@@ -186,7 +186,7 @@ function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 	const statusIndicator = document.querySelector( '#editor-status' );
 
-	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
+	pendingActions.on( 'change:hasAny', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
 			statusIndicator.classList.add( 'busy' );
 		} else {
@@ -266,7 +266,7 @@ function handleSaveButton( editor ) {
 function handleStatusChanges( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
-	pendingActions.on( 'change:isPending', () => updateStatus( editor ) );
+	pendingActions.on( 'change:hasAny', () => updateStatus( editor ) );
 
 	editor.model.document.on( 'change:data', () => {
 		isDirty = true;
@@ -279,7 +279,7 @@ function handleBeforeunload( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
 	window.addEventListener( 'beforeunload', evt => {
-		if ( pendingActions.isPending ) {
+		if ( pendingActions.hasAny ) {
 			evt.returnValue = pendingActions.first.message;
 		}
 	} );
@@ -294,7 +294,7 @@ function updateStatus( editor ) {
 		saveButton.classList.remove( 'active' );
 	}
 
-	if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+	if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
 		saveButton.classList.add( 'saving' );
 	} else {
 		saveButton.classList.remove( 'saving' );

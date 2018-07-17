@@ -50,7 +50,7 @@ function displayStatus( editor ) {
 	const statusIndicator = document.querySelector( '.snippet-autosave-status' );
 	const console = document.querySelector( '#snippet-autosave-console' );
 
-	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
+	pendingActions.on( 'change:hasAny', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
 			statusIndicator.classList.add( 'busy' );
 			console.classList.remove( 'received' );
