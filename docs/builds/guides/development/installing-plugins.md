@@ -17,8 +17,8 @@ In this guide you can learn how to add plugins to your editor in the two most co
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
+* [Node.js](https://nodejs.org/en/) 6.9.0+
+* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991); especially with deduplicating packages; upgrade npm when in doubt)
 
 ## Adding a plugin to a build
 
