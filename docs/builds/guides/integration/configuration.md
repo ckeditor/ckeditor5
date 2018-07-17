@@ -59,7 +59,7 @@ ClassicEditor
 Each build has a number of plugins available. You can easily list all plugins available in your build:
 
 ```js
-ClassicEditor.build.plugins.map( plugin => plugin.pluginName );
+ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 ```
 
 ## Adding features
