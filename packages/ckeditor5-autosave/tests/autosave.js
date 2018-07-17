@@ -249,13 +249,13 @@ describe( 'Autosave', () => {
 			} );
 
 			sinon.assert.notCalled( serverActionSpy );
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
 			sandbox.clock.tick( 1000 );
 			return Promise.resolve().then( () => Promise.resolve() ).then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
-				expect( pendingActions.isPending ).to.be.false;
+				expect( pendingActions.hasAny ).to.be.false;
 			} );
 		} );
 
@@ -267,19 +267,19 @@ describe( 'Autosave', () => {
 				save: serverActionSpy
 			};
 
-			expect( pendingActions.isPending ).to.be.false;
+			expect( pendingActions.hasAny ).to.be.false;
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 
 			// Server action needs to wait at least a cycle.
 			return wait().then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
-				expect( pendingActions.isPending ).to.be.false;
+				expect( pendingActions.hasAny ).to.be.false;
 			} );
 		} );
 
@@ -297,14 +297,14 @@ describe( 'Autosave', () => {
 				save: serverActionStub
 			};
 
-			expect( pendingActions.isPending ).to.be.false;
+			expect( pendingActions.hasAny ).to.be.false;
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
@@ -313,12 +313,12 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 
 			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
-				expect( pendingActions.isPending ).to.be.true;
+				expect( pendingActions.hasAny ).to.be.true;
 				sinon.assert.calledOnce( serverActionSpy );
 
 				// Wait another 1000ms and a promise cycle for the second server action.
@@ -326,7 +326,7 @@ describe( 'Autosave', () => {
 			} )
 				.then( () => Promise.resolve() )
 				.then( () => {
-					expect( pendingActions.isPending ).to.be.false;
+					expect( pendingActions.hasAny ).to.be.false;
 					sinon.assert.calledTwice( serverActionSpy );
 				} );
 		} );
@@ -339,33 +339,33 @@ describe( 'Autosave', () => {
 				save: serverActionSpy
 			};
 
-			expect( pendingActions.isPending ).to.be.false;
+			expect( pendingActions.hasAny ).to.be.false;
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
 			} );
 
-			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.hasAny ).to.be.true;
 
 			// Server action needs to wait at least a cycle.
 			return wait().then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
-				expect( pendingActions.isPending ).to.be.true;
+				expect( pendingActions.hasAny ).to.be.true;
 
 				autosave._flush();
 
 				// Wait another promise cycle.
 				return wait().then( () => {
 					sinon.assert.calledTwice( serverActionSpy );
-					expect( pendingActions.isPending ).to.be.false;
+					expect( pendingActions.hasAny ).to.be.false;
 				} );
 			} );
 		} );
@@ -553,12 +553,12 @@ describe( 'Autosave', () => {
 
 			return editor.destroy()
 				.then( () => {
-					expect( pendingActions.isPending ).to.be.true;
+					expect( pendingActions.hasAny ).to.be.true;
 					sandbox.clock.tick( 1000 );
 				} )
 				.then( () => Promise.resolve() )
 				.then( () => {
-					expect( pendingActions.isPending ).to.be.false;
+					expect( pendingActions.hasAny ).to.be.false;
 					sinon.assert.calledOnce( serverActionSpy );
 					sinon.assert.calledOnce( serverActionStub );
 				} );

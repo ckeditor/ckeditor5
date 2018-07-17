@@ -152,7 +152,7 @@ export default class Autosave extends Plugin {
 		// to warn before full page reload and this event cannot be dispatched manually.
 		/* istanbul ignore next */
 		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
-			if ( this._pendingActions.isPending ) {
+			if ( this._pendingActions.hasAny ) {
 				domEvt.returnValue = this._pendingActions.first.message;
 			}
 		} );
