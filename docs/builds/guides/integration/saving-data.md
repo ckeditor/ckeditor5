@@ -17,7 +17,7 @@ This approach is only available in the {@link builds/guides/overview#classic-edi
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>

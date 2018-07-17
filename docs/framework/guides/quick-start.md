@@ -11,10 +11,10 @@ This guide will show you how to initialize the editor from source and how to cre
 
 The framework is made of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** using npm 5+ [is not recommended](https://github.com/npm/npm/issues/16991))
+* [Node.js](https://nodejs.org/en/) 6.9.0+
+* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991); especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@4.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@4](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -29,8 +29,8 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^4.15.0 \
-	webpack-cli@^3.0.8
+	webpack@4 \
+	webpack-cli@3
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -165,7 +165,9 @@ You can now run webpack to build the application. To do that, call the `webpack`
 </info-box>
 
 <info-box>
-	Use `--mode production` if you want to build a minified and optimized application. See more at https://webpack.js.org/concepts/mode/.
+	Use `webpack --mode production` if you want to build a minified and optimized application. See more at https://webpack.js.org/concepts/mode/.
+
+	**Note:** Prior to version 1.2.7 `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up to date version of that package (and that webpack uses this version).
 </info-box>
 
 If everything worked correctly, you should see:
@@ -189,17 +191,18 @@ Finally, it is time to create an HTML page:
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>CKEditor 5 Framework – Quick start</title>
 	</head>
+	<body>
+		<div id="editor">
+			<p>Editor content goes here.</p>
+		</div>
 
-	<div id="editor">
-		<p>Editor content goes here.</p>
-	</div>
-
-	<script src="dist/bundle.js"></script>
+		<script src="dist/bundle.js"></script>
+	</body>
 </html>
 ```
 
