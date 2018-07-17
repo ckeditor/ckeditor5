@@ -44,7 +44,7 @@ ClassicEditor
 		} );
 
 		window.addEventListener( 'beforeunload', evt => {
-			if ( pendingActions.isPending ) {
+			if ( pendingActions.hasAny ) {
 				evt.returnValue = pendingActions.first.message;
 			}
 		} );

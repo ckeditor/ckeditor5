@@ -28,14 +28,14 @@ describe( 'PendingActions', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should have isPending observable', () => {
+		it( 'should have hasAny observable', () => {
 			const spy = sinon.spy();
 
-			pendingActions.on( 'change:isPending', spy );
+			pendingActions.on( 'change:hasAny', spy );
 
-			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 
-			pendingActions.isPending = true;
+			pendingActions.hasAny = true;
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -60,12 +60,12 @@ describe( 'PendingActions', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should update isPending observable', () => {
-			expect( pendingActions ).to.have.property( 'isPending', false );
+		it( 'should update hasAny observable', () => {
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 
 			pendingActions.add( 'Action' );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 		} );
 
 		it( 'should throw an error when invalid message is given', () => {
@@ -90,15 +90,15 @@ describe( 'PendingActions', () => {
 			const action1 = pendingActions.add( 'Action 1' );
 			const action2 = pendingActions.add( 'Action 2' );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 
 			pendingActions.remove( action1 );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 
 			pendingActions.remove( action2 );
 
-			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 		} );
 
 		it( 'should fire remove event with removed item', () => {

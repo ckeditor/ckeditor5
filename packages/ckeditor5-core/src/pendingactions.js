@@ -69,9 +69,9 @@ export default class PendingActions extends Plugin {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} #isPending
+		 * @member {Boolean} #hasAny
 		 */
-		this.set( 'isPending', false );
+		this.set( 'hasAny', false );
 
 		/**
 		 * A list of pending actions.
@@ -106,7 +106,7 @@ export default class PendingActions extends Plugin {
 
 		action.set( 'message', message );
 		this._actions.add( action );
-		this.isPending = true;
+		this.hasAny = true;
 
 		return action;
 	}
@@ -118,7 +118,7 @@ export default class PendingActions extends Plugin {
 	 */
 	remove( action ) {
 		this._actions.remove( action );
-		this.isPending = !!this._actions.length;
+		this.hasAny = !!this._actions.length;
 	}
 
 	/**
