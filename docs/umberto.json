@@ -8,7 +8,8 @@
 	"redirects": {
 		"builds/guides/license-and-legal.html": "builds/guides/support/license-and-legal.html",
 		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
-		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html"
+		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",
+		"builds/guides/development/installing-plugins.html": "builds/guides/integration/installing-plugins.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",

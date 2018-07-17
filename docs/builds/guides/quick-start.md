@@ -47,10 +47,10 @@ Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `Classi
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 - Classic editor</title>
+	<title>CKEditor 5 – Classic editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
 </head>
 <body>
@@ -99,7 +99,7 @@ Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEdi
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Inline editor</title>
@@ -151,7 +151,7 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Balloon editor</title>
@@ -206,7 +206,7 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 – Document editor</title>

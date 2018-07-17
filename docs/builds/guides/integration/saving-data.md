@@ -17,7 +17,7 @@ This approach is only available in the {@link builds/guides/overview#classic-edi
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Classic editor</title>
@@ -93,7 +93,7 @@ When you:
 * Use Ajax requests instead of the classic integration with HTML forms,
 * Implement a single-page application,
 * Use a different editor type than the Classic editor (and hence, cannot use the previous method),
- 
+
 you can retrieve the data from the editor by using the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method.
 
 For that, you need to store the reference to the `editor` because &mdash; unlike in CKEditor 4 &mdash; there is no global `CKEDITOR.instances` property. You can do that in multiple ways, for example by assigning the `editor` to a variable defined outside the `then()`'s callback:
@@ -123,7 +123,7 @@ document.querySelector( '#submit' ).addEventListener( 'click', () => {
 The {@link module:autosave/autosave~Autosave} feature allows you to automatically save the data (e.g. send it to the server) when needed (when the user changed the content).
 
 <info-box>
-	This plugin is unavailable in any of the builds by default so you need to {@link builds/guides/development/installing-plugins install it}.
+	This plugin is unavailable in any of the builds by default so you need to {@link builds/guides/integration/installing-plugins install it}.
 </info-box>
 
 Assuming that you implemented a `saveData()` function that sends the data to your server and returns a promise which is resolved once the data is successfully saved, configuring the autosave feature is as simple as:

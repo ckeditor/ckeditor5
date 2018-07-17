@@ -11,10 +11,10 @@ This guide will show you how to initialize the editor from source and how to cre
 
 The framework is made of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
+* [Node.js](https://nodejs.org/en/) 6.9.0+
+* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991); especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@4.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@4](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -29,8 +29,8 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^4.12.2
-	webpack-cli@^3.0.8
+	webpack@4 \
+	webpack-cli@3
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -113,7 +113,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/development/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
+	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/integration/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js
@@ -141,7 +141,7 @@ ClassicEditor
 You can now run webpack to build the application. To do that, call the `webpack` executable:
 
 ```bash
-./node_modules/.bin/webpack
+./node_modules/.bin/webpack --mode development
 ```
 
 <info-box>
@@ -151,7 +151,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 
 	```js
 	"scripts": {
-		"build": "webpack"
+		"build": "webpack --mode development"
 	}
 	```
 
@@ -164,37 +164,45 @@ You can now run webpack to build the application. To do that, call the `webpack`
 	npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install `webpack-cli` globally.
 </info-box>
 
+<info-box>
+	Use `webpack --mode production` if you want to build a minified and optimized application. See more at https://webpack.js.org/concepts/mode/.
+
+	**Note:** Prior to version 1.2.7 `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up to date version of that package (and that webpack uses this version).
+</info-box>
+
 If everything worked correctly, you should see:
 
 ```
-p@m /workspace/quick-start> ./node_modules/.bin/webpack
-Hash: 3973724171776d324f0c
-Version: webpack 3.6.0
-Time: 3322ms
-        Asset     Size  Chunks                    Chunk Names
-    bundle.js  1.93 MB       0  [emitted]  [big]  main
-bundle.js.map   2.2 MB       0  [emitted]         main
- [143] (webpack)/buildin/harmony-module.js 596 bytes {0} [built]
- [249] ./app.js 546 bytes {0} [built]
- [269] (webpack)/buildin/global.js 509 bytes {0} [built]
-    + 456 hidden modules
+p@m /workspace/quick-start> ./node_modules/.bin/webpack --mode development
+Hash: c96beab038124d61568f
+Version: webpack 4.15.1
+Time: 3023ms
+Built at: 2018-07-05 17:37:38
+        Asset      Size  Chunks             Chunk Names
+    bundle.js  2.45 MiB    main  [emitted]  main
+bundle.js.map  2.39 MiB    main  [emitted]  main
+[./app.js] 638 bytes {main} [built]
+[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 489 bytes {main} [built]
+[./node_modules/webpack/buildin/harmony-module.js] (webpack)/buildin/harmony-module.js 573 bytes {main} [built]
+    + 491 hidden modules
 ```
 
 Finally, it is time to create an HTML page:
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>CKEditor 5 Framework – Quick start</title>
 	</head>
+	<body>
+		<div id="editor">
+			<p>Editor content goes here.</p>
+		</div>
 
-	<div id="editor">
-		<p>Editor content goes here.</p>
-	</div>
-
-	<script src="dist/bundle.js"></script>
+		<script src="dist/bundle.js"></script>
+	</body>
 </html>
 ```
 
