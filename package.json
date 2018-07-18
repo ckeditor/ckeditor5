@@ -60,7 +60,7 @@
     "@ckeditor/ckeditor5-widget": "^10.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-collaboration": "^10.0.1",
+    "@ckeditor/ckeditor5-collaboration": "^10.1.0",
     "@ckeditor/ckeditor5-dev-docs": "^9.0.4",
     "@ckeditor/ckeditor5-dev-env": "^11.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^12.0.0",
