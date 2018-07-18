@@ -55,7 +55,7 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
