@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.1.0...v11.0.0) (2018-07-18)
+
+### Features
+
+* Added the observable `Editor#state` property. Closes [#124](https://github.com/ckeditor/ckeditor5-core/issues/124). ([ec89d8d](https://github.com/ckeditor/ckeditor5-core/commit/ec89d8d))
+* Imported the module providing the `CKEDITOR_VERSION` global constant in the `Editor` class (see [ckeditor/ckeditor5#1005](https://github.com/ckeditor/ckeditor5/issues/1005)). ([a1a9144](https://github.com/ckeditor/ckeditor5-core/commit/a1a9144))
+* Introduced the `#element` property to the `EditorWithUI` interface. The `#element` property from the `ElementApi` interface has been renamed to `#sourceElement`. Most editors implement both interfaces, which ultimately means that the old `editor.element` property is now called `editor.sourceElement` and there's a new `editor.element` property with a new meaning. Closes [#64](https://github.com/ckeditor/ckeditor5-core/issues/64). ([eb43b63](https://github.com/ckeditor/ckeditor5-core/commit/eb43b63))
+* Introduced the `EditorUI#update` event. Closes [#130](https://github.com/ckeditor/ckeditor5-core/issues/130). ([734166a](https://github.com/ckeditor/ckeditor5-core/commit/734166a))
+
+### Bug fixes
+
+* Editor#destroy waits for the initialization. Closes [#134](https://github.com/ckeditor/ckeditor5-core/issues/134). ([ad1da26](https://github.com/ckeditor/ckeditor5-core/commit/ad1da26))
+* The `ClassicTestEditor` should not render its UI in the `constructor()`. Closes [#137](https://github.com/ckeditor/ckeditor5-core/issues/137). ([46fdc36](https://github.com/ckeditor/ckeditor5-core/commit/46fdc36))
+
+### Other changes
+
+* Refreshed the pilcrow icon (see [ckeditor/ckeditor5-ui#394](https://github.com/ckeditor/ckeditor5-ui/issues/394)). ([ce33acb](https://github.com/ckeditor/ckeditor5-core/commit/ce33acb))
+* Split `Editor.build` into `Editor.builtinPlugins` and `Editor.defaultConfig`. Closes [#140](https://github.com/ckeditor/ckeditor5-core/issues/140). ([c13ec79](https://github.com/ckeditor/ckeditor5-core/commit/c13ec79))
+* Updated translations. ([ba21a12](https://github.com/ckeditor/ckeditor5-core/commit/ba21a12))
+
+### BREAKING CHANGES
+
+* `Editor.build` was split to `Editor.builtinPlugins` and `Editor.defaultConfig`.
+* The `editor.element` property was renamed to `editor.sourceElement`.
+* The `editor.updateElement()` method was renamed to `editor.updateSourceElement()`.
+* The `EditorUI` is now a class (no longer an interface).
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v10.0.0...v10.1.0) (2018-06-21)
 
 ### Features
