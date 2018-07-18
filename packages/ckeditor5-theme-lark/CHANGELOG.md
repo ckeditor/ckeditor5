@@ -8,12 +8,13 @@ Changelog
 * Added theme styles for the switch button (see [ckeditor/ckeditor5-ui#402](https://github.com/ckeditor/ckeditor5-ui/issues/402)). ([90ab35e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/90ab35e))
 
   Also:
+
   * Defined styles of the `.ck-button` in `.ck-list`,
   * Simplified the `.ck-list` styles as `.ck-list__item` became just a container,
   * Aligned several components' styles to the new architecture of the lists and buttons (including `flex`),
   * Extended the theme manual test with various use-cases of switch buttons and buttons in the list (dropdown).
 * Implemented a CSS–styled image upload loader (see [ckeditor/ckeditor5-image#207](https://github.com/ckeditor/ckeditor5-image/issues/207)). ([594cf12](https://github.com/ckeditor/ckeditor5-theme-lark/commit/594cf12))
-* Implemented styles for the widget selection handler (see [ckeditor/ckeditor5-widget#40](https://github.com/ckeditor/ckeditor5-widget/issues/40)). ([0703b2b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0703b2b))
+* Implemented styles for the widget selection handle (see [ckeditor/ckeditor5-widget#40](https://github.com/ckeditor/ckeditor5-widget/issues/40)). ([0703b2b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0703b2b))
 
   Also fixed a regression after [ckeditor/ckeditor5#936](https://github.com/ckeditor/ckeditor5/issues/936) which made the widget use wrong outline styles when the editable is blurred. Minor code refactoring in the widget styles.
 
@@ -32,7 +33,7 @@ Changelog
 ### BREAKING CHANGES
 
 * Various color variables --ck-color-button-...-focus have been renamed to --ck-color-button-...-hover.
-* Several `--ck-color-widget-*` custom properties have been renamed to match the project's naming standards. 
+* Several `--ck-color-widget-*` custom properties have been renamed to match the project's naming standards.
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.0.0...v10.1.0) (2018-06-21)
