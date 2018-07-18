@@ -6,16 +6,11 @@ Changelog
 ### Features
 
 * Implemented a module exposing the `CKEDIOR_VERSION` to the global scope. Closes [ckeditor/ckeditor5#1005](https://github.com/ckeditor/ckeditor5/issues/1005). ([3546ac4](https://github.com/ckeditor/ckeditor5-utils/commit/3546ac4))
-* Introduce `env.isEdge` property. ([13d4af4](https://github.com/ckeditor/ckeditor5-utils/commit/13d4af4))
+* Introduced `env.isEdge`. ([13d4af4](https://github.com/ckeditor/ckeditor5-utils/commit/13d4af4))
 
 ### Bug fixes
 
-* Made the `FocusTracker#isFocused` synchronous thanks to `FocusEvent#relatedTarget`. Closes [#245](https://github.com/ckeditor/ckeditor5-utils/issues/245). ([7467c4e](https://github.com/ckeditor/ckeditor5-utils/commit/7467c4e))
-* The `isWindow` helper should work in the Electron environment. Closes [ckeditor/ckeditor5#879](https://github.com/ckeditor/ckeditor5/issues/879). ([d561151](https://github.com/ckeditor/ckeditor5-utils/commit/d561151))
-
-### Other changes
-
-* Made FocusTracker asynchronous again. Closes [ckeditor/ckeditor5-ui#431](https://github.com/ckeditor/ckeditor5-ui/issues/431). ([65094f6](https://github.com/ckeditor/ckeditor5-utils/commit/65094f6))
+* The `isWindow()` helper should work in the Electron environment. Closes [ckeditor/ckeditor5#879](https://github.com/ckeditor/ckeditor5/issues/879). ([d561151](https://github.com/ckeditor/ckeditor5-utils/commit/d561151))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.0.0...v10.1.0) (2018-06-21)
