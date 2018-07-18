@@ -5,12 +5,12 @@ Changelog
 
 ### Bug fixes
 
-* Handle <kbd>Backspace</kbd> on Android (by a lovely heuristic for detecting it based on DOM mutations). Closes ckeditor/ckeditor5/issues/1106. Closes ckeditor/ckeditor5/issues/1130. ([9161275](https://github.com/ckeditor/ckeditor5-typing/commit/9161275))
+* Handle <kbd>Backspace</kbd> on Android. Closes ckeditor/ckeditor5/issues/1106. Closes https://github.com/ckeditor/ckeditor5/issues/1130. ([9161275](https://github.com/ckeditor/ckeditor5-typing/commit/9161275))
 * Remove selection contents on `keydown` before the composition starts. Closes [#83](https://github.com/ckeditor/ckeditor5-typing/issues/83). Closes [#150](https://github.com/ckeditor/ckeditor5-typing/issues/150). ([ab1b46d](https://github.com/ckeditor/ckeditor5-typing/commit/ab1b46d))
 
 ### BREAKING CHANGES
 
-* `@ckeditor/ckeditor5-typing/src/changebuffer.js` was moved to `@ckeditor/ckeditor5-typing/src/utils/changebuffer.js';
+* `@ckeditor/ckeditor5-typing/src/changebuffer.js` was moved to `@ckeditor/ckeditor5-typing/src/utils/changebuffer.js`.
 
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v10.0.0...v10.0.1) (2018-06-21)
