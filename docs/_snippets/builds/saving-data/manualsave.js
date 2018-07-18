@@ -10,12 +10,12 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 let HTTP_SERVER_LAG = 500;
 let isDirty = false;
 
-document.querySelector( '#snippet-manual-lag' ).addEventListener( 'change', evt => {
+document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', evt => {
 	HTTP_SERVER_LAG = evt.target.value;
 } );
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-manual' ), {
+	.create( document.querySelector( '#snippet-manualsave' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			viewportTopOffset: 60
@@ -34,7 +34,7 @@ ClassicEditor
 
 // Handle clicking the "Save" button.
 function handleSaveButton( editor ) {
-	const saveButton = document.querySelector( '#snippet-manual-save' );
+	const saveButton = document.querySelector( '#snippet-manualsave-save' );
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
 	saveButton.addEventListener( 'click', evt => {
@@ -45,7 +45,7 @@ function handleSaveButton( editor ) {
 
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( data );
+			updateServerDataConsole( data );
 
 			pendingActions.remove( action );
 
@@ -80,8 +80,7 @@ function handleBeforeunload( editor ) {
 }
 
 function updateStatus( editor ) {
-	const buttonContainer = document.querySelector( '.snippet-manual-save-container' );
-	const console = document.querySelector( '#snippet-manual-save-console' );
+	const buttonContainer = document.querySelector( '#snippet-manualsave-container' );
 
 	if ( isDirty ) {
 		buttonContainer.classList.add( 'active' );
@@ -91,15 +90,23 @@ function updateStatus( editor ) {
 
 	if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
 		buttonContainer.classList.add( 'saving' );
-		console.classList.remove( 'received' );
 	} else {
 		buttonContainer.classList.remove( 'saving' );
 	}
 }
 
-function log( msg ) {
-	const console = document.querySelector( '#snippet-manual-save-console' );
+let consoleUpdates = 0;
 
-	console.classList.add( 'received' );
+function updateServerDataConsole( msg ) {
+	const console = document.querySelector( '#snippet-manualsave-console' );
+
+	consoleUpdates++;
+	console.classList.add( 'updated' );
 	console.textContent = msg;
+
+	setTimeout( () => {
+		if ( --consoleUpdates == 0 ) {
+			console.classList.remove( 'updated' );
+		}
+	}, 500 );
 }

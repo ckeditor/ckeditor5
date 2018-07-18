@@ -38,7 +38,7 @@ function saveData( data ) {
 	return new Promise( resolve => {
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( data );
+			updateServerDataConsole( data );
 
 			resolve();
 		}, HTTP_SERVER_LAG );
@@ -47,22 +47,29 @@ function saveData( data ) {
 
 function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
-	const statusIndicator = document.querySelector( '.snippet-autosave-status' );
-	const console = document.querySelector( '#snippet-autosave-console' );
+	const statusIndicator = document.querySelector( '#snippet-autosave-status' );
 
 	pendingActions.on( 'change:hasAny', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
 			statusIndicator.classList.add( 'busy' );
-			console.classList.remove( 'received' );
 		} else {
 			statusIndicator.classList.remove( 'busy' );
-			console.classList.add( 'received' );
 		}
 	} );
 }
 
-function log( msg ) {
+let consoleUpdates = 0;
+
+function updateServerDataConsole( msg ) {
 	const console = document.querySelector( '#snippet-autosave-console' );
 
+	consoleUpdates++;
+	console.classList.add( 'updated' );
 	console.textContent = msg;
+
+	setTimeout( () => {
+		if ( --consoleUpdates == 0 ) {
+			console.classList.remove( 'updated' );
+		}
+	}, 500 );
 }

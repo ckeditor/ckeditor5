@@ -16,7 +16,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link builds/guides/integration/basic-api#creators editor creator}.
+* Changing the {@link builds/guides/integration/basic-api#creating-an-editor editor creator}.
 * Changing the {@link framework/guides/theme-customization editor theme}.
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.
@@ -46,7 +46,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
-	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build).
+	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments – e.g. in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
 </info-box>
 
 <info-box warning>
@@ -58,8 +58,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 Every build contains the following files:
 
 * `build/ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
-* `src/ckeditor.js` &ndash; The source entry point of the build. It can be used for complex bundling and development. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org).
-* `build-config.js` &ndash; The configuration of this particular CKEditor 5 build, based on which the `src/ckeditor.js` file is created.
+* `src/ckeditor.js` &ndash; The source entry point of the build. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org). It defines the editor creator, a list of plugins and the default config of a build.
 * `webpack-config.js` &ndash; webpack configuration used to build the editor.
 
 ## Customizing a build
@@ -67,8 +66,8 @@ Every build contains the following files:
 In order to customize a build you need to:
 
 * Install missing dependencies.
-* Update the `build-config.js` file.
-* Update the builds (which includes updating `src/ckeditor.js` and the editor bundle in `build/`).
+* Update the `src/ckeditor.js` file.
+* Update the build (the editor bundle in `build/`).
 
 ### Installing dependencies
 
@@ -94,62 +93,61 @@ This will install the package and add it to `package.json`. You can also edit `p
 
 ### Updating build configuration
 
-If you added or removed dependencies, you will also need to modify the `build-config.js` file. Based on it the bundler entry file (`src/ckeditor.js`) will be created. You can also opt out from automatically creating the entry file and modify `src/ckeditor.js` manually, which can be useful in some non-standard cases.
+If you added or removed dependencies, you will also need to modify the `src/ckeditor.js` file.
 
-Either way, every plugin that you want to include in the bundle should be included at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your build configuration might look like this:
+Every plugin that you want to include in the bundle should be included at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your webpack entry file (`src/ckeditor.js`) may look like this:
 
 ```js
 'use strict';
 
-module.exports = {
-	// The editor creator to use.
-	editor: '@ckeditor/ckeditor5-editor-classic/src/classiceditor',
+// The editor creator to use.
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-	// The name under which the editor will be exported.
-	moduleName: 'ClassicEditor',
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-	// Plugins to include in the build.
-	plugins: [
-		'@ckeditor/ckeditor5-essentials/src/essentials',
+import CustomPlugin from 'ckeditor5-custom-package/src/customplugin';
+import OtherCustomPlugin from '../relative/path/to/some/othercustomplugin';
 
-		'@ckeditor/ckeditor5-autoformat/src/autoformat',
-		'@ckeditor/ckeditor5-basic-styles/src/bold',
-		'@ckeditor/ckeditor5-basic-styles/src/italic',
-		'@ckeditor/ckeditor5-heading/src/heading',
-		'@ckeditor/ckeditor5-link/src/link',
-		'@ckeditor/ckeditor5-list/src/list',
-		'@ckeditor/ckeditor5-paragraph/src/paragraph',
+export default class ClassicEditor extends ClassicEditorBase {}
 
-		'ckeditor5-custom-package/src/customplugin',
-		'../relative/path/to/some/othercustomplugin'
-	],
+// Plugins to include in the build.
+ClassicEditor.builtinPlugins = [
+	EssentialsPlugin,
+	AutoformatPlugin,
+	BoldPlugin,
+	ItalicPlugin,
+	HeadingPlugin,
+	LinkPlugin,
+	ListPlugin,
+	ParagraphPlugin,
 
-	// Editor configuration.
-	config: {
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'custombutton' ],
+	CustomPlugin,
+	OtherCustomPlugin
+];
 
-		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-		language: 'en'
-	}
+ClassicEditor.defaultConfig = {
+	toolbar: [ 'heading', '|', 'bold', 'italic', 'custombutton' ],
+
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
 };
 ```
 
 ### Rebuilding the bundle
 
-After you changed the build configuration or updated some dependencies, it is time to rebuild the bundle. This will run a bundler (webpack) with a proper configuration (see `webpack.config.js`).
+After you changed the webpack entry file or updated some dependencies, it is time to rebuild the bundle. This will run a bundler (webpack) with a proper configuration (see `webpack.config.js`).
 
-If you wish to create a bundle based on the build configuration (`build-config.js`), run:
+To do that, execute the following command:
 
 ```bash
 npm run build
-```
-
-This command will update the entry file (`src/ckeditor.js`) and create the bundle &mdash; `build/ckeditor.js`.
-
-If you want to skip updating the entry file (in case you modified it manually), run:
-
-```bash
-npm run build-ckeditor
 ```
 
 You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.

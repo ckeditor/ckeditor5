@@ -41,63 +41,82 @@ Now, install the plugin package:
 npm install --save-dev @ckeditor/ckeditor5-alignment
 ```
 
-Edit the `build-config.js` file to add your plugin to the list of plugins which will be included in the build and to add your feature's button to the toolbar:
+Edit the `src/ckeditor.js` file to add your plugin to the list of plugins which will be included in the build and to add your feature's button to the toolbar:
 
-```
-module.exports = {
-	// The editor creator to use.
-	editor: '@ckeditor/ckeditor5-editor-classic/src/classiceditor',
+```js
+// The editor creator to use.
+import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-	// The name under which the editor will be exported.
-	moduleName: 'ClassicEditor',
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import Link from '@ckeditor/ckeditor5-link/src/link';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-	// Plugins to include in the build.
-	plugins: [
-		'@ckeditor/ckeditor5-essentials/src/essentials',
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';     // <--- ADDED
 
-		'@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter',
-		'@ckeditor/ckeditor5-autoformat/src/autoformat',
-		'@ckeditor/ckeditor5-basic-styles/src/bold',
-		'@ckeditor/ckeditor5-basic-styles/src/italic',
-		'@ckeditor/ckeditor5-block-quote/src/blockquote',
-		'@ckeditor/ckeditor5-easy-image/src/easyimage',
-		'@ckeditor/ckeditor5-heading/src/heading',
-		'@ckeditor/ckeditor5-image/src/image',
-		'@ckeditor/ckeditor5-image/src/imagecaption',
-		'@ckeditor/ckeditor5-image/src/imagestyle',
-		'@ckeditor/ckeditor5-image/src/imagetoolbar',
-		'@ckeditor/ckeditor5-link/src/link',
-		'@ckeditor/ckeditor5-list/src/list',
-		'@ckeditor/ckeditor5-paragraph/src/paragraph',
-		'@ckeditor/ckeditor5-upload/src/imageupload',
+export default class ClassicEditor extends ClassicEditorBase {}
 
-		'@ckeditor/ckeditor5-alignment/src/alignment', //    <--- ADDED
-	],
+// Plugins to include in the build.
+ClassicEditor.builtinPlugins = [
+	Essentials,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Link,
+	List,
+	Paragraph,
+	Alignment                                                            // <--- ADDED
+];
 
-	// Editor config.
-	config: {
-		toolbar: {
-			items: [
-				'heading',
-				'alignment', //                      <--- ADDED
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'blockQuote',
-				'undo',
-				'redo'
-			]
-		},
-
-		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
-		},
-
-		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-		language: 'en'
-	}
+// Editor configuration.
+ClassicEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'alignment',                                                 // <--- ADDED
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'imageUpload',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		toolbar: [
+			'imageStyle:full',
+			'imageStyle:side',
+			'|',
+			'imageTextAlternative'
+		]
+	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
+	language: 'en'
 };
 ```
 
@@ -136,12 +155,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment'; //   <--- ADDED
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';     // <--- ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Alignment ], //   <--- MODIFIED
-		toolbar: [ 'bold', 'italic', 'alignment' ] //             <--- MODIFIED
+		plugins: [ Essentials, Paragraph, Bold, Italic, Alignment ],     // <--- MODIFIED
+		toolbar: [ 'bold', 'italic', 'alignment' ]                       // <--- MODIFIED
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -181,27 +200,27 @@ ClassicEditor
 	} );
 ```
 
-All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see e.g. [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)), which is created based on the `build-config.js` file and based on which a build is created, looks like this:
+All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see e.g. [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)) looks like this:
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 // ...
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
-ClassicEditor.builtInPlugins = [
-	EssentialsPlugin,
-	UploadAdapterPlugin,
-	AutoformatPlugin,
-	BoldPlugin,
-	ItalicPlugin,
-	BlockQuotePlugin,
+ClassicEditor.builtinPlugins = [
+	Essentials,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
 	// ...
 ];
 
@@ -217,7 +236,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This code imports the source of the classic editor and extends it with a static property `build` in which it defines a set of plugins and configuration to be used by this editor class.
+This code imports the source of the classic editor and extends it with a static `builtinPlugins` and `defaultConfig` properties in which it defines a set of plugins and configuration to be used by this editor class.
 
 In this approach, all editor instances created by using this editor build will by default load all these built-in plugins and configuration.
 
@@ -225,7 +244,7 @@ In this approach, all editor instances created by using this editor build will b
 	You can still use the {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`} and {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} options to override the default configuration.
 </info-box>
 
-When building the editor from source and not using a build as a base, you can also use the static `build` property of editor classes. However, in this situation it is usually more convenient to simply pass all the plugins directly to the static `create()` method:
+When building the editor from source and not using a build as a base, you can also use the static `builtinPlugins` and `defaultConfig` properties of editor classes. However, in this situation it is usually more convenient to simply pass all the plugins directly to the static `create()` method:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -247,4 +266,4 @@ ClassicEditor
 	} );
 ```
 
-So, in short, both methods use very similar mechanisms. However, adding a plugin through the static `build` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
+So, in short, both methods use very similar mechanisms. However, adding a plugin through the static `builtinPlugins` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
