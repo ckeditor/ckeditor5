@@ -5,11 +5,11 @@ Changelog
 
 ### Features
 
-* Implemented and enabled the table selection handler (see [ckeditor/ckeditor5-widget#40](https://github.com/ckeditor/ckeditor5-widget/issues/40)). ([47295bd](https://github.com/ckeditor/ckeditor5-table/commit/47295bd))
-* Used the switch button to toggle table headers  (see [ckeditor/ckeditor5-ui#402](https://github.com/ckeditor/ckeditor5-ui/issues/402)). ([f3b7d0b](https://github.com/ckeditor/ckeditor5-table/commit/f3b7d0b))
+* Implemented the table selection handle (see [ckeditor/ckeditor5-widget#40](https://github.com/ckeditor/ckeditor5-widget/issues/40)). ([47295bd](https://github.com/ckeditor/ckeditor5-table/commit/47295bd))
+* Used the switch button to toggle table headers (see [ckeditor/ckeditor5-ui#402](https://github.com/ckeditor/ckeditor5-ui/issues/402)). ([f3b7d0b](https://github.com/ckeditor/ckeditor5-table/commit/f3b7d0b))
 
   Also:
-  * Aligned the `TableUI` to the new API of the `addListToDropdown` helper,
+  * Aligned the `TableUI` to the new API of the `addListToDropdown()` helper,
   * Updated the tests to consider the `ListItemView` as simply a container for buttons.
 
 ### Bug fixes
