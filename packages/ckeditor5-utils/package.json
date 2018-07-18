@@ -9,7 +9,7 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "ckeditor5": "^11.0.0"
+    "ckeditor5": "^11.0.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^11.0.0",
