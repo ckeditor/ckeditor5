@@ -33,7 +33,14 @@ export default class BalloonEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editableElement );
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+		
 		this.registerChild( this.editable );
 	}
 
