@@ -1,6 +1,36 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.1.0...v11.0.0) (2018-07-18)
+
+### Features
+
+* Implemented the `SwitchButtonView`. Closes [#402](https://github.com/ckeditor/ckeditor5-ui/issues/402). Closes [#403](https://github.com/ckeditor/ckeditor5-ui/issues/403). ([105fbea](https://github.com/ckeditor/ckeditor5-ui/commit/105fbea))
+
+  Also:
+  * Simplified the `ListItemView` class, which is now just a container for `ButtonView` (and others),
+  * Moved `ListItemView#style` and `#class` to the `ButtonView` (as `#class` and `#labelStyle`),
+  * Enhanced the `addListToDropdown` utility with a better configuration (`ListDropdownItemDefinition`) and the support for buttons, switch buttons, and separators,
+  * `.ck-button` and `.ck-list` became `flex` containers; the first one to allow complex inner structures (like the toggle) and the later to take control of complex list items (like `.ck-switchbutton`).
+
+### Bug fixes
+
+* The `BalloonToolbar` should hide when the editable is blurred. Closes [#418](https://github.com/ckeditor/ckeditor5-ui/issues/418). ([f6a02d4](https://github.com/ckeditor/ckeditor5-ui/commit/f6a02d4))
+* The `BlockToolbar` should add elements to the `FocusTracker` only after `uiReady` is fired to avoid errors. Closes [#424](https://github.com/ckeditor/ckeditor5-ui/issues/424). ([ae9fa09](https://github.com/ckeditor/ckeditor5-ui/commit/ae9fa09))
+* The `BlockToolbar` should hide when the editor is blurred. Closes [#408](https://github.com/ckeditor/ckeditor5-ui/issues/408). ([e3bbccf](https://github.com/ckeditor/ckeditor5-ui/commit/e3bbccf))
+
+### Other changes
+
+* Allowed list item's buttons to have an outer, visible box-shadow. Ensured the balloon panel's arrow does not cover panel's children. Closes [#394](https://github.com/ckeditor/ckeditor5-ui/issues/394). ([8a64ee2](https://github.com/ckeditor/ckeditor5-ui/commit/8a64ee2))
+* Updated translations. ([949585d](https://github.com/ckeditor/ckeditor5-ui/commit/949585d))
+
+### BREAKING CHANGES
+
+* Most of the `ListItemView` functionality is now handled by the `ButtonView`,
+* The API of the `addListToDropdown` has changed; see `ListDropdownItemDefinition` to learn more,
+* The `.ck-button` and `.ck-list` classes are using `flex` which may have an impact on rendering.
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.0.0...v10.1.0) (2018-06-21)
 
 ### Features
