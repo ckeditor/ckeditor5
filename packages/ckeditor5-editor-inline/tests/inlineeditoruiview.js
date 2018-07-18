@@ -15,11 +15,6 @@ describe( 'InlineEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale( 'en' );
 		view = new InlineEditorUIView( locale );
-		view.render();
-	} );
-
-	afterEach( () => {
-		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -32,12 +27,8 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
-			it( 'is given the right CSS classes', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
-			} );
-
-			it( 'sets the default value of the #viewportTopOffset attribute', () => {
-				expect( view.viewportTopOffset ).to.equal( 0 );
+			it( 'is not rendered', () => {
+				expect( view.toolbar.isRendered ).to.be.false;
 			} );
 		} );
 
@@ -50,16 +41,12 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.panel.locale ).to.equal( locale );
 			} );
 
-			it( 'is given the right CSS class', () => {
-				expect( view.panel.element.classList.contains( 'ck-toolbar-container' ) ).to.be.true;
-			} );
-
-			it( 'is put into the #body collection', () => {
-				expect( view.body.get( 0 ) ).to.equal( view.panel );
-			} );
-
 			it( 'gets view.panel#withArrow set', () => {
 				expect( view.panel.withArrow ).to.be.false;
+			} );
+
+			it( 'is not rendered', () => {
+				expect( view.panel.isRendered ).to.be.false;
 			} );
 		} );
 
@@ -72,6 +59,42 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
+			it( 'is not rendered', () => {
+				expect( view.editable.isRendered ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
+		afterEach( () => {
+			view.destroy();
+		} );
+
+		describe( '#toolbar', () => {
+			it( 'is given the right CSS classes', () => {
+				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+			} );
+
+			it( 'sets the default value of the #viewportTopOffset attribute', () => {
+				expect( view.viewportTopOffset ).to.equal( 0 );
+			} );
+		} );
+
+		describe( '#panel', () => {
+			it( 'is given the right CSS class', () => {
+				expect( view.panel.element.classList.contains( 'ck-toolbar-container' ) ).to.be.true;
+			} );
+
+			it( 'is put into the #body collection', () => {
+				expect( view.body.get( 0 ) ).to.equal( view.panel );
+			} );
+		} );
+
+		describe( '#editable', () => {
 			it( 'is registered as a child', () => {
 				const spy = sinon.spy( view.editable, 'destroy' );
 
@@ -96,6 +119,7 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
+			view.render();
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();
 		} );
