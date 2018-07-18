@@ -30,7 +30,7 @@ describe( 'BalloonEditorUIView', () => {
 			} );
 		} );
 	} );
-	
+
 	describe( 'render()', () => {
 		it( 'editable is registered as a child', () => {
 			const spy = sinon.spy( view.editable, 'destroy' );

@@ -40,7 +40,7 @@ export default class BalloonEditorUIView extends EditorUIView {
 	 */
 	render() {
 		super.render();
-		
+
 		this.registerChild( this.editable );
 	}
 
