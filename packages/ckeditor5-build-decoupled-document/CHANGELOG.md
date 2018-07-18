@@ -3,6 +3,14 @@ Changelog
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.1.0...v11.0.0) (2018-07-18)
 
+### Release notes
+
+This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `DecoupledEditor#element` property was renamed to `DecoupledEditor#sourceElement`.
+
+If you maintain a [custom build of CKEditor 5](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+
+Blog post is coming soon...
+
 ### Dependencies
 
 Major releases (contain breaking changes):
@@ -44,12 +52,15 @@ Patch releases (bug fixes, internal changes):
 
 ### Other changes
 
-* Changed the build structure. TODO. Closes [ckeditor/ckeditor5#1038](https://github.com/ckeditor/ckeditor5/issues/1038). ([cd72eca](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/cd72eca))
-* Updated `webpack` to version 4. ([dfdde57](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/dfdde57))
+* Changed the structure of the build repository. Closes [ckeditor/ckeditor5#1038](https://github.com/ckeditor/ckeditor5/issues/1038). ([cd72eca](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/cd72eca))
+* Updated `webpack` to version 4 (applies to custom builds only). ([dfdde57](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/dfdde57))
 
 ### BREAKING CHANGES
 
-* CKEditor 5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor 5 tools and build configuration were updated to work with `webpack@4` now and will not work with `webpack@3.
+If you maintain a custom build, we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136). Closes [ckeditor/ckeditor5#1038](https://github.com/ckeditor/ckeditor5/issues/1038).
+
+* CKEditor 5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor 5 tools and build configuration were updated to work with `webpack@4` and will not work with `webpack@3`.
+* The structure of the build repository was changed. The `build-config.js` file was removed and the build configuration is now kept only in the `src/ckeditor.js` file.
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.0.1...v10.1.0) (2018-06-21)
