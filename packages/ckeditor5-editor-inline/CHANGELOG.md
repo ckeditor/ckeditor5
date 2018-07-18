@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.1...v11.0.0) (2018-07-18)
+
+### Features
+
+* Editor can now be created with initial data passed to the constructor. Closes [#37](https://github.com/ckeditor/ckeditor5-editor-inline/issues/37). ([cfd8c53](https://github.com/ckeditor/ckeditor5-editor-inline/commit/cfd8c53))
+
+### Other changes
+
+* Used the `EditorUI` as a parent class for the `InlineEditorUI` (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)). ([c148346](https://github.com/ckeditor/ckeditor5-editor-inline/commit/c148346))
+
+### BREAKING CHANGES
+
+* The `InlineEditor#element` property was renamed to `InlineEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
+
+
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 Internal changes only (updated dependencies, documentation, etc.).
