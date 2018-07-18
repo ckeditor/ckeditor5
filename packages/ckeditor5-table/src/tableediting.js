@@ -258,7 +258,7 @@ function tablePostFixer( writer, model, tableUtils ) {
 	for ( const entry of changes ) {
 		let table;
 
-		if ( entry.name == 'table' ) {
+		if ( entry.name == 'table' && entry.type == 'insert' ) {
 			table = entry.position.nodeAfter;
 		}
 
@@ -281,44 +281,44 @@ function tablePostFixer( writer, model, tableUtils ) {
 	return wasFixed;
 }
 
-function getRowsLengths( table ) {
-	const lengths = {};
-
+function getCellsToTrim( table ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
 	const cellsToTrim = [];
 
-	for ( const data of new TableWalker( table ) ) {
-		const row = data.row;
-		const column = data.column;
-		const colspan = data.colspan;
-		const rowspan = data.rowspan;
-
-		if ( !lengths[ row ] ) {
-			// Le first row - the first column will be current width including rowspanned cells.
-			lengths[ row ] = column;
-		}
-
-		lengths[ row ] += colspan;
-
+	for ( const { row, rowspan, cell } of new TableWalker( table ) ) {
 		const maxRows = table.childCount;
 
 		if ( headingRows > row ) {
 			if ( row + rowspan > headingRows ) {
 				const newRowspan = headingRows - row;
 
-				cellsToTrim.push( { cell: data.cell, rowspan: newRowspan } );
+				cellsToTrim.push( { cell, rowspan: newRowspan } );
 			}
 		} else {
 			if ( row + rowspan + headingRows > maxRows ) {
 				const newRowspan = maxRows - row - headingRows + 1;
 
-				cellsToTrim.push( { cell: data.cell, rowspan: newRowspan } );
+				cellsToTrim.push( { cell, rowspan: newRowspan } );
 			}
 		}
 	}
 
-	return { lengths, cellsToTrim };
+	return cellsToTrim;
+}
+
+function getRowsLengths( table ) {
+	const lengths = {};
+
+	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
+		if ( !lengths[ row ] ) {
+			lengths[ row ] = 0;
+		}
+
+		lengths[ row ] += 1;
+	}
+
+	return lengths;
 }
 
 function makeTableRowsSameLength( tableUtils, table, writer ) {
@@ -326,7 +326,16 @@ function makeTableRowsSameLength( tableUtils, table, writer ) {
 
 	const tableSize = tableUtils.getColumns( table );
 
-	const { lengths, cellsToTrim } = getRowsLengths( table );
+	// First: trim rowspanned table cells on section boundaries
+	const cellsToTrim = getCellsToTrim( table );
+
+	if ( cellsToTrim.length ) {
+		for ( const data of cellsToTrim ) {
+			updateNumericAttribute( 'rowspan', data.rowspan, data.cell, writer, 1 );
+		}
+	}
+
+	const lengths = getRowsLengths( table );
 
 	const isValid = Object.values( lengths ).every( length => length === tableSize );
 
@@ -343,12 +352,6 @@ function makeTableRowsSameLength( tableUtils, table, writer ) {
 
 				wasFixed = true;
 			}
-		}
-	}
-
-	if ( cellsToTrim.length ) {
-		for ( const data of cellsToTrim ) {
-			updateNumericAttribute( 'rowspan', data.rowspan, data.cell, writer, 1 );
 		}
 	}
 

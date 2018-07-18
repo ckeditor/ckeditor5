@@ -387,7 +387,26 @@ describe( 'TableEditing', () => {
 			] ) );
 		} );
 
-		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex)', () => {
+		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex 1)', () => {
+			const parsed = parse( modelTable( [
+				[ '00', { rowspan: 2, contents: '10' } ],
+				[ '10', { colspan: 2, contents: '12' } ],
+				[ '20', '21' ]
+			] ), model.schema );
+
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
+				[ '10', { colspan: 2, contents: '12' } ],
+				[ '20', '21', '', '' ]
+			] ) );
+		} );
+
+		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex 2)', () => {
 			const parsed = parse( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
@@ -568,6 +587,20 @@ describe( 'TableEditing', () => {
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '11', '', '12' ]
 				] ) );
+		} );
+
+		it( 'should not crash on table remove', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ]
+			] ) );
+
+			expect( () => {
+				model.change( writer => {
+					writer.remove( Range.createIn( root ) );
+				} );
+			} ).to.not.throw();
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		// Case: remove same column (undo does nothing on one client - NOOP in batch).
