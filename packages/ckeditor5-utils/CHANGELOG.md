@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [10.2.1](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.0...v10.2.1) (2018-07-18)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [10.2.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.1.0...v10.2.0) (2018-07-18)
 
 ### Features
