@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v10.0.1...v11.0.0) (2018-07-18)
+
+### Features
+
+* Editor can now be created with initial data passed to the `create()` method. Closes [#72](https://github.com/ckeditor/ckeditor5-editor-classic/issues/72). ([09cebc6](https://github.com/ckeditor/ckeditor5-editor-classic/commit/09cebc6))
+
+### Other changes
+
+* Used the `EditorUI` as a parent class for the `ClassicEditorUI` (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)). ([ae98cfd](https://github.com/ckeditor/ckeditor5-editor-classic/commit/ae98cfd))
+
+### BREAKING CHANGES
+
+* The `ClassicEditor#element` property was renamed to `ClassicEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
+
+
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 Internal changes only (updated dependencies, documentation, etc.).
