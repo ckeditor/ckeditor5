@@ -1,6 +1,40 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.1.0...v11.0.0) (2018-07-18)
+
+### Features
+
+* Added theme styles for the switch button (see [ckeditor/ckeditor5-ui#402](https://github.com/ckeditor/ckeditor5-ui/issues/402)). ([90ab35e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/90ab35e))
+
+  Also:
+  * Defined styles of the `.ck-button` in `.ck-list`,
+  * Simplified the `.ck-list` styles as `.ck-list__item` became just a container,
+  * Aligned several components' styles to the new architecture of the lists and buttons (including `flex`),
+  * Extended the theme manual test with various use-cases of switch buttons and buttons in the list (dropdown).
+* Implemented a CSS–styled image upload loader (see [ckeditor/ckeditor5-image#207](https://github.com/ckeditor/ckeditor5-image/issues/207)). ([594cf12](https://github.com/ckeditor/ckeditor5-theme-lark/commit/594cf12))
+* Implemented styles for the widget selection handler (see [ckeditor/ckeditor5-widget#40](https://github.com/ckeditor/ckeditor5-widget/issues/40)). ([0703b2b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0703b2b))
+
+  Also fixed a regression after [ckeditor/ckeditor5#936](https://github.com/ckeditor/ckeditor5/issues/936) which made the widget use wrong outline styles when the editable is blurred. Minor code refactoring in the widget styles.
+
+### Bug fixes
+
+* Added missing `box-sizing` to the successful upload icon. Closes [ckeditor/ckeditor5#1095](https://github.com/ckeditor/ckeditor5/issues/1095). ([72f0bbc](https://github.com/ckeditor/ckeditor5-theme-lark/commit/72f0bbc))
+* The `DropdownPanelView` should scroll when the content is long. Added a CSS custom property to control the height of the panel. Closes [ckeditor/ckeditor5#952](https://github.com/ckeditor/ckeditor5/issues/952). ([9804952](https://github.com/ckeditor/ckeditor5-theme-lark/commit/9804952))
+* The switch button should be animated properly in Edge. Closes [ckeditor/ckeditor5-ui#433](https://github.com/ckeditor/ckeditor5-ui/issues/433). ([1c0ec96](https://github.com/ckeditor/ckeditor5-theme-lark/commit/1c0ec96))
+* The table cell selection highlight is broken around merged cells. Closes [ckeditor/ckeditor5-table#69](https://github.com/ckeditor/ckeditor5-table/issues/69). Closes [ckeditor/ckeditor5-table#29](https://github.com/ckeditor/ckeditor5-table/issues/29). ([084e9bb](https://github.com/ckeditor/ckeditor5-theme-lark/commit/084e9bb))
+* The toggle switch button animation should be a tad faster. Closes [#183](https://github.com/ckeditor/ckeditor5-theme-lark/issues/183). ([1e9773c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/1e9773c))
+
+### Other changes
+
+* Used a solid box-shadow to indicate the :focus state of the .ck-button (also .ck-input). Obsoleted the background color change on .ck-button:focus to avoid situations when a focused button looks like an active one (see [ckeditor/ckeditor5-ui#394](https://github.com/ckeditor/ckeditor5-ui/issues/394)). ([ad5770c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ad5770c))
+
+### BREAKING CHANGES
+
+* Various color variables --ck-color-button-...-focus have been renamed to --ck-color-button-...-hover.
+* Several `--ck-color-widget-*` custom properties have been renamed to match the project's naming standards. 
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.0.0...v10.1.0) (2018-06-21)
 
 ### Features
