@@ -13,7 +13,7 @@ Changelog
 
 ### BREAKING CHANGES
 
-* The `BalloonEditor#element` property was renamed to `BalloonEditor#sourceElement`
+* The `BalloonEditor#element` property was renamed to `BalloonEditor#sourceElement` and `BalloonEditor#updateElement()` method to `BalloonEditor#updateSourceElement()`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
 
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v10.0.0...v10.0.1) (2018-06-21)
