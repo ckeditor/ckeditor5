@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* The value of the `AttributeCommand` is taken from the first allowed node. Closes [#56](https://github.com/ckeditor/ckeditor5-basic-styles/issues/56). ([64a0dbc](https://github.com/ckeditor/ckeditor5-basic-styles/commit/64a0dbc))
+* The value of `AttributeCommand` should be taken from the first node on which this style is allowed. Closes [#56](https://github.com/ckeditor/ckeditor5-basic-styles/issues/56). ([64a0dbc](https://github.com/ckeditor/ckeditor5-basic-styles/commit/64a0dbc))
 
 ### Other changes
 
