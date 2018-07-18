@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.2](https://github.com/ckeditor/ckeditor5-paragraph/compare/v10.0.1...v10.0.2) (2018-07-18)
+
+### Other changes
+
+* Refreshed the paragraph icon (see [ckeditor/ckeditor5-ui#394](https://github.com/ckeditor/ckeditor5-ui/issues/394)). ([d6e054a](https://github.com/ckeditor/ckeditor5-paragraph/commit/d6e054a))
+
+
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-paragraph/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 Internal changes only (updated dependencies, documentation, etc.).
