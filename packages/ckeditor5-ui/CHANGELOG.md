@@ -8,6 +8,7 @@ Changelog
 * Implemented the `SwitchButtonView`. Closes [#402](https://github.com/ckeditor/ckeditor5-ui/issues/402). Closes [#403](https://github.com/ckeditor/ckeditor5-ui/issues/403). ([105fbea](https://github.com/ckeditor/ckeditor5-ui/commit/105fbea))
 
   Also:
+
   * Simplified the `ListItemView` class, which is now just a container for `ButtonView` (and others),
   * Moved `ListItemView#style` and `#class` to the `ButtonView` (as `#class` and `#labelStyle`),
   * Enhanced the `addListToDropdown` utility with a better configuration (`ListDropdownItemDefinition`) and the support for buttons, switch buttons, and separators,
