@@ -10,7 +10,7 @@ Changelog
 
 ### BREAKING CHANGES
 
-* `DecoupledEditor#element` was renamed to `DecoupledEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
+* The `DecoupledEditor#element` property was renamed to `DecoupledEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
 
 
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.1...v10.0.2) (2018-06-21)
