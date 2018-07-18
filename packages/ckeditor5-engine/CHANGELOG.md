@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [10.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.1.0...v10.2.0) (2018-07-18)
+
+### Features
+
+* Introduced `ViewDocument#layoutChanged` event. Closes [#1445](https://github.com/ckeditor/ckeditor5-engine/issues/1445). ([dab70e6](https://github.com/ckeditor/ckeditor5-engine/commit/dab70e6))
+
+### Bug fixes
+
+* Attributes were incorrectly set on an element's children during upcast. Closes [#1443](https://github.com/ckeditor/ckeditor5-engine/issues/1443). ([dfa0b39](https://github.com/ckeditor/ckeditor5-engine/commit/dfa0b39))
+* Element to attribute upcast should set an attribute on all the elements inside the converted element. See [#1443](https://github.com/ckeditor/ckeditor5-engine/issues/1443). ([26673a0](https://github.com/ckeditor/ckeditor5-engine/commit/26673a0))
+* Expand selection mechanism will work correctly with the inline elements. Closes [ckeditor/ckeditor5#1064](https://github.com/ckeditor/ckeditor5/issues/1064). ([e23742c](https://github.com/ckeditor/ckeditor5-engine/commit/e23742c))
+* Improved selection post-fixing mechanism for selections which cross limit element boundaries. Closes [#1436](https://github.com/ckeditor/ckeditor5-engine/issues/1436). ([e0a5a0b](https://github.com/ckeditor/ckeditor5-engine/commit/e0a5a0b))
+
+  Feature: The `schema.getLimitElement()` method now accepts also `Range` and `Position` as a parameter.
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.0.0...v10.1.0) (2018-06-21)
 
 ### Features
