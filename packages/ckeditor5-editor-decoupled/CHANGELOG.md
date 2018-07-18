@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.2...v11.0.0) (2018-07-18)
+
+### Other changes
+
+* Aligned `DecoupledEditor` to changes in the `EditorWithUI` and `ElementApi` interfaces. ([8c7414b](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/8c7414b))
+* Used the `EditorUI` as a parent class for the `DecoupledEditorUI` (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)). ([d92da9f](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/d92da9f))
+
+### BREAKING CHANGES
+
+* `DecoupledEditor#element` was renamed to `DecoupledEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.1...v10.0.2) (2018-06-21)
 
 Internal changes only (updated dependencies, documentation, etc.).
