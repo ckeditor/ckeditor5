@@ -548,11 +548,11 @@ describe( 'TableEditing', () => {
 					[ '10', '11', '12' ]
 				] ),
 				writer => {
-					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 2, [ 1 ] );
 				},
 				writer => {
-					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 1, [ 1 ] );
 				},
 				formattedModelTable( [
@@ -572,11 +572,11 @@ describe( 'TableEditing', () => {
 					[ '10', '11', '12' ]
 				] ),
 				writer => {
-					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 1, [ 1 ] );
 				},
 				writer => {
-					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 3, [ 1 ] );
 				},
 				formattedModelTable( [
@@ -587,6 +587,56 @@ describe( 'TableEditing', () => {
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '11', '', '12' ]
 				] ) );
+		} );
+
+		it( 'collab change table header rows vs remove row', () => {
+			_testExternal(
+				modelTable( [
+					[ '11', { rowspan: 2, contents: '12' }, '13' ],
+					[ '21', '23' ],
+					[ '31', '32', '33' ]
+				] ),
+				writer => {
+					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
+					_setAttribute( writer, 'rowspan', 1, [ 0, 0, 1 ] );
+					_insertCell( writer, 1, 1 );
+				},
+				writer => {
+					_removeRow( writer, 1 );
+				},
+				formattedModelTable( [
+					[ '11', { rowspan: 1, contents: '12' }, '13' ],
+					[ '31', '32', '33' ]
+				], { headingRows: 1 } ),
+				formattedModelTable( [
+					[ '11', { rowspan: 2, contents: '12' }, '13', '' ],
+					[ '31', '32', '33' ]
+				] ) );
+		} );
+
+		it( 'collab remove row vs change table header rows', () => {
+			_testExternal(
+				modelTable( [
+					[ '11', { rowspan: 2, contents: '12' }, '13' ],
+					[ '21', '23' ],
+					[ '31', '32', '33' ]
+				] ),
+				writer => {
+					_removeRow( writer, 1 );
+				},
+				writer => {
+					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
+					_setAttribute( writer, 'rowspan', 1, [ 0, 0, 1 ] );
+				},
+				formattedModelTable( [
+					[ '11', { rowspan: 1, contents: '12' }, '13', '' ],
+					[ '31', '32', '33', '' ]
+				], { headingRows: 1 } ),
+				formattedModelTable( [
+					[ '11', { rowspan: 1, contents: '12' }, '13', '' ],
+					[ '21', '23', '', '' ],
+					[ '31', '32', '33', '' ]
+				], { headingRows: 1 } ) );
 		} );
 
 		it( 'should not crash on table remove', () => {
@@ -619,6 +669,10 @@ describe( 'TableEditing', () => {
 			editor.execute( 'undo' );
 
 			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after undo' ).to.equal( modelAfterUndo );
+
+			editor.execute( 'redo' );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after redo' ).to.equal( modelAfter );
 		}
 
 		function _removeColumn( writer, columnIndex, rows ) {
@@ -626,8 +680,17 @@ describe( 'TableEditing', () => {
 
 			for ( const index of rows ) {
 				const tableRow = table.getChild( index );
-				writer.remove( tableRow.getChild( columnIndex ) );
+				const tableCell = tableRow.getChild( columnIndex );
+
+				writer.remove( tableCell );
 			}
+		}
+
+		function _removeRow( writer, rowIndex ) {
+			const table = root.getChild( 0 );
+			const tableRow = table.getChild( rowIndex );
+
+			writer.remove( tableRow );
 		}
 
 		function _insertRow( writer, rowIndex, rowData ) {
@@ -641,10 +704,15 @@ describe( 'TableEditing', () => {
 			writer.insert( parsedTable.getChild( 0 ), table, rowIndex );
 		}
 
-		function _setAttribute( writer, attributeKey, attributeValue, path ) {
+		function _insertCell( writer, rowIndex, index ) {
 			const table = root.getChild( 0 );
+			const tableRow = table.getChild( rowIndex );
 
-			const node = table.getNodeByPath( path );
+			writer.insertElement( 'tableCell', tableRow, index );
+		}
+
+		function _setAttribute( writer, attributeKey, attributeValue, path ) {
+			const node = root.getNodeByPath( path );
 
 			writer.setAttribute( attributeKey, attributeValue, node );
 		}

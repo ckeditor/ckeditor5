@@ -263,14 +263,23 @@ function tablePostFixer( writer, model, tableUtils ) {
 		}
 
 		if ( entry.name == 'tableRow' ) {
-			const tableRow = entry.position.nodeAfter;
-			table = tableRow.parent;
+			table = entry.position.parent;
 		}
 
 		if ( entry.name == 'tableCell' ) {
 			const tableRow = entry.position.parent;
 
 			table = tableRow.parent;
+		}
+
+		if ( entry.type === 'attribute' ) {
+			if ( entry.attributeKey === 'headingRows' ) {
+				table = entry.range.start.parent;
+			}
+
+			if ( entry.attributeKey === 'colspan' || entry.attributeKey === 'rowspan' ) {
+				table = entry.range.start.parent.parent;
+			}
 		}
 
 		if ( table ) {
