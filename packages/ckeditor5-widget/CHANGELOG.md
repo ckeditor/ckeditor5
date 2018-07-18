@@ -5,11 +5,11 @@ Changelog
 
 ### Features
 
-* Implemented the widget selection handler. Closes [#40](https://github.com/ckeditor/ckeditor5-widget/issues/40). ([bbf9298](https://github.com/ckeditor/ckeditor5-widget/commit/bbf9298))
+* Implemented the widget selection handle. Closes [#40](https://github.com/ckeditor/ckeditor5-widget/issues/40). ([bbf9298](https://github.com/ckeditor/ckeditor5-widget/commit/bbf9298))
 
 ### Other changes
 
-* Don't set `contenteditable` property for widgets and their nested editables on Edge due to awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
+* Do not set the `contenteditable` property for widgets and their nested editables on Edge due to an awful instability which it causes in this browser. Closes [ckeditor/ckeditor5#1079](https://github.com/ckeditor/ckeditor5/issues/1079). Closes [ckeditor/ckeditor5#1067](https://github.com/ckeditor/ckeditor5/issues/1067). ([ee530b1](https://github.com/ckeditor/ckeditor5-widget/commit/ee530b1))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.0.0...v10.1.0) (2018-06-21)
