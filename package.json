@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "11.0.0",
+  "version": "11.0.1",
   "description": "The development environment of CKEditor 5 – the best browser-based rich text editor.",
   "private": true,
   "keywords": [
@@ -27,10 +27,10 @@
     "@ckeditor/ckeditor5-autosave": "^10.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^10.0.2",
     "@ckeditor/ckeditor5-block-quote": "^10.0.2",
-    "@ckeditor/ckeditor5-build-balloon": "^11.0.0",
-    "@ckeditor/ckeditor5-build-classic": "^11.0.0",
-    "@ckeditor/ckeditor5-build-decoupled-document": "^11.0.0",
-    "@ckeditor/ckeditor5-build-inline": "^11.0.0",
+    "@ckeditor/ckeditor5-build-balloon": "^11.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^11.0.1",
+    "@ckeditor/ckeditor5-build-decoupled-document": "^11.0.1",
+    "@ckeditor/ckeditor5-build-inline": "^11.0.1",
     "@ckeditor/ckeditor5-clipboard": "^10.0.2",
     "@ckeditor/ckeditor5-cloud-services": "^10.0.2",
     "@ckeditor/ckeditor5-core": "^11.0.0",
@@ -56,11 +56,11 @@
     "@ckeditor/ckeditor5-ui": "^11.0.0",
     "@ckeditor/ckeditor5-undo": "^10.0.2",
     "@ckeditor/ckeditor5-upload": "^10.0.2",
-    "@ckeditor/ckeditor5-utils": "^10.2.0",
+    "@ckeditor/ckeditor5-utils": "^10.2.1",
     "@ckeditor/ckeditor5-widget": "^10.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-collaboration": "^10.0.1",
+    "@ckeditor/ckeditor5-collaboration": "^10.1.0",
     "@ckeditor/ckeditor5-dev-docs": "^9.0.4",
     "@ckeditor/ckeditor5-dev-env": "^11.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^12.0.0",
