@@ -65,7 +65,10 @@ cli.provideToken()
 		log.info( 'Bumping the version...' );
 
 		// Bump the version.
-		tools.shExec( `npm version ${ changelogVersion } --message "Release: v${ changelogVersion }."`, { verbosity: 'error' } );
+		tools.shExec(
+			`npm version ${ changelogVersion } --message "Release: v${ changelogVersion }." --allow-same-version`,
+			{ verbosity: 'error' }
+		);
 
 		tools.shExec( `git push origin master v${ changelogVersion }` );
 
