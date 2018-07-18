@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.2](https://github.com/ckeditor/ckeditor5-block-quote/compare/v10.0.1...v10.0.2) (2018-07-18)
+
+### Other changes
+
+* Updated translations. ([170a8fd](https://github.com/ckeditor/ckeditor5-block-quote/commit/170a8fd))
+
+
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 ### Other changes
