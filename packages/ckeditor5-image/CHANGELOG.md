@@ -10,10 +10,10 @@ Changelog
 
 ### Bug fixes
 
-* Complete upload icon should not be rendered in Edge. Closes ckeditor/ckeditor5/issues/1066. ([9a62cf1](https://github.com/ckeditor/ckeditor5-image/commit/9a62cf1))
+* Complete upload icon should not be rendered in Edge due to an [Edge's bug](https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/105834/). Closes https://github.com/ckeditor/ckeditor5/issues/1066. ([9a62cf1](https://github.com/ckeditor/ckeditor5-image/commit/9a62cf1))
 * The UI should update once the image is loaded. Closes [#142](https://github.com/ckeditor/ckeditor5-image/issues/142). ([dee20c0](https://github.com/ckeditor/ckeditor5-image/commit/dee20c0))
 
-  Used the `EditorUI#update` event instead of `View#render` to attach the UI components (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)). 
+  Used the `EditorUI#update` event instead of `View#render` to attach the UI components (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)).
 
 ### Other changes
 
