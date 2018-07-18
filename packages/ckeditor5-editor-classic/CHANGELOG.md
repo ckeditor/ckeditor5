@@ -13,7 +13,7 @@ Changelog
 
 ### BREAKING CHANGES
 
-* The `ClassicEditor#element` property was renamed to `ClassicEditor#sourceElement`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
+* The `ClassicEditor#element` property was renamed to `ClassicEditor#sourceElement` and `ClassicEditor#updateElement()` method to `ClassicEditor#updateSourceElement()`. See [ckeditor/ckeditor5-core#64](https://github.com/ckeditor/ckeditor5-core/issues/64).
 
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v10.0.0...v10.0.1) (2018-06-21)
