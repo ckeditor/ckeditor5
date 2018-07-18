@@ -1,7 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-build-inline/compare/v11.0.0...v11.0.1) (2018-07-18)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-build-inline/compare/v10.1.0...v11.0.0) (2018-07-18)
+
 ### Release notes
 
 This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `InlineEditor#element` property was renamed to `InlineEditor#sourceElement` and the `InlineEditor#updateElement()` method was renamed to `InlineEditor#updateSourceElement()`.
