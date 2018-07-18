@@ -3,6 +3,14 @@ Changelog
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5/compare/v10.1.0...v11.0.0) (2018-07-18)
 
+### Release notes
+
+This is a major releases that introduces two new plugins ([autosave](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/saving-data.html) and [block toolbar](https://docs.ckeditor.com/ckeditor5/latest/features/blocktoolbar.html)), many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4` and simplified structure of build repositories). Additionally, the `Editor#element` property was renamed to `Editor#sourceElement` and the `Editor#updateElement()` method was renamed to `Editor#updateSourceElement()`.
+
+If you maintain a [custom build of CKEditor 5](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+
+Blog post is coming soon...
+
 ### Dependencies
 
 New packages:
@@ -58,7 +66,7 @@ Patch releases (bug fixes, internal changes):
 
 Besides new features introduced by the dependencies, this version also introduces the following features:
 
-* Introduced ckeditor5-autoformat. ([bac9671](https://github.com/ckeditor/ckeditor5/commit/bac9671))
+* Introduced the [`@ckeditor/ckeditor5-autosave`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave) package. ([bac9671](https://github.com/ckeditor/ckeditor5/commit/bac9671))
 
 ### Other changes
 
@@ -66,7 +74,10 @@ Besides new features introduced by the dependencies, this version also introduce
 
 ### BREAKING CHANGES
 
-* CKEditor 5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor 5 tools and build configuration were updated to work with `webpack@4` now and will not work with `webpack@3.
+If you maintain a custom build or integrate CKEditor 5 from source, we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136). Closes [ckeditor/ckeditor5#1038](https://github.com/ckeditor/ckeditor5/issues/1038).
+
+* CKEditor 5 environment was updated to use `webpack@4`. `webpack@4` introduced major changes in its configuration and plugin system. CKEditor 5 tools and build configuration were updated to work with `webpack@4` and will not work with `webpack@3`.
+* The structure of build repositories was changed. The `build-config.js` files were removed and the build configuration is now kept only in the `src/ckeditor.js` files.
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5/compare/v10.0.1...v10.1.0) (2018-06-21)
