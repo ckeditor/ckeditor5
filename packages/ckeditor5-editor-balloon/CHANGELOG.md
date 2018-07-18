@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v10.0.1...v11.0.0) (2018-07-18)
+
+### Features
+
+* Editor can now be created with initial data passed to the `create()` method. Closes [#18](https://github.com/ckeditor/ckeditor5-editor-balloon/issues/18). ([48c265c](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/48c265c))
+
+### Other changes
+
+* Used the `EditorUI` as a parent class for the `BalloonEditorUI` (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)). ([03af1c0](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/03af1c0))
+
+### BREAKING CHANGES
+
+* The `BalloonEditor#element` property was renamed to `BalloonEditor#sourceElement`
+
+
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 Internal changes only (updated dependencies, documentation, etc.).
