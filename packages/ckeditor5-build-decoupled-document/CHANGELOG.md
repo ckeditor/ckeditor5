@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v11.0.0...v11.0.1) (2018-07-18)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.1.0...v11.0.0) (2018-07-18)
 
 ### Release notes
