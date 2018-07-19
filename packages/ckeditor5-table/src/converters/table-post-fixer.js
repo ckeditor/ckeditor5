@@ -39,7 +39,7 @@ function tablePostFixer( writer, model, tableUtils ) {
 		}
 
 		if ( table ) {
-			wasFixed = makeTableRowsSameLength( tableUtils, table, writer );
+			wasFixed = makeTableRowsSameLength( tableUtils, table, writer ) || wasFixed;
 		}
 	}
 
