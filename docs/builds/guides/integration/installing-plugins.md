@@ -18,7 +18,7 @@ In this guide you can learn how to add plugins to your editor in the two most co
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991); especially with deduplicating packages; upgrade npm when in doubt)
+* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 ## Adding a plugin to a build
 
@@ -29,7 +29,7 @@ Adding plugins to existing builds is done through their customization. Editor bu
 3. Add it to the build configuration.
 4. Bundle the build.
 
-```
+```bash
 git clone -b stable https://github.com/ckeditor/ckeditor5-build-classic.git
 cd ckeditor5-build-classic
 npm install
@@ -37,7 +37,7 @@ npm install
 
 Now, install the plugin package:
 
-```
+```bash
 npm install --save-dev @ckeditor/ckeditor5-alignment
 ```
 
@@ -122,7 +122,7 @@ ClassicEditor.defaultConfig = {
 
 Finally, bundle the build:
 
-```
+```bash
 npm run build
 ```
 
@@ -142,7 +142,7 @@ If you {@link framework/guides/quick-start build the editor from source}, then t
 
 For example, if you wish to install the text alignment feature:
 
-```
+```bash
 npm install --save-dev @ckeditor/ckeditor5-alignment
 ```
 
@@ -200,7 +200,7 @@ ClassicEditor
 	} );
 ```
 
-All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see e.g. [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)) looks like this:
+All this works because a typical `src/ckeditor.js` module that you can find in every editor build repository (see for example [`@ckeditor/ckeditor5-build-classic`](https://github.com/ckeditor/ckeditor5-build-classic/blob/stable/src/ckeditor.js)) looks like this:
 
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -236,7 +236,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-This code imports the source of the classic editor and extends it with a static `builtinPlugins` and `defaultConfig` properties in which it defines a set of plugins and configuration to be used by this editor class.
+This code imports the source of the classic editor and extends it with a static `builtinPlugins` and `defaultConfig` properties where it defines a set of plugins and configuration to be used by this editor class.
 
 In this approach, all editor instances created by using this editor build will by default load all these built-in plugins and configuration.
 

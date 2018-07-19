@@ -270,7 +270,7 @@ function handleSaveButton( editor ) {
 		// Register the action of saving the data as a "pending action".
 		// All asynchronous actions related to the editor are tracked like this,
 		// so later on you only need to check `pendingActions.hasAny` to check
-		// whether editor is busy or not.
+		// whether the editor is busy or not.
 		const action = pendingActions.add( 'Saving changes' );
 
 		evt.preventDefault();
@@ -279,7 +279,7 @@ function handleSaveButton( editor ) {
 		setTimeout( () => {
 			pendingActions.remove( action );
 
-			// Reset isDirty only if data didn't change in the meantime.
+			// Reset isDirty only if the data did not change in the meantime.
 			if ( data == editor.getData() ) {
 				isDirty = false;
 			}
@@ -302,7 +302,7 @@ function handleStatusChanges( editor ) {
 }
 
 // If the user tries to leave the page before the data is saved, ask
-// they whether they are sure.
+// them whether they are sure they want to proceed.
 function handleBeforeunload( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 

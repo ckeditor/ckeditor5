@@ -26,7 +26,7 @@ then
 	# `stable` branch.
 	git checkout stable && \
 	node ./scripts/release/update-mgit-branches stable && \
-	git commit -a -m "Internal: Use stable branches. [skip ci]".
+	git commit -a -m "Internal: Use stable branches. [skip ci]"
 
 	# `master` branch.
 	git checkout master && \

@@ -26,7 +26,7 @@ Some of the reasons for creating custom builds are:
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991); especially with deduplicating packages; upgrade npm when in doubt)
+* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
 ## Forking an existing build
@@ -46,7 +46,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
-	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments – e.g. in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
+	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows for even more flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments &mdash; for example in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
 </info-box>
 
 <info-box warning>
@@ -58,7 +58,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 Every build contains the following files:
 
 * `build/ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
-* `src/ckeditor.js` &ndash; The source entry point of the build. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org). It defines the editor creator, a list of plugins and the default config of a build.
+* `src/ckeditor.js` &ndash; The source entry point of the build. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org). It defines the editor creator, the list of plugins and the default configuration of a build.
 * `webpack-config.js` &ndash; webpack configuration used to build the editor.
 
 ## Customizing a build
@@ -95,7 +95,7 @@ This will install the package and add it to `package.json`. You can also edit `p
 
 If you added or removed dependencies, you will also need to modify the `src/ckeditor.js` file.
 
-Every plugin that you want to include in the bundle should be included at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your webpack entry file (`src/ckeditor.js`) may look like this:
+Every plugin that you want to include in the bundle should be added at this stage. You can also change the editor creator and specify the default editor configuration. For instance, your webpack entry file (`src/ckeditor.js`) may look like this:
 
 ```js
 'use strict';
