@@ -202,29 +202,26 @@ function fixTableRowsWidths( table, writer ) {
 // @returns {Array.<{{cell, rowspan}}>}
 function findCellsToTrim( table ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+	const maxRows = table.childCount;
 
 	const cellsToTrim = [];
 
 	for ( const { row, rowspan, cell } of new TableWalker( table ) ) {
-		const maxRows = table.childCount;
-
 		// Skip cells that do not expand over its row.
 		if ( rowspan < 2 ) {
 			continue;
 		}
 
-		if ( headingRows > row ) {
-			if ( row + rowspan > headingRows ) {
-				const newRowspan = headingRows - row;
+		const isInHeader = row < headingRows;
 
-				cellsToTrim.push( { cell, rowspan: newRowspan, old: rowspan } );
-			}
-		} else {
-			if ( row + rowspan + headingRows > maxRows + 1 ) {
-				const newRowspan = maxRows - row - headingRows + 1;
+		// Row limit is either end of header section or whole table as table body is after the header.
+		const rowLimit = isInHeader ? headingRows : maxRows;
 
-				cellsToTrim.push( { cell, rowspan: newRowspan, old: rowspan } );
-			}
+		// If table cell expands over its limit reduce it height to proper value.
+		if ( row + rowspan > rowLimit ) {
+			const newRowspan = rowLimit - row;
+
+			cellsToTrim.push( { cell, rowspan: newRowspan } );
 		}
 	}
 

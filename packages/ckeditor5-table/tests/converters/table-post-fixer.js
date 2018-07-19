@@ -12,7 +12,7 @@ import TableEditing from '../../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-describe( 'Table Post Fixer', () => {
+describe( 'Table post-fixer', () => {
 	let editor, model, root;
 
 	beforeEach( () => {
@@ -22,9 +22,7 @@ describe( 'Table Post Fixer', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
 				model = editor.model;
-
 				root = model.document.getRoot();
 			} );
 	} );
