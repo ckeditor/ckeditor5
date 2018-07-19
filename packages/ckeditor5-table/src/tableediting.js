@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import upcastTable from './converters/upcasttable';
@@ -22,6 +21,7 @@ import {
 	downcastTableHeadingColumnsChange,
 	downcastTableHeadingRowsChange
 } from './converters/downcast';
+
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
@@ -31,9 +31,9 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { getParentTable, updateNumericAttribute } from './commands/utils';
-import TableWalker from './tablewalker';
+import { getParentTable } from './commands/utils';
 import TableUtils from '../src/tableutils';
+import injectTablePostFixer from './converters/table-post-fixer';
 
 import '../theme/tableediting.css';
 
@@ -244,125 +244,4 @@ export default class TableEditing extends Plugin {
 			writer.setSelection( Range.createIn( cellToFocus ) );
 		} );
 	}
-}
-
-function injectTablePostFixer( model, tableUtils ) {
-	model.document.registerPostFixer( writer => tablePostFixer( writer, model, tableUtils ) );
-}
-
-function tablePostFixer( writer, model, tableUtils ) {
-	const changes = model.document.differ.getChanges();
-
-	let wasFixed = false;
-
-	for ( const entry of changes ) {
-		let table;
-
-		if ( entry.name == 'table' && entry.type == 'insert' ) {
-			table = entry.position.nodeAfter;
-		}
-
-		if ( entry.name == 'tableRow' ) {
-			table = entry.position.parent;
-		}
-
-		if ( entry.name == 'tableCell' ) {
-			const tableRow = entry.position.parent;
-
-			table = tableRow.parent;
-		}
-
-		if ( entry.type === 'attribute' ) {
-			if ( entry.attributeKey === 'headingRows' ) {
-				table = entry.range.start.parent;
-			}
-
-			if ( entry.attributeKey === 'colspan' || entry.attributeKey === 'rowspan' ) {
-				table = entry.range.start.parent.parent;
-			}
-		}
-
-		if ( table ) {
-			wasFixed = makeTableRowsSameLength( tableUtils, table, writer );
-		}
-	}
-
-	return wasFixed;
-}
-
-function getCellsToTrim( table ) {
-	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
-
-	const cellsToTrim = [];
-
-	for ( const { row, rowspan, cell } of new TableWalker( table ) ) {
-		const maxRows = table.childCount;
-
-		if ( headingRows > row ) {
-			if ( row + rowspan > headingRows ) {
-				const newRowspan = headingRows - row;
-
-				cellsToTrim.push( { cell, rowspan: newRowspan } );
-			}
-		} else {
-			if ( row + rowspan + headingRows > maxRows ) {
-				const newRowspan = maxRows - row - headingRows + 1;
-
-				cellsToTrim.push( { cell, rowspan: newRowspan } );
-			}
-		}
-	}
-
-	return cellsToTrim;
-}
-
-function getRowsLengths( table ) {
-	const lengths = {};
-
-	for ( const { row } of new TableWalker( table, { includeSpanned: true } ) ) {
-		if ( !lengths[ row ] ) {
-			lengths[ row ] = 0;
-		}
-
-		lengths[ row ] += 1;
-	}
-
-	return lengths;
-}
-
-function makeTableRowsSameLength( tableUtils, table, writer ) {
-	let wasFixed = false;
-
-	const tableSize = tableUtils.getColumns( table );
-
-	// First: trim rowspanned table cells on section boundaries
-	const cellsToTrim = getCellsToTrim( table );
-
-	if ( cellsToTrim.length ) {
-		for ( const data of cellsToTrim ) {
-			updateNumericAttribute( 'rowspan', data.rowspan, data.cell, writer, 1 );
-		}
-	}
-
-	const lengths = getRowsLengths( table );
-
-	const isValid = Object.values( lengths ).every( length => length === tableSize );
-
-	if ( !isValid ) {
-		const maxColumns = Object.values( lengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
-
-		for ( const [ rowIndex, size ] of Object.entries( lengths ) ) {
-			const columnsToInsert = maxColumns - size;
-
-			if ( columnsToInsert ) {
-				for ( let i = 0; i < columnsToInsert; i++ ) {
-					writer.insertElement( 'tableCell', Position.createAt( table.getChild( rowIndex ), 'end' ) );
-				}
-
-				wasFixed = true;
-			}
-		}
-	}
-
-	return wasFixed;
 }
