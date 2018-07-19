@@ -23,28 +23,19 @@ function tablePostFixer( writer, model, tableUtils ) {
 	for ( const entry of changes ) {
 		let table;
 
+		// Fix table on table insert.
 		if ( entry.name == 'table' && entry.type == 'insert' ) {
 			table = entry.position.nodeAfter;
 		}
 
-		if ( entry.name == 'tableRow' ) {
-			table = entry.position.parent;
+		// Fix table on adding/removing table cells and rows.
+		if ( entry.name == 'tableRow' || entry.name == 'tableCell' ) {
+			table = getParentTable( entry.position );
 		}
 
-		if ( entry.name == 'tableCell' ) {
-			const tableRow = entry.position.parent;
-
-			table = tableRow.parent;
-		}
-
-		if ( entry.type === 'attribute' ) {
-			if ( entry.attributeKey === 'headingRows' ) {
-				table = entry.range.start.parent;
-			}
-
-			if ( entry.attributeKey === 'colspan' || entry.attributeKey === 'rowspan' ) {
-				table = entry.range.start.parent.parent;
-			}
+		// Fix table on any table's attribute change - including attributes of table cells.
+		if ( isTableAttributeEntry( entry ) ) {
+			table = getParentTable( entry.range.start );
 		}
 
 		if ( table ) {
@@ -130,4 +121,15 @@ function makeTableRowsSameLength( tableUtils, table, writer ) {
 	}
 
 	return wasFixed;
+}
+
+// Checks if differ entry for attribute change is one of table's attributes.
+//
+// @param entry
+// @returns {Boolean}
+function isTableAttributeEntry( entry ) {
+	const isAttributeType = entry.type === 'attribute';
+	const key = entry.attributeKey;
+
+	return isAttributeType && ( key === 'headingRows' || key === 'colspan' || key === 'rowspan' );
 }
