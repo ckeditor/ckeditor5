@@ -59,7 +59,7 @@ import TableWalker from './../tablewalker';
  *					<td>XYZ<td>
  *				</tr>
  *			</tbody>
- *        </table>
+ *		</table>
  *
  * In above example the table will be rendered as a table with two rows - one in the header and second one in the body.
  * The table cell with FOO contents will not expand to the body section so its `rowspan` attribute will be changed to `1` (and as
@@ -92,7 +92,7 @@ import TableWalker from './../tablewalker';
  *					<td>XYZ<td>
  *				</tr>
  *			</tbody>
- *        </table>
+ *		</table>
  *
  * **Note** The table post-fixer only ensures proper structure without deeper analysis of the nature of a change. As such it might lead
  * to a structure which was not intended by user changes. In particular it will also fix undo steps (in conjunction with collaboration)
