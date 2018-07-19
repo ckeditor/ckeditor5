@@ -19,7 +19,6 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -27,7 +26,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, UndoEditing ]
+				plugins: [ TableEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -110,11 +109,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-					'<table>' +
-					'<tbody>' +
-					'<tr><td>foo</td></tr>' +
-					'</tbody>' +
-					'</table>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
@@ -124,11 +123,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-					'<table>' +
-					'<thead>' +
-					'<tr><th>foo</th></tr>' +
-					'</thead>' +
-					'</table>' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>foo</th></tr>' +
+							'</thead>' +
+						'</table>' +
 					'</figure>'
 				);
 			} );
