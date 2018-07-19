@@ -122,7 +122,7 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
-		injectTablePostFixer( model, this.editor.plugins.get( TableUtils ) );
+		injectTablePostFixer( model );
 
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
