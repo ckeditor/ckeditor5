@@ -413,6 +413,16 @@ describe( 'MergeCellCommand', () => {
 				expect( command.value ).to.be.undefined;
 			} );
 
+			it( 'should be undefined if mergable cell is in other table section', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00[]' }, '02' ],
+					[ '12' ],
+					[ '21', '22' ]
+				], { headingRows: 2 } ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
 			it( 'should be undefined if not in a cell', () => {
 				setData( model, '<p>11[]</p>' );
 
