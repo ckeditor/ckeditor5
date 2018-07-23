@@ -56,6 +56,39 @@ describe( 'ImageUploadCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'isEnabled', () => {
+		it( 'should be true when the selection directly in the root', () => {
+			setModelData( model, '[]' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true when the selection directly in a paragraph', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true when the selection directly in a block', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( '$text', { allowIn: 'block' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block>foo[]</block>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false when the selection in a limit element', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.register( 'limit', { allowIn: 'block', isLimit: true } );
+			model.schema.extend( '$text', { allowIn: 'limit' } );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'limit', view: 'limit' } ) );
+
+			setModelData( model, '<block><limit>foo[]</limit></block>' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+	} );
+
 	describe( 'execute()', () => {
 		it( 'should insert image at selection position (includes deleting selected content)', () => {
 			const file = createNativeFileMock();

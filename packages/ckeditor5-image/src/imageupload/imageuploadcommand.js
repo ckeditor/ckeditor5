@@ -19,6 +19,23 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  */
 export default class ImageUploadCommand extends Command {
 	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+		const schema = model.schema;
+		const position = selection.getFirstPosition();
+		let parent = position.parent;
+
+		if ( parent != parent.root ) {
+			parent = parent.parent;
+		}
+
+		this.isEnabled = schema.checkChild( parent, 'image' );
+	}
+
+	/**
 	 * Executes the command.
 	 *
 	 * @fires execute
