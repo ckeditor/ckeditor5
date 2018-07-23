@@ -20,6 +20,9 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 | Nest the current list item (when in a list) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
 | Move focus to the visible contextual balloon | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
 | Move focus between fields (inputs and buttons) in contextual balloons | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Move selection to the next table cell (selects all table cell contents) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Insert new row (when selection is in the last table cell) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Move selection to the previous table cell (selects all table cell contents) | <kbd>Shift</kbd>+<kbd>Tab</kbd> | <kbd>Shift</kbd>+<kbd>Tab</kbd> |
 | Move focus to the toolbar | <kbd>Alt</kbd> + <kbd>F10</kbd> | <kbd>Alt</kbd> + <kbd>F10</kbd> <br> (may require <kbd>Fn</kbd>) |
 | Navigate through the toolbar | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> |
 | Execute the currently focused button | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
