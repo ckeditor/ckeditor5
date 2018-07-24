@@ -90,7 +90,7 @@ The {@link module:alignment/alignment~Alignment} plugin registers:
 	You can align the currently selected block(s) by executing one of these commands:
 
 	```js
-	editor.execute( 'align', { value: 'center' } );
+	editor.execute( 'alignment', { value: 'center' } );
 	```
 
 ## Contribute
