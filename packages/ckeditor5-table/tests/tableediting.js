@@ -40,6 +40,37 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		// table:
+		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
+		expect( model.schema.isObject( 'table' ) ).to.be.true;
+		expect( model.schema.isLimit( 'table' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
+
+		// table row:
+		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
+		expect( model.schema.isLimit( 'tableRow' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'tableRow' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'table' ], 'tableRow' ) ).to.be.true;
+
+		// table cell:
+		expect( model.schema.isRegistered( 'tableCell' ) ).to.be.true;
+		expect( model.schema.isLimit( 'tableCell' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'tableRow' ], 'tableCell' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'tableCell' ], 'tableCell' ) ).to.be.false;
+
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'colspan' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'rowspan' ) ).to.be.true;
+
+		// table cell contents:
+		expect( model.schema.checkChild( [ 'tableCell' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'tableCell' ], '$block' ) ).to.be.true;
 	} );
 
 	it( 'adds insertTable command', () => {
