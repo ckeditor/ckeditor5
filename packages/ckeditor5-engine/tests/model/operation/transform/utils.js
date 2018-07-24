@@ -24,7 +24,10 @@ export class Client {
 
 	init() {
 		return ModelTestEditor.create( {
-			plugins: [ Typing, Paragraph, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing ]
+			// Typing is needed for delete command.
+			// UndoEditing is needed for undo command.
+			// Block plugins are needed for proper data serializing.
+			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing ]
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;
