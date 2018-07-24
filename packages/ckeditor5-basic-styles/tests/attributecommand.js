@@ -284,9 +284,9 @@ describe( 'AttributeCommand', () => {
 			setData( model, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).to.equal( 0 );
 				command.execute();
-				expect( writer.batch.deltas.length ).to.equal( 1 );
+				expect( writer.batch.operations.length ).to.equal( 1 );
 			} );
 
 			expect( getData( model ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
