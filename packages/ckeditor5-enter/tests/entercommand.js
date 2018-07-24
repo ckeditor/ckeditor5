@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import EnterCommand from '../src/entercommand';
-import InsertDelta from '@ckeditor/ckeditor5-engine/src/model/delta/insertdelta';
+import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'EnterCommand', () => {
@@ -50,30 +50,30 @@ describe( 'EnterCommand', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas ).to.length( 0 );
+				expect( writer.batch.operations ).to.length( 0 );
 				editor.execute( 'enter' );
-				expect( writer.batch.deltas ).to.length.above( 0 );
+				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
 		} );
 
-		it( 'creates InsertDelta if enter is at the beginning of block', () => {
+		it( 'creates InsertOperation if enter is at the beginning of block', () => {
 			setData( model, '<p>[]foo</p>' );
 
 			editor.execute( 'enter' );
 
-			const deltas = Array.from( doc.history.getDeltas() );
+			const ops = doc.history.getOperations();
 
-			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
+			expect( ops[ ops.length - 1 ] ).to.be.instanceof( InsertOperation );
 		} );
 
-		it( 'creates InsertDelta if enter is at the end of block', () => {
+		it( 'creates InsertOperation if enter is at the end of block', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			editor.execute( 'enter' );
 
-			const deltas = Array.from( doc.history.getDeltas() );
+			const operations = Array.from( doc.history.getOperations() );
 
-			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
+			expect( operations[ operations.length - 1 ] ).to.be.instanceof( InsertOperation );
 		} );
 	} );
 
