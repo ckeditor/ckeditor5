@@ -166,11 +166,11 @@ describe( 'HeadingCommand', () => {
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).to.equal( 0 );
 
 				command.execute( { value: 'heading1' } );
 
-				expect( writer.batch.deltas.length ).to.be.above( 0 );
+				expect( writer.batch.operations.length ).to.be.above( 0 );
 			} );
 		} );
 
