@@ -112,7 +112,7 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * The current batch to which a feature should add its deltas. Once the {@link #size}
+	 * The current batch to which a feature should add its operations. Once the {@link #size}
 	 * is reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
 	 * @type {module:engine/model/batch~Batch}
