@@ -68,6 +68,9 @@ export default class TableEditing extends Plugin {
 			isLimit: true
 		} );
 
+		// Allow all $block content inside table cell.
+		schema.extend( '$block', { allowIn: 'tableCell' } );
+
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
