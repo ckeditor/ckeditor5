@@ -436,8 +436,8 @@ describe( 'Paragraph feature', () => {
 				} );
 			} );
 
-			expect( Array.from( removeBatch.deltas, delta => delta.type ) ).to.include.members( [ 'insert' ] );
-			expect( Array.from( attributeBatch.deltas, delta => delta.type ) ).to.not.include.members( [ 'insert' ] );
+			expect( Array.from( removeBatch.operations, operation => operation.type ) ).to.include.members( [ 'insert' ] );
+			expect( Array.from( attributeBatch.operations, operation => operation.type ) ).to.not.include.members( [ 'insert' ] );
 		} );
 	} );
 
