@@ -307,7 +307,9 @@ export function downcastRemoveRow() {
 	}, { priority: 'higher' } );
 }
 
-// Renames a table cell in the view to a given element name.
+// Renames an existing table cell in the view to a given element name.
+//
+// **Note** This method will not do anything if a view table cell was not yet converted.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
@@ -315,6 +317,11 @@ export function downcastRemoveRow() {
 // @param {Boolean} asWidget
 function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
 	const viewCell = conversionApi.mapper.toViewElement( tableCell );
+
+	// View cell might be not yet converted - skip it as it will be properly created by cell converter later on.
+	if ( !viewCell ) {
+		return;
+	}
 
 	let renamedCell;
 
@@ -486,6 +493,8 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 
 // Moves view table rows associated with passed model rows to the provided table section element.
 //
+// **Note** This method will skip not converted table rows.
+//
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection
 // @param {Object} conversionApi
@@ -494,7 +503,10 @@ function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi
 	for ( const tableRow of rowsToMove ) {
 		const viewTableRow = conversionApi.mapper.toViewElement( tableRow );
 
-		conversionApi.writer.move( ViewRange.createOn( viewTableRow ), ViewPosition.createAt( viewTableSection, offset ) );
+		// View table row might be not yet converted - skip it as it will be properly created by cell converter later on.
+		if ( viewTableRow ) {
+			conversionApi.writer.move( ViewRange.createOn( viewTableRow ), ViewPosition.createAt( viewTableSection, offset ) );
+		}
 	}
 }
 
