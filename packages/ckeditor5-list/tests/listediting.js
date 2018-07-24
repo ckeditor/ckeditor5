@@ -2776,7 +2776,9 @@ describe( 'ListEditing', () => {
 								'<li>g</li>' +
 							'</ul>' +
 						'</li>' +
-					'</ol>'
+					'</ol>',
+
+					false
 				);
 
 				testMove(
@@ -3946,7 +3948,7 @@ describe( 'ListEditing', () => {
 		_test( testName, input, output, actionCallback, testUndo );
 	}
 
-	function _test( testName, input, output, actionCallback ) {
+	function _test( testName, input, output, actionCallback, testUndo ) {
 		it( testName, () => {
 			const callbackSelection = prepareTest( model, input );
 
@@ -3955,27 +3957,29 @@ describe( 'ListEditing', () => {
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
-		it( testName + ' (undo integration)', () => {
-			const callbackSelection = prepareTest( model, input );
+		if ( testUndo ) {
+			it( testName + ' (undo integration)', () => {
+				const callbackSelection = prepareTest( model, input );
 
-			const modelBefore = getModelData( model );
-			const viewBefore = getViewData( view, { withoutSelection: true } );
+				const modelBefore = getModelData( model );
+				const viewBefore = getViewData( view, { withoutSelection: true } );
 
-			actionCallback( callbackSelection );
+				actionCallback( callbackSelection );
 
-			const modelAfter = getModelData( model );
-			const viewAfter = getViewData( view, { withoutSelection: true } );
+				const modelAfter = getModelData( model );
+				const viewAfter = getViewData( view, { withoutSelection: true } );
 
-			editor.execute( 'undo' );
+				editor.execute( 'undo' );
 
-			expect( getModelData( model ) ).to.equal( modelBefore );
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
+				expect( getModelData( model ) ).to.equal( modelBefore );
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
 
-			editor.execute( 'redo' );
+				editor.execute( 'redo' );
 
-			expect( getModelData( model ) ).to.equal( modelAfter );
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
-		} );
+				expect( getModelData( model ) ).to.equal( modelAfter );
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
+			} );
+		}
 
 		function prepareTest( model, input ) {
 			const modelRoot = model.document.getRoot( 'main' );
