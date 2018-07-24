@@ -77,11 +77,11 @@ describe( 'ImageTextAlternativeCommand', () => {
 		setData( model, '[<image src="image.png"></image>]' );
 
 		model.change( writer => {
-			expect( writer.batch.deltas ).to.length( 0 );
+			expect( writer.batch.operations ).to.length( 0 );
 
 			command.execute( { newValue: 'foo bar' } );
 
-			expect( writer.batch.deltas ).to.length.above( 0 );
+			expect( writer.batch.operations ).to.length.above( 0 );
 		} );
 	} );
 } );
