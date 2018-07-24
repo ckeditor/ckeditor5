@@ -73,7 +73,7 @@ function updateBaseVersions( operations, baseVersion ) {
 	return operations;
 }
 
-function transform( a, b, context = { isStrong: false } ) {
+function transform( a, b, context = { aIsStrong: false } ) {
 	const transformationFunction = getTransformation( a, b );
 
 	return transformationFunction( a.clone(), b, context );
@@ -114,13 +114,13 @@ function transformSets( operationsA, operationsB, options ) {
 					const opA = opsA[ k ];
 					const opB = opsB[ l ];
 
-					context.isStrong = true;
+					context.aIsStrong = true;
 					const newOpA = transform( opA, opB, context );
 
-					context.isStrong = false;
+					context.aIsStrong = false;
 					const newOpB = transform( opB, opA, context );
 
-					delete context.isStrong;
+					delete context.aIsStrong;
 
 					if ( options.useContext ) {
 						updateOriginalOperation( context, opA, newOpA );
@@ -365,7 +365,7 @@ setTransformation( AttributeOperation, AttributeOperation, ( a, b, context ) => 
 			// If this operation is more important, we also want to apply change to the part of the
 			// original range that has already been changed by the other operation. Since that range
 			// got changed we also have to update `oldValue`.
-			if ( context.isStrong ) {
+			if ( context.aIsStrong ) {
 				operations.push( new AttributeOperation( common, b.key, b.newValue, a.newValue, 0 ) );
 			}
 		}
@@ -677,7 +677,7 @@ setTransformation( InsertOperation, AttributeOperation, ( a, b ) => {
 } );
 
 setTransformation( InsertOperation, InsertOperation, ( a, b, context ) => {
-	if ( a.position.isEqual( b.position ) && context.isStrong ) {
+	if ( a.position.isEqual( b.position ) && context.aIsStrong ) {
 		return [ a ];
 	}
 
@@ -732,7 +732,7 @@ setTransformation( MarkerOperation, InsertOperation, ( a, b ) => {
 
 setTransformation( MarkerOperation, MarkerOperation, ( a, b, context ) => {
 	if ( a.name == b.name ) {
-		if ( context.isStrong ) {
+		if ( context.aIsStrong ) {
 			a.oldRange = Range.createFromRange( b.newRange );
 		} else {
 			return getNoOp();
@@ -835,7 +835,7 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 
 	// Handle positions in graveyard.
 	// If graveyard positions are same and `a` operation is strong - do not transform.
-	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
 	}
 
@@ -861,7 +861,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	a.sourcePosition = a.sourcePosition._getTransformedByMoveOperation( b );
 	a.targetPosition = a.targetPosition._getTransformedByMoveOperation( b );
 
-	if ( !a.graveyardPosition.isEqual( b.targetPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.targetPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
 	}
 
@@ -950,7 +950,7 @@ setTransformation( MergeOperation, UnwrapOperation, ( a, b, context ) => {
 
 	// Handle positions in graveyard.
 	// If graveyard positions are same and `a` operation is strong - do not transform.
-	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
 	}
 
@@ -981,9 +981,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 	const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	// Assign `context.isStrong` to a different variable, because the value may change during execution of
-	// this algorithm and we do not want to override original `context.isStrong` that will be used in later transformations.
-	let aIsStrong = context.isStrong;
+	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
+	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
+	let aIsStrong = context.aIsStrong;
 
 	// `a.targetPosition` could be affected by the `b` operation. We will transform it.
 	const newTargetPosition = a.targetPosition._getTransformedByMove(
@@ -1314,7 +1314,7 @@ setTransformation( RenameOperation, MoveOperation, ( a, b ) => {
 
 setTransformation( RenameOperation, RenameOperation, ( a, b, context ) => {
 	if ( a.position.isEqual( b.position ) ) {
-		if ( context.isStrong ) {
+		if ( context.aIsStrong ) {
 			a.oldName = b.newName;
 		} else {
 			return getNoOp();
@@ -1369,7 +1369,7 @@ setTransformation( RenameOperation, UnwrapOperation, ( a, b ) => {
 
 setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, context ) => {
 	if ( a.root === b.root && a.key === b.key ) {
-		if ( !context.isStrong || a.newValue === b.newValue ) {
+		if ( !context.aIsStrong || a.newValue === b.newValue ) {
 			return [ new NoOperation( 0 ) ];
 		} else {
 			a.oldValue = b.newValue;
@@ -1583,7 +1583,7 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 	}
 
 	// Case 1:	If ranges to wrap intersect on the same level then there is a conflict.
-	//			Depending on `context.isStrong` the nodes in the intersecting part should be left as they were wrapped
+	//			Depending on `context.aIsStrong` the nodes in the intersecting part should be left as they were wrapped
 	//			or moved to the new wrapping element.
 	//
 	//			`Foo` and `Bar` are to be wrapped in `blockQuote`, while `Bar` and `Xyz` in `div`.
@@ -1613,7 +1613,7 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 	//
 	//			The range from incoming operation may be also wholly included in the range from operation `b`.
 	//			Then, cancel the wrapping. The same happens when the ranges are identical but in that case,
-	//			`context.isStrong` decides which wrapping should be cancelled.
+	//			`context.aIsStrong` decides which wrapping should be cancelled.
 	//
 	//			Lastly, the range from operation `b` may be wholly included in the range from incoming operation.
 	//			Then, unwrap the range from operation `b` and do a wrap on full range from operation `a`.
@@ -1623,7 +1623,7 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 
 		// Range from `a` is contained in range from `b` or ranges are equal.
 		if ( ranges.length == 0 ) {
-			if ( a.wrappedRange.isEqual( b.wrappedRange ) && context.isStrong ) {
+			if ( a.wrappedRange.isEqual( b.wrappedRange ) && context.aIsStrong ) {
 				// If ranges are equal and `a` is a stronger operation, reverse `b` operation and then apply `a` operation.
 				const reversed = b.getReversed();
 
@@ -1648,7 +1648,7 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 		}
 		// Ranges intersect.
 		else if ( ranges.length == 1 ) {
-			if ( context.isStrong ) {
+			if ( context.aIsStrong ) {
 				// If the incoming wrap operation is strong, we need to reverse the previous wrap, then apply the incoming
 				// operation as is, then re-wrap the other nodes that were wrapped in the previous wrap.
 				//
@@ -1761,7 +1761,7 @@ setTransformation( UnwrapOperation, MergeOperation, ( a, b, context ) => {
 	a.position.stickiness = 'toPrevious';
 	a.howMany = transformed.end.offset - transformed.start.offset;
 
-	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMergeOperation( b );
 	}
 
@@ -1786,7 +1786,7 @@ setTransformation( UnwrapOperation, MoveOperation, ( a, b, context ) => {
 
 	a.position = a.position._getTransformedByMoveOperation( b );
 
-	if ( !a.graveyardPosition.isEqual( b.targetPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.targetPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
 	}
 
@@ -1859,7 +1859,7 @@ setTransformation( UnwrapOperation, UnwrapOperation, ( a, b, context ) => {
 
 	a.position = a.position._getTransformedByUnwrapOperation( b );
 
-	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.isStrong ) {
+	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByUnwrapOperation( b );
 	}
 
