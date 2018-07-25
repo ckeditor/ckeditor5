@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getParentTable } from './utils';
+import { getParentElement, getParentTable } from './utils';
 import TableUtils from '../tableutils';
 
 /**
@@ -72,8 +72,10 @@ export default class InsertColumnCommand extends Command {
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		const table = getParentTable( selection.getFirstPosition() );
-		const tableCell = selection.getFirstPosition().parent;
+		const firstPosition = selection.getFirstPosition();
+
+		const tableCell = getParentElement( 'tableCell', firstPosition );
+		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
 		const insertAt = this.order === 'after' ? column + 1 : column;

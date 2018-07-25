@@ -50,7 +50,9 @@ describe( 'InsertColumnCommand', () => {
 					isLimit: true
 				} );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				schema.extend( '$block', { allowIn: 'tableCell' } );
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 				// Table conversion.
 				conversion.for( 'upcast' ).add( upcastTable() );
@@ -88,7 +90,7 @@ describe( 'InsertColumnCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<p>foo[]</p>' );
+				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
@@ -99,7 +101,7 @@ describe( 'InsertColumnCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should insert column in given table at given index', () => {
+			it( 'should insert column in given table after selection\'s column', () => {
 				setData( model, modelTable( [
 					[ '11[]', '12' ],
 					[ '21', '22' ]
@@ -110,6 +112,18 @@ describe( 'InsertColumnCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11[]', '', '12' ],
 					[ '21', '', '22' ]
+				] ) );
+			} );
+
+			it( 'should insert column in given table after selection\'s column (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '11', '<paragraph>12[]</paragraph>', '13' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '<paragraph>12[]</paragraph>', '', '13' ]
 				] ) );
 			} );
 
@@ -200,7 +214,7 @@ describe( 'InsertColumnCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<p>foo[]</p>' );
+				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
@@ -211,7 +225,7 @@ describe( 'InsertColumnCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should insert column in given table at given index', () => {
+			it( 'should insert column in given table before selection\'s column', () => {
 				setData( model, modelTable( [
 					[ '11', '12[]' ],
 					[ '21', '22' ]
@@ -222,6 +236,18 @@ describe( 'InsertColumnCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '', '12[]' ],
 					[ '21', '', '22' ]
+				] ) );
+			} );
+
+			it( 'should insert column in given table before selection\'s column (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '11', '<paragraph>12[]</paragraph>', '13' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
 			} );
 
