@@ -158,9 +158,8 @@ export default class BlockQuoteCommand extends Command {
 			let quote = findQuote( groupRange.start );
 
 			if ( !quote ) {
-				quote = new Element( 'blockQuote' );
-
-				writer.wrap( groupRange, quote );
+				writer.wrap( groupRange, new Element( 'blockQuote' ) );
+				quote = groupRange.start.nodeAfter;
 			}
 
 			quotesToMerge.push( quote );
