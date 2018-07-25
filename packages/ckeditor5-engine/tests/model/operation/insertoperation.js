@@ -11,7 +11,7 @@ import RemoveOperation from '../../../src/model/operation/removeoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;
@@ -33,13 +33,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert text node', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Text( 'x' ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 1 );
@@ -47,13 +47,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert element', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				new Element( 'p' ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 1 );
@@ -61,13 +61,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert set of nodes', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				[ 'bar', new Element( 'p' ), 'foo' ],
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 7 );
@@ -80,13 +80,13 @@ describe( 'InsertOperation', () => {
 	it( 'should insert between existing nodes', () => {
 		root._insertChild( 0, new Text( 'xy' ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 1 ] ),
 				'bar',
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 5 );
@@ -94,13 +94,13 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert text', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
 				[ 'foo', new Text( 'x' ), 'bar' ],
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 7 );
@@ -132,11 +132,11 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.version ).to.equal( 1 );
 
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -151,11 +151,11 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.version ).to.equal( 1 );
 
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -192,11 +192,11 @@ describe( 'InsertOperation', () => {
 		const element = new Element( 'p', { key: 'value' } );
 
 		const op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
-		model.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( op );
 
 		const text = new Text( 'text' );
 		const op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
-		model.applyOperation( wrapInDelta( op2 ) );
+		model.applyOperation( op2 );
 
 		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );
 		expect( op.nodes.getNode( 0 ).name ).to.equal( 'p' );
@@ -221,6 +221,7 @@ describe( 'InsertOperation', () => {
 		it( 'should create proper json object', () => {
 			const position = new Position( root, [ 0 ] );
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
+			op.shouldReceiveAttributes = true;
 
 			const serialized = jsonParseStringify( op );
 
@@ -228,7 +229,8 @@ describe( 'InsertOperation', () => {
 				__className: 'engine.model.operation.InsertOperation',
 				baseVersion: 0,
 				nodes: jsonParseStringify( new NodeList( [ new Text( 'x' ) ] ) ),
-				position: jsonParseStringify( position )
+				position: jsonParseStringify( position ),
+				shouldReceiveAttributes: true
 			} );
 		} );
 	} );

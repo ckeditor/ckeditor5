@@ -7,8 +7,6 @@ import Range from '../../../src/model/range';
 import TreeWalker from '../../../src/model/treewalker';
 import Text from '../../../src/model/text';
 import TextProxy from '../../../src/model/textproxy';
-import Delta from '../../../src/model/delta/delta';
-import Batch from '../../../src/model/batch';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.
@@ -45,27 +43,6 @@ export function getNodesAndText( range ) {
  */
 export function jsonParseStringify( object ) {
 	return JSON.parse( JSON.stringify( object ) );
-}
-
-/**
- * Adds given {@link module:engine/model/operation/operation~Operation operation} to a newly created
- * {@link module:engine/model/delta/delta~Delta delta}
- * and returns it back. Every operation, when applied, have to be added to a delta. This helper function is useful in those
- * tests which focus on operations, not deltas.
- *
- * @param {module:engine/model/operation/operation~Operation} operation Operation to wrap
- * @returns {module:engine/model/operation/operation~Operation}
- */
-export function wrapInDelta( operation ) {
-	const delta = new Delta();
-	// Batch() requires the document but only a few lines of code needs batch in `document#changes`
-	// so we may have an invalid batch instance for some tests.
-	const batch = new Batch();
-
-	delta.addOperation( operation );
-	batch.addDelta( delta );
-
-	return operation;
 }
 
 /**

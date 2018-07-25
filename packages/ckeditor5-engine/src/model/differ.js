@@ -176,6 +176,54 @@ export default class Differ {
 
 				break;
 			}
+			case 'split': {
+				const splitElement = operation.position.parent;
+				const howManyMoved = splitElement.maxOffset - operation.position.offset;
+
+				if ( !this._isInInsertedElement( splitElement ) ) {
+					this._markRemove( splitElement, operation.position.offset, howManyMoved );
+				}
+
+				if ( !this._isInInsertedElement( splitElement.parent ) ) {
+					this._markInsert( splitElement.parent, splitElement.startOffset + 1, 1 );
+				}
+
+				break;
+			}
+			case 'merge': {
+				const mergedElement = operation.sourcePosition.parent;
+				const mergedIntoElement = operation.targetPosition.parent;
+
+				if ( !this._isInInsertedElement( mergedElement.parent ) ) {
+					this._markRemove( mergedElement.parent, mergedElement.startOffset, 1 );
+				}
+
+				if ( !this._isInInsertedElement( mergedIntoElement ) ) {
+					this._markInsert( mergedIntoElement, operation.targetPosition.offset, mergedElement.maxOffset );
+				}
+
+				break;
+			}
+			case 'wrap': {
+				if ( !this._isInInsertedElement( operation.position.parent ) ) {
+					this._markRemove( operation.position.parent, operation.position.offset, operation.howMany );
+					this._markInsert( operation.position.parent, operation.position.offset, 1 );
+				}
+
+				break;
+			}
+			case 'unwrap': {
+				const elementToUnwrap = operation.position.parent;
+				const offset = elementToUnwrap.startOffset;
+				const parent = elementToUnwrap.parent;
+
+				if ( !this._isInInsertedElement( parent ) ) {
+					this._markRemove( parent, offset, 1 );
+					this._markInsert( parent, offset, elementToUnwrap.maxOffset );
+				}
+
+				break;
+			}
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.

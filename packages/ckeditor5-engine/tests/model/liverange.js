@@ -100,11 +100,14 @@ describe( 'LiveRange', () => {
 		const sourcePosition = new Position( root, [ 2 ] );
 		const targetPosition = new Position( root, [ 0 ] );
 		const batch = new Batch();
+		let op = null;
 
 		model.enqueueChange( batch, writer => {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
 
 			writer.move( sourceRange, targetPosition );
+
+			op = batch.operations[ 0 ];
 		} );
 
 		expect( spy.calledOnce ).to.be.true;
@@ -112,11 +115,8 @@ describe( 'LiveRange', () => {
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
 		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
 
-		// Second parameter is an object with data about model changes that caused the live range to change.
-		expect( spy.args[ 0 ][ 2 ].type ).to.equal( 'move' );
-		expect( spy.args[ 0 ][ 2 ].batch ).to.equal( batch );
-		expect( spy.args[ 0 ][ 2 ].range.isEqual( Range.createFromPositionAndShift( targetPosition, 1 ) ) ).to.be.true;
-		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( sourcePosition ) ).to.be.true;
+		// Second parameter is the operation that changed the range.
+		expect( spy.args[ 0 ][ 2 ] ).to.equal( op );
 	} );
 
 	it( 'should fire change:content event with proper data when content inside the range has changed', () => {
@@ -128,24 +128,23 @@ describe( 'LiveRange', () => {
 		const sourcePosition = new Position( root, [ 0, 2, 0 ] );
 		const targetPosition = new Position( root, [ 0, 4, 0 ] );
 		const batch = new Batch();
+		let op = null;
 
 		model.enqueueChange( batch, writer => {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
 
 			writer.move( sourceRange, targetPosition );
+
+			op = batch.operations[ 0 ];
 		} );
 
 		expect( spy.calledOnce ).to.be.true;
 
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
-		// We compare to the `live` range, because boundaries should not have changed.
 		expect( spy.args[ 0 ][ 1 ].isEqual( live ) ).to.be.true;
 
-		// Second parameter is an object with data about model changes that caused the live range to change.
-		expect( spy.args[ 0 ][ 2 ].type ).to.equal( 'move' );
-		expect( spy.args[ 0 ][ 2 ].batch ).to.equal( batch );
-		expect( spy.args[ 0 ][ 2 ].range.isEqual( Range.createFromPositionAndShift( targetPosition, 2 ) ) ).to.be.true;
-		expect( spy.args[ 0 ][ 2 ].sourcePosition.isEqual( sourcePosition ) ).to.be.true;
+		// Second parameter is the operation that changed the range.
+		expect( spy.args[ 0 ][ 2 ] ).to.equal( op );
 	} );
 
 	describe( 'should get transformed and fire change:range if', () => {
@@ -311,7 +310,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 4, 2 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 2, 0 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
@@ -353,7 +352,7 @@ describe( 'LiveRange', () => {
 				} );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 4, 1 ] ); // Included some nodes.
+				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );
 

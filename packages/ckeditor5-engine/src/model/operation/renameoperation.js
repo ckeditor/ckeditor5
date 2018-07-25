@@ -38,6 +38,7 @@ export default class RenameOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/renameoperation~RenameOperation#position
 		 */
 		this.position = position;
+		this.position.stickiness = 'toNext';
 
 		/**
 		 * Current name of the element.

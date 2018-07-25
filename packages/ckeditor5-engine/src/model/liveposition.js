@@ -8,7 +8,6 @@
  */
 
 import Position from './position';
-import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -35,11 +34,11 @@ export default class LivePosition extends Position {
 	 * @see module:engine/model/position~Position
 	 * @param {module:engine/model/rootelement~RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {module:engine/model/position~PositionStickiness} [stickiness] Defaults to `'sticksToNext'`.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness] Position stickiness. Defaults to `'toNone'`.
 	 * See {@link module:engine/model/liveposition~LivePosition#stickiness}.
 	 */
-	constructor( root, path, stickiness ) {
-		super( root, path );
+	constructor( root, path, stickiness = 'toNone' ) {
+		super( root, path, stickiness );
 
 		if ( !this.root.is( 'rootElement' ) ) {
 			/**
@@ -53,26 +52,10 @@ export default class LivePosition extends Position {
 		}
 
 		/**
-		 * Flag representing `LivePosition` stickiness. `LivePosition` might be sticking to previous node or next node.
-		 * Whenever some nodes are inserted at the same position as `LivePosition`, `stickiness` is checked to decide if
-		 * LivePosition should be moved. Similar applies when a range of nodes is moved and one of it's boundary
-		 * position is same as `LivePosition`.
-		 *
-		 * Examples:
-		 *
-		 *		Insert:
-		 *		Position is at | and we insert at the same position, marked as ^:
-		 *		- | sticks to previous node: `<p>f|^oo</p>` => `<p>f|baroo</p>`
-		 *		- | sticks to next node: `<p>f^|oo</p>` => `<p>fbar|oo</p>`
-		 *
-		 *		Move:
-		 *		Position is at | and range [ ] is moved to position ^:
-		 *		- | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
-		 *		- | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
+		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
 		 *
 		 * @member {module:engine/model/position~PositionStickiness} module:engine/model/liveposition~LivePosition#stickiness
 		 */
-		this.stickiness = stickiness || 'sticksToNext';
 
 		bindWithDocument.call( this );
 	}
@@ -136,9 +119,6 @@ export default class LivePosition extends Position {
  * @method module:engine/model/liveposition~LivePosition.bindWithDocument
  */
 function bindWithDocument() {
-	// Operation types handled by LivePosition (these are operations that change model tree structure).
-	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
-
 	this.listenTo(
 		this.root.document.model,
 		'applyOperation',
@@ -149,9 +129,7 @@ function bindWithDocument() {
 				return;
 			}
 
-			if ( supportedTypes.has( operation.type ) ) {
-				transform.call( this, operation );
-			}
+			transform.call( this, operation );
 		},
 		{ priority: 'low' }
 	);
@@ -166,68 +144,16 @@ function bindWithDocument() {
  * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
  */
 function transform( operation ) {
-	/* eslint-disable no-case-declarations */
-	let range;
-	let position;
+	const result = this.getTransformedByOperation( operation );
 
-	if ( operation.type == 'insert' ) {
-		range = Range.createFromPositionAndShift( operation.position, operation.nodes.maxOffset );
-	} else {
-		range = Range.createFromPositionAndShift( operation.getMovedRangeStart(), operation.howMany );
-		position = operation.sourcePosition;
-	}
-
-	const howMany = range.end.offset - range.start.offset;
-	let transformed;
-
-	switch ( operation.type ) {
-		case 'insert':
-			const insertBefore = this.stickiness == 'sticksToNext';
-			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );
-			break;
-
-		case 'move':
-		case 'remove':
-		case 'reinsert':
-			const originalRange = Range.createFromPositionAndShift( position, howMany );
-
-			const gotMoved = originalRange.containsPosition( this ) ||
-				( originalRange.start.isEqual( this ) && this.stickiness == 'sticksToNext' ) ||
-				( originalRange.end.isEqual( this ) && this.stickiness == 'sticksToPrevious' );
-
-			// We can't use ._getTransformedByMove() because we have a different if-condition.
-			if ( gotMoved ) {
-				transformed = this._getCombined( position, range.start );
-			} else {
-				const insertBefore = this.stickiness == 'sticksToNext';
-
-				// `Position._getTransformedByMove` is expecting `targetPosition` to be "before" move
-				// (before transformation). `range.start` is already after the move happened.
-				// We have to revert `targetPosition` to the state before the move.
-				const targetPosition = range.start._getTransformedByInsertion( position, howMany );
-
-				transformed = this._getTransformedByMove( position, targetPosition, howMany, insertBefore );
-			}
-			break;
-	}
-
-	if ( !this.isEqual( transformed ) ) {
+	if ( !this.isEqual( result ) ) {
 		const oldPosition = Position.createFromPosition( this );
 
-		this.path = transformed.path;
-		this.root = transformed.root;
+		this.path = result.path;
+		this.root = result.root;
 
 		this.fire( 'change', oldPosition );
 	}
-	/* eslint-enable no-case-declarations */
 }
 
 mix( LivePosition, EmitterMixin );
-
-/**
- * Enum representing how position is "sticking" with their neighbour nodes.
- * Possible values: `'sticksToNext'`, `'sticksToPrevious'`.
- *
- * @typedef {String} module:engine/model/position~PositionStickiness
- */
-

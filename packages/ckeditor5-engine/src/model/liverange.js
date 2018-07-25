@@ -116,9 +116,6 @@ export default class LiveRange extends Range {
  * @method module:engine/model/liverange~LiveRange#bindWithDocument
  */
 function bindWithDocument() {
-	// Operation types that a range can be transformed by.
-	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
-
 	this.listenTo(
 		this.root.document.model,
 		'applyOperation',
@@ -129,9 +126,7 @@ function bindWithDocument() {
 				return;
 			}
 
-			if ( supportedTypes.has( operation.type ) ) {
-				transform.call( this, operation );
-			}
+			transform.call( this, operation );
 		},
 		{ priority: 'low' }
 	);
@@ -146,71 +141,42 @@ function bindWithDocument() {
  * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
  */
 function transform( operation ) {
-	const changeType = operation.type;
-	const batch = operation.delta.batch;
-
-	let targetRange;
-	let sourcePosition;
-
-	if ( changeType == 'insert' ) {
-		targetRange = Range.createFromPositionAndShift( operation.position, operation.nodes.maxOffset );
-	} else {
-		targetRange = Range.createFromPositionAndShift( operation.getMovedRangeStart(), operation.howMany );
-		sourcePosition = operation.sourcePosition;
-	}
-
-	const howMany = targetRange.end.offset - targetRange.start.offset;
-	let targetPosition = targetRange.start;
-
-	if ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) {
-		// Range._getTransformedByDocumentChange is expecting `targetPosition` to be "before" move
-		// (before transformation). `targetRange.start` is already after the move happened.
-		// We have to revert `targetPosition` to the state before the move.
-		targetPosition = targetPosition._getTransformedByInsertion( sourcePosition, howMany );
-	}
-
-	const result = this._getTransformedByDocumentChange( changeType, operation.delta.type, targetPosition, howMany, sourcePosition );
-
-	// Decide whether moved part should be included in the range.
-	//
-	// First, this concerns only `move` change, because insert change includes inserted part always (changeType == 'move').
-	// Second, this is a case only if moved range was intersecting with this range and was inserted into this range (result.length == 3).
-	if ( ( changeType == 'move' || changeType == 'remove' || changeType == 'reinsert' ) && result.length == 3 ) {
-		// `result[ 2 ]` is a "common part" of this range and moved range. We substitute that common part with the whole
-		// `targetRange` because we want to include whole `targetRange` in this range.
-		result[ 2 ] = targetRange;
-	}
-
-	const updated = Range.createFromRanges( result );
-
-	const boundariesChanged = !updated.isEqual( this );
-
-	const rangeExpanded = this.containsPosition( targetPosition );
-	const rangeShrunk = sourcePosition && ( this.containsPosition( sourcePosition ) || this.start.isEqual( sourcePosition ) );
-	const contentChanged = rangeExpanded || rangeShrunk;
+	const ranges = this.getTransformedByOperation( operation );
+	const result = Range.createFromRanges( ranges );
+	const boundariesChanged = !result.isEqual( this );
+	const contentChanged = doesOperationChangeRangeContent( this, operation );
 
 	if ( boundariesChanged ) {
 		// If range boundaries have changed, fire `change:range` event.
 		const oldRange = Range.createFromRange( this );
 
-		this.start = updated.start;
-		this.end = updated.end;
+		this.start = result.start;
+		this.end = result.end;
 
-		this.fire( 'change:range', oldRange, {
-			type: changeType,
-			batch,
-			range: targetRange,
-			sourcePosition
-		} );
+		this.fire( 'change:range', oldRange, operation );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range.createFromRange( this ), {
-			type: changeType,
-			batch,
-			range: targetRange,
-			sourcePosition
-		} );
+		this.fire( 'change:content', Range.createFromRange( this ), operation );
 	}
+}
+
+function doesOperationChangeRangeContent( range, operation ) {
+	switch ( operation.type ) {
+		case 'insert':
+		case 'split':
+		case 'wrap':
+		case 'unwrap':
+			return range.containsPosition( operation.position );
+		case 'move':
+		case 'remove':
+		case 'reinsert':
+		case 'merge':
+			return range.containsPosition( operation.sourcePosition ) ||
+				range.start.isEqual( operation.sourcePosition ) ||
+				range.containsPosition( operation.targetPosition );
+	}
+
+	return false;
 }
 
 mix( LiveRange, EmitterMixin );

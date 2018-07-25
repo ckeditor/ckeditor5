@@ -608,7 +608,7 @@ describe( 'Position', () => {
 	describe( '_getTransformedByInsertion()', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4 );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
@@ -616,42 +616,43 @@ describe( 'Position', () => {
 
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion position is in different root', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
-		it( 'should not increment offset if insertion is in the same parent and the same offset', () => {
+		it( 'should increment offset if insertion is in the same parent and the same offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2 );
 
-			expect( transformed.offset ).to.equal( 3 );
+			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset and it is inserted before', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
+			position.stickiness = 'toNext';
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and further offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if insertion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
@@ -659,7 +660,7 @@ describe( 'Position', () => {
 		it( 'should not update path if insertion position parent is a node from that path and offset is ' +
 			'after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
@@ -749,12 +750,8 @@ describe( 'Position', () => {
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position._getTransformedByMove(
-				new Position( root, [ 1, 2, 0 ] ),
-				new Position( root, [ 2 ] ), 3,
-				false,
-				true
-			);
+			position.stickiness = 'toPrevious';
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );
@@ -810,15 +807,16 @@ describe( 'Position', () => {
 
 			const serialized = jsonParseStringify( position );
 
-			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ] } );
+			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ], stickiness: 'toNone' } );
 		} );
 
 		it( 'should serialize position from graveyard', () => {
 			const position = new Position( doc.graveyard, [ 0 ] );
+			position.stickiness = 'toPrevious';
 
 			const serialized = jsonParseStringify( position );
 
-			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ] } );
+			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ], stickiness: 'toPrevious' } );
 		} );
 	} );
 

@@ -119,11 +119,11 @@ export function _move( sourceRange, targetPosition ) {
 }
 
 /**
- * Sets given attribute on nodes in given range.
+ * Sets given attribute on nodes in given range. The attributes are only set on top-level nodes of the range, not on its children.
  *
  * @protected
  * @function module:engine/model/operation/utils~utils._setAttribute
- * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set.
+ * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Should be flat.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
  */
@@ -133,7 +133,7 @@ export function _setAttribute( range, key, value ) {
 	_splitNodeAtPosition( range.end );
 
 	// Iterate over all items in the range.
-	for ( const item of range.getItems() ) {
+	for ( const item of range.getItems( { shallow: true } ) ) {
 		// Iterator will return `TextProxy` instances but we know that those text proxies will
 		// always represent full text nodes (this is guaranteed thanks to splitting we did before).
 		// So, we can operate on those text proxies' text nodes.
@@ -191,7 +191,7 @@ export function _normalizeNodes( nodes ) {
 		const prev = normalized[ i - 1 ];
 
 		if ( node instanceof Text && prev instanceof Text && _haveSameAttributes( node, prev ) ) {
-			// Doing this instead changing prev.data because .data is readonly.
+			// Doing this instead changing `prev.data` because `data` is readonly.
 			normalized.splice( i - 1, 2, new Text( prev.data + node.data, prev.getAttributes() ) );
 			i--;
 		}

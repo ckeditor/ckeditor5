@@ -12,7 +12,7 @@ import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'RemoveOperation', () => {
 	let model, doc, root, graveyard;
@@ -35,17 +35,6 @@ describe( 'RemoveOperation', () => {
 		expect( op.type ).to.equal( 'remove' );
 	} );
 
-	it( 'should not be sticky', () => {
-		const op = new RemoveOperation(
-			new Position( root, [ 2 ] ),
-			2,
-			new Position( doc.graveyard, [ 0 ] ),
-			doc.version
-		);
-
-		expect( op.isSticky ).to.be.false;
-	} );
-
 	it( 'should extend MoveOperation class', () => {
 		const operation = new RemoveOperation(
 			new Position( root, [ 2 ] ),
@@ -60,14 +49,14 @@ describe( 'RemoveOperation', () => {
 	it( 'should be able to remove set of nodes and append them to graveyard root', () => {
 		root._insertChild( 0, new Text( 'fozbar' ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
 				new Position( doc.graveyard, [ 0 ] ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 4 );
@@ -117,12 +106,12 @@ describe( 'RemoveOperation', () => {
 
 		root._insertChild( 0, new Text( 'bar' ) );
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 0 );
 
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -135,7 +124,7 @@ describe( 'RemoveOperation', () => {
 		const position = new Position( doc.graveyard, [ 2 ] );
 		const operation = new RemoveOperation( position, 1, new Position( doc.graveyard, [ 0 ] ), 0 );
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.graveyard.childCount ).to.equal( 3 );
 		expect( doc.graveyard.getChild( 0 ).name ).to.equal( 'z' );
@@ -178,7 +167,6 @@ describe( 'RemoveOperation', () => {
 				__className: 'engine.model.operation.RemoveOperation',
 				baseVersion: 0,
 				howMany: 2,
-				isSticky: false,
 				sourcePosition: jsonParseStringify( op.sourcePosition ),
 				targetPosition: jsonParseStringify( op.targetPosition )
 			} );

@@ -4,10 +4,7 @@
  */
 
 import History from '../../src/model/history';
-import Delta from '../../src/model/delta/delta';
 import Operation from '../../src/model/operation/operation';
-
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'History', () => {
 	let history;
@@ -18,195 +15,177 @@ describe( 'History', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create an empty History instance', () => {
-			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
+			expect( Array.from( history.getOperations() ).length ).to.equal( 0 );
 		} );
 	} );
 
-	describe( 'addDelta', () => {
-		it( 'should save delta in the history', () => {
-			const delta = new Delta();
-			delta.addOperation( new Operation( 0 ) );
+	describe( 'addOperation', () => {
+		it( 'should save operation in the history', () => {
+			const op = new Operation( 0 );
 
-			history.addDelta( delta );
+			history.addOperation( op );
 
-			const deltas = Array.from( history.getDeltas() );
-			expect( deltas.length ).to.equal( 1 );
-			expect( deltas[ 0 ] ).to.equal( delta );
+			const ops = Array.from( history.getOperations() );
+			expect( ops.length ).to.equal( 1 );
+			expect( ops[ 0 ] ).to.equal( op );
 		} );
 
-		it( 'should save each delta only once', () => {
-			const delta = new Delta();
-			delta.addOperation( new Operation( 0 ) );
+		it( 'should save each operation only once', () => {
+			const op = new Operation( 0 );
 
-			history.addDelta( delta );
-			history.addDelta( delta );
+			history.addOperation( op );
+			history.addOperation( op );
 
-			const deltas = Array.from( history.getDeltas() );
-			expect( deltas.length ).to.equal( 1 );
-			expect( deltas[ 0 ] ).to.equal( delta );
+			const ops = Array.from( history.getOperations() );
+			expect( ops.length ).to.equal( 1 );
+			expect( ops[ 0 ] ).to.equal( op );
 		} );
 
-		it( 'should save multiple deltas and keep their order', () => {
-			const deltas = getDeltaSet();
+		it( 'should save multiple operations and keep their order', () => {
+			const ops = getOperations();
 
-			for ( const delta of deltas ) {
-				history.addDelta( delta );
+			for ( const op of ops ) {
+				history.addOperation( op );
 			}
 
-			const historyDeltas = Array.from( history.getDeltas() );
-			expect( historyDeltas ).to.deep.equal( deltas );
-		} );
-
-		it( 'should skip deltas that does not have operations', () => {
-			const delta = new Delta();
-
-			history.addDelta( delta );
-
-			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
+			const historyOperations = history.getOperations();
+			expect( historyOperations ).to.deep.equal( ops );
 		} );
 	} );
 
-	describe( 'getDelta', () => {
-		it( 'should return delta with given base version', () => {
-			const delta = getDelta( 0 );
-			history.addDelta( delta );
+	describe( 'getOperation', () => {
+		it( 'should return operation with given base version', () => {
+			const op0 = new Operation( 0 );
+			const op1 = new Operation( 1 );
+			const op2 = new Operation( 2 );
 
-			const historyDelta = history.getDelta( 0 );
-			expect( historyDelta ).to.equal( delta );
+			history.addOperation( op0 );
+			history.addOperation( op1 );
+			history.addOperation( op2 );
+
+			const historyOperation = history.getOperation( 1 );
+			expect( historyOperation ).to.equal( op1 );
 		} );
 
-		it( 'should return null if delta has not been found in history', () => {
-			expect( history.getDelta( -1 ) ).to.be.null;
-			expect( history.getDelta( 2 ) ).to.be.null;
-			expect( history.getDelta( 20 ) ).to.be.null;
+		it( 'should return undefined if operation has not been found in history', () => {
+			const op0 = new Operation( 0 );
+
+			history.addOperation( op0 );
+
+			expect( history.getOperation( -1 ) ).to.be.undefined;
+			expect( history.getOperation( 10 ) ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'getDeltas', () => {
-		let deltas;
+	describe( 'getOperations', () => {
+		let ops;
 
 		beforeEach( () => {
-			deltas = getDeltaSet();
+			ops = getOperations();
 
-			for ( const delta of deltas ) {
-				history.addDelta( delta );
+			for ( const op of ops ) {
+				history.addOperation( op );
 			}
 		} );
 
-		it( 'should return only history deltas from given base version', () => {
-			const historyDeltas = Array.from( history.getDeltas( 3 ) );
-			expect( historyDeltas ).to.deep.equal( deltas.slice( 1 ) );
+		it( 'should return only operations from given base version', () => {
+			const historyOperations = Array.from( history.getOperations( 1 ) );
+
+			expect( historyOperations ).to.deep.equal( ops.slice( 1 ) );
 		} );
 
-		it( 'should return only history deltas to given base version', () => {
-			const historyDeltas = Array.from( history.getDeltas( 3, 6 ) );
-			expect( historyDeltas ).to.deep.equal( deltas.slice( 1, 2 ) );
+		it( 'should return only operations up to given base version', () => {
+			const historyOperations = Array.from( history.getOperations( 1, 2 ) );
+
+			expect( historyOperations ).to.deep.equal( ops.slice( 1, 2 ) );
 		} );
 
-		it( 'should return empty (finished) iterator if given history point is too high or negative', () => {
-			expect( Array.from( history.getDeltas( 20 ) ).length ).to.equal( 0 );
-			expect( Array.from( history.getDeltas( -1 ) ).length ).to.equal( 0 );
-		} );
-
-		it( 'should throw if given history point is "inside" delta', () => {
-			expect( () => {
-				Array.from( history.getDeltas( 2 ) );
-			} ).to.throw( CKEditorError, /model-history-wrong-version/ );
+		it( 'should return empty array if no operations match', () => {
+			expect( Array.from( history.getOperations( 20 ) ).length ).to.equal( 0 );
+			expect( Array.from( history.getOperations( -1 ) ).length ).to.equal( 0 );
 		} );
 	} );
 
-	describe( 'isUndoingDelta', () => {
+	describe( 'isUndoingOperation', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
-			undoing = new Delta();
-			undone = new Delta();
+			undone = new Operation( 0 );
+			undoing = new Operation( 1 );
 
-			history.addDelta( undone );
-			history.addDelta( undoing );
+			history.addOperation( undone );
+			history.addOperation( undoing );
 
-			history.setDeltaAsUndone( undone, undoing );
+			history.setOperationAsUndone( undone, undoing );
 		} );
 
-		it( 'should return true if delta is an undoing delta', () => {
-			expect( history.isUndoingDelta( undoing ) ).to.be.true;
+		it( 'should return true if operation is an undoing operation', () => {
+			expect( history.isUndoingOperation( undoing ) ).to.be.true;
 		} );
 
-		it( 'should return false if delta is not an undoing delta', () => {
-			const delta = new Delta();
+		it( 'should return false if operation is not an undoing operation', () => {
+			const operation = new Operation();
 
-			expect( history.isUndoingDelta( undone ) ).to.be.false;
-			expect( history.isUndoingDelta( delta ) ).to.be.false;
+			expect( history.isUndoingOperation( operation ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'isUndoneDelta', () => {
+	describe( 'isUndoneOperation', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
-			undoing = new Delta();
-			undone = new Delta();
+			undone = new Operation( 0 );
+			undoing = new Operation( 1 );
 
-			history.addDelta( undone );
-			history.addDelta( undoing );
+			history.addOperation( undone );
+			history.addOperation( undoing );
 
-			history.setDeltaAsUndone( undone, undoing );
+			history.setOperationAsUndone( undone, undoing );
 		} );
 
-		it( 'should return true if delta has been set as undone', () => {
-			expect( history.isUndoneDelta( undone ) ).to.be.true;
+		it( 'should return true if operation has been set as undone', () => {
+			expect( history.isUndoneOperation( undone ) ).to.be.true;
 		} );
 
-		it( 'should return false if delta has not been set as undone', () => {
-			const delta = new Delta();
+		it( 'should return false if operation is not an undone', () => {
+			const operation = new Operation();
 
-			expect( history.isUndoneDelta( undoing ) ).to.be.false;
-			expect( history.isUndoneDelta( delta ) ).to.be.false;
+			expect( history.isUndoneOperation( operation ) ).to.be.false;
 		} );
 	} );
 
-	describe( 'getUndoneDelta', () => {
+	describe( 'getUndoneOperation', () => {
 		let undoing, undone;
 
 		beforeEach( () => {
-			undoing = new Delta();
-			undone = new Delta();
+			undone = new Operation( 0 );
+			undoing = new Operation( 1 );
 
-			history.addDelta( undone );
-			history.addDelta( undoing );
+			history.addOperation( undone );
+			history.addOperation( undoing );
 
-			history.setDeltaAsUndone( undone, undoing );
+			history.setOperationAsUndone( undone, undoing );
 		} );
 
-		it( 'should return undone delta basing on undoing delta', () => {
-			expect( history.getUndoneDelta( undoing ) ).to.equal( undone );
+		it( 'should return undone operation basing on undoing operation', () => {
+			expect( history.getUndoneOperation( undoing ) ).to.equal( undone );
 		} );
 
-		it( 'should return undefined if given delta is not an undoing delta', () => {
-			const delta = new Delta();
+		it( 'should return undefined if given operation is not an undoing operation', () => {
+			const op = new Operation( 0 );
 
-			expect( history.getUndoneDelta( undone ) ).to.be.undefined;
-			expect( history.getUndoneDelta( delta ) ).to.be.undefined;
+			expect( history.getUndoneOperation( undone ) ).to.be.undefined;
+			expect( history.getUndoneOperation( op ) ).to.be.undefined;
 		} );
 	} );
 } );
 
-function getDeltaSet() {
-	const deltas = [];
+function getOperations() {
+	const ops = [];
 
-	deltas.push( getDelta( 0 ) );
-	deltas.push( getDelta( 3 ) );
-	deltas.push( getDelta( 6 ) );
+	ops.push( new Operation( 0 ) );
+	ops.push( new Operation( 1 ) );
+	ops.push( new Operation( 2 ) );
 
-	return deltas;
-}
-
-function getDelta( baseVersion ) {
-	const delta = new Delta();
-
-	for ( let i = 0; i < 3; i++ ) {
-		delta.addOperation( new Operation( i + baseVersion ) );
-	}
-
-	return delta;
+	return ops;
 }

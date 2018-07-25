@@ -9,7 +9,7 @@
 
 /* global console */
 
-import DeltaReplayer from './deltareplayer';
+import OperationReplayer from './operationreplayer';
 
 import ModelPosition from '../model/position';
 import ModelRange from '../model/range';
@@ -25,18 +25,7 @@ import MoveOperation from '../model/operation/moveoperation';
 import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
-import Delta from '../model/delta/delta';
-import AttributeDelta from '../model/delta/attributedelta';
-import InsertDelta from '../model/delta/insertdelta';
-import MarkerDelta from '../model/delta/markerdelta';
-import MergeDelta from '../model/delta/mergedelta';
-import MoveDelta from '../model/delta/movedelta';
-import RenameDelta from '../model/delta/renamedelta';
-import RootAttributeDelta from '../model/delta/rootattributedelta';
-import SplitDelta from '../model/delta/splitdelta';
-import UnwrapDelta from '../model/delta/unwrapdelta';
-import WrapDelta from '../model/delta/wrapdelta';
-import deltaTransform from '../model/delta/transform';
+import transform from '../model/operation/transform';
 import Model from '../model/model';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
@@ -50,8 +39,6 @@ import ViewDocumentFragment from '../view/documentfragment';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-
-import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 // Sandbox class allows creating mocks of the functions and restoring these mocks to the original values.
 class Sandbox {
@@ -98,7 +85,7 @@ const treeDump = Symbol( '_treeDump' );
 // Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
 
-// Separator used to separate stringified deltas
+// Separator used to separate stringified operations
 const LOG_SEPARATOR = '-------';
 
 // Specified whether debug tools were already enabled.
@@ -122,7 +109,6 @@ let logger = console;
  * * {@link module:engine/model/documentfragment~DocumentFragment model.DocumentFragment},
  * * {@link module:engine/model/document~Document model.Document},
  * * all {@link module:engine/model/operation/operation~Operation operations}
- * * all {@link module:engine/model/delta/delta~Delta deltas},
  * * {@link module:engine/view/element~Element view.Element},
  * * {@link module:engine/view/documentfragment~DocumentFragment view.DocumentFragment},
  * * {@link module:engine/view/document~Document view.Document}.
@@ -130,8 +116,7 @@ let logger = console;
  * Additionally, the following logging utility methods are added:
  * * {@link module:engine/model/text~Text model.Text} `logExtended`,
  * * {@link module:engine/model/element~Element model.Element} `logExtended`,
- * * {@link module:engine/model/element~Element model.Element} `logAll`,
- * * {@link module:engine/model/delta/delta~Delta model.Delta} `logAll`.
+ * * {@link module:engine/model/element~Element model.Element} `logAll`.
  *
  * Additionally, the following classes are expanded with `logTree` and `printTree` methods:
  * * {@link module:engine/model/element~Element model.Element},
@@ -364,134 +349,22 @@ function enableLoggingTools() {
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
 	} );
 
-	sandbox.mock( Delta.prototype, 'log', function() {
-		logger.log( this.toString() );
-	} );
+	const _transformTransform = transform.transform;
 
-	sandbox.mock( Delta.prototype, 'logAll', function() {
-		logger.log( '--------------------' );
-
-		this.log();
-
-		for ( const op of this.operations ) {
-			op.log();
-		}
-	} );
-
-	sandbox.mock( Delta.prototype, '_saveHistory', function( itemToSave ) {
-		const history = itemToSave.before.history ? itemToSave.before.history : [];
-
-		itemToSave.before = clone( itemToSave.before );
-		delete itemToSave.before.history;
-		itemToSave.before = JSON.stringify( itemToSave.before );
-
-		itemToSave.transformedBy = clone( itemToSave.transformedBy );
-		delete itemToSave.transformedBy.history;
-		itemToSave.transformedBy = JSON.stringify( itemToSave.transformedBy );
-
-		this.history = history.concat( itemToSave );
-	} );
-
-	const _deltaTransformTransform = deltaTransform.transform;
-
-	sandbox.mock( deltaTransform, 'transform', function( a, b, context ) {
+	sandbox.mock( transform, 'transform', function( a, b, context ) {
 		let results;
 
 		try {
-			results = _deltaTransformTransform( a, b, context );
+			results = _transformTransform( a, b, context );
 		} catch ( e ) {
-			logger.error( 'Error during delta transformation!' );
+			logger.error( 'Error during operation transformation!' );
 			logger.error( a.toString() + ( context.isStrong ? ' (important)' : '' ) );
 			logger.error( b.toString() + ( context.isStrong ? '' : ' (important)' ) );
 
 			throw e;
 		}
 
-		for ( let i = 0; i < results.length; i++ ) {
-			results[ i ]._saveHistory( {
-				before: a,
-				transformedBy: b,
-				wasImportant: !!context.isStrong,
-				resultIndex: i,
-				resultsTotal: results.length
-			} );
-		}
-
 		return results;
-	} );
-
-	sandbox.mock( AttributeDelta.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
-	} );
-
-	sandbox.mock( InsertDelta.prototype, 'toString', function() {
-		const op = this._insertOperation;
-		const nodeString = op.nodes.length > 1 ? `[ ${ op.nodes.length } ]` : op.nodes.getNode( 0 );
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ nodeString } -> ${ op.position }`;
-	} );
-
-	sandbox.mock( MarkerDelta.prototype, 'toString', function() {
-		const op = this.operations[ 0 ];
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ op.name }": ${ op.oldRange } -> ${ op.newRange }`;
-	} );
-
-	sandbox.mock( MergeDelta.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			( this.position ?
-				this.position.toString() :
-				`(move from ${ this.operations[ 0 ].sourcePosition })`
-			);
-	} );
-
-	sandbox.mock( MoveDelta.prototype, 'toString', function() {
-		const opStrings = [];
-
-		for ( const op of this.operations ) {
-			const range = ModelRange.createFromPositionAndShift( op.sourcePosition, op.howMany );
-
-			opStrings.push( `${ range } -> ${ op.targetPosition }` );
-		}
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			opStrings.join( '; ' );
-	} );
-
-	sandbox.mock( RenameDelta.prototype, 'toString', function() {
-		const op = this.operations[ 0 ];
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ op.position }: "${ op.oldName }" -> "${ op.newName }"`;
-	} );
-
-	sandbox.mock( RootAttributeDelta.prototype, 'toString', function() {
-		const op = this.operations[ 0 ];
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`"${ op.key }": ${ JSON.stringify( op.oldValue ) } -> ${ JSON.stringify( op.newValue ) }, ${ op.root.rootName }`;
-	} );
-
-	sandbox.mock( SplitDelta.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			( this.position ?
-				this.position.toString() :
-				`(clone to ${ this._cloneOperation.position || this._cloneOperation.targetPosition })`
-			);
-	} );
-
-	sandbox.mock( UnwrapDelta.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			this.position.toString();
-	} );
-
-	sandbox.mock( WrapDelta.prototype, 'toString', function() {
-		const wrapElement = this._insertOperation.nodes.getNode( 0 );
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ this.range } -> ${ wrapElement }`;
 	} );
 
 	sandbox.mock( ViewText.prototype, 'toString', function() {
@@ -569,30 +442,25 @@ function enableReplayerTools() {
 	const _modelApplyOperation = Model.prototype.applyOperation;
 
 	sandbox.mock( Model.prototype, 'applyOperation', function( operation ) {
-		if ( !this._lastDelta ) {
-			this._appliedDeltas = [];
-		} else if ( this._lastDelta !== operation.delta ) {
-			this._appliedDeltas.push( this._lastDelta.toJSON() );
+		if ( !this._appliedOperations ) {
+			this._appliedOperations = [];
 		}
 
-		this._lastDelta = operation.delta;
+		this._appliedOperations.push( operation.toJSON() );
 
 		return _modelApplyOperation.call( this, operation );
 	} );
 
-	sandbox.mock( Model.prototype, 'getAppliedDeltas', function() {
-		// No deltas has been applied yet, return empty string.
-		if ( !this._lastDelta ) {
+	sandbox.mock( Model.prototype, 'getAppliedOperations', function() {
+		if ( !this._appliedOperations ) {
 			return '';
 		}
 
-		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta );
-
-		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
+		return this._appliedOperations.map( JSON.stringify ).join( LOG_SEPARATOR );
 	} );
 
-	sandbox.mock( Model.prototype, 'createReplayer', function( stringifiedDeltas ) {
-		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
+	sandbox.mock( Model.prototype, 'createReplayer', function( stringifiedOperations ) {
+		return new OperationReplayer( this, LOG_SEPARATOR, stringifiedOperations );
 	} );
 }
 
@@ -694,8 +562,8 @@ function dumpTrees( document, version ) {
 	}
 }
 
-// Helper function, returns the class name of a given `Delta` or `Operation`.
-// @param {module:engine/model/delta/delta~Delta|module:engine/model/operation/operation~Operation}
+// Helper function, returns the class name of a given `Operation`.
+// @param {module:engine/model/operation/operation~Operation}
 // @returns {String} Class name.
 function getClassName( obj ) {
 	const path = obj.constructor.className.split( '.' );

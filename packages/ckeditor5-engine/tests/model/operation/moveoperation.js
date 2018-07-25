@@ -9,7 +9,7 @@ import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'MoveOperation', () => {
 	let model, doc, root;
@@ -31,31 +31,20 @@ describe( 'MoveOperation', () => {
 		expect( op.type ).to.equal( 'move' );
 	} );
 
-	it( 'should be sticky', () => {
-		const op = new MoveOperation(
-			new Position( root, [ 0, 0 ] ),
-			1,
-			new Position( root, [ 1, 0 ] ),
-			doc.version
-		);
-
-		expect( op.isSticky ).to.be.false;
-	} );
-
 	it( 'should move from one node to another', () => {
 		const p1 = new Element( 'p1', [], new Element( 'x' ) );
 		const p2 = new Element( 'p2' );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 0, 0 ] ),
 				1,
 				new Position( root, [ 1, 0 ] ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
@@ -69,14 +58,14 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node backward', () => {
 		root._insertChild( 0, new Text( 'xbarx' ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
 				new Position( root, [ 1 ] ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 5 );
@@ -86,14 +75,14 @@ describe( 'MoveOperation', () => {
 	it( 'should move position of children in one node forward', () => {
 		root._insertChild( 0, new Text( 'xbarx' ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MoveOperation(
 				new Position( root, [ 1 ] ),
 				2,
 				new Position( root, [ 4 ] ),
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 5 );
@@ -133,7 +122,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
@@ -141,7 +130,7 @@ describe( 'MoveOperation', () => {
 		expect( p2.maxOffset ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
-		model.applyOperation( wrapInDelta( operation.getReversed() ) );
+		model.applyOperation( operation.getReversed() );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 2 );
@@ -283,9 +272,8 @@ describe( 'MoveOperation', () => {
 				__className: 'engine.model.operation.MoveOperation',
 				baseVersion: 0,
 				howMany: 1,
-				isSticky: false,
-				sourcePosition: jsonParseStringify( sourcePosition ),
-				targetPosition: jsonParseStringify( targetPosition )
+				sourcePosition: jsonParseStringify( op.sourcePosition ),
+				targetPosition: jsonParseStringify( op.targetPosition )
 			} );
 		} );
 	} );
@@ -295,18 +283,6 @@ describe( 'MoveOperation', () => {
 			const sourcePosition = new Position( root, [ 0, 0 ] );
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
-
-			const serialized = jsonParseStringify( op );
-			const deserialized = MoveOperation.fromJSON( serialized, doc );
-
-			expect( deserialized ).to.deep.equal( op );
-		} );
-
-		it( 'should create proper MoveOperation from json object - sticky', () => {
-			const sourcePosition = new Position( root, [ 0, 0 ] );
-			const targetPosition = new Position( root, [ 1, 0 ] );
-			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
-			op.isSticky = true;
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = MoveOperation.fromJSON( serialized, doc );

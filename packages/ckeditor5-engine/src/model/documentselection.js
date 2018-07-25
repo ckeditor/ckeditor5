@@ -750,14 +750,14 @@ class LiveSelection extends Selection {
 
 		const liveRange = LiveRange.createFromRange( range );
 
-		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
+		liveRange.on( 'change:range', ( evt, oldRange, operation ) => {
 			this._hasChangedRange = true;
 
 			// If `LiveRange` is in whole moved to the graveyard, save necessary data. It will be fixed on `Model#applyOperation` event.
 			if ( liveRange.root == this._document.graveyard ) {
 				this._fixGraveyardRangesData.push( {
 					liveRange,
-					sourcePosition: data.sourcePosition
+					sourcePosition: operation.sourcePosition
 				} );
 			}
 		} );

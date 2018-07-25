@@ -41,6 +41,8 @@ export default class MoveOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
+		this.sourcePosition.stickiness = 'toNext';
+		// maybe lets change sourcePosition + howMany to a range? flattness will be guaranteed by writer anyway
 
 		/**
 		 * Offset size of moved range.
@@ -55,16 +57,7 @@ export default class MoveOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#targetPosition
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
-
-		/**
-		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
-		 * {@link module:engine/model/operation/transform~transform operational transformation} if there will be an operation that
-		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
-		 * get their insertion path updated to the position where this `MoveOperation` moves the range.
-		 *
-		 * @member {Boolean} module:engine/model/operation/moveoperation~MoveOperation#isSticky
-		 */
-		this.isSticky = false;
+		this.targetPosition.stickiness = 'toNone';
 	}
 
 	/**
@@ -80,10 +73,7 @@ export default class MoveOperation extends Operation {
 	 * @returns {module:engine/model/operation/moveoperation~MoveOperation} Clone of this operation.
 	 */
 	clone() {
-		const op = new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
-		op.isSticky = this.isSticky;
-
-		return op;
+		return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
 	}
 
 	/**
@@ -112,10 +102,7 @@ export default class MoveOperation extends Operation {
 	getReversed() {
 		const newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
-		const op = new this.constructor( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
-		op.isSticky = this.isSticky;
-
-		return op;
+		return new this.constructor( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -200,12 +187,6 @@ export default class MoveOperation extends Operation {
 		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
 		const targetPosition = Position.fromJSON( json.targetPosition, document );
 
-		const move = new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
-
-		if ( json.isSticky ) {
-			move.isSticky = true;
-		}
-
-		return move;
+		return new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 	}
 }

@@ -61,7 +61,7 @@ describe( 'model test utils', () => {
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
-			sinon.assert.calledWithExactly( stringifySpy, root );
+			sinon.assert.calledWithExactly( stringifySpy, root, null, null );
 		} );
 
 		it( 'should use stringify method with selection', () => {
@@ -72,7 +72,7 @@ describe( 'model test utils', () => {
 			} );
 			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
-			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
+			sinon.assert.calledWithExactly( stringifySpy, root, document.selection, null );
 		} );
 
 		it( 'should throw an error when passing invalid document', () => {

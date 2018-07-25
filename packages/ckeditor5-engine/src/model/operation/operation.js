@@ -40,6 +40,8 @@ export default class Operation {
 		 */
 		this.isDocumentOperation = this.baseVersion !== null;
 
+		this.batch = null;
+
 		/**
 		 * Operation type.
 		 *
@@ -48,11 +50,11 @@ export default class Operation {
 		 */
 
 		/**
-		 * {@link module:engine/model/delta/delta~Delta Delta} which the operation is a part of. This property is set by the
-		 * {@link module:engine/model/delta/delta~Delta delta} when the operations is added to it by the
-		 * {@link module:engine/model/delta/delta~Delta#addOperation} method.
+		 * {@link module:engine/model/operation/operation~Operation Operation} which the operation is a part of. This property is set by the
+		 * {@link module:engine/model/operation/operation~Operation operation} when the operations is added to it by the
+		 * {@link module:engine/model/operation/operation~Operation#addOperation} method.
 		 *
-		 * @member {module:engine/model/delta/delta~Delta} #delta
+		 * @member {module:engine/model/operation/operation~Operation} #operation
 		 */
 
 		/**
@@ -97,15 +99,14 @@ export default class Operation {
 	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
 	 * @method #toJSON
-	 * @returns {Object} Clone of this object with the delta property replaced with string.
+	 * @returns {Object} Clone of this object with the operation property replaced with string.
 	 */
 	toJSON() {
 		const json = clone( this, true );
 
 		json.__className = this.constructor.className;
 
-		// Remove parent delta to avoid circular dependencies.
-		delete json.delta;
+		delete json.batch;
 
 		// Only document operations are shared with other clients so it is not necessary to keep this information.
 		delete json.isDocumentOperation;

@@ -22,7 +22,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				getSelectedContent( model, doc.selection );
-				expect( writer.batch.deltas ).to.length( 1 );
+				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
 

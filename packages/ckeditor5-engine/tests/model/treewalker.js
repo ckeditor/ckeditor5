@@ -16,7 +16,7 @@ describe( 'TreeWalker', () => {
 	let model, doc, root, img1, paragraph, ba, r, img2, x,
 		rootBeginning, rootEnding;
 
-	before( () => {
+	beforeEach( () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
@@ -153,7 +153,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range starts between elements', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'elementStart', item: paragraph },
 					{ type: 'text', data: 'ba', attrs: [ [ 'bold', true ] ] },
@@ -192,7 +192,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range starts inside the text', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
 					{ type: 'text', data: 'r', attrs: [] },
@@ -233,7 +233,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range ends inside the text', () => {
 			let expected, range;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementEnd', item: img1 },
@@ -325,7 +325,7 @@ describe( 'TreeWalker', () => {
 		describe( 'whole root', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementEnd', item: img1 },
@@ -371,7 +371,7 @@ describe( 'TreeWalker', () => {
 		describe( 'range', () => {
 			let start, end, range, expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] },
 					{ type: 'text', data: 'a', attrs: [ [ 'bold', true ] ] },
@@ -417,7 +417,7 @@ describe( 'TreeWalker', () => {
 	describe( 'iterate omitting child nodes and elementEnd `shallow`', () => {
 		let expected;
 
-		before( () => {
+		beforeEach( () => {
 			expected = [
 				{ type: 'elementStart', item: img1 },
 				{ type: 'elementStart', item: paragraph }
@@ -452,7 +452,7 @@ describe( 'TreeWalker', () => {
 		describe( 'merged text', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementStart', item: paragraph },
@@ -494,7 +494,7 @@ describe( 'TreeWalker', () => {
 		describe( 'single character', () => {
 			let expected;
 
-			before( () => {
+			beforeEach( () => {
 				expected = [
 					{ type: 'elementStart', item: img1 },
 					{ type: 'elementStart', item: paragraph },

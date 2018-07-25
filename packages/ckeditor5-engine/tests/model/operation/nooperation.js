@@ -5,7 +5,7 @@
 
 import Model from '../../../src/model/model';
 import NoOperation from '../../../src/model/operation/nooperation';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
 	let model, noop, doc;
@@ -17,7 +17,7 @@ describe( 'NoOperation', () => {
 	} );
 
 	it( 'should not throw an error when applied', () => {
-		expect( () => model.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
+		expect( () => model.applyOperation( noop ) ).to.not.throw( Error );
 	} );
 
 	it( 'should create a NoOperation as a reverse', () => {

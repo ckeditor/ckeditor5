@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Delta from '../../../src/model/delta/delta';
+import Batch from '../../../src/model/batch';
 import Operation from '../../../src/model/operation/operation';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
@@ -12,18 +12,6 @@ describe( 'Operation', () => {
 		const op = new Operation( 4 );
 
 		expect( op.baseVersion ).to.equal( 4 );
-	} );
-
-	it( 'should be correctly transformed to JSON', () => {
-		const delta = new Delta();
-		const opInDelta = new Operation( 0 );
-		delta.addOperation( opInDelta );
-
-		const opOutsideDelta = new Operation( 0 );
-
-		const parsedOutside = jsonParseStringify( opOutsideDelta );
-
-		expect( parsedOutside.delta ).to.be.undefined;
 	} );
 
 	describe( 'isDocumentOperation', () => {
@@ -41,8 +29,21 @@ describe( 'Operation', () => {
 	} );
 
 	describe( 'toJSON', () => {
-		it( 'should create proper json object', () => {
+		it( 'should create proper json object #1', () => {
 			const op = new Operation( 4 );
+
+			const serialized = jsonParseStringify( op );
+
+			expect( serialized ).to.deep.equal( {
+				__className: 'engine.model.operation.Operation',
+				baseVersion: 4
+			} );
+		} );
+
+		it( 'should create proper json object #1', () => {
+			const op = new Operation( 4 );
+			const batch = new Batch();
+			batch.addOperation( op );
 
 			const serialized = jsonParseStringify( op );
 

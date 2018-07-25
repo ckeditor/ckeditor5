@@ -48,6 +48,15 @@ export default class InsertOperation extends Operation {
 		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
 		 */
 		this.nodes = new NodeList( _normalizeNodes( nodes ) );
+
+		/**
+		 * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
+		 * during operational transformation. This happens, when operation insertion position points to inside a
+		 * range which attributes have changed.
+		 *
+		 * @member {Boolean} module:engine/model/operation/insertoperation~InsertOperation#shouldReceiveAttributes
+		 */
+		this.shouldReceiveAttributes = false;
 	}
 
 	/**
@@ -57,6 +66,10 @@ export default class InsertOperation extends Operation {
 		return 'insert';
 	}
 
+	get howMany() {
+		return this.nodes.maxOffset;
+	}
+
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
@@ -64,8 +77,11 @@ export default class InsertOperation extends Operation {
 	 */
 	clone() {
 		const nodes = new NodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
+		const insert = new InsertOperation( this.position, nodes, this.baseVersion );
 
-		return new InsertOperation( this.position, nodes, this.baseVersion );
+		insert.shouldReceiveAttributes = this.shouldReceiveAttributes;
+
+		return insert;
 	}
 
 	/**
@@ -139,6 +155,9 @@ export default class InsertOperation extends Operation {
 			}
 		}
 
-		return new InsertOperation( Position.fromJSON( json.position, document ), children, json.baseVersion );
+		const insert = new InsertOperation( Position.fromJSON( json.position, document ), children, json.baseVersion );
+		insert.shouldReceiveAttributes = json.shouldReceiveAttributes;
+
+		return insert;
 	}
 }

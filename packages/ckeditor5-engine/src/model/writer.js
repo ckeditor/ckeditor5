@@ -7,19 +7,6 @@
  * @module engine/model/writer
  */
 
-import AttributeDelta from './delta/attributedelta';
-import InsertDelta from './delta/insertdelta';
-import MarkerDelta from './delta/markerdelta';
-import MergeDelta from './delta/mergedelta';
-import MoveDelta from './delta/movedelta';
-import RemoveDelta from './delta/removedelta';
-import RenameDelta from './delta/renamedelta';
-import RootAttributeDelta from './delta/rootattributedelta';
-import SplitDelta from './delta/splitdelta';
-import UnwrapDelta from './delta/unwrapdelta';
-import WeakInsertDelta from './delta/weakinsertdelta';
-import WrapDelta from './delta/wrapdelta';
-
 import AttributeOperation from './operation/attributeoperation';
 import DetachOperation from './operation/detachoperation';
 import InsertOperation from './operation/insertoperation';
@@ -28,6 +15,10 @@ import MoveOperation from './operation/moveoperation';
 import RemoveOperation from './operation/removeoperation';
 import RenameOperation from './operation/renameoperation';
 import RootAttributeOperation from './operation/rootattributeoperation';
+import SplitOperation from './operation/splitoperation';
+import MergeOperation from './operation/mergeoperation';
+import WrapOperation from './operation/wrapoperation';
+import UnwrapOperation from './operation/unwrapoperation';
 
 import DocumentFragment from './documentfragment';
 import Text from './text';
@@ -166,9 +157,6 @@ export default class Writer {
 
 		const position = Position.createAt( itemOrPosition, offset );
 
-		// For text that has no parent we need to make a WeakInsert.
-		const delta = item instanceof Text && !item.parent ? new WeakInsertDelta() : new InsertDelta();
-
 		// If item has a parent already.
 		if ( item.parent ) {
 			// We need to check if item is going to be inserted within the same document.
@@ -195,8 +183,11 @@ export default class Writer {
 
 		const insert = new InsertOperation( position, item, version );
 
-		this.batch.addDelta( delta );
-		delta.addOperation( insert );
+		if ( item instanceof Text ) {
+			insert.shouldReceiveAttributes = true;
+		}
+
+		this.batch.addOperation( insert );
 		this.model.applyOperation( insert );
 
 		// When element is a DocumentFragment we need to move its markers to Document#markers.
@@ -346,7 +337,11 @@ export default class Writer {
 		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
-			setAttributeOnRange( this, key, value, itemOrRange );
+			const ranges = itemOrRange.getMinimalFlatRanges();
+
+			for ( const range of ranges ) {
+				setAttributeOnRange( this, key, value, range );
+			}
 		} else {
 			setAttributeOnItem( this, key, value, itemOrRange );
 		}
@@ -383,7 +378,11 @@ export default class Writer {
 		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
-			setAttributeOnRange( this, key, null, itemOrRange );
+			const ranges = itemOrRange.getMinimalFlatRanges();
+
+			for ( const range of ranges ) {
+				setAttributeOnRange( this, key, null, range );
+			}
 		} else {
 			setAttributeOnItem( this, key, null, itemOrRange );
 		}
@@ -473,13 +472,10 @@ export default class Writer {
 			throw new CKEditorError( 'writer-move-different-document: Range is going to be moved between different documents.' );
 		}
 
-		const delta = new MoveDelta();
-		this.batch.addDelta( delta );
-
 		const version = range.root.document ? range.root.document.version : null;
-
 		const operation = new MoveOperation( range.start, range.end.offset - range.start.offset, position, version );
-		delta.addOperation( operation );
+
+		this.batch.addOperation( operation );
 		this.model.applyOperation( operation );
 	}
 
@@ -491,24 +487,17 @@ export default class Writer {
 	remove( itemOrRange ) {
 		this._assertWriterUsedCorrectly();
 
-		const addRemoveDelta = ( position, howMany ) => {
-			const delta = new RemoveDelta();
-			this.batch.addDelta( delta );
-
-			applyRemoveOperation( position, howMany, delta, this.model );
-		};
-
 		if ( itemOrRange instanceof Range ) {
 			// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
 			const ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
 			for ( const flat of ranges ) {
-				addRemoveDelta( flat.start, flat.end.offset - flat.start.offset );
+				applyRemoveOperation( flat.start, flat.end.offset - flat.start.offset, this.batch, this.model );
 			}
 		} else {
 			const howMany = itemOrRange.is( 'text' ) ? itemOrRange.offsetSize : 1;
 
-			addRemoveDelta( Position.createBefore( itemOrRange ), howMany );
+			applyRemoveOperation( Position.createBefore( itemOrRange ), howMany, this.batch, this.model );
 		}
 	}
 
@@ -518,13 +507,10 @@ export default class Writer {
 	 * Node before and after the position have to be an element. Otherwise `writer-merge-no-element-before` or
 	 * `writer-merge-no-element-after` error will be thrown.
 	 *
-	 * @param {module:engine/model/position~Position} position Position of merge.
+	 * @param {module:engine/model/position~Position} position Position between merged elements.
 	 */
 	merge( position ) {
 		this._assertWriterUsedCorrectly();
-
-		const delta = new MergeDelta();
-		this.batch.addDelta( delta );
 
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
@@ -547,23 +533,45 @@ export default class Writer {
 			throw new CKEditorError( 'writer-merge-no-element-after: Node after merge position must be an element.' );
 		}
 
-		const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
-		const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
+		if ( !position.root.document ) {
+			this._mergeDetached( position );
+		} else {
+			this._merge( position );
+		}
+	}
 
-		const moveVersion = position.root.document ? position.root.document.version : null;
+	/**
+	 * Performs merge action in a detached tree.
+	 *
+	 * @private
+	 */
+	_mergeDetached( position ) {
+		const nodeBefore = position.nodeBefore;
+		const nodeAfter = position.nodeAfter;
 
-		const move = new MoveOperation(
-			positionAfter,
-			nodeAfter.maxOffset,
-			positionBefore,
-			moveVersion
-		);
+		this.move( Range.createIn( nodeAfter ), Position.createAt( nodeBefore, 'end' ) );
+		this.remove( nodeAfter );
+	}
 
-		move.isSticky = true;
-		delta.addOperation( move );
-		this.model.applyOperation( move );
+	/**
+	 * Performs merge action in a non-detached tree.
+	 *
+	 * @private
+	 * @param {module:engine/model/position~Position} position Position between merged elements.
+	 */
+	_merge( position ) {
+		const targetPosition = Position.createAt( position.nodeBefore, 'end' );
+		const sourcePosition = Position.createAt( position.nodeAfter, 0 );
 
-		applyRemoveOperation( position, 1, delta, this.model );
+		const graveyard = position.root.document.graveyard;
+		const graveyardPosition = new Position( graveyard, [ 0 ] );
+
+		const version = position.root.document.version;
+
+		const merge = new MergeOperation( sourcePosition, targetPosition, graveyardPosition, version );
+
+		this.batch.addOperation( merge );
+		this.model.applyOperation( merge );
 	}
 
 	/**
@@ -586,13 +594,10 @@ export default class Writer {
 			);
 		}
 
-		const delta = new RenameDelta();
-		this.batch.addDelta( delta );
-
 		const version = element.root.document ? element.root.document.version : null;
-
 		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, version );
-		delta.addOperation( renameOperation );
+
+		this.batch.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
 	}
 
@@ -639,41 +644,19 @@ export default class Writer {
 		let firstSplitElement, firstCopyElement;
 
 		do {
-			const delta = new SplitDelta();
-			this.batch.addDelta( delta );
+			const version = splitElement.root.document ? splitElement.root.document.version : null;
+			const split = new SplitOperation( position, null, version );
 
-			const copy = new Element( splitElement.name, splitElement.getAttributes() );
-			const insertVersion = splitElement.root.document ? splitElement.root.document.version : null;
-
-			const insert = new InsertOperation(
-				Position.createAfter( splitElement ),
-				copy,
-				insertVersion
-			);
-
-			delta.addOperation( insert );
-			this.model.applyOperation( insert );
-
-			const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
-
-			const move = new MoveOperation(
-				position,
-				splitElement.maxOffset - position.offset,
-				Position.createFromParentAndOffset( copy, 0 ),
-				moveVersion
-			);
-			move.isSticky = true;
-
-			delta.addOperation( move );
-			this.model.applyOperation( move );
+			this.batch.addOperation( split );
+			this.model.applyOperation( split );
 
 			// Cache result of the first split.
 			if ( !firstSplitElement && !firstCopyElement ) {
 				firstSplitElement = splitElement;
-				firstCopyElement = copy;
+				firstCopyElement = position.parent.nextSibling;
 			}
 
-			position = Position.createBefore( copy );
+			position = Position.createAfter( position.parent );
 			splitElement = position.parent;
 		} while ( splitElement !== limitElement );
 
@@ -724,26 +707,11 @@ export default class Writer {
 			throw new CKEditorError( 'writer-wrap-element-attached: Element to wrap with is already attached to tree model.' );
 		}
 
-		const delta = new WrapDelta();
-		this.batch.addDelta( delta );
+		const version = range.root.document ? range.root.document.version : null;
+		const wrap = new WrapOperation( range.start, range.end.offset - range.start.offset, element, version );
 
-		const insertVersion = range.root.document ? range.root.document.version : null;
-
-		const insert = new InsertOperation( range.end, element, insertVersion );
-		delta.addOperation( insert );
-		this.model.applyOperation( insert );
-
-		const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
-
-		const targetPosition = Position.createFromParentAndOffset( element, 0 );
-		const move = new MoveOperation(
-			range.start,
-			range.end.offset - range.start.offset,
-			targetPosition,
-			moveVersion
-		);
-		delta.addOperation( move );
-		this.model.applyOperation( move );
+		this.batch.addOperation( wrap );
+		this.model.applyOperation( wrap );
 	}
 
 	/**
@@ -764,24 +732,41 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 		}
 
-		const delta = new UnwrapDelta();
-		this.batch.addDelta( delta );
+		if ( !element.root.document ) {
+			this._unwrapDetached( element );
+		} else {
+			this._unwrap( element );
+		}
+	}
 
-		const sourcePosition = Position.createFromParentAndOffset( element, 0 );
-		const moveVersion = sourcePosition.root.document ? sourcePosition.root.document.version : null;
+	/**
+	 * Performs unwrap action in a detached tree.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} element Element to unwrap.
+	 */
+	_unwrapDetached( element ) {
+		this.move( Range.createIn( element ), Position.createAfter( element ) );
+		this.remove( element );
+	}
 
-		const move = new MoveOperation(
-			sourcePosition,
-			element.maxOffset,
-			Position.createBefore( element ),
-			moveVersion
-		);
+	/**
+	 * Performs unwrap action in a non-detached tree.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} element Element to unwrap.
+	 */
+	_unwrap( element ) {
+		const position = Position.createAt( element, 0 );
+		const version = position.root.document.version;
 
-		move.isSticky = true;
-		delta.addOperation( move );
-		this.model.applyOperation( move );
+		const graveyard = position.root.document.graveyard;
+		const graveyardPosition = new Position( graveyard, [ 0 ] );
 
-		applyRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
+		const unwrap = new UnwrapOperation( position, element.maxOffset, graveyardPosition, version );
+
+		this.batch.addOperation( unwrap );
+		this.model.applyOperation( unwrap );
 	}
 
 	/**
@@ -1243,7 +1228,6 @@ export default class Writer {
 // @param {*} value Attribute new value.
 // @param {module:engine/model/range~Range} range Model range on which the attribute will be set.
 function setAttributeOnRange( writer, key, value, range ) {
-	const delta = new AttributeDelta();
 	const model = writer.model;
 	const doc = model.document;
 
@@ -1260,7 +1244,7 @@ function setAttributeOnRange( writer, key, value, range ) {
 	// Value after the currently position.
 	let valueAfter;
 
-	for ( const val of range ) {
+	for ( const val of range.getWalker( { shallow: true } ) ) {
 		valueAfter = val.item.getAttribute( key );
 
 		// At the first run of the iterator the position in undefined. We also do not have a valueBefore, but
@@ -1285,16 +1269,11 @@ function setAttributeOnRange( writer, key, value, range ) {
 	}
 
 	function addOperation() {
-		// Add delta to the batch only if there is at least operation in the delta. Add delta only once.
-		if ( delta.operations.length === 0 ) {
-			writer.batch.addDelta( delta );
-		}
-
 		const range = new Range( lastSplitPosition, position );
 		const version = range.root.document ? doc.version : null;
 		const operation = new AttributeOperation( range, key, valueBefore, value, version );
 
-		delta.addOperation( operation );
+		writer.batch.addOperation( operation );
 		model.applyOperation( operation );
 	}
 }
@@ -1315,37 +1294,25 @@ function setAttributeOnItem( writer, key, value, item ) {
 	if ( previousValue != value ) {
 		const isRootChanged = item.root === item;
 
-		const delta = isRootChanged ? new RootAttributeDelta() : new AttributeDelta();
-		writer.batch.addDelta( delta );
-
 		if ( isRootChanged ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
 			const version = item.document ? doc.version : null;
 
 			operation = new RootAttributeOperation( item, key, previousValue, value, version );
 		} else {
-			if ( item.is( 'element' ) ) {
-				// If we change the attribute of the element, we do not want to change attributes of its children, so
-				// the end of the range cannot be after the closing tag, it should be inside that element, before any of
-				// it's children, so the range will contain only the opening tag.
-				range = new Range( Position.createBefore( item ), Position.createFromParentAndOffset( item, 0 ) );
-			} else {
-				// If `item` is text proxy, we create a range from the beginning to the end of that text proxy, to change
-				// all characters represented by it.
-				range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
-			}
+			range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 
 			operation = new AttributeOperation( range, key, previousValue, value, version );
 		}
 
-		delta.addOperation( operation );
+		writer.batch.addOperation( operation );
 		model.applyOperation( operation );
 	}
 }
 
-// Creates and applies marker operation to {@link module:engine/model/delta/delta~Delta delta}.
+// Creates and applies marker operation to {@link module:engine/model/operation/operation~Operation operation}.
 //
 // @private
 // @param {module:engine/model/writer~Writer} writer
@@ -1356,24 +1323,22 @@ function setAttributeOnItem( writer, key, value, item ) {
 function applyMarkerOperation( writer, name, oldRange, newRange, affectsData ) {
 	const model = writer.model;
 	const doc = model.document;
-	const delta = new MarkerDelta();
 
 	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version, affectsData );
 
-	writer.batch.addDelta( delta );
-	delta.addOperation( operation );
+	writer.batch.addOperation( operation );
 	model.applyOperation( operation );
 }
 
 // Creates `RemoveOperation` or `DetachOperation` that removes `howMany` nodes starting from `position`.
-// The operation will be applied on given model instance and added to given delta instance.
+// The operation will be applied on given model instance and added to given operation instance.
 //
 // @private
 // @param {module:engine/model/position~Position} position Position from which nodes are removed.
 // @param {Number} howMany Number of nodes to remove.
-// @param {module:engine/model/delta~Delta} delta Delta to add new operation to.
+// @param {Batch} batch
 // @param {module:engine/model/model~Model} model Model instance on which operation will be applied.
-function applyRemoveOperation( position, howMany, delta, model ) {
+function applyRemoveOperation( position, howMany, batch, model ) {
 	let operation;
 
 	if ( position.root.document ) {
@@ -1385,7 +1350,7 @@ function applyRemoveOperation( position, howMany, delta, model ) {
 		operation = new DetachOperation( position, howMany );
 	}
 
-	delta.addOperation( operation );
+	batch.addOperation( operation );
 	model.applyOperation( operation );
 }
 
