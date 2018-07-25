@@ -230,9 +230,9 @@ describe( 'FontCommand', () => {
 			setData( model, '<paragraph>a[bc<$text font="foo">fo]obar</$text>xyz</paragraph>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).to.equal( 0 );
 				command.execute( { value: 'foo' } );
-				expect( writer.batch.deltas.length ).to.equal( 1 );
+				expect( writer.batch.operations.length ).to.equal( 1 );
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>a[<$text font="foo">bcfo]obar</$text>xyz</paragraph>' );
