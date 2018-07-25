@@ -159,11 +159,11 @@ describe( 'ParagraphCommand', () => {
 			setData( model, '<paragraph>foo[</paragraph><heading1>bar]</heading1>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas.length ).to.equal( 0 );
+				expect( writer.batch.operations.length ).to.equal( 0 );
 
 				command.execute();
 
-				expect( writer.batch.deltas.length ).to.equal( 1 );
+				expect( writer.batch.operations.length ).to.equal( 1 );
 			} );
 		} );
 
@@ -172,11 +172,11 @@ describe( 'ParagraphCommand', () => {
 				setData( model, '<heading1>foo[]bar</heading1>' );
 
 				model.change( writer => {
-					expect( writer.batch.deltas.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).to.equal( 0 );
 
 					command.execute();
 
-					expect( writer.batch.deltas.length ).to.above( 0 );
+					expect( writer.batch.operations.length ).to.above( 0 );
 				} );
 			} );
 
