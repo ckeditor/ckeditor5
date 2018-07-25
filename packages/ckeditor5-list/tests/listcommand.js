@@ -127,11 +127,11 @@ describe( 'ListCommand', () => {
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
 				model.change( writer => {
-					expect( writer.batch.deltas.length ).to.equal( 0 );
+					expect( writer.batch.operations.length ).to.equal( 0 );
 
 					command.execute();
 
-					expect( writer.batch.deltas.length ).to.be.above( 0 );
+					expect( writer.batch.operations.length ).to.be.above( 0 );
 				} );
 			} );
 
