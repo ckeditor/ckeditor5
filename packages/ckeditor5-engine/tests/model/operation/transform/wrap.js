@@ -72,7 +72,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients( '<paragraph><div>Foo</div></pragraph>');
+				expectClients( '<paragraph><div>Foo</div></pragraph>' );
 			} );
 
 			it.skip( 'intersecting wrap, then undo #1', () => {
@@ -110,7 +110,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients( '<paragraph><div>Foo</div></pragraph>');
+				expectClients( '<paragraph><div>Foo</div></pragraph>' );
 			} );
 
 			it( 'element and text', () => {
