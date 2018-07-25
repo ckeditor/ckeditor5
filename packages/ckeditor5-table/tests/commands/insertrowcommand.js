@@ -50,7 +50,9 @@ describe( 'InsertRowCommand', () => {
 					isLimit: true
 				} );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				schema.extend( '$block', { allowIn: 'tableCell' } );
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 				// Table conversion.
 				conversion.for( 'upcast' ).add( upcastTable() );
@@ -88,7 +90,7 @@ describe( 'InsertRowCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<p>foo[]</p>' );
+				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
@@ -111,6 +113,23 @@ describe( 'InsertRowCommand', () => {
 					[ '00[]', '01' ],
 					[ '', '' ],
 					[ '10', '11' ]
+				] ) );
+			} );
+
+			it( 'should insert row after current position (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>[]10</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00' ],
+					[ '<paragraph>[]10</paragraph>' ],
+					[ '' ],
+					[ '20' ]
 				] ) );
 			} );
 
@@ -223,7 +242,7 @@ describe( 'InsertRowCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
-				setData( model, '<p>foo[]</p>' );
+				setData( model, '<paragraph>foo[]</paragraph>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 
@@ -234,6 +253,23 @@ describe( 'InsertRowCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
+			it( 'should insert row before current position (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>[]10</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00' ],
+					[ '' ],
+					[ '<paragraph>[]10</paragraph>' ],
+					[ '20' ]
+				] ) );
+			} );
+
 			it( 'should insert row at the beginning of a table', () => {
 				setData( model, modelTable( [
 					[ '00[]', '01' ],
