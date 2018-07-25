@@ -5,8 +5,6 @@
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Model from '../../src/model/model';
-import NoOperation from '../../src/model/operation/nooperation';
-import transform from '../../src/model/operation/transform';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelSelection from '../../src/model/selection';

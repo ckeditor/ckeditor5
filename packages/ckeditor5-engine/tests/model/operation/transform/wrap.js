@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -228,7 +228,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>')
+				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
 
 				john.undo();
 				kate.undo();

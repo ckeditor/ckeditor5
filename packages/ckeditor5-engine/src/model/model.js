@@ -14,7 +14,6 @@ import Document from './document';
 import MarkerCollection from './markercollection';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import transform from './operation/transform';
 import ModelElement from './element';
 import ModelRange from './range';
 

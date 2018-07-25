@@ -33,8 +33,7 @@ function getTransformation( a, b ) {
 	const OperationB = b.constructor;
 
 	const aGroups = new Set();
-
-	let aGroup = transformations.get( OperationA );
+	const aGroup = transformations.get( OperationA );
 
 	if ( aGroup ) {
 		aGroups.add( aGroup );
@@ -939,9 +938,9 @@ setTransformation( MergeOperation, UnwrapOperation, ( a, b, context ) => {
 	if ( a.sourcePosition.isEqual( b.position ) ) {
 		const path = b.graveyardPosition.path.slice();
 		path.push( 0 );
-		
+
 		a.sourcePosition = new Position( b.graveyardPosition.root, path );
-		
+
 		return [ a ];
 	}
 
@@ -1351,7 +1350,6 @@ setTransformation( RenameOperation, SplitOperation, ( a, b ) => {
 
 	return [ a ];
 } );
-
 
 setTransformation( RenameOperation, WrapOperation, ( a, b ) => {
 	a.position = a.position._getTransformedByWrapOperation( b );
@@ -1814,7 +1812,7 @@ setTransformation( UnwrapOperation, SplitOperation, ( a, b ) => {
 	//			`howMany` property because it wouldn't be correctly calculated by `_getTransformedBySplitOperation`.
 	//
 	if ( b.insertionPosition.isEqual( a.position.getShiftedBy( a.howMany ) ) ) {
-		a.howMany ++;
+		a.howMany++;
 
 		return [ a ];
 	}

@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -25,7 +25,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expect( '<paragraph>Fr</paragraph>' );
+				expectClients( '<paragraph>Fr</paragraph>' );
 			} );
 
 			it( 'text from three elements', () => {
@@ -37,7 +37,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expect( '<paragraph>Fobc</paragraph>' );
+				expectClients( '<paragraph>Fobc</paragraph>' );
 			} );
 		} );
 	} );

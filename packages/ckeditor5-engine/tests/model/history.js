@@ -6,8 +6,6 @@
 import History from '../../src/model/history';
 import Operation from '../../src/model/operation/operation';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 describe( 'History', () => {
 	let history;
 

@@ -4,7 +4,6 @@
  */
 
 import Model from '../../../src/model/model';
-import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 import Position from '../../../src/model/position';

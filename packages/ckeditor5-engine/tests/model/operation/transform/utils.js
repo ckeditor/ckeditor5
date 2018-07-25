@@ -1,17 +1,19 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
-import { getData, setData, parse } from '../../../../src/dev-utils/model';
+import { getData, parse } from '../../../../src/dev-utils/model';
 import transform from '../../../../src/model/operation/transform';
 import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 import OperationFactory from '../../../../src/model/operation/operationfactory';
+
+const clients = new Set();
+const bufferedOperations = new Set();
 
 export class Client {
 	constructor( name ) {
@@ -245,9 +247,6 @@ export class Client {
 		return client.init();
 	}
 }
-
-const clients = new Set();
-const bufferedOperations = new Set();
 
 function bufferOperations( operations, client ) {
 	bufferedOperations.add( { operations: operations.map( operation => JSON.stringify( operation ) ), client } );

@@ -671,7 +671,6 @@ describe( 'transform', () => {
 
 				expect( transOp.length ).to.equal( 3 );
 
-
 				expected.range.start.path = [ 0, 2, 0 ];
 				expected.range.end.path = [ 0, 2, 1 ];
 

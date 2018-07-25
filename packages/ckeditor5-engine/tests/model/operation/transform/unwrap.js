@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -17,11 +17,15 @@ describe( 'transform', () => {
 	describe( 'unwrap', () => {
 		describe( 'by unwrap', () => {
 			it( 'element in different path', () => {
-				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' +
-							  '<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				john.setData(
+					'<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' +
+					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+				);
 
-				kate.setData( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-							  '<blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>'
+				);
 
 				john.unwrap();
 				kate.unwrap();
@@ -133,4 +137,4 @@ describe( 'transform', () => {
 			} );
 		} );
 	} );
-} ) ;
+} );

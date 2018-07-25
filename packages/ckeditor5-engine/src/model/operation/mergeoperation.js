@@ -11,7 +11,7 @@ import Operation from './operation';
 import SplitOperation from './splitoperation';
 import Position from '../position';
 import Range from '../range';
-import { _remove, _move } from './utils';
+import { _move } from './utils';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 

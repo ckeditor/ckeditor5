@@ -16,7 +16,6 @@ import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import Node from '../../../src/model/node';
 import TextProxy from '../../../src/model/textproxy';
-import Operation from '../../../src/model/operation/operation';
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;

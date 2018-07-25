@@ -469,7 +469,6 @@ export default class Range {
 		return this.start.getCommonAncestor( this.end );
 	}
 
-
 	_getTransformedByInsertOperation( operation, spread = false ) {
 		return this._getTransformedByInsertion( operation.position, operation.howMany, spread );
 	}

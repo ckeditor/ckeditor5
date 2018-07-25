@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -376,7 +376,7 @@ describe( 'transform', () => {
 				john.setData( '<paragraph>Foo[]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
-				john.type( ' Bar')
+				john.type( ' Bar' );
 				kate.wrap( 'blockQuote' );
 
 				syncClients();

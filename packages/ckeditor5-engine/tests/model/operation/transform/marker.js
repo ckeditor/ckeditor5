@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -273,7 +273,7 @@ describe( 'transform', () => {
 						'<m1:start></m1:start>Foo<m1:end></m1:end> ' +
 						'<m2:start></m2:start>Bar<m2:end></m2:end>Abc' +
 					'</paragraph>'
-				)
+				);
 			} );
 
 			it( 'then split text in same path', () => {
@@ -635,7 +635,7 @@ describe( 'transform', () => {
 				kate.setData( '<paragraph>Fo[]o</paragraph>' );
 
 				john.setMarker( 'm1' );
-				kate.split()
+				kate.split();
 
 				syncClients();
 

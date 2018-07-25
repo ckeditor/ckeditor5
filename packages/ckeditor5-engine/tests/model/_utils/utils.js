@@ -7,7 +7,6 @@ import Range from '../../../src/model/range';
 import TreeWalker from '../../../src/model/treewalker';
 import Text from '../../../src/model/text';
 import TextProxy from '../../../src/model/textproxy';
-import Batch from '../../../src/model/batch';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.

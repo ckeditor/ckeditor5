@@ -22,10 +22,6 @@ import DetachOperation from '../model/operation/detachoperation';
 import InsertOperation from '../model/operation/insertoperation';
 import MarkerOperation from '../model/operation/markeroperation';
 import MoveOperation from '../model/operation/moveoperation';
-import MergeOperation from '../model/operation/mergeoperation';
-import SplitOperation from '../model/operation/splitoperation';
-import WrapOperation from '../model/operation/wrapoperation';
-import UnwrapOperation from '../model/operation/unwrapoperation';
 import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
@@ -356,7 +352,6 @@ function enableLoggingTools() {
 	const _transformTransform = transform.transform;
 
 	sandbox.mock( transform, 'transform', function( a, b, context ) {
-		debugger;
 		let results;
 
 		try {

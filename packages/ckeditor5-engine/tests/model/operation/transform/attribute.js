@@ -5,8 +5,8 @@ describe( 'transform', () => {
 
 	beforeEach( () => {
 		return Promise.all( [
-			Client.get( 'john' ).then( client => john = client ),
-			Client.get( 'kate' ).then( client => kate = client )
+			Client.get( 'john' ).then( client => ( john = client ) ),
+			Client.get( 'kate' ).then( client => ( kate = client ) )
 		] );
 	} );
 
@@ -718,7 +718,7 @@ describe( 'transform', () => {
 					'<paragraph bold="true">' +
 						'Foo <m1:start></m1:start>Bar<m1:end></m1:end>' +
 					'</paragraph>'
-				 );
+				);
 			} );
 
 			it( 'in text in different path', () => {
@@ -763,7 +763,9 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients(
-					'<paragraph>F<$text bold="true">oo </$text><m1:start></m1:start><$text bold="true">Ba</$text>r<m1:end></m1:end></paragraph>'
+					'<paragraph>' +
+						'F<$text bold="true">oo </$text><m1:start></m1:start><$text bold="true">Ba</$text>r<m1:end></m1:end>' +
+					'</paragraph>'
 				);
 			} );
 
