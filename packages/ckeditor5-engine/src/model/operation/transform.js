@@ -124,8 +124,6 @@ function transformSets( operationsA, operationsB, options ) {
 					if ( options.useContext ) {
 						updateOriginalOperation( context, opA, newOpA );
 						updateOriginalOperation( context, opB, newOpB );
-
-						updateRelations( context, opA, opB );
 					}
 
 					opsA.splice( k, 1, ...newOpA );
@@ -178,7 +176,6 @@ function initializeContext( opsA, opsB, options ) {
 	}
 
 	context.document = options.document;
-	context.relations = new Map();
 
 	context.wasUndone = function( op ) {
 		if ( !options.useContext ) {
@@ -190,148 +187,7 @@ function initializeContext( opsA, opsB, options ) {
 		return this.document.history.isUndoneOperation( originalOp );
 	};
 
-	context.getRelation = function( opA, opB ) {
-		if ( !options.useContext ) {
-			return null;
-		}
-
-		const origB = this.originalOperations.get( opB );
-		const undoneB = this.document.history.getUndoneOperation( origB );
-
-		if ( !undoneB ) {
-			return null;
-		}
-
-		const origA = this.originalOperations.get( opA );
-		const relationsA = this.relations.get( origA );
-
-		if ( relationsA ) {
-			return relationsA.get( undoneB ) || null;
-		}
-
-		return null;
-	};
-
 	return context;
-}
-
-function updateRelations( context, opA, opB ) {
-	switch ( opA.constructor ) {
-		case MoveOperation:
-		case RemoveOperation:
-		case ReinsertOperation: {
-			switch ( opB.constructor ) {
-				case MergeOperation: {
-					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
-						setRelation( context, opA, opB, 'insertAtSource' );
-						setRelation( context, opB, opA, 'insertAtSource' );
-					}
-
-					break;
-				}
-
-				case MoveOperation: {
-					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'insertBefore' );
-						setRelation( context, opB, opA, 'insertAfter' );
-					}
-
-					break;
-				}
-
-				case UnwrapOperation: {
-					if ( opA.targetPosition.isEqual( opB.unwrappedRange.start ) || opA.targetPosition.isEqual( opB.unwrappedRange.end ) ) {
-						setRelation( context, opA, opB, 'insertInside' );
-						setRelation( context, opB, opA, 'insertInside' );
-					}
-
-					break;
-				}
-			}
-
-			break;
-		}
-
-		case SplitOperation: {
-			switch ( opB.constructor ) {
-				case MergeOperation: {
-					if ( opA.position.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'splitBefore' );
-						setRelation( context, opB, opA, 'splitBefore' );
-					}
-
-					break;
-				}
-
-				case MoveOperation: {
-					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'splitBefore' );
-						setRelation( context, opB, opA, 'splitBefore' );
-					}
-
-					break;
-				}
-
-				case UnwrapOperation: {
-					if ( opA.position.isEqual( opB.unwrappedRange.start ) || opA.position.isEqual( opB.unwrappedRange.end ) ) {
-						setRelation( context, opA, opB, 'splitInside' );
-						setRelation( context, opB, opA, 'splitInside' );
-					}
-
-					break;
-				}
-			}
-
-			break;
-		}
-
-		case InsertOperation: {
-			switch ( opB.constructor ) {
-				case MergeOperation: {
-					if ( opA.position.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.position ) ) {
-						setRelation( context, opA, opB, 'insertAtSource' );
-						setRelation( context, opB, opA, 'insertAtSource' );
-					}
-
-					break;
-				}
-
-				case MoveOperation: {
-					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'insertBefore' );
-						setRelation( context, opB, opA, 'insertAfter' );
-					}
-
-					break;
-				}
-
-				case UnwrapOperation: {
-					if ( opA.position.isEqual( opB.unwrappedRange.start ) || opA.position.isEqual( opB.unwrappedRange.end ) ) {
-						setRelation( context, opA, opB, 'insertInside' );
-						setRelation( context, opB, opA, 'insertInside' );
-					}
-
-					break;
-				}
-			}
-
-			break;
-		}
-	}
-}
-
-function setRelation( context, opA, opB, relation ) {
-	const origA = context.originalOperations.get( opA );
-	const origB = context.originalOperations.get( opB );
-
-	let relationsA = context.relations.get( origA );
-
-	if ( !relationsA ) {
-		relationsA = new Map();
-		context.relations.set( origA, relationsA );
-	}
-
-	relationsA.set( origB, relation );
 }
 
 function updateOriginalOperation( context, oldOp, newOps ) {
