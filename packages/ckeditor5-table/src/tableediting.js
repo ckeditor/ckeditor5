@@ -31,7 +31,7 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { getParentTable } from './commands/utils';
+import { getParentElement, getParentTable } from './commands/utils';
 import TableUtils from './tableutils';
 
 import '../theme/tableediting.css';
@@ -199,7 +199,9 @@ export default class TableEditing extends Plugin {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		const table = getParentTable( selection.getFirstPosition() );
+		const firstPosition = selection.getFirstPosition();
+
+		const table = getParentTable( firstPosition );
 
 		if ( !table ) {
 			return;
@@ -208,7 +210,7 @@ export default class TableEditing extends Plugin {
 		domEventData.preventDefault();
 		domEventData.stopPropagation();
 
-		const tableCell = selection.focus.parent;
+		const tableCell = getParentElement( 'tableCell', firstPosition );
 		const tableRow = tableCell.parent;
 
 		const currentRowIndex = table.getChildIndex( tableRow );

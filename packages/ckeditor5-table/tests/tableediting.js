@@ -274,6 +274,18 @@ describe( 'TableEditing', () => {
 				] ) );
 			} );
 
+			it( 'should move to the next table cell if part of block content is selected', () => {
+				setModelData( model, modelTable( [
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>', '[13]' ],
+				] ) );
+			} );
+
 			describe( 'on table widget selected', () => {
 				beforeEach( () => {
 					editor.model.schema.register( 'block', {
@@ -386,6 +398,18 @@ describe( 'TableEditing', () => {
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '[12]' ],
 					[ '21', '22' ]
+				] ) );
+			} );
+
+			it( 'should move to the previous table cell if part of block content is selected', () => {
+				setModelData( model, modelTable( [
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '[11]', '<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>', '13' ],
 				] ) );
 			} );
 		} );
