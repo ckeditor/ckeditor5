@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import upcastTable from './converters/upcasttable';
@@ -132,6 +133,8 @@ export default class TableEditing extends Plugin {
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
+		// Add listener to 'enter' key pressed inside table cell.
+		this.listenTo( editor.editing.view.document, 'enter', ( ...args ) => this._handleEnterInsideTable( ...args ) );
 	}
 
 	/**
@@ -247,6 +250,47 @@ export default class TableEditing extends Plugin {
 
 		editor.model.change( writer => {
 			writer.setSelection( Range.createIn( cellToFocus ) );
+		} );
+	}
+
+	/**
+	 * Handles {@link module:engine/view/document~Document#event:enter keydown} events for the <kbd>Enter</kbd> key executed inside table
+	 * cell.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} evt
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data
+	 */
+	_handleEnterInsideTable( evt, data ) {
+		// Do not act on SHIFT-ENTER.
+		if ( data.isSoft ) {
+			return;
+		}
+
+		const editor = this.editor;
+
+		const position = editor.model.document.selection.getFirstPosition();
+		const parent = position.parent;
+
+		// Either the selection is not inside a table or it is in a table cell that has already a block content.
+		if ( parent.name != 'tableCell' || ( !parent.getChild( 0 ) || !parent.getChild( 0 ).is( 'text' ) ) ) {
+			return;
+		}
+
+		data.preventDefault();
+		// Stop the event to prevent default enter event listener.
+		evt.stop();
+
+		editor.model.change( writer => {
+			// Wrap $text from table cell in paragraph.
+			writer.wrap( Range.createIn( parent ), 'paragraph' );
+
+			// Enforce selection to be inside newly created paragraph as consequent 'enter' keys would create nested paragraphs otherwise.
+			const positionInParagraph = Position.createFromParentAndOffset( parent.getChild( 0 ), position.offset );
+			writer.setSelection( positionInParagraph );
+
+			// Execute 'enter' command.
+			editor.execute( 'enter' );
 		} );
 	}
 }

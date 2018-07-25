@@ -390,4 +390,93 @@ describe( 'TableEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'enter key', () => {
+		let evtDataStub, viewDocument;
+
+		beforeEach( () => {
+			evtDataStub = {
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy(),
+				isSoft: false
+			};
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ TableEditing, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					sinon.stub( editor, 'execute' );
+
+					viewDocument = editor.editing.view.document;
+					model = editor.model;
+				} );
+		} );
+
+		it( 'should do nothing if not in table cell', () => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		} );
+
+		it( 'should do nothing if table cell has already a block content', () => {
+			setModelData( model, modelTable( [
+				[ '<paragraph>[]11</paragraph>' ]
+			] ) );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '<paragraph>[]11</paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should do nothing if table cell with a block content is selected as a whole', () => {
+			setModelData( model, modelTable( [
+				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
+			] ) );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			setModelData( model, modelTable( [
+				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should allow default behavior of Shift+Enter pressed', () => {
+			setModelData( model, modelTable( [
+				[ '[]11' ]
+			] ) );
+
+			evtDataStub.isSoft = true;
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]11' ]
+			] ) );
+		} );
+
+		it( 'should wrap table cell in paragraph and set selection', () => {
+			setModelData( model, modelTable( [
+				[ '[]11' ]
+			] ) );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'enter' );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '<paragraph>[]11</paragraph>' ]
+			] ) );
+		} );
+	} );
 } );
