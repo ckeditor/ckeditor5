@@ -14,7 +14,7 @@ import RedoCommand from './redocommand';
 /**
  * The undo engine feature.
  *
- * Undo brings in possibility to undo and redo changes done in the model by deltas through
+ * Undo brings in possibility to undo and redo changes done in the model by operations through
  * the {@link module:engine/model/writer~Writer Writer API}.
  *
  * @extends module:core/plugin~Plugin
@@ -77,7 +77,7 @@ export default class UndoEditing extends Plugin {
 				return;
 			}
 
-			const batch = operation.delta.batch;
+			const batch = operation.batch;
 
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.
 			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {

@@ -33,14 +33,14 @@ export default class RedoCommand extends BaseCommand {
 		const item = this._stack.pop();
 		const redoingBatch = new Batch();
 
-		// All changes have to be done in one `enqueueChange` callback so other listeners will not
-		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
+		// All changes have to be done in one `enqueueChange` callback so other listeners will not step between consecutive
+		// operations, or won't do changes to the document before selection is properly restored.
 		this.editor.model.enqueueChange( redoingBatch, () => {
-			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
-			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
-			const deltas = this.editor.model.document.history.getDeltas( nextBaseVersion );
+			const lastOperation = item.batch.operations[ item.batch.operations.length - 1 ];
+			const nextBaseVersion = lastOperation.baseVersion + 1;
+			const operations = this.editor.model.document.history.getOperations( nextBaseVersion );
 
-			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
+			this._restoreSelection( item.selection.ranges, item.selection.isBackward, operations );
 			this._undo( item.batch, redoingBatch );
 		} );
 
