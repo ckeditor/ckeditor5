@@ -82,7 +82,8 @@ export default class BaseCommand extends Command {
 	 * @protected
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be restored.
 	 * @param {Boolean} isBackward A flag describing whether the restored range was selected forward or backward.
-	 * @param {Array.<module:engine/model/operation/operation~Operation>} operations Operations which has been applied since selection has been stored.
+	 * @param {Array.<module:engine/model/operation/operation~Operation>} operations Operations which has been applied
+	 * since selection has been stored.
 	 */
 	_restoreSelection( ranges, isBackward, operations ) {
 		const model = this.editor.model;

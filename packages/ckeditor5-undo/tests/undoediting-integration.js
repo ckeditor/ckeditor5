@@ -9,7 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoEditing from '../src/undoediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
