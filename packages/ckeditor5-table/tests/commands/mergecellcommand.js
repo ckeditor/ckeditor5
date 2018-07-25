@@ -51,7 +51,9 @@ describe( 'MergeCellCommand', () => {
 					isLimit: true
 				} );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				schema.extend( '$block', { allowIn: 'tableCell' } );
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
 				// Table conversion.
 				conversion.for( 'upcast' ).add( upcastTable() );
@@ -139,7 +141,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -152,6 +154,14 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable sibling if in cell that has sibling on the right (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00', '<paragraph>[]01</paragraph>', '02' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 2 ] ) );
 			} );
 
 			it( 'should be undefined if last cell of a row', () => {
@@ -179,14 +189,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '[]00', '01' ]
 				] ) );
@@ -257,7 +267,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -267,6 +277,14 @@ describe( 'MergeCellCommand', () => {
 			it( 'should be set to mergeable sibling if in cell that has sibling on the left', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			} );
+
+			it( 'should be set to mergeable sibling if in cell that has sibling on the left (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00', '<paragraph>01[]</paragraph>', '02' ]
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -297,14 +315,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '[]01' ]
 				] ) );
@@ -361,7 +379,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -384,6 +402,16 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable cell (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>10[]</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 2, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in last row', () => {
@@ -414,14 +442,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ],
 					[ '10', '11' ]
@@ -514,7 +542,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -537,6 +565,16 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable cell (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>10[]</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in first row', () => {
@@ -578,7 +616,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );

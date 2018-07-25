@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
-import { updateNumericAttribute } from './utils';
+import { getParentElement, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
 
 /**
@@ -83,7 +83,7 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = doc.selection.getFirstPosition().parent;
+		const tableCell = getParentElement( 'tableCell', doc.selection.getFirstPosition() );
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
@@ -125,9 +125,9 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const element = doc.selection.getFirstPosition().parent;
+		const tableCell = getParentElement( 'tableCell', doc.selection.getFirstPosition() );
 
-		if ( !element.is( 'tableCell' ) ) {
+		if ( !tableCell ) {
 			return;
 		}
 
@@ -135,8 +135,8 @@ export default class MergeCellCommand extends Command {
 
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?
-			getHorizontalCell( element, this.direction, tableUtils ) :
-			getVerticalCell( element, this.direction );
+			getHorizontalCell( tableCell, this.direction, tableUtils ) :
+			getVerticalCell( tableCell, this.direction );
 
 		if ( !cellToMerge ) {
 			return;
@@ -144,7 +144,7 @@ export default class MergeCellCommand extends Command {
 
 		// If found check if the span perpendicular to merge direction is equal on both cells.
 		const spanAttribute = this.isHorizontal ? 'rowspan' : 'colspan';
-		const span = parseInt( element.getAttribute( spanAttribute ) || 1 );
+		const span = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
 
 		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
