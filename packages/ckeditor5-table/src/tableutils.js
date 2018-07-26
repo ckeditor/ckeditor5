@@ -480,7 +480,7 @@ export default class TableUtils extends Plugin {
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
 						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
 
-						writer.insertElement( 'tableCell', newCellsAttributes, position );
+						createCells( 1, writer, position, newCellsAttributes );
 					}
 				}
 			}
@@ -569,7 +569,9 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 // @param {module:engine/model/position~Position} insertPosition
 function createCells( cells, writer, insertPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
-		writer.insertElement( 'tableCell', attributes, insertPosition );
+		const tableCell = writer.createElement( 'tableCell', attributes );
+		writer.insert( tableCell, insertPosition );
+		writer.insertElement( 'paragraph', Position.createAt( tableCell ) );
 	}
 }
 

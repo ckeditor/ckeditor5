@@ -5,7 +5,8 @@
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { modelTable } from './_utils/utils';
+
+import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
 import TableWalker from '../src/tablewalker';
 
@@ -20,22 +21,8 @@ describe( 'TableWalker', () => {
 				doc = model.document;
 				root = doc.getRoot( 'main' );
 
-				const schema = model.schema;
-
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows', 'headingColumns' ],
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', { allowIn: 'table' } );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isLimit: true
-				} );
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -53,7 +40,7 @@ describe( 'TableWalker', () => {
 		const formattedResult = result.map( ( { row, column, cell, cellIndex } ) => ( {
 			row,
 			column,
-			data: cell && cell.getChild( 0 ).data,
+			data: cell && cell.getChild( 0 ).getChild( 0 ).data,
 			index: cellIndex
 		} ) );
 

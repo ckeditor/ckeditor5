@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableUtils from '../tableutils';
+import { getParentElement } from './utils';
 
 /**
  * The split cell command.
@@ -49,9 +50,9 @@ export default class SplitCellCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const element = doc.selection.getFirstPosition().parent;
+		const tableCell = getParentElement( 'tableCell', doc.selection.getFirstPosition() );
 
-		this.isEnabled = element.is( 'tableCell' );
+		this.isEnabled = !!tableCell;
 	}
 
 	/**
@@ -63,7 +64,7 @@ export default class SplitCellCommand extends Command {
 		const selection = document.selection;
 
 		const firstPosition = selection.getFirstPosition();
-		const tableCell = firstPosition.parent;
+		const tableCell = getParentElement( 'tableCell', firstPosition );
 
 		const isHorizontally = this.direction === 'horizontally';
 

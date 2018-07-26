@@ -7,15 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import {
-	downcastInsertCell,
-	downcastInsertRow,
-	downcastInsertTable,
-	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
-} from '../../src/converters/downcast';
-import { formatTable, formattedViewTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, formatTable, formattedViewTable, modelTable } from '../_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -36,36 +28,8 @@ describe( 'downcast converters', () => {
 				root = doc.getRoot( 'main' );
 				viewDocument = editor.editing.view;
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
-
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows', 'headingColumns' ],
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', { allowIn: 'table' } );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isLimit: true
-				} );
-
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
-
-				// Insert conversion
-				conversion.for( 'downcast' ).add( downcastInsertRow() );
-				conversion.for( 'downcast' ).add( downcastInsertCell() );
-
-				conversion.for( 'downcast' ).add( downcastRemoveRow() );
-
-				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
-				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -142,6 +106,25 @@ describe( 'downcast converters', () => {
 			) );
 		} );
 
+		it( 'should create table with block content', () => {
+			setModelData( model, modelTable( [
+				[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
+			] ) );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td><p>00</p><p>foo</p></td>' +
+								'<td>01</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
+		} );
+
 		it( 'should be possible to overwrite', () => {
 			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
 			editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
@@ -161,7 +144,7 @@ describe( 'downcast converters', () => {
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 				'<table foo="bar">' +
-					'<tr><td></td></tr>' +
+					'<tr><td><p></p></td></tr>' +
 				'</table>'
 			) );
 		} );
@@ -240,7 +223,7 @@ describe( 'downcast converters', () => {
 			} );
 		} );
 
-		describe( 'asWidget', () => {
+		describe( 'options.asWidget=true', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
 					.then( newEditor => {
@@ -250,30 +233,8 @@ describe( 'downcast converters', () => {
 						root = doc.getRoot( 'main' );
 						viewDocument = editor.editing.view;
 
-						const conversion = editor.conversion;
-						const schema = model.schema;
-
-						schema.register( 'table', {
-							allowWhere: '$block',
-							allowAttributes: [ 'headingRows', 'headingColumns' ],
-							isObject: true
-						} );
-
-						schema.register( 'tableRow', { allowIn: 'table' } );
-
-						schema.register( 'tableCell', {
-							allowIn: 'tableRow',
-							allowContentOf: '$block',
-							allowAttributes: [ 'colspan', 'rowspan' ],
-							isLimit: true
-						} );
-
-						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
-
-						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+						defaultSchema( model.schema );
+						defaultConversion( editor.conversion, true );
 					} );
 			} );
 
@@ -285,7 +246,9 @@ describe( 'downcast converters', () => {
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
-								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span></span></td>' +
+								'</tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'
@@ -483,7 +446,7 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
-		describe( 'asWidget', () => {
+		describe( 'options.asWidget=true', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
 					.then( newEditor => {
@@ -493,30 +456,8 @@ describe( 'downcast converters', () => {
 						root = doc.getRoot( 'main' );
 						viewDocument = editor.editing.view;
 
-						const conversion = editor.conversion;
-						const schema = model.schema;
-
-						schema.register( 'table', {
-							allowWhere: '$block',
-							allowAttributes: [ 'headingRows', 'headingColumns' ],
-							isObject: true
-						} );
-
-						schema.register( 'tableRow', { allowIn: 'table' } );
-
-						schema.register( 'tableCell', {
-							allowIn: 'tableRow',
-							allowContentOf: '$block',
-							allowAttributes: [ 'colspan', 'rowspan' ],
-							isLimit: true
-						} );
-
-						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
-
-						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+						defaultSchema( model.schema );
+						defaultConversion( editor.conversion, true );
 					} );
 			} );
 
@@ -532,13 +473,21 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 				} );
 
-				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				// TODO check span always?
+				expect( formatTable(
+					getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
-								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</td></tr>' +
-								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span>00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
+								'</tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'
@@ -646,7 +595,7 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
-		describe( 'asWidget', () => {
+		describe( 'options.asWidget=true', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
 					.then( newEditor => {
@@ -656,30 +605,8 @@ describe( 'downcast converters', () => {
 						root = doc.getRoot( 'main' );
 						viewDocument = editor.editing.view;
 
-						const conversion = editor.conversion;
-						const schema = model.schema;
-
-						schema.register( 'table', {
-							allowWhere: '$block',
-							allowAttributes: [ 'headingRows', 'headingColumns' ],
-							isObject: true
-						} );
-
-						schema.register( 'tableRow', { allowIn: 'table' } );
-
-						schema.register( 'tableCell', {
-							allowIn: 'tableRow',
-							allowContentOf: '$block',
-							allowAttributes: [ 'colspan', 'rowspan' ],
-							isLimit: true
-						} );
-
-						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
-
-						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+						defaultSchema( model.schema );
+						defaultConversion( editor.conversion, true );
 					} );
 			} );
 
@@ -700,7 +627,9 @@ describe( 'downcast converters', () => {
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</td>' +
+					'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+					'<span>00</span>' +
+					'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -845,7 +774,7 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
-		describe( 'asWidget', () => {
+		describe( 'options.asWidget=true', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
 					.then( newEditor => {
@@ -855,33 +784,8 @@ describe( 'downcast converters', () => {
 						root = doc.getRoot( 'main' );
 						viewDocument = editor.editing.view;
 
-						const conversion = editor.conversion;
-						const schema = model.schema;
-
-						schema.register( 'table', {
-							allowWhere: '$block',
-							allowAttributes: [ 'headingRows', 'headingColumns' ],
-							isObject: true
-						} );
-
-						schema.register( 'tableRow', { allowIn: 'table' } );
-
-						schema.register( 'tableCell', {
-							allowIn: 'tableRow',
-							allowContentOf: '$block',
-							allowAttributes: [ 'colspan', 'rowspan' ],
-							isLimit: true
-						} );
-
-						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
-
-						conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
-
-						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+						defaultSchema( model.schema );
+						defaultConversion( editor.conversion, true );
 					} );
 			} );
 
@@ -899,7 +803,11 @@ describe( 'downcast converters', () => {
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<thead>' +
-								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span>00</span>' +
+									'</th>' +
+								'</tr>' +
 							'</thead>' +
 						'</table>' +
 					'</figure>'
@@ -1053,7 +961,7 @@ describe( 'downcast converters', () => {
 			], { headingRows: 2 } ) );
 		} );
 
-		describe( 'asWidget', () => {
+		describe( 'options.asWidget=true', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
 					.then( newEditor => {
@@ -1063,33 +971,8 @@ describe( 'downcast converters', () => {
 						root = doc.getRoot( 'main' );
 						viewDocument = editor.editing.view;
 
-						const conversion = editor.conversion;
-						const schema = model.schema;
-
-						schema.register( 'table', {
-							allowWhere: '$block',
-							allowAttributes: [ 'headingRows', 'headingColumns' ],
-							isObject: true
-						} );
-
-						schema.register( 'tableRow', { allowIn: 'table' } );
-
-						schema.register( 'tableCell', {
-							allowIn: 'tableRow',
-							allowContentOf: '$block',
-							allowAttributes: [ 'colspan', 'rowspan' ],
-							isLimit: true
-						} );
-
-						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
-
-						conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
-
-						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+						defaultSchema( model.schema );
+						defaultConversion( editor.conversion, true );
 					} );
 			} );
 
@@ -1107,7 +990,11 @@ describe( 'downcast converters', () => {
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
-								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span>00</span>' +
+									'</th>' +
+								'</tr>' +
 							'</tbody>' +
 						'</table>' +
 					'</figure>'

@@ -4,20 +4,10 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import RemoveColumnCommand from '../../src/commands/removecolumncommand';
-import {
-	downcastInsertCell,
-	downcastInsertRow,
-	downcastInsertTable,
-	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
-} from '../../src/converters/downcast';
-import upcastTable from '../../src/converters/upcasttable';
-import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 
 describe( 'RemoveColumnCommand', () => {
@@ -33,48 +23,8 @@ describe( 'RemoveColumnCommand', () => {
 				model = editor.model;
 				command = new RemoveColumnCommand( editor );
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
-
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows', 'headingColumns' ],
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', { allowIn: 'table' } );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isLimit: true
-				} );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-				// Insert row conversion.
-				conversion.for( 'downcast' ).add( downcastInsertRow() );
-
-				// Remove row conversion.
-				conversion.for( 'downcast' ).add( downcastRemoveRow() );
-
-				// Table cell conversion.
-				conversion.for( 'downcast' ).add( downcastInsertCell() );
-
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-				// Table attributes conversion.
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
-
-				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
-				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -103,7 +53,7 @@ describe( 'RemoveColumnCommand', () => {
 		} );
 
 		it( 'should be false if selection is outside a table', () => {
-			setData( model, '<p>11[]</p>' );
+			setData( model, '<paragraph>11[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
@@ -121,7 +71,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '02' ],
-				[ '10[]', '12' ],
+				[ '<paragraph>10</paragraph>[]', '12' ],
 				[ '20', '22' ]
 			] ) );
 		} );
@@ -136,7 +86,7 @@ describe( 'RemoveColumnCommand', () => {
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]01' ],
+				[ '[]<paragraph>01</paragraph>' ],
 				[ '11' ],
 				[ '21' ]
 			] ) );
@@ -153,7 +103,7 @@ describe( 'RemoveColumnCommand', () => {
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '01' ],
-				[ '[]11' ],
+				[ '[]<paragraph>11</paragraph>' ],
 				[ '21' ]
 			], { headingColumns: 1 } ) );
 		} );
@@ -172,7 +122,7 @@ describe( 'RemoveColumnCommand', () => {
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { colspan: 3, contents: '00' }, '03' ],
 				[ { colspan: 2, contents: '10' }, '13' ],
-				[ { colspan: 2, contents: '20[]' }, '23' ],
+				[ { colspan: 2, contents: '<paragraph>20</paragraph>[]' }, '23' ],
 				[ '30', '31', '33' ],
 				[ '40', '41', '43' ]
 

@@ -368,8 +368,31 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 	const tableCell = tableWalkerValue.cell;
 
-	conversionApi.mapper.bindElements( tableCell, cellElement );
+	const isSingleParagraph = tableCell.childCount === 1 && tableCell.getChild( 0 ).name === 'paragraph';
+
 	conversionApi.writer.insert( insertPosition, cellElement );
+
+	if ( isSingleParagraph ) {
+		const innerParagraph = tableCell.getChild( 0 );
+		const paragraphInsertPosition = ViewPosition.createAt( cellElement, 'end' );
+
+		conversionApi.consumable.consume( innerParagraph, 'insert' );
+
+		if ( options.asWidget ) {
+			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
+
+			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
+			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
+
+			conversionApi.mapper.bindElements( tableCell, cellElement );
+		} else {
+			// TODO: binding two to one seems supspicious...
+			conversionApi.mapper.bindElements( tableCell, cellElement );
+			conversionApi.mapper.bindElements( innerParagraph, cellElement );
+		}
+	} else {
+		conversionApi.mapper.bindElements( tableCell, cellElement );
+	}
 }
 
 // Creates or returns an existing `<tr>` element from the view.
