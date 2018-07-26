@@ -130,9 +130,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale, editableElement );
-
-		this.body.add( this.panel );
-		this.registerChild( this.editable );
 	}
 
 	/**
@@ -141,6 +138,8 @@ export default class InlineEditorUIView extends EditorUIView {
 	render() {
 		super.render();
 
+		this.body.add( this.panel );
+		this.registerChild( this.editable );
 		this.panel.content.add( this.toolbar );
 	}
 
