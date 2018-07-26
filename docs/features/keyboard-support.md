@@ -7,32 +7,115 @@ classes: keyboard-shortcuts
 
 Below is a list of the most important keystrokes supported by CKEditor 5 and its features:
 
-| Action | PC | Mac |
-|-----|---|-----|
-| Copy | <kbd>Ctrl</kbd> + <kbd>C</kbd> | <kbd>⌘</kbd> + <kbd>C</kbd> |
-| Paste | <kbd>Ctrl</kbd> + <kbd>V</kbd> | <kbd>⌘</kbd> + <kbd>V</kbd> |
-| Undo | <kbd>Ctrl</kbd> + <kbd>Z</kbd> | <kbd>⌘</kbd> + <kbd>Z</kbd> |
-| Redo | <kbd>Ctrl</kbd> + <kbd>Y</kbd> <br> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd>  | <kbd>⌘</kbd> + <kbd>Y</kbd> <br> <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> |
-| Bold | <kbd>Ctrl</kbd> + <kbd>B</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
-| Italic | <kbd>Ctrl</kbd> + <kbd>I</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
-| Link | <kbd>Ctrl</kbd> + <kbd>K</kbd> | <kbd>⌘</kbd> + <kbd>K</kbd> |
-| Insert a hard break (e.g. a new paragraph) | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
-| Insert a soft break (i.e. a `<br>`) | <kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Shift</kbd>+<kbd>Enter</kbd> |
-| Nest the current list item (when in a list) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move selection to the next cell (when in a table) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Insert a new table row (when in the last cell of a table) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move the selection to the previous cell (when in a table) | <kbd>Shift</kbd>+<kbd>Tab</kbd> | <kbd>Shift</kbd>+<kbd>Tab</kbd> |
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Copy</td>
+			<td><kbd>Ctrl</kbd> + <kbd>C</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>C</kbd></td>
+		</tr>
+		<tr>
+			<td>Paste</td>
+			<td><kbd>Ctrl</kbd> + <kbd>V</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>V</kbd></td>
+		</tr>
+		<tr>
+			<td>Undo</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>Z</kbd></td>
+		</tr>
+		<tr>
+			<td>Redo</td>
+			<td><kbd>Ctrl</kbd> + <kbd>Y</kbd> <br> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>Y</kbd> <br> <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
+		</tr>
+		<tr>
+			<td>Bold</td>
+			<td><kbd>Ctrl</kbd> + <kbd>B</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>I</kbd></td>
+		</tr>
+		<tr>
+			<td>Italic</td>
+			<td><kbd>Ctrl</kbd> + <kbd>I</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>I</kbd></td>
+		</tr>
+		<tr>
+			<td>Link</td>
+			<td><kbd>Ctrl</kbd> + <kbd>K</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>K</kbd></td>
+		</tr>
+		<tr>
+			<td>Insert a hard break (e.g. a new paragraph)</td>
+			<td colspan="2"><kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Insert a soft break (i.e. a <code>&lt;br&gt;</code>)</td>
+			<td colspan="2"><kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+		</tr>
+		<tr>
+			<td>Nest the current list item (when in a list)</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move selection to the next cell (when in a table)</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Insert a new table row (when in the last cell of a table)</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move the selection to the previous cell (when in a table)</td>
+			<td colspan="2"><kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+		</tr>
+	</tbody>
+</table>
 
 ## User interface and navigation
 
-| Action | PC | Mac |
-|-----|---|-----|
-| Close contextual balloons and UI components like dropdowns | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
-| Move focus to the visible contextual balloon | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move focus between fields (inputs and buttons) in contextual balloons | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move focus to the toolbar | <kbd>Alt</kbd> + <kbd>F10</kbd> | <kbd>Alt</kbd> + <kbd>F10</kbd> <br> (may require <kbd>Fn</kbd>) |
-| Navigate through the toolbar | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> |
-| Execute the currently focused button | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
+<table>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th>PC</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Close contextual balloons and UI components like dropdowns</td>
+			<td colspan="2"><kbd>Esc</kbd></td>
+		</tr>
+		<tr>
+			<td>Move focus to the visible contextual balloon</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move focus between fields (inputs and buttons) in contextual balloons</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
+		</tr>
+		<tr>
+			<td>Move focus to the toolbar</td>
+			<td><kbd>Alt</kbd> + <kbd>F10</kbd></td>
+			<td><kbd>Alt</kbd> + <kbd>F10</kbd> <br> (may require <kbd>Fn</kbd>)</td>
+		</tr>
+		<tr>
+			<td>Navigate through the toolbar</td>
+			<td colspan="2"><kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd></td>
+		</tr>
+		<tr>
+			<td>Execute the currently focused button</td>
+			<td colspan="2"><kbd>Enter</kbd></td>
+		</tr>
+	</tbody>
+</table>
 
 <style>
 .keyboard-shortcuts th {
