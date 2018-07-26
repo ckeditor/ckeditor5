@@ -16,11 +16,6 @@ describe( 'DecoupledEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale( 'en' );
 		view = new DecoupledEditorUIView( locale );
-		view.render();
-	} );
-
-	afterEach( () => {
-		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -34,18 +29,12 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.toolbar ).to.be.instanceof( ToolbarView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );
 
-			it( 'is rendered but gets no parent', () => {
-				expect( view.isRendered ).to.be.true;
-				expect( view.toolbar.element.parentElement ).to.be.null;
-			} );
-
-			it( 'gets the CSS classes', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
-				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			it( 'is not rendered', () => {
+				expect( view.toolbar.isRendered ).to.be.false;
 			} );
 		} );
 
@@ -58,9 +47,8 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
-			it( 'is rendered but gets no parent', () => {
-				expect( view.isRendered ).to.be.true;
-				expect( view.editable.element.parentElement ).to.be.null;
+			it( 'is not rendered', () => {
+				expect( view.editable.isRendered ).to.be.false;
 			} );
 
 			it( 'can be created out of an existing DOM element', () => {
@@ -76,7 +64,40 @@ describe( 'DecoupledEditorUIView', () => {
 		} );
 	} );
 
+	describe( 'render()', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
+		afterEach( () => {
+			view.destroy();
+		} );
+
+		describe( '#toolbar', () => {
+			it( 'is rendered but gets no parent', () => {
+				expect( view.isRendered ).to.be.true;
+				expect( view.toolbar.element.parentElement ).to.be.null;
+			} );
+
+			it( 'gets the CSS classes', () => {
+				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
+				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+			} );
+		} );
+
+		describe( '#editable', () => {
+			it( 'is rendered but gets no parent', () => {
+				expect( view.isRendered ).to.be.true;
+				expect( view.editable.element.parentElement ).to.be.null;
+			} );
+		} );
+	} );
+
 	describe( 'destroy', () => {
+		beforeEach( () => {
+			view.render();
+		} );
+
 		it( 'destroys #toolbar and #editable', () => {
 			const toolbarSpy = sinon.spy( view.toolbar, 'destroy' );
 			const editableSpy = sinon.spy( view.editable, 'destroy' );
@@ -103,6 +124,7 @@ describe( 'DecoupledEditorUIView', () => {
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
+			view.render();
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();
 		} );
