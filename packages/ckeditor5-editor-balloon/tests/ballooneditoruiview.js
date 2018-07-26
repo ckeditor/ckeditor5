@@ -25,13 +25,19 @@ describe( 'BalloonEditorUIView', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
-			it( 'is registered as a child', () => {
-				const spy = sinon.spy( view.editable, 'destroy' );
-
-				view.render();
-				view.destroy();
-				sinon.assert.calledOnce( spy );
+			it( 'is not rendered', () => {
+				expect( view.editable.isRendered ).to.be.false;
 			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'editable is registered as a child', () => {
+			const spy = sinon.spy( view.editable, 'destroy' );
+
+			view.render();
+			view.destroy();
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
