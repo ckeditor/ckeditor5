@@ -16,18 +16,23 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 | Bold | <kbd>Ctrl</kbd> + <kbd>B</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
 | Italic | <kbd>Ctrl</kbd> + <kbd>I</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
 | Link | <kbd>Ctrl</kbd> + <kbd>K</kbd> | <kbd>⌘</kbd> + <kbd>K</kbd> |
-| Close contextual balloons and UI components like dropdowns | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
+| Insert a hard break (e.g. a new paragraph) | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
+| Insert a soft break (i.e. a `<br>`) | <kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Shift</kbd>+<kbd>Enter</kbd> |
 | Nest the current list item (when in a list) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Move selection to the next cell (when in a table) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Insert a new table row (when in the last cell of a table) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
+| Move the selection to the previous cell (when in a table) | <kbd>Shift</kbd>+<kbd>Tab</kbd> | <kbd>Shift</kbd>+<kbd>Tab</kbd> |
+
+## User interface and navigation
+
+| Action | PC | Mac |
+|-----|---|-----|
+| Close contextual balloons and UI components like dropdowns | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
 | Move focus to the visible contextual balloon | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
 | Move focus between fields (inputs and buttons) in contextual balloons | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move selection to the next table cell (selects all table cell contents) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Insert new row (when selection is in the last table cell) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
-| Move selection to the previous table cell (selects all table cell contents) | <kbd>Shift</kbd>+<kbd>Tab</kbd> | <kbd>Shift</kbd>+<kbd>Tab</kbd> |
 | Move focus to the toolbar | <kbd>Alt</kbd> + <kbd>F10</kbd> | <kbd>Alt</kbd> + <kbd>F10</kbd> <br> (may require <kbd>Fn</kbd>) |
 | Navigate through the toolbar | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> |
 | Execute the currently focused button | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
-| Insert a hard break (e.g. a new paragraph) | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
-| Insert a soft break (i.e. a `<br>`) | <kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Shift</kbd>+<kbd>Enter</kbd> |
 
 <style>
 .keyboard-shortcuts th {
