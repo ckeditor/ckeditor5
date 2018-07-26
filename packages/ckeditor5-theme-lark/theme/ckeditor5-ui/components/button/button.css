@@ -37,6 +37,9 @@ a.ck.ck-button {
 	/* Apply some smooth transition to the box-shadow. */
 	transition: box-shadow 200ms ease-in-out;
 
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */
+	-webkit-appearance: none;
+
 	&:active,
 	&:focus {
 		@mixin ck-focus-ring;
