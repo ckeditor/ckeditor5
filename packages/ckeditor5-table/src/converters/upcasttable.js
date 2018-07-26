@@ -53,9 +53,12 @@ export default function upcastTable() {
 			} else {
 				// Create one row and one table cell for empty table.
 				const row = conversionApi.writer.createElement( 'tableRow' );
-
 				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
-				conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
+
+				const tableCell = conversionApi.writer.createElement( 'tableCell' );
+				conversionApi.writer.insert( tableCell, ModelPosition.createAt( row, 'end' ) );
+
+				conversionApi.writer.insertElement( 'paragraph', ModelPosition.createAt( tableCell, 'end' ) );
 			}
 
 			// Set conversion result range.
@@ -67,6 +70,54 @@ export default function upcastTable() {
 				// before: <allowed>[]</allowed>
 				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
 				ModelPosition.createAfter( table )
+			);
+
+			// Now we need to check where the modelCursor should be.
+			// If we had to split parent to insert our element then we want to continue conversion inside split parent.
+			//
+			// before: <allowed><notAllowed>[]</notAllowed></allowed>
+			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
+			if ( splitResult.cursorParent ) {
+				data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+
+				// Otherwise just continue after inserted element.
+			} else {
+				data.modelCursor = data.modelRange.end;
+			}
+		}, { priority: 'normal' } );
+	};
+}
+
+export function upcastTableCell( elementName ) {
+	return dispatcher => {
+		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+			const viewTableCell = data.viewItem;
+
+			// When element was already consumed then skip it.
+			if ( !conversionApi.consumable.test( viewTableCell, { name: true } ) ) {
+				return;
+			}
+
+			const tableCell = conversionApi.writer.createElement( 'tableCell' );
+
+			// Insert element on allowed position.
+			const splitResult = conversionApi.splitToAllowedParent( tableCell, data.modelCursor );
+			conversionApi.writer.insert( tableCell, splitResult.position );
+			conversionApi.consumable.consume( viewTableCell, { name: true } );
+
+			for ( const child of viewTableCell.getChildren() ) {
+				conversionApi.convertItem( child, ModelPosition.createAt( tableCell, 'end' ) );
+			}
+
+			// Set conversion result range.
+			data.modelRange = new ModelRange(
+				// Range should start before inserted element
+				ModelPosition.createBefore( tableCell ),
+				// Should end after but we need to take into consideration that children could split our
+				// element, so we need to move range after parent of the last converted child.
+				// before: <allowed>[]</allowed>
+				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
+				ModelPosition.createAfter( tableCell )
 			);
 
 			// Now we need to check where the modelCursor should be.

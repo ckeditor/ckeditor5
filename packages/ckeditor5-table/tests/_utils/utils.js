@@ -178,9 +178,8 @@ export function defaultConversion( conversion, asWidget = false ) {
 
 	// Table cell conversion.
 	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
-	conversion.for( 'upcast' ).add( upcastTableCell() );
-	// conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-	// conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+	conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
+	conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
 
 	// Table attributes conversion.
 	conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );

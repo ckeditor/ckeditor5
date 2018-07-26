@@ -123,7 +123,10 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on ui#update when the table content is selected', () => {
-			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell>bar</tableCell></tableRow></table>' );
+			setData(
+				model,
+				'<paragraph>[foo]</paragraph><table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
+			);
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -147,7 +150,7 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( model, '<table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
+			setData( model, '<table><tableRow><tableCell><paragraph>x[y]z</paragraph></tableCell></tableRow></table>' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -170,7 +173,10 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should hide the toolbar on render if the table is de–selected', () => {
-			setData( model, '<paragraph>foo</paragraph><table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+			setData(
+				model,
+				'<paragraph>foo</paragraph><table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>'
+			);
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 

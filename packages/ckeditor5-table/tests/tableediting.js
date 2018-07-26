@@ -69,7 +69,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkAttribute( [ 'tableCell' ], 'rowspan' ) ).to.be.true;
 
 		// Table cell contents:
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.false;
 	} );
@@ -137,7 +137,7 @@ describe( 'TableEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
-				setModelData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+				setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
@@ -151,7 +151,10 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should create thead section', () => {
-				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+				setModelData(
+					model,
+					'<table headingRows="1"><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
@@ -170,7 +173,7 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell>foo</tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );
@@ -243,7 +246,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[<paragraph>12</paragraph>]' ]
+					[ '11', '[12]' ]
 				] ) );
 			} );
 
@@ -256,7 +259,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[<paragraph></paragraph>]', '' ]
+					[ '[]', '' ]
 				] ) );
 			} );
 
@@ -270,7 +273,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[<paragraph>21</paragraph>]', '22' ]
+					[ '[21]', '22' ]
 				] ) );
 			} );
 
@@ -285,7 +288,7 @@ describe( 'TableEditing', () => {
 					[
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
-						'[<paragraph>13</paragraph>]'
+						'[13]'
 					],
 				] ) );
 			} );
@@ -316,7 +319,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 					expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-						[ '[<paragraph>11</paragraph>]', '12' ]
+						[ '[11]', '12' ]
 					] ) );
 
 					// Should cancel event - so no other tab handler is called.
@@ -375,7 +378,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '[<paragraph>11</paragraph>]', '12' ]
+					[ '[11]', '12' ]
 				] ) );
 			} );
 
@@ -400,7 +403,7 @@ describe( 'TableEditing', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[<paragraph>12</paragraph>]' ],
+					[ '11', '[12]' ],
 					[ '21', '22' ]
 				] ) );
 			} );
@@ -414,7 +417,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[
-						'[<paragraph>11</paragraph>]',
+						'[11]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'13'
 					],

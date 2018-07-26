@@ -7,13 +7,18 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import upcastTable from '../../src/converters/upcasttable';
+import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
+import { formatTable } from '../_utils/utils';
+import Paragraph from '../../../ckeditor5-paragraph/src/paragraph';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create()
+		return VirtualTestEditor
+			.create( {
+				plugins: [ Paragraph ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -24,17 +29,22 @@ describe( 'upcastTable()', () => {
 				schema.register( 'table', {
 					allowWhere: '$block',
 					allowAttributes: [ 'headingRows', 'headingColumns' ],
+					isLimit: true,
 					isObject: true
 				} );
 
-				schema.register( 'tableRow', { allowIn: 'table' } );
+				schema.register( 'tableRow', {
+					allowIn: 'table',
+					isLimit: true
+				} );
 
 				schema.register( 'tableCell', {
 					allowIn: 'tableRow',
-					allowContentOf: '$block',
 					allowAttributes: [ 'colspan', 'rowspan' ],
 					isLimit: true
 				} );
+
+				schema.extend( '$block', { allowIn: 'tableCell' } );
 
 				conversion.for( 'upcast' ).add( upcastTable() );
 
@@ -42,8 +52,8 @@ describe( 'upcastTable()', () => {
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 
 				// Table cell conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+				conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
+				conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
 
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
@@ -55,7 +65,7 @@ describe( 'upcastTable()', () => {
 	} );
 
 	function expectModel( data ) {
-		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable( data ) );
 	}
 
 	it( 'should convert table figure', () => {
@@ -69,7 +79,7 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table>' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -83,7 +93,7 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table>' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -91,7 +101,7 @@ describe( 'upcastTable()', () => {
 	it( 'should not convert empty figure', () => {
 		'<figure class="table"></figure>';
 
-		expectModel( '' );
+		expectModel( '<paragraph></paragraph>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
@@ -105,7 +115,7 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table>' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -119,12 +129,12 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table headingRows="1">' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
 
-	it( 'should create table model from table with one thead with more then on row', () => {
+	it( 'should create table model from table with one thead with more then one row', () => {
 		editor.setData(
 			'<table>' +
 			'<thead>' +
@@ -137,9 +147,9 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table headingRows="3">' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
-			'<tableRow><tableCell>2</tableCell></tableRow>' +
-			'<tableRow><tableCell>3</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -155,9 +165,9 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table headingRows="1">' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
-			'<tableRow><tableCell>2</tableCell></tableRow>' +
-			'<tableRow><tableCell>3</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -172,8 +182,8 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table headingRows="1">' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
-			'<tableRow><tableCell>2</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -187,7 +197,7 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<table>' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 			'</table>'
 		);
 	} );
@@ -199,7 +209,7 @@ describe( 'upcastTable()', () => {
 		);
 
 		expectModel(
-			'<table><tableRow><tableCell></tableCell></tableRow></table>'
+			'<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>'
 		);
 	} );
 
@@ -212,17 +222,17 @@ describe( 'upcastTable()', () => {
 		);
 
 		expectModel(
-			'<table><tableRow><tableCell>bar</tableCell></tableRow></table>'
+			'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
 		);
 	} );
 
 	it( 'should create table model from some broken table', () => {
 		editor.setData(
-			'<table><td><p>foo</p></td></table>'
+			'<table><td><z>foo</z></td></table>'
 		);
 
 		expectModel(
-			'<table><tableRow><tableCell>foo</tableCell></tableRow></table>'
+			'<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>'
 		);
 	} );
 
@@ -245,8 +255,8 @@ describe( 'upcastTable()', () => {
 		expectModel(
 			'<div>foo</div>' +
 			'<table headingRows="1">' +
-			'<tableRow><tableCell>1</tableCell></tableRow>' +
-			'<tableRow><tableCell>2</tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+			'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
 			'</table>' +
 			'<div>bar</div>'
 		);
@@ -258,8 +268,19 @@ describe( 'upcastTable()', () => {
 			allowAttributes: [ 'headingRows' ],
 			isObject: true
 		} );
+		editor.model.schema.register( 'fooCell', {
+			allowIn: 'fooRow',
+			isObject: true
+		} );
+		editor.model.schema.register( 'fooRow', {
+			allowIn: 'fooTable',
+			isObject: true
+		} );
 
 		editor.conversion.elementToElement( { model: 'fooTable', view: 'table', converterPriority: 'high' } );
+		editor.conversion.elementToElement( { model: 'fooRow', view: 'tr', converterPriority: 'high' } );
+		editor.conversion.elementToElement( { model: 'fooCell', view: 'td', converterPriority: 'high' } );
+		editor.conversion.elementToElement( { model: 'fooCell', view: 'th', converterPriority: 'high' } );
 
 		editor.setData(
 			'<table>' +
@@ -268,7 +289,7 @@ describe( 'upcastTable()', () => {
 		);
 
 		expectModel(
-			'<fooTable></fooTable>'
+			'<fooTable><fooRow><fooCell></fooCell></fooRow></fooTable>'
 		);
 	} );
 
@@ -296,19 +317,34 @@ describe( 'upcastTable()', () => {
 			expectModel(
 				'<table headingColumns="2" headingRows="1">' +
 				'<tableRow>' +
-				'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+					'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'<tableCell><paragraph>14</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
+					'<tableCell><paragraph>21</paragraph></tableCell>' +
+					'<tableCell><paragraph>22</paragraph></tableCell>' +
+					'<tableCell><paragraph>23</paragraph></tableCell>' +
+					'<tableCell><paragraph>24</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell>31</tableCell><tableCell>32</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
+					'<tableCell><paragraph>31</paragraph></tableCell>' +
+					'<tableCell><paragraph>32</paragraph></tableCell>' +
+					'<tableCell><paragraph>33</paragraph></tableCell>' +
+					'<tableCell><paragraph>34</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell>41</tableCell><tableCell>42</tableCell><tableCell>43</tableCell><tableCell>44</tableCell>' +
+					'<tableCell><paragraph>41</paragraph></tableCell>' +
+					'<tableCell><paragraph>42</paragraph></tableCell>' +
+					'<tableCell><paragraph>43</paragraph></tableCell>' +
+					'<tableCell><paragraph>44</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell>51</tableCell><tableCell>52</tableCell><tableCell>53</tableCell><tableCell>54</tableCell>' +
+					'<tableCell><paragraph>51</paragraph></tableCell>' +
+					'<tableCell><paragraph>52</paragraph></tableCell>' +
+					'<tableCell><paragraph>53</paragraph></tableCell>' +
+					'<tableCell><paragraph>54</paragraph></tableCell>' +
 				'</tableRow>' +
 				'</table>'
 			);
@@ -332,13 +368,21 @@ describe( 'upcastTable()', () => {
 			expectModel(
 				'<table headingColumns="3" headingRows="1">' +
 				'<tableRow>' +
-				'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+					'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'<tableCell><paragraph>13</paragraph></tableCell>' +
+					'<tableCell><paragraph>14</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
+					'<tableCell><paragraph>21</paragraph></tableCell>' +
+					'<tableCell><paragraph>22</paragraph></tableCell>' +
+					'<tableCell><paragraph>23</paragraph></tableCell>' +
+					'<tableCell><paragraph>24</paragraph></tableCell>' +
 				'</tableRow>' +
 				'<tableRow>' +
-				'<tableCell colspan="2">31</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
+				'<tableCell colspan="2"><paragraph>31</paragraph></tableCell>' +
+					'<tableCell><paragraph>33</paragraph></tableCell>' +
+					'<tableCell><paragraph>34</paragraph></tableCell>' +
 				'</tableRow>' +
 				'</table>'
 			);
