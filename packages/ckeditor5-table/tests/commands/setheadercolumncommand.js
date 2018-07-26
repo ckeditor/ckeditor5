@@ -133,60 +133,43 @@ describe( 'HeaderColumnCommand', () => {
 	describe( 'execute()', () => {
 		it( 'should set heading columns attribute that cover column in which is selection', () => {
 			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00', '01[]', '02', '03' ]
 			] ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should set heading columns attribute below current selection column', () => {
+			setData( model, modelTable( [
+				[ '00', '01[]', '02', '03' ]
+			], { headingColumns: 3 } ) );
+
+			command.execute();
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 		} );
 
-		it(
-			'should set heading columns attribute if currently selected column is a heading so the heading section is before this column',
-			() => {
-				setData( model, modelTable( [
-					[ '00', '01' ],
-					[ '[]10', '11' ],
-					[ '20', '21' ]
-				], { headingColumns: 2 } ) );
-
-				command.execute();
-
-				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', '01' ],
-					[ '[]10', '11' ],
-					[ '20', '21' ]
-				], { headingColumns: 1 } ) );
-			}
-		);
-
 		it( 'should toggle of selected column', () => {
 			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '10', '11[]' ],
-				[ '20', '21' ]
+				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01' ],
-				[ '10', '11[]' ],
-				[ '20', '21' ]
+				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 1 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01' ],
-				[ '10', '11[]' ],
-				[ '20', '21' ]
+				[ '00', '01[]', '02', '03' ]
 			], { headingColumns: 2 } ) );
 		} );
 	} );

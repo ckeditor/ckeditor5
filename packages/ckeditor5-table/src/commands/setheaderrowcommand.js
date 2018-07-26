@@ -74,24 +74,22 @@ export default class SetHeaderRowCommand extends Command {
 		const table = tableRow.parent;
 
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-		let rowIndex = tableRow.index;
+		const selectionRow = tableRow.index;
 
-		if ( rowIndex + 1 !== currentHeadingRows ) {
-			rowIndex++;
-		}
+		const headingRowsToSet = currentHeadingRows > selectionRow ? selectionRow : selectionRow + 1;
 
 		model.change( writer => {
-			if ( rowIndex ) {
+			if ( headingRowsToSet ) {
 				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				const cellsToSplit = getOverlappingCells( table, rowIndex, currentHeadingRows );
+				const cellsToSplit = getOverlappingCells( table, headingRowsToSet, currentHeadingRows );
 
 				for ( const cell of cellsToSplit ) {
-					splitHorizontally( cell, rowIndex, writer );
+					splitHorizontally( cell, headingRowsToSet, writer );
 				}
 			}
 
-			updateNumericAttribute( 'headingRows', rowIndex, table, writer, 0 );
+			updateNumericAttribute( 'headingRows', headingRowsToSet, table, writer, 0 );
 		} );
 	}
 
