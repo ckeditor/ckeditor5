@@ -10,7 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import throttle from './throttle';
+import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /* globals window */
 
@@ -76,7 +78,7 @@ export default class Autosave extends Plugin {
 		 * @protected
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), 1000 );
+		this._debouncedSave = debounce( this._save.bind( this ), 2000 );
 
 		/**
 		 * Last document version.
@@ -95,12 +97,12 @@ export default class Autosave extends Plugin {
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
-		 * Save action counter monitors number of actions.
+		 * The state of this plugin.
 		 *
 		 * @private
-		 * @type {Number}
+		 * @type {'initial'|'debounced-saving'|'external-saving'}
 		 */
-		this._saveActionCounter = 0;
+		this.set( '_state', 'initial' );
 
 		/**
 		 * An action that will be added to pending action manager for actions happening in that plugin.
@@ -110,7 +112,7 @@ export default class Autosave extends Plugin {
 		 */
 
 		/**
-		 * Plugins' config.
+		 * The config of this plugins.
 		 *
 		 * @private
 		 * @type {Object}
@@ -134,14 +136,25 @@ export default class Autosave extends Plugin {
 
 		this._pendingActions = editor.plugins.get( PendingActions );
 
+		// this._state = 'initial';
+
 		this.listenTo( doc, 'change:data', () => {
-			this._incrementCounter();
-
-			const willOriginalFunctionBeCalled = this._throttledSave();
-
-			if ( !willOriginalFunctionBeCalled ) {
-				this._decrementCounter();
+			if ( !this._saveCallbacks.length ) {
+				return;
 			}
+
+			if ( this._state == 'initial' ) {
+				this._action = this._pendingActions.add( this.editor.t( 'Saving changes' ) );
+				this._state = 'debounced-saving';
+
+				this._debouncedSave();
+			}
+
+			else if ( this._state == 'debounced-saving' ) {
+				this._debouncedSave();
+			}
+
+			// Do nothing if the plugin is in `external-saving` state.
 		} );
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
@@ -175,7 +188,7 @@ export default class Autosave extends Plugin {
 	 * @protected
 	 */
 	_flush() {
-		this._throttledSave.flush();
+		this._debouncedSave.flush();
 	}
 
 	/**
@@ -188,6 +201,46 @@ export default class Autosave extends Plugin {
 	_save() {
 		const version = this.editor.model.document.version;
 
+		// Change may not produce an operation, so the document's version
+		// can be the same after that change.
+		if (
+			version < this._lastDocumentVersion ||
+			this.editor.state === 'initializing'
+		) {
+			this._debouncedSave.cancel();
+
+			return;
+		}
+
+		this._lastDocumentVersion = version;
+
+		this._state = 'external-saving';
+
+		// Wait one promise cycle to be sure that save callbacks are not called
+		// inside a conversion or when the editor's state changes.
+		Promise.resolve()
+			.then( () => Promise.all(
+				this._saveCallbacks.map( cb => cb( this.editor ) )
+			) )
+			.then( () => {
+				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
+					this._state = 'debounced-saving';
+					this._debouncedSave();
+				} else {
+					this._state = 'initial';
+					this._pendingActions.remove( this._action );
+					this._action = null;
+				}
+			} );
+	}
+
+	/**
+	 * Save callbacks.
+	 *
+	 * @private
+	 * @type {Array.<Function>}
+	 */
+	get _saveCallbacks() {
 		const saveCallbacks = [];
 
 		if ( this.adapter && this.adapter.save ) {
@@ -198,63 +251,11 @@ export default class Autosave extends Plugin {
 			saveCallbacks.push( this._config.save );
 		}
 
-		// Change may not produce an operation, so the document's version
-		// can be the same after that change.
-		if (
-			version < this._lastDocumentVersion ||
-			!saveCallbacks.length ||
-			this.editor.state === 'initializing'
-		) {
-			this._throttledSave.flush();
-			this._decrementCounter();
-
-			return;
-		}
-
-		this._lastDocumentVersion = version;
-
-		// Wait one promise cycle to be sure that:
-		// 1. The save method is always asynchronous.
-		// 2. Save callbacks are not called inside conversions or while editor's state changes.
-		Promise.resolve()
-			.then( () => Promise.all(
-				saveCallbacks.map( cb => cb( this.editor ) )
-			) )
-			.then( () => {
-				this._decrementCounter();
-			} );
-	}
-
-	/**
-	 * Increments counter and adds pending action if it not exists.
-	 *
-	 * @private
-	 */
-	_incrementCounter() {
-		const t = this.editor.t;
-
-		this._saveActionCounter++;
-
-		if ( !this._action ) {
-			this._action = this._pendingActions.add( t( 'Saving changes' ) );
-		}
-	}
-
-	/**
-	 * Decrements counter and removes pending action if counter is empty,
-	 * which means, that no new save action occurred.
-	 *
-	 * @private
-	 */
-	_decrementCounter() {
-		this._saveActionCounter--;
-
-		if ( this._saveActionCounter === 0 ) {
-			this._pendingActions.remove( this._action );
-			this._action = null;
-		}
+		return saveCallbacks;
 	}
 }
+
+mix( Autosave, ObservableMixin );
 
 /**
  * An interface that requires the `save()` method.
