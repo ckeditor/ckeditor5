@@ -22,7 +22,6 @@ import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
-import transform from '../../src/model/operation/transform';
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -665,39 +664,6 @@ describe( 'debug tools', () => {
 			const operationReplayer = model.createReplayer( stringifiedOperations );
 
 			expect( operationReplayer.getOperationsToReplay() ).to.deep.equal( [ JSON.parse( stringifiedOperations ) ] );
-		} );
-	} );
-
-	describe( 'should provide error logging for transformation', () => {
-		let model, document, root, otherRoot;
-
-		beforeEach( () => {
-			model = new Model();
-			document = model.document;
-			root = document.createRoot();
-			otherRoot = document.createRoot( 'other', 'other' );
-		} );
-
-		it.skip( 'with more important operation A', () => {
-			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
-			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
-
-			expect( () => {
-				transform.transform( opA, opB, { isStrong: true } );
-			} ).to.throw( Error );
-			expect( error.calledWith( opA.toString() + ' (important)' ) ).to.be.true;
-			expect( error.calledWith( opB.toString() ) ).to.be.true;
-		} );
-
-		it.skip( 'with more important operation B', () => {
-			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
-			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
-
-			testUtils.sinon.stub( transform, 'transform' ).throws( new Error() );
-
-			expect( () => transform.transform( opA, opB, { isStrong: true } ) ).to.throw( Error );
-			expect( error.calledWith( opA.toString() ) ).to.be.true;
-			expect( error.calledWith( opB.toString() + ' (important)' ) ).to.be.true;
 		} );
 	} );
 

@@ -13,7 +13,9 @@ import UnwrapOperation from './unwrapoperation';
 import NoOperation from './nooperation';
 import Range from '../range';
 import Position from '../position';
+
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 const transformations = new Map();
 
@@ -75,7 +77,20 @@ function updateBaseVersions( operations, baseVersion ) {
 function transform( a, b, context = { aIsStrong: false, wasUndone: () => false, getRelation: () => null } ) {
 	const transformationFunction = getTransformation( a, b );
 
-	return transformationFunction( a.clone(), b, context );
+	try {
+		return transformationFunction( a.clone(), b, context );
+	} catch ( e ) {
+		log.error( 'Error during operation transformation!' );
+		log.error( 'Transformed operation', a );
+		log.error( 'Operation transformed by', b );
+		log.error( 'context.aIsStrong', context.aIsStrong );
+		log.error( 'context.wasUndone( a )', context.wasUndone( a ) );
+		log.error( 'context.wasUndone( b )', context.wasUndone( b ) );
+		log.error( 'context.getRelation( a, b )', context.getRelation( a, b ) );
+		log.error( 'context.getRelation( b, a )', context.getRelation( b, a ) );
+
+		throw e;
+	}
 }
 
 function transformSets( operationsA, operationsB, options ) {
