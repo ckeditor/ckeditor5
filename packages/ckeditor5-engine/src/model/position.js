@@ -22,7 +22,7 @@ import Text from './text';
  *
  * Since position in a model is represented by a {@link module:engine/model/position~Position#root position root} and
  * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing elements.
- * This requirement is important for {@link module:engine/model/operation/transform~transform operational transformation}.
+ * This requirement is important for operational transformation.
  *
  * Also, {@link module:engine/model/operation/operation~Operation operations}
  * kept in {@link module:engine/model/document~Document#history document history}

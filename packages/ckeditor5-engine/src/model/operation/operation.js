@@ -50,14 +50,6 @@ export default class Operation {
 		 */
 
 		/**
-		 * {@link module:engine/model/operation/operation~Operation Operation} which the operation is a part of. This property is set by the
-		 * {@link module:engine/model/operation/operation~Operation operation} when the operations is added to it by the
-		 * {@link module:engine/model/operation/operation~Operation#addOperation} method.
-		 *
-		 * @member {module:engine/model/operation/operation~Operation} #operation
-		 */
-
-		/**
 		 * Creates and returns an operation that has the same parameters as this operation.
 		 *
 		 * @method #clone
@@ -70,8 +62,8 @@ export default class Operation {
 		 * operation execution. In other words, it reverses changes done by the original operation.
 		 *
 		 * Keep in mind that tree model state may change since executing the original operation,
-		 * so reverse operation will be "outdated". In that case you will need to
-		 * {@link module:engine/model/operation/transform~transform} it by all operations that were executed after the original operation.
+		 * so reverse operation will be "outdated". In that case you will need to transform it by
+		 * all operations that were executed after the original operation.
 		 *
 		 * @method #getReversed
 		 * @returns {module:engine/model/operation/operation~Operation} Reversed operation.
