@@ -761,6 +761,7 @@ export default class Position {
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
 		const combined = Position.createFromPosition( target );
+		combined.stickiness = this.stickiness;
 
 		// Then we have to update the rest of the path.
 
