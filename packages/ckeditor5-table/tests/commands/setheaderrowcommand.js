@@ -84,58 +84,83 @@ describe( 'HeaderRowCommand', () => {
 	describe( 'execute()', () => {
 		it( 'should set heading rows attribute that cover row in which is selection', () => {
 			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
 			] ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
 			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should toggle heading rows attribute', () => {
 			setData( model, modelTable( [
-				[ '[]00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			] ) );
-
-			command.execute();
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			], { headingRows: 1 } ) );
-
-			command.execute();
-
-			setData( model, modelTable( [
-				[ '[]00', '01' ],
-				[ '10', '11' ],
-				[ '20', '21' ]
-			] ) );
-		} );
-
-		it( 'should set heading rows attribute if currently selected row is a heading so the heading section is below this row', () => {
-			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
 			], { headingRows: 2 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
 			], { headingRows: 1 } ) );
+
+			command.execute();
+
+			setData( model, modelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should set heading rows attribute if currently selected row is a heading so the heading section is below this row', () => {
+			setData( model, modelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 3 } ) );
+
+			command.execute();
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00' ],
+				[ '[]10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should unsetset heading rows attribute', () => {
+			setData( model, modelTable( [
+				[ '[]00' ],
+				[ '10' ],
+				[ '20' ],
+				[ '30' ]
+			], { headingRows: 3 } ) );
+
+			command.execute();
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00' ],
+				[ '10' ],
+				[ '20' ],
+				[ '30' ]
+			] ) );
 		} );
 
 		it( 'should fix rowspaned cells on the edge of an table head section', () => {
@@ -178,29 +203,29 @@ describe( 'HeaderRowCommand', () => {
 
 		it( 'should fix rowspaned cells on the edge of an table head section when creating section', () => {
 			setData( model, modelTable( [
-				[ { rowspan: 2, contents: '[]00' }, '01' ],
-				[ '11' ]
+				[ { rowspan: 2, contents: '00' }, '01' ],
+				[ '[]11' ]
 			], { headingRows: 2 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]00', '01' ],
-				[ '', '11' ]
+				[ '00', '01' ],
+				[ '', '[]11' ]
 			], { headingRows: 1 } ) );
 		} );
 
 		it( 'should fix rowspaned cells inside a row', () => {
 			setData( model, modelTable( [
-				[ '00', { rowspan: 2, contents: '[]01' } ],
-				[ '10' ]
+				[ '00', { rowspan: 2, contents: '01' } ],
+				[ '[]10' ]
 			], { headingRows: 2 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '[]01' ],
-				[ '10', '' ]
+				[ '00', '01' ],
+				[ '[]10', '' ]
 			], { headingRows: 1 } ) );
 		} );
 
