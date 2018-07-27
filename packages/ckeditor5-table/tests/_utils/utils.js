@@ -89,7 +89,8 @@ export function viewTable( tableData, attributes = {} ) {
 		cellElement: 'th',
 		rowElement: 'tr',
 		headingElement: 'th',
-		wrappingElement: 'p',
+		wrappingElement: asWidget ? 'span' : 'p',
+		enforceWrapping: asWidget,
 		asWidget
 	} ) }</thead>` : '';
 
@@ -98,7 +99,8 @@ export function viewTable( tableData, attributes = {} ) {
 			cellElement: 'td',
 			rowElement: 'tr',
 			headingElement: 'th',
-			wrappingElement: 'p',
+			wrappingElement: asWidget ? 'span' : 'p',
+			enforceWrapping: asWidget,
 			asWidget
 		} ) }</tbody>` : '';
 

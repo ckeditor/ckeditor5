@@ -1152,6 +1152,10 @@ describe( 'downcast converters', () => {
 				[ '00[]' ]
 			] ) );
 
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00' ]
+			], { asWidget: true } ) );
+
 			const table = root.getChild( 0 );
 
 			model.change( writer => {
