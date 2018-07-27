@@ -107,6 +107,8 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
+		injectParagraphInTableCellPostFixer( editor.model, editor.editing );
+
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
@@ -249,5 +251,54 @@ export default class TableEditing extends Plugin {
 		editor.model.change( writer => {
 			writer.setSelection( Range.createIn( cellToFocus ) );
 		} );
+	}
+}
+
+function injectParagraphInTableCellPostFixer( model, editing ) {
+	editing.view.document.registerPostFixer( writer => paragraphInTableCellPostFixer( writer, model, editing.mapper ) );
+}
+
+function paragraphInTableCellPostFixer( writer, model, mapper ) {
+	const changes = model.document.differ.getChanges();
+
+	for ( const entry of changes ) {
+		const tableCell = entry.position.parent;
+
+		if ( tableCell.is( 'tableCell' ) ) {
+			if ( tableCell.childCount > 1 ) {
+				for ( const child of tableCell.getChildren() ) {
+					if ( child.name != 'paragraph' ) {
+						continue;
+					}
+
+					const viewElement = mapper.toViewElement( child );
+
+					if ( viewElement && viewElement.name === 'span' ) {
+						// Unbind table cell as <span> will be renamed to <p>.
+						// mapper.unbindModelElement( tableCell );
+
+						const renamedViewElement = writer.rename( viewElement, 'p' );
+
+						// Re-bind table cell to renamed view element.
+						mapper.bindElements( child, renamedViewElement );
+					}
+				}
+			} else {
+				const singleChild = tableCell.getChild( 0 );
+				if ( !singleChild || !singleChild.is( 'paragraph' ) ) {
+					return;
+				}
+
+				const viewElement = mapper.toViewElement( singleChild );
+
+				// Unbind table cell as <span> will be renamed to <p>.
+				// mapper.unbindModelElement( tableCell );
+
+				const renamedViewElement = writer.rename( viewElement, 'span' );
+
+				// Re-bind table cell to renamed view element.
+				mapper.bindElements( singleChild, renamedViewElement );
+			}
+		}
 	}
 }

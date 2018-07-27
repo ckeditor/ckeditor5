@@ -11,6 +11,28 @@ import { defaultConversion, defaultSchema, formatTable, formattedViewTable, mode
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+function paragraphInTableCell() {
+	return dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+		const tableCell = data.item.parent;
+
+		if ( tableCell.is( 'tableCell' ) && tableCell.childCount > 1 ) {
+			for ( const child of tableCell.getChildren() ) {
+				if ( child.name != 'paragraph' ) {
+					continue;
+				}
+
+				const viewElement = conversionApi.mapper.toViewElement( child );
+
+				if ( viewElement && viewElement.name === 'span' ) {
+					conversionApi.mapper.unbindModelElement( tableCell );
+					conversionApi.writer.rename( viewElement, 'p' );
+					conversionApi.mapper.bindElements( child, viewElement );
+				}
+			}
+		}
+	}, { converterPriority: 'highest' } );
+}
+
 describe( 'downcast converters', () => {
 	let editor, model, doc, root, viewDocument;
 
@@ -1105,6 +1127,46 @@ describe( 'downcast converters', () => {
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '00', '01' ]
 			], { headingRows: 1 } ) );
+		} );
+	} );
+
+	describe( 'options.asWidget=true', () => {
+		beforeEach( () => {
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+					root = doc.getRoot( 'main' );
+					viewDocument = editor.editing.view;
+
+					defaultSchema( model.schema );
+					defaultConversion( editor.conversion, true );
+
+					editor.conversion.for( 'downcast' ).add( paragraphInTableCell() );
+				} );
+		} );
+
+		it( 'should rename <span> to <p> when more then one block content inside table cell', () => {
+			setModelData( model, modelTable( [
+				[ '00[]' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insert( paragraph, nodeByPath, 'after' );
+
+				writer.setSelection( nodeByPath.nextSibling, 0 );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '<p>00</p><p></p>' ]
+			], { asWidget: true } ) );
 		} );
 	} );
 } );

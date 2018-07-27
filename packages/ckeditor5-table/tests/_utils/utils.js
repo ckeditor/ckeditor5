@@ -83,22 +83,29 @@ export function modelTable( tableData, attributes ) {
  */
 export function viewTable( tableData, attributes = {} ) {
 	const headingRows = attributes.headingRows || 0;
+	const asWidget = !!attributes.asWidget;
 
 	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), {
 		cellElement: 'th',
 		rowElement: 'tr',
 		headingElement: 'th',
-		wrappingElement: 'p'
+		wrappingElement: 'p',
+		asWidget
 	} ) }</thead>` : '';
+
 	const tbody = tableData.length > headingRows ?
 		`<tbody>${ makeRows( tableData.slice( headingRows ), {
 			cellElement: 'td',
 			rowElement: 'tr',
 			headingElement: 'th',
-			wrappingElement: 'p'
+			wrappingElement: 'p',
+			asWidget
 		} ) }</tbody>` : '';
 
-	return `<figure class="table"><table>${ thead }${ tbody }</table></figure>`;
+	const figureAttributes = asWidget ? 'class="ck-widget ck-widget_selectable table" contenteditable="false"' : 'class="table"';
+	const widgetHandler = '<div class="ck ck-widget__selection-handler"></div>';
+
+	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
 }
 
 /**
@@ -202,25 +209,24 @@ function formatAttributes( attributes ) {
 			attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
 		}
 	}
+
 	return attributesString;
 }
 
 // Formats passed table data to a set of table rows.
 function makeRows( tableData, options ) {
-	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping } = options;
+	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget } = options;
 
 	return tableData
 		.reduce( ( previousRowsString, tableRow ) => {
 			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
-				let contents = tableCellData;
-
 				const isObject = typeof tableCellData === 'object';
+
+				let contents = isObject ? tableCellData.contents : tableCellData;
 
 				let resultingCellElement = cellElement;
 
 				if ( isObject ) {
-					contents = tableCellData.contents;
-
 					// TODO: check...
 					if ( tableCellData.isHeading ) {
 						resultingCellElement = headingElement;
@@ -230,11 +236,18 @@ function makeRows( tableData, options ) {
 					delete tableCellData.isHeading;
 				}
 
+				const attributes = isObject ? tableCellData : {};
+
+				if ( asWidget ) {
+					attributes.class = 'ck-editor__editable ck-editor__nested-editable';
+					attributes.contenteditable = 'true';
+				}
+
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
 					contents = `<${ wrappingElement }>${ contents }</${ wrappingElement }>`;
 				}
 
-				const formattedAttributes = formatAttributes( isObject ? tableCellData : '' );
+				const formattedAttributes = formatAttributes( attributes );
 				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
 
 				return tableRowString;
