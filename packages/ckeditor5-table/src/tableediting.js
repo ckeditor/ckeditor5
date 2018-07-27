@@ -262,7 +262,40 @@ function paragraphInTableCellPostFixer( writer, model, mapper ) {
 	const changes = model.document.differ.getChanges();
 
 	for ( const entry of changes ) {
-		const tableCell = entry.position.parent;
+		const tableCell = entry.position && entry.position.parent;
+
+		if ( !tableCell && entry.type == 'attribute' && entry.range.start.parent.name == 'tableCell' ) {
+			const tableCell = entry.range.start.parent;
+
+			if ( tableCell.childCount === 1 ) {
+				const singleChild = tableCell.getChild( 0 );
+
+				if ( !singleChild || !singleChild.is( 'paragraph' ) ) {
+					return;
+				}
+
+				const viewElement = mapper.toViewElement( singleChild );
+
+				let renameTo = 'p';
+
+				if ( viewElement.name === 'p' ) {
+					if ( [ ...singleChild.getAttributes() ].length ) {
+						return;
+					} else {
+						renameTo = 'span';
+					}
+				}
+
+				const renamedViewElement = writer.rename( viewElement, renameTo );
+
+				// Re-bind table cell to renamed view element.
+				mapper.bindElements( singleChild, renamedViewElement );
+			}
+		}
+
+		if ( !tableCell ) {
+			continue;
+		}
 
 		if ( tableCell.is( 'tableCell' ) ) {
 			if ( tableCell.childCount > 1 ) {
