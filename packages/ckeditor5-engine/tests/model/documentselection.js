@@ -334,7 +334,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-set-ranges-not-range/ );
 		} );
 
 		it( 'should log a warning when trying to set selection to the graveyard', () => {
