@@ -34,6 +34,7 @@ import { getParentElement, getParentTable } from './commands/utils';
 import TableUtils from './tableutils';
 
 import '../theme/tableediting.css';
+import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 /**
  * The table editing feature.
@@ -107,7 +108,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
-		injectParagraphInTableCellPostFixer( editor.model, editor.editing );
+		injectTableCellPostFixer( editor.model, editor.editing );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -251,87 +252,5 @@ export default class TableEditing extends Plugin {
 		editor.model.change( writer => {
 			writer.setSelection( Range.createIn( cellToFocus ) );
 		} );
-	}
-}
-
-function injectParagraphInTableCellPostFixer( model, editing ) {
-	editing.view.document.registerPostFixer( writer => paragraphInTableCellPostFixer( writer, model, editing.mapper ) );
-}
-
-function paragraphInTableCellPostFixer( writer, model, mapper ) {
-	const changes = model.document.differ.getChanges();
-
-	for ( const entry of changes ) {
-		const tableCell = entry.position && entry.position.parent;
-
-		if ( !tableCell && entry.type == 'attribute' && entry.range.start.parent.name == 'tableCell' ) {
-			const tableCell = entry.range.start.parent;
-
-			if ( tableCell.childCount === 1 ) {
-				const singleChild = tableCell.getChild( 0 );
-
-				if ( !singleChild || !singleChild.is( 'paragraph' ) ) {
-					return;
-				}
-
-				const viewElement = mapper.toViewElement( singleChild );
-
-				let renameTo = 'p';
-
-				if ( viewElement.name === 'p' ) {
-					if ( [ ...singleChild.getAttributes() ].length ) {
-						return;
-					} else {
-						renameTo = 'span';
-					}
-				}
-
-				const renamedViewElement = writer.rename( viewElement, renameTo );
-
-				// Re-bind table cell to renamed view element.
-				mapper.bindElements( singleChild, renamedViewElement );
-			}
-		}
-
-		if ( !tableCell ) {
-			continue;
-		}
-
-		if ( tableCell.is( 'tableCell' ) ) {
-			if ( tableCell.childCount > 1 ) {
-				for ( const child of tableCell.getChildren() ) {
-					if ( child.name != 'paragraph' ) {
-						continue;
-					}
-
-					const viewElement = mapper.toViewElement( child );
-
-					if ( viewElement && viewElement.name === 'span' ) {
-						// Unbind table cell as <span> will be renamed to <p>.
-						// mapper.unbindModelElement( tableCell );
-
-						const renamedViewElement = writer.rename( viewElement, 'p' );
-
-						// Re-bind table cell to renamed view element.
-						mapper.bindElements( child, renamedViewElement );
-					}
-				}
-			} else {
-				const singleChild = tableCell.getChild( 0 );
-				if ( !singleChild || !singleChild.is( 'paragraph' ) ) {
-					return;
-				}
-
-				const viewElement = mapper.toViewElement( singleChild );
-
-				// Unbind table cell as <span> will be renamed to <p>.
-				// mapper.unbindModelElement( tableCell );
-
-				const renamedViewElement = writer.rename( viewElement, 'span' );
-
-				// Re-bind table cell to renamed view element.
-				mapper.bindElements( singleChild, renamedViewElement );
-			}
-		}
 	}
 }
