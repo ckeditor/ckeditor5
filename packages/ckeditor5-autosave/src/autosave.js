@@ -73,6 +73,19 @@ export default class Autosave extends Plugin {
 		 */
 
 		/**
+		 * The state of this plugin.
+		 *
+		 * The plugin can be in the following states:
+		 *
+		 * * synchronized - when all changes are saved
+		 * * waiting - when the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`
+		 * * saving - when the provided save method is called and the plugin waits for the response
+		 *
+		 * @member {'synchronized'|'waiting'|'saving'} #state
+		 */
+		this.set( 'state', 'synchronized' );
+
+		/**
 		 * Throttled save method.
 		 *
 		 * @protected
@@ -95,14 +108,6 @@ export default class Autosave extends Plugin {
 		 * @type {DomEmitterMixin}
 		 */
 		this._domEmitter = Object.create( DomEmitterMixin );
-
-		/**
-		 * The state of this plugin.
-		 *
-		 * @private
-		 * @type {'initial'|'debounced-saving'|'external-saving'}
-		 */
-		this.set( '_state', 'initial' );
 
 		/**
 		 * An action that will be added to pending action manager for actions happening in that plugin.
@@ -136,21 +141,19 @@ export default class Autosave extends Plugin {
 
 		this._pendingActions = editor.plugins.get( PendingActions );
 
-		// this._state = 'initial';
-
 		this.listenTo( doc, 'change:data', () => {
 			if ( !this._saveCallbacks.length ) {
 				return;
 			}
 
-			if ( this._state == 'initial' ) {
+			if ( this.state == 'synchronized' ) {
 				this._action = this._pendingActions.add( this.editor.t( 'Saving changes' ) );
-				this._state = 'debounced-saving';
+				this.state = 'waiting';
 
 				this._debouncedSave();
 			}
 
-			else if ( this._state == 'debounced-saving' ) {
+			else if ( this.state == 'waiting' ) {
 				this._debouncedSave();
 			}
 
@@ -214,7 +217,7 @@ export default class Autosave extends Plugin {
 
 		this._lastDocumentVersion = version;
 
-		this._state = 'external-saving';
+		this.state = 'saving';
 
 		// Wait one promise cycle to be sure that save callbacks are not called
 		// inside a conversion or when the editor's state changes.
@@ -224,10 +227,10 @@ export default class Autosave extends Plugin {
 			) )
 			.then( () => {
 				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
-					this._state = 'debounced-saving';
+					this.state = 'waiting';
 					this._debouncedSave();
 				} else {
-					this._state = 'initial';
+					this.state = 'synchronized';
 					this._pendingActions.remove( this._action );
 					this._action = null;
 				}

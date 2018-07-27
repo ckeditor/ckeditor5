@@ -30,11 +30,11 @@ ClassicEditor
 				const data = editor.getData();
 
 				return wait( 1000 )
-					.then( () => console.log( `${ getTime() } Saved content:`, data ) );
+					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
 			}
 		};
 
-		autosave.listenTo( autosave, 'change:_state',
+		autosave.listenTo( autosave, 'change:state',
 			( evt, propName, newValue, oldValue ) => console.log( `${ getTime() } Changed state: ${ oldValue } -> ${ newValue }` ) );
 	} );
 
