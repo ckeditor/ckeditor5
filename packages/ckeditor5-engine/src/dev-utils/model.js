@@ -249,7 +249,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	if ( markers ) {
 		// To provide stable results, sort markers by name.
-		markers = Array.from( markers ).sort( ( a, b ) => a.name < b.name );
+		markers = Array.from( markers ).sort( ( a, b ) => a.name < b.name ? 1 : -1 );
 
 		for ( const marker of markers ) {
 			downcastDispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
