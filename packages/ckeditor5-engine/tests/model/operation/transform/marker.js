@@ -183,7 +183,6 @@ describe( 'transform', () => {
 				kate.remove();
 
 				syncClients();
-
 				expectClients( '<paragraph></paragraph>' );
 
 				john.undo();
@@ -191,8 +190,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				// Actual result for Kate:
-				// <paragraph><m1:start></m1:start>Fo<m1:end></m1:end><m2:start></m2:start>o<m2:end></m2:end> Bar</paragraph>
+				// Wrong markers transforming.
 				expectClients(
 					'<paragraph>' +
 						'<m1:start></m1:start>Foo<m1:end></m1:end><m2:start></m2:start> Bar<m2:end></m2:end>' +

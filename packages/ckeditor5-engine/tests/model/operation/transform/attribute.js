@@ -795,7 +795,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>FooB<$text bold="true">ar</$text></paragraph>' );
 			} );
 
-			it.skip( 'element into paragraph #2, then undo', () => {
+			it( 'element into paragraph #2, then undo', () => {
 				john.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
