@@ -113,6 +113,9 @@ function tablePostFixer( writer, model ) {
 
 	let wasFixed = false;
 
+	// Do not analyze the same table more then once - may happen for multiple changes in the same table.
+	const analyzedTables = new Set();
+
 	for ( const entry of changes ) {
 		let table;
 
@@ -131,11 +134,14 @@ function tablePostFixer( writer, model ) {
 			table = getParentTable( entry.range.start );
 		}
 
-		if ( table ) {
+		if ( table && !analyzedTables.has( table ) ) {
 			// Step 1: correct rowspans of table cells if necessary.
-			wasFixed = fixTableCellsRowspan( table, writer ) || wasFixed; // Should be true if any of present tables was fixed.
+			// The wasFixed flag should be true if any of tables in batch was fixed - might be more then one.
+			wasFixed = fixTableCellsRowspan( table, writer ) || wasFixed;
 			// Step 2: fix table rows widths.
 			wasFixed = fixTableRowsWidths( table, writer ) || wasFixed;
+
+			analyzedTables.add( table );
 		}
 	}
 

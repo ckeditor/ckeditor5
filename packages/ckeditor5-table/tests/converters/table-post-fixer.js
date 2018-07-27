@@ -133,11 +133,15 @@ describe( 'Table post-fixer', () => {
 				[ '21', '22' ]
 			] );
 			const tableB = modelTable( [
-				[ 'aa' ],
+				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
+			const tableC = modelTable( [
+				[ 'xx' ],
+				[ 'yy', 'yy' ]
+			] );
 
-			const parsed = parse( tableA + tableB, model.schema );
+			const parsed = parse( tableA + tableB + tableC, model.schema );
 
 			model.change( writer => {
 				writer.remove( Range.createIn( root ) );
@@ -149,11 +153,17 @@ describe( 'Table post-fixer', () => {
 				[ '21', '22' ]
 			] );
 			const expectedTableB = formattedModelTable( [
-				[ 'aa', '' ],
+				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
 			] );
+			const expectedTableC = formattedModelTable( [
+				[ 'xx', '' ],
+				[ 'yy', 'yy' ]
+			] );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( expectedTableA + expectedTableB );
+			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( expectedTables );
 		} );
 
 		it( 'should not crash on table remove', () => {
