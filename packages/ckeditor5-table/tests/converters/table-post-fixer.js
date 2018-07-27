@@ -89,7 +89,7 @@ describe( 'Table post-fixer', () => {
 			] ) );
 		} );
 
-		it( 'should fix wrong rowspan attribute on table header', () => {
+		it( 'should fix the wrong rowspan attribute of a table cell inside the header', () => {
 			const parsed = parse( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],
 				[ { rowspan: 8, contents: '12' } ],
@@ -108,7 +108,7 @@ describe( 'Table post-fixer', () => {
 			], { headingRows: 2 } ) );
 		} );
 
-		it( 'should fix wrong rowspan attribute on table body', () => {
+		it( 'should fix the wrong rowspan attribute of a table cell inside the body', () => {
 			const parsed = parse( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 3, contents: '11' }, '12' ],
