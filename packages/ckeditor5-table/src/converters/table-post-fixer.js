@@ -12,15 +12,15 @@ import { getParentTable, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
 
 /**
- * Injects table post-fixer to the model.
+ * Injects a table post-fixer into the model.
  *
- * The role of the tables post-fixer is to ensure that the table's rows has correct structure
+ * The role of the table post-fixer is to ensure that the table rows have the correct structure
  * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
  *
  * The correct structure means that:
  *
- * * All table rows have the same width.
- * * None of a table cells extends vertically beyond its section (either header or body).
+ * * All table rows have the same size.
+ * * None of a table cells that extend vertically beyond their section (either header or body).
  *
  * If the table structure is not correct, the post-fixer will automatically correct it in two steps:
  *
@@ -31,7 +31,7 @@ import TableWalker from './../tablewalker';
  *
  * Such situation may occur when pasting a table (or part of a table) to the editor from external sources.
  *
- * As an example see below table which has a table cell (FOO) with a `rowspan` attribute of `2`:
+ * For example, see the following table which has the cell (FOO) with the rowspan attribute (2):
  *
  *		<table headingRows="1">
  *			<tableRow>
@@ -61,21 +61,23 @@ import TableWalker from './../tablewalker';
  *			</tbody>
  *		</table>
  *
- * In above example the table will be rendered as a table with two rows - one in the header and second one in the body.
- * The table cell with FOO contents will not expand to the body section so its `rowspan` attribute will be changed to `1` (and as
- * the value `1` is a default value the `rowspan` attribute will be removed from the model).
+ * In the above example the table will be rendered as a table with two rows - one in the header and second one in the body.
+ * The table cell (FOO) cannot span over multiple rows as it would expand from the header to the body section.
+ * The `rowspan` attribute must be changed to (1). The value (1) is a default value of the `rowspan` attribute
+ * so the `rowspan` attribute will be removed from the model.
  *
- * The table cell with BAZ contents will be in the first column of a table.
+ * The table cell with BAZ contents will be in the first column of the table.
  *
  * ## Adding missing table cells
  *
- * The table post-fixer will insert empty table cells to equalize table rows lengths. The width of a table row is calculated by counting
- * widths of table cells and widths of columns spanned by cells from rows above in a given row.
+ * The table post-fixer will insert empty table cells to equalize table rows sizes (number of columns).
+ * The size of a table row is calculated by counting column spans of table cells - both horizontal (from the same row) and
+ * vertical (from rows above).
  *
- * In the above example the table row in body section of the table is narrower then the row from the header - it has two cells
- * with default colspan (value of `1`). The header row has one cell with width = 1 and second withe width = 2.
- * The table cell FOO does not expand beyond head section (and as such will be fixed in the first step of this post-fixer).
- * The post-fixer will add a missing table cell to the row in body section of the table.
+ * In the above example, the table row in the body section of the table is narrower then the row from the header - it has two cells
+ * with the default colspan (1). The header row has one cell with colspan (1) and second with colspan (2).
+ * The table cell (FOO) does not expand beyond the head section (and as such will be fixed in the first step of this post-fixer).
+ * The post-fixer will add a missing table cell to the row in the body section of the table.
  *
  * The table from the above example will be fixed and rendered to the view as below:
  *
@@ -94,8 +96,8 @@ import TableWalker from './../tablewalker';
  *			</tbody>
  *		</table>
  *
- * **Note** The table post-fixer only ensures proper structure without deeper analysis of the nature of a change. As such it might lead
- * to a structure which was not intended by user changes. In particular it will also fix undo steps (in conjunction with collaboration)
+ * **Note** The table post-fixer only ensures proper structure without deeper analysis of the nature of a change. As such, it might lead
+ * to a structure which was not intended by the user changes. In particular, it will also fix undo steps (in conjunction with collaboration)
  * in which editor content might not return to the original state.
  *
  * @param {module:engine/model/model~Model} model
@@ -138,8 +140,8 @@ function tablePostFixer( writer, model ) {
 			// Step 1: correct rowspans of table cells if necessary.
 			// The wasFixed flag should be true if any of tables in batch was fixed - might be more then one.
 			wasFixed = fixTableCellsRowspan( table, writer ) || wasFixed;
-			// Step 2: fix table rows widths.
-			wasFixed = fixTableRowsWidths( table, writer ) || wasFixed;
+			// Step 2: fix table rows sizes.
+			wasFixed = fixTableRowsSizes( table, writer ) || wasFixed;
 
 			analyzedTables.add( table );
 		}
@@ -148,7 +150,7 @@ function tablePostFixer( writer, model ) {
 	return wasFixed;
 }
 
-// Fixes the invalid value of rowspan attribute as a table cell cannot extend vertically beyond a table section to which it belongs.
+// Fixes the invalid value of the rowspan attribute because a table cell cannot vertically extend beyond the table section it belongs to.
 //
 // @param {module:engine/model/element~Element} table
 // @param {module:engine/model/writer~Writer} writer
@@ -169,12 +171,12 @@ function fixTableCellsRowspan( table, writer ) {
 	return wasFixed;
 }
 
-// Makes all table rows in a table the same width.
+// Makes all table rows in a table the same size.
 //
 // @param {module:engine/model/element~Element} table
 // @param {module:engine/model/writer~Writer} writer
 // @returns {Boolean} Returns true if table was fixed.
-function fixTableRowsWidths( table, writer ) {
+function fixTableRowsSizes( table, writer ) {
 	let wasFixed = false;
 
 	const rowsLengths = getRowsLengths( table );
@@ -201,7 +203,7 @@ function fixTableRowsWidths( table, writer ) {
 	return wasFixed;
 }
 
-// Searches for the table cells that extends beyond the table section to which they belongs. It will return  an array of objects
+// Searches for the table cells that extends beyond the table section to which they belong to. It will return an array of objects
 // that holds table cells to be trimmed and correct value of a rowspan attribute to set.
 //
 // @param {module:engine/model/element~Element} table
@@ -252,7 +254,7 @@ function getRowsLengths( table ) {
 	return lengths;
 }
 
-// Checks if differ entry for attribute change is one of table's attributes.
+// Checks if the differ entry for an attribute change is one of table's attributes.
 //
 // @param entry
 // @returns {Boolean}
