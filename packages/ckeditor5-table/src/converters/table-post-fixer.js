@@ -96,9 +96,121 @@ import TableWalker from './../tablewalker';
  *			</tbody>
  *		</table>
  *
- * **Note** The table post-fixer only ensures proper structure without deeper analysis of the nature of a change. As such, it might lead
+ * ## Collaboration & Undo - Expectations vs post-fixer results
+ *
+ * The table post-fixer only ensures proper structure without deeper analysis of the nature of a change. As such, it might lead
  * to a structure which was not intended by the user changes. In particular, it will also fix undo steps (in conjunction with collaboration)
  * in which editor content might not return to the original state.
+ *
+ * This will usually happen when one or more users changes size of the table.
+ *
+ * As en example see a table below:
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>
+ *					<td>11</td>
+ *					<td>12</td>
+ *				</tr>
+ *				<tr>
+ *					<td>21<td>
+ *					<td>22<td>
+ *				</tr>
+ *			</tbody>
+ *		</table>
+ *
+ * and user actions:
+ *
+ * 1. Both user have table with two rows and two columns.
+ * 2. User A adds a column at the end of the table - this will insert empty table cells to two rows.
+ * 3. User B adds a row at the end of the table- this will insert a row with two empty table cells.
+ * 4. Both users will have a table as below:
+ *
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by A)</td>
+ *				</tr>
+ *				<tr>
+ *					<td>21</td>
+ *					<td>22</td>
+ *					<td>(empty, inserted by A)</td>
+ *				</tr>
+ *				<tr>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *				</tr>
+ *			</tbody>
+ *		</table>
+ *
+ * The last row is shorter then others so table post-fixer will add empty row to tha last row:
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by A)</td>
+ *				</tr>
+ *				<tr>
+ *					<td>21<td>
+ *					<td>22<td>
+ *					<td>(empty, inserted by A)</td>
+ *				</tr>
+ *				<tr>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
+ *				</tr>
+ *			</tbody>
+ *		</table>
+ *
+ * Unfortunately undo doesn't know the nature of changes and depending which user will apply post-fixer changes undoing them might lead to
+ * broken table. If User B will undo inserting column to a table the undo engine will undo only operations of
+ * inserting empty cells to rows from initial table state (row 1 & 2) but the cell in post-fixed row will remain:
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>
+ *					<td>11</td>
+ *					<td>12</td>
+ *				</tr>
+ *				<tr>
+ *					<td>21</td>
+ *					<td>22</td>
+ *				</tr>
+ *				<tr>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
+ *				</tr>
+ *			</tbody>
+ *		</table>
+ *
+ * After undo the table post-fixer will detect that two rows are shorter then other and will fix table to:
+ *
+ *		<table>
+ *			<tbody>
+ *				<tr>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *				</tr>
+ *				<tr>
+ *					<td>21<td>
+ *					<td>22<td>
+ *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *				</tr>
+ *				<tr>
+ *					<td>(empty, inserted by B)<td>
+ *					<td>(empty, inserted by B)<td>
+ *					<td>(empty, inserted by a post-fixer)<td>
+ *				</tr>
+ *			</tbody>
+ *		</table>
  *
  * @param {module:engine/model/model~Model} model
  */
