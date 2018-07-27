@@ -32,7 +32,7 @@ describe( 'Table post-fixer', () => {
 	} );
 
 	describe( 'on insert table', () => {
-		it( 'should add missing columns to a tableRows that are shorter then longest table row', () => {
+		it( 'should add missing columns to tableRows that are shorter then the longest table row', () => {
 			const parsed = parse( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
@@ -51,7 +51,7 @@ describe( 'Table post-fixer', () => {
 			] ) );
 		} );
 
-		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex 1)', () => {
+		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 1)', () => {
 			const parsed = parse( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' } ],
 				[ '10', { colspan: 2, contents: '12' } ],
@@ -70,7 +70,7 @@ describe( 'Table post-fixer', () => {
 			] ) );
 		} );
 
-		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex 2)', () => {
+		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
 			const parsed = parse( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
@@ -181,8 +181,8 @@ describe( 'Table post-fixer', () => {
 		} );
 	} );
 
-	describe( 'collaboration', () => {
-		it( 'collab remove column vs insert row', () => {
+	describe( 'on collaboration', () => {
+		it( 'should add missing cells to columns (remove column vs insert row)', () => {
 			_testExternal(
 				modelTable( [
 					[ '00[]', '01' ],
@@ -190,11 +190,13 @@ describe( 'Table post-fixer', () => {
 				] ),
 				writer => _removeColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				// Table should have added empty cells.
 				formattedModelTable( [
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
@@ -202,7 +204,7 @@ describe( 'Table post-fixer', () => {
 				] ) );
 		} );
 
-		it( 'collab insert row vs remove column', () => {
+		it( 'should add missing cells to columns (insert row vs remove column)', () => {
 			_testExternal(
 				modelTable( [
 					[ '00[]', '01' ],
@@ -210,18 +212,20 @@ describe( 'Table post-fixer', () => {
 				] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _removeColumn( writer, 1, [ 0, 2 ] ),
+				// There should be empty cells added.
 				formattedModelTable( [
 					[ '00', '' ],
 					[ 'a', 'b' ],
 					[ '10', '' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ '00', '' ],
 					[ '10', '' ]
 				] ) );
 		} );
 
-		it( 'collab insert row vs insert column', () => {
+		it( 'should add empty cell to an added row (insert row vs insert column)', () => {
 			_testExternal(
 				modelTable( [
 					[ '00[]', '01' ],
@@ -229,18 +233,20 @@ describe( 'Table post-fixer', () => {
 				] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
 				writer => _insertColumn( writer, 1, [ 0, 2 ] ),
+				// There should be empty cells added.
 				formattedModelTable( [
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ '00', '', '01' ],
 					[ '10', '', '11' ]
 				] ) );
 		} );
 
-		it( 'collab insert column vs insert row', () => {
+		it( 'should add empty cell to an added row (insert column vs insert row)', () => {
 			_testExternal(
 				modelTable( [
 					[ '00[]', '01' ],
@@ -248,11 +254,13 @@ describe( 'Table post-fixer', () => {
 				] ),
 				writer => _insertColumn( writer, 1, [ 0, 1 ] ),
 				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				// There should be empty cells added.
 				formattedModelTable( [
 					[ '00', '', '01' ],
 					[ 'a', 'b', '' ],
 					[ '10', '', '11' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ '00', '01', '' ],
 					[ 'a', 'b', '' ],
@@ -260,7 +268,7 @@ describe( 'Table post-fixer', () => {
 				] ) );
 		} );
 
-		it( 'collab insert column vs insert column - other row has spanned cell', () => {
+		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column)', () => {
 			_testExternal(
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
@@ -274,17 +282,19 @@ describe( 'Table post-fixer', () => {
 					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 1, [ 1 ] );
 				},
+				// There should be empty cells added.
 				formattedModelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '', '11', '12' ]
 				] ) );
 		} );
 
-		it( 'collab insert column vs insert column - other row has spanned cell (inverted)', () => {
+		it( 'should add empty cell when inserting column over a colspanned cell (insert column vs insert column) - inverted', () => {
 			_testExternal(
 				modelTable( [
 					[ { colspan: 3, contents: '00' } ],
@@ -298,17 +308,19 @@ describe( 'Table post-fixer', () => {
 					_setAttribute( writer, 'colspan', 4, [ 0, 0, 0 ] );
 					_insertColumn( writer, 3, [ 1 ] );
 				},
+				// There should be empty cells added.
 				formattedModelTable( [
 					[ { colspan: 4, contents: '00' }, '' ],
 					[ '10', '', '11', '', '12' ]
 				] ),
+				// Table will have empty column after undo.
 				formattedModelTable( [
 					[ { colspan: 3, contents: '00' }, '' ],
 					[ '10', '11', '', '12' ]
 				] ) );
 		} );
 
-		it( 'collab change table header rows vs remove row', () => {
+		it( 'should insert table cell on undo (change table headers on row with rowspanned cell vs remove row)', () => {
 			_testExternal(
 				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
@@ -317,14 +329,14 @@ describe( 'Table post-fixer', () => {
 				] ),
 				writer => {
 					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
-					_setAttribute( writer, 'rowspan', 1, [ 0, 0, 1 ] );
+					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
 					_insertCell( writer, 1, 1 );
 				},
 				writer => {
 					_removeRow( writer, 1 );
 				},
 				formattedModelTable( [
-					[ '11', { rowspan: 1, contents: '12' }, '13' ],
+					[ '11', '12', '13' ],
 					[ '31', '32', '33' ]
 				], { headingRows: 1 } ),
 				formattedModelTable( [
@@ -333,7 +345,7 @@ describe( 'Table post-fixer', () => {
 				] ) );
 		} );
 
-		it( 'collab remove row vs change table header rows', () => {
+		it( 'should insert empty table cell (remove row vs change table headers on row with rowspanned cell)', () => {
 			_testExternal(
 				modelTable( [
 					[ '11', { rowspan: 2, contents: '12' }, '13' ],
@@ -345,22 +357,18 @@ describe( 'Table post-fixer', () => {
 				},
 				writer => {
 					_setAttribute( writer, 'headingRows', 1, [ 0 ] );
-					_setAttribute( writer, 'rowspan', 1, [ 0, 0, 1 ] );
+					_removeAttribute( writer, 'rowspan', [ 0, 0, 1 ] );
 				},
 				formattedModelTable( [
-					[ '11', { rowspan: 1, contents: '12' }, '13', '' ],
+					[ '11', '12', '13', '' ],
 					[ '31', '32', '33', '' ]
 				], { headingRows: 1 } ),
 				formattedModelTable( [
-					[ '11', { rowspan: 1, contents: '12' }, '13', '' ],
+					[ '11', '12', '13', '' ],
 					[ '21', '23', '', '' ],
 					[ '31', '32', '33', '' ]
 				], { headingRows: 1 } ) );
 		} );
-
-		// Case: remove same column (undo does nothing on one client - NOOP in batch).
-		// Case: remove same row (undo does nothing on one client - NOOP in batch).
-		// Case: Typing over user selecting - typing in marker...
 
 		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
 			setModelData( model, initialData );
@@ -420,6 +428,12 @@ describe( 'Table post-fixer', () => {
 			const node = root.getNodeByPath( path );
 
 			writer.setAttribute( attributeKey, attributeValue, node );
+		}
+
+		function _removeAttribute( writer, attributeKey, path ) {
+			const node = root.getNodeByPath( path );
+
+			writer.removeAttribute( attributeKey, node );
 		}
 
 		function _insertColumn( writer, columnIndex, rows ) {
