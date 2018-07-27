@@ -199,10 +199,14 @@ function getVerticalCell( tableCell, direction ) {
 		return;
 	}
 
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
+	const isMergeWithBodyCell = direction == 'down' && ( rowIndex + rowspan ) === headingRows;
+	const isMergeWithHeadCell = direction == 'up' && rowIndex === headingRows;
+
 	// Don't search for mergeable cell if direction points out of the current table section.
-	if ( headingRows && ( ( direction == 'down' && rowIndex === headingRows - 1 ) || ( direction == 'up' && rowIndex === headingRows ) ) ) {
+	if ( headingRows && ( isMergeWithBodyCell || isMergeWithHeadCell ) ) {
 		return;
 	}
 
