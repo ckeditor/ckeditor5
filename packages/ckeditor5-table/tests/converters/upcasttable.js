@@ -9,7 +9,7 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
 import { formatTable } from '../_utils/utils';
-import Paragraph from '../../../ckeditor5-paragraph/src/paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
