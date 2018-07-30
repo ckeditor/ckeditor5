@@ -113,13 +113,17 @@ function transformSets( operationsA, operationsB, options ) {
 					const opA = opsA[ k ];
 					const opB = opsB[ l ];
 
-					context.aIsStrong = true;
-					const newOpA = transform( opA, opB, context );
+					const newOpA = transform( opA, opB, {
+						aIsStrong: true,
+						aWasUndone: context.wasUndone( opA ),
+						bWasUndone: context.wasUndone( opB )
+					} );
 
-					context.aIsStrong = false;
-					const newOpB = transform( opB, opA, context );
-
-					delete context.aIsStrong;
+					const newOpB = transform( opB, opA, {
+						aIsStrong: false,
+						aWasUndone: context.wasUndone( opB ),
+						bWasUndone: context.wasUndone( opA ),
+					} );
 
 					if ( options.useContext ) {
 						updateOriginalOperation( context, opA, newOpA );
@@ -269,7 +273,7 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 		// <p>Fo[zb]ar<p>
 		//
 		// New text with `highlight="red"` is typed:
-		// <p>Fo[z<$text higlight="red">x</$text>a]r</p>
+		// <p>Fo[z<$text highlight="red">x</$text>a]r</p>
 		//
 		// In this case three operations are needed: `oldValue=null, newValue="yellow"` for `z`, `oldValue="red",
 		// newValue="yellow"` for `x` and `oldValue=null, newValue="yellow"` for `a`. It could even happen that
@@ -707,7 +711,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const removedRange = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b instanceof RemoveOperation && !context.wasUndone( b ) ) {
+	if ( b instanceof RemoveOperation && !context.bWasUndone ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return getNoOp();
 		}
@@ -1057,7 +1061,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			//			deleting it was to have it all deleted. From user experience point of view, moving back the
 			//			removed nodes might be unexpected. This means that in this scenario we will reverse merging and remove the element.
 			//
-			if ( !context.wasUndone( a ) ) {
+			if ( !context.aWasUndone ) {
 				return [ b.getReversed(), a ];
 			}
 		} else {
