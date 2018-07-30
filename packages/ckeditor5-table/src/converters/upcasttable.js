@@ -44,6 +44,12 @@ export default function upcastTable() {
 
 			// Insert element on allowed position.
 			const splitResult = conversionApi.splitToAllowedParent( table, data.modelCursor );
+
+			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+			if ( !splitResult ) {
+				return;
+			}
+
 			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
@@ -102,6 +108,12 @@ export function upcastTableCell( elementName ) {
 
 			// Insert element on allowed position.
 			const splitResult = conversionApi.splitToAllowedParent( tableCell, data.modelCursor );
+
+			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+			if ( !splitResult ) {
+				return;
+			}
+
 			conversionApi.writer.insert( tableCell, splitResult.position );
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 

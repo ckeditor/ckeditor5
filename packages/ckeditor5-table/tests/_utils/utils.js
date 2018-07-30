@@ -12,6 +12,7 @@ import {
 	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
+import { upcastElementToElement } from '../../../ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * Returns a model representation of a table shorthand notation:
@@ -154,24 +155,38 @@ export function formattedViewTable( tableData, attributes ) {
 	return formatTable( viewTable( tableData, attributes ) );
 }
 
-export function defaultSchema( schema ) {
+export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'table', {
 		allowWhere: '$block',
 		allowAttributes: [ 'headingRows', 'headingColumns' ],
+		isLimit: true,
 		isObject: true
 	} );
 
-	schema.register( 'tableRow', { allowIn: 'table' } );
+	schema.register( 'tableRow', {
+		allowIn: 'table',
+		isLimit: true
+	} );
 
 	schema.register( 'tableCell', {
 		allowIn: 'tableRow',
-		allowContentOf: '$block',
 		allowAttributes: [ 'colspan', 'rowspan' ],
 		isLimit: true
 	} );
 
+	// Allow all $block content inside table cell.
 	schema.extend( '$block', { allowIn: 'tableCell' } );
-	schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+	// Disallow table in table.
+	schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+
+	if ( registerParagraph ) {
+		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+	}
 }
 
 export function defaultConversion( conversion, asWidget = false ) {
@@ -182,13 +197,14 @@ export function defaultConversion( conversion, asWidget = false ) {
 	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
 
 	// Table row conversion.
+	conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
 	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
 
 	// Table cell conversion.
-	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
 	conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
 	conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
+	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
 
 	// Table attributes conversion.
 	conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );

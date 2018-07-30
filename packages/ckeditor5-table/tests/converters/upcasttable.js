@@ -8,7 +8,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
-import { formatTable } from '../_utils/utils';
+import { defaultSchema, formatTable } from '../_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'upcastTable()', () => {
@@ -24,37 +24,20 @@ describe( 'upcastTable()', () => {
 				model = editor.model;
 
 				const conversion = editor.conversion;
-				const schema = model.schema;
 
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows', 'headingColumns' ],
-					isLimit: true,
-					isObject: true
-				} );
+				defaultSchema( model.schema, false );
 
-				schema.register( 'tableRow', {
-					allowIn: 'table',
-					isLimit: true
-				} );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isLimit: true
-				} );
-
-				schema.extend( '$block', { allowIn: 'tableCell' } );
-
+				// Table conversion.
 				conversion.for( 'upcast' ).add( upcastTable() );
 
-				// Table row upcast only since downcast conversion is done in `downcastTable()`.
+				// Table row conversion.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 
 				// Table cell conversion.
 				conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
 				conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
 
+				// Table attributes conversion.
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
@@ -290,6 +273,32 @@ describe( 'upcastTable()', () => {
 
 		expectModel(
 			'<fooTable><fooRow><fooCell></fooCell></fooRow></fooTable>'
+		);
+	} );
+
+	it( 'should strip table in table', () => {
+		editor.setData(
+			'<table>' +
+				'<tr>' +
+					'<td>' +
+						'<table>' +
+							'<tr>' +
+								'<td>tableception</td>' +
+							'</tr>' +
+						'</table>' +
+					'</td>' +
+				'</tr>' +
+			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>tableception</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
 		);
 	} );
 
