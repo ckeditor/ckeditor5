@@ -39,7 +39,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Bold</td>
 			<td><kbd>Ctrl</kbd> + <kbd>B</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>I</kbd></td>
+			<td><kbd>⌘</kbd> + <kbd>B</kbd></td>
 		</tr>
 		<tr>
 			<td>Italic</td>
@@ -57,7 +57,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		</tr>
 		<tr>
 			<td>Insert a soft break (i.e. a <code>&lt;br&gt;</code>)</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Enter</kbd></td>
+			<td colspan="2"><kbd>Shift</kbd> + <kbd>Enter</kbd></td>
 		</tr>
 		<tr>
 			<td>Nest the current list item (when in a list)</td>
@@ -68,17 +68,19 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Insert a new table row (when in the last cell of a table)</td>
-			<td colspan="2"><kbd>Tab</kbd></td>
+			<td>Move selection to the previous cell (when in a table)</td>
+			<td colspan="2"><kbd>Shift</kbd> + <kbd>Tab</kbd></td>
 		</tr>
 		<tr>
-			<td>Move the selection to the previous cell (when in a table)</td>
-			<td colspan="2"><kbd>Shift</kbd>+<kbd>Tab</kbd></td>
+			<td>Insert a new table row (when in the last cell of a table)</td>
+			<td colspan="2"><kbd>Tab</kbd></td>
 		</tr>
 	</tbody>
 </table>
 
 ## User interface and navigation
+
+Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface:
 
 <table>
 	<thead>
