@@ -1156,6 +1156,12 @@ setTransformation( RenameOperation, InsertOperation, ( a, b ) => {
 } );
 
 setTransformation( RenameOperation, MergeOperation, ( a, b ) => {
+	if ( a.position.isEqual( b.deletionPosition ) ) {
+		a.position = Position.createFromPosition( b.graveyardPosition );
+
+		return [ a ];
+	}
+
 	a.position = a.position._getTransformedByMergeOperation( b );
 
 	return [ a ];

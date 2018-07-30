@@ -563,6 +563,8 @@ export default class Position {
 				// Above happens during OT when the merged element is moved before the merged-to element.
 				pos = pos._getTransformedByDeletion( operation.deletionPosition, 1 );
 			}
+		} else if ( this.isEqual( operation.deletionPosition ) ) {
+			pos = Position.createFromPosition( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
 		}
