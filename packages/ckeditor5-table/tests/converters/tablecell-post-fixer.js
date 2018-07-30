@@ -8,8 +8,10 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { defaultConversion, defaultSchema, formatTable, formattedViewTable, modelTable } from '../_utils/utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import injectTableCellPostFixer from '../../src/converters/tablecell-post-fixer';
+
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'TableCell post-fixer', () => {
 	let editor, model, doc, root, viewDocument;
@@ -17,6 +19,9 @@ describe( 'TableCell post-fixer', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
