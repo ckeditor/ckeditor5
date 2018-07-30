@@ -1545,7 +1545,7 @@ describe( 'Writer', () => {
 				expect( batch.operations.length ).to.equal( 2 );
 			} );
 
-			it( 'should use RemoveOperation', () => {
+			it( 'should use MoveOperation to graveyard', () => {
 				batch = new Batch();
 				remove( div );
 

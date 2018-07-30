@@ -64,6 +64,12 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	get type() {
+		if ( this.targetPosition.root.rootName == '$graveyard' ) {
+			return 'remove';
+		} else if ( this.sourcePosition.root.rootName == '$graveyard' ) {
+			return 'reinsert';
+		}
+
 		return 'move';
 	}
 

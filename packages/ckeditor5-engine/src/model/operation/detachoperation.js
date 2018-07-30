@@ -60,7 +60,6 @@ export default class DetachOperation extends Operation {
 		if ( this.sourcePosition.root.document ) {
 			/**
 			 * Cannot detach document node.
-			 * Use {@link module:engine/model/operation/removeoperation~RemoveOperation remove operation} instead.
 			 *
 			 * @error detach-operation-on-document-node
 			 */

@@ -3,8 +3,6 @@ import AttributeOperation from './attributeoperation';
 import RenameOperation from './renameoperation';
 import MarkerOperation from './markeroperation';
 import MoveOperation from './moveoperation';
-import RemoveOperation from './removeoperation';
-import ReinsertOperation from './reinsertoperation';
 import RootAttributeOperation from './rootattributeoperation';
 import MergeOperation from './mergeoperation';
 import SplitOperation from './splitoperation';
@@ -29,32 +27,10 @@ function setTransformation( OperationA, OperationB, transformationFunction ) {
 }
 
 function getTransformation( a, b ) {
-	const OperationA = a.constructor;
-	const OperationB = b.constructor;
+	const aGroup = transformations.get( a.constructor );
 
-	const aGroups = new Set();
-	const aGroup = transformations.get( OperationA );
-
-	if ( aGroup ) {
-		aGroups.add( aGroup );
-	}
-
-	for ( const Operation of transformations.keys() ) {
-		if ( a instanceof Operation ) {
-			aGroups.add( transformations.get( Operation ) );
-		}
-	}
-
-	for ( const group of aGroups ) {
-		if ( group.has( OperationB ) ) {
-			return group.get( OperationB );
-		}
-
-		for ( const Operation of group.keys() ) {
-			if ( b instanceof Operation ) {
-				return group.get( Operation );
-			}
-		}
+	if ( aGroup && aGroup.has( b.constructor ) ) {
+		return aGroup.get( b.constructor );
 	}
 
 	return noUpdateTransformation;
@@ -707,7 +683,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const removedRange = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b instanceof RemoveOperation && !context.wasUndone( b ) ) {
+	if ( b.type == 'remove' && !context.wasUndone( b ) ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return getNoOp();
 		}
@@ -926,9 +902,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 	// to provide more expected results.
-	if ( a instanceof RemoveOperation && !( b instanceof RemoveOperation ) ) {
+	if ( a.type == 'remove' && b.type != 'remove' ) {
 		aIsStrong = true;
-	} else if ( !( a instanceof RemoveOperation ) && b instanceof RemoveOperation ) {
+	} else if ( a.type != 'remove' && b.type == 'remove' ) {
 		aIsStrong = false;
 	}
 
@@ -1050,7 +1026,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 	const movedRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( b.deletionPosition.hasSameParentAs( a.sourcePosition ) && movedRange.containsPosition( b.sourcePosition ) ) {
-		if ( a instanceof RemoveOperation ) {
+		if ( a.type == 'remove' ) {
 			// Case 1:	The element to remove got merged.
 			//			Merge operation does support merging elements which are not siblings. So it would not be a problem
 			//			from technical point of view. However, if the element was removed, the intention of the user
@@ -1767,25 +1743,12 @@ function makeMoveOperationsFromRanges( ranges, targetPosition ) {
 }
 
 function makeMoveOperation( range, targetPosition ) {
-	// We want to keep correct operation class.
-	let OperationClass;
-
-	if ( targetPosition.root.rootName == '$graveyard' ) {
-		OperationClass = RemoveOperation;
-	} else if ( range.start.root.rootName == '$graveyard' ) {
-		OperationClass = ReinsertOperation;
-	} else {
-		OperationClass = MoveOperation;
-	}
-
 	targetPosition.stickiness = 'toNone';
 
-	const result = new OperationClass(
+	return new MoveOperation(
 		range.start,
 		range.end.offset - range.start.offset,
 		targetPosition,
-		0 // Is corrected anyway later.
+		0
 	);
-
-	return result;
 }
