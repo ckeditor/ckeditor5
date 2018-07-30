@@ -82,6 +82,7 @@ function tableCellPostFixer( writer, model, mapper ) {
 				}
 			} else {
 				const singleChild = tableCell.getChild( 0 );
+
 				if ( !singleChild || !singleChild.is( 'paragraph' ) ) {
 					return;
 				}

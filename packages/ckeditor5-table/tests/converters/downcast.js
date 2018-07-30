@@ -1199,5 +1199,18 @@ describe( 'downcast converters', () => {
 				[ '<p>00</p><p></p>' ]
 			], { asWidget: true } ) );
 		} );
+
+		it( 'should rename <span> to <p> for single paragraph with attribute', () => {
+			model.schema.extend( '$block', { allowAttributes: 'foo' } );
+			editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+			setModelData( model, modelTable( [
+				[ '<paragraph foo="bar">00[]</paragraph>' ]
+			] ) );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '<p foo="bar">00</p>' ]
+			], { asWidget: true } ) );
+		} );
 	} );
 } );

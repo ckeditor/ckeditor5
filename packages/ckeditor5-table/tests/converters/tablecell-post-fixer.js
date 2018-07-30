@@ -90,7 +90,41 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should do nothing on rename <paragraph> to <heading1> ', () => {
+	it( 'should rename <span> to <p> when setting attribute on paragraph', () => {
+		model.schema.extend( '$block', { allowAttributes: 'foo' } );
+		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p foo="bar">00</p>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should rename <p> to <span> when removing attribute from paragraph', () => {
+		model.schema.extend( '$block', { allowAttributes: 'foo' } );
+		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.removeAttribute( 'foo', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<span>00</span>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should do nothing on rename <paragraph> to <heading1>', () => {
 		setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 		const table = root.getChild( 0 );

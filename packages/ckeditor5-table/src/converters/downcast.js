@@ -386,7 +386,9 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
 		if ( options.asWidget ) {
-			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
+			const containerName = [ ...innerParagraph.getAttributeKeys() ].length ? 'p' : 'span';
+
+			const fakeParagraph = conversionApi.writer.createContainerElement( containerName );
 
 			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
 			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
