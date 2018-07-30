@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
 import {
 	downcastInsertCell,
 	downcastInsertRow,
@@ -12,7 +14,6 @@ import {
 	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
-import { upcastElementToElement } from '../../../ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * Returns a model representation of a table shorthand notation:
