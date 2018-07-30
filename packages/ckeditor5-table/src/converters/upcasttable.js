@@ -132,18 +132,8 @@ export function upcastTableCell( elementName ) {
 				ModelPosition.createAfter( tableCell )
 			);
 
-			// Now we need to check where the modelCursor should be.
-			// If we had to split parent to insert our element then we want to continue conversion inside split parent.
-			//
-			// before: <allowed><notAllowed>[]</notAllowed></allowed>
-			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
-			if ( splitResult.cursorParent ) {
-				data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
-
-				// Otherwise just continue after inserted element.
-			} else {
-				data.modelCursor = data.modelRange.end;
-			}
+			// Continue after inserted element.
+			data.modelCursor = data.modelRange.end;
 		}, { priority: 'normal' } );
 	};
 }
