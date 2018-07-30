@@ -72,7 +72,7 @@ function updateBaseVersions( operations, baseVersion ) {
 	return operations;
 }
 
-function transform( a, b, context = { isStrong: false } ) {
+function transform( a, b, context = {} ) {
 	const transformationFunction = getTransformation( a, b );
 
 	return transformationFunction( a.clone(), b, context );
