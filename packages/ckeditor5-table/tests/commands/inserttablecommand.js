@@ -41,7 +41,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should be false if in table', () => {
-				setData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );

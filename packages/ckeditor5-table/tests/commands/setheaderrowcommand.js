@@ -9,7 +9,7 @@ import SetHeaderRowCommand from '../../src/commands/setheaderrowcommand';
 import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 
-describe( 'HeaderRowCommand', () => {
+describe( 'SetHeaderRowCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -38,7 +38,7 @@ describe( 'HeaderRowCommand', () => {
 		} );
 
 		it( 'should be true if selection is in table', () => {
-			setData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+			setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );

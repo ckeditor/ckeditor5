@@ -152,7 +152,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ { colspan: 2, contents: '[<paragraph>00</paragraph><paragraph>01</paragraph>]' } ]
+					[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
 				] ) );
 			} );
 		} );
@@ -278,7 +278,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ { colspan: 2, contents: '[<paragraph>00</paragraph><paragraph>01</paragraph>]' } ]
+					[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
 				] ) );
 			} );
 		} );
@@ -416,7 +416,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', { rowspan: 2, contents: '[<paragraph>01</paragraph><paragraph>11</paragraph>]' } ],
+					[ '00', { rowspan: 2, contents: '<paragraph>[01</paragraph><paragraph>11]</paragraph>' } ],
 					[ '10' ]
 				] ) );
 			} );
@@ -431,7 +431,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', '[<paragraph>01</paragraph><paragraph>11</paragraph>]', { rowspan: 2, contents: '02' } ],
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>', { rowspan: 2, contents: '02' } ],
 					[ '20', '21' ]
 				] ) );
 			} );
@@ -450,7 +450,7 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
-					[ '20', '[<paragraph>21</paragraph><paragraph>31</paragraph>]', { rowspan: 2, contents: '22' } ],
+					[ '20', '<paragraph>[21</paragraph><paragraph>31]</paragraph>', { rowspan: 2, contents: '22' } ],
 					[ '40', '41' ]
 				] ) );
 			} );
@@ -590,7 +590,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', { rowspan: 2, contents: '[<paragraph>01</paragraph><paragraph>11</paragraph>]' } ],
+					[ '00', { rowspan: 2, contents: '<paragraph>[01</paragraph><paragraph>11]</paragraph>' } ],
 					[ '10' ]
 				] ) );
 			} );
@@ -610,7 +610,7 @@ describe( 'MergeCellCommand', () => {
 					[
 						{ rowspan: 2, contents: '21' },
 						'22',
-						{ rowspan: 3, contents: '[<paragraph>23</paragraph><paragraph>33</paragraph>]' }
+						{ rowspan: 3, contents: '<paragraph>[23</paragraph><paragraph>33]</paragraph>' }
 					],
 					[ '32' ],
 					[ { colspan: 2, contents: '40' }, '42' ]
@@ -627,7 +627,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', '[<paragraph>01</paragraph><paragraph>11</paragraph>]', { rowspan: 2, contents: '02' } ],
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>', { rowspan: 2, contents: '02' } ],
 					[ '20', '21' ]
 				] ) );
 			} );
@@ -646,7 +646,7 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
-					[ '20', '[<paragraph>21</paragraph><paragraph>31</paragraph>]', { rowspan: 2, contents: '22' } ],
+					[ '20', '<paragraph>[21</paragraph><paragraph>31]</paragraph>', { rowspan: 2, contents: '22' } ],
 					[ '40', '41' ]
 				] ) );
 			} );

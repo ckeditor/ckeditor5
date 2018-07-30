@@ -10,7 +10,7 @@ import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand';
 import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 
-describe( 'HeaderColumnCommand', () => {
+describe( 'SetHeaderColumnCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -39,7 +39,7 @@ describe( 'HeaderColumnCommand', () => {
 		} );
 
 		it( 'should be true if selection is in table', () => {
-			setData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+			setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
