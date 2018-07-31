@@ -21,6 +21,7 @@ import {
 	downcastTableHeadingColumnsChange,
 	downcastTableHeadingRowsChange
 } from './converters/downcast';
+
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
@@ -31,7 +32,8 @@ import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import { getParentElement, getParentTable } from './commands/utils';
-import TableUtils from './tableutils';
+import TableUtils from '../src/tableutils';
+import injectTablePostFixer from './converters/table-post-fixer';
 
 import '../theme/tableediting.css';
 import injectTableCellPostFixer from './converters/tablecell-post-fixer';
@@ -47,7 +49,8 @@ export default class TableEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const schema = editor.model.schema;
+		const model = editor.model;
+		const schema = model.schema;
 		const conversion = editor.conversion;
 
 		schema.register( 'table', {
@@ -130,6 +133,8 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
+
+		injectTablePostFixer( model );
 
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );

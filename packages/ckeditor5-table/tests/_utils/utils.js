@@ -37,7 +37,7 @@ import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
  *			contents: 'foo' // text contents of a cell
  *		};
  *
- * @param {Array.<String>} tableData
+ * @param {Array.<Array.<String>|Object>} tableData
  * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns`.
  *
  * @returns {String}
