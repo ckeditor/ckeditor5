@@ -45,7 +45,7 @@ describe( 'TableCell post-fixer', () => {
 			} );
 	} );
 
-	it( 'should rename <span> to <p> when more then one block content inside table cell', () => {
+	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {
 		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -82,6 +82,32 @@ describe( 'TableCell post-fixer', () => {
 
 		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><div></div>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should properly rename the same element on consecutive changes', () => {
+		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+
+			writer.insertElement( 'paragraph', nodeByPath, 'after' );
+
+			writer.setSelection( nodeByPath.nextSibling, 0 );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p>00</p><p></p>' ]
+		], { asWidget: true } ) );
+
+		model.change( writer => {
+			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '00' ]
 		], { asWidget: true } ) );
 	} );
 
