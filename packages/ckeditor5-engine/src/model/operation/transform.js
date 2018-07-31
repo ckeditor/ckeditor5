@@ -113,27 +113,32 @@ function transformSets( operationsA, operationsB, options ) {
 					const opA = opsA[ k ];
 					const opB = opsB[ l ];
 
-					const newOpA = transform( opA, opB, {
+					if ( options.useContext ) {
+						updateRelations( context, opA, opB );
+					}
+
+					const contextAB = {
 						aIsStrong: true,
 						aWasUndone: context.wasUndone( opA ),
 						bWasUndone: context.wasUndone( opB ),
 						abRelation: context.getRelation( opA, opB ),
 						baRelation: context.getRelation( opB, opA )
-					} );
+					};
 
-					const newOpB = transform( opB, opA, {
+					const contextBA = {
 						aIsStrong: false,
 						aWasUndone: context.wasUndone( opB ),
 						bWasUndone: context.wasUndone( opA ),
 						abRelation: context.getRelation( opB, opA ),
 						baRelation: context.getRelation( opA, opB )
-					} );
+					};
+
+					const newOpA = transform( opA, opB, contextAB );
+					const newOpB = transform( opB, opA, contextBA );
 
 					if ( options.useContext ) {
 						updateOriginalOperation( context, opA, newOpA );
 						updateOriginalOperation( context, opB, newOpB );
-
-						updateRelations( context, opA, opB );
 					}
 
 					opsA.splice( k, 1, ...newOpA );
@@ -238,10 +243,15 @@ function updateRelations( context, opA, opB ) {
 					break;
 				}
 
-				case MoveOperation: {
+				case MoveOperation:
+				case RemoveOperation:
+				case ReinsertOperation: {
 					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
 						setRelation( context, opA, opB, 'insertBefore' );
 						setRelation( context, opB, opA, 'insertAfter' );
+					} else {
+						setRelation( context, opA, opB, 'insertAfter' );
+						setRelation( context, opB, opA, 'insertBefore' );
 					}
 
 					break;
@@ -272,7 +282,9 @@ function updateRelations( context, opA, opB ) {
 					break;
 				}
 
-				case MoveOperation: {
+				case MoveOperation:
+				case RemoveOperation:
+				case ReinsertOperation: {
 					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
 						setRelation( context, opA, opB, 'splitBefore' );
 						setRelation( context, opB, opA, 'insertAtSource' );
@@ -305,7 +317,9 @@ function updateRelations( context, opA, opB ) {
 					break;
 				}
 
-				case MoveOperation: {
+				case MoveOperation:
+				case RemoveOperation:
+				case ReinsertOperation: {
 					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
 						setRelation( context, opA, opB, 'insertBefore' );
 					}
@@ -897,8 +911,6 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 } );
 
 setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
-	a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
-
 	if ( b.graveyardPosition ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
 	}
@@ -917,13 +929,18 @@ setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 	//			This means that `targetPosition` needs to be transformed. This is the default case though.
 	//			For example, if the split would be after `F`, `targetPosition` should also be transformed.
 	//
-	//			There is one exception though - when the split operation is a result of undo. In those cases, it is needed
-	//			to keep `targetPosition` intact, so the nodes are returned to the correct element.
+	//			There is an exception though. It is when merge operation targets into inside of an element.
+	//			Such merge operation can be a result of merge x merge transformation, when merges are identical.
+	//			Such merge operation's source position is in graveyard and we will use that to recognize it
+	//			(although a more precise method would be more correct).
 	//
-	// if ( a.targetPosition.isEqual( b.position ) && b.graveyardPosition ) {
-	// 	return [ a ];
-	// }
+	if ( a.targetPosition.isEqual( b.position ) && a.sourcePosition.root.rootName == '$graveyard' ) {
+		a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
 
+		return [ a ];
+	}
+
+	a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
 	a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
 	return [ a ];
@@ -1011,7 +1028,13 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 
 	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
 	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
-	let aIsStrong = context.aIsStrong || context.abRelation == 'insertBefore';
+	let aIsStrong = context.aIsStrong;
+
+	if ( context.abRelation == 'insertBefore' ) {
+		aIsStrong = true;
+	} else if ( context.abRelation == 'insertAfter' ) {
+		aIsStrong = false;
+	}
 
 	// `a.targetPosition` could be affected by the `b` operation. We will transform it.
 	let newTargetPosition;
