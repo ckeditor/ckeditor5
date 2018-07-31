@@ -246,7 +246,6 @@ function makeRows( tableData, options ) {
 				let resultingCellElement = cellElement;
 
 				if ( isObject ) {
-					// TODO: check...
 					if ( tableCellData.isHeading ) {
 						resultingCellElement = headingElement;
 					}

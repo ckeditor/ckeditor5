@@ -19,8 +19,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Table, TableToolbar, Alignment, Image, ImageCaption, ImageStyle ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote',
-			'alignment', 'insertImage',
-			'|', 'undo', 'redo'
+			'alignment', '|', 'undo', 'redo'
 		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]

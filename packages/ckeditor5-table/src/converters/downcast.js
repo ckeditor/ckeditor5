@@ -395,7 +395,6 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 			conversionApi.mapper.bindElements( tableCell, cellElement );
 		} else {
-			// TODO: binding two to one seems supspicious...
 			conversionApi.mapper.bindElements( tableCell, cellElement );
 			conversionApi.mapper.bindElements( innerParagraph, cellElement );
 		}

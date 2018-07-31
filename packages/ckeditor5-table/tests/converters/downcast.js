@@ -495,7 +495,6 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 				} );
 
-				// TODO check span always?
 				expect( formatTable(
 					getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
