@@ -33,27 +33,16 @@ describe( 'TableCell post-fixer', () => {
 				defaultSchema( model.schema );
 				defaultConversion( editor.conversion, true );
 
+				editor.model.schema.register( 'block', {
+					inheritAllFrom: '$block'
+				} );
+				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
+
+				model.schema.extend( '$block', { allowAttributes: 'foo' } );
+				editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
 				injectTableCellPostFixer( model, editor.editing );
 			} );
-	} );
-
-	it( 'should create <span> element for single paragraph inside table cell', () => {
-		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
-
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-			'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-				'<div class="ck ck-widget__selection-handler"></div>' +
-				'<table>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-								'<span>00</span>' +
-							'</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
-			'</figure>'
-		) );
 	} );
 
 	it( 'should rename <span> to <p> when more then one block content inside table cell', () => {
@@ -76,26 +65,7 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
-		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph><paragraph>foo</paragraph>' ] ] ) );
-
-		const table = root.getChild( 0 );
-
-		model.change( writer => {
-			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
-		} );
-
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-			[ '00' ]
-		], { asWidget: true } ) );
-	} );
-
 	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
-		editor.model.schema.register( 'block', {
-			inheritAllFrom: '$block'
-		} );
-		editor.conversion.elementToElement( { model: 'block', view: 'div' } );
-
 		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -115,10 +85,7 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should rename <span> to <p> when setting attribute on paragraph', () => {
-		model.schema.extend( '$block', { allowAttributes: 'foo' } );
-		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
-
+	it( 'should rename <span> to <p> when setting attribute on <paragraph>', () => {
 		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -132,10 +99,21 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should rename <p> to <span> when removing attribute from paragraph', () => {
-		model.schema.extend( '$block', { allowAttributes: 'foo' } );
-		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
+		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph><paragraph>foo</paragraph>' ] ] ) );
 
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '00' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should rename <p> to <span> when removing attribute from <paragraph>', () => {
 		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -149,26 +127,7 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should do nothing on rename <paragraph> to <heading1>', () => {
-		editor.conversion.elementToElement( { model: 'heading1', view: 'h1' } );
-
-		setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-		const table = root.getChild( 0 );
-
-		model.change( writer => {
-			writer.rename( table.getNodeByPath( [ 0, 0, 0 ] ), 'heading1' );
-		} );
-
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-			[ '<h1>00</h1>' ]
-		], { asWidget: true } ) );
-	} );
-
-	it( 'should do nothing <p> when attribute value is changed', () => {
-		model.schema.extend( '$block', { allowAttributes: 'foo' } );
-		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
-
+	it( 'should keep <p> in the view when <paragraph> attribute value is changed', () => {
 		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -182,10 +141,7 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should do nothing <p> when attribute value is changed on multiple nodes', () => {
-		model.schema.extend( '$block', { allowAttributes: 'foo' } );
-		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
-
+	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
 		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph><paragraph>00</paragraph>' ] ] ) );
 
 		const table = root.getChild( 0 );
@@ -199,15 +155,21 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
-	it( 'should do nothing when setting attribute on other block item', () => {
-		model.schema.extend( '$block', { allowAttributes: 'foo' } );
-		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+	it( 'should do nothing on rename <paragraph> to other block', () => {
+		setModelData( model, modelTable( [ [ '00' ] ] ) );
 
-		editor.model.schema.register( 'block', {
-			inheritAllFrom: '$block'
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.rename( table.getNodeByPath( [ 0, 0, 0 ] ), 'block' );
 		} );
-		editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<div>00</div>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
 		setModelData( model, modelTable( [ [ '<block>foo</block>' ] ] ) );
 
 		const table = root.getChild( 0 );
