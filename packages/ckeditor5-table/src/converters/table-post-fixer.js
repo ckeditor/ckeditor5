@@ -304,7 +304,9 @@ function fixTableRowsSizes( table, writer ) {
 
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
-					writer.insertElement( 'tableCell', Position.createAt( table.getChild( rowIndex ), 'end' ) );
+					const tableCell = writer.createElement( 'tableCell' );
+					writer.insert( tableCell, Position.createAt( table.getChild( rowIndex ), 'end' ) );
+					writer.insertElement( 'paragraph', tableCell );
 				}
 
 				wasFixed = true;

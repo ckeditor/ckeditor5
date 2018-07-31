@@ -63,7 +63,6 @@ export default function upcastTable() {
 
 				const tableCell = conversionApi.writer.createElement( 'tableCell' );
 				conversionApi.writer.insert( tableCell, ModelPosition.createAt( row, 'end' ) );
-
 				conversionApi.writer.insertElement( 'paragraph', ModelPosition.createAt( tableCell, 'end' ) );
 			}
 
