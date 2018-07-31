@@ -532,20 +532,10 @@ setTransformation( AttributeOperation, MergeOperation, ( a, b ) => {
 } );
 
 setTransformation( AttributeOperation, MoveOperation, ( a, b ) => {
-	const movedRange = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 	const ranges = breakRangeByMoveOperation( a.range, b, true );
 
 	// Create `AttributeOperation`s out of the ranges.
-	return ranges.map( range => {
-		if ( movedRange.containsRange( range, true ) ) {
-			range = range._getTransformedByMoveOperation( b, false )[ 0 ];
-		} else {
-			range = range._getTransformedByDeletion( b.sourcePosition, b.howMany );
-			range = range._getTransformedByInsertion( b.targetPosition, b.howMany, false )[ 0 ];
-		}
-
-		return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
-	} );
+	return ranges.map( range => new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion ) );
 } );
 
 function breakRangeByMoveOperation( range, moveOp, includeCommon ) {
@@ -553,32 +543,48 @@ function breakRangeByMoveOperation( range, moveOp, includeCommon ) {
 
 	const movedRange = Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
 
-	if ( range.start.hasSameParentAs( moveOp.sourcePosition ) ) {
+	if ( movedRange.containsRange( range, true ) ) {
+		ranges = [ ...range._getTransformedByMoveOperation( moveOp ) ];
+	} else if ( range.start.hasSameParentAs( moveOp.sourcePosition ) ) {
 		ranges = range.getDifference( movedRange );
+
+		_flatMoveTransform( ranges, moveOp );
 
 		if ( includeCommon ) {
 			const common = range.getIntersection( movedRange );
 
 			if ( common ) {
-				ranges.push( common );
+				ranges.push( ...common._getTransformedByMoveOperation( moveOp ) );
 			}
 		}
 	} else {
 		ranges = [ range ];
-	}
 
-	for ( let i = 0; i < ranges.length; i++ ) {
-		const range = ranges[ i ];
-
-		if ( range.start.hasSameParentAs( moveOp.targetPosition ) && range.containsPosition( moveOp.targetPosition ) ) {
-			ranges.splice( i, 1,
-				new Range( range.start, moveOp.targetPosition ),
-				new Range( moveOp.targetPosition, range.end )
-			);
-		}
+		_flatMoveTransform( ranges, moveOp );
 	}
 
 	return ranges;
+}
+
+function _flatMoveTransform( ranges, moveOp ) {
+	const targetPosition = moveOp.getMovedRangeStart();
+
+	for ( let i = 0; i < ranges.length; i++ ) {
+		let range = ranges[ i ];
+
+		if ( range.start.hasSameParentAs( moveOp.sourcePosition ) ) {
+			range = range._getTransformedByDeletion( moveOp.sourcePosition, moveOp.howMany );
+		}
+
+		if ( range.start.hasSameParentAs( targetPosition ) ) {
+			const result = range._getTransformedByInsertion( targetPosition, moveOp.howMany, true );
+
+			ranges.splice( i, 1, ...result );
+			i = i - 1 + result.length;
+		} else {
+			ranges[ i ] = range;
+		}
+	}
 }
 
 setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
@@ -1625,12 +1631,6 @@ setTransformation( WrapOperation, MoveOperation, ( a, b, context ) => {
 
 	const ranges = breakRangeByMoveOperation( a.wrappedRange, b, false );
 
-	if ( ranges.length == 0 ) {
-		const range = a.wrappedRange._getTransformedByMoveOperation( b )[ 0 ];
-
-		ranges.push( range );
-	}
-
 	return ranges.reverse().map( range => {
 		const howMany = range.end.offset - range.start.offset;
 		const elementOrGraveyardPosition = a.graveyardPosition ? a.graveyardPosition : a.element;
@@ -1640,7 +1640,7 @@ setTransformation( WrapOperation, MoveOperation, ( a, b, context ) => {
 } );
 
 setTransformation( WrapOperation, SplitOperation, ( a, b, context ) => {
-	// Case 1:	If range to wrap got split by split operation cancel the wrapping.
+	// Case 1:	If range to wrap got split cancel the wrapping.
 	//			Do that only if this is not undo mode. If `b` operation was earlier transformed by unwrap operation
 	//			and the split position was inside the unwrapped range, then proceed without special case.
 	//
@@ -1652,6 +1652,7 @@ setTransformation( WrapOperation, SplitOperation, ( a, b, context ) => {
 		// created a new element which was put to the graveyard when the wrap was reversed).
 		//
 		// Instead, a node in graveyard will be inserted.
+		//
 		if ( a.element ) {
 			const graveyard = a.position.root.document.graveyard;
 			const graveyardPosition = new Position( graveyard, [ 0 ] );

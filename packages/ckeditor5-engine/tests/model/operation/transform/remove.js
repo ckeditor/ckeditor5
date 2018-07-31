@@ -158,13 +158,30 @@ describe( 'transform', () => {
 				kate.wrap( 'blockQuote' );
 
 				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
 
 				john.undo();
 
 				syncClients();
 
-				// Actual content:
-				// <paragraph>Foo</paragraph><paragraph>Bar</paragraph><blockQuote></blockQuote>
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'element while removing, then undo #2', () => {
+				john.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+
+				john.remove();
+				john.undo();
+				kate.wrap( 'blockQuote' );
+
+				syncClients();
+
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<blockQuote>' +
