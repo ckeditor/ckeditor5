@@ -90,6 +90,31 @@ describe( 'TableCell post-fixer', () => {
 		], { asWidget: true } ) );
 	} );
 
+	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
+		editor.model.schema.register( 'block', {
+			inheritAllFrom: '$block'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'div' } );
+
+		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			const nodeByPath = table.getNodeByPath( [ 0, 0, 0 ] );
+
+			const paragraph = writer.createElement( 'block' );
+
+			writer.insert( paragraph, nodeByPath, 'after' );
+
+			writer.setSelection( nodeByPath.nextSibling, 0 );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p>00</p><div></div>' ]
+		], { asWidget: true } ) );
+	} );
+
 	it( 'should rename <span> to <p> when setting attribute on paragraph', () => {
 		model.schema.extend( '$block', { allowAttributes: 'foo' } );
 		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
@@ -125,11 +150,11 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should do nothing on rename <paragraph> to <heading1>', () => {
+		editor.conversion.elementToElement( { model: 'heading1', view: 'h1' } );
+
 		setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 		const table = root.getChild( 0 );
-
-		editor.conversion.elementToElement( { model: 'heading1', view: 'h1' } );
 
 		model.change( writer => {
 			writer.rename( table.getNodeByPath( [ 0, 0, 0 ] ), 'heading1' );
@@ -137,6 +162,62 @@ describe( 'TableCell post-fixer', () => {
 
 		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<h1>00</h1>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should do nothing <p> when attribute value is changed', () => {
+		model.schema.extend( '$block', { allowAttributes: 'foo' } );
+		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p foo="baz">00</p>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should do nothing <p> when attribute value is changed on multiple nodes', () => {
+		model.schema.extend( '$block', { allowAttributes: 'foo' } );
+		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph><paragraph>00</paragraph>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<p foo="baz">00</p><p>00</p>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should do nothing when setting attribute on other block item', () => {
+		model.schema.extend( '$block', { allowAttributes: 'foo' } );
+		editor.conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+
+		editor.model.schema.register( 'block', {
+			inheritAllFrom: '$block'
+		} );
+		editor.conversion.elementToElement( { model: 'block', view: 'div' } );
+
+		setModelData( model, modelTable( [ [ '<block>foo</block>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
 	} );
 } );
