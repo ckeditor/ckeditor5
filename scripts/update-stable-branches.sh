@@ -5,14 +5,11 @@
 
 set -e
 
-read -p "Did you update the \"Releases\" section in README.md? " -n 1 -r
+read -p "Are you sure? " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	# Release the CKEditor5 repository.
-	node ./scripts/release/release-ckeditor5.js
-
 	# Update the `stable` branch in the ckeditor5 repository.
 	git checkout stable && git merge master && git checkout master
 
@@ -39,6 +36,4 @@ then
 	mgit exec 'git push origin stable'
 
 	echo "Success! 🎂"
-else
-	echo "Update the \"Releases\" section in README.md before starting the release process."
 fi

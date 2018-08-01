@@ -109,9 +109,9 @@
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
     "changelog": "node ./scripts/release/changelog.js",
-    "release": "bash ./scripts/release-ckeditor5.sh",
-    "release:dependencies": "node ./scripts/release/release-dependencies.js",
-    "release:update-dependencies": "node ./scripts/update-dependencies-versions.js",
+    "release:bump-version": "node ./scripts/release/bump-versions.js",
+    "release:publish": "node ./scripts/release/publish.js",
+    "release:stable-branches": "sh ./scripts/update-stable-branches.sh",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
   },
   "lint-staged": {
