@@ -789,6 +789,41 @@ describe( 'transform', () => {
 					'</blockQuote>'
 				);
 			} );
+
+			it( 'only marker end is inside merged element #1', () => {
+				john.setData( '<paragraph>Foo</paragraph>[<paragraph>B]ar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.merge();
+
+				syncClients();
+
+				expectClients( '<paragraph>Foo<m1:start></m1:start>B<m1:end></m1:end>ar</paragraph>' );
+			} );
+
+			it( 'only marker end is inside merged element #2', () => {
+				john.setData( '<paragraph>Foo[]Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo[]Bar</paragraph>' );
+
+				kate.split();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				john.setSelection( [ 1 ] );
+				john.insert( '<paragraph>Xyz</paragraph>' );
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Xyz</paragraph><paragraph>Bar</paragraph>' );
+
+				john.setSelection( [ 1 ], [ 2, 1 ] );
+				john.setMarker( 'm1' );
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo<m1:start></m1:start>Bar</paragraph><paragraph>Xyz</paragraph><m1:end></m1:end>' );
+			} );
 		} );
 
 		describe( 'by rename', () => {
