@@ -86,9 +86,7 @@ export default class LiveRange extends Range {
 	 * @param {Object} data Object with additional information about the change. Those parameters are passed from
 	 * {@link module:engine/model/document~Document#event:change document change event}.
 	 * @param {String} data.type Change type.
-	 * @param {module:engine/model/batch~Batch} data.batch Batch which changed the live range.
-	 * @param {module:engine/model/range~Range} data.range Range containing the result of applied change.
-	 * @param {module:engine/model/position~Position} data.sourcePosition Source position for move, remove and reinsert change types.
+	 * @param {module:engine/model/position~Position|null} deletionPosition Source position for move, remove and reinsert change types.
 	 */
 
 	/**
@@ -147,16 +145,27 @@ function transform( operation ) {
 	const contentChanged = doesOperationChangeRangeContent( this, operation );
 
 	if ( boundariesChanged ) {
+		let deletionPosition = null;
+
+		if ( result.root.rootName == '$graveyard' ) {
+			if ( operation.type == 'remove' ) {
+				deletionPosition = operation.sourcePosition;
+			} else {
+				// Merge operation.
+				deletionPosition = operation.deletionPosition;
+			}
+		}
+
 		// If range boundaries have changed, fire `change:range` event.
 		const oldRange = Range.createFromRange( this );
 
 		this.start = result.start;
 		this.end = result.end;
 
-		this.fire( 'change:range', oldRange, operation );
+		this.fire( 'change:range', oldRange, deletionPosition );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range.createFromRange( this ), operation );
+		this.fire( 'change:content', Range.createFromRange( this ), null );
 	}
 }
 
