@@ -604,12 +604,19 @@ export default class Position {
 		if ( isContained ) {
 			pos = this._getCombined( operation.position, operation.targetPosition );
 		} else if ( this.isEqual( operation.targetPosition ) ) {
-			return Position.createFromPosition( this );
+			pos = Position.createFromPosition( this );
 		} else {
 			pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany );
 		}
 
-		return pos._getTransformedByMove( operation.targetPosition.getShiftedBy( operation.howMany ), operation.graveyardPosition, 1 );
+		const targetPosition = operation.targetPosition.getShiftedBy( operation.howMany );
+
+		if ( !targetPosition.isEqual( operation.graveyardPosition ) ) {
+			pos = pos._getTransformedByDeletion( targetPosition, 1 );
+			pos = pos._getTransformedByInsertion( operation.graveyardPosition, 1 );
+		}
+
+		return pos;
 	}
 
 	/**
