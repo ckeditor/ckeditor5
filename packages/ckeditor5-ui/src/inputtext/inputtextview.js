@@ -78,6 +78,10 @@ export default class InputTextView extends View {
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
 				readonly: bind.to( 'isReadOnly' )
+			},
+			on: {
+				keydown: bind.to( 'keydown' ),
+				change: bind.to( 'change' )
 			}
 		} );
 	}
