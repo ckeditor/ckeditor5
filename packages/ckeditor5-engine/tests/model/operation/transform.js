@@ -16,7 +16,6 @@ import AttributeOperation from '../../../src/model/operation/attributeoperation'
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import MarkerOperation from '../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
-import RemoveOperation from '../../../src/model/operation/removeoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
@@ -688,7 +687,7 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by RemoveOperation', () => {
+		describe( 'by MoveOperation to graveyard', () => {
 			beforeEach( () => {
 				start = new Position( doc.graveyard, [ 2, 0 ] );
 				end = new Position( doc.graveyard, [ 2, 4 ] );
@@ -701,7 +700,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'remove operation inserted elements before attribute operation range: increment path', () => {
-				const transformBy = new RemoveOperation(
+				const transformBy = new MoveOperation(
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( doc.graveyard, [ 0 ] ),
@@ -721,7 +720,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'remove operation inserted elements after attribute operation range: do nothing', () => {
-				const transformBy = new RemoveOperation(
+				const transformBy = new MoveOperation(
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( doc.graveyard, [ 0 ] ),
@@ -1962,11 +1961,11 @@ describe( 'transform', () => {
 			} );
 		} );
 
-		describe( 'by RemoveOperation', () => {
+		describe( 'by MoveOperation to graveyard', () => {
 			let transformBy;
 
 			beforeEach( () => {
-				transformBy = new RemoveOperation(
+				transformBy = new MoveOperation(
 					Position.createFromPosition( op.sourcePosition ),
 					op.howMany,
 					new Position( doc.graveyard, [ 0 ] ),
@@ -1974,7 +1973,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'should skip context.aIsStrong and be less important than RemoveOperation', () => {
+			it( 'should skip context.aIsStrong and be less important than MoveOperation', () => {
 				const transOp = transform.transform( op, transformBy, { aIsStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
@@ -2020,10 +2019,10 @@ describe( 'transform', () => {
 		} );
 	} );
 
-	describe( 'RemoveOperation', () => {
+	describe( 'MoveOperation to graveyard', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'should force removing content even if was less important', () => {
-				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
+				const op = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 
 				const targetPosition = Position.createFromPosition( op.targetPosition );
 
@@ -2036,7 +2035,7 @@ describe( 'transform', () => {
 				expect( transOp.length ).to.equal( 1 );
 
 				expectOperation( transOp[ 0 ], {
-					type: RemoveOperation,
+					type: MoveOperation,
 					howMany: 2,
 					sourcePosition,
 					targetPosition

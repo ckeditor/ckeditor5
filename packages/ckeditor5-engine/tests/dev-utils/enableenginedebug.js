@@ -21,7 +21,6 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
-import RemoveOperation from '../../src/model/operation/removeoperation';
 import transform from '../../src/model/operation/transform';
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
@@ -532,8 +531,8 @@ describe( 'debug tools', () => {
 				model.applyOperation( insert );
 
 				const graveyard = modelDoc.graveyard;
-				const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
-				model.applyOperation( remove );
+				const move = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
+				model.applyOperation( move );
 			} );
 
 			log.resetHistory();
