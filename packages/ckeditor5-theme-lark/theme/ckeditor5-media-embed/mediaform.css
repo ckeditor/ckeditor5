@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck.ck-media-form {
+	padding: var(--ck-spacing-standard);
+
+	&:focus {
+		outline: none;
+	}
+
+	& > :not(:first-child) {
+		margin-left: var(--ck-spacing-standard);
+	}
+}
