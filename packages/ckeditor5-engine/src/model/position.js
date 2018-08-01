@@ -599,15 +599,17 @@ export default class Position {
 			unwrappedRange.start.isEqual( this ) ||
 			unwrappedRange.end.isEqual( this );
 
+		let pos;
+
 		if ( isContained ) {
-			return this._getCombined( operation.position, operation.targetPosition );
+			pos = this._getCombined( operation.position, operation.targetPosition );
 		} else if ( this.isEqual( operation.targetPosition ) ) {
 			return Position.createFromPosition( this );
 		} else {
-			const pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany - 1 );
-
-			return pos._getTransformedByInsertion( operation.graveyardPosition, 1 );
+			pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany );
 		}
+
+		return pos._getTransformedByMove( operation.targetPosition.getShiftedBy( operation.howMany ), operation.graveyardPosition, 1 );
 	}
 
 	/**
