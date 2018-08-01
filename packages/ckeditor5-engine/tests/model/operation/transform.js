@@ -19,6 +19,8 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 describe( 'transform', () => {
 	let model, doc, root, op, nodeA, nodeB, expected;
 
@@ -53,10 +55,29 @@ describe( 'transform', () => {
 	}
 
 	const contextIsStrong = {
-		aIsStrong: true,
-		wasUndone: () => false,
-		getRelation: () => false
+		aIsStrong: true
 	};
+
+	it( 'error logging', () => {
+		const spy = sinon.spy( log, 'error' );
+
+		const nodeA = new Node();
+		const nodeB = new Node();
+
+		const position = new Position( root, [ 0 ] );
+
+		const a = new InsertOperation( position, [ nodeA ], 0 );
+		const b = new InsertOperation( position, [ nodeB ], 0 );
+
+		// Modify an operation so it will throw an error.
+		a.position = null;
+
+		expect( () => {
+			transform.transform( a, b );
+		} ).to.throw();
+
+		sinon.assert.called( spy );
+	} );
 
 	describe( 'InsertOperation', () => {
 		let nodeC, nodeD, position;
