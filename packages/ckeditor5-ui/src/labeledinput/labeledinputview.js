@@ -139,7 +139,8 @@ export default class LabeledInputView extends View {
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
 		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
-		inputView.on( 'keydown', () => {
+
+		inputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
 			this.errorText = false;

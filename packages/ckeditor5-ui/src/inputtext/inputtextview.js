@@ -80,8 +80,7 @@ export default class InputTextView extends View {
 				readonly: bind.to( 'isReadOnly' )
 			},
 			on: {
-				keydown: bind.to( 'keydown' ),
-				change: bind.to( 'change' )
+				input: bind.to( 'input' )
 			}
 		} );
 	}
