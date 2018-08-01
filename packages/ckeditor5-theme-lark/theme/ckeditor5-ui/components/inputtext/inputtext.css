@@ -42,4 +42,12 @@
 			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow), var(--ck-inner-shadow);
 		}
 	}
+
+	&.ck-error {
+		border-color: var(--ck-color-input-error-border);
+
+		&:focus {
+			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow), var(--ck-inner-shadow);
+		}
+	}
 }

@@ -12,12 +12,14 @@
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
 	--ck-color-base-active: 									hsl(208, 88%, 52%);
 	--ck-color-base-active-focus:								hsl(208, 88%, 47%);
+	--ck-color-base-error:										hsl(15, 100%, 43%);
 
 	/* -- Generic colors ------------------------------------------------------------------------ */
 
 	--ck-color-focus-border: 									hsl(208, 90%, 62%);
 	--ck-color-focus-shadow:									hsla(209, 90%, 72%,.5);
 	--ck-color-focus-disabled-shadow:							hsla(209, 90%, 72%,.3);
+	--ck-color-focus-error-shadow:								hsla(9,100%,56%,.3);
 	--ck-color-text: 											var(--ck-color-base-text);
 	--ck-color-shadow-drop: 									hsla(0, 0%, 0%, 0.15);
 	--ck-color-shadow-inner: 									hsla(0, 0%, 0%, 0.1);
@@ -59,6 +61,7 @@
 
 	--ck-color-input-background: 								var(--ck-color-base-background);
 	--ck-color-input-border: 									hsl(0, 0%, 78%);
+	--ck-color-input-error-border:								var(--ck-color-base-error);
 	--ck-color-input-text: 										var(--ck-color-base-text);
 	--ck-color-input-disabled-background: 						hsl(0, 0%, 95%);
 	--ck-color-input-disabled-border: 							hsl(0, 0%, 78%);

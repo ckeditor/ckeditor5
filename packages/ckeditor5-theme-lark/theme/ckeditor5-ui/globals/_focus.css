@@ -20,6 +20,11 @@
 	--ck-focus-disabled-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-disabled-shadow);
 
 	/**
+	 * A visual style of focused element's outer shadow (when has errors).
+	 */
+	--ck-focus-error-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-error-shadow);
+
+	/**
 	 * A visual style of focused element's border or outline.
 	 */
 	--ck-focus-ring: 1px solid var(--ck-color-focus-border);
