@@ -62,6 +62,10 @@ export default class WrapOperation extends Operation {
 		this.element = elementOrPosition instanceof Element ? elementOrPosition : null;
 
 		this.graveyardPosition = elementOrPosition instanceof Element ? null : Position.createFromPosition( elementOrPosition );
+
+		if ( this.graveyardPosition ) {
+			this.graveyardPosition.stickiness = 'toNext';
+		}
 	}
 
 	/**

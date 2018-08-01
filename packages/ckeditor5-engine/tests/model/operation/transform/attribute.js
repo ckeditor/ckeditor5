@@ -325,7 +325,7 @@ describe( 'transform', () => {
 				kate.setData( '<paragraph>F[oo] Bar</paragraph>' );
 
 				john.setAttribute( 'bold', true );
-				kate.move( [ 0, 7 ], [ 0, 1 ], [ 0, 3 ] );
+				kate.move( [ 0, 7 ] );
 
 				syncClients();
 

@@ -702,8 +702,8 @@ describe( 'transform', () => {
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.range.start.path = [ 0, 2, 1 ];
-				expected.range.end.path = [ 0, 2, 2 ];
+				expected.range.start.path = [ 0, 2, 3 ];
+				expected.range.end.path = [ 0, 2, 4 ];
 
 				expectOperation( transOp[ 1 ], expected );
 
@@ -711,56 +711,6 @@ describe( 'transform', () => {
 				expected.range.end.path = [ 0, 2, 3 ];
 
 				expectOperation( transOp[ 2 ], expected );
-			} );
-		} );
-
-		describe( 'by MoveOperation to graveyard', () => {
-			beforeEach( () => {
-				start = new Position( doc.graveyard, [ 2, 0 ] );
-				end = new Position( doc.graveyard, [ 2, 4 ] );
-
-				range = new Range( start, end );
-
-				op = new AttributeOperation( range, 'foo', 'abc', 'bar', 0 );
-
-				expected.range = new Range( start, end );
-			} );
-
-			it( 'remove operation inserted elements before attribute operation range: increment path', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 0 ] ),
-					2,
-					new Position( doc.graveyard, [ 0 ] ),
-					0
-				);
-
-				transformBy.targetPosition.path = [ 0 ];
-
-				const transOp = transform.transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expected.range.start.path = [ 4, 0 ];
-				expected.range.end.path = [ 4, 4 ];
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'remove operation inserted elements after attribute operation range: do nothing', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 0 ] ),
-					2,
-					new Position( doc.graveyard, [ 0 ] ),
-					0
-				);
-
-				transformBy.targetPosition.path = [ 4 ];
-
-				const transOp = transform.transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 	} );
