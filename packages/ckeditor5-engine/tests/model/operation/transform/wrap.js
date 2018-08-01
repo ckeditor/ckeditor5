@@ -241,7 +241,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 			} );
 
-			it.skip( 'element into paragraph, then undo', () => {
+			it( 'element into paragraph, then undo', () => {
 				john.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
@@ -249,7 +249,7 @@ describe( 'transform', () => {
 				kate.merge();
 
 				syncClients();
-				expectClients( '<paragraph>FooBar</paragraph><blockQuote></blockQuote>' );
+				expectClients( '<paragraph>FooBar</paragraph>' );
 
 				john.undo();
 				kate.undo();
