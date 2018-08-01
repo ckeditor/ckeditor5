@@ -63,19 +63,24 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'intersecting wrap #2', () => {
-				john.setData( '<paragraph>[Foo]</paragraph>' );
-				kate.setData( '<paragraph>F[o]o</paragraph>' );
+			it( 'intersecting wrap #2', () => {
+				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]<paragraph>Abc</paragraph>' );
 
-				john.wrap( 'div' );
+				john.wrap( 'blockQuote' );
 				kate.wrap( 'div' );
 
 				syncClients();
-
-				expectClients( '<paragraph><div>Foo</div></pragraph>' );
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+						'<paragraph>Abc</paragraph>' +
+					'</blockQuote>'
+				);
 			} );
 
-			it.skip( 'intersecting wrap, then undo #1', () => {
+			it( 'intersecting wrap, then undo #1', () => {
 				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph>]<paragraph>Abc</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
 
@@ -83,12 +88,20 @@ describe( 'transform', () => {
 				kate.wrap( 'div' );
 
 				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>' +
+					'<div>' +
+						'<paragraph>Abc</paragraph>' +
+					'</div>'
+				);
 
 				john.undo();
 				kate.undo();
 
 				syncClients();
-
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>' +
@@ -96,21 +109,30 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'intersecting wrap, then undo #2', () => {
-				john.setData( '<paragraph>[Foo]</paragraph>' );
-				kate.setData( '<paragraph>F[o]o</paragraph>' );
+			it( 'intersecting wrap, then undo #2', () => {
+				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph>]<paragraph>Abc</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
 
-				john.wrap( 'div' );
+				john.wrap( 'blockQuote' );
 				kate.wrap( 'div' );
 
 				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>' +
+					'<div>' +
+						'<paragraph>Abc</paragraph>' +
+					'</div>'
+				);
 
 				john.undo();
 				kate.undo();
 
 				syncClients();
 
-				expectClients( '<paragraph><div>Foo</div></pragraph>' );
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>' );
 			} );
 
 			it( 'element and text', () => {
@@ -227,14 +249,12 @@ describe( 'transform', () => {
 				kate.merge();
 
 				syncClients();
-
-				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
+				expectClients( '<paragraph>FooBar</paragraph><blockQuote></blockQuote>' );
 
 				john.undo();
 				kate.undo();
 
 				syncClients();
-
 				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 			} );
 		} );

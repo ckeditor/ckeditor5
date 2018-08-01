@@ -218,7 +218,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'element while removing, then undo', () => {
+			it( 'element while removing, then undo', () => {
 				john.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
 				kate.setData( '<paragraph>Foo</paragraph><blockQuote>[]<paragraph>Bar</paragraph></blockQuote>' );
 
@@ -226,15 +226,11 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
-
 				expectClients( '<paragraph>Foo</paragraph>' );
 
 				john.undo();
 
 				syncClients();
-
-				// Actual result:
-				// <paragraph>Foo</paragraph><blockQuote></blockQuote>
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>'
@@ -443,7 +439,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'element into paragraph, then undo', () => {
+			it( 'element into paragraph, then undo', () => {
 				john.setData( '<paragraph>F[oo]</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
@@ -451,15 +447,11 @@ describe( 'transform', () => {
 				kate.merge();
 
 				syncClients();
-
 				expectClients( '<paragraph>FBar</paragraph>' );
 
 				john.undo();
 
 				syncClients();
-
-				// Actual result:
-				// <paragraph>F<paragraph></paragraph>oBar</paragraph>
 				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
