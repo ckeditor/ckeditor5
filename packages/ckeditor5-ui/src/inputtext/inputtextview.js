@@ -55,6 +55,14 @@ export default class InputTextView extends View {
 		 */
 		this.set( 'isReadOnly', false );
 
+		/**
+		 * `true` when the field has some error.
+		 *
+		 * @observable
+		 * @member {Boolean} #error
+		 */
+		this.set( 'hasError', false );
+
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
@@ -64,7 +72,8 @@ export default class InputTextView extends View {
 				class: [
 					'ck',
 					'ck-input',
-					'ck-input-text'
+					'ck-input-text',
+					bind.if( 'hasError', 'ck-error' )
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),

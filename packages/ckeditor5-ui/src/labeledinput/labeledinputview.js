@@ -9,8 +9,8 @@
 
 import View from '../view';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
-
 import LabelView from '../label/labelview';
+import '../../theme/components/labeledinput/labeledinput.css';
 
 /**
  * The labeled input view class.
@@ -28,6 +28,14 @@ export default class LabeledInputView extends View {
 		super( locale );
 
 		const id = `ck-input-${ uid() }`;
+
+		/**
+		 * The error associated with the field.
+		 *
+		 * @observable
+		 * @member {String} #error
+		 */
+		this.set( 'errorText', null );
 
 		/**
 		 * The text of the label.
@@ -80,7 +88,22 @@ export default class LabeledInputView extends View {
 			},
 			children: [
 				this.labelView,
-				this.inputView
+				this.inputView,
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'ck',
+							'ck-labeled-input__error',
+							bind.if( 'errorText', 'ck-hidden', value => !value )
+						]
+					},
+					children: [
+						{
+							text: bind.to( 'errorText' )
+						}
+					]
+				}
 			]
 		} );
 	}
@@ -115,6 +138,7 @@ export default class LabeledInputView extends View {
 		inputView.id = id;
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
+		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
 
 		return inputView;
 	}
