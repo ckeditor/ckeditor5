@@ -97,9 +97,7 @@ export default class MergeCellCommand extends Command {
 			// Cache the parent of cell to remove for later check.
 			const removedTableCellRow = cellToRemove.parent;
 
-			// Remove table cell and merge it contents with merged cell.
-			writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
-			writer.remove( cellToRemove );
+			mergeTableCells( cellToRemove, cellToExpand, writer );
 
 			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
 			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
@@ -253,4 +251,32 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 	}
 
 	writer.remove( removedTableCellRow );
+}
+
+// Merges two table cells - will ensure that after merging cells with empty paragraph the result table cell will only have one paragraph.
+// If one of the merged table cell is empty the merged table cell will have contents of the non-empty table cell.
+// If both are empty the merged table cell will have only one empty paragraph.
+//
+// @param {module:engine/model/element~Element} cellToRemove
+// @param {module:engine/model/element~Element} cellToExpand
+// @param {module:engine/model/writer~Writer} writer
+function mergeTableCells( cellToRemove, cellToExpand, writer ) {
+	if ( !isEmpty( cellToRemove ) ) {
+		if ( isEmpty( cellToExpand ) ) {
+			writer.remove( Range.createIn( cellToExpand ) );
+		}
+
+		writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
+	}
+
+	// Remove merged table cell.
+	writer.remove( cellToRemove );
+}
+
+// Checks if passed table cell contains empty paragraph.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @returns {Boolean}
+function isEmpty( tableCell ) {
+	return tableCell.childCount == 1 && tableCell.getChild( 0 ).is( 'paragraph' ) && tableCell.getChild( 0 ).isEmpty;
 }
