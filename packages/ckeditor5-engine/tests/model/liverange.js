@@ -9,6 +9,8 @@ import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
 import Range from '../../src/model/range';
 import Text from '../../src/model/text';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
 import { stringify, setData } from '../../src/dev-utils/model';
 
 describe( 'LiveRange', () => {
@@ -154,20 +156,42 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 0 ][ 2 ].isEqual( sourcePosition ) ).to.be.true;
 	} );
 
+	// This scenario is hypothetically possible during OT if the element to merge-into was removed.
+	// In that case a live range inside the merged element will be merged into an element which is in graveyard.
+	// Because it may happen only in OT, in the test below we will generate operations by hand.
 	it( 'should pass deletion position if range was removed (merge)', () => {
-		const live = new LiveRange( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+		const live = new LiveRange( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 1 ] ) );
 
 		const spy = sinon.spy();
 		live.on( 'change:range', spy );
 
-		const mergePosition = new Position( root, [ 1 ] );
-
 		model.change( writer => {
-			writer.merge( mergePosition );
+			const batch = writer.batch;
+			const gy = model.document.graveyard;
+
+			const remove = new MoveOperation(
+				new Position( root, [ 0 ] ),
+				1,
+				new Position( gy, [ 0 ] ),
+				model.document.version
+			);
+
+			const merge = new MergeOperation(
+				new Position( root, [ 0, 0 ] ),
+				new Position( gy, [ 0, 0 ] ),
+				new Position( gy, [ 0 ] ),
+				model.document.version + 1
+			);
+
+			batch.addOperation( remove );
+			model.applyOperation( remove );
+
+			batch.addOperation( merge );
+			model.applyOperation( merge );
 		} );
 
 		// Second parameter is deletion position.
-		expect( spy.args[ 0 ][ 2 ].isEqual( mergePosition ) ).to.be.true;
+		expect( spy.args[ 1 ][ 2 ].isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 	} );
 
 	describe( 'should get transformed and fire change:range if', () => {

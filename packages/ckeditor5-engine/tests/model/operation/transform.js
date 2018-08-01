@@ -73,10 +73,18 @@ describe( 'transform', () => {
 		a.position = null;
 
 		expect( () => {
-			transform.transform( a, b );
+			transform.transform( a, b, {
+				aIsStrong: true,
+				aWasUndone: false,
+				bWasUndone: false,
+				abRelation: null,
+				baRelation: null
+			} );
 		} ).to.throw();
 
 		sinon.assert.called( spy );
+
+		log.error.restore();
 	} );
 
 	describe( 'InsertOperation', () => {

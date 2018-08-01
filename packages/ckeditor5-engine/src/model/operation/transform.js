@@ -60,10 +60,10 @@ function transform( a, b, context = {} ) {
 		log.error( 'Transformed operation', a );
 		log.error( 'Operation transformed by', b );
 		log.error( 'context.aIsStrong', context.aIsStrong );
-		log.error( 'context.wasUndone( a )', context.wasUndone( a ) );
-		log.error( 'context.wasUndone( b )', context.wasUndone( b ) );
-		log.error( 'context.getRelation( a, b )', context.getRelation( a, b ) );
-		log.error( 'context.getRelation( b, a )', context.getRelation( b, a ) );
+		log.error( 'context.aWasUndone', context.aWasUndone );
+		log.error( 'context.bWasUndone', context.bWasUndone );
+		log.error( 'context.abRelation', context.abRelation );
+		log.error( 'context.baRelation', context.baRelation );
 
 		throw e;
 	}
@@ -500,15 +500,18 @@ setTransformation( AttributeOperation, MergeOperation, ( a, b ) => {
 	//			Do it only, if there is more than one element in attribute range. If there is only one element,
 	//			it will be handled by the default algorithm.
 	//
-	const howMany = a.range.end.offset - a.range.start.offset;
-
-	if ( howMany > 1 && a.range.start.hasSameParentAs( b.deletionPosition ) ) {
+	if ( a.range.start.hasSameParentAs( b.deletionPosition ) ) {
 		if ( a.range.containsPosition( b.deletionPosition ) || a.range.start.isEqual( b.deletionPosition ) ) {
 			ranges.push( Range.createFromPositionAndShift( b.graveyardPosition, 1 ) );
 		}
 	}
 
-	ranges.push( a.range._getTransformedByMergeOperation( b ) );
+	const range = a.range._getTransformedByMergeOperation( b );
+
+	// Do not add empty (collapsed) ranges to the result. `range` may be collapsed if it contained only the merged element.
+	if ( !range.isCollapsed ) {
+		ranges.push( range );
+	}
 
 	// Create `AttributeOperation`s out of the ranges.
 	return ranges.map( range => {
@@ -605,10 +608,13 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 	if ( a.range.start.hasSameParentAs( b.position ) && a.range.containsPosition( b.position ) ) {
 		const secondPart = a.clone();
 
-		secondPart.range.start = Position.createFromPosition( b.moveTargetPosition );
-		secondPart.range.end = a.range.end._getCombined( b.position, b.moveTargetPosition );
+		secondPart.range = new Range(
+			Position.createFromPosition( b.moveTargetPosition ),
+			a.range.end._getCombined( b.position, b.moveTargetPosition )
+		);
 
 		a.range.end = Position.createFromPosition( b.position );
+		a.range.end.stickiness = 'toPrevious';
 
 		return [ a, secondPart ];
 	}
@@ -1036,7 +1042,7 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 
 	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
 	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
-	let aIsStrong = context.aIsStrong || context.getRelation( a, b ) == 'insertBefore';
+	let aIsStrong = context.aIsStrong;
 
 	if ( context.abRelation == 'insertBefore' ) {
 		aIsStrong = true;
@@ -1379,6 +1385,7 @@ setTransformation( RenameOperation, InsertOperation, ( a, b ) => {
 setTransformation( RenameOperation, MergeOperation, ( a, b ) => {
 	if ( a.position.isEqual( b.deletionPosition ) ) {
 		a.position = Position.createFromPosition( b.graveyardPosition );
+		a.position.stickiness = 'toNext';
 
 		return [ a ];
 	}
@@ -1613,14 +1620,23 @@ setTransformation( WrapOperation, InsertOperation, ( a, b, context ) => {
 } );
 
 setTransformation( WrapOperation, MergeOperation, ( a, b ) => {
+	if ( a.graveyardPosition ) {
+		a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
+	}
+
+	// Case 1:	The element to wrap got merged.
+	//
+	if ( a.position.isEqual( b.deletionPosition ) ) {
+		a.position = Position.createFromPosition( b.graveyardPosition );
+		a.position.stickiness = 'toNext';
+
+		return [ a ];
+	}
+
 	const transformed = a.wrappedRange._getTransformedByMergeOperation( b );
 
 	a.position = transformed.start;
 	a.howMany = transformed.end.offset - transformed.start.offset;
-
-	if ( a.graveyardPosition ) {
-		a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
-	}
 
 	return [ a ];
 } );
