@@ -12,8 +12,6 @@ import TableWalker from './tablewalker';
 
 export default class TableSelection {
 	constructor( editor, tableUtils ) {
-		// block | column | row
-		this._mode = 'block';
 		this._isSelecting = false;
 		this._highlighted = new Set();
 
@@ -25,12 +23,11 @@ export default class TableSelection {
 		return this._isSelecting;
 	}
 
-	startSelection( tableCell, mode = 'block' ) {
+	startSelection( tableCell ) {
 		this.clearSelection();
 		this._isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
-		this._mode = mode;
 		this._redrawSelection();
 	}
 
@@ -61,23 +58,10 @@ export default class TableSelection {
 
 	* getSelection() {
 		if ( !this._startElement || !this._endElement ) {
-			return [];
+			return;
 		}
 
-		// return selection according to the mode
-		if ( this._mode == 'block' ) {
-			yield* this._getBlockSelection();
-		}
-
-		if ( this._mode == 'row' ) {
-			yield* this._getRowSelection();
-		}
-
-		if ( this._mode == 'column' ) {
-			yield* this._getColumnSelection();
-		}
-
-		return [];
+		yield* this._getBlockSelection();
 	}
 
 	* _getBlockSelection() {
@@ -91,32 +75,6 @@ export default class TableSelection {
 		const endColumn = startLocation.column > endLocation.column ? startLocation.column : endLocation.column;
 
 		for ( const cellInfo of new TableWalker( this._startElement.parent.parent, { startRow, endRow } ) ) {
-			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
-				yield cellInfo.cell;
-			}
-		}
-	}
-
-	* _getRowSelection() {
-		const startLocation = this.tableUtils.getCellLocation( this._startElement );
-		const endLocation = this.tableUtils.getCellLocation( this._endElement );
-
-		const startRow = startLocation.row > endLocation.row ? endLocation.row : startLocation.row;
-		const endRow = startLocation.row > endLocation.row ? startLocation.row : endLocation.row;
-
-		for ( const cellInfo of new TableWalker( this._startElement.parent.parent, { startRow, endRow } ) ) {
-			yield cellInfo.cell;
-		}
-	}
-
-	* _getColumnSelection() {
-		const startLocation = this.tableUtils.getCellLocation( this._startElement );
-		const endLocation = this.tableUtils.getCellLocation( this._endElement );
-
-		const startColumn = startLocation.column > endLocation.column ? endLocation.column : startLocation.column;
-		const endColumn = startLocation.column > endLocation.column ? startLocation.column : endLocation.column;
-
-		for ( const cellInfo of new TableWalker( this._startElement.parent.parent ) ) {
 			if ( cellInfo.column >= startColumn && cellInfo.column <= endColumn ) {
 				yield cellInfo.cell;
 			}
