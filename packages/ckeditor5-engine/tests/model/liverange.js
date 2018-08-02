@@ -178,6 +178,7 @@ describe( 'LiveRange', () => {
 
 			const merge = new MergeOperation(
 				new Position( root, [ 0, 0 ] ),
+				10,
 				new Position( gy, [ 0, 0 ] ),
 				new Position( gy, [ 0 ] ),
 				model.document.version + 1

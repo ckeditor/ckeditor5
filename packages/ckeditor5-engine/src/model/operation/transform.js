@@ -839,6 +839,10 @@ setTransformation( MarkerOperation, UnwrapOperation, ( a, b ) => {
 // -----------------------
 
 setTransformation( MergeOperation, InsertOperation, ( a, b ) => {
+	if ( a.sourcePosition.hasSameParentAs( b.position ) ) {
+		a.howMany += b.howMany;
+	}
+
 	a.sourcePosition = a.sourcePosition._getTransformedByInsertOperation( b );
 	a.targetPosition = a.targetPosition._getTransformedByInsertOperation( b );
 
@@ -855,6 +859,7 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 		path.push( 0 );
 
 		a.sourcePosition = new Position( b.graveyardPosition.root, path );
+		a.howMany = 0;
 
 		return [ a ];
 	}
@@ -864,6 +869,10 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
+	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
+		a.howMany += b.howMany;
+	}
+
 	a.sourcePosition = a.sourcePosition._getTransformedByMergeOperation( b );
 	a.targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
 
@@ -890,6 +899,14 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return getNoOp();
 		}
+	}
+
+	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
+		a.howMany += b.howMany;
+	}
+
+	if ( a.sourcePosition.hasSameParentAs( b.sourcePosition ) ) {
+		a.howMany -= b.howMany;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedByMoveOperation( b );
@@ -922,14 +939,15 @@ setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 	//			For example, if the split would be after `F`, `targetPosition` should also be transformed.
 	//
 	//			There is an exception though. It is when merge operation targets into inside of an element.
-	//			Such merge operation can be a result of merge x merge transformation, when merges are identical.
-	//			Such merge operation's source position is in graveyard and we will use that to recognize it
-	//			(although a more precise method would be more correct).
 	//
-	if ( a.targetPosition.isEqual( b.position ) && a.sourcePosition.root.rootName == '$graveyard' ) {
+	if ( a.targetPosition.isEqual( b.position ) && b.howMany != 0 ) {
 		a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
 
 		return [ a ];
+	}
+
+	if ( a.sourcePosition.hasSameParentAs( b.position ) ) {
+		a.howMany = b.position.offset;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
@@ -941,6 +959,10 @@ setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 setTransformation( MergeOperation, WrapOperation, ( a, b ) => {
 	if ( b.graveyardPosition ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
+	}
+
+	if ( a.sourcePosition.hasSameParentAs( b.position ) ) {
+		a.howMany = a.howMany + 1 - b.howMany;
 	}
 
 	// Case 1:	Wrap is with an element from graveyard, which also is merge operation target. This happens
@@ -995,8 +1017,13 @@ setTransformation( MergeOperation, UnwrapOperation, ( a, b, context ) => {
 		path.push( 0 );
 
 		a.sourcePosition = new Position( b.graveyardPosition.root, path );
+		a.howMany = 0;
 
 		return [ a ];
+	}
+
+	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {
+		a.howMany = a.howMany - 1 + b.howMany;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedByUnwrapOperation( b );
@@ -1466,7 +1493,13 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 
 setTransformation( SplitOperation, InsertOperation, ( a, b, context ) => {
 	if ( a.position.isEqual( b.position ) && context.baRelation == 'insertAtSource' ) {
+		a.howMany += b.howMany;
+
 		return [ a ];
+	}
+
+	if ( a.position.hasSameParentAs( b.position ) && a.position.offset < b.position.offset ) {
+		a.howMany += b.howMany;
 	}
 
 	a.position = a.position._getTransformedByInsertOperation( b );
@@ -1475,6 +1508,10 @@ setTransformation( SplitOperation, InsertOperation, ( a, b, context ) => {
 } );
 
 setTransformation( SplitOperation, MergeOperation, ( a, b ) => {
+	if ( a.position.hasSameParentAs( b.targetPosition ) ) {
+		a.howMany += b.howMany;
+	}
+
 	a.position = a.position._getTransformedByMergeOperation( b );
 
 	if ( a.graveyardPosition ) {
@@ -1507,12 +1544,20 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	const rangeToMove = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	if ( a.position.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.position ) ) {
+		const howManyRemoved = b.howMany - ( a.position.offset - b.sourcePosition.offset );
+		a.howMany -= howManyRemoved;
+
+		if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.targetPosition.offset ) {
+			a.howMany += b.howMany;
+		}
+
 		a.position = Position.createFromPosition( b.sourcePosition );
 
 		return [ a ];
 	}
 
 	if ( a.position.isEqual( b.targetPosition ) && context.abRelation == 'splitBefore' ) {
+		a.howMany += b.howMany;
 		a.position = a.position._getTransformedByDeletion( b.sourcePosition, b.howMany );
 
 		return [ a ];
@@ -1520,6 +1565,14 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
+	if ( a.position.hasSameParentAs( b.sourcePosition ) && a.position.offset < b.sourcePosition.offset ) {
+		a.howMany -= b.howMany;
+	}
+
+	if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.sourcePosition.offset ) {
+		a.howMany += b.howMany;
+	}
+
 	a.position = a.position._getTransformedByMoveOperation( b );
 
 	return [ a ];
@@ -1534,9 +1587,15 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 		if ( a.graveyardPosition && b.graveyardPosition && a.graveyardPosition.isEqual( b.graveyardPosition ) ) {
 			return getNoOp();
 		}
+
+		a.howMany = 0;
 	} else if ( a.position.isEqual( b.insertionPosition ) && context.abRelation == 'splitBefore' ) {
 		return [ a ];
 	} else {
+		if ( a.position.hasSameParentAs( b.position ) && a.position.offset < b.position.offset ) {
+			a.howMany -= b.howMany;
+		}
+
 		a.position = a.position._getTransformedBySplitOperation( b );
 	}
 
@@ -1567,7 +1626,12 @@ setTransformation( SplitOperation, WrapOperation, ( a, b, context ) => {
 
 	if ( a.position.isEqual( b.position ) && context.abRelation == 'splitInside' ) {
 		a.position = b.targetPosition;
+		a.howMany = b.howMany;
 	} else {
+		if ( a.position.hasSameParentAs( b.position ) && a.position.offset < b.position.offset ) {
+			a.howMany = a.howMany + 1 - b.howMany;
+		}
+
 		a.position = a.position._getTransformedByWrapOperation( b );
 	}
 
@@ -1586,7 +1650,12 @@ setTransformation( SplitOperation, UnwrapOperation, ( a, b, context ) => {
 		path.push( 0 );
 
 		a.position = new Position( b.graveyardPosition.root, path );
+		a.howMany = 0;
 	} else {
+		if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.targetPosition.offset ) {
+			a.howMany = a.howMany - 1 + b.howMany;
+		}
+
 		a.position = a.position._getTransformedByUnwrapOperation( b );
 	}
 
@@ -1884,11 +1953,11 @@ setTransformation( UnwrapOperation, MergeOperation, ( a, b, context ) => {
 		return [ b.getReversed(), a ];
 	}
 
-	// // Case 2:	The element to unwrap was merged-to and has new nodes.
-	// //
-	// if ( a.position.hasSameParentAs( b.targetPosition ) ) {
-	// 	// Merge operation needs `howMany`!
-	// }
+	// Case 2:	The element to unwrap was merged-to and has new nodes.
+	//
+	if ( a.position.hasSameParentAs( b.targetPosition ) ) {
+		a.howMany += b.howMany;
+	}
 
 	if ( a.position.hasSameParentAs( b.graveyardPosition ) ) {
 		a.howMany++;

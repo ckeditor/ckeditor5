@@ -567,7 +567,7 @@ export default class Writer {
 
 		const version = position.root.document.version;
 
-		const merge = new MergeOperation( sourcePosition, targetPosition, graveyardPosition, version );
+		const merge = new MergeOperation( sourcePosition, position.nodeAfter.maxOffset, targetPosition, graveyardPosition, version );
 
 		this.batch.addOperation( merge );
 		this.model.applyOperation( merge );
@@ -644,7 +644,8 @@ export default class Writer {
 
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
-			const split = new SplitOperation( position, null, version );
+			const howMany = splitElement.maxOffset - position.offset;
+			const split = new SplitOperation( position, howMany, null, version );
 
 			this.batch.addOperation( split );
 			this.model.applyOperation( split );
