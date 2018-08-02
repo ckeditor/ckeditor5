@@ -8,3 +8,10 @@
  * it acts as a message to the builder telling that it should look for the corresponding styles
  * **in the theme** when compiling the editor.
  */
+
+.ck-content .table table {
+	& td.selected,
+	& th.selected {
+		background: hsl(216, 100%, 67%);
+	}
+}
