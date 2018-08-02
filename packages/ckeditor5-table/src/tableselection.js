@@ -8,15 +8,34 @@
  */
 
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-import TableWalker from './tablewalker';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-export default class TableSelection {
-	constructor( editor, tableUtils ) {
+import TableWalker from './tablewalker';
+import TableUtils from './tableutils';
+
+export default class TableSelection extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TableSelection';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableUtils ];
+	}
+
+	constructor( editor ) {
+		super( editor );
+
 		this._isSelecting = false;
 		this._highlighted = new Set();
 
 		this.editor = editor;
-		this.tableUtils = tableUtils;
+		this.tableUtils = editor.plugins.get( TableUtils );
 	}
 
 	get isSelecting() {

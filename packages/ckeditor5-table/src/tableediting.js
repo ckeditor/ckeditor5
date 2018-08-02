@@ -151,10 +151,7 @@ export default class TableEditing extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		const selected = new Set();
-
-		const tableUtils = editor.plugins.get( TableUtils );
-		const tableSelection = new TableSelection( editor, tableUtils );
+		const tableSelection = editor.plugins.get( TableSelection );
 
 		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
 			const tableCell = getTableCell( domEventData, this.editor );
@@ -163,7 +160,7 @@ export default class TableEditing extends Plugin {
 				return;
 			}
 
-			const { column, row } = tableUtils.getCellLocation( tableCell );
+			const { column, row } = editor.plugins.get( TableUtils ).getCellLocation( tableCell );
 
 			const mode = getSelectionMode( domEventData, column, row );
 
@@ -206,7 +203,6 @@ export default class TableEditing extends Plugin {
 
 				if ( node && ( node.is( 'td' ) || node.is( 'th' ) ) ) {
 					editor.editing.view.change( writer => writer.addClass( 'selected', node ) );
-					selected.add( node );
 				}
 			}
 		} );
@@ -216,7 +212,7 @@ export default class TableEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableUtils ];
+		return [ TableUtils, TableSelection ];
 	}
 
 	/**
