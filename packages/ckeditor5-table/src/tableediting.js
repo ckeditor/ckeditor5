@@ -341,40 +341,16 @@ class TableSelection {
 	}
 
 	updateSelection( tableCell ) {
-		this._endElement = tableCell;
-		this._redrawSelection();
-	}
-
-	_redrawSelection() {
-		const viewRanges = [];
-
-		const selected = [ ...this.getSelection() ];
-		const previous = [ ...this._highlighted.values() ];
-
-		this._highlighted.clear();
-
-		for ( const tableCell of selected ) {
-			const viewElement = this.editor.editing.mapper.toViewElement( tableCell );
-			viewRanges.push( ViewRange.createOn( viewElement ) );
-
-			this._highlighted.add( viewElement );
+		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+			this._endElement = tableCell;
 		}
-
-		this.editor.editing.view.change( writer => {
-			for ( const previouslyHighlighted of previous ) {
-				if ( !selected.includes( previouslyHighlighted ) ) {
-					writer.removeClass( 'selected', previouslyHighlighted );
-				}
-			}
-
-			writer.setSelection( viewRanges, { fake: true, label: 'fake selection over table cell' } );
-		} );
+		this._redrawSelection();
 	}
 
 	stopSelection( tableCell ) {
 		this._isSelecting = false;
 
-		if ( tableCell ) {
+		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
 
@@ -451,6 +427,32 @@ class TableSelection {
 				yield cellInfo.cell;
 			}
 		}
+	}
+
+	_redrawSelection() {
+		const viewRanges = [];
+
+		const selected = [ ...this.getSelection() ];
+		const previous = [ ...this._highlighted.values() ];
+
+		this._highlighted.clear();
+
+		for ( const tableCell of selected ) {
+			const viewElement = this.editor.editing.mapper.toViewElement( tableCell );
+			viewRanges.push( ViewRange.createOn( viewElement ) );
+
+			this._highlighted.add( viewElement );
+		}
+
+		this.editor.editing.view.change( writer => {
+			for ( const previouslyHighlighted of previous ) {
+				if ( !selected.includes( previouslyHighlighted ) ) {
+					writer.removeClass( 'selected', previouslyHighlighted );
+				}
+			}
+
+			writer.setSelection( viewRanges, { fake: true, label: 'fake selection over table cell' } );
+		} );
 	}
 }
 
