@@ -194,10 +194,6 @@ export default class TableEditing extends Plugin {
 
 			const tableCell = getTableCell( domEventData, this.editor );
 
-			if ( !tableCell ) {
-				return;
-			}
-
 			tableSelection.stopSelection( tableCell );
 		} );
 
@@ -377,7 +373,11 @@ class TableSelection {
 
 	stopSelection( tableCell ) {
 		this._isSelecting = false;
-		this._endElement = tableCell;
+
+		if ( tableCell ) {
+			this._endElement = tableCell;
+		}
+
 		this._redrawSelection();
 	}
 
