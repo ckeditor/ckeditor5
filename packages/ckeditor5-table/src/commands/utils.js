@@ -8,23 +8,13 @@
  */
 
 /**
- * Returns the parent table. Returns undefined if position is not inside table.
- *
- * @param {module:engine/model/position~Position} position
- * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
- */
-export function getParentTable( position ) {
-	return getParentElement( 'table', position );
-}
-
-/**
  * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
  *
  * @param {String} parentName Name of parent element to find.
- * @param {module:engine/model/position~Position} position
+ * @param {module:engine/model/position~Position|module:engine/model/position~Position} position Position to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
-export function getParentElement( parentName, position ) {
+export function findAncestor( parentName, position ) {
 	let parent = position.parent;
 
 	while ( parent ) {

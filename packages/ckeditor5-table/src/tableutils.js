@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
-import { createEmptyTableCell, getParentTable, updateNumericAttribute } from './commands/utils';
+import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
 
 /**
  * The table utilities plugin.
@@ -294,7 +294,8 @@ export default class TableUtils extends Plugin {
 	 */
 	splitCellVertically( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
-		const table = getParentTable( tableCell );
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
@@ -430,8 +431,9 @@ export default class TableUtils extends Plugin {
 	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 
-		const table = getParentTable( tableCell );
-		const splitCellRow = table.getChildIndex( tableCell.parent );
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
+		const splitCellRow = table.getChildIndex( tableRow );
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );

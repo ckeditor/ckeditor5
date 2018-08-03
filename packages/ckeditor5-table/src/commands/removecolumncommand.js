@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import TableUtils from '../tableutils';
-import { getParentElement, updateNumericAttribute } from './utils';
+import { findAncestor, updateNumericAttribute } from './utils';
 
 /**
  * The remove column command.
@@ -33,7 +33,7 @@ export default class RemoveColumnCommand extends Command {
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		const tableCell = getParentElement( 'tableCell', selection.getFirstPosition() );
+		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
 
 		this.isEnabled = !!tableCell && tableUtils.getColumns( tableCell.parent.parent ) > 1;
 	}
@@ -47,7 +47,7 @@ export default class RemoveColumnCommand extends Command {
 
 		const firstPosition = selection.getFirstPosition();
 
-		const tableCell = getParentElement( 'tableCell', firstPosition );
+		const tableCell = findAncestor( 'tableCell', firstPosition );
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 

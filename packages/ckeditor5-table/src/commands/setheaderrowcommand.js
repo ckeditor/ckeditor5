@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import { createEmptyTableCell, getParentElement, updateNumericAttribute } from './utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -37,7 +37,7 @@ export default class SetHeaderRowCommand extends Command {
 		const selection = doc.selection;
 
 		const position = selection.getFirstPosition();
-		const tableCell = getParentElement( 'tableCell', position );
+		const tableCell = findAncestor( 'tableCell', position );
 		const isInTable = !!tableCell;
 
 		this.isEnabled = isInTable;
@@ -68,7 +68,7 @@ export default class SetHeaderRowCommand extends Command {
 		const selection = doc.selection;
 
 		const position = selection.getFirstPosition();
-		const tableCell = getParentElement( 'tableCell', position );
+		const tableCell = findAncestor( 'tableCell', position );
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 

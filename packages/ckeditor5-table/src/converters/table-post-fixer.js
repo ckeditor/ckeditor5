@@ -8,7 +8,7 @@
  */
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import { createEmptyTableCell, getParentTable, updateNumericAttribute } from './../commands/utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
 
 /**
@@ -240,12 +240,12 @@ function tablePostFixer( writer, model ) {
 
 		// Fix table on adding/removing table cells and rows.
 		if ( entry.name == 'tableRow' || entry.name == 'tableCell' ) {
-			table = getParentTable( entry.position );
+			table = findAncestor( 'table', entry.position );
 		}
 
 		// Fix table on any table's attribute change - including attributes of table cells.
 		if ( isTableAttributeEntry( entry ) ) {
-			table = getParentTable( entry.range.start );
+			table = findAncestor( 'table', entry.range.start );
 		}
 
 		if ( table && !analyzedTables.has( table ) ) {

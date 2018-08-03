@@ -30,12 +30,13 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { getParentElement } from './commands/utils';
+import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
+
 import injectTablePostFixer from './converters/table-post-fixer';
+import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 import '../theme/tableediting.css';
-import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 /**
  * The table editing feature.
@@ -190,7 +191,7 @@ export default class TableEditing extends Plugin {
 
 			const firstPosition = selection.getFirstPosition();
 
-			const tableCell = getParentElement( 'tableCell', firstPosition );
+			const tableCell = findAncestor( 'tableCell', firstPosition );
 
 			if ( !tableCell ) {
 				return;

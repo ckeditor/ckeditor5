@@ -8,7 +8,7 @@
  */
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import { getParentTable } from '../commands/utils';
+import { findAncestor } from '../commands/utils';
 
 /**
  * A helper utility that positions the
@@ -36,7 +36,7 @@ export function getBalloonPositionData( editor ) {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 	const viewSelection = editingView.document.selection;
 
-	const parentTable = getParentTable( viewSelection.getFirstPosition() );
+	const parentTable = findAncestor( 'table', viewSelection.getFirstPosition() );
 
 	return {
 		target: editingView.domConverter.viewToDom( parentTable ),

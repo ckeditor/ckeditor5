@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
-import { getParentElement, updateNumericAttribute } from './utils';
+import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
 
 /**
@@ -83,7 +83,7 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getParentElement( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
 		const cellToMerge = this.value;
 		const direction = this.direction;
 
@@ -123,7 +123,7 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getParentElement( 'tableCell', doc.selection.getFirstPosition() );
+		const tableCell = findAncestor( 'tableCell', doc.selection.getFirstPosition() );
 
 		if ( !tableCell ) {
 			return;

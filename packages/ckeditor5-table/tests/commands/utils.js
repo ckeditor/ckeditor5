@@ -8,7 +8,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import { defaultConversion, defaultSchema, modelTable } from '../_utils/utils';
 
-import { getParentTable } from '../../src/commands/utils';
+import { findAncestor } from '../../src/commands/utils';
 
 describe( 'commands utils', () => {
 	let editor, model;
@@ -32,13 +32,13 @@ describe( 'commands utils', () => {
 		it( 'should return undefined if not in table', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			expect( getParentTable( model.document.selection.focus ) ).to.be.undefined;
+			expect( findAncestor( 'table', model.document.selection.focus ) ).to.be.undefined;
 		} );
 
 		it( 'should return table if position is in tableCell', () => {
 			setData( model, modelTable( [ [ '[]' ] ] ) );
 
-			const parentTable = getParentTable( model.document.selection.focus );
+			const parentTable = findAncestor( 'table', model.document.selection.focus );
 
 			expect( parentTable ).to.not.be.undefined;
 			expect( parentTable.is( 'table' ) ).to.be.true;
