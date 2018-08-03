@@ -118,6 +118,7 @@ export default class TableSelection extends Plugin {
 		this.editor.editing.view.change( writer => {
 			for ( const previouslyHighlighted of previous ) {
 				if ( !selected.includes( previouslyHighlighted ) ) {
+					// TODO: unify somewhere...
 					writer.removeClass( 'selected', previouslyHighlighted );
 				}
 			}
