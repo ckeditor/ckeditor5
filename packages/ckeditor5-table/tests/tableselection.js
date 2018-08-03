@@ -37,16 +37,31 @@ describe( 'TableSelection', () => {
 		} );
 	} );
 
-	describe.only( 'start()', () => {
-		it( 'should...', () => {
+	describe( 'start()', () => {
+		it( 'should start selection', () => {
 			setData( model, modelTable( [
-				[ { rowspan: 2, colspan: 2, contents: '00[]' }, '02' ],
-				[ '12' ]
+				[ '00[]', '01' ],
+				[ '10', '11' ]
 			] ) );
 
 			const nodeByPath = root.getNodeByPath( [ 0, 0, 0 ] );
 
 			tableSelection.startSelection( nodeByPath );
+
+			expect( tableSelection.isSelecting ).to.be.true;
+		} );
+
+		it( 'update selection to single table cell', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const nodeByPath = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			tableSelection.startSelection( nodeByPath );
+
+			expect( Array.from( tableSelection.getSelection() ) ).to.deep.equal( [ nodeByPath ] );
 		} );
 	} );
 } );
