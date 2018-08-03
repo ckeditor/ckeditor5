@@ -319,7 +319,7 @@ function getTableCell( domEventData, editor ) {
 		return;
 	}
 
-	return getParentElement( 'tableCell', Position.createAt( modelElement ) );
+	return findAncestor( 'tableCell', Position.createAt( modelElement ) );
 }
 
 function getSelectionMode( domEventData, column, row ) {
