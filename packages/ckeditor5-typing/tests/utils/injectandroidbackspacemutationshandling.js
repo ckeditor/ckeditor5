@@ -106,7 +106,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			'<h2>Heading 1{}</h2><p>Paragraph</p><h3>Heading 2</h3>' );
 	} );
 
-	it.skip( 'should handle two entire blocks removal', () => {
+	it( 'should handle two entire blocks removal', () => {
 		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
@@ -151,7 +151,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			'<h2>{Heading 1</h2><p>Paragraph}</p><h3>Heading 2</h3>' );
 	} );
 
-	it.skip( 'should handle two partially selected blocks removal', () => {
+	it( 'should handle two partially selected blocks removal', () => {
 		// 1. Set selection to '<h2>Hea{ding 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
@@ -194,7 +194,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expectContentAfterUndo( modelContent, viewContent );
 	} );
 
-	it.skip( 'should handle blocks removal if selection ends on the boundary of inline element', () => {
+	it( 'should handle blocks removal if selection ends on the boundary of inline element', () => {
 		editor.setData( '<h2>Heading 1</h2><p>Paragraph</p><h3><em>Heading</em> 2</h3>' );
 
 		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph</p><h3>]<i>Heading</i> 2</h3>'.
@@ -224,7 +224,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			newChildren: [],
 			oldChildren: Array.from( viewRoot.getChild( 2 ).getChildren() ),
 			node: viewRoot.getChild( 2 )
-		}, { // `paragrpah` and `heading2` removal mutation
+		}, { // `paragraph` and `heading2` removal mutation
 			type: 'children',
 			newChildren: [ viewRoot.getChild( 0 ) ],
 			oldChildren: Array.from( viewRoot.getChildren() ),
@@ -242,7 +242,11 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( '<heading1><$text italic="true">[]Heading</$text> 2</heading1>' );
 		expect( getViewData( view ) ).to.equal( '<h2><i>{}Heading</i> 2</h2>' );
 
-		expectContentAfterUndo( modelContent, viewContent );
+		// https://github.com/ckeditor/ckeditor5-undo/issues/89
+		expectContentAfterUndo(
+			'<heading1>[Heading 1</heading1><paragraph>Paragraph]</paragraph><heading2><$text italic="true">Heading</$text> 2</heading2>',
+			'<h2>{Heading 1</h2><p>Paragraph}</p><h3><i>Heading</i> 2</h3>'
+		);
 	} );
 
 	it( 'should handle selection changed by the user before `backspace` on block merging', () => {
