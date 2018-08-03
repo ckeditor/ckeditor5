@@ -1540,7 +1540,7 @@ setTransformation( SplitOperation, MergeOperation, ( a, b ) => {
 	a.position = a.position._getTransformedByMergeOperation( b );
 
 	if ( a.graveyardPosition ) {
-		a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
+		a.graveyardPosition = a.graveyardPosition._getTransformedByMergeOperation( b );
 	}
 
 	return [ a ];
