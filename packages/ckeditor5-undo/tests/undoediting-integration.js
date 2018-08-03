@@ -903,7 +903,7 @@ describe( 'UndoEditing integration', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-undo/issues/65#issuecomment-323682195
-		it.skip( 'undoing split after the element created by split has been removed', () => {
+		it( 'undoing split after the element created by split has been removed', () => {
 			input( '<paragraph>Foo[]bar</paragraph>' );
 
 			editor.execute( 'enter' );
@@ -915,12 +915,13 @@ describe( 'UndoEditing integration', () => {
 
 				editor.execute( 'delete' );
 			} );
+			output( '<paragraph>Foo[]</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>Foo[</paragraph><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<paragraph>Foobar[]</paragraph>' );
+			output( '<paragraph>Foo[]bar</paragraph>' );
 		} );
 	} );
 
@@ -984,7 +985,7 @@ describe( 'UndoEditing integration', () => {
 	} );
 
 	describe( 'other edge cases', () => {
-		it.skip( 'deleteContent between two nodes', () => {
+		it( 'deleteContent between two nodes', () => {
 			input( '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
 			editor.model.deleteContent( doc.selection );
