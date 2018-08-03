@@ -54,7 +54,9 @@ export function transform( a, b, context = {} ) {
 	const transformationFunction = getTransformation( a, b );
 
 	try {
-		return transformationFunction( a.clone(), b, context );
+		a = a.clone();
+
+		return transformationFunction( a, b, context );
 	} catch ( e ) {
 		log.error( 'Error during operation transformation!' );
 		log.error( 'Transformed operation', a );
@@ -130,8 +132,6 @@ export function transformSets( operationsA, operationsB, options ) {
 					if ( options.useContext ) {
 						updateOriginalOperation( context, opA, newOpA );
 						updateOriginalOperation( context, opB, newOpB );
-
-						updateRelations( context, opA, opB );
 					}
 
 					opsA.splice( k, 1, ...newOpA );
@@ -224,6 +224,8 @@ function updateRelations( context, opA, opB ) {
 					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
 						setRelation( context, opA, opB, 'insertAtSource' );
 						setRelation( context, opB, opA, 'splitBefore' );
+					} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
+						setRelation( context, opA, opB, 'insertBetween' );
 					}
 
 					break;
@@ -294,6 +296,8 @@ function updateRelations( context, opA, opB ) {
 				case MergeOperation: {
 					if ( opA.position.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.position ) ) {
 						setRelation( context, opA, opB, 'insertAtSource' );
+					} else if ( opA.position.isEqual( opB.deletionPosition ) ) {
+						setRelation( context, opA, opB, 'insertBetween' );
 					}
 
 					break;
@@ -522,52 +526,39 @@ setTransformation( AttributeOperation, MoveOperation, ( a, b ) => {
 } );
 
 function breakRangeByMoveOperation( range, moveOp, includeCommon ) {
-	let ranges;
+	let common = null;
+	let difference = [];
 
-	const movedRange = Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
+	const moveRange = Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
 
-	if ( movedRange.containsRange( range, true ) ) {
-		ranges = [ ...range._getTransformedByMoveOperation( moveOp ) ];
-	} else if ( range.start.hasSameParentAs( moveOp.sourcePosition ) ) {
-		ranges = range.getDifference( movedRange );
-
-		_flatMoveTransform( ranges, moveOp );
-
-		if ( includeCommon ) {
-			const common = range.getIntersection( movedRange );
-
-			if ( common ) {
-				ranges.push( ...common._getTransformedByMoveOperation( moveOp ) );
-			}
-		}
+	if ( moveRange.containsRange( range, true ) ) {
+		common = range;
+	} else if ( range.start.hasSameParentAs( moveRange.start ) ) {
+		difference = range.getDifference( moveRange );
+		common = includeCommon ? range.getIntersection( moveRange ) : null;
 	} else {
-		ranges = [ range ];
-
-		_flatMoveTransform( ranges, moveOp );
+		difference = [ range ];
 	}
 
-	return ranges;
-}
+	const result = [];
 
-function _flatMoveTransform( ranges, moveOp ) {
-	const targetPosition = moveOp.getMovedRangeStart();
+	for ( let diff of difference ) {
+		diff = diff._getTransformedByDeletion( moveOp.sourcePosition, moveOp.howMany );
 
-	for ( let i = 0; i < ranges.length; i++ ) {
-		let range = ranges[ i ];
+		const targetPosition = moveOp.getMovedRangeStart();
+		const spread = diff.start.hasSameParentAs( targetPosition );
+		diff = diff._getTransformedByInsertion( targetPosition, moveOp.howMany, spread );
 
-		if ( range.start.hasSameParentAs( moveOp.sourcePosition ) ) {
-			range = range._getTransformedByDeletion( moveOp.sourcePosition, moveOp.howMany );
-		}
-
-		if ( range.start.hasSameParentAs( targetPosition ) ) {
-			const result = range._getTransformedByInsertion( targetPosition, moveOp.howMany, true );
-
-			ranges.splice( i, 1, ...result );
-			i = i - 1 + result.length;
-		} else {
-			ranges[ i ] = range;
-		}
+		result.push( ...diff );
 	}
+
+	if ( common ) {
+		result.push(
+			common._getTransformedByMove( moveOp.sourcePosition, moveOp.targetPosition, moveOp.howMany, false )[ 0 ]
+		);
+	}
+
+	return result;
 }
 
 setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
@@ -921,6 +912,10 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 
 setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 	if ( b.graveyardPosition ) {
+		if ( a.deletionPosition.isEqual( b.graveyardPosition ) ) {
+			a.howMany = b.howMany;
+		}
+
 		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
 	}
 
@@ -938,12 +933,38 @@ setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 	//			This means that `targetPosition` needs to be transformed. This is the default case though.
 	//			For example, if the split would be after `F`, `targetPosition` should also be transformed.
 	//
-	//			There is an exception though. It is when merge operation targets into inside of an element.
+	//			There are two exception, though, when we want to keep `targetPosition` as it was.
 	//
-	if ( a.targetPosition.isEqual( b.position ) && b.howMany != 0 ) {
-		a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
+	//			First exception is when the merge target position is inside an element (not at the end, as usual). This
+	//			happens when the merge operation earlier was transformed by "the same" merge operation. If merge operation
+	//			targets inside the element we want to keep the original target position (and not transform it) because
+	//			we have additional context telling us that we want to merge to the original element. We can check if the
+	//			merge operation points inside element by checking what is `SplitOperation#howMany`. Since merge target position
+	//			is same as split position, if `howMany` is non-zero, it means that the merge target position is inside an element.
+	//
+	//			Second exception is when the element to merge is in the graveyard and split operation uses it. In that case
+	//			if target position would be transformed, the merge operation would target at the source position:
+	//
+	//			root: <p>Foo</p>				graveyard: <p></p>
+	//
+	//			SplitOperation: root [ 0, 3 ] using graveyard [ 0 ] (howMany = 0)
+	//			MergeOperation: graveyard [ 0, 0 ] -> root [ 0, 3 ] (howMany = 0)
+	//
+	//			Since split operation moves the graveyard node back to the root, the merge operation source position changes.
+	//			We would like to merge from the empty <p> to the "Foo" <p>:
+	//
+	//			root: <p>Foo</p><p></p>			graveyard:
+	//
+	//			MergeOperation#sourcePosition = root [ 1, 0 ]
+	//
+	//			If `targetPosition` is transformed, it would become root [ 1, 0 ] as well. It has to be kept as it was.
+	//
+	if ( a.targetPosition.isEqual( b.position ) ) {
+		if ( b.howMany != 0 || ( b.graveyardPosition && a.deletionPosition.isEqual( b.graveyardPosition ) ) ) {
+			a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
 
-		return [ a ];
+			return [ a ];
+		}
 	}
 
 	if ( a.sourcePosition.hasSameParentAs( b.position ) ) {
@@ -1065,17 +1086,18 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
 	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
 	let aIsStrong = context.aIsStrong;
+	let insertBefore = !context.aIsStrong;
 
 	if ( context.abRelation == 'insertBefore' ) {
-		aIsStrong = true;
+		insertBefore = true;
 	} else if ( context.abRelation == 'insertAfter' ) {
-		aIsStrong = false;
+		insertBefore = false;
 	}
 
 	// `a.targetPosition` could be affected by the `b` operation. We will transform it.
 	let newTargetPosition;
 
-	if ( a.targetPosition.isEqual( b.targetPosition ) && aIsStrong ) {
+	if ( a.targetPosition.isEqual( b.targetPosition ) && insertBefore ) {
 		newTargetPosition = a.targetPosition._getTransformedByDeletion(
 			b.sourcePosition,
 			b.howMany
@@ -1167,9 +1189,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 	// to provide more expected results.
-	if ( a.type == 'remove' && b.type != 'remove' ) {
+	if ( a.type == 'remove' && b.type != 'remove' && !context.aWasUndone ) {
 		aIsStrong = true;
-	} else if ( a.type != 'remove' && b.type == 'remove' ) {
+	} else if ( a.type != 'remove' && b.type == 'remove' && !context.bWasUndone ) {
 		aIsStrong = false;
 	}
 
@@ -1282,10 +1304,13 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 
 	a.sourcePosition = transformed.start;
 	a.howMany = transformed.end.offset - transformed.start.offset;
-	a.targetPosition = newTargetPosition;
 
 	if ( a.targetPosition.isEqual( b.position ) && context.abRelation == 'insertAtSource' ) {
-		a.targetPosition = b.targetPosition;
+		a.targetPosition = b.moveTargetPosition;
+	} else if ( a.targetPosition.isEqual( b.insertionPosition ) && context.abRelation == 'insertBetween' ) {
+		a.targetPosition = a.targetPosition;
+	} else {
+		a.targetPosition = newTargetPosition;
 	}
 
 	return [ a ];
@@ -1569,7 +1594,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		a.howMany -= b.howMany;
 	}
 
-	if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.sourcePosition.offset ) {
+	if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.targetPosition.offset ) {
 		a.howMany += b.howMany;
 	}
 

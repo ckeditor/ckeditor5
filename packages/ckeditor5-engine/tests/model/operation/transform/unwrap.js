@@ -132,6 +132,21 @@ describe( 'transform', () => {
 					'<paragraph>Bar</paragraph>'
 				);
 			} );
+
+			it( 'unwrap merge target element', () => {
+				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>Foo</paragraph></blockQuote>[]<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.merge();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );
