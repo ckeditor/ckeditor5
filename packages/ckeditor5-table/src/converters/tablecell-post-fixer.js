@@ -96,12 +96,12 @@ function tableCellPostFixer( writer, model, mapper ) {
 			}
 		} else {
 			// Check all nodes inside table cell on insert/remove operations (also other blocks).
-			const tableCell = entry.position && entry.position.parent;
+			const parent = entry.position && entry.position.parent;
 
-			if ( tableCell && tableCell.is( 'tableCell' ) ) {
-				const renameTo = tableCell.childCount > 1 ? 'p' : 'span';
+			if ( parent && parent.is( 'tableCell' ) ) {
+				const renameTo = parent.childCount > 1 ? 'p' : 'span';
 
-				for ( const child of tableCell.getChildren() ) {
+				for ( const child of parent.getChildren() ) {
 					renameParagraphIfDifferent( child, renameTo, writer, mapper );
 				}
 			}
