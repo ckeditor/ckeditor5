@@ -51,19 +51,19 @@ export default class TableSelection extends Plugin {
 	}
 
 	updateSelection( tableCell ) {
-		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+		if ( this.isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
+
 		this._redrawSelection();
 	}
 
 	stopSelection( tableCell ) {
-		this._isSelecting = false;
-
-		if ( tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+		if ( this.isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
 
+		this._isSelecting = false;
 		this._redrawSelection();
 	}
 
