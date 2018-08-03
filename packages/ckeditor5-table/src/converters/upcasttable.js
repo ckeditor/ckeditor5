@@ -9,6 +9,7 @@
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import { createEmptyTableCell } from '../commands/utils';
 
 /**
  * View table element to model table element conversion helper.
@@ -61,9 +62,7 @@ export default function upcastTable() {
 				const row = conversionApi.writer.createElement( 'tableRow' );
 				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
 
-				const tableCell = conversionApi.writer.createElement( 'tableCell' );
-				conversionApi.writer.insert( tableCell, ModelPosition.createAt( row, 'end' ) );
-				conversionApi.writer.insertElement( 'paragraph', ModelPosition.createAt( tableCell, 'end' ) );
+				createEmptyTableCell( conversionApi.writer, ModelPosition.createAt( row, 'end' ) );
 			}
 
 			// Set conversion result range.

@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import { getParentElement, updateNumericAttribute } from './utils';
+import { createEmptyTableCell, getParentElement, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -169,10 +169,9 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
 			const tableRow = table.getChild( row );
+			const tableCellPosition = Position.createFromParentAndOffset( tableRow, cellIndex );
 
-			const newCell = writer.createElement( 'tableCell', attributes );
-			writer.insert( newCell, Position.createFromParentAndOffset( tableRow, cellIndex ) );
-			writer.insertElement( 'paragraph', Position.createAt( newCell, 0 ) );
+			createEmptyTableCell( writer, tableCellPosition, attributes );
 		}
 	}
 

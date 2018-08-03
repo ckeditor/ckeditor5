@@ -52,3 +52,16 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
 		writer.removeAttribute( key, item );
 	}
 }
+
+/**
+ * Common method to create empty table cell - it will create proper model structure as table cell must have at least one block inside.
+ *
+ * @param {module:engine/model/writer~Writer} writer Model writer.
+ * @param {module:engine/model/position~Position} insertPosition Position at which table cell should be inserted.
+ * @param {Object} attributes Element's attributes.
+ */
+export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
+	const tableCell = writer.createElement( 'tableCell', attributes );
+	writer.insertElement( 'paragraph', tableCell );
+	writer.insert( tableCell, insertPosition );
+}

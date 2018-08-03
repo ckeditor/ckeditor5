@@ -8,7 +8,7 @@
  */
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import { getParentTable, updateNumericAttribute } from './../commands/utils';
+import { createEmptyTableCell, getParentTable, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
 
 /**
@@ -304,9 +304,7 @@ function fixTableRowsSizes( table, writer ) {
 
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
-					const tableCell = writer.createElement( 'tableCell' );
-					writer.insert( tableCell, Position.createAt( table.getChild( rowIndex ), 'end' ) );
-					writer.insertElement( 'paragraph', tableCell );
+					createEmptyTableCell( writer, Position.createAt( table.getChild( rowIndex ), 'end' ) );
 				}
 
 				wasFixed = true;

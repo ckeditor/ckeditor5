@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
-import { getParentTable, updateNumericAttribute } from './commands/utils';
+import { createEmptyTableCell, getParentTable, updateNumericAttribute } from './commands/utils';
 
 /**
  * The table utilities plugin.
@@ -569,9 +569,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 // @param {module:engine/model/position~Position} insertPosition
 function createCells( cells, writer, insertPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
-		const tableCell = writer.createElement( 'tableCell', attributes );
-		writer.insert( tableCell, insertPosition );
-		writer.insertElement( 'paragraph', Position.createAt( tableCell ) );
+		createEmptyTableCell( writer, insertPosition, attributes );
 	}
 }
 
