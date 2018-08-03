@@ -89,7 +89,7 @@ export default function upcastTable() {
 			} else {
 				data.modelCursor = data.modelRange.end;
 			}
-		}, { priority: 'normal' } );
+		} );
 	};
 }
 
@@ -133,7 +133,7 @@ export function upcastTableCell( elementName ) {
 
 			// Continue after inserted element.
 			data.modelCursor = data.modelRange.end;
-		}, { priority: 'normal' } );
+		} );
 	};
 }
 

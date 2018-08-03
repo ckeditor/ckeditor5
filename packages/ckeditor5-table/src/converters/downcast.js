@@ -74,7 +74,7 @@ export function downcastInsertTable( options = {} ) {
 
 		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : figureElement );
 		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : figureElement );
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -117,7 +117,7 @@ export function downcastInsertRow( options = {} ) {
 
 			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -159,7 +159,7 @@ export function downcastInsertCell( options = {} ) {
 				return;
 			}
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -236,7 +236,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 		function isBetween( index, lower, upper ) {
 			return index > lower && index < upper;
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -274,7 +274,7 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 
 			renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget );
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
