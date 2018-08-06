@@ -1879,23 +1879,53 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 			return [ a ];
 		}
 		// Ranges intersect.
-		else if ( ranges.length == 1 ) {
-			if ( context.aIsStrong ) {
-				// If the incoming wrap operation is strong, we need to reverse the previous wrap, then apply the incoming
-				// operation as is, then re-wrap the other nodes that were wrapped in the previous wrap.
-				//
-				// Content already wrapped into `blockQuote` but that wrap is not strong:
-				// <blockQuote><p>Foo</p><p>Bar</p></blockQuote><p>Xyz</p>
-				//
-				// Unwrap:
-				// <p>Foo</p><p>Bar</p><p>Xyz</p>
-				//
-				// Wrap with stronger wrap (`a`):
-				// <p>Foo</p><div><p>Bar</p><p>Xyz</p></div>
-				//
-				// Re-wrap:
-				// <blockQuote><p>Foo</p></blockQuote><div><p>Bar</p><p>Xyz</p></div>
-				//
+		else {
+			// Range from `b` has some extra nodes other than nodes from `a`.
+			if ( !a.wrappedRange.containsRange( b.wrappedRange, true ) ) {
+				if ( context.aIsStrong ) {
+					// If the incoming wrap operation is strong, we need to reverse the previous wrap, then apply the incoming
+					// operation as is, then re-wrap the other nodes that were wrapped in the previous wrap.
+					//
+					// Content already wrapped into `blockQuote` but that wrap is not strong:
+					// <blockQuote><p>Foo</p><p>Bar</p></blockQuote><p>Xyz</p>
+					//
+					// Unwrap:
+					// <p>Foo</p><p>Bar</p><p>Xyz</p>
+					//
+					// Wrap with stronger wrap (`a`):
+					// <p>Foo</p><div><p>Bar</p><p>Xyz</p></div>
+					//
+					// Re-wrap:
+					// <blockQuote><p>Foo</p></blockQuote><div><p>Bar</p><p>Xyz</p></div>
+					//
+					const reversed = b.getReversed();
+
+					// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
+					// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
+					// update a position in graveyard.
+					if ( !b.graveyardPosition && a.graveyardPosition ) {
+						a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
+					}
+
+					const bOnlyRange = b.wrappedRange.getDifference( a.wrappedRange )[ 0 ];
+					const rewrapRange = bOnlyRange._getTransformedByWrapOperation( a );
+					const rewrapHowMany = rewrapRange.end.offset - rewrapRange.start.offset;
+					const rewrap = new WrapOperation( rewrapRange.start, rewrapHowMany, reversed.graveyardPosition, 0 );
+
+					return [ reversed, a, rewrap ];
+				} else {
+					// If the incoming wrap operation is not strong, just wrap those nodes which were not wrapped already.
+					const range = ranges[ 0 ]._getTransformedByWrapOperation( b );
+
+					a.position = range.start;
+					a.howMany = range.end.offset - range.start.offset;
+					a.graveyardPosition = newGraveyardPosition;
+
+					return [ a ];
+				}
+			}
+			// Range from `b` is contained in range from `a`. Reverse operation `b` in addition to operation `a`.
+			else {
 				const reversed = b.getReversed();
 
 				// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
@@ -1905,35 +1935,8 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 					a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
 				}
 
-				const bOnlyRange = b.wrappedRange.getDifference( a.wrappedRange )[ 0 ];
-				const rewrapRange = bOnlyRange._getTransformedByWrapOperation( a );
-				const rewrapHowMany = rewrapRange.end.offset - rewrapRange.start.offset;
-				const rewrap = new WrapOperation( rewrapRange.start, rewrapHowMany, reversed.graveyardPosition, 0 );
-
-				return [ reversed, a, rewrap ];
-			} else {
-				// If the incoming wrap operation is not strong, just wrap those nodes which were not wrapped already.
-				const range = ranges[ 0 ]._getTransformedByWrapOperation( b );
-
-				a.position = range.start;
-				a.howMany = range.end.offset - range.start.offset;
-				a.graveyardPosition = newGraveyardPosition;
-
-				return [ a ];
+				return [ reversed, a ];
 			}
-		}
-		// Range from `b` is contained in range from `a`. Reverse operation `b` in addition to operation `a`.
-		else {
-			const reversed = b.getReversed();
-
-			// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
-			// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
-			// update a position in graveyard.
-			if ( !b.graveyardPosition && a.graveyardPosition ) {
-				a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
-			}
-
-			return [ reversed, a ];
 		}
 	}
 
