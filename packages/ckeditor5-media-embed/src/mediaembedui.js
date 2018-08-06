@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import imageIcon from '../theme/icons/media.svg';
+import mediaIcon from '../theme/icons/media.svg';
 import MediaFormView from './ui/mediaformview';
 import { hasMediaContent } from './utils';
 
@@ -48,10 +48,13 @@ export default class MediaEmbedUI extends Plugin {
 
 		button.set( {
 			label: t( 'Insert media' ),
-			icon: imageIcon,
+			icon: mediaIcon,
 			tooltip: true
 		} );
 
+		// Note: Use the low priority to make sure the following listener starts working after the
+		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+		// invisible form/input cannot be focused/selected.
 		button.on( 'open', () => {
 			// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 			// the command. If the user typed in the input, then canceled (`urlInputView#value` stays
@@ -70,10 +73,7 @@ export default class MediaEmbedUI extends Plugin {
 			}
 		} );
 
-		dropdown.on( 'change:isOpen', () => {
-			form.resetErrors();
-		} );
-
+		dropdown.on( 'change:isOpen', () => form.resetErrors() );
 		dropdown.on( 'cancel', () => closeUI() );
 
 		function closeUI() {
@@ -96,12 +96,12 @@ function getFormValidators( editor ) {
 	const t = editor.t;
 
 	return [
-		function( form ) {
+		form => {
 			if ( !form.url.length ) {
 				return t( 'The URL must not be empty.' );
 			}
 		},
-		function( form ) {
+		form => {
 			if ( !hasMediaContent( editor, form.url ) ) {
 				return t( 'This media URL is not supported.' );
 			}
