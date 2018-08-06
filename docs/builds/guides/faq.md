@@ -81,7 +81,9 @@ Image features are enabled by default in all editor builds (also the image uploa
 
 ## How to use CKEditor 5 with frameworks (Angular, React, etc.)?
 
-There are no ready–to–use framework adapters as of yet. We recognize the popularity of these frameworks and our intention is for the guides and seamless integrations to be developed in the future. Meanwhile, please refer to the [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/599) for more information.
+The beta versions of official [Angular](https://github.com/ckeditor/ckeditor5-angular) and [React](https://github.com/ckeditor/ckeditor5-react) integrations are already available to try out and test. Your feedback will be most welcome!
+
+We will be working on further integrations (and documentation) soon. Meanwhile, please refer to the dedicated [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/599) for more information.
 
 ## How to get a fully–featured editor build (a.k.a. CKEditor 4 "Full Package")?
 

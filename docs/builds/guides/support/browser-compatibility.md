@@ -38,21 +38,10 @@ Features known to not be fully supported yet:
 
 ## Mobile environment
 
-Although CKEditor 5 works in Safari for iOS and Chrome for Android, it has not been fully tested yet and there are known bugs and inconveniences. Full support for mobile browsers will be our goal after releasing v10.0.0.
+CKEditor 5 is currently supported in the following mobile environments:
 
-When working on mobile support we need to consider two complex aspects:
-
-* **Special UI, designed for mobile.**
-
-	During the design phase we understood that creating a responsive and touch-friendly UI will not guarantee a desired UX level by itself. Also, that the "mobile first" approach has no application in this case due to constraints of the mobile environment and the specific editing method. Therefore, we plan to introduce a completely customized, mobile-oriented UI.
-
-	We began research on how to display necessary UI controls on the screen and, sadly, it turned out that mobile Safari's viewport mechanics makes it extremely complicated to display the UI in a reliable way. You can read more in the [UX: Mobile editing](https://github.com/ckeditor/ckeditor5-design/issues/149) ticket.
-
-* **Handling mobile browsers' quirks.**
-
-	Mobile browsers (especially mobile Safari) work differently than their desktop equivalents. [Chrome's incomplete `keydown` event](https://bugs.chromium.org/p/chromium/issues/detail?id=118639) is just one of the issues that we need to deal with.
-
-	For several years we have worked with W3C on [fixing `contentEditable`](https://medium.com/content-uneditable/fixing-contenteditable-1a9a5073c35d) &mdash; a technology on which the entire browser-based editing is based. Recently, browser vendors started implementing the core part of [the new specifications](http://w3c.github.io/editing/) &mdash; the `beforeinput` event which has a chance to improve the situation. CKEditor 5's architecture was designed with this event in mind, so we will start taking advantage of it as soon as it proves to be stable enough.
+* Android (all vendor-supported versions)
+* iOS (all vendor-supported versions)
 
 ## Quality assurance
 
