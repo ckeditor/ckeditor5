@@ -10,7 +10,6 @@ import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'AttributeOperation', () => {
 	let model, doc, root;
@@ -377,16 +376,17 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized.__className ).to.equal( 'engine.model.operation.AttributeOperation' );
+
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.AttributeOperation',
 				baseVersion: 0,
 				key: 'key',
 				newValue: 'newValue',
 				oldValue: null,
-				range: jsonParseStringify( range )
+				range: range.toJSON()
 			} );
 		} );
 	} );
@@ -402,7 +402,7 @@ describe( 'AttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = AttributeOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

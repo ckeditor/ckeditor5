@@ -644,7 +644,7 @@ describe( 'debug tools', () => {
 
 			const stringifiedOperations = model.getAppliedOperations();
 
-			expect( stringifiedOperations ).to.equal( JSON.stringify( insert.toJSON() ) );
+			expect( stringifiedOperations ).to.equal( JSON.stringify( insert ) );
 		} );
 
 		it( 'createReplayer()', () => {

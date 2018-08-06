@@ -5,7 +5,6 @@
 
 import {
 	getNodesAndText,
-	jsonParseStringify,
 	itemAt,
 	getText,
 	createRangeOnElementOnly
@@ -34,22 +33,6 @@ describe( 'getNodesAndText', () => {
 
 	it( 'reads two elements with text', () => {
 		expect( getNodesAndText( Range.createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
-	} );
-} );
-
-describe( 'jsonParseStringify', () => {
-	class Foo {
-		constructor( ra ) {
-			this.ra = ra;
-		}
-	}
-
-	it( 'should return cleaned object', () => {
-		const foo = new Foo( { bar: 'bar' } );
-
-		const fooJsoned = jsonParseStringify( foo );
-		expect( fooJsoned ).to.not.be.instanceOf( Foo );
-		expect( fooJsoned ).to.deep.equal( { ra: { bar: 'bar' } } );
 	} );
 } );
 

@@ -5,7 +5,6 @@
 
 import Model from '../../../src/model/model';
 import DetachOperation from '../../../src/model/operation/detachoperation';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Position from '../../../src/model/position';
 import DocumentFragment from '../../../src/model/documentfragment';
@@ -61,12 +60,12 @@ describe( 'DetachOperation', () => {
 			const position = Position.createBefore( element );
 			const op = new DetachOperation( position, 1 );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.DetachOperation',
 				baseVersion: null,
-				sourcePosition: jsonParseStringify( position ),
+				sourcePosition: position.toJSON(),
 				howMany: 1
 			} );
 		} );

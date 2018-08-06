@@ -381,7 +381,11 @@ export default class Node {
 		const json = {};
 
 		if ( this._attrs.size ) {
-			json.attributes = [ ...this._attrs ];
+			json.attributes = Array.from( this._attrs ).reduce( ( result, attr ) => {
+				result[ attr[ 0 ] ] = attr[ 1 ];
+
+				return result;
+			}, {} );
 		}
 
 		return json;

@@ -7,7 +7,6 @@ import Model from '../../../src/model/model';
 import Text from '../../../src/model/text';
 import Range from '../../../src/model/range';
 import MarkerOperation from '../../../src/model/operation/markeroperation';
-import { jsonParseStringify } from '../../model/_utils/utils';
 
 function matchRange( range ) {
 	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );
@@ -135,14 +134,14 @@ describe( 'MarkerOperation', () => {
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new MarkerOperation( 'name', null, range, model.markers, doc.version, true );
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.MarkerOperation',
 				baseVersion: 0,
 				name: 'name',
 				oldRange: null,
-				newRange: jsonParseStringify( range ),
+				newRange: range.toJSON(),
 				affectsData: true
 			} );
 		} );
@@ -152,7 +151,7 @@ describe( 'MarkerOperation', () => {
 		it( 'should create proper MarkerOperation from json object #1', () => {
 			const op = new MarkerOperation( 'name', null, range, model.markers, doc.version, true );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );
@@ -162,7 +161,7 @@ describe( 'MarkerOperation', () => {
 			// Gotta love 100% CC.
 			const op = new MarkerOperation( 'name', range, null, model.markers, doc.version, true );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

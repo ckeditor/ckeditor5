@@ -7,7 +7,6 @@ import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -320,14 +319,17 @@ describe( 'Element', () => {
 		it( 'should serialize empty element', () => {
 			const element = new Element( 'one' );
 
-			expect( jsonParseStringify( element ) ).to.deep.equal( { name: 'one' } );
+			expect( element.toJSON() ).to.deep.equal( { name: 'one' } );
 		} );
 
 		it( 'should serialize element with attributes', () => {
 			const element = new Element( 'one', { foo: true, bar: false } );
 
-			expect( jsonParseStringify( element ) ).to.deep.equal( {
-				attributes: [ [ 'foo', true ], [ 'bar', false ] ],
+			expect( element.toJSON() ).to.deep.equal( {
+				attributes: {
+					foo: true,
+					bar: false
+				},
 				name: 'one'
 			} );
 		} );
@@ -340,7 +342,7 @@ describe( 'Element', () => {
 
 			const node = new Element( null, null, [ one, two, three ] );
 
-			expect( jsonParseStringify( node ) ).to.deep.equal( {
+			expect( node.toJSON() ).to.deep.equal( {
 				children: [
 					{ name: 'one' },
 					{
@@ -362,7 +364,7 @@ describe( 'Element', () => {
 		it( 'should create element without attributes', () => {
 			const el = new Element( 'el' );
 
-			const serialized = jsonParseStringify( el );
+			const serialized = el.toJSON();
 
 			const deserialized = Element.fromJSON( serialized );
 
@@ -374,7 +376,7 @@ describe( 'Element', () => {
 		it( 'should create element with attributes', () => {
 			const el = new Element( 'el', { foo: true } );
 
-			const serialized = jsonParseStringify( el );
+			const serialized = el.toJSON();
 
 			const deserialized = Element.fromJSON( serialized );
 
@@ -390,7 +392,7 @@ describe( 'Element', () => {
 			const text = new Text( 'foo' );
 			const el = new Element( 'el', null, [ p, text ] );
 
-			const serialized = jsonParseStringify( el );
+			const serialized = el.toJSON();
 
 			const deserialized = Element.fromJSON( serialized );
 

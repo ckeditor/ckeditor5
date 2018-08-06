@@ -11,7 +11,6 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;
@@ -223,13 +222,13 @@ describe( 'InsertOperation', () => {
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
 			op.shouldReceiveAttributes = true;
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.InsertOperation',
 				baseVersion: 0,
-				nodes: jsonParseStringify( new NodeList( [ new Text( 'x' ) ] ) ),
-				position: jsonParseStringify( position ),
+				nodes: ( new NodeList( [ new Text( 'x' ) ] ) ).toJSON(),
+				position: position.toJSON(),
 				shouldReceiveAttributes: true
 			} );
 		} );
@@ -244,7 +243,7 @@ describe( 'InsertOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = InsertOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

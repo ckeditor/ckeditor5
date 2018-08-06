@@ -791,6 +791,17 @@ export default class Position {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		return {
+			root: this.root.toJSON(),
+			path: Array.from( this.path ),
+			stickiness: this.stickiness
+		};
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/model/position~Position position},
@@ -915,7 +926,7 @@ export default class Position {
 	 */
 	static fromJSON( json, doc ) {
 		if ( json.root === '$graveyard' ) {
-			const pos = new Position( doc.graveyard, json.path );
+			const pos = new Position( doc.graveyard, Array.from( json.path ) );
 			pos.stickiness = json.stickiness;
 
 			return pos;
@@ -934,7 +945,7 @@ export default class Position {
 			);
 		}
 
-		const pos = new Position( doc.getRoot( json.root ), json.path );
+		const pos = new Position( doc.getRoot( json.root ), Array.from( json.path ) );
 		pos.stickiness = json.stickiness;
 
 		return pos;
