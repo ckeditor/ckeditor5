@@ -124,6 +124,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+
+				john.remove();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph></paragraph>' +
+					'<paragraph><div>Bar</div></paragraph>'
+				);
+			} );
+
 			it( 'element in same path', () => {
 				john.setData( '<paragraph>[Foo]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -136,6 +151,18 @@ describe( 'transform', () => {
 				expectClients(
 					'<blockQuote><paragraph></paragraph></blockQuote>'
 				);
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<paragraph>[Foo] Bar</paragraph>' );
+				kate.setData( '<paragraph>[Foo Bar]</paragraph>' );
+
+				john.remove();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients( '<paragraph><div> Bar</div></paragraph>' );
 			} );
 
 			it( 'element while removing', () => {
@@ -163,14 +190,40 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				// Actual content:
-				// <paragraph>Foo</paragraph><paragraph>Bar</paragraph><blockQuote></blockQuote>
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph>Bar</paragraph>' +
 					'</blockQuote>'
 				);
+			} );
+
+			it( 'text while removing', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.remove();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients( '<paragraph></paragraph>' );
+			} );
+
+			it( 'text while removing, then undo', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.remove();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				expectClients( '<paragraph><div>Foo</div></paragraph>' );
 			} );
 		} );
 
@@ -190,6 +243,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+
+				john.remove();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph></paragraph>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'element in same path', () => {
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -201,6 +269,20 @@ describe( 'transform', () => {
 
 				expectClients(
 					'<paragraph></paragraph>'
+				);
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.remove();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote></blockQuote>'
 				);
 			} );
 

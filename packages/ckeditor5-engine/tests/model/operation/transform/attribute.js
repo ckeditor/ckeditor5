@@ -376,6 +376,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text into div in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+
+				john.setAttribute( 'bold', true );
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><$text bold="true">Foo</$text></paragraph>' +
+					'<paragraph><div>Bar</div></paragraph>'
+				);
+			} );
+
 			it( 'element into blockQuote in same path #1', () => {
 				john.setData( '<paragraph>[Foo]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -406,6 +421,18 @@ describe( 'transform', () => {
 						'<paragraph bold="true">Foo</paragraph>' +
 					'</blockQuote>'
 				);
+			} );
+
+			it( 'text into div in same path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.setAttribute( 'bold', true );
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients( '<paragraph><div><$text bold="true">Foo</$text></div></paragraph>' );
 			} );
 		} );
 
@@ -440,6 +467,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+
+				john.setAttribute( 'bold', true );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><$text bold="true">Foo</$text></paragraph>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'element in same path #1', () => {
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -464,6 +506,20 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph bold="true">Foo</paragraph>' );
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.setAttribute( 'bold', true );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote><$text bold="true">Foo</$text></blockQuote>'
+				);
 			} );
 		} );
 
