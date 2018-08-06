@@ -79,6 +79,8 @@ export function transformSets( operationsA, operationsB, options ) {
 		return { operationsA, operationsB };
 	}
 
+	const toTransform = operationsA.map( op => ( { opA: op, transformFrom: 0 } ) );
+
 	const data = {
 		nextBaseVersionA: operationsA[ operationsA.length - 1 ].baseVersion + 1,
 		nextBaseVersionB: operationsB[ operationsB.length - 1 ].baseVersion + 1,
@@ -88,69 +90,55 @@ export function transformSets( operationsA, operationsB, options ) {
 
 	const context = initializeContext( operationsA, operationsB, options );
 
-	// For each operation from `operationsA` set...
-	for ( let i = 0; i < operationsA.length; ) {
-		const opsA = [ operationsA[ i ] ];
+	for ( let i = 0; i < toTransform.length; i++ ) {
+		const transformFrom = toTransform[ i ].transformFrom;
 
-		// Get an operation from `operationsB` set, and transform them.
-		for ( let j = 0; j < operationsB.length; ) {
-			const opsB = [ operationsB[ j ] ];
+		for ( let j = transformFrom; j < operationsB.length; ) {
+			const opA = toTransform[ i ].opA;
+			const opB = operationsB[ j ];
 
-			// After transformation both operation `a` and `b` might be broken into two operations.
-			// When operation `a` is broken on two operations, it is needed to continue transforming both operations
-			// by operations from `operationsB` set. Hence, there is a need for additional loop, that will loop
-			// through all currently processed operation. For the same reason, additional loop is needed for operation
-			// `b` which may be broken into two operations after transforming by first operation from `opsA`.
-			for ( let k = 0; k < opsA.length; ) {
-				for ( let l = 0; l < opsB.length; ) {
-					const opA = opsA[ k ];
-					const opB = opsB[ l ];
-
-					if ( options.useContext ) {
-						updateRelations( context, opA, opB );
-					}
-
-					const contextAB = {
-						aIsStrong: true,
-						aWasUndone: context.wasUndone( opA ),
-						bWasUndone: context.wasUndone( opB ),
-						abRelation: context.getRelation( opA, opB ),
-						baRelation: context.getRelation( opB, opA )
-					};
-
-					const contextBA = {
-						aIsStrong: false,
-						aWasUndone: context.wasUndone( opB ),
-						bWasUndone: context.wasUndone( opA ),
-						abRelation: context.getRelation( opB, opA ),
-						baRelation: context.getRelation( opA, opB )
-					};
-
-					const newOpA = transform( opA, opB, contextAB );
-					const newOpB = transform( opB, opA, contextBA );
-
-					if ( options.useContext ) {
-						updateOriginalOperation( context, opA, newOpA );
-						updateOriginalOperation( context, opB, newOpB );
-					}
-
-					opsA.splice( k, 1, ...newOpA );
-					k = k + newOpA.length;
-
-					opsB.splice( l, 1, ...newOpB );
-					l = l + newOpB.length;
-				}
+			if ( options.useContext ) {
+				updateRelations( context, opA, opB );
 			}
 
-			operationsB.splice( j, 1, ...opsB );
-			j = j + opsB.length;
-			data.extraOpsB += opsB.length - 1;
-		}
+			const contextAB = {
+				aIsStrong: true,
+				aWasUndone: context.wasUndone( opA ),
+				bWasUndone: context.wasUndone( opB ),
+				abRelation: context.getRelation( opA, opB ),
+				baRelation: context.getRelation( opB, opA )
+			};
 
-		operationsA.splice( i, 1, ...opsA );
-		i = i + opsA.length;
-		data.extraOpsA += opsA.length - 1;
+			const contextBA = {
+				aIsStrong: false,
+				aWasUndone: context.wasUndone( opB ),
+				bWasUndone: context.wasUndone( opA ),
+				abRelation: context.getRelation( opB, opA ),
+				baRelation: context.getRelation( opA, opB )
+			};
+
+			const newOpsA = transform( opA, opB, contextAB );
+			const newOpsB = transform( opB, opA, contextBA );
+
+			if ( options.useContext ) {
+				updateOriginalOperation( context, opA, newOpsA );
+				updateOriginalOperation( context, opB, newOpsB );
+			}
+
+			const newTransformFrom = j + newOpsB.length;
+			const newToTransform = newOpsA.map( op => ( { opA: op, transformFrom: newTransformFrom } ) );
+
+			toTransform.splice( i, 1, ...newToTransform );
+
+			operationsB.splice( j, 1, ...newOpsB );
+			j = j + newOpsB.length;
+
+			data.extraOpsA += newOpsA.length - 1;
+			data.extraOpsB += newOpsB.length - 1;
+		}
 	}
+
+	operationsA = toTransform.map( item => item.opA );
 
 	if ( options.padWithNoOps ) {
 		padWithNoOps( operationsA, data.extraOpsB - data.extraOpsA );
@@ -1742,14 +1730,20 @@ setTransformation( WrapOperation, MoveOperation, ( a, b, context ) => {
 		return [ a ];
 	}
 
-	const ranges = breakRangeByMoveOperation( a.wrappedRange, b, false );
+	const moveRange = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const wrappedRange = a.wrappedRange;
 
-	return ranges.reverse().map( range => {
-		const howMany = range.end.offset - range.start.offset;
-		const elementOrGraveyardPosition = a.graveyardPosition ? a.graveyardPosition : a.element;
+	if ( moveRange.containsRange( wrappedRange, true ) ) {
+		a.position = a.position._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+	} else {
+		let transformed = wrappedRange._getTransformedByDeletion( b.sourcePosition, b.howMany );
+		transformed = transformed._getTransformedByInsertion( b.targetPosition, b.howMany, false )[ 0 ];
 
-		return new WrapOperation( range.start, howMany, elementOrGraveyardPosition, 0 );
-	} );
+		a.position = transformed.start;
+		a.howMany = transformed.end.offset - transformed.start.offset;
+	}
+
+	return [ a ];
 } );
 
 setTransformation( WrapOperation, SplitOperation, ( a, b, context ) => {

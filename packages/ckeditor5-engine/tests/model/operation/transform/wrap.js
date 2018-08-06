@@ -209,6 +209,39 @@ describe( 'transform', () => {
 					'</blockQuote>'
 				);
 			} );
+
+			it( 'delete all wrapped content', () => {
+				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
+				kate.setData( '<paragraph>[Foo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+				john.wrap( 'blockQuote' );
+				kate.delete();
+
+				syncClients();
+				expectClients( '<blockQuote><paragraph>c</paragraph></blockQuote>' );
+			} );
+
+			it.skip( 'delete all wrapped content and undo', () => {
+				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
+				kate.setData( '<paragraph>[Foo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+				john.wrap( 'blockQuote' );
+				kate.delete();
+
+				syncClients();
+				expectClients( '<blockQuote><paragraph>c</paragraph></blockQuote>' );
+
+				john.undo();
+
+				// There is a bug in undo for Kate.
+				// Kate's content is: '<blockQuote><paragraph>c</paragraph></blockQuote>'.
+				// Then goes undo and it returns "Foo" paragraph into block quote, but "Bar" goes after it.
+				// There is a move (reinsert) x wrap transformation and the move is not included inside the wrap.
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>' );
+			} );
 		} );
 
 		describe( 'by remove', () => {
