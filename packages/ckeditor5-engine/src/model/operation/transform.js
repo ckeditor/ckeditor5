@@ -382,10 +382,10 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 	//			operation range needs to be split. For text insertion, extra operation needs to be generated.
 	//
 	if ( a.range.start.hasSameParentAs( b.position ) && a.range.containsPosition( b.position ) ) {
-		// This will spread the range into two.
-		const ranges = a.range._getTransformedByInsertion( b.position, b.howMany, true );
-		const result = ranges.map( range => {
-			return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
+		// This will return an array with a single, expanded range.
+		const range = a.range._getTransformedByInsertion( b.position, b.howMany, !b.shouldReceiveAttributes );
+		const result = range.map( r => {
+			return new AttributeOperation( r, a.key, a.oldValue, a.newValue, a.baseVersion );
 		} );
 
 		// `AttributeOperation#range` includes some newly inserted text.
@@ -400,9 +400,8 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 		// Bold should be applied also on the new text:
 		// <p>Fo<$text bold=true>zxxb</$text>ar</p>
 		//
-		// Instead of expanding the attribute operation range, it is needed to create a new attribute operation.
-		// This is because the inserted text might have already an attribute applied and the `oldValue` property
-		// of the attribute operation might be wrong:
+		// There is a special case to consider here, which will dictate how the final solution will look like. The inserted
+		// text might have already an attribute applied and the `oldValue` property of the attribute operation might be wrong:
 		//
 		// Attribute `highlight="yellow"` should be applied on the following range:
 		// <p>Fo[zb]ar<p>
@@ -410,29 +409,45 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 		// New text with `highlight="red"` is typed:
 		// <p>Fo[z<$text highlight="red">x</$text>a]r</p>
 		//
-		// In this case three operations are needed: `oldValue=null, newValue="yellow"` for `z`, `oldValue="red",
-		// newValue="yellow"` for `x` and `oldValue=null, newValue="yellow"` for `a`. It could even happen that
-		// there are multiple nodes with different `oldValue`s are inserted, so multiple new operations might be added.
+		// In this case we cannot simply apply operation: `oldValue=null, newValue="yellow"` for the whole range
+		// because that will led to an exception (`oldValue` is incorrect). We also cannot break the original range
+		// as this would mess up following insert operations:
+		//
+		// Attribute operation is to apply bold on below `[]` range, but multiple characters are inserted at `^`.
+		// Assume ranges breaking:
+		//
+		// <p>F[o^zba]r</p>
+		// <p>F[o][x][zba]</p>
+		// <p>F[o][x]x[zba]</p>
+		// <p>F[o][x]xx[zba]</p>
+		//
+		// As you can see, characters after the first one are not included in any range when the original attribute range
+		// is broken at first `x` insertion.
+		//
+		// So, the final solution is to just expand the original range, but "fix" all the nodes that have "incorrect" `oldValue`.
+		// For example, in the highlight case above, we would need an operation to change `highlight="red"` to `null` so that
+		// the original attribute operation `null` -> `yellow` would be correct.
 		//
 		if ( b.shouldReceiveAttributes ) {
-			result.splice( 1, 0, ..._getComplementaryAttributeOperations( a, b ) );
+			// Be sure to add those operations before the original operation.
+			result.unshift( ..._getComplementaryAttributeOperations( b, a.key, a.oldValue ) );
 		}
 		// If nodes should not receive new attribute, just leave the spread ranges as they are.
 		return result;
 	}
 
-	// If insert operation is not spreading the attribute operation range, simply transform the range.
+	// If insert operation is not expanding the attribute operation range, simply transform the range.
 	a.range = a.range._getTransformedByInsertOperation( b )[ 0 ];
 
 	return [ a ];
 } );
 
-function _getComplementaryAttributeOperations( attributeOperation, insertOperation ) {
+function _getComplementaryAttributeOperations( insertOperation, key, newValue ) {
 	const nodes = insertOperation.nodes;
 	const result = [];
 
 	// At the beginning we store the attribute value from the first node.
-	let val = nodes.getNode( 0 ).getAttribute( attributeOperation.key );
+	let val = nodes.getNode( 0 ).getAttribute( key );
 
 	// This stores the last index of node list where the attribute value has changed.
 	// We need it to create separate `AttributeOperation`s for nodes with different attribute values.
@@ -443,14 +458,14 @@ function _getComplementaryAttributeOperations( attributeOperation, insertOperati
 
 	for ( let i = 1; i < nodes.length; i++ ) {
 		const node = nodes.getNode( i );
-		const nodeAttrVal = node.getAttribute( attributeOperation.key );
+		const nodeAttrVal = node.getAttribute( key );
 
 		// If previous node has different attribute value, we will create an operation to the point before current node.
 		// So all nodes with the same attributes up to this point will be included in one `AttributeOperation`.
 		if ( nodeAttrVal != val ) {
 			// New operation is created only when it is needed. If given node already has proper value for this
 			// attribute we simply skip it without adding a new operation.
-			if ( val != attributeOperation.newValue ) {
+			if ( val != newValue ) {
 				addOperation();
 			}
 
@@ -474,7 +489,7 @@ function _getComplementaryAttributeOperations( attributeOperation, insertOperati
 		);
 
 		result.push(
-			new AttributeOperation( range, attributeOperation.key, val, attributeOperation.newValue, 0 )
+			new AttributeOperation( range, key, val, newValue, 0 )
 		);
 	}
 }
@@ -667,7 +682,7 @@ setTransformation( InsertOperation, AttributeOperation, ( a, b ) => {
 	const result = [ a ];
 
 	if ( a.shouldReceiveAttributes && b.range.containsPosition( a.position ) ) {
-		result.push( ..._getComplementaryAttributeOperations( b, a ) );
+		result.push( ..._getComplementaryAttributeOperations( a, b.key, b.newValue ) );
 	}
 
 	return result;
