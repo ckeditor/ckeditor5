@@ -281,6 +281,18 @@ describe( 'transform', () => {
 
 				expectClients( '<paragraph><$text bold="true">Foxxxo</$text></paragraph>' );
 			} );
+
+			it( 'type inside element which attribute changes', () => {
+				john.setData( '[<paragraph></paragraph>]' );
+				kate.setData( '<paragraph>[]</paragraph>' );
+
+				john.setAttribute( 'bold', true );
+				kate.type( 'x' );
+
+				syncClients();
+
+				expectClients( '<paragraph bold="true">x</paragraph>' );
+			} );
 		} );
 
 		describe( 'by move', () => {

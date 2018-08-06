@@ -437,7 +437,7 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 	}
 
 	// If insert operation is not expanding the attribute operation range, simply transform the range.
-	a.range = a.range._getTransformedByInsertOperation( b )[ 0 ];
+	a.range = a.range._getTransformedByInsertion( b.position, b.howMany, false )[ 0 ];
 
 	return [ a ];
 } );
@@ -681,7 +681,7 @@ setTransformation( AttributeOperation, UnwrapOperation, ( a, b ) => {
 setTransformation( InsertOperation, AttributeOperation, ( a, b ) => {
 	const result = [ a ];
 
-	if ( a.shouldReceiveAttributes && b.range.containsPosition( a.position ) ) {
+	if ( a.shouldReceiveAttributes && a.position.hasSameParentAs( b.range.start ) && b.range.containsPosition( a.position ) ) {
 		result.push( ..._getComplementaryAttributeOperations( a, b.key, b.newValue ) );
 	}
 
