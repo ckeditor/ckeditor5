@@ -64,6 +64,8 @@ export default class Autosave extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		const config = editor.config.get( 'autosave' ) || {};
+
 		/**
 		 * The adapter is an object with a `save()` method. That method will be called whenever
 		 * the data changes. It might be called some time after the change,
@@ -86,12 +88,21 @@ export default class Autosave extends Plugin {
 		this.set( 'state', 'synchronized' );
 
 		/**
+		 * A minimum amount of time that needs to pass after the last action.
+		 * After that time the provided save callbacks are being called.
+		 *
+		 * @protected
+		 * @type {Number}
+		 */
+		this._waitingTime = config.waitingTime || 2000;
+
+		/**
 		 * Throttled save method.
 		 *
 		 * @protected
 		 * @type {Function}
 		 */
-		this._debouncedSave = debounce( this._save.bind( this ), 2000 );
+		this._debouncedSave = debounce( this._save.bind( this ), this._debounceTime );
 
 		/**
 		 * Last document version.
@@ -122,7 +133,7 @@ export default class Autosave extends Plugin {
 		 * @private
 		 * @type {Object}
 		 */
-		this._config = editor.config.get( 'autosave' ) || {};
+		this._config = config;
 
 		/**
 		 * Editor's pending actions manager.
@@ -327,4 +338,23 @@ mix( Autosave, ObservableMixin );
  * @method module:autosave/autosave~AutosaveConfig#save
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {Promise.<*>}
+ */
+
+/**
+ * The minimum amount of time that need to pass after last action to call the provided callback.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				autosave: {
+ *					save( editor ) {
+ *						return saveData( editor.getData() );
+ *					},
+ *					waitingTime: 1000
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @property module:autosave/autosave~AutosaveConfig#waitingTime
+ * @type {Number}
  */
