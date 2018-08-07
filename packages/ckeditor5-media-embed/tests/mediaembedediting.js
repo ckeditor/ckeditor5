@@ -117,20 +117,28 @@ describe( 'MediaEmbedEditing', () => {
 						.to.equal( '' );
 				} );
 
+				it( 'should not convert when the wrapper has no data-oembed-url attribute', () => {
+					editor.setData( '<figure class="media"><div></div></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal( '' );
+				} );
+
 				it( 'should not convert in the wrong context', () => {
-					model.schema.register( 'div', { inheritAllFrom: '$block' } );
+					model.schema.register( 'blockquote', { inheritAllFrom: '$block' } );
 					model.schema.addChildCheck( ( ctx, childDef ) => {
 						if ( ctx.endsWith( '$root' ) && childDef.name == 'media' ) {
 							return false;
 						}
 					} );
 
-					editor.conversion.elementToElement( { model: 'div', view: 'div' } );
+					editor.conversion.elementToElement( { model: 'blockquote', view: 'blockquote' } );
 
-					editor.setData( '<div><figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure></div>' );
+					editor.setData(
+						'<blockquote><figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure></blockquote>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<div></div>' );
+						.to.equal( '<blockquote></blockquote>' );
 				} );
 
 				it( 'should not convert if the oembed wrapper is already consumed', () => {

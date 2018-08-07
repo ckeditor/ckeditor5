@@ -47,10 +47,10 @@ export function viewFigureToModel() {
 		const conversionResult = conversionApi.convertItem( viewWrapper, data.modelCursor );
 
 		// Get the model wrapper from conversion result.
-		const modelWrapper = first( conversionResult.modelRange.getItems() );
+		const mediaElement = first( conversionResult.modelRange.getItems() );
 
-		// If the wrapper wasn't successfully converted, then finish conversion.
-		if ( !modelWrapper ) {
+		// If the media has not been successfully converted, finish the conversion.
+		if ( !mediaElement ) {
 			return;
 		}
 
@@ -75,20 +75,17 @@ export function modelToViewUrlAttributeConverter( editor, options ) {
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const attributes = {};
-		const wrapper = figure.getChild( 0 );
-		const withAspectWrapper = options.inEditingPipeline || options.shouldRenderContent;
+		const withAspectWrapper = options.isEditingPipeline || options.shouldRenderContent;
 		const wrapperContent = withAspectWrapper ? getMediaContent( editor, data.attributeNewValue ) : null;
 
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
-		if ( wrapper ) {
-			viewWriter.remove( ViewRange.createOn( wrapper ) );
-		}
+		viewWriter.remove( ViewRange.createIn( figure ) );
 
 		if ( data.attributeNewValue !== null ) {
 			attributes[ 'data-oembed-url' ] = data.attributeNewValue;
 		}
 
-		if ( options.inEditingPipeline ) {
+		if ( options.isEditingPipeline ) {
 			attributes.class = 'ck-media__wrapper';
 		}
 

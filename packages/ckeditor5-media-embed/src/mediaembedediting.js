@@ -140,18 +140,14 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
-				const figure = createMediaFigureElement( viewWriter, {
-					witgAspectWrapper: true
-				} );
-
-				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
+				return toMediaWidget( createMediaFigureElement( viewWriter ), viewWriter, t( 'media widget' ) );
 			}
 		} ) );
 
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' )
 			.add( modelToViewUrlAttributeConverter( editor, {
-				inEditingPipeline: true
+				isEditingPipeline: true
 			} ) );
 
 		// View -> Model (data-oembed-url -> url)

@@ -35,7 +35,7 @@ export function toMediaWidget( viewElement, writer, label ) {
 // @private
 // @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/containerelement~ContainerElement}
-export function createMediaFigureElement( writer, options ) {
+export function createMediaFigureElement( writer, options = {} ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
 	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
