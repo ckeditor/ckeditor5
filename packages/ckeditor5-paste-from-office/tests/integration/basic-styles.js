@@ -14,7 +14,8 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { expectPaste } from '../_utils/utils';
 
 import boldWithinText from '../data/integration/basic-styles/bold-within-text/input.word2016.html';
 import italicStartingText from '../data/integration/basic-styles/italic-starting-text/input.word2016.html';
@@ -282,23 +283,3 @@ describe( 'Basic Styles – integration', () => {
 		} );
 	} );
 } );
-
-function expectPaste( editor, input, output ) {
-	pasteHtml( editor, input );
-	expect( getData( editor.model ) ).to.equal( output );
-}
-
-function pasteHtml( editor, html ) {
-	editor.editing.view.document.fire( 'paste', {
-		dataTransfer: createDataTransfer( { 'text/html': html } ),
-		preventDefault() {}
-	} );
-}
-
-function createDataTransfer( data ) {
-	return {
-		getData( type ) {
-			return data[ type ];
-		}
-	};
-}
