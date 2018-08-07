@@ -16,12 +16,12 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import boldWithinText from '../data/integration/basic-styles/bold-within-text/input.chrome.word2016.html';
-import italicStartingText from '../data/integration/basic-styles/italic-starting-text/input.chrome.word2016.html';
-import underlinedText from '../data/integration/basic-styles/underlined-text/input.chrome.word2016.html';
-import strikethroughEndingText from '../data/integration/basic-styles/strikethrough-ending-text/input.chrome.word2016.html';
-import multipleStylesSingleLine from '../data/integration/basic-styles/multiple-styles-single-line/input.chrome.word2016.html';
-import multipleStylesMultiline from '../data/integration/basic-styles/multiple-styles-multiline/input.chrome.word2016.html';
+import boldWithinText from '../data/integration/basic-styles/bold-within-text/input.word2016.html';
+import italicStartingText from '../data/integration/basic-styles/italic-starting-text/input.word2016.html';
+import underlinedText from '../data/integration/basic-styles/underlined-text/input.word2016.html';
+import strikethroughEndingText from '../data/integration/basic-styles/strikethrough-ending-text/input.word2016.html';
+import multipleStylesSingleLine from '../data/integration/basic-styles/multiple-styles-single-line/input.word2016.html';
+import multipleStylesMultiline from '../data/integration/basic-styles/multiple-styles-multiline/input.word2016.html';
 
 describe( 'Basic Styles – integration', () => {
 	let element, editor;
@@ -49,6 +49,7 @@ describe( 'Basic Styles – integration', () => {
 	} );
 
 	// Pastes: 'Some text <b>with bold</b>.'
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'bold within text', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, boldWithinText, '<paragraph>Some text <$text bold="true">with bold</$text>.[]</paragraph>' );
@@ -82,6 +83,7 @@ describe( 'Basic Styles – integration', () => {
 	} );
 
 	// Pastes: '<i>Italic</i> text.'
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'italic starting text', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, italicStartingText, '<paragraph><$text italic="true">Italic</$text> text.[]</paragraph>' );
@@ -114,6 +116,7 @@ describe( 'Basic Styles – integration', () => {
 	} );
 
 	// Pastes: '<u>Whole text underlined</u>'
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'underlined text', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, underlinedText, '<paragraph><$text underline="true">Whole text underlined[]</$text></paragraph>' );
@@ -148,6 +151,7 @@ describe( 'Basic Styles – integration', () => {
 	} );
 
 	// Pastes: 'Text <s>incorrect</s>'
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'strikethrough ending text', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, strikethroughEndingText, '<paragraph>Text <$text strikethrough="true">incorrect[]</$text></paragraph>' );
@@ -183,6 +187,7 @@ describe( 'Basic Styles – integration', () => {
 	} );
 
 	// Pastes: 'Text <b><u>containi<s>ng</s></u></b><s><u> multi</u>ple</s><i>styling</i>.'
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles single line', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, multipleStylesSingleLine, '<paragraph>Text ' +
@@ -232,6 +237,7 @@ describe( 'Basic Styles – integration', () => {
 	//		<p>Line <b>bold</b> and <i>italics</i></p>
 	//		<p>Line <b><u>foo</u></b><u> bar</u></p>
 	//		<p><s>Third</s> line <b>styling, <i>space on e</i>nd </b></p>
+	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles multiline', () => {
 		it( 'pastes in the empty editor', () => {
 			expectPaste( editor, multipleStylesMultiline, '<paragraph>Line ' +
