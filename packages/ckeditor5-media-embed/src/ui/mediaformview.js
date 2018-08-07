@@ -17,7 +17,7 @@ import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '../../../ckeditor5-utils/src/keystrokehandler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
