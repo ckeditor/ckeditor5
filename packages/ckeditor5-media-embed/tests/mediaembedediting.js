@@ -8,6 +8,7 @@ import MediaEmbedEditing from '../src/mediaembedediting';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
@@ -567,10 +568,10 @@ describe( 'MediaEmbedEditing', () => {
 			editor.setData(
 				`<figure class="media"><div data-oembed-url="${ url }"></div></figure>` );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.match(
+			expect( normalizeHtml( getViewData( view, { withoutSelection: true } ) ) ).to.match(
 				new RegExp( '<figure[^>]+>' +
 					'<div[^>]+>' +
-						`<div[^>]+>${ expected }</div>` +
+						`<div[^>]+>${ normalizeHtml( expected ) }</div>` +
 					'</div>' +
 				'</figure>' ), `assertion for "${ url }"` );
 		}
