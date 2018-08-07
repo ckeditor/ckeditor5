@@ -7,16 +7,16 @@
  * @module media-embed/ui/insertmediaview
  */
 
-import View from '../../../ckeditor5-ui/src/view';
-import ViewCollection from '../../../ckeditor5-ui/src/viewcollection';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
-import ButtonView from '../../../ckeditor5-ui/src/button/buttonview';
-import LabeledInputView from '../../../ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from '../../../ckeditor5-ui/src/inputtext/inputtextview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
+import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-import submitHandler from '../../../ckeditor5-ui/src/bindings/submithandler';
-import FocusTracker from '../../../ckeditor5-utils/src/focustracker';
-import FocusCycler from '../../../ckeditor5-ui/src/focuscycler';
+import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '../../../ckeditor5-utils/src/keystrokehandler';
 
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
