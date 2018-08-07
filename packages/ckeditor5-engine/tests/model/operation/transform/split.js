@@ -52,6 +52,40 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in same path', () => {
+				john.setData( '<paragraph>F[]oo</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.split();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><div>F</div></paragraph>' +
+					'<paragraph><div>oo</div></paragraph>'
+				);
+			} );
+
+			it( 'text in same path, then undo', () => {
+				john.setData( '<paragraph>F[]oo</paragraph>' );
+				kate.setData( '<paragraph>[Foo]</paragraph>' );
+
+				john.split();
+				kate.wrap( 'div' );
+
+				syncClients();
+
+				kate.undo();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>oo</paragraph>'
+				);
+			} );
+
 			it( 'multiple elements', () => {
 				john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph>]' );
@@ -122,6 +156,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.split();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>F</blockQuote>' +
+					'<blockQuote>oo</blockQuote>'
+				);
+			} );
+
 			it.skip( 'element in same position', () => {
 				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
@@ -149,6 +198,24 @@ describe( 'transform', () => {
 
 				expectClients(
 					'<paragraph>Foo</paragraph>'
+				);
+			} );
+
+			it( 'text in same path, then undo', () => {
+				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.split();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>Foo</blockQuote>'
 				);
 			} );
 

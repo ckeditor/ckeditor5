@@ -31,6 +31,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+
+				john.wrap( 'div' );
+				kate.wrap( 'div2' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><div>Foo</div></paragraph>' +
+					'<paragraph><div2>Bar</div2></paragraph>'
+				);
+			} );
+
 			it( 'the same element', () => {
 				john.setData( '[<paragraph>Foo</paragraph>]' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -142,6 +157,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+
+				john.wrap( 'div' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><div>Foo</div></paragraph>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'the same element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -168,6 +198,18 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			} );
+
+			it( 'the same text', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.wrap( 'div' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote><div>Foo</div></blockQuote>' );
 			} );
 		} );
 
