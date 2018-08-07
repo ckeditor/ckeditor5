@@ -15,7 +15,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
+import { isElement } from 'lodash-es';
 
 /**
  * The {@glink builds/guides/overview#decoupled-editor decoupled editor} implementation.
