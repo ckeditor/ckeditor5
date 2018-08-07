@@ -37,7 +37,7 @@ export default class MediaEmbedEditing extends Plugin {
 			media: {
 				dailymotion: {
 					url: [
-						/^(https:)?\/\/(www\.)?dailymotion\.com\/video\/(\w+)/
+						/^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/
 					],
 					html: id =>
 						`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
@@ -47,7 +47,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 				instagram: {
 					url: [
-						/^(https:)?\/\/(www\.)?instagram\.com\/p\/(\w+)/
+						/^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
 					],
 
 					html: id =>
@@ -58,9 +58,9 @@ export default class MediaEmbedEditing extends Plugin {
 
 				spotify: {
 					url: [
-						/^(https:)?\/\/open\.spotify\.com\/(artist\/\w+)/,
-						/^(https:)?\/\/open\.spotify\.com\/(album\/\w+)/,
-						/^(https:)?\/\/open\.spotify\.com\/(track\/\w+)/
+						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
+						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
+						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(track\/\w+)/
 					],
 					html: id =>
 						`<iframe src="https://open.spotify.com/embed/${ id }" ` +
@@ -70,10 +70,10 @@ export default class MediaEmbedEditing extends Plugin {
 
 				youtube: {
 					url: [
-						/^(https:)?\/\/(www\.)?youtube\.com\/watch\?v=(\w+)/,
-						/^(https:)?\/\/(www\.)?youtube\.com\/v\/(\w+)/,
-						/^(https:)?\/\/(www\.)?youtube\.com\/embed\/(\w+)/,
-						/^(https:)?\/\/youtu\.be\/(\w+)/
+						/^(https:\/\/)?(www\.)?youtube\.com\/watch\?v=(\w+)/,
+						/^(https:\/\/)?(www\.)?youtube\.com\/v\/(\w+)/,
+						/^(https:\/\/)?(www\.)?youtube\.com\/embed\/(\w+)/,
+						/^(https:\/\/)?youtu\.be\/(\w+)/
 					],
 					html: id =>
 						`<iframe src="https://www.youtube.com/embed/${ id }" ` +
@@ -83,13 +83,13 @@ export default class MediaEmbedEditing extends Plugin {
 
 				vimeo: {
 					url: [
-						/^(https:)?\/\/vimeo\.com\/(\d+)/,
-						/^(https:)?\/\/vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
-						/^(https:)?\/\/vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
-						/^(https:)?\/\/vimeo\.com\/channels\/[^/]+\/(\d+)/,
-						/^(https:)?\/\/vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
-						/^(https:)?\/\/vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
-						/^(https:)?\/\/player\.vimeo\.com\/video\/(\d+)/
+						/^(https:\/\/)?(www\.)?vimeo\.com\/(\d+)/,
+						/^(https:\/\/)?(www\.)?vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
+						/^(https:\/\/)?(www\.)?vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
+						/^(https:\/\/)?(www\.)?vimeo\.com\/channels\/[^/]+\/(\d+)/,
+						/^(https:\/\/)?(www\.)?vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
+						/^(https:\/\/)?(www\.)?vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
+						/^(https:\/\/)?(www\.)?player\.vimeo\.com\/video\/(\d+)/
 					],
 					html: id =>
 						`<iframe src="https://player.vimeo.com/video/${ id }" ` +
