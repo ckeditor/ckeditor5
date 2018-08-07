@@ -196,9 +196,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'text in same path, then undo', () => {
@@ -214,9 +212,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote>Foo</blockQuote>'
-				);
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 
 			it( 'multiple elements', () => {
@@ -297,9 +293,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'text in different path', () => {

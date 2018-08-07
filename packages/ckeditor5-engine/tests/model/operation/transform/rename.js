@@ -210,9 +210,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<heading1>Foo</heading1>'
-				);
+				expectClients( '<heading1>Foo</heading1>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -238,9 +236,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<heading1>FooBar</heading1>'
-				);
+				expectClients( '<heading1>FooBar</heading1>' );
 			} );
 
 			it( 'element into paragraph #2', () => {
@@ -252,9 +248,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooBar</paragraph>'
-				);
+				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #1', () => {
@@ -266,9 +260,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><heading1>FooBar</heading1></blockQuote>'
-				);
+				expectClients( '<blockQuote><heading1>FooBar</heading1></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #2', () => {
@@ -280,9 +272,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FooBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
 			} );
 		} );
 	} );

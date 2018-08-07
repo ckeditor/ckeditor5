@@ -25,9 +25,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>F</paragraph><paragraph>B</paragraph>'
-				);
+				expectClients( '<paragraph>F</paragraph><paragraph>B</paragraph>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -39,9 +37,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>F B</paragraph>'
-				);
+				expectClients( '<paragraph>F B</paragraph>' );
 			} );
 
 			it( 'text in other user\'s selection #1', () => {
@@ -53,9 +49,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 
 			it( 'text in other user\'s selection #2', () => {
@@ -67,9 +61,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 
 			it( 'element in different path', () => {
@@ -81,9 +73,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 
 			it( 'text in other user\'s selection, then undo', () => {
@@ -100,9 +90,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 		} );
 
@@ -148,9 +136,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph></paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph></paragraph></blockQuote>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -267,9 +253,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -281,9 +265,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote></blockQuote>'
-				);
+				expectClients( '<blockQuote></blockQuote>' );
 			} );
 
 			it( 'element while removing', () => {
@@ -295,9 +277,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it.skip( 'element while removing, then undo', () => {
@@ -402,9 +382,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 		} );
 
@@ -418,9 +396,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FBar</paragraph>'
-				);
+				expectClients( '<paragraph>FBar</paragraph>' );
 			} );
 
 			it( 'element into paragraph #2', () => {
@@ -432,9 +408,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooB</paragraph>'
-				);
+				expectClients( '<paragraph>FooB</paragraph>' );
 			} );
 
 			it.skip( 'element into paragraph, then undo', () => {
@@ -466,9 +440,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FBar</paragraph></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #2', () => {
@@ -480,9 +452,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FooB</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FooB</paragraph></blockQuote>' );
 			} );
 
 			it( 'removed element, then undo', () => {
@@ -540,9 +510,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<heading1></heading1>'
-				);
+				expectClients( '<heading1></heading1>' );
 			} );
 		} );
 	} );

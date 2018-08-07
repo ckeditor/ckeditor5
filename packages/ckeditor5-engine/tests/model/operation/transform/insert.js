@@ -175,9 +175,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 		} );
 
@@ -486,9 +484,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooAbc</paragraph><paragraph>Bar</paragraph>'
-				);
+				expectClients( '<paragraph>FooAbc</paragraph><paragraph>Bar</paragraph>' );
 			} );
 
 			it( 'text in different path', () => {
@@ -500,9 +496,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooAbc</paragraph><blockQuote>Bar</blockQuote>'
-				);
+				expectClients( '<paragraph>FooAbc</paragraph><blockQuote>Bar</blockQuote>' );
 			} );
 
 			it( 'element in same path #1', () => {
@@ -514,9 +508,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 
 			it( 'element in same path #2', () => {
@@ -543,9 +535,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote>Foo Bar</blockQuote>'
-				);
+				expectClients( '<blockQuote>Foo Bar</blockQuote>' );
 			} );
 
 			it( 'element, then insert text and move', () => {
@@ -770,9 +760,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooAbc</paragraph><paragraph></paragraph>'
-				);
+				expectClients( '<paragraph>FooAbc</paragraph><paragraph></paragraph>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -784,9 +772,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Bar</paragraph>' );
 			} );
 
 			it( 'element in different path', () => {
@@ -931,9 +917,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 		} );
 
@@ -978,9 +962,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>BarFo<m1:start></m1:start>o<m1:end></m1:end></paragraph>'
-				);
+				expectClients( '<paragraph>BarFo<m1:start></m1:start>o<m1:end></m1:end></paragraph>' );
 			} );
 		} );
 

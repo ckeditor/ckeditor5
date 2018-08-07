@@ -336,9 +336,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>BarFo<$text italic="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph>BarFo<$text italic="true">o</$text></paragraph>' );
 			} );
 		} );
 
@@ -460,9 +458,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>oFo</paragraph>'
-				);
+				expectClients( '<paragraph>oFo</paragraph>' );
 			} );
 
 			it( 'remove attribute from element in same path', () => {
@@ -474,9 +470,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>oFo</paragraph>'
-				);
+				expectClients( '<paragraph>oFo</paragraph>' );
 			} );
 
 			it( 'remove attribute from text with 2 attributes in same path', () => {
@@ -488,9 +482,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text italic="true">o</$text>Fo</paragraph>'
-				);
+				expectClients( '<paragraph><$text italic="true">o</$text>Fo</paragraph>' );
 			} );
 
 			it( 'remove attribute from text in other user\'s selection', () => {
@@ -655,9 +647,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text bold="true">Foo</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text bold="true">Foo</$text></paragraph>' );
 			} );
 
 			it( 'element in same path #2', () => {
@@ -681,9 +671,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><$text bold="true">Foo</$text></blockQuote>'
-				);
+				expectClients( '<blockQuote><$text bold="true">Foo</$text></blockQuote>' );
 			} );
 		} );
 
@@ -806,9 +794,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text bold="true">Fo</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text bold="true">Fo</$text></paragraph>' );
 			} );
 
 			it( 'text in other user\'s selection', () => {
@@ -820,9 +806,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text bold="true">F</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text bold="true">F</$text></paragraph>' );
 			} );
 
 			it( 'remove attribute from element in different path', () => {
@@ -864,9 +848,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>o</paragraph>'
-				);
+				expectClients( '<paragraph>o</paragraph>' );
 			} );
 
 			it( 'remove attribute from element in same path', () => {
@@ -878,9 +860,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>o</paragraph>'
-				);
+				expectClients( '<paragraph>o</paragraph>' );
 			} );
 
 			it( 'remove attribute from text with 2 attributes in same path', () => {
@@ -892,9 +872,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text italic="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text italic="true">o</$text></paragraph>' );
 			} );
 
 			it( 'remove attribute from text in other user\'s selection', () => {
@@ -906,9 +884,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 		} );
 
@@ -952,9 +928,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text bold="true">Fo</$text>o</paragraph>'
-				);
+				expectClients( '<paragraph><$text bold="true">Fo</$text>o</paragraph>' );
 			} );
 
 			it( 'from element in same path', () => {
@@ -978,9 +952,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text bold="true">Fo</$text><$text italic="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text bold="true">Fo</$text><$text italic="true">o</$text></paragraph>' );
 			} );
 
 			it( 'from text in other user\'s selection', () => {
@@ -992,9 +964,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><$text italic="true">Foo</$text></paragraph>'
-				);
+				expectClients( '<paragraph><$text italic="true">Foo</$text></paragraph>' );
 			} );
 		} );
 
@@ -1126,9 +1096,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><m1:start></m1:start>Fo<m1:end></m1:end>o</paragraph>'
-				);
+				expectClients( '<paragraph><m1:start></m1:start>Fo<m1:end></m1:end>o</paragraph>' );
 			} );
 
 			it( 'remove attribute from text in same path, then undo', () => {
@@ -1144,9 +1112,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><m1:start></m1:start>Fo<m1:end></m1:end><$text bold="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph><m1:start></m1:start>Fo<m1:end></m1:end><$text bold="true">o</$text></paragraph>' );
 			} );
 
 			it( 'remove attribute from text with 2 attributes in same path', () => {
@@ -1158,9 +1124,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><m1:start></m1:start>Fo<m1:end></m1:end><$text italic="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph><m1:start></m1:start>Fo<m1:end></m1:end><$text italic="true">o</$text></paragraph>' );
 			} );
 
 			it( 'remove attribute from text in other user\'s selection', () => {
@@ -1172,9 +1136,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph><m1:start></m1:start>Foo<m1:end></m1:end></paragraph>'
-				);
+				expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end></paragraph>' );
 			} );
 		} );
 
@@ -1234,9 +1196,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1><$text bold="true">Foo Bar</$text></heading1>'
-			);
+			expectClients( '<heading1><$text bold="true">Foo Bar</$text></heading1>' );
 		} );
 
 		it( 'element in user\'s selection', () => {
@@ -1248,9 +1208,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1><$text bold="true">Foo</$text></heading1>'
-			);
+			expectClients( '<heading1><$text bold="true">Foo</$text></heading1>' );
 		} );
 
 		it( 'element in user\'s selection, then undo', () => {
@@ -1267,9 +1225,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<paragraph>Foo</paragraph>'
-			);
+			expectClients( '<paragraph>Foo</paragraph>' );
 		} );
 
 		it( 'remove attribute from element in different path', () => {
@@ -1311,9 +1267,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1>Foo</heading1>'
-			);
+			expectClients( '<heading1>Foo</heading1>' );
 		} );
 
 		it( 'remove attribute from element in same path', () => {
@@ -1325,9 +1279,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1>Foo</heading1>'
-			);
+			expectClients( '<heading1>Foo</heading1>' );
 		} );
 
 		it( 'remove attribute from text with 2 attributes in same path', () => {
@@ -1339,9 +1291,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1>Fo<$text italic="true">o</$text></heading1>'
-			);
+			expectClients( '<heading1>Fo<$text italic="true">o</$text></heading1>' );
 		} );
 
 		it( 'remove attribute from text in other user\'s selection', () => {
@@ -1353,9 +1303,7 @@ describe( 'transform', () => {
 
 			syncClients();
 
-			expectClients(
-				'<heading1>Foo</heading1>'
-			);
+			expectClients( '<heading1>Foo</heading1>' );
 		} );
 	} );
 } );

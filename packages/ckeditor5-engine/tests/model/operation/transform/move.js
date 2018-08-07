@@ -338,9 +338,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>ooF</paragraph>'
-				);
+				expectClients( '<paragraph>ooF</paragraph>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -352,9 +350,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote>ooF</blockQuote>'
-				);
+				expectClients( '<blockQuote>ooF</blockQuote>' );
 			} );
 		} );
 
@@ -550,9 +546,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 		} );
 
@@ -566,9 +560,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>ooFBar</paragraph>'
-				);
+				expectClients( '<paragraph>ooFBar</paragraph>' );
 			} );
 
 			it( 'element into paragraph #2', () => {
@@ -580,9 +572,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>arFooB</paragraph>'
-				);
+				expectClients( '<paragraph>arFooB</paragraph>' );
 			} );
 
 			it( 'element into paragraph #3', () => {
@@ -594,9 +584,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooBar</paragraph>'
-				);
+				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #1', () => {
@@ -608,9 +596,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>ooFBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>ooFBar</paragraph></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #2', () => {
@@ -622,9 +608,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>arFooB</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>arFooB</paragraph></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #3', () => {
@@ -636,9 +620,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FooBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
 			} );
 
 			it( 'moved element', () => {
