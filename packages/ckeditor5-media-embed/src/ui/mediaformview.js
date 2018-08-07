@@ -167,14 +167,15 @@ export default class MediaFormView extends View {
 
 		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
 		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP.
+		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
 		this.keystrokes.set( 'arrowright', stopPropagation );
 		this.keystrokes.set( 'arrowleft', stopPropagation );
 		this.keystrokes.set( 'arrowup', stopPropagation );
 		this.keystrokes.set( 'arrowdown', stopPropagation );
 
-		// Unblock selectstart, a default behaviour of the DropdownView#panelView.
-		// TODO: blocking selectstart in the #panelView should be configurable per dropdown instance.
+		// Intercept the "selectstart" event, which is blocked by default because of the default behavior
+		// of the DropdownView#panelView.
+		// TODO: blocking "selectstart" in the #panelView should be configurable per–drop–down instance.
 		this.listenTo( this.urlInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
@@ -235,7 +236,7 @@ export default class MediaFormView extends View {
 	}
 
 	/**
-	 * Returns all form fields back to the errorless state.
+	 * Cleans up the errors in all form fields. See {@link #isValid}.
 	 */
 	resetErrors() {
 		this.urlInputView.errorText = false;
