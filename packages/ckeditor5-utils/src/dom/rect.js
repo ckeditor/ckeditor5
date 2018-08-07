@@ -9,10 +9,10 @@
 
 import isRange from './isrange';
 import isWindow from './iswindow';
-import isElement from '../lib/lodash/isElement';
 import getBorderWidths from './getborderwidths';
 import log from '../log';
 import isText from './istext';
+import { isElement } from 'lodash-es';
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by

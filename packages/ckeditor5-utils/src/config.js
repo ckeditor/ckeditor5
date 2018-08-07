@@ -7,7 +7,7 @@
  * @module utils/config
  */
 
-import isPlainObject from './lib/lodash/isPlainObject';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * Handles a configuration dictionary.

@@ -11,7 +11,7 @@ import global from './global';
 import Rect from './rect';
 import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
-import isFunction from '../lib/lodash/isFunction';
+import { isFunction } from 'lodash-es';
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
