@@ -16,9 +16,9 @@ import Range from './range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import Text from './text';
 import EditableElement from './editableelement';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * View writer class. Provides set of methods used to properly manipulate nodes attached to
