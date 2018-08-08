@@ -8,6 +8,8 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
@@ -20,40 +22,61 @@ import { formatTable, formattedModelTable, modelTable, viewTable } from './_util
 
 describe( 'Table feature – integration', () => {
 	describe( 'with clipboard', () => {
-		it( 'pastes td as p when pasting into the table', () => {
+		let editor, clipboard;
+
+		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, Widget, Clipboard ] } )
+				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
-					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
-
-					setModelData( editor.model, modelTable( [ [ 'foo[]' ] ] ) );
-
-					clipboard.fire( 'inputTransformation', {
-						content: parseView( '<td>bar</td>' )
-					} );
-
-					expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
-						[ 'foobar[]' ]
-					] ) );
+					editor = newEditor;
+					clipboard = editor.plugins.get( 'Clipboard' );
 				} );
 		} );
 
+		it( 'pastes td as p when pasting into the table', () => {
+			setModelData( editor.model, modelTable( [ [ 'foo[]' ] ] ) );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<td>bar</td>' )
+			} );
+
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
+				[ 'foobar[]' ]
+			] ) );
+		} );
+
 		it( 'pastes td as p when pasting into the p', () => {
-			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, Widget, Clipboard ] } )
-				.then( newEditor => {
-					const editor = newEditor;
-					const clipboard = editor.plugins.get( 'Clipboard' );
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
-					setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<td>bar</td>' )
+			} );
 
-					clipboard.fire( 'inputTransformation', {
-						content: parseView( '<td>bar</td>' )
-					} );
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
+		} );
 
-					expect( formatTable( getModelData( editor.model ) ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
-				} );
+		it( 'pastes list into the td', () => {
+			setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<li>bar</li>' )
+			} );
+
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
+				[ '<listItem listIndent="0" listType="bulleted">bar[]</listItem>' ]
+			] ) );
+		} );
+
+		it( 'pastes blockquote into the td', () => {
+			setModelData( editor.model, modelTable( [ [ '[]' ] ] ) );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<blockquote>bar</blockquote>' )
+			} );
+
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
+				[ '<blockQuote><paragraph>bar[]</paragraph></blockQuote>' ]
+			] ) );
 		} );
 	} );
 
