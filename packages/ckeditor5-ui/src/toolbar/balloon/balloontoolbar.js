@@ -12,9 +12,9 @@ import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
+import { debounce } from 'lodash-es';
 
 /**
  * The contextual toolbar.

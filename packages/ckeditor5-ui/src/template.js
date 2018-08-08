@@ -14,10 +14,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from './view';
 import ViewCollection from './viewcollection';
-import cloneDeepWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeepWith';
-import isObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isObject';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import { isObject, cloneDeepWith } from 'lodash-es';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
