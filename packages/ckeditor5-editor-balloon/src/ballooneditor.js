@@ -18,7 +18,7 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
+import { isElement } from 'lodash-es';
 
 /**
  * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
