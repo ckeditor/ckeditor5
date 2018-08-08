@@ -7,8 +7,8 @@
  * @module utils/tomap
  */
 
-import isPlainObject from './lib/lodash/isPlainObject';
 import objectToMap from './objecttomap';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * Transforms object or iterable to map. Iterable needs to be in the format acceptable by the `Map` constructor.

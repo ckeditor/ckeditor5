@@ -9,8 +9,7 @@
 
 import EmitterMixin from './emittermixin';
 import CKEditorError from './ckeditorerror';
-import extend from './lib/lodash/extend';
-import isObject from './lib/lodash/isObject';
+import { extend, isObject } from 'lodash-es';
 
 const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );

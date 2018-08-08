@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import extend from '../src/lib/lodash/extend';
+import { extend } from 'lodash-es';
 
 describe( 'utils', () => {
 	describe( 'extend()', () => {
