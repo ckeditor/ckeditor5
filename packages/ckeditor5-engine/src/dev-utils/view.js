@@ -7,6 +7,8 @@
  * @module engine/dev-utils/view
  */
 
+/* globals document */
+
 /**
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
@@ -652,13 +654,17 @@ class ViewStringify {
 				callback( this._stringifyElementOpen( root ) );
 			}
 
-			let offset = 0;
-			callback( this._stringifyElementRanges( root, offset ) );
-
-			for ( const child of root.getChildren() ) {
-				this._walkView( child, callback );
-				offset++;
+			if ( root.is( 'uiElement' ) ) {
+				callback( root.render( document ).innerHTML );
+			} else {
+				let offset = 0;
 				callback( this._stringifyElementRanges( root, offset ) );
+
+				for ( const child of root.getChildren() ) {
+					this._walkView( child, callback );
+					offset++;
+					callback( this._stringifyElementRanges( root, offset ) );
+				}
 			}
 
 			if ( root.is( 'element' ) && !ignore ) {
