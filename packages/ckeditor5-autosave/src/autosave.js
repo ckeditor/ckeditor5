@@ -10,9 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { debounce } from 'lodash-es';
 
 /* globals window */
 
