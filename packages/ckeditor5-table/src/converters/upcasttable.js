@@ -116,7 +116,12 @@ export function upcastTableCell( elementName ) {
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 
 			for ( const child of viewTableCell.getChildren() ) {
-				conversionApi.convertItem( child, ModelPosition.createAt( tableCell, 'end' ) );
+				const { modelCursor } = conversionApi.convertItem( child, ModelPosition.createAt( tableCell, 'end' ) );
+
+				// Ensure empty paragraph in table cell.
+				if ( modelCursor.parent.name == 'tableCell' && !modelCursor.parent.childCount ) {
+					conversionApi.writer.insertElement( 'paragraph', modelCursor );
+				}
 			}
 
 			// Set conversion result range.

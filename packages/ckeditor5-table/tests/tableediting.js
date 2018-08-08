@@ -7,6 +7,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import TableEditing from '../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
@@ -26,7 +27,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph ]
+				plugins: [ TableEditing, Paragraph, ImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -72,6 +73,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'image' ) ).to.be.false;
 	} );
 
 	it( 'adds insertTable command', () => {
@@ -174,6 +176,13 @@ describe( 'TableEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with image', () => {
+				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );

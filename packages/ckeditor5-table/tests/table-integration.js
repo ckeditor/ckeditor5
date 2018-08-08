@@ -16,7 +16,7 @@ import {
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import TableEditing from '../src/tableediting';
-import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
+import { formatTable, formattedModelTable, modelTable, viewTable } from './_utils/utils';
 
 describe( 'Table feature – integration', () => {
 	describe( 'with clipboard', () => {
@@ -58,72 +58,71 @@ describe( 'Table feature – integration', () => {
 	} );
 
 	describe( 'with undo', () => {
-		it( 'fixing empty roots should be transparent to undo', () => {
+		let editor, doc, root;
+
+		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, UndoEditing ] } )
+				.create( { plugins: [ Paragraph, TableEditing, Widget, UndoEditing ] } )
 				.then( newEditor => {
-					const editor = newEditor;
-					const doc = editor.model.document;
-					const root = doc.getRoot();
-
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
-
-					editor.setData( '<p>Foobar.</p>' );
-
-					editor.model.change( writer => {
-						writer.remove( root.getChild( 0 ) );
-					} );
-
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
-
-					editor.execute( 'undo' );
-
-					expect( editor.getData() ).to.equal( '<p>Foobar.</p>' );
-
-					editor.execute( 'redo' );
-
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
-
-					editor.execute( 'undo' );
-
-					expect( editor.getData() ).to.equal( '<p>Foobar.</p>' );
+					editor = newEditor;
+					doc = editor.model.document;
+					root = doc.getRoot();
 				} );
 		} );
 
+		it( 'fixing empty roots should be transparent to undo', () => {
+			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
+
+			editor.data.set( viewTable( [ [ 'foo' ] ] ) );
+
+			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+
+			editor.model.change( writer => {
+				writer.remove( root.getChild( 0 ) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+
+			editor.execute( 'undo' );
+
+			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+
+			editor.execute( 'redo' );
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+
+			editor.execute( 'undo' );
+
+			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+		} );
+
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
-			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, UndoEditing ] } )
-				.then( newEditor => {
-					const editor = newEditor;
-					const doc = editor.model.document;
-					const root = doc.getRoot();
-					const otherRoot = doc.createRoot( '$root', 'otherRoot' );
+			const otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-					editor.data.set( '<p>Foobar.</p>', 'main' );
-					editor.data.set( '<p>Foobar.</p>', 'otherRoot' );
+			editor.data.set( viewTable( [ [ 'foo' ] ] ), 'main' );
+			editor.data.set( viewTable( [ [ 'foo' ] ] ), 'otherRoot' );
 
-					editor.model.change( writer => {
-						writer.remove( root.getChild( 0 ) );
-					} );
+			editor.model.change( writer => {
+				writer.remove( root.getChild( 0 ) );
+			} );
 
-					editor.model.change( writer => {
-						writer.remove( otherRoot.getChild( 0 ) );
-					} );
+			editor.model.change( writer => {
+				writer.remove( otherRoot.getChild( 0 ) );
+			} );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>&nbsp;</p>' );
 
-					editor.execute( 'undo' );
+			editor.execute( 'undo' );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
+			expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 
-					editor.execute( 'undo' );
+			editor.execute( 'undo' );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>Foobar.</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
-				} );
+			expect( editor.data.get( 'main' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 		} );
 	} );
 } );

@@ -81,6 +81,13 @@ export default class TableEditing extends Plugin {
 			}
 		} );
 
+		// Disallow image in table cell.
+		schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
+				return false;
+			}
+		} );
+
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 

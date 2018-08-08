@@ -6,10 +6,11 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
-import { defaultSchema, formatTable } from '../_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+
+import { defaultConversion, defaultSchema, formatTable, modelTable } from '../_utils/utils';
 
 describe( 'upcastTable()', () => {
 	let editor, model;
@@ -17,29 +18,15 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph ]
+				plugins: [ Paragraph, ImageEditing, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 
-				const conversion = editor.conversion;
-
 				defaultSchema( model.schema, false );
 
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-
-				// Table row conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-
-				// Table cell conversion.
-				conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
-				conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
-
-				// Table attributes conversion.
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+				defaultConversion( editor.conversion, true );
 
 				// Since this part of test tests only view->model conversion editing pipeline is not necessary
 				// so defining model->view converters won't be necessary.
@@ -395,6 +382,76 @@ describe( 'upcastTable()', () => {
 				'</tableRow>' +
 				'</table>'
 			);
+		} );
+	} );
+
+	describe( 'block contents', () => {
+		it( 'should upcast table with empty table cell to paragraph', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ 'foo' ]
+			] ) );
+		} );
+
+		it( 'should upcast table with <p> in table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td><p>foo</p></td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ 'foo' ]
+			] ) );
+		} );
+
+		it( 'should upcast table with multiple <p> in table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>' +
+								'<p>foo</p>' +
+								'<p>bar</p>' +
+								'<p>baz</p>' +
+							'</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ '<paragraph>foo</paragraph><paragraph>bar</paragraph><paragraph>baz</paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should upcast table with <img> in table cell to empty table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td><img src="sample.png"></td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ '' ]
+			] ) );
 		} );
 	} );
 } );
