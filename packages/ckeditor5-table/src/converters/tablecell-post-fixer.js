@@ -7,8 +7,6 @@
  * @module table/converters/tablecell-post-fixer
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
-
 /**
  * Injects a table cell post-fixer into the editing controller.
  *
@@ -73,7 +71,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/view/range';
  * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
 export default function injectTableCellPostFixer( model, editing ) {
-	editing.view.document.registerPostFixer( writer => tableCellPostFixer( writer, model, editing.mapper, editing ) );
+	editing.view.document.registerPostFixer( writer => tableCellPostFixer( writer, model, editing.mapper ) );
 }
 
 // The table cell post-fixer.
@@ -81,7 +79,7 @@ export default function injectTableCellPostFixer( model, editing ) {
 // @param {module:engine/view/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
 // @param {module:engine/conversion/mapper~Mapper} mapper
-function tableCellPostFixer( writer, model, mapper, editing ) {
+function tableCellPostFixer( writer, model, mapper ) {
 	const changes = model.document.differ.getChanges();
 	let wasFixed = false;
 
@@ -95,7 +93,7 @@ function tableCellPostFixer( writer, model, mapper, editing ) {
 				const singleChild = tableCell.getChild( 0 );
 				const renameTo = Array.from( singleChild.getAttributes() ).length ? 'p' : 'span';
 
-				wasFixed = renameParagraphIfDifferent( singleChild, renameTo, writer, mapper, editing, model ) || wasFixed;
+				wasFixed = renameParagraphIfDifferent( singleChild, renameTo, writer, model, mapper ) || wasFixed;
 			}
 		} else {
 			// Check all nodes inside table cell on insert/remove operations (also other blocks).
@@ -105,7 +103,7 @@ function tableCellPostFixer( writer, model, mapper, editing ) {
 				const renameTo = parent.childCount > 1 ? 'p' : 'span';
 
 				for ( const child of parent.getChildren() ) {
-					wasFixed = renameParagraphIfDifferent( child, renameTo, writer, mapper, editing, model ) || wasFixed;
+					wasFixed = renameParagraphIfDifferent( child, renameTo, writer, model, mapper ) || wasFixed;
 				}
 			}
 		}
@@ -119,11 +117,12 @@ function tableCellPostFixer( writer, model, mapper, editing ) {
 // - view element is converted (mapped)
 // - view element has different name then requested.
 //
-// @param modelElement
-// @param desiredElementName
+// @param {module:engine/model/element~Element} modelElement
+// @param {String} desiredElementName
 // @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/model/model~Model} model
 // @param {module:engine/conversion/mapper~Mapper} mapper
-function renameParagraphIfDifferent( modelElement, desiredElementName, writer, mapper, editing, model ) {
+function renameParagraphIfDifferent( modelElement, desiredElementName, writer, model, mapper ) {
 	// Only rename paragraph elements.
 	if ( !modelElement.is( 'paragraph' ) ) {
 		return false;
@@ -136,47 +135,41 @@ function renameParagraphIfDifferent( modelElement, desiredElementName, writer, m
 		return false;
 	}
 
-	const rangesToFix = checkRangesToFix( model, modelElement, editing, mapper );
+	// After renaming element in the view by a post-fixer the selection would have references to the previous element.
+	const selection = model.document.selection;
+	const shouldFixSelection = checkSelectionForRenamedElement( selection, modelElement );
 
+	// Unbind current view element as it should be cleared from mapper.
 	mapper.unbindViewElement( viewElement );
-
 	const renamedViewElement = writer.rename( viewElement, desiredElementName );
-
-	// Bind table cell to renamed view element.
+	// Bind paragraph inside table cell to the renamed view element.
 	mapper.bindElements( modelElement, renamedViewElement );
 
-	if ( rangesToFix.length ) {
-		fixViewSelection( rangesToFix, mapper, writer );
+	if ( shouldFixSelection ) {
+		// Re-create view selection based on model selection.
+		updateRangesInViewSelection( selection, mapper, writer );
 	}
 
 	return true;
 }
 
-function checkRangesToFix( model, modelElement, editing, mapper ) {
-	const needsFix = !![ ...model.document.selection.getSelectedBlocks() ].find( el => el === modelElement );
-
-	if ( !needsFix ) {
-		return [];
-	}
-
-	const rangesToFix = [];
-
-	const selection = editing.view.document.selection;
-
-	const ranges = selection.getRanges();
-
-	for ( const range of ranges ) {
-		rangesToFix.push( {
-			start: mapper.toModelPosition( range.start ),
-			end: mapper.toModelPosition( range.end )
-		} );
-	}
-
-	return rangesToFix;
+// Checks if model selection contains renamed element.
+//
+// @param {module:engine/model/selection~Selection} selection
+// @param {module:engine/model/element~Element} modelElement
+// @returns {boolean}
+function checkSelectionForRenamedElement( selection, modelElement ) {
+	return !![ ...selection.getSelectedBlocks() ].find( block => block === modelElement );
 }
 
-function fixViewSelection( rangesToFix, mapper, writer ) {
-	const fixedRanges = rangesToFix.map( range => new Range( mapper.toViewPosition( range.start ), mapper.toViewPosition( range.end ) ) );
+// Re-create view selection from model selection.
+//
+// @param {module:engine/model/selection~Selection} selection
+// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/conversion/mapper~Mapper} mapper
+function updateRangesInViewSelection( selection, mapper, writer ) {
+	const fixedRanges = Array.from( selection.getRanges() )
+		.map( range => mapper.toViewRange( range ) );
 
-	writer.setSelection( fixedRanges );
+	writer.setSelection( fixedRanges, { backward: selection.isBackward } );
 }
