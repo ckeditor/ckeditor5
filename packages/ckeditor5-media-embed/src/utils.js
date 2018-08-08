@@ -10,6 +10,8 @@
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
+import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
+
 const mediaSymbol = Symbol( 'isMedia' );
 
 /**
@@ -56,8 +58,7 @@ export function addMediaWrapperElementToFigure( writer, figure, options ) {
 		renderFunction = function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 
-			domElement.innerHTML =
-				`<div class="ck-media__wrapper__aspect">${ options.wrapperContent || '' }</div>`;
+			domElement.innerHTML = options.wrapperContent || '';
 
 			return domElement;
 		};
@@ -79,20 +80,20 @@ export function getSelectedMediaElement( selection ) {
 }
 
 export function getMediaContent( editor, url ) {
-	const data = getContentMatchAndCreator( editor, url );
+	const data = getContentMatchAndRenderer( editor, url );
 
 	if ( data ) {
-		return data.contentCreator( data.match.pop() );
+		return data.contentViewRenderer( data.contentUrlMatch.pop() );
 	} else {
 		return '<p>No embeddable media found for given URL.</p>';
 	}
 }
 
 export function hasMediaContent( editor, url ) {
-	return !!getContentMatchAndCreator( editor, url );
+	return !!getContentMatchAndRenderer( editor, url );
 }
 
-function getContentMatchAndCreator( editor, url ) {
+function getContentMatchAndRenderer( editor, url ) {
 	if ( !url ) {
 		return null;
 	}
@@ -102,22 +103,34 @@ function getContentMatchAndCreator( editor, url ) {
 	url = url.trim();
 
 	for ( const name in contentDefinitions ) {
-		let { url: pattern, html: contentCreator } = contentDefinitions[ name ];
+		let { url: pattern, html: contentViewRenderer } = contentDefinitions[ name ];
 
 		if ( !Array.isArray( pattern ) ) {
 			pattern = [ pattern ];
 		}
 
 		for ( const subPattern of pattern ) {
-			const match = url.match( subPattern );
+			const contentUrlMatch = url.match( subPattern );
 
-			if ( match ) {
-				return { match, contentCreator };
+			if ( contentUrlMatch ) {
+				contentViewRenderer = contentViewRenderer || getDefaultContentRenderer( editor, url );
+
+				return { contentUrlMatch, contentViewRenderer };
 			}
 		}
 	}
 
 	return null;
+}
+
+function getDefaultContentRenderer( editor, url ) {
+	return () =>
+		'<div class="ck-media__placeholder">' +
+			`<div class="ck-media__placeholder__icon">${ mediaPlaceholderIcon }</div>` +
+			`<a class="ck-media__placeholder__url" target="new" href="${ url }" title="${ editor.t( 'Open media in new tab' ) }">` +
+				url +
+			'</a>' +
+		'</div>';
 }
 
 function getFillerOffset() {

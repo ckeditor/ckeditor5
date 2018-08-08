@@ -19,8 +19,6 @@ import { toMediaWidget, createMediaFigureElement } from './utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import '../theme/mediaembedediting.css';
-
 /**
  * The media embed editing feature.
  *
@@ -63,9 +61,11 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(track\/\w+)/
 					],
 					html: id =>
-						`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-							'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-						'</iframe>'
+						'<div class="ck-media__wrapper__aspect">' +
+							`<iframe src="https://open.spotify.com/embed/${ id }" ` +
+								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'</iframe>' +
+						'</div>'
 				},
 
 				youtube: {
@@ -76,9 +76,11 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?youtu\.be\/(\w+)/
 					],
 					html: id =>
-						`<iframe src="https://www.youtube.com/embed/${ id }" ` +
-							'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-						'</iframe>'
+						'<div class="ck-media__wrapper__aspect">' +
+							`<iframe src="https://www.youtube.com/embed/${ id }" ` +
+								'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+							'</iframe>' +
+						'</div>'
 				},
 
 				vimeo: {
@@ -92,10 +94,24 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?(www\.)?player\.vimeo\.com\/video\/(\d+)/
 					],
 					html: id =>
-						`<iframe src="https://player.vimeo.com/video/${ id }" ` +
-							'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
-						'</iframe>'
+						'<div class="ck-media__wrapper__aspect">' +
+							`<iframe src="https://player.vimeo.com/video/${ id }" ` +
+								'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+							'</iframe>' +
+						'</div>'
 				},
+
+				twitter: {
+					url: /^(https:\/\/)?(www\.)?twitter\.com/
+				},
+
+				googleMaps: {
+					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
+				},
+
+				flickr: {
+					url: /^(https:\/\/)?(www\.)?flickr\.com/
+				}
 			}
 		} );
 	}
