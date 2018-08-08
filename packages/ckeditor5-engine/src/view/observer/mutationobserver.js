@@ -12,7 +12,7 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
-import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
+import { isEqualWith } from 'lodash-es';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view

@@ -12,8 +12,8 @@ import Text from './text';
 import TextProxy from './textproxy';
 import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
-import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import Matcher from './matcher';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * View element.
