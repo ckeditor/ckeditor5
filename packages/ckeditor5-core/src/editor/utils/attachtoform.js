@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import isFunction from '@ckeditor/ckeditor5-utils/src/lib/lodash/isFunction';
+import { isFunction } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
