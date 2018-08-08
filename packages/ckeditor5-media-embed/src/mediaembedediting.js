@@ -44,14 +44,7 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 
 				instagram: {
-					url: [
-						/^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
-					],
-
-					html: id =>
-						`<iframe src="http://instagram.com/p/${ id }/embed" ` +
-							'frameborder="0">' +
-						'</iframe>'
+					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
 				},
 
 				spotify: {
@@ -111,6 +104,10 @@ export default class MediaEmbedEditing extends Plugin {
 
 				flickr: {
 					url: /^(https:\/\/)?(www\.)?flickr\.com/
+				},
+
+				facebook: {
+					url: /^(https:\/\/)?(www\.)?facebook\.com/
 				}
 			}
 		} );
