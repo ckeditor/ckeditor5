@@ -17,7 +17,7 @@ import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
+import { isElement } from 'lodash-es';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
