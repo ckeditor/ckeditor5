@@ -268,6 +268,18 @@ describe( 'transform', () => {
 				expectClients( '<blockQuote></blockQuote>' );
 			} );
 
+			it( 'text in same path, then undo', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+
+				john.remove();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
+			} );
+
 			it( 'element while removing', () => {
 				john.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
 				kate.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );

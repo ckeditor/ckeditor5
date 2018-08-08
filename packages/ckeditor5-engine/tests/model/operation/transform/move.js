@@ -252,7 +252,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'element while moving', () => {
+			it( 'text while moving', () => {
 				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
 
@@ -644,6 +644,34 @@ describe( 'transform', () => {
 
 				syncClients();
 				expectClients( '<paragraph>FooBar</paragraph>' );
+
+				john.undo();
+
+				syncClients();
+
+				expectClients( '<paragraph>FooBar</paragraph>' );
+			} );
+
+			it( 'moved text', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph>B[ar]</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				john.move( [ 0, 0 ] );
+				kate.merge();
+
+				syncClients();
+
+				expectClients( '<paragraph>arFooB</paragraph>' );
+			} );
+
+			it( 'moved text, then undo', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph>B[ar]</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				john.move( [ 0, 0 ] );
+				kate.merge();
+
+				syncClients();
 
 				john.undo();
 
