@@ -1339,7 +1339,14 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			//			it would be a move operation that moves 0 nodes, so maybe it is better just to return no-op.
 			//
 			if ( a.howMany == 1 ) {
-				return getNoOp();
+				if ( !context.bWasUndone ) {
+					return getNoOp();
+				} else {
+					a.sourcePosition = Position.createFromPosition( b.graveyardPosition );
+					a.targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
+
+					return [ a ];
+				}
 			}
 		}
 	}
