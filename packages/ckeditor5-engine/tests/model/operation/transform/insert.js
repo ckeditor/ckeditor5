@@ -300,18 +300,6 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'text in same path', () => {
-				john.setData( '<paragraph>Foo[]</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph>' );
-
-				john.type( 'Bar' );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients( '<paragraph><div>Foo</div>Bar</paragraph>' );
-			} );
-
 			it( 'element in different paths #1', () => {
 				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
@@ -344,21 +332,6 @@ describe( 'transform', () => {
 						'<paragraph>Foo</paragraph>' +
 					'</blockQuote>' +
 					'<paragraph>BarAbc</paragraph>'
-				);
-			} );
-
-			it( 'text in different paths', () => {
-				john.setData( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.type( 'Abc' );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph>FooAbc</paragraph>' +
-					'<paragraph><div>Bar</div></paragraph>'
 				);
 			} );
 

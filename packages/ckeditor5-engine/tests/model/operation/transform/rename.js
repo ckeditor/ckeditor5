@@ -130,21 +130,6 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'text in different path', () => {
-				john.setData( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>' +
-					'<paragraph><div>Bar</div></paragraph>'
-				);
-			} );
-
 			it( 'element in same path', () => {
 				john.setData( '<paragraph>[]Foo</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -155,18 +140,6 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<blockQuote><heading1>Foo</heading1></blockQuote>' );
-			} );
-
-			it( 'text in same path', () => {
-				john.setData( '<paragraph>[]Foo</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients( '<heading1><div>Foo</div></heading1>' );
 			} );
 		} );
 

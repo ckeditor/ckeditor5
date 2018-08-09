@@ -31,21 +31,6 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'text in different path', () => {
-				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.wrap( 'div' );
-				kate.wrap( 'div2' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph><div>Foo</div></paragraph>' +
-					'<paragraph><div2>Bar</div2></paragraph>'
-				);
-			} );
-
 			it( 'the same element', () => {
 				john.setData( '[<paragraph>Foo</paragraph>]' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );

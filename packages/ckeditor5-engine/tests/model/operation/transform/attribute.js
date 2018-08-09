@@ -532,21 +532,6 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'text into div in different path', () => {
-				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.setAttribute( 'bold', true );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph><$text bold="true">Foo</$text></paragraph>' +
-					'<paragraph><div>Bar</div></paragraph>'
-				);
-			} );
-
 			it( 'element into blockQuote in same path #1', () => {
 				john.setData( '<paragraph>[Foo]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -577,18 +562,6 @@ describe( 'transform', () => {
 						'<paragraph bold="true">Foo</paragraph>' +
 					'</blockQuote>'
 				);
-			} );
-
-			it( 'text into div in same path', () => {
-				john.setData( '<paragraph>[Foo]</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph>' );
-
-				john.setAttribute( 'bold', true );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients( '<paragraph><div><$text bold="true">Foo</$text></div></paragraph>' );
 			} );
 		} );
 

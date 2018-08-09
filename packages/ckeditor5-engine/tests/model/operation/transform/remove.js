@@ -112,21 +112,6 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'text in different path', () => {
-				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.remove();
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph></paragraph>' +
-					'<paragraph><div>Bar</div></paragraph>'
-				);
-			} );
-
 			it( 'element in same path', () => {
 				john.setData( '<paragraph>[Foo]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
@@ -137,18 +122,6 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<blockQuote><paragraph></paragraph></blockQuote>' );
-			} );
-
-			it( 'text in same path', () => {
-				john.setData( '<paragraph>[Foo] Bar</paragraph>' );
-				kate.setData( '<paragraph>[Foo Bar]</paragraph>' );
-
-				john.remove();
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients( '<paragraph><div> Bar</div></paragraph>' );
 			} );
 
 			it( 'element while removing', () => {
@@ -182,34 +155,6 @@ describe( 'transform', () => {
 						'<paragraph>Bar</paragraph>' +
 					'</blockQuote>'
 				);
-			} );
-
-			it( 'text while removing', () => {
-				john.setData( '<paragraph>[Foo]</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph>' );
-
-				john.remove();
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients( '<paragraph></paragraph>' );
-			} );
-
-			it( 'text while removing, then undo', () => {
-				john.setData( '<paragraph>[Foo]</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph>' );
-
-				john.remove();
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				john.undo();
-
-				syncClients();
-
-				expectClients( '<paragraph><div>Foo</div></paragraph>' );
 			} );
 		} );
 
