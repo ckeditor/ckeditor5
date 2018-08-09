@@ -303,7 +303,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>AbcFoo</paragraph><paragraph>Bar</paragraph>' );
 			} );
 
-			it( 'remove attribute from text in same path', () => {
+			it( 'remove attribute from text while typing in client\'s range', () => {
 				john.setData( '<paragraph>F<$text bold="true">o[]o</$text></paragraph>' );
 				kate.setData( '<paragraph>F<$text bold="true">[oo]</$text></paragraph>' );
 
@@ -327,7 +327,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>BarFoo</paragraph>' );
 			} );
 
-			it( 'remove attribute from text with 2 attributes in same path', () => {
+			it( 'remove attribute from text with 2 attributes while typing in client\'s range', () => {
 				john.setData( '<paragraph>F<$text bold="true" italic="true">o[]o</$text></paragraph>' );
 				kate.setData( '<paragraph>F<$text bold="true" italic="true">[oo]</$text></paragraph>' );
 
@@ -664,7 +664,7 @@ describe( 'transform', () => {
 
 			it( 'text in same path', () => {
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.setAttribute( 'bold', true );
 				kate.unwrap();
