@@ -39,6 +39,24 @@ describe( 'transform', () => {
 
 				expectClients( '<paragraph>Fobc</paragraph>' );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-engine/issues/1492
+			it( 'delete same content from a few elements', () => {
+				john.setData( '<paragraph>F[oo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+				kate.setData( '<paragraph>F[oo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
+
+				john.delete();
+				kate.delete();
+
+				syncClients();
+				expectClients( '<paragraph>Fc</paragraph>' );
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>' );
+			} );
 		} );
 	} );
 } );

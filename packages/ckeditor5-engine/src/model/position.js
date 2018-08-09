@@ -717,11 +717,16 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
-		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
-		let transformed = this._getTransformedByDeletion( sourcePosition, howMany );
-
-		// Then we update target position, as it could be affected by nodes removal too.
+		// Update target position, as it could be affected by nodes removal.
 		targetPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
+
+		if ( sourcePosition.isEqual( targetPosition ) ) {
+			// If `targetPosition` is equal to `sourcePosition` this isn't really any move. Just return position as it is.
+			return Position.createFromPosition( this );
+		}
+
+		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
+		const transformed = this._getTransformedByDeletion( sourcePosition, howMany );
 
 		const isMoved = transformed === null ||
 			( sourcePosition.isEqual( this ) && this.stickiness == 'toNext' ) ||
@@ -730,14 +735,13 @@ export default class Position {
 		if ( isMoved ) {
 			// This position is inside moved range (or sticks to it).
 			// In this case, we calculate a combination of this position, move source position and target position.
-			transformed = this._getCombined( sourcePosition, targetPosition );
+			return this._getCombined( sourcePosition, targetPosition );
 		} else {
 			// This position is not inside a removed range.
+			//
 			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
-			transformed = transformed._getTransformedByInsertion( targetPosition, howMany );
+			return transformed._getTransformedByInsertion( targetPosition, howMany );
 		}
-
-		return transformed;
 	}
 
 	/**
