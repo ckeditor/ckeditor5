@@ -665,19 +665,14 @@ export default class Schema {
 	 *
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
-	getValidRanges( ranges, attribute ) {
+	* getValidRanges( ranges, attribute ) {
 		ranges = convertToMinimalFlatRanges( ranges );
-		const result = [];
 
 		for ( const range of ranges ) {
-			const validRanges = this._getValidRangesForRange( range, attribute );
-
-			result.push( ...validRanges );
+			yield* this._getValidRangesForRange( range, attribute );
 		}
-
-		return result;
 	}
 
 	/**
@@ -689,22 +684,20 @@ export default class Schema {
 	 * @private
 	 * @param {module:engine/model/range~Range} range Range to process.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
-	_getValidRangesForRange( range, attribute ) {
-		const result = [];
-
+	* _getValidRangesForRange( range, attribute ) {
 		let start = range.start;
 		let end = range.start;
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				result.push( ...this._getValidRangesForRange( Range.createIn( item ), attribute ) );
+				yield* this._getValidRangesForRange( Range.createIn( item ), attribute );
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
 				if ( !start.isEqual( end ) ) {
-					result.push( new Range( start, end ) );
+					yield new Range( start, end );
 				}
 
 				start = Position.createAfter( item );
@@ -714,10 +707,8 @@ export default class Schema {
 		}
 
 		if ( !start.isEqual( end ) ) {
-			result.push( new Range( start, end ) );
+			yield new Range( start, end );
 		}
-
-		return result;
 	}
 
 	/**
@@ -1602,15 +1593,9 @@ function* combineWalkers( backward, forward ) {
 // all those minimal flat ranges.
 //
 // @param {Array.<module:engine/model/range~Range>} ranges Ranges to process.
-// @returns {Array.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
-function convertToMinimalFlatRanges( ranges ) {
-	const result = [];
-
+// @returns {Iterator.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
+function* convertToMinimalFlatRanges( ranges ) {
 	for ( const range of ranges ) {
-		const minimal = range.getMinimalFlatRanges();
-
-		result.push( ...minimal );
+		yield* range.getMinimalFlatRanges();
 	}
-
-	return result;
 }

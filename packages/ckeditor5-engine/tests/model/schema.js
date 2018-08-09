@@ -1178,7 +1178,7 @@ describe( 'Schema', () => {
 
 			setData( model, '[<p>foo<img></img>bar</p>]' );
 
-			const validRanges = schema.getValidRanges( doc.selection.getRanges(), 'foo' );
+			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo' ) );
 
 			expect( validRanges.length ).to.equal( 2 );
 
