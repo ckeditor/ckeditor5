@@ -62,6 +62,10 @@ export default class WrapOperation extends Operation {
 		this.element = elementOrPosition instanceof Element ? elementOrPosition : null;
 
 		this.graveyardPosition = elementOrPosition instanceof Element ? null : Position.createFromPosition( elementOrPosition );
+
+		if ( this.graveyardPosition ) {
+			this.graveyardPosition.stickiness = 'toNext';
+		}
 	}
 
 	/**
@@ -148,7 +152,10 @@ export default class WrapOperation extends Operation {
 		const targetPosition = new Position( this.position.root, targetPath );
 
 		if ( this.element ) {
-			_insert( insertPosition, this.element._clone() );
+			const originalElement = this.element;
+			this.element = this.element._clone();
+
+			_insert( insertPosition, originalElement );
 		} else {
 			_move( Range.createFromPositionAndShift( this.graveyardPosition, 1 ), insertPosition );
 		}

@@ -90,7 +90,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'intersecting wrap', () => {
+			it( 'intersecting wrap', () => {
 				john.setData( '<paragraph>Fo[]o</paragraph>' );
 				kate.setData( '<paragraph>F[oo]</paragraph>' );
 
@@ -98,10 +98,9 @@ describe( 'transform', () => {
 				kate.wrap( 'div' );
 
 				syncClients();
-
 				expectClients(
-					'<paragraph>F</paragraph>' +
-					'<paragraph><div>oo</div></paragraph>'
+					'<paragraph>Fo</paragraph>' +
+					'<paragraph>o</paragraph>'
 				);
 			} );
 		} );
@@ -122,7 +121,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'element in same position', () => {
+			it( 'element in same position', () => {
 				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
@@ -130,7 +129,6 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
-
 				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 
@@ -285,7 +283,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
-			it.skip( 'element into paragraph #3', () => {
+			it( 'element into paragraph #3', () => {
 				john.setData( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
@@ -299,13 +297,10 @@ describe( 'transform', () => {
 				kate.undo();
 
 				syncClients();
-				// Actual content for Kate:
-				// <paragraph>FooBar</paragraph><paragraph></paragraph>
-				// There is a problem in Merge x Split transform in undo case.
 				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 			} );
 
-			it.skip( 'element into paragraph #4', () => {
+			it( 'element into paragraph #4', () => {
 				john.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
@@ -313,14 +308,16 @@ describe( 'transform', () => {
 				kate.merge();
 
 				syncClients();
+				expectClients(
+					'<paragraph>FooB</paragraph>' +
+					'<paragraph>ar</paragraph>'
+				);
 
 				john.undo();
 				kate.undo();
 
-				expectClients(
-					'<paragraph>Fo</paragraph>' +
-					'<paragraph>oBar</paragraph>'
-				);
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 			} );
 		} );
 

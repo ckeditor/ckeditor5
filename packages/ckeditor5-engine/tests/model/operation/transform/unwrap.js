@@ -50,7 +50,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
-			it.skip( 'the same element, then undo', () => {
+			it( 'the same element, then undo', () => {
 				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
@@ -63,9 +63,6 @@ describe( 'transform', () => {
 				john.undo();
 
 				syncClients();
-				// Actual content for Kate:
-				// <paragraph><paragraph>Foo</paragraph></paragraph>
-				// Kate has a different order of nodes in graveyard after syncing.
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
 		} );

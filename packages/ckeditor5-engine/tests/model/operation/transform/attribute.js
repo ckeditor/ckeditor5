@@ -325,7 +325,7 @@ describe( 'transform', () => {
 				kate.setData( '<paragraph>F[oo] Bar</paragraph>' );
 
 				john.setAttribute( 'bold', true );
-				kate.move( [ 0, 7 ], [ 0, 1 ], [ 0, 3 ] );
+				kate.move( [ 0, 7 ] );
 
 				syncClients();
 
@@ -795,7 +795,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>FooB<$text bold="true">ar</$text></paragraph>' );
 			} );
 
-			it.skip( 'element into paragraph #2, then undo', () => {
+			it( 'element into paragraph #2, then undo', () => {
 				john.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 

@@ -113,7 +113,7 @@ describe( 'Selection', () => {
 			expect( () => {
 				// eslint-disable-next-line no-new
 				new Selection( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, /view-selection-add-range-not-range/ );
 		} );
 
 		it( 'should throw an error when ranges intersects', () => {
@@ -878,7 +878,7 @@ describe( 'Selection', () => {
 			it( 'should throw an error when range is invalid', () => {
 				expect( () => {
 					selection.setTo( [ { invalid: 'range' } ] );
-				} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+				} ).to.throw( CKEditorError, /view-selection-add-range-not-range/ );
 			} );
 
 			it( 'should throw when range is intersecting with already added range', () => {

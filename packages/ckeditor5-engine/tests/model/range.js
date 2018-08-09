@@ -12,7 +12,6 @@ import TreeWalker from '../../src/model/treewalker';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
-import RemoveOperation from '../../src/model/operation/removeoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
@@ -898,10 +897,10 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by RemoveOperation', () => {
+		describe( 'by MoveOperation to graveyard', () => {
 			it( 'remove before range', () => {
 				const start = new Position( root, [ 0 ] );
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -910,7 +909,7 @@ describe( 'Range', () => {
 
 			it( 'remove intersecting with range', () => {
 				const start = new Position( root, [ 4 ] );
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -922,7 +921,7 @@ describe( 'Range', () => {
 			it( 'remove inside the range', () => {
 				const start = new Position( root, [ 3 ] );
 
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 

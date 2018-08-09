@@ -43,6 +43,10 @@ export default class SplitOperation extends Operation {
 		this.position.stickiness = 'toNext';
 
 		this.graveyardPosition = graveyardPosition ? Position.createFromPosition( graveyardPosition ) : null;
+
+		if ( this.graveyardPosition ) {
+			this.graveyardPosition.stickiness = 'toNext';
+		}
 	}
 
 	/**

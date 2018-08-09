@@ -158,13 +158,30 @@ describe( 'transform', () => {
 				kate.wrap( 'blockQuote' );
 
 				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
 
 				john.undo();
 
 				syncClients();
 
-				// Actual content:
-				// <paragraph>Foo</paragraph><paragraph>Bar</paragraph><blockQuote></blockQuote>
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'element while removing, then undo #2', () => {
+				john.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+
+				john.remove();
+				john.undo();
+				kate.wrap( 'blockQuote' );
+
+				syncClients();
+
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<blockQuote>' +
@@ -218,7 +235,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'element while removing, then undo', () => {
+			it( 'element while removing, then undo', () => {
 				john.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
 				kate.setData( '<paragraph>Foo</paragraph><blockQuote>[]<paragraph>Bar</paragraph></blockQuote>' );
 
@@ -226,15 +243,11 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
-
 				expectClients( '<paragraph>Foo</paragraph>' );
 
 				john.undo();
 
 				syncClients();
-
-				// Actual result:
-				// <paragraph>Foo</paragraph><blockQuote></blockQuote>
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>'
@@ -443,7 +456,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'element into paragraph, then undo', () => {
+			it( 'element into paragraph, then undo', () => {
 				john.setData( '<paragraph>F[oo]</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
@@ -451,15 +464,11 @@ describe( 'transform', () => {
 				kate.merge();
 
 				syncClients();
-
 				expectClients( '<paragraph>FBar</paragraph>' );
 
 				john.undo();
 
 				syncClients();
-
-				// Actual result:
-				// <paragraph>F<paragraph></paragraph>oBar</paragraph>
 				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
