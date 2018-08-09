@@ -79,7 +79,9 @@ export function transformSets( operationsA, operationsB, options ) {
 		return { operationsA, operationsB };
 	}
 
-	const toTransform = operationsA.map( op => ( { opA: op, transformFrom: 0 } ) );
+	for ( const op of operationsA ) {
+		op.transformBy = 0;
+	}
 
 	const data = {
 		nextBaseVersionA: operationsA[ operationsA.length - 1 ].baseVersion + 1,
@@ -90,55 +92,64 @@ export function transformSets( operationsA, operationsB, options ) {
 
 	const context = initializeContext( operationsA, operationsB, options );
 
-	for ( let i = 0; i < toTransform.length; i++ ) {
-		const transformFrom = toTransform[ i ].transformFrom;
+	let i = 0;
 
-		for ( let j = transformFrom; j < operationsB.length; ) {
-			const opA = toTransform[ i ].opA;
-			const opB = operationsB[ j ];
+	while ( i < operationsA.length ) {
+		const opA = operationsA[ i ];
 
-			if ( options.useContext ) {
-				updateRelations( context, opA, opB );
-			}
+		const transformBy = opA.transformBy;
 
-			const contextAB = {
-				aIsStrong: true,
-				aWasUndone: context.wasUndone( opA ),
-				bWasUndone: context.wasUndone( opB ),
-				abRelation: context.getRelation( opA, opB ),
-				baRelation: context.getRelation( opB, opA )
-			};
-
-			const contextBA = {
-				aIsStrong: false,
-				aWasUndone: context.wasUndone( opB ),
-				bWasUndone: context.wasUndone( opA ),
-				abRelation: context.getRelation( opB, opA ),
-				baRelation: context.getRelation( opA, opB )
-			};
-
-			const newOpsA = transform( opA, opB, contextAB );
-			const newOpsB = transform( opB, opA, contextBA );
-
-			if ( options.useContext ) {
-				updateOriginalOperation( context, opA, newOpsA );
-				updateOriginalOperation( context, opB, newOpsB );
-			}
-
-			const newTransformFrom = j + newOpsB.length;
-			const newToTransform = newOpsA.map( op => ( { opA: op, transformFrom: newTransformFrom } ) );
-
-			toTransform.splice( i, 1, ...newToTransform );
-
-			operationsB.splice( j, 1, ...newOpsB );
-			j = j + newOpsB.length;
-
-			data.extraOpsA += newOpsA.length - 1;
-			data.extraOpsB += newOpsB.length - 1;
+		if ( transformBy == operationsB.length ) {
+			i++;
+			continue;
 		}
+
+		const opB = operationsB[ transformBy ];
+
+		if ( options.useContext ) {
+			updateRelations( context, opA, opB );
+		}
+
+		const contextAB = {
+			aIsStrong: true,
+			aWasUndone: context.wasUndone( opA ),
+			bWasUndone: context.wasUndone( opB ),
+			abRelation: context.getRelation( opA, opB ),
+			baRelation: context.getRelation( opB, opA )
+		};
+
+		const contextBA = {
+			aIsStrong: false,
+			aWasUndone: context.wasUndone( opB ),
+			bWasUndone: context.wasUndone( opA ),
+			abRelation: context.getRelation( opB, opA ),
+			baRelation: context.getRelation( opA, opB )
+		};
+
+		const newOpsA = transform( opA, opB, contextAB );
+		const newOpsB = transform( opB, opA, contextBA );
+
+		if ( options.useContext ) {
+			updateOriginalOperation( context, opA, newOpsA );
+			updateOriginalOperation( context, opB, newOpsB );
+		}
+
+		const newTransformBy = transformBy + newOpsB.length;
+
+		for ( const newOpA of newOpsA ) {
+			newOpA.transformBy = newTransformBy;
+		}
+
+		operationsA.splice( i, 1, ...newOpsA );
+		operationsB.splice( transformBy, 1, ...newOpsB );
+
+		data.extraOpsA += newOpsA.length - 1;
+		data.extraOpsB += newOpsB.length - 1;
 	}
 
-	operationsA = toTransform.map( item => item.opA );
+	for ( const op of operationsA ) {
+		delete op.transformBy;
+	}
 
 	if ( options.padWithNoOps ) {
 		padWithNoOps( operationsA, data.extraOpsB - data.extraOpsA );
