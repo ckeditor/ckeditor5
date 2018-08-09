@@ -1121,7 +1121,7 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 		} );
 
-		function test( input, attribute, output ) {
+		function testValidRangesForAttribute( input, attribute, output ) {
 			setData( model, input );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
@@ -1133,7 +1133,7 @@ describe( 'Schema', () => {
 		it( 'should return a range with p for an attribute allowed only on p', () => {
 			schema.extend( 'p', { allowAttributes: 'foo' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img></img>bar</p>]',
 				'foo',
 				'[<p>foo<img></img>bar</p>]'
@@ -1143,7 +1143,7 @@ describe( 'Schema', () => {
 		it( 'should return ranges on text nodes for an attribute allowed only on text', () => {
 			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img></img>bar</p>]',
 				'bold',
 				'<p>[foo]<img></img>[bar]</p>'
@@ -1153,7 +1153,7 @@ describe( 'Schema', () => {
 		it( 'should return a range on img for an attribute allowed only on img', () => {
 			schema.extend( 'img', { allowAttributes: 'src' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img></img>bar</p>]',
 				'src',
 				'<p>foo[<img></img>]bar</p>'
@@ -1164,7 +1164,7 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowAttributes: 'bold' } );
 			schema.extend( 'img', { allowAttributes: 'bold' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img></img>bar</p>]',
 				'bold',
 				'<p>[foo<img></img>bar]</p>'
@@ -1192,7 +1192,7 @@ describe( 'Schema', () => {
 		it( 'should not break a range if children are not allowed to have the attribute', () => {
 			schema.extend( 'p', { allowAttributes: 'foo' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo</p><p>bar</p>]',
 				'foo',
 				'[<p>foo</p><p>bar</p>]'
@@ -1202,7 +1202,7 @@ describe( 'Schema', () => {
 		it( 'should search deeply', () => {
 			schema.extend( '$text', { allowAttributes: 'bold', allowIn: 'img' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img>xxx</img>bar</p>]',
 				'bold',
 				'<p>[foo]<img>[xxx]</img>[bar]</p>'
@@ -1212,7 +1212,7 @@ describe( 'Schema', () => {
 		it( 'should work with multiple ranges', () => {
 			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>a</p><p>b</p>]<p>c</p><p>[d]</p>',
 				'bold',
 				'<p>[a]</p><p>[b]</p><p>c</p><p>[d]</p>'
@@ -1222,7 +1222,7 @@ describe( 'Schema', () => {
 		it( 'should work with non-flat ranges', () => {
 			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>a</p><p>b</p><p>c]</p><p>d</p>',
 				'bold',
 				'<p>[a]</p><p>[b]</p><p>[c]</p><p>d</p>'
@@ -1232,7 +1232,7 @@ describe( 'Schema', () => {
 		it( 'should not leak beyond the given ranges', () => {
 			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo</p><p>b]a[r</p><p>x]yz</p>',
 				'bold',
 				'<p>[foo]</p><p>[b]a[r]</p><p>[x]yz</p>'
@@ -1249,7 +1249,7 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			test(
+			testValidRangesForAttribute(
 				'[<p>foo<img>xx]x</img>bar</p>',
 				'bold',
 				'<p>[foo]<img>xxx</img>bar</p>'
