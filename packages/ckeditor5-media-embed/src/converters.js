@@ -9,7 +9,7 @@
 
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import { getMediaContent, addMediaWrapperElementToFigure } from './utils';
+import { addMediaWrapperElementToFigure } from './utils';
 
 /**
  * Returns a function that converts the media wrapper view representation:
@@ -62,7 +62,9 @@ export function viewFigureToModel() {
 	}
 }
 
-export function modelToViewUrlAttributeConverter( editor, options ) {
+export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
+	const renderMediaHtml = options.isViewPipeline || options.renderMediaHtml;
+
 	return dispatcher => {
 		dispatcher.on( 'attribute:url:media', converter );
 	};
@@ -75,8 +77,13 @@ export function modelToViewUrlAttributeConverter( editor, options ) {
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const attributes = {};
-		const withAspectWrapper = options.isEditingPipeline || options.shouldRenderContent;
-		const wrapperContent = withAspectWrapper ? getMediaContent( editor, data.attributeNewValue ) : null;
+		let mediaHtml = null;
+
+		if ( renderMediaHtml ) {
+			mediaHtml = mediaRegistry.getHtml( data.attributeNewValue, {
+				usePlaceholderAsFallback: options.isViewPipeline
+			} );
+		}
 
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
 		viewWriter.remove( ViewRange.createIn( figure ) );
@@ -85,13 +92,12 @@ export function modelToViewUrlAttributeConverter( editor, options ) {
 			attributes[ 'data-oembed-url' ] = data.attributeNewValue;
 		}
 
-		if ( options.isEditingPipeline ) {
+		if ( options.isViewPipeline ) {
 			attributes.class = 'ck-media__wrapper';
 		}
 
 		addMediaWrapperElementToFigure( viewWriter, figure, {
-			withAspectWrapper,
-			wrapperContent,
+			mediaHtml,
 			attributes,
 		} );
 	}

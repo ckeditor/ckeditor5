@@ -16,6 +16,7 @@ import {
 
 import InsertMediaCommand from './insertmediacommand';
 import { toMediaWidget, createMediaFigureElement } from './utils';
+import { MediaRegistry } from './mediaregistry';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
@@ -127,6 +128,8 @@ export default class MediaEmbedEditing extends Plugin {
 		const conversion = editor.conversion;
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
 
+		this.mediaRegistry = new MediaRegistry( this.editor );
+
 		editor.commands.add( 'insertMedia', new InsertMediaCommand( editor ) );
 
 		// Configure the schema.
@@ -142,30 +145,32 @@ export default class MediaEmbedEditing extends Plugin {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
 				return createMediaFigureElement( viewWriter, {
-					withAspectWrapper: !semanticDataOutput
+					renderMediaHtml: !semanticDataOutput
 				} );
 			}
 		} ) );
 
 		// Model -> Data (url -> data-oembed-url)
-		conversion.for( 'dataDowncast' )
-			.add( modelToViewUrlAttributeConverter( editor, {
-				shouldRenderContent: !semanticDataOutput
-			} ) );
+		conversion.for( 'dataDowncast' ).add( modelToViewUrlAttributeConverter( this.mediaRegistry, {
+			renderMediaHtml: !semanticDataOutput
+		} ) );
 
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
-				return toMediaWidget( createMediaFigureElement( viewWriter ), viewWriter, t( 'media widget' ) );
+				const figure = createMediaFigureElement( viewWriter, {
+					renderMediaHtml: true
+				} );
+
+				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
 			}
 		} ) );
 
 		// Model -> View (url -> data-oembed-url)
-		conversion.for( 'editingDowncast' )
-			.add( modelToViewUrlAttributeConverter( editor, {
-				isEditingPipeline: true
-			} ) );
+		conversion.for( 'editingDowncast' ).add( modelToViewUrlAttributeConverter( this.mediaRegistry, {
+			isViewPipeline: true
+		} ) );
 
 		// View -> Model (data-oembed-url -> url)
 		conversion.for( 'upcast' )

@@ -10,7 +10,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
-describe( 'MediaEmbedEditing', () => {
+describe.only( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
 	const mediaDefinitions = {
 		test: {
@@ -323,9 +323,7 @@ describe( 'MediaEmbedEditing', () => {
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
 									'<div data-oembed-url="http://ckeditor.com">' +
-										'<div class="ck-media__wrapper__aspect">' +
-											'<iframe src="http://ckeditor.com"></iframe>' +
-										'</div>' +
+										'<iframe src="http://ckeditor.com"></iframe>' +
 									'</div>' +
 								'</figure>' );
 						} );
@@ -336,7 +334,6 @@ describe( 'MediaEmbedEditing', () => {
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
 									'<div>' +
-										'<div class="ck-media__wrapper__aspect"></div>' +
 									'</div>' +
 								'</figure>' );
 						} );
@@ -347,9 +344,7 @@ describe( 'MediaEmbedEditing', () => {
 							editor.setData(
 								'<figure class="media">' +
 									'<div data-oembed-url="http://ckeditor.com">' +
-										'<div class="ck-media__wrapper__aspect">' +
-											'<iframe src="http://cksource.com"></iframe>' +
-										'</div>' +
+										'<iframe src="http://cksource.com"></iframe>' +
 									'</div>' +
 								'</figure>' );
 
@@ -392,9 +387,7 @@ describe( 'MediaEmbedEditing', () => {
 								'<div>' +
 									'<figure class="media">' +
 										'<div data-oembed-url="http://ckeditor.com">' +
-											'<div class="ck-media__wrapper__aspect">' +
-												'<iframe src="http://cksource.com"></iframe>' +
-											'</div>' +
+											'<iframe src="http://cksource.com"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -413,9 +406,7 @@ describe( 'MediaEmbedEditing', () => {
 								'<div>' +
 									'<figure class="media">' +
 										'<div data-oembed-url="http://ckeditor.com">' +
-											'<div class="ck-media__wrapper__aspect">' +
-												'<iframe src="http://cksource.com"></iframe>' +
-											'</div>' +
+											'<iframe src="http://cksource.com"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -489,9 +480,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="http://ckeditor.com">' +
-									'<div class="ck-media__wrapper__aspect">' +
-										'<iframe src="http://ckeditor.com"></iframe>' +
-									'</div>' +
+									'<iframe src="http://ckeditor.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);
@@ -508,9 +497,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="http://cksource.com">' +
-									'<div class="ck-media__wrapper__aspect">' +
-										'<iframe src="http://cksource.com"></iframe>' +
-									'</div>' +
+									'<iframe src="http://cksource.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);
@@ -528,9 +515,6 @@ describe( 'MediaEmbedEditing', () => {
 							.to.equal(
 								'<figure class="ck-widget media" contenteditable="false">' +
 									'<div class="ck-media__wrapper">' +
-										'<div class="ck-media__wrapper__aspect">' +
-											'<p>No embeddable media found for given URL.</p>' +
-										'</div>' +
 									'</div>' +
 								'</figure>'
 							);
@@ -551,9 +535,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="http://ckeditor.com">' +
-									'<div class="ck-media__wrapper__aspect">' +
-										'<iframe src="http://ckeditor.com"></iframe>' +
-									'</div>' +
+									'<iframe src="http://ckeditor.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);

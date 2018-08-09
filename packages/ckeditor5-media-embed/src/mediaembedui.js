@@ -10,8 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import MediaFormView from './ui/mediaformview';
-import { hasMediaContent } from './utils';
-
+import MediaEmbedEditing from './mediaembedediting';
 import mediaIcon from '../theme/icons/media.svg';
 
 /**
@@ -26,10 +25,11 @@ export default class MediaEmbedUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'insertMedia' );
+		const mediaRegistry = this.editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
 		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'insertMedia', locale => {
-			const form = new MediaFormView( getFormValidators( editor ), locale );
+			const form = new MediaFormView( getFormValidators( editor.t, mediaRegistry ), locale );
 			const dropdown = createDropdown( locale );
 
 			this._setUpDropdown( dropdown, form, command, editor );
@@ -93,9 +93,7 @@ export default class MediaEmbedUI extends Plugin {
 	}
 }
 
-function getFormValidators( editor ) {
-	const t = editor.t;
-
+function getFormValidators( t, mediaRegistry ) {
 	return [
 		form => {
 			if ( !form.url.length ) {
@@ -103,7 +101,7 @@ function getFormValidators( editor ) {
 			}
 		},
 		form => {
-			if ( !hasMediaContent( editor, form.url ) ) {
+			if ( !mediaRegistry.has( form.url ) ) {
 				return t( 'This media URL is not supported.' );
 			}
 		}
