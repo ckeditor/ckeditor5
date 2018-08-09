@@ -10,14 +10,14 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
-describe.only( 'MediaEmbedEditing', () => {
+describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
-	const mediaDefinitions = {
-		test: {
+	const mediaDefinitions = [
+		{
 			url: /(.*)/,
 			html: id => `<iframe src="${ id }"></iframe>`
 		}
-	};
+	];
 
 	testUtils.createSinonSandbox();
 
@@ -38,7 +38,7 @@ describe.only( 'MediaEmbedEditing', () => {
 			} );
 
 			it( 'upcasts the URL (dailymotion)', () => {
-				testMediaConfig( [
+				testMediaUpcast( [
 					'https://www.dailymotion.com/video/foo',
 					'www.dailymotion.com/video/foo',
 					'dailymotion.com/video/foo',
@@ -49,17 +49,16 @@ describe.only( 'MediaEmbedEditing', () => {
 			} );
 
 			it( 'upcasts the URL (instagram)', () => {
-				testMediaConfig( [
+				testMediaUpcast( [
 					'https://www.instagram.com/p/foo',
 					'www.instagram.com/p/foo',
 					'instagram.com/p/foo',
-				],
-				'<iframe src="http://instagram.com/p/foo/embed" frameborder="0"></iframe>' );
+				] );
 			} );
 
 			describe( 'spotify', () => {
 				it( 'upcasts the URL (artist)', () => {
-					testMediaConfig( [
+					testMediaUpcast( [
 						'https://www.open.spotify.com/artist/foo',
 						'www.open.spotify.com/artist/foo',
 						'open.spotify.com/artist/foo',
@@ -70,7 +69,7 @@ describe.only( 'MediaEmbedEditing', () => {
 				} );
 
 				it( 'upcasts the URL (album)', () => {
-					testMediaConfig( [
+					testMediaUpcast( [
 						'https://www.open.spotify.com/album/foo',
 						'www.open.spotify.com/album/foo',
 						'open.spotify.com/album/foo',
@@ -81,7 +80,7 @@ describe.only( 'MediaEmbedEditing', () => {
 				} );
 
 				it( 'upcasts the URL (track)', () => {
-					testMediaConfig( [
+					testMediaUpcast( [
 						'https://www.open.spotify.com/track/foo',
 						'www.open.spotify.com/track/foo',
 						'open.spotify.com/track/foo',
@@ -93,7 +92,7 @@ describe.only( 'MediaEmbedEditing', () => {
 			} );
 
 			it( 'upcasts the URL (youtube)', () => {
-				testMediaConfig( [
+				testMediaUpcast( [
 					'https://www.youtube.com/watch?v=foo',
 					'www.youtube.com/watch?v=foo',
 					'youtube.com/watch?v=foo',
@@ -115,7 +114,7 @@ describe.only( 'MediaEmbedEditing', () => {
 			} );
 
 			it( 'upcasts the URL (vimeo)', () => {
-				testMediaConfig( [
+				testMediaUpcast( [
 					'https://www.vimeo.com/1234',
 					'www.vimeo.com/1234',
 					'vimeo.com/1234',
@@ -545,17 +544,31 @@ describe.only( 'MediaEmbedEditing', () => {
 		} );
 	} );
 
-	function testMediaConfig( urls, expected ) {
+	function testMediaUpcast( urls, expected ) {
 		for ( const url of urls ) {
 			editor.setData(
 				`<figure class="media"><div data-oembed-url="${ url }"></div></figure>` );
 
-			expect( normalizeHtml( getViewData( view, { withoutSelection: true } ) ) ).to.match(
-				new RegExp( '<figure[^>]+>' +
-					'<div[^>]+>' +
-						`<div[^>]+>${ normalizeHtml( expected ) }</div>` +
-					'</div>' +
-				'</figure>' ), `assertion for "${ url }"` );
+			const viewData = getViewData( view, { withoutSelection: true } );
+			let expectedRegExp;
+
+			if ( expected ) {
+				expectedRegExp = new RegExp(
+					'<figure[^>]+>' +
+						'<div[^>]+>' +
+							`<div[^>]+>${ normalizeHtml( expected ) }</div>` +
+						'</div>' +
+					'</figure>' );
+			} else {
+				expectedRegExp = new RegExp(
+					'<figure[^>]+>' +
+						'<div[^>]+>' +
+							'<div class="ck-media__placeholder">.*</div>' +
+						'</div>' +
+					'</figure>' );
+			}
+
+			expect( normalizeHtml( viewData ) ).to.match( expectedRegExp, `assertion for "${ url }"` );
 		}
 	}
 } );

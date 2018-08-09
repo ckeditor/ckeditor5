@@ -21,12 +21,12 @@ describe( 'MediaEmbedUI', () => {
 			.create( editorElement, {
 				plugins: [ MediaEmbed ],
 				mediaEmbed: {
-					media: {
-						test: {
+					media: [
+						{
 							url: /https:\/\/valid\/(.*)/,
 							html: id => `<iframe src="${ id }"></iframe>`
 						}
-					}
+					]
 				}
 			} )
 			.then( newEditor => {

@@ -22,10 +22,17 @@ export default class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ MediaEmbedEditing ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'insertMedia' );
-		const mediaRegistry = this.editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
+		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
 		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'insertMedia', locale => {

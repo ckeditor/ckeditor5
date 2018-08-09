@@ -36,9 +36,7 @@ export class MediaRegistry {
 
 		url = url.trim();
 
-		for ( const name in mediaProviders ) {
-			let { url: pattern, html: renderer } = mediaProviders[ name ];
-
+		for ( let { url: pattern, html: renderer } of mediaProviders ) {
 			if ( !Array.isArray( pattern ) ) {
 				pattern = [ pattern ];
 			}

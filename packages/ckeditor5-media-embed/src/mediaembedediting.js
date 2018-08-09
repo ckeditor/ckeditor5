@@ -33,22 +33,24 @@ export default class MediaEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'mediaEmbed', {
-			media: {
-				dailymotion: {
+			media: [
+				{
 					url: [
 						/^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/
 					],
 					html: id =>
-						`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
-							'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
-						'</iframe>'
+						'<div class="ck-media__wrapper__aspect">' +
+							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
+								'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
+							'</iframe>' +
+						'</div>'
 				},
 
-				instagram: {
+				{
 					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
 				},
 
-				spotify: {
+				{
 					url: [
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
@@ -62,7 +64,7 @@ export default class MediaEmbedEditing extends Plugin {
 						'</div>'
 				},
 
-				youtube: {
+				{
 					url: [
 						/^(https:\/\/)?(www\.)?youtube\.com\/watch\?v=(\w+)/,
 						/^(https:\/\/)?(www\.)?youtube\.com\/v\/(\w+)/,
@@ -77,7 +79,7 @@ export default class MediaEmbedEditing extends Plugin {
 						'</div>'
 				},
 
-				vimeo: {
+				{
 					url: [
 						/^(https:\/\/)?(www\.)?vimeo\.com\/(\d+)/,
 						/^(https:\/\/)?(www\.)?vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
@@ -95,26 +97,26 @@ export default class MediaEmbedEditing extends Plugin {
 						'</div>'
 				},
 
-				twitter: {
+				{
 					url: /^(https:\/\/)?(www\.)?twitter\.com/
 				},
 
-				googleMaps: {
+				{
 					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
 				},
 
-				flickr: {
+				{
 					url: /^(https:\/\/)?(www\.)?flickr\.com/
 				},
 
-				facebook: {
+				{
 					url: /^(https:\/\/)?(www\.)?facebook\.com/
 				},
 
-				any: {
+				{
 					url: /.*/
 				}
-			}
+			]
 		} );
 	}
 
