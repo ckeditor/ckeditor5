@@ -50,7 +50,7 @@ function updateBaseVersions( operations, baseVersion ) {
 	return operations;
 }
 
-function transform( a, b, context = {} ) {
+export function transform( a, b, context = {} ) {
 	const transformationFunction = getTransformation( a, b );
 
 	try {
@@ -69,7 +69,7 @@ function transform( a, b, context = {} ) {
 	}
 }
 
-function transformSets( operationsA, operationsB, options ) {
+export function transformSets( operationsA, operationsB, options ) {
 	operationsA = operationsA.slice();
 	operationsB = operationsB.slice();
 
@@ -162,11 +162,6 @@ function transformSets( operationsA, operationsB, options ) {
 
 	return { operationsA, operationsB };
 }
-
-export default {
-	transform,
-	transformSets
-};
 
 function padWithNoOps( operations, howMany ) {
 	for ( let i = 0; i < howMany; i++ ) {

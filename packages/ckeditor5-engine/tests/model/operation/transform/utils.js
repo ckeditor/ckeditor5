@@ -7,7 +7,7 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
-import transform from '../../../../src/model/operation/transform';
+import { transformSets } from '../../../../src/model/operation/transform';
 import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 import OperationFactory from '../../../../src/model/operation/operationfactory';
@@ -290,9 +290,9 @@ export function syncClients() {
 			};
 
 			if ( localClient.orderNumber < remoteClient.orderNumber ) {
-				remoteOperationsTransformed = transform.transformSets( localOperations, remoteOperations, options ).operationsB;
+				remoteOperationsTransformed = transformSets( localOperations, remoteOperations, options ).operationsB;
 			} else {
-				remoteOperationsTransformed = transform.transformSets( remoteOperations, localOperations, options ).operationsA;
+				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
 			localClient.editor.model.enqueueChange( 'transparent', writer => {
