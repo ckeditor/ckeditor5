@@ -113,7 +113,7 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
 
 		// Second parameter is null for operations that did not move the range into graveyard.
-		expect( spy.args[ 0 ][ 2 ] ).to.be.null;
+		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
 	} );
 
 	it( 'should fire change:content event when content inside the range has changed', () => {
@@ -137,7 +137,7 @@ describe( 'LiveRange', () => {
 		expect( spy.args[ 0 ][ 1 ].isEqual( live ) ).to.be.true;
 
 		// Second parameter is null for operations that did not move the range into graveyard.
-		expect( spy.args[ 0 ][ 2 ] ).to.be.null;
+		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
 	} );
 
 	it( 'should pass deletion position if range was removed (remove)', () => {
@@ -153,7 +153,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		// Second parameter is deletion position.
-		expect( spy.args[ 0 ][ 2 ].isEqual( sourcePosition ) ).to.be.true;
+		expect( spy.args[ 0 ][ 2 ].deletionPosition.isEqual( sourcePosition ) ).to.be.true;
 	} );
 
 	// This scenario is hypothetically possible during OT if the element to merge-into was removed.
@@ -191,7 +191,7 @@ describe( 'LiveRange', () => {
 		} );
 
 		// Second parameter is deletion position.
-		expect( spy.args[ 1 ][ 2 ].isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
+		expect( spy.args[ 1 ][ 2 ].deletionPosition.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 	} );
 
 	describe( 'should get transformed and fire change:range if', () => {

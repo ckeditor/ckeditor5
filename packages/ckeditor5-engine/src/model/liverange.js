@@ -143,10 +143,9 @@ function transform( operation ) {
 	const result = Range.createFromRanges( ranges );
 	const boundariesChanged = !result.isEqual( this );
 	const contentChanged = doesOperationChangeRangeContent( this, operation );
+	let deletionPosition = null;
 
 	if ( boundariesChanged ) {
-		let deletionPosition = null;
-
 		if ( result.root.rootName == '$graveyard' ) {
 			if ( operation.type == 'remove' ) {
 				deletionPosition = operation.sourcePosition;
@@ -162,10 +161,10 @@ function transform( operation ) {
 		this.start = result.start;
 		this.end = result.end;
 
-		this.fire( 'change:range', oldRange, deletionPosition );
+		this.fire( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range.createFromRange( this ), null );
+		this.fire( 'change:content', Range.createFromRange( this ), { deletionPosition } );
 	}
 }
 
