@@ -9,9 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import mediaIcon from '../theme/icons/media.svg';
 import MediaFormView from './ui/mediaformview';
 import { hasMediaContent } from './utils';
+
+import mediaIcon from '../theme/icons/media.svg';
 
 /**
  * The media embed UI plugin.

@@ -108,6 +108,10 @@ export default class MediaEmbedEditing extends Plugin {
 
 				facebook: {
 					url: /^(https:\/\/)?(www\.)?facebook\.com/
+				},
+
+				any: {
+					url: /.*/
 				}
 			}
 		} );
