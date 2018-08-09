@@ -316,7 +316,7 @@ describe( 'transform', () => {
 
 			it( 'text in different path', () => {
 				john.setData( '<paragraph>F[oo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
-				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
 
 				john.move( [ 0, 0 ] );
 				kate.unwrap();
@@ -343,7 +343,7 @@ describe( 'transform', () => {
 
 			it( 'text in same path', () => {
 				john.setData( '<blockQuote><paragraph>F[oo]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.move( [ 0, 0, 0 ] );
 				kate.unwrap();

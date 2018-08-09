@@ -489,7 +489,7 @@ describe( 'transform', () => {
 
 			it( 'text in different path', () => {
 				john.setData( '<paragraph>Foo[]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
-				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
 
 				john.type( 'Abc' );
 				kate.unwrap();
@@ -528,7 +528,7 @@ describe( 'transform', () => {
 
 			it( 'text in same path', () => {
 				john.setData( '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.type( ' Bar' );
 				kate.unwrap();

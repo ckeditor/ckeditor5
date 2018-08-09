@@ -159,7 +159,7 @@ describe( 'transform', () => {
 
 			it( 'text in different path', () => {
 				john.setData( '<paragraph>[Foo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
-				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[Bar]</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
 
 				john.wrap( 'div' );
 				kate.unwrap();
@@ -202,7 +202,7 @@ describe( 'transform', () => {
 
 			it( 'the same text', () => {
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.wrap( 'div' );
 				kate.unwrap();
@@ -214,7 +214,7 @@ describe( 'transform', () => {
 
 			it( 'the same text, then undo', () => {
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.wrap( 'div' );
 				kate.unwrap();
