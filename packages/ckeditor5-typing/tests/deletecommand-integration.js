@@ -118,7 +118,7 @@ describe( 'DeleteCommand integration', () => {
 			assertOutput( '<paragraph>123456[]</paragraph><paragraph>78</paragraph>' );
 		} );
 
-		it.skip( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
+		it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
 			setData( model, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
 
 			editor.execute( 'delete' );
