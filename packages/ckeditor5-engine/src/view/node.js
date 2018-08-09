@@ -10,8 +10,8 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { clone } from 'lodash-es';
 
 /**
  * Abstract tree view node class.

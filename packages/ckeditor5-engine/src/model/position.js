@@ -8,10 +8,10 @@
  */
 
 import TreeWalker from './treewalker';
-import last from '@ckeditor/ckeditor5-utils/src/lib/lodash/last';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
+import { last } from 'lodash-es';
 
 /**
  * Represents a position in the model tree.

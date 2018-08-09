@@ -11,7 +11,7 @@ import ViewAttributeElement from '../view/attributeelement';
 import ViewRange from '../view/range';
 import DocumentSelection from '../model/documentselection';
 
-import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 
 /**
  * Contains downcast (model-to-view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
