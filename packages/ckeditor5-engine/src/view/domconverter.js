@@ -23,7 +23,7 @@ import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
+import { isElement } from 'lodash-es';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles

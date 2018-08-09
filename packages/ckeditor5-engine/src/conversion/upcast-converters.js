@@ -8,7 +8,7 @@ import Matcher from '../view/matcher';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 
-import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
+import { cloneDeep } from 'lodash-es';
 
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
