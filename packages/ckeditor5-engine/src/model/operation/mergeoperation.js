@@ -30,7 +30,7 @@ export default class MergeOperation extends Operation {
 	 *
 	 * @param {module:engine/model/position~Position} sourcePosition Position inside the merged element. All nodes from that
 	 * element after that position will be moved to {@link ~#targetPosition}.
-	 * @param {Number} howMany
+	 * @param {Number} howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param {module:engine/model/position~Position} targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param {module:engine/model/position~Position} graveyardPosition Position in graveyard to which the merged element will be moved.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
