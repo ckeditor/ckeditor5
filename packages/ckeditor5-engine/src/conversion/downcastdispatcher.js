@@ -11,7 +11,7 @@ import Consumable from './modelconsumable';
 import Range from '../model/range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
+import { extend } from 'lodash-es';
 
 /**
  * `DowncastDispatcher` is a central point of downcasting (conversion from model to view), which is a process of reacting to changes

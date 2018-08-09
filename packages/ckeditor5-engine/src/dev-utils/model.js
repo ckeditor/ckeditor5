@@ -34,7 +34,7 @@ import {
 } from '../conversion/downcast-selection-converters';
 import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcast-converters';
 
-import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
+import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**

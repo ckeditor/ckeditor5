@@ -21,7 +21,8 @@
     "framework"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^10.2.0"
+    "@ckeditor/ckeditor5-utils": "^10.2.0",
+    "lodash-es": "^4.17.10"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^10.0.2",
