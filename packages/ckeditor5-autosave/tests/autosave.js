@@ -13,15 +13,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 
 describe( 'Autosave', () => {
-	/** @type {(typeof import 'sinon')} */
 	const sandbox = sinon.sandbox;
 
-	let editor;
-
-	let element;
-
-	/** @type {Autosave} */
-	let autosave;
+	let editor, element, autosave;
 
 	beforeEach( () => {
 		sandbox.useFakeTimers( { now: Date.now() } );
