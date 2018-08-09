@@ -131,7 +131,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
-			it.skip( 'should redo series of batches undone by undo command', () => {
+			it( 'should redo series of batches undone by undo command', () => {
 				undo.execute();
 				undo.execute();
 				undo.execute();
@@ -190,7 +190,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
-			it.skip( 'should redo batch selectively undone by undo command', () => {
+			it( 'should redo batch selectively undone by undo command', () => {
 				undo.execute( batch0 );
 				redo.execute();
 

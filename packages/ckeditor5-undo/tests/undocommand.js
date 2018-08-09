@@ -136,7 +136,7 @@ describe( 'UndoCommand', () => {
 				} );
 			} );
 
-			it.skip( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
+			it( 'should revert changes done by operations from the batch that was most recently added to the command stack', () => {
 				undo.execute();
 
 				// Selection is restored. Wrap is removed:
@@ -210,7 +210,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			} );
 
-			it.skip( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
+			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
 				undo.execute( batch1 );
 				// Remove attribute:
 				/*
@@ -238,7 +238,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.true;
 			} );
 
-			it.skip( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
+			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
 				undo.execute( batch0 );
 				// Remove foobar:
 				/*
