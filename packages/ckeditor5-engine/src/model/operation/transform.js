@@ -1908,7 +1908,7 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 					// Unwrap:
 					// <p>Foo</p><p>Bar</p><p>Xyz</p>
 					//
-					// Wrap with stronger wrap (`a`):
+					// Wrap with stronger wrap:
 					// <p>Foo</p><div><p>Bar</p><p>Xyz</p></div>
 					//
 					// Re-wrap:
