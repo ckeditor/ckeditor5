@@ -79,8 +79,10 @@ export function transformSets( operationsA, operationsB, options ) {
 		return { operationsA, operationsB };
 	}
 
+	const nextTransformIndex = new WeakMap();
+
 	for ( const op of operationsA ) {
-		op.transformBy = 0;
+		nextTransformIndex.set( op, 0 );
 	}
 
 	const data = {
@@ -97,14 +99,14 @@ export function transformSets( operationsA, operationsB, options ) {
 	while ( i < operationsA.length ) {
 		const opA = operationsA[ i ];
 
-		const transformBy = opA.transformBy;
+		const transformByIndex = nextTransformIndex.get( opA );
 
-		if ( transformBy == operationsB.length ) {
+		if ( transformByIndex == operationsB.length ) {
 			i++;
 			continue;
 		}
 
-		const opB = operationsB[ transformBy ];
+		const opB = operationsB[ transformByIndex ];
 
 		if ( options.useContext ) {
 			updateRelations( context, opA, opB );
@@ -134,21 +136,15 @@ export function transformSets( operationsA, operationsB, options ) {
 			updateOriginalOperation( context, opB, newOpsB );
 		}
 
-		const newTransformBy = transformBy + newOpsB.length;
-
 		for ( const newOpA of newOpsA ) {
-			newOpA.transformBy = newTransformBy;
+			nextTransformIndex.set( newOpA, transformByIndex + newOpsB.length );
 		}
 
 		operationsA.splice( i, 1, ...newOpsA );
-		operationsB.splice( transformBy, 1, ...newOpsB );
+		operationsB.splice( transformByIndex, 1, ...newOpsB );
 
 		data.extraOpsA += newOpsA.length - 1;
 		data.extraOpsB += newOpsB.length - 1;
-	}
-
-	for ( const op of operationsA ) {
-		delete op.transformBy;
 	}
 
 	if ( options.padWithNoOps ) {
