@@ -417,27 +417,23 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 		// Attribute `highlight="yellow"` should be applied on the following range:
 		// <p>Fo[zb]ar<p>
 		//
-		// New text with `highlight="red"` is typed:
+		// But before that, new text with `highlight="red"` is typed:
 		// <p>Fo[z<$text highlight="red">x</$text>a]r</p>
 		//
-		// In this case we cannot simply apply operation: `oldValue=null, newValue="yellow"` for the whole range
-		// because that will led to an exception (`oldValue` is incorrect). We also cannot break the original range
-		// as this would mess up following insert operations:
+		// In this case we cannot simply apply operation changing the attribute value from `null` to `"yellow"` for the whole range
+		// because that would lead to an exception (`oldValue` is incorrect for `x`).
 		//
-		// Attribute operation is to apply bold on below `[]` range, but multiple characters are inserted at `^`.
-		// Assume ranges breaking:
+		// We also cannot break the original range as this would mess up a scenario when there are multiple following insert operations.
 		//
-		// <p>F[o^zba]r</p>
-		// <p>F[o][x][zba]</p>
-		// <p>F[o][x]x[zba]</p>
-		// <p>F[o][x]xx[zba]</p>
+		// So, the attribute range will be expanded, no matter what attributes are set on the inserted nodes:
 		//
-		// As you can see, characters after the first one are not included in any range when the original attribute range
-		// is broken at first `x` insertion.
+		// <p>Fo[z<$text highlight="red">x</$text>a]r</p>		<--- Change from `null` to `yellow`, still throwing an exception.
 		//
-		// So, the final solution is to just expand the original range, but "fix" all the nodes that have "incorrect" `oldValue`.
-		// For example, in the highlight case above, we would need an operation to change `highlight="red"` to `null` so that
-		// the original attribute operation `null` -> `yellow` would be correct.
+		// But before that operation would be applied, we will add an additional attribute operation that will change
+		// attributes on inserted nodes in a way which would make the original operation correct:
+		//
+		// <p>Fo[z{<$text highlight="red">}x</$text>a]r</p>		<--- Change `{}` from `red` to `null`.
+		// <p>Fo[zxa]r</p>										<--- Now change from `null` to `yellow` is completely fine.
 		//
 		if ( b.shouldReceiveAttributes ) {
 			// Be sure to add those operations before the original operation.
@@ -934,15 +930,21 @@ setTransformation( MergeOperation, SplitOperation, ( a, b ) => {
 	}
 
 	// Case 1:	Merge operation moves nodes to the place where split happens.
+	//			This is a classic situation when there are two paragraphs, and there is a split (enter) after the first
+	//			paragraph and there is a merge (delete) at the beginning of the second paragraph:
 	//
-	//			Split is after `Foo`, while merge is from `Bar` to the end of `Foo`:
-	//			<p>Foo</p><p>Bar</p>
+	//			<p>Foo{}</p><p>[]Bar</p>.
 	//
-	//			After split:
+	//			Split is after `Foo`, while merge is from `Bar` to the end of `Foo`.
+	//
+	//			State after split:
 	//			<p>Foo</p><p></p><p>Bar</p>
 	//
-	//			In this case, `Bar` should be merged to the new paragraph:
+	//			Now, `Bar` should be merged to the new paragraph:
 	//			<p>Foo</p><p>Bar</p>
+	//
+	//			Instead of merging it to the original paragraph:
+	//			<p>FooBar</p><p></p>
 	//
 	//			This means that `targetPosition` needs to be transformed. This is the default case though.
 	//			For example, if the split would be after `F`, `targetPosition` should also be transformed.
