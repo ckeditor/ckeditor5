@@ -12,11 +12,17 @@ export class MediaRegistry {
 	}
 
 	has( url ) {
+		return !!this._getMedia( url );
+	}
+
+	hasRenderer( url ) {
 		if ( !url ) {
 			return null;
 		}
 
-		return !!this._getMedia( url );
+		const media = this._getMedia( url );
+
+		return !!media.renderer;
 	}
 
 	getHtml( url, options ) {
@@ -62,15 +68,11 @@ class Media {
 		this.renderer = renderer;
 	}
 
-	getHtml( options ) {
+	getHtml() {
 		if ( this.renderer ) {
 			return this.renderer( this.match.pop() );
 		} else {
-			if ( options.usePlaceholderAsFallback ) {
-				return this._getPlaceholderHtml();
-			} else {
-				return '';
-			}
+			return this._getPlaceholderHtml();
 		}
 	}
 

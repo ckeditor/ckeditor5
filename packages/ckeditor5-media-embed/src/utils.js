@@ -62,7 +62,13 @@ export function addMediaWrapperElementToFigure( writer, figure, options ) {
 		};
 	}
 
-	const wrapper = writer.createUIElement( 'div', options.attributes, renderFunction );
+	let wrapper;
+
+	if ( options.useSemanticWrapper ) {
+		wrapper = writer.createEmptyElement( 'oembed', options.attributes, renderFunction );
+	} else {
+		wrapper = writer.createUIElement( 'div', options.attributes, renderFunction );
+	}
 
 	writer.insert( ViewPosition.createAt( figure ), wrapper );
 }

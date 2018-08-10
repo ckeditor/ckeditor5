@@ -146,24 +146,24 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
+				const url = modelElement.getAttribute( 'url' );
+
 				return createMediaFigureElement( viewWriter, {
-					renderMediaHtml: !semanticDataOutput
+					useSemanticWrapper: semanticDataOutput || !this.mediaRegistry.hasRenderer( url )
 				} );
 			}
 		} ) );
 
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add( modelToViewUrlAttributeConverter( this.mediaRegistry, {
-			renderMediaHtml: !semanticDataOutput
+			renderMediaHtml: !semanticDataOutput,
 		} ) );
 
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
-				const figure = createMediaFigureElement( viewWriter, {
-					renderMediaHtml: true
-				} );
+				const figure = createMediaFigureElement( viewWriter );
 
 				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
 			}
@@ -176,6 +176,23 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// View -> Model (data-oembed-url -> url)
 		conversion.for( 'upcast' )
+			// Upcast semantic media.
+			.add( upcastElementToElement( {
+				view: {
+					name: 'oembed',
+					attributes: {
+						'url': true
+					}
+				},
+				model: ( viewMedia, modelWriter ) => {
+					const url = viewMedia.getAttribute( 'url' );
+
+					if ( this.mediaRegistry.has( url ) ) {
+						return modelWriter.createElement( 'media', { url } );
+					}
+				}
+			} ) )
+			// Upcast non-semantic media.
 			.add( upcastElementToElement( {
 				view: {
 					name: 'div',
@@ -184,9 +201,11 @@ export default class MediaEmbedEditing extends Plugin {
 					}
 				},
 				model: ( viewMedia, modelWriter ) => {
-					return modelWriter.createElement( 'media', {
-						url: viewMedia.getAttribute( 'data-oembed-url' )
-					} );
+					const url = viewMedia.getAttribute( 'data-oembed-url' );
+
+					if ( this.mediaRegistry.has( url ) ) {
+						return modelWriter.createElement( 'media', { url } );
+					}
 				}
 			} ) )
 			.add( viewFigureToModel() );

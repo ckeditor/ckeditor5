@@ -205,7 +205,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( editor.getData() ).to.equal(
 							'<figure class="media">' +
-								'<div data-oembed-url="http://ckeditor.com"></div>' +
+								'<oembed url="http://ckeditor.com"></oembed>' +
 							'</figure>' );
 					} );
 
@@ -214,14 +214,14 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( editor.getData() ).to.equal(
 							'<figure class="media">' +
-								'<div></div>' +
+								'<oembed></oembed>' +
 							'</figure>' );
 					} );
 				} );
 
 				describe( 'view to model', () => {
 					it( 'should convert media figure', () => {
-						editor.setData( '<figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure>' );
+						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '<media url="http://ckeditor.com"></media>' );
@@ -266,7 +266,7 @@ describe( 'MediaEmbedEditing', () => {
 						editor.conversion.elementToElement( { model: 'blockquote', view: 'blockquote' } );
 
 						editor.setData(
-							'<blockquote><figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure></blockquote>' );
+							'<blockquote><figure class="media"><oembed url="http://ckeditor.com"></oembed></figure></blockquote>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '<blockquote></blockquote>' );
@@ -278,7 +278,7 @@ describe( 'MediaEmbedEditing', () => {
 							conversionApi.consumable.consume( img, { name: true } );
 						}, { priority: 'high' } );
 
-						editor.setData( '<figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure>' );
+						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '' );
@@ -289,10 +289,43 @@ describe( 'MediaEmbedEditing', () => {
 							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 						}, { priority: 'high' } );
 
-						editor.setData( '<figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure>' );
+						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '' );
+					} );
+
+					it( 'should discard the contents of the media', () => {
+						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com">foo bar</oembed></figure>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '<media url="http://ckeditor.com"></media>' );
+					} );
+
+					it( 'should not convert unknown media', () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ MediaEmbedEditing ],
+								mediaEmbed: {
+									semanticDataOutput: true,
+									media: [
+										{
+											url: /^http:\/\/known\.media/,
+											html: () => 'known-media'
+										}
+									]
+								}
+							} )
+							.then( newEditor => {
+								newEditor.setData(
+									'<figure class="media"><oembed url="http://unknown.media"></oembed></figure>' +
+									'<figure class="media"><oembed url="http://known.media"></oembed></figure>' );
+
+								expect( getModelData( newEditor.model, { withoutSelection: true } ) )
+									.to.equal( '<media url="http://known.media"></media>' );
+
+								return newEditor.destroy();
+							} );
 					} );
 				} );
 			} );
@@ -332,8 +365,8 @@ describe( 'MediaEmbedEditing', () => {
 
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
-									'<div>' +
-									'</div>' +
+									'<oembed>' +
+									'</oembed>' +
 								'</figure>' );
 						} );
 					} );
@@ -423,6 +456,49 @@ describe( 'MediaEmbedEditing', () => {
 
 							expect( getModelData( model, { withoutSelection: true } ) )
 								.to.equal( '' );
+						} );
+
+						it( 'should discard the contents of the media', () => {
+							editor.setData(
+								'<figure class="media">' +
+									'<div data-oembed-url="http://ckeditor.com">' +
+										'foo bar baz' +
+									'</div>' +
+								'</figure>' );
+
+							expect( getModelData( model, { withoutSelection: true } ) )
+								.to.equal( '<media url="http://ckeditor.com"></media>' );
+						} );
+
+						it( 'should not convert unknown media', () => {
+							return VirtualTestEditor
+								.create( {
+									plugins: [ MediaEmbedEditing ],
+									mediaEmbed: {
+										media: [
+											{
+												url: /^http:\/\/known\.media/,
+												html: () => 'known-media'
+											}
+										]
+									}
+								} )
+								.then( newEditor => {
+									newEditor.setData(
+										'<figure class="media">' +
+											'<div data-oembed-url="http://known.media">' +
+											'</div>' +
+										'</figure>' +
+										'<figure class="media">' +
+											'<div data-oembed-url="http://unknown.media">' +
+											'</div>' +
+										'</figure>' );
+
+									expect( getModelData( newEditor.model, { withoutSelection: true } ) )
+										.to.equal( '<media url="http://known.media"></media>' );
+
+									return newEditor.destroy();
+								} );
 						} );
 					} );
 				} );

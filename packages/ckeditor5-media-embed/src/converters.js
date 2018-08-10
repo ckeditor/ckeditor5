@@ -74,31 +74,29 @@ export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
 			return;
 		}
 
+		const url = data.attributeNewValue;
 		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
-		const attributes = {};
-		let mediaHtml = null;
-
-		if ( renderMediaHtml ) {
-			mediaHtml = mediaRegistry.getHtml( data.attributeNewValue, {
-				usePlaceholderAsFallback: options.isViewPipeline
-			} );
-		}
 
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
 		viewWriter.remove( ViewRange.createIn( figure ) );
 
-		if ( data.attributeNewValue !== null ) {
-			attributes[ 'data-oembed-url' ] = data.attributeNewValue;
+		const wrapperAttributes = {};
+		const useSemanticWrapper = !renderMediaHtml ||
+			( options.renderMediaHtml && !mediaRegistry.hasRenderer( url ) );
+
+		if ( url !== null ) {
+			wrapperAttributes[ renderMediaHtml ? 'data-oembed-url' : 'url' ] = url;
 		}
 
 		if ( options.isViewPipeline ) {
-			attributes.class = 'ck-media__wrapper';
+			wrapperAttributes.class = 'ck-media__wrapper';
 		}
 
 		addMediaWrapperElementToFigure( viewWriter, figure, {
-			mediaHtml,
-			attributes,
+			mediaHtml: renderMediaHtml ? mediaRegistry.getHtml( url ) : null,
+			attributes: wrapperAttributes,
+			useSemanticWrapper
 		} );
 	}
 }
