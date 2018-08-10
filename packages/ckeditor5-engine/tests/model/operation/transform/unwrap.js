@@ -72,7 +72,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
-			it.skip( 'the same element, then undo', () => {
+			it( 'the same element, then undo', () => {
 				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
@@ -85,9 +85,6 @@ describe( 'transform', () => {
 				john.undo();
 
 				syncClients();
-				// Actual content for Kate:
-				// <paragraph><paragraph>Foo</paragraph></paragraph>
-				// Kate has a different order of nodes in graveyard after syncing.
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
 
@@ -174,6 +171,21 @@ describe( 'transform', () => {
 			it( 'unwrapped element', () => {
 				john.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.merge();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'unwrap merge target element', () => {
+				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>Foo</paragraph></blockQuote>[]<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
 
 				john.unwrap();
 				kate.merge();

@@ -10,7 +10,6 @@ import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
 import InsertOperation from '../../src/model/operation/insertoperation';
-import RemoveOperation from '../../src/model/operation/removeoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
@@ -1617,7 +1616,7 @@ describe( 'Differ', () => {
 
 	function remove( sourcePosition, howMany ) {
 		const targetPosition = Position.createAt( doc.graveyard, doc.graveyard.maxOffset );
-		const operation = new RemoveOperation( sourcePosition, howMany, targetPosition, doc.version );
+		const operation = new MoveOperation( sourcePosition, howMany, targetPosition, doc.version );
 
 		model.applyOperation( operation );
 	}

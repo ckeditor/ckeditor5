@@ -181,7 +181,6 @@ describe( 'transform', () => {
 				kate.remove();
 
 				syncClients();
-
 				expectClients( '<paragraph></paragraph>' );
 
 				john.undo();
@@ -189,8 +188,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				// Actual result for Kate:
-				// <paragraph><m1:start></m1:start>Fo<m1:end></m1:end><m2:start></m2:start>o<m2:end></m2:end> Bar</paragraph>
+				// Wrong markers transforming.
 				expectClients(
 					'<paragraph>' +
 						'<m1:start></m1:start>Foo<m1:end></m1:end><m2:start></m2:start> Bar<m2:end></m2:end>' +
@@ -716,6 +714,41 @@ describe( 'transform', () => {
 						'<paragraph><m1:start></m1:start>Foo<m1:end></m1:end> Bar</paragraph>' +
 					'</blockQuote>'
 				);
+			} );
+
+			it( 'only marker end is inside merged element #1', () => {
+				john.setData( '<paragraph>Foo</paragraph>[<paragraph>B]ar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				john.setMarker( 'm1' );
+				kate.merge();
+
+				syncClients();
+
+				expectClients( '<paragraph>Foo<m1:start></m1:start>B<m1:end></m1:end>ar</paragraph>' );
+			} );
+
+			it( 'only marker end is inside merged element #2', () => {
+				john.setData( '<paragraph>Foo[]Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo[]Bar</paragraph>' );
+
+				kate.split();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				john.setSelection( [ 1 ] );
+				john.insert( '<paragraph>Xyz</paragraph>' );
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Xyz</paragraph><paragraph>Bar</paragraph>' );
+
+				john.setSelection( [ 1 ], [ 2, 1 ] );
+				john.setMarker( 'm1' );
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo<m1:start></m1:start>Bar</paragraph><paragraph>Xyz</paragraph><m1:end></m1:end>' );
 			} );
 		} );
 

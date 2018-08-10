@@ -345,7 +345,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'text in other user\'s selection', () => {
+			it( 'text in other user\'s selection', () => {
 				john.setData( '<paragraph>[Foo] Bar</paragraph>' );
 				kate.setData( '<paragraph>F[]oo Bar</paragraph>' );
 
@@ -376,7 +376,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'inside moved text', () => {
+			it( 'inside moved text', () => {
 				john.setData( '<paragraph>F[oo Ba]r</paragraph><paragraph>Abc</paragraph>' );
 				kate.setData( '<paragraph>Foo[] Bar</paragraph><paragraph>Abc</paragraph>' );
 
@@ -384,10 +384,6 @@ describe( 'transform', () => {
 				kate.split();
 
 				syncClients();
-
-				// Actual result for Kate:
-				// <paragraph>F</paragraph><paragraph>r</paragraph><paragraph> BaooAbc</paragraph>
-				// Move operations have wrong targets when they target at same place.
 
 				expectClients(
 					'<paragraph>F</paragraph>' +

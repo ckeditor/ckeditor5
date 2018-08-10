@@ -493,16 +493,49 @@ export default class Range {
 	}
 
 	_getTransformedByMergeOperation( operation ) {
-		const start = this.start._getTransformedByMergeOperation( operation );
-		const end = this.end._getTransformedByMergeOperation( operation );
+		let start = this.start._getTransformedByMergeOperation( operation );
+		let end = this.end._getTransformedByMergeOperation( operation );
+
+		if ( start.root != end.root ) {
+			// This happens when only start or end was next to the merged (deleted) element. In this case we need to fix
+			// the range cause its boundaries would be in different roots.
+			if ( start.root != this.root ) {
+				// Fix start position root at it was the only one that was moved.
+				start = this.start;
+			} else {
+				// Fix end position root.
+				end = this.end.getShiftedBy( -1 );
+			}
+		}
 
 		if ( start.isAfter( end ) ) {
-			// This happens in the following case:
+			// This happens in the following two, similar cases:
 			//
-			// <p>abc</p>{<p>x}yz</p> -> <p>abcx}yz</p>{
-			//                           <p>abcx{yz</p>}
+			// Case 1: Range start is directly before merged node.
+			//         Resulting range should include only nodes from the merged element:
 			//
-			return new Range( end, start );
+			// Before: <p>aa</p>{<p>b}b</p><p>cc</p>
+			// Merge:  <p>aab}b</p>{<p>cc</p>
+			// Fix:    <p>aa{b}b</p><p>cc</p>
+			//
+			// Case 2: Range start is not directly before merged node.
+			//         Result should include all nodes that were in the original range.
+			//
+			// Before: <p>aa</p>{<p>cc</p><p>b}b</p>
+			// Merge:  <p>aab}b</p>{<p>cc</p>
+			// Fix:    <p>aa{bb</p><p>cc</p>}
+			//
+			//         The range is expanded by an additional `b` letter but it is better than dropping the whole `cc` paragraph.
+			//
+			if ( !operation.deletionPosition.isEqual( start ) ) {
+				// Case 2.
+				end = operation.deletionPosition;
+			}
+
+			// In both cases start is at the end of the merge-to element.
+			start = operation.targetPosition;
+
+			return new Range( start, end );
 		}
 
 		return new Range( start, end );

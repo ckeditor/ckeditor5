@@ -7,7 +7,7 @@ import Model from '../../../src/model/model';
 import NodeList from '../../../src/model/nodelist';
 import Element from '../../../src/model/element';
 import InsertOperation from '../../../src/model/operation/insertoperation';
-import RemoveOperation from '../../../src/model/operation/removeoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -107,7 +107,7 @@ describe( 'InsertOperation', () => {
 		expect( root.getChild( 0 ).data ).to.equal( 'fooxbar' );
 	} );
 
-	it( 'should create a RemoveOperation as a reverse', () => {
+	it( 'should create a MoveOperation as a reverse', () => {
 		const position = new Position( root, [ 0 ] );
 		const operation = new InsertOperation(
 			position,
@@ -117,7 +117,7 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( RemoveOperation );
+		expect( reverse ).to.be.an.instanceof( MoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.sourcePosition.isEqual( position ) ).to.be.true;
 		expect( reverse.howMany ).to.equal( 7 );

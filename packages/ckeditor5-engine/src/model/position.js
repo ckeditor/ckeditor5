@@ -563,6 +563,8 @@ export default class Position {
 				// Above happens during OT when the merged element is moved before the merged-to element.
 				pos = pos._getTransformedByDeletion( operation.deletionPosition, 1 );
 			}
+		} else if ( this.isEqual( operation.deletionPosition ) ) {
+			pos = Position.createFromPosition( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
 		}
@@ -599,15 +601,24 @@ export default class Position {
 			unwrappedRange.start.isEqual( this ) ||
 			unwrappedRange.end.isEqual( this );
 
-		if ( isContained ) {
-			return this._getCombined( operation.position, operation.targetPosition );
-		} else if ( this.isEqual( operation.targetPosition ) ) {
-			return Position.createFromPosition( this );
-		} else {
-			const pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany - 1 );
+		let pos;
 
-			return pos._getTransformedByInsertion( operation.graveyardPosition, 1 );
+		if ( isContained ) {
+			pos = this._getCombined( operation.position, operation.targetPosition );
+		} else if ( this.isEqual( operation.targetPosition ) ) {
+			pos = Position.createFromPosition( this );
+		} else {
+			pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany );
 		}
+
+		const targetPosition = operation.targetPosition.getShiftedBy( operation.howMany );
+
+		if ( !targetPosition.isEqual( operation.graveyardPosition ) ) {
+			pos = pos._getTransformedByDeletion( targetPosition, 1 );
+			pos = pos._getTransformedByInsertion( operation.graveyardPosition, 1 );
+		}
+
+		return pos;
 	}
 
 	/**
@@ -706,11 +717,16 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
-		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
-		let transformed = this._getTransformedByDeletion( sourcePosition, howMany );
-
-		// Then we update target position, as it could be affected by nodes removal too.
+		// Update target position, as it could be affected by nodes removal.
 		targetPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
+
+		if ( sourcePosition.isEqual( targetPosition ) ) {
+			// If `targetPosition` is equal to `sourcePosition` this isn't really any move. Just return position as it is.
+			return Position.createFromPosition( this );
+		}
+
+		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
+		const transformed = this._getTransformedByDeletion( sourcePosition, howMany );
 
 		const isMoved = transformed === null ||
 			( sourcePosition.isEqual( this ) && this.stickiness == 'toNext' ) ||
@@ -719,14 +735,13 @@ export default class Position {
 		if ( isMoved ) {
 			// This position is inside moved range (or sticks to it).
 			// In this case, we calculate a combination of this position, move source position and target position.
-			transformed = this._getCombined( sourcePosition, targetPosition );
+			return this._getCombined( sourcePosition, targetPosition );
 		} else {
 			// This position is not inside a removed range.
+			//
 			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
-			transformed = transformed._getTransformedByInsertion( targetPosition, howMany );
+			return transformed._getTransformedByInsertion( targetPosition, howMany );
 		}
-
-		return transformed;
 	}
 
 	/**
@@ -761,6 +776,7 @@ export default class Position {
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
 		const combined = Position.createFromPosition( target );
+		combined.stickiness = this.stickiness;
 
 		// Then we have to update the rest of the path.
 

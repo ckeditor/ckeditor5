@@ -26,12 +26,13 @@ export default class SplitOperation extends Operation {
 	 * Creates a split operation.
 	 *
 	 * @param {module:engine/model/position~Position} position Position at which an element should be split.
+	 * @param {Number}
 	 * @param {module:engine/model/position~Position|null} graveyardPosition Position in graveyard before the element which
 	 * should be used as a parent of the nodes after `position`. If it is not set, a copy of the the `position` parent will be used.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( position, graveyardPosition, baseVersion ) {
+	constructor( position, howMany, graveyardPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
@@ -43,6 +44,12 @@ export default class SplitOperation extends Operation {
 		this.position.stickiness = 'toNext';
 
 		this.graveyardPosition = graveyardPosition ? Position.createFromPosition( graveyardPosition ) : null;
+
+		if ( this.graveyardPosition ) {
+			this.graveyardPosition.stickiness = 'toNext';
+		}
+
+		this.howMany = howMany;
 	}
 
 	/**
@@ -100,7 +107,7 @@ export default class SplitOperation extends Operation {
 	 * @returns {module:engine/model/operation/splitoperation~SplitOperation} Clone of this operation.
 	 */
 	clone() {
-		return new this.constructor( this.position, this.graveyardPosition, this.baseVersion );
+		return new this.constructor( this.position, this.howMany, this.graveyardPosition, this.baseVersion );
 	}
 
 	/**
@@ -112,7 +119,7 @@ export default class SplitOperation extends Operation {
 		const graveyard = this.position.root.document.graveyard;
 		const graveyardPosition = new Position( graveyard, [ 0 ] );
 
-		return new MergeOperation( this.moveTargetPosition, this.position, graveyardPosition, this.baseVersion + 1 );
+		return new MergeOperation( this.moveTargetPosition, this.howMany, this.position, graveyardPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -130,6 +137,13 @@ export default class SplitOperation extends Operation {
 			 * @error split-operation-position-invalid
 			 */
 			throw new CKEditorError( 'split-operation-position-invalid: Split position is invalid.' );
+		} else if ( this.howMany != element.maxOffset - this.position.offset ) {
+			/**
+			 * Split operation specifies wrong number of nodes to move.
+			 *
+			 * @error split-operation-how-many-invalid
+			 */
+			throw new CKEditorError( 'split-operation-how-many-invalid: Split operation specifies wrong number of nodes to move.' );
 		}
 	}
 
@@ -170,6 +184,6 @@ export default class SplitOperation extends Operation {
 		const position = Position.fromJSON( json.position, document );
 		const graveyardPosition = json.graveyardPosition ? Position.fromJSON( json.graveyardPosition, document ) : null;
 
-		return new this( position, graveyardPosition, json.baseVersion );
+		return new this( position, json.howMany, graveyardPosition, json.baseVersion );
 	}
 }

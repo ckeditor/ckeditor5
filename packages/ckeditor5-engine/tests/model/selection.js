@@ -633,7 +633,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-set-ranges-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {

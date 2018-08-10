@@ -840,7 +840,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph><paragraph>BarAbc</paragraph>' );
 			} );
 
-			it.skip( 'element, then add marker, split and undo with type #2', () => {
+			it( 'element, then add marker, split and undo with type #2', () => {
 				john.setData( '<paragraph>Foo</paragraph>[]' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
@@ -874,8 +874,6 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				// Actual content:
-				// <paragraph></paragraph><paragraph>Ba</paragraph><paragraph></paragraph>
 				expectClients( '<paragraph>Foo</paragraph><paragraph>BarAbc</paragraph>' );
 			} );
 		} );

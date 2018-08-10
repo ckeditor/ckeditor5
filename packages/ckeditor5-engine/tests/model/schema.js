@@ -1106,8 +1106,7 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'getValidRanges()', () => {
-		const attribute = 'bold';
-		let model, doc, root, schema, ranges;
+		let model, doc, root, schema;
 
 		beforeEach( () => {
 			model = new Model();
@@ -1116,112 +1115,145 @@ describe( 'Schema', () => {
 			root = doc.createRoot();
 
 			schema.register( 'p', { inheritAllFrom: '$block' } );
-			schema.register( 'h1', { inheritAllFrom: '$block' } );
-			schema.register( 'img', {
-				allowWhere: '$text'
-			} );
+			schema.register( 'img', { allowWhere: '$text' } );
 
-			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Allow 'bold' on p>$text.
-				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-					return true;
-				}
-
-				// Allow 'bold' on $root>p.
-				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
-					return true;
-				}
-			} );
-
-			// Parse data string to model.
-			const parsedModel = parse( '<p>foo<img />bar</p>', model.schema, { context: [ root.name ] } );
-
-			// Set parsed model data to prevent selection post-fixer from running.
-			model.change( writer => {
-				writer.insert( parsedModel, root );
-			} );
-
-			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
+			// This is a "hack" to allow setting any ranges in `setData` util.
+			schema.extend( '$text', { allowIn: '$root' } );
 		} );
 
-		it( 'should return unmodified ranges when attribute is allowed on each item (text is not allowed in img)', () => {
-			schema.extend( 'img', { allowAttributes: 'bold' } );
-
-			expect( schema.getValidRanges( ranges, attribute ) ).to.deep.equal( ranges );
-		} );
-
-		it( 'should return unmodified ranges when attribute is allowed on each item (text is allowed in img)', () => {
-			schema.extend( 'img', { allowAttributes: 'bold' } );
-			schema.extend( '$text', { allowIn: 'img' } );
-
-			expect( schema.getValidRanges( ranges, attribute ) ).to.deep.equal( ranges );
-		} );
-
-		it( 'should return two ranges when attribute is not allowed on one item', () => {
-			schema.extend( 'img', { allowAttributes: 'bold' } );
-			schema.extend( '$text', { allowIn: 'img' } );
-
-			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
+		function testValidRangesForAttribute( input, attribute, output ) {
+			setData( model, input );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( '<p>[foo<img>]xxx[</img>bar]</p>' );
+			expect( stringify( root, sel ) ).to.equal( output );
+		}
+
+		it( 'should return a range with p for an attribute allowed only on p', () => {
+			schema.extend( 'p', { allowAttributes: 'foo' } );
+
+			testValidRangesForAttribute(
+				'[<p>foo<img></img>bar</p>]',
+				'foo',
+				'[<p>foo<img></img>bar</p>]'
+			);
 		} );
 
-		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
-			schema.extend( '$text', { allowIn: 'img' } );
+		it( 'should return ranges on text nodes for an attribute allowed only on text', () => {
+			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Allow 'bold' on img>$text.
-				if ( ctx.endsWith( 'img $text' ) && attributeName == 'bold' ) {
-					return true;
-				}
-			} );
+			testValidRangesForAttribute(
+				'[<p>foo<img></img>bar</p>]',
+				'bold',
+				'<p>[foo]<img></img>[bar]</p>'
+			);
+		} );
 
-			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
+		it( 'should return a range on img for an attribute allowed only on img', () => {
+			schema.extend( 'img', { allowAttributes: 'src' } );
 
-			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection( validRanges );
+			testValidRangesForAttribute(
+				'[<p>foo<img></img>bar</p>]',
+				'src',
+				'<p>foo[<img></img>]bar</p>'
+			);
+		} );
 
-			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>[xxx]</img>[bar]</p>' );
+		it( 'should return a range containing all children for an attribute allowed on all children', () => {
+			schema.extend( '$text', { allowAttributes: 'bold' } );
+			schema.extend( 'img', { allowAttributes: 'bold' } );
+
+			testValidRangesForAttribute(
+				'[<p>foo<img></img>bar</p>]',
+				'bold',
+				'<p>[foo<img></img>bar]</p>'
+			);
+		} );
+
+		it( 'should return a range with p and a range on all children for an attribute allowed on p and its children', () => {
+			schema.extend( 'p', { allowAttributes: 'foo' } );
+			schema.extend( '$text', { allowAttributes: 'foo' } );
+			schema.extend( 'img', { allowAttributes: 'foo' } );
+
+			setData( model, '[<p>foo<img></img>bar</p>]' );
+
+			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo' ) );
+
+			expect( validRanges.length ).to.equal( 2 );
+
+			expect( validRanges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
+			expect( validRanges[ 0 ].end.path ).to.deep.equal( [ 0, 7 ] );
+
+			expect( validRanges[ 1 ].start.path ).to.deep.equal( [ 0 ] );
+			expect( validRanges[ 1 ].end.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'should not break a range if children are not allowed to have the attribute', () => {
+			schema.extend( 'p', { allowAttributes: 'foo' } );
+
+			testValidRangesForAttribute(
+				'[<p>foo</p><p>bar</p>]',
+				'foo',
+				'[<p>foo</p><p>bar</p>]'
+			);
+		} );
+
+		it( 'should search deeply', () => {
+			schema.extend( '$text', { allowAttributes: 'bold', allowIn: 'img' } );
+
+			testValidRangesForAttribute(
+				'[<p>foo<img>xxx</img>bar</p>]',
+				'bold',
+				'<p>[foo]<img>[xxx]</img>[bar]</p>'
+			);
+		} );
+
+		it( 'should work with multiple ranges', () => {
+			schema.extend( '$text', { allowAttributes: 'bold' } );
+
+			testValidRangesForAttribute(
+				'[<p>a</p><p>b</p>]<p>c</p><p>[d]</p>',
+				'bold',
+				'<p>[a]</p><p>[b]</p><p>c</p><p>[d]</p>'
+			);
+		} );
+
+		it( 'should work with non-flat ranges', () => {
+			schema.extend( '$text', { allowAttributes: 'bold' } );
+
+			testValidRangesForAttribute(
+				'[<p>a</p><p>b</p><p>c]</p><p>d</p>',
+				'bold',
+				'<p>[a]</p><p>[b]</p><p>[c]</p><p>d</p>'
+			);
 		} );
 
 		it( 'should not leak beyond the given ranges', () => {
-			setData( model, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
+			schema.extend( '$text', { allowAttributes: 'bold' } );
 
-			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection( validRanges );
-
-			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img></img>[bar]x[bar]<img></img>[foo]</p>' );
+			testValidRangesForAttribute(
+				'[<p>foo</p><p>b]a[r</p><p>x]yz</p>',
+				'bold',
+				'<p>[foo]</p><p>[b]a[r]</p><p>[x]yz</p>'
+			);
 		} );
 
 		it( 'should correctly handle a range which ends in a disallowed position', () => {
-			schema.extend( '$text', { allowIn: 'img' } );
+			schema.extend( '$text', { allowAttributes: 'bold', allowIn: 'img' } );
 
-			setData( model, '<p>[foo<img>bar]</img>bom</p>' );
-
-			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection( validRanges );
-
-			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>bar</img>bom</p>' );
-		} );
-
-		it( 'should split range into two ranges and omit disallowed element', () => {
+			// Disallow bold on text inside image.
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Disallow 'bold' on p>img.
-				if ( ctx.endsWith( 'p img' ) && attributeName == 'bold' ) {
+				if ( ctx.endsWith( 'img $text' ) && attributeName == 'bold' ) {
 					return false;
 				}
 			} );
 
-			const result = schema.getValidRanges( ranges, attribute );
-
-			expect( result ).to.length( 2 );
-			expect( result[ 0 ].start.path ).to.members( [ 0 ] );
-			expect( result[ 0 ].end.path ).to.members( [ 0, 3 ] );
-			expect( result[ 1 ].start.path ).to.members( [ 0, 4 ] );
-			expect( result[ 1 ].end.path ).to.members( [ 1 ] );
+			testValidRangesForAttribute(
+				'[<p>foo<img>xx]x</img>bar</p>',
+				'bold',
+				'<p>[foo]<img>xxx</img>bar</p>'
+			);
 		} );
 	} );
 

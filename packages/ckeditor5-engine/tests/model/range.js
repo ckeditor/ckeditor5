@@ -12,7 +12,6 @@ import TreeWalker from '../../src/model/treewalker';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
-import RemoveOperation from '../../src/model/operation/removeoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
@@ -898,10 +897,10 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by RemoveOperation', () => {
+		describe( 'by MoveOperation to graveyard', () => {
 			it( 'remove before range', () => {
 				const start = new Position( root, [ 0 ] );
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -910,7 +909,7 @@ describe( 'Range', () => {
 
 			it( 'remove intersecting with range', () => {
 				const start = new Position( root, [ 4 ] );
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -922,7 +921,7 @@ describe( 'Range', () => {
 			it( 'remove inside the range', () => {
 				const start = new Position( root, [ 3 ] );
 
-				const op = new RemoveOperation( start, 2, gyPos, 1 );
+				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -945,7 +944,7 @@ describe( 'Range', () => {
 			it( 'split inside range', () => {
 				range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -956,7 +955,7 @@ describe( 'Range', () => {
 			it( 'split at the beginning of multi-element range', () => {
 				range = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 1, 2 ] ) );
 
-				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), 5, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -967,7 +966,7 @@ describe( 'Range', () => {
 			it( 'split inside range which starts at the beginning of split element', () => {
 				range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -978,7 +977,7 @@ describe( 'Range', () => {
 			it( 'split inside range which end is at the end of split element', () => {
 				range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), 5, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -989,7 +988,7 @@ describe( 'Range', () => {
 			it( 'split element which has collapsed range at the end', () => {
 				range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -1005,6 +1004,7 @@ describe( 'Range', () => {
 
 				const op = new MergeOperation(
 					new Position( root, [ 1, 0 ] ),
+					4,
 					new Position( root, [ 0, 3 ] ),
 					gyPos,
 					1
@@ -1023,6 +1023,7 @@ describe( 'Range', () => {
 
 				const op = new MergeOperation(
 					new Position( root, [ 0, 0 ] ),
+					4,
 					new Position( root, [ 1, 3 ] ),
 					gyPos,
 					1
@@ -1046,6 +1047,7 @@ describe( 'Range', () => {
 
 				const op = new MergeOperation(
 					new Position( root, [ 1, 0 ] ),
+					4,
 					new Position( root, [ 0, 1 ] ),
 					gyPos,
 					1
