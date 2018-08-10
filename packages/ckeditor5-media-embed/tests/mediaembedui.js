@@ -23,7 +23,7 @@ describe( 'MediaEmbedUI', () => {
 				mediaEmbed: {
 					media: [
 						{
-							url: /https:\/\/valid\/(.*)/,
+							url: /^https:\/\/valid\/(.*)/,
 							html: id => `<iframe src="${ id }"></iframe>`
 						}
 					]
@@ -129,8 +129,7 @@ describe( 'MediaEmbedUI', () => {
 				const commandSpy = sinon.spy( editor.commands.get( 'insertMedia' ), 'execute' );
 
 				// The form is invalid.
-				const stub = sinon.stub( form, 'isValid' ).returns( false );
-				form.url = 'http://ckeditor.com';
+				form.url = 'https://invalid/url';
 				dropdown.isOpen = true;
 
 				dropdown.fire( 'submit' );
@@ -140,11 +139,11 @@ describe( 'MediaEmbedUI', () => {
 				expect( dropdown.isOpen ).to.be.true;
 
 				// The form is valid.
-				stub.returns( true );
+				form.url = 'https://valid/url';
 				dropdown.fire( 'submit' );
 
 				sinon.assert.calledOnce( commandSpy );
-				sinon.assert.calledWithExactly( commandSpy, 'http://ckeditor.com' );
+				sinon.assert.calledWithExactly( commandSpy, 'https://valid/url' );
 				sinon.assert.calledOnce( viewFocusSpy );
 				expect( dropdown.isOpen ).to.be.false;
 			} );

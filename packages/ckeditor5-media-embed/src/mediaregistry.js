@@ -15,26 +15,17 @@ export class MediaRegistry {
 		return !!this._getMedia( url );
 	}
 
-	hasRenderer( url ) {
-		if ( !url ) {
-			return null;
+	getMediaViewElement( writer, url, options ) {
+		let media;
+
+		if ( url ) {
+			media = this._getMedia( url );
+		} else {
+			// Generate a view for a renderer–less media.
+			media = new Media( this.editor.t, url );
 		}
 
-		const media = this._getMedia( url );
-
-		return !!media.renderer;
-	}
-
-	getHtml( url, options ) {
-		if ( !url ) {
-			return null;
-		}
-
-		const media = this._getMedia( url );
-
-		if ( media ) {
-			return media.getHtml( options );
-		}
+		return media.getViewElement( writer, options );
 	}
 
 	_getMedia( url ) {
@@ -68,10 +59,50 @@ class Media {
 		this.renderer = renderer;
 	}
 
-	getHtml() {
+	getViewElement( writer, options ) {
+		let renderFunction;
+
+		if ( options.renderContent ) {
+			const mediaHtml = this._getContentHtml();
+
+			renderFunction = function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
+
+				domElement.innerHTML = mediaHtml;
+
+				return domElement;
+			};
+		}
+
+		const attributes = {};
+
+		if ( options.useSemanticWrapper ) {
+			if ( this.url ) {
+				attributes.url = this.url;
+			}
+
+			return writer.createEmptyElement( 'oembed', attributes, renderFunction );
+		} else {
+			if ( this.url ) {
+				attributes[ 'data-oembed-url' ] = this.url;
+			}
+
+			if ( options.isViewPipeline ) {
+				attributes.class = 'ck-media__wrapper';
+			}
+
+			return writer.createUIElement( 'div', attributes, renderFunction );
+		}
+	}
+
+	_getContentHtml() {
 		if ( this.renderer ) {
 			return this.renderer( this.match.pop() );
 		} else {
+			if ( !this.url ) {
+				return '';
+			}
+
 			return this._getPlaceholderHtml();
 		}
 	}

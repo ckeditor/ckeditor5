@@ -129,8 +129,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
-
-		this.mediaRegistry = new MediaRegistry( this.editor );
+		const mediaRegistry = this.mediaRegistry = new MediaRegistry( this.editor );
 
 		editor.commands.add( 'insertMedia', new InsertMediaCommand( editor ) );
 
@@ -148,31 +147,38 @@ export default class MediaEmbedEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
 
-				return createMediaFigureElement( viewWriter, {
-					useSemanticWrapper: semanticDataOutput || !this.mediaRegistry.hasRenderer( url )
+				return createMediaFigureElement( viewWriter, mediaRegistry, url, {
+					useSemanticWrapper: semanticDataOutput || !url,
+					renderContent: !semanticDataOutput
 				} );
 			}
 		} ) );
 
 		// Model -> Data (url -> data-oembed-url)
-		conversion.for( 'dataDowncast' ).add( modelToViewUrlAttributeConverter( this.mediaRegistry, {
-			renderMediaHtml: !semanticDataOutput,
-		} ) );
+		conversion.for( 'dataDowncast' ).add(
+			modelToViewUrlAttributeConverter( mediaRegistry, {
+				semanticDataOutput
+			} ) );
 
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
-				const figure = createMediaFigureElement( viewWriter );
+				const url = modelElement.getAttribute( 'url' );
+				const figure = createMediaFigureElement( viewWriter, mediaRegistry, url, {
+					isViewPipeline: true,
+					renderContent: true
+				} );
 
 				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
 			}
 		} ) );
 
 		// Model -> View (url -> data-oembed-url)
-		conversion.for( 'editingDowncast' ).add( modelToViewUrlAttributeConverter( this.mediaRegistry, {
-			isViewPipeline: true
-		} ) );
+		conversion.for( 'editingDowncast' ).add(
+			modelToViewUrlAttributeConverter( mediaRegistry, {
+				isViewPipeline: true
+			} ) );
 
 		// View -> Model (data-oembed-url -> url)
 		conversion.for( 'upcast' )
@@ -187,7 +193,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
-					if ( this.mediaRegistry.has( url ) ) {
+					if ( mediaRegistry.has( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
@@ -203,7 +209,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
-					if ( this.mediaRegistry.has( url ) ) {
+					if ( mediaRegistry.has( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}

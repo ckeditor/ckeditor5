@@ -35,7 +35,7 @@ export function toMediaWidget( viewElement, writer, label ) {
 // @private
 // @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/containerelement~ContainerElement}
-export function createMediaFigureElement( writer, options = {} ) {
+export function createMediaFigureElement( writer, mediaRegistry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
 	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
@@ -44,33 +44,9 @@ export function createMediaFigureElement( writer, options = {} ) {
 	// Note: The hack comes from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
-	addMediaWrapperElementToFigure( writer, figure, options );
+	writer.insert( ViewPosition.createAt( figure ), mediaRegistry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
-}
-
-export function addMediaWrapperElementToFigure( writer, figure, options ) {
-	let renderFunction;
-
-	if ( options.mediaHtml ) {
-		renderFunction = function( domDocument ) {
-			const domElement = this.toDomElement( domDocument );
-
-			domElement.innerHTML = options.mediaHtml;
-
-			return domElement;
-		};
-	}
-
-	let wrapper;
-
-	if ( options.useSemanticWrapper ) {
-		wrapper = writer.createEmptyElement( 'oembed', options.attributes, renderFunction );
-	} else {
-		wrapper = writer.createUIElement( 'div', options.attributes, renderFunction );
-	}
-
-	writer.insert( ViewPosition.createAt( figure ), wrapper );
 }
 
 export function getSelectedMediaElement( selection ) {

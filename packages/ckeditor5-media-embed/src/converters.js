@@ -9,7 +9,7 @@
 
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import { addMediaWrapperElementToFigure } from './utils';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 /**
  * Returns a function that converts the media wrapper view representation:
@@ -34,7 +34,10 @@ export function viewFigureToModel() {
 		}
 
 		// Find a div wrapper element inside the figure element.
-		const viewWrapper = Array.from( data.viewItem.getChildren() ).find( viewChild => viewChild.is( 'div' ) );
+		const viewWrapper = Array.from( data.viewItem.getChildren() )
+			.find( viewChild => {
+				return viewChild.is( 'div' );
+			} );
 
 		// Do not convert if the div wrapper element is absent, is missing data-oembed-url attribute or was already converted.
 		if ( !viewWrapper ||
@@ -63,7 +66,11 @@ export function viewFigureToModel() {
 }
 
 export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
-	const renderMediaHtml = options.isViewPipeline || options.renderMediaHtml;
+	const mediaViewElementOptions = {
+		useSemanticWrapper: options.semanticDataOutput,
+		renderContent: !options.semanticDataOutput,
+		isViewPipeline: options.isViewPipeline
+	};
 
 	return dispatcher => {
 		dispatcher.on( 'attribute:url:media', converter );
@@ -81,22 +88,8 @@ export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
 		viewWriter.remove( ViewRange.createIn( figure ) );
 
-		const wrapperAttributes = {};
-		const useSemanticWrapper = !renderMediaHtml ||
-			( options.renderMediaHtml && !mediaRegistry.hasRenderer( url ) );
+		const mediaViewElement = mediaRegistry.getMediaViewElement( viewWriter, url, mediaViewElementOptions );
 
-		if ( url !== null ) {
-			wrapperAttributes[ renderMediaHtml ? 'data-oembed-url' : 'url' ] = url;
-		}
-
-		if ( options.isViewPipeline ) {
-			wrapperAttributes.class = 'ck-media__wrapper';
-		}
-
-		addMediaWrapperElementToFigure( viewWriter, figure, {
-			mediaHtml: renderMediaHtml ? mediaRegistry.getHtml( url ) : null,
-			attributes: wrapperAttributes,
-			useSemanticWrapper
-		} );
+		viewWriter.insert( ViewPosition.createAt( figure ), mediaViewElement );
 	}
 }
