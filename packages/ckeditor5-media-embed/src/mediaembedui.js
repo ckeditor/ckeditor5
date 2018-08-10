@@ -108,7 +108,7 @@ function getFormValidators( t, mediaRegistry ) {
 			}
 		},
 		form => {
-			if ( !mediaRegistry.has( form.url ) ) {
+			if ( !mediaRegistry.hasMedia( form.url ) ) {
 				return t( 'This media URL is not supported.' );
 			}
 		}

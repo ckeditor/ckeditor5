@@ -11,7 +11,7 @@ export class MediaRegistry {
 		this.mediaProviders = editor.config.get( 'mediaEmbed.media' );
 	}
 
-	has( url ) {
+	hasMedia( url ) {
 		return !!this._getMedia( url );
 	}
 

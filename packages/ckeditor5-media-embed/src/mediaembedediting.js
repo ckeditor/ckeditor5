@@ -39,8 +39,9 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/
 					],
 					html: id =>
-						'<div class="ck-media__wrapper__aspect">' +
+						'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
 							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 								'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
 							'</iframe>' +
 						'</div>'
@@ -57,8 +58,9 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(track\/\w+)/
 					],
 					html: id =>
-						'<div class="ck-media__wrapper__aspect">' +
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
 							`<iframe src="https://open.spotify.com/embed/${ id }" ` +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
 							'</iframe>' +
 						'</div>'
@@ -72,8 +74,9 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?youtu\.be\/(\w+)/
 					],
 					html: id =>
-						'<div class="ck-media__wrapper__aspect">' +
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
 							`<iframe src="https://www.youtube.com/embed/${ id }" ` +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 								'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
 							'</iframe>' +
 						'</div>'
@@ -90,8 +93,9 @@ export default class MediaEmbedEditing extends Plugin {
 						/^(https:\/\/)?(www\.)?player\.vimeo\.com\/video\/(\d+)/
 					],
 					html: id =>
-						'<div class="ck-media__wrapper__aspect">' +
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
 							`<iframe src="https://player.vimeo.com/video/${ id }" ` +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 								'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 							'</iframe>' +
 						'</div>'
@@ -193,7 +197,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
-					if ( mediaRegistry.has( url ) ) {
+					if ( mediaRegistry.hasMedia( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
@@ -209,7 +213,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
-					if ( mediaRegistry.has( url ) ) {
+					if ( mediaRegistry.hasMedia( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}

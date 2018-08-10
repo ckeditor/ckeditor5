@@ -14,20 +14,6 @@
 			pointer-events: none;
 		}
 
-		& .ck-media__wrapper__aspect {
-			position: relative;
-			padding-bottom: 100%;
-			height: 0;
-
-			& * {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				top: 0;
-				left: 0;
-			}
-		}
-
 		& .ck-media__placeholder {
 			padding: 2em;
 			background: hsl(0, 0%, 96%);
@@ -62,19 +48,11 @@
 		&[data-oembed-url*="vimeo.com"] {
 			max-width: 640px;
 			max-height: 360px;
-
-			& .ck-media__wrapper__aspect {
-				padding-bottom: 56.2493%;
-			}
 		}
 
 		&[data-oembed-url*="open.spotify.com"] {
 			max-width: 300px;
 			max-height: 380px;
-
-			& .ck-media__wrapper__aspect {
-				padding-bottom: 126%;
-			}
 		}
 
 		&[data-oembed-url*="twitter.com"],
