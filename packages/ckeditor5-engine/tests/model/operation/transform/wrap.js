@@ -300,7 +300,8 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph><div>Fo</div>r</paragraph>' );
-        
+			} );
+
 			it( 'delete all wrapped content', () => {
 				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
 				kate.setData( '<paragraph>[Foo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );

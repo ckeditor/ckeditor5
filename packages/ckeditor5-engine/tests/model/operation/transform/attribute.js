@@ -337,7 +337,8 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph>F<$text italic="true">oBaro</$text></paragraph>' );
-        
+			} );
+
 			it( 'multiple typing', () => {
 				john.setData( '<paragraph>[Foo]</paragraph>' );
 				kate.setData( '<paragraph>Fo[]o</paragraph>' );
