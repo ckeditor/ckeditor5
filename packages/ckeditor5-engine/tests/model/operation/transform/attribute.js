@@ -1275,8 +1275,8 @@ describe( 'transform', () => {
 		} );
 
 		it( 'remove attribute from text in different path', () => {
-			john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
-			kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+			john.setData( '<paragraph>F[]oo</paragraph><paragraph><$text bold="true">Bar</$text></paragraph>' );
+			kate.setData( '<paragraph>Foo</paragraph><paragraph><$text bold="true">[Bar]</$text></paragraph>' );
 
 			john.rename( 'heading1' );
 			kate.removeAttribute( 'bold' );
