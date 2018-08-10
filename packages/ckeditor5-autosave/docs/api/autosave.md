@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autosave.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)
 
-This package implements the autosaveting feature for CKEditor 5. It allows styling text by typing sequences like `**bold this**`.
+This package implements the autosaving feature for CKEditor 5.
 
 ## Documentation
 
