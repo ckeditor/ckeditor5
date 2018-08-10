@@ -14,6 +14,9 @@ describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
 	const mediaDefinitions = [
 		{
+			url: /^https:\/\/generic/
+		},
+		{
 			url: /(.*)/,
 			html: id => `<iframe src="${ id }"></iframe>`
 		}
@@ -219,11 +222,11 @@ describe( 'MediaEmbedEditing', () => {
 
 				describe( 'model to view', () => {
 					it( 'should convert', () => {
-						setModelData( model, '<media url="http://ckeditor.com"></media>' );
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 
 						expect( editor.getData() ).to.equal(
 							'<figure class="media">' +
-								'<oembed url="http://ckeditor.com"></oembed>' +
+								'<oembed url="https://ckeditor.com"></oembed>' +
 							'</figure>' );
 					} );
 
@@ -235,14 +238,23 @@ describe( 'MediaEmbedEditing', () => {
 								'<oembed></oembed>' +
 							'</figure>' );
 					} );
+
+					it( 'should convert (generic media)', () => {
+						setModelData( model, '<media url="https://generic"></media>' );
+
+						expect( editor.getData() ).to.equal(
+							'<figure class="media">' +
+								'<oembed url="https://generic"></oembed>' +
+							'</figure>' );
+					} );
 				} );
 
 				describe( 'view to model', () => {
 					it( 'should convert media figure', () => {
-						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
+						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<media url="http://ckeditor.com"></media>' );
+							.to.equal( '<media url="https://ckeditor.com"></media>' );
 					} );
 
 					it( 'should not convert if there is no media class', () => {
@@ -284,7 +296,7 @@ describe( 'MediaEmbedEditing', () => {
 						editor.conversion.elementToElement( { model: 'blockquote', view: 'blockquote' } );
 
 						editor.setData(
-							'<blockquote><figure class="media"><oembed url="http://ckeditor.com"></oembed></figure></blockquote>' );
+							'<blockquote><figure class="media"><oembed url="https://ckeditor.com"></oembed></figure></blockquote>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '<blockquote></blockquote>' );
@@ -296,7 +308,7 @@ describe( 'MediaEmbedEditing', () => {
 							conversionApi.consumable.consume( img, { name: true } );
 						}, { priority: 'high' } );
 
-						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
+						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '' );
@@ -307,17 +319,17 @@ describe( 'MediaEmbedEditing', () => {
 							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 						}, { priority: 'high' } );
 
-						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com"></oembed></figure>' );
+						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com"></oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '' );
 					} );
 
 					it( 'should discard the contents of the media', () => {
-						editor.setData( '<figure class="media"><oembed url="http://ckeditor.com">foo bar</oembed></figure>' );
+						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com">foo bar</oembed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<media url="http://ckeditor.com"></media>' );
+							.to.equal( '<media url="https://ckeditor.com"></media>' );
 					} );
 
 					it( 'should not convert unknown media', () => {
@@ -328,7 +340,7 @@ describe( 'MediaEmbedEditing', () => {
 									semanticDataOutput: true,
 									media: [
 										{
-											url: /^http:\/\/known\.media/,
+											url: /^https:\/\/known\.media/,
 											html: () => 'known-media'
 										}
 									]
@@ -336,11 +348,11 @@ describe( 'MediaEmbedEditing', () => {
 							} )
 							.then( newEditor => {
 								newEditor.setData(
-									'<figure class="media"><oembed url="http://unknown.media"></oembed></figure>' +
-									'<figure class="media"><oembed url="http://known.media"></oembed></figure>' );
+									'<figure class="media"><oembed url="https://unknown.media"></oembed></figure>' +
+									'<figure class="media"><oembed url="https://known.media"></oembed></figure>' );
 
 								expect( getModelData( newEditor.model, { withoutSelection: true } ) )
-									.to.equal( '<media url="http://known.media"></media>' );
+									.to.equal( '<media url="https://known.media"></media>' );
 
 								return newEditor.destroy();
 							} );
@@ -368,12 +380,12 @@ describe( 'MediaEmbedEditing', () => {
 				describe( 'conversion in the data pipeline', () => {
 					describe( 'model to view', () => {
 						it( 'should convert', () => {
-							setModelData( model, '<media url="http://ckeditor.com"></media>' );
+							setModelData( model, '<media url="https://ckeditor.com"></media>' );
 
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
-									'<div data-oembed-url="http://ckeditor.com">' +
-										'<iframe src="http://ckeditor.com"></iframe>' +
+									'<div data-oembed-url="https://ckeditor.com">' +
+										'<iframe src="https://ckeditor.com"></iframe>' +
 									'</div>' +
 								'</figure>' );
 						} );
@@ -387,19 +399,28 @@ describe( 'MediaEmbedEditing', () => {
 									'</oembed>' +
 								'</figure>' );
 						} );
+
+						it( 'should convert (generic media)', () => {
+							setModelData( model, '<media url="https://generic"></media>' );
+
+							expect( editor.getData() ).to.equal(
+								'<figure class="media">' +
+									'<oembed url="https://generic"></oembed>' +
+								'</figure>' );
+						} );
 					} );
 
 					describe( 'view to model', () => {
 						it( 'should convert media figure', () => {
 							editor.setData(
 								'<figure class="media">' +
-									'<div data-oembed-url="http://ckeditor.com">' +
-										'<iframe src="http://cksource.com"></iframe>' +
+									'<div data-oembed-url="https://ckeditor.com">' +
+										'<iframe src="https://cksource.com"></iframe>' +
 									'</div>' +
 								'</figure>' );
 
 							expect( getModelData( model, { withoutSelection: true } ) )
-								.to.equal( '<media url="http://ckeditor.com"></media>' );
+								.to.equal( '<media url="https://ckeditor.com"></media>' );
 						} );
 
 						it( 'should not convert if there is no media class', () => {
@@ -436,8 +457,8 @@ describe( 'MediaEmbedEditing', () => {
 							editor.setData(
 								'<div>' +
 									'<figure class="media">' +
-										'<div data-oembed-url="http://ckeditor.com">' +
-											'<iframe src="http://cksource.com"></iframe>' +
+										'<div data-oembed-url="https://ckeditor.com">' +
+											'<iframe src="https://cksource.com"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -455,8 +476,8 @@ describe( 'MediaEmbedEditing', () => {
 							editor.setData(
 								'<div>' +
 									'<figure class="media">' +
-										'<div data-oembed-url="http://ckeditor.com">' +
-											'<iframe src="http://cksource.com"></iframe>' +
+										'<div data-oembed-url="https://ckeditor.com">' +
+											'<iframe src="https://cksource.com"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -470,7 +491,7 @@ describe( 'MediaEmbedEditing', () => {
 								conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 							}, { priority: 'high' } );
 
-							editor.setData( '<figure class="media"><div data-oembed-url="http://ckeditor.com"></div></figure>' );
+							editor.setData( '<figure class="media"><div data-oembed-url="https://ckeditor.com"></div></figure>' );
 
 							expect( getModelData( model, { withoutSelection: true } ) )
 								.to.equal( '' );
@@ -479,13 +500,13 @@ describe( 'MediaEmbedEditing', () => {
 						it( 'should discard the contents of the media', () => {
 							editor.setData(
 								'<figure class="media">' +
-									'<div data-oembed-url="http://ckeditor.com">' +
+									'<div data-oembed-url="https://ckeditor.com">' +
 										'foo bar baz' +
 									'</div>' +
 								'</figure>' );
 
 							expect( getModelData( model, { withoutSelection: true } ) )
-								.to.equal( '<media url="http://ckeditor.com"></media>' );
+								.to.equal( '<media url="https://ckeditor.com"></media>' );
 						} );
 
 						it( 'should not convert unknown media', () => {
@@ -495,7 +516,7 @@ describe( 'MediaEmbedEditing', () => {
 									mediaEmbed: {
 										media: [
 											{
-												url: /^http:\/\/known\.media/,
+												url: /^https:\/\/known\.media/,
 												html: () => 'known-media'
 											}
 										]
@@ -504,16 +525,16 @@ describe( 'MediaEmbedEditing', () => {
 								.then( newEditor => {
 									newEditor.setData(
 										'<figure class="media">' +
-											'<div data-oembed-url="http://known.media">' +
+											'<div data-oembed-url="https://known.media">' +
 											'</div>' +
 										'</figure>' +
 										'<figure class="media">' +
-											'<div data-oembed-url="http://unknown.media">' +
+											'<div data-oembed-url="https://unknown.media">' +
 											'</div>' +
 										'</figure>' );
 
 									expect( getModelData( newEditor.model, { withoutSelection: true } ) )
-										.to.equal( '<media url="http://known.media"></media>' );
+										.to.equal( '<media url="https://known.media"></media>' );
 
 									return newEditor.destroy();
 								} );
@@ -568,36 +589,36 @@ describe( 'MediaEmbedEditing', () => {
 			function test() {
 				describe( 'model to view', () => {
 					it( 'should convert', () => {
-						setModelData( model, '<media url="http://ckeditor.com"></media>' );
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="http://ckeditor.com">' +
-									'<iframe src="http://ckeditor.com"></iframe>' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
+									'<iframe src="https://ckeditor.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);
 					} );
 
 					it( 'should convert the url attribute change', () => {
-						setModelData( model, '<media url="http://ckeditor.com"></media>' );
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 						const media = doc.getRoot().getChild( 0 );
 
 						model.change( writer => {
-							writer.setAttribute( 'url', 'http://cksource.com', media );
+							writer.setAttribute( 'url', 'https://cksource.com', media );
 						} );
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="http://cksource.com">' +
-									'<iframe src="http://cksource.com"></iframe>' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
+									'<iframe src="https://cksource.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);
 					} );
 
 					it( 'should convert the url attribute removal', () => {
-						setModelData( model, '<media url="http://ckeditor.com"></media>' );
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 						const media = doc.getRoot().getChild( 0 );
 
 						model.change( writer => {
@@ -614,7 +635,7 @@ describe( 'MediaEmbedEditing', () => {
 					} );
 
 					it( 'should not convert the url attribute removal if is already consumed', () => {
-						setModelData( model, '<media url="http://ckeditor.com"></media>' );
+						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 						const media = doc.getRoot().getChild( 0 );
 
 						editor.editing.downcastDispatcher.on( 'attribute:url:media', ( evt, data, conversionApi ) => {
@@ -627,8 +648,8 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="http://ckeditor.com">' +
-									'<iframe src="http://ckeditor.com"></iframe>' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
+									'<iframe src="https://ckeditor.com"></iframe>' +
 								'</div>' +
 							'</figure>'
 						);

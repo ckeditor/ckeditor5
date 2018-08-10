@@ -21,7 +21,7 @@ export class MediaRegistry {
 		if ( url ) {
 			media = this._getMedia( url );
 		} else {
-			// Generate a view for a renderer–less media.
+			// Generate a view for a renderer–less media. It will render as an empty media.
 			media = new Media( this.editor.t, url );
 		}
 
@@ -33,7 +33,7 @@ export class MediaRegistry {
 
 		url = url.trim();
 
-		for ( let { url: pattern, html: renderer } of mediaProviders ) {
+		for ( let { url: pattern, html: rendererFunction } of mediaProviders ) {
 			if ( !Array.isArray( pattern ) ) {
 				pattern = [ pattern ];
 			}
@@ -42,7 +42,7 @@ export class MediaRegistry {
 				const match = url.match( subPattern );
 
 				if ( match ) {
-					return new Media( this.editor.t, url, match, renderer );
+					return new Media( this.editor.t, url, match, rendererFunction );
 				}
 			}
 		}
@@ -52,18 +52,18 @@ export class MediaRegistry {
 }
 
 class Media {
-	constructor( t, url, match, renderer ) {
+	constructor( t, url, match, rendererFunction ) {
 		this.t = t;
 		this.url = url;
 		this.match = match;
-		this.renderer = renderer;
+		this.rendererFunction = rendererFunction;
 	}
 
 	getViewElement( writer, options ) {
 		let renderFunction;
 
 		if ( options.renderContent ) {
-			const mediaHtml = this._getContentHtml();
+			const mediaHtml = this._getContentHtml( options );
 
 			renderFunction = function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
@@ -76,7 +76,7 @@ class Media {
 
 		const attributes = {};
 
-		if ( options.useSemanticWrapper ) {
+		if ( options.useSemanticWrapper || ( this.url && !this.rendererFunction && !options.renderForEditingView ) ) {
 			if ( this.url ) {
 				attributes.url = this.url;
 			}
@@ -87,7 +87,7 @@ class Media {
 				attributes[ 'data-oembed-url' ] = this.url;
 			}
 
-			if ( options.isViewPipeline ) {
+			if ( options.renderForEditingView ) {
 				attributes.class = 'ck-media__wrapper';
 			}
 
@@ -95,15 +95,17 @@ class Media {
 		}
 	}
 
-	_getContentHtml() {
-		if ( this.renderer ) {
-			return this.renderer( this.match.pop() );
+	_getContentHtml( options ) {
+		if ( this.rendererFunction ) {
+			return this.rendererFunction( this.match.pop() );
 		} else {
-			if ( !this.url ) {
-				return '';
+			// The placeholder only makes sense for editing view and media which have URLs.
+			// Placeholder is never displayed in data and URL-less media have no content.
+			if ( this.url && options.renderForEditingView ) {
+				return this._getPlaceholderHtml();
 			}
 
-			return this._getPlaceholderHtml();
+			return '';
 		}
 	}
 

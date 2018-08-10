@@ -170,7 +170,7 @@ export default class MediaEmbedEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
 				const figure = createMediaFigureElement( viewWriter, mediaRegistry, url, {
-					isViewPipeline: true,
+					renderForEditingView: true,
 					renderContent: true
 				} );
 
@@ -181,7 +181,7 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' ).add(
 			modelToViewUrlAttributeConverter( mediaRegistry, {
-				isViewPipeline: true
+				renderForEditingView: true
 			} ) );
 
 		// View -> Model (data-oembed-url -> url)

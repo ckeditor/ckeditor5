@@ -69,7 +69,7 @@ export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
 	const mediaViewElementOptions = {
 		useSemanticWrapper: options.semanticDataOutput,
 		renderContent: !options.semanticDataOutput,
-		isViewPipeline: options.isViewPipeline
+		renderForEditingView: options.renderForEditingView
 	};
 
 	return dispatcher => {
