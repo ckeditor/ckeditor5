@@ -19,6 +19,7 @@ import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/vie
 
 import TableEditing from '../src/tableediting';
 import { formatTable, formattedModelTable, modelTable, viewTable } from './_utils/utils';
+import TableSelection from '../src/tableselection';
 
 describe( 'Table feature – integration', () => {
 	describe( 'with clipboard', () => {
@@ -26,7 +27,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
+				.create( { plugins: [ Paragraph, TableEditing, TableSelection, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					clipboard = editor.plugins.get( 'Clipboard' );
@@ -85,7 +86,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, Widget, UndoEditing ] } )
+				.create( { plugins: [ Paragraph, TableEditing, TableSelection, Widget, UndoEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					doc = editor.model.document;

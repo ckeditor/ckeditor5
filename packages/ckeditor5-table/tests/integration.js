@@ -11,6 +11,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Table from '../src/table';
 import TableToolbar from '../src/tabletoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import TableSelection from '../src/tableselection';
 
 describe( 'TableToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
@@ -22,7 +23,7 @@ describe( 'TableToolbar integration', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableToolbar, BalloonToolbar, Paragraph ]
+					plugins: [ Table, TableSelection, TableToolbar, BalloonToolbar, Paragraph ]
 				} )
 				.then( editor => {
 					newEditor = editor;

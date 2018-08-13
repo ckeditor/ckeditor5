@@ -15,6 +15,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import TableSelection from '../src/tableselection';
 
 describe( 'TableToolbar', () => {
 	let editor, model, doc, plugin, toolbar, balloon, editorElement;
@@ -25,7 +26,7 @@ describe( 'TableToolbar', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
+				plugins: [ Paragraph, Table, TableSelection, TableToolbar, FakeButton ],
 				table: {
 					toolbar: [ 'fake_button' ]
 				}

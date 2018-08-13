@@ -20,6 +20,7 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
+import TableSelection from '../src/tableselection';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -27,7 +28,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, ImageEditing ]
+				plugins: [ TableEditing, TableSelection, Paragraph, ImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -466,7 +467,7 @@ describe( 'TableEditing', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ TableEditing, Paragraph ]
+					plugins: [ TableEditing, TableSelection, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

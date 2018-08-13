@@ -151,6 +151,14 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
+						commandName: 'mergeTableCells',
+						label: t( 'Merge cells' )
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
 						commandName: 'mergeTableCellUp',
 						label: t( 'Merge cell up' )
 					}

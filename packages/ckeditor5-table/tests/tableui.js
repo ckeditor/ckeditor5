@@ -14,8 +14,9 @@ import TableUI from '../src/tableui';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
+import TableSelection from '../src/tableselection';
 
-describe( 'TableUI', () => {
+describe.only( 'TableUI', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -35,7 +36,7 @@ describe( 'TableUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TableEditing, TableUI ]
+				plugins: [ TableEditing, TableSelection, TableUI ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -326,6 +327,8 @@ describe( 'TableUI', () => {
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal( [
+				'Merge cells',
+				'|',
 				'Merge cell up',
 				'Merge cell right',
 				'Merge cell down',

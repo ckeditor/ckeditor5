@@ -34,11 +34,10 @@ import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
 
 import injectTablePostFixer from './converters/table-post-fixer';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import injectTableCellPostFixer from './converters/tablecell-post-fixer';
-import TableSelection from './tableselection';
 
 import '../theme/tableediting.css';
+import MergeCellsCommand from './commands/mergecellscommand';
 
 /**
  * The table editing feature.
@@ -54,7 +53,6 @@ export default class TableEditing extends Plugin {
 		const model = editor.model;
 		const schema = model.schema;
 		const conversion = editor.conversion;
-		const viewDocument = editor.editing.view.document;
 
 		schema.register( 'table', {
 			allowWhere: '$block',
@@ -141,6 +139,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'mergeTableCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
 		editor.commands.add( 'mergeTableCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
 
+		editor.commands.add( 'mergeTableCells', new MergeCellsCommand( editor ) );
+
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
@@ -150,69 +150,13 @@ export default class TableEditing extends Plugin {
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
-
-		const tableSelection = editor.plugins.get( TableSelection );
-
-		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
-			const tableCell = getTableCell( domEventData, this.editor );
-
-			if ( !tableCell ) {
-				return;
-			}
-
-			const { column, row } = editor.plugins.get( TableUtils ).getCellLocation( tableCell );
-
-			const mode = getSelectionMode( domEventData, column, row );
-
-			tableSelection.startSelection( tableCell, mode );
-
-			domEventData.preventDefault();
-		} );
-
-		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
-			if ( !tableSelection.isSelecting ) {
-				return;
-			}
-
-			const tableCell = getTableCell( domEventData, this.editor );
-
-			if ( !tableCell ) {
-				return;
-			}
-
-			tableSelection.updateSelection( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
-			if ( !tableSelection.isSelecting ) {
-				return;
-			}
-
-			const tableCell = getTableCell( domEventData, this.editor );
-
-			tableSelection.stopSelection( tableCell );
-		} );
-
-		this.listenTo( viewDocument, 'blur', () => {
-			tableSelection.clearSelection();
-		} );
-
-		viewDocument.selection.on( 'change', () => {
-			for ( const range of viewDocument.selection.getRanges() ) {
-				const node = range.start.nodeAfter;
-
-				if ( node && ( node.is( 'td' ) || node.is( 'th' ) ) ) {
-					editor.editing.view.change( writer => writer.addClass( 'selected', node ) );
-				}
-			}
-		} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableUtils, TableSelection ];
+		return [ TableUtils ];
 	}
 
 	/**
@@ -309,30 +253,4 @@ export default class TableEditing extends Plugin {
 			} );
 		};
 	}
-}
-
-function getTableCell( domEventData, editor ) {
-	const element = domEventData.target;
-	const modelElement = editor.editing.mapper.toModelElement( element );
-
-	if ( !modelElement ) {
-		return;
-	}
-
-	return findAncestor( 'tableCell', Position.createAt( modelElement ) );
-}
-
-function getSelectionMode( domEventData, column, row ) {
-	let mode = 'block';
-
-	const domEvent = domEventData.domEvent;
-	const target = domEvent.target;
-
-	if ( column == 0 && domEvent.offsetX < target.clientWidth / 2 ) {
-		mode = 'row';
-	} else if ( row == 0 && ( domEvent.offsetY < target.clientHeight / 2 ) ) {
-		mode = 'column';
-	}
-
-	return mode;
 }
