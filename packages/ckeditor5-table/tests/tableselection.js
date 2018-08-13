@@ -9,7 +9,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
 
 import TableSelection from '../src/tableselection';
-import { getData as getViewData } from '../../ckeditor5-engine/src/dev-utils/view';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'TableSelection', () => {
 	let editor, model, root, tableSelection;
