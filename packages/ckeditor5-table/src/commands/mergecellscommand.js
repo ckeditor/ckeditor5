@@ -62,6 +62,10 @@ export default class MergeCellsCommand extends Command {
 			tableSelection.clearSelection();
 
 			const firstTableCell = selectedTableCells.shift();
+
+			// TODO: this shouldn't be necessary (right now the selection could overlap existing.
+			writer.setSelection( Range.createIn( firstTableCell ) );
+
 			const { row, column } = tableUtils.getCellLocation( firstTableCell );
 
 			const colspan = parseInt( firstTableCell.getAttribute( 'colspan' ) || 1 );
