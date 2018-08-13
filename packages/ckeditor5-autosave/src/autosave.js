@@ -164,7 +164,9 @@ export default class Autosave extends Plugin {
 				this._debouncedSave();
 			}
 
-			// Do nothing if the plugin is in `external-saving` state.
+			// If the plugin is in `saving` state, it will change its state later basing on the `document.version`.
+			// If the `document.version` will be higher than stored `#_lastDocumentVersion`, then it means, that some `change:data`
+			// event has fired in the meantime.
 		} );
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
