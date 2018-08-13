@@ -631,7 +631,7 @@ describe( 'Autosave', () => {
 		} );
 	} );
 
-	it( 'should wait on the editor initialization', () => {
+	it( 'should run callbacks until the editor is in the ready state', () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 		editor = null;
@@ -642,7 +642,7 @@ describe( 'Autosave', () => {
 			}
 
 			init() {
-				this.editor.once( 'ready', () => {
+				this.editor.once( 'dataReady', () => {
 					const editor = this.editor;
 
 					editor.model.change( writer => {
@@ -650,10 +650,8 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 2000 );
+					sandbox.clock.tick( 10 );
 				} );
-
-				return Promise.resolve().then( () => Promise.resolve() );
 			}
 		}
 
@@ -661,18 +659,16 @@ describe( 'Autosave', () => {
 			.create( element, {
 				plugins: [ Autosave, Paragraph, AsyncPlugin ],
 				autosave: {
-					save: sinon.spy( () => {
-						expect( editor ).to.not.be.null;
-					} )
+					save: sinon.spy(),
+					waitingTime: 5
 				}
 			} )
 			.then( _editor => {
 				editor = _editor;
-				autosave = editor.plugins.get( Autosave );
 				const spy = editor.config.get( 'autosave' ).save;
 
 				expect( editor.getData() ).to.equal( '<p>bar</p>' );
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 			} )
 			.then( () => {
 				document.body.removeChild( element );
