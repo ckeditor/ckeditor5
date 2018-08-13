@@ -85,7 +85,6 @@ describe( 'Autosave', () => {
 					editor = _editor;
 
 					autosave = editor.plugins.get( Autosave );
-					// editor.listenTo( autosave, 'change:state', ( e, ...data ) => console.log( data ) );
 
 					const data = '<p>paragraph1</p><p>paragraph2</p>';
 					editor.setData( data );
@@ -277,7 +276,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should add a pending action during the saving.', () => {
+		it( 'should add a pending action after a change and wait on the server response', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const serverActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
@@ -312,8 +311,32 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		// Integration test.
 		it( 'should add a pending action during the saving #2.', () => {
+			const serverActionSpy = sinon.spy();
+			const pendingActions = editor.plugins.get( PendingActions );
+
+			autosave.adapter = {
+				save: serverActionSpy
+			};
+
+			expect( pendingActions.hasAny ).to.be.false;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			expect( pendingActions.hasAny ).to.be.true;
+
+			sandbox.clock.tick( 2000 );
+
+			return runPromiseCycles().then( () => {
+				sinon.assert.calledOnce( serverActionSpy );
+				expect( pendingActions.hasAny ).to.be.false;
+			} );
+		} );
+
+		it( 'should be in correct states during the saving', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const serverActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
@@ -371,32 +394,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should add a pending action during the saving #2.', () => {
-			const serverActionSpy = sinon.spy();
-			const pendingActions = editor.plugins.get( PendingActions );
-
-			autosave.adapter = {
-				save: serverActionSpy
-			};
-
-			expect( pendingActions.hasAny ).to.be.false;
-
-			editor.model.change( writer => {
-				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
-			} );
-
-			expect( pendingActions.hasAny ).to.be.true;
-
-			sandbox.clock.tick( 2000 );
-
-			return runPromiseCycles().then( () => {
-				sinon.assert.calledOnce( serverActionSpy );
-				expect( pendingActions.hasAny ).to.be.false;
-			} );
-		} );
-
-		it( 'should filter out changes in the selection', () => {
+		it( 'should filter out selection changes', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
@@ -412,7 +410,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should filter out markers that does not affect the data model', () => {
+		it( 'should filter out markers that does not affect the data', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
@@ -437,7 +435,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should filter out markers that does not affect the data model #2', () => {
+		it( 'should filter out markers that does not affect the data #2', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
@@ -462,7 +460,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should call the save method when some marker affects the data model', () => {
+		it( 'should call the save method when some marker affects the data', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
@@ -480,7 +478,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should call the save method when some marker affects the data model #2', () => {
+		it( 'should call the save method when some marker affects the data #2', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
@@ -509,7 +507,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should call the save method when some marker affects the data model #3', () => {
+		it( 'should call the save method when some marker affects the data #3', () => {
 			autosave.adapter = {
 				save: sandbox.spy()
 			};
