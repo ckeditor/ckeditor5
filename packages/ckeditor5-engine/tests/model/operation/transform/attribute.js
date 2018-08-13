@@ -593,6 +593,80 @@ describe( 'transform', () => {
 					'</blockQuote>'
 				);
 			} );
+
+			it( 'remove attribute from element in different path', () => {
+				john.setData( '[<paragraph>Foo</paragraph>]<paragraph bold="true">Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph bold="true">Bar</paragraph>]' );
+
+				john.wrap( 'blockQuote' );
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in different path', () => {
+				john.setData( '[<paragraph>Foo</paragraph>]<paragraph><$text bold="true">Bar</$text></paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph><$text bold="true">[Bar]</$text></paragraph>' );
+
+				john.wrap( 'blockQuote' );
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in same path', () => {
+				john.setData( '[<paragraph>Fo<$text bold="true">o</$text></paragraph>]' );
+				kate.setData( '<paragraph>Fo<$text bold="true">[o]</$text></paragraph>' );
+
+				john.wrap( 'blockQuote' );
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			} );
+
+			it( 'remove attribute from element in same path', () => {
+				john.setData( '[<paragraph bold="true">Foo</paragraph>]' );
+				kate.setData( '[<paragraph bold="true">Foo</paragraph>]' );
+
+				john.wrap( 'blockQuote' );
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			} );
+
+			it( 'remove attribute from text with 2 attributes in same path', () => {
+				john.setData( '[<paragraph>Fo<$text bold="true" italic="true">o</$text></paragraph>]' );
+				kate.setData( '<paragraph>Fo<$text bold="true" italic="true">[o]</$text></paragraph>' );
+
+				john.wrap( 'blockQuote' );
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Fo<$text italic="true">o</$text></paragraph>' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'by unwrap', () => {
@@ -675,6 +749,80 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<blockQuote><$text bold="true">Foo</$text></blockQuote>' );
+			} );
+
+			it( 'remove attribute from element in different path', () => {
+				john.setData(
+					'<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' +
+					'<paragraph bold="true">Bar</paragraph>' );
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'[<paragraph bold="true">Bar</paragraph>]' );
+
+				john.unwrap();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in different path', () => {
+				john.setData(
+					'<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' +
+					'<paragraph><$text bold="true">Bar</$text></paragraph>' );
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<paragraph><$text bold="true">[Bar]</$text></paragraph>' );
+
+				john.unwrap();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>Foo</blockQuote>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in same path', () => {
+				john.setData( '<blockQuote><paragraph>[]Fo<$text bold="true">o</$text></paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>Fo<$text bold="true">[o]</$text></paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
+			} );
+
+			it( 'remove attribute from element in same path', () => {
+				john.setData( '<blockQuote><paragraph bold="true">[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote>[<paragraph bold="true">Foo</paragraph>]</blockQuote>' );
+
+				john.unwrap();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
+			} );
+
+			it( 'remove attribute from text with 2 attributes in same path', () => {
+				john.setData( '<blockQuote><paragraph>[]Fo<$text bold="true" italic="true">o</$text></paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>Fo<$text bold="true" italic="true">[o]</$text></paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients( '<blockQuote>Fo<$text italic="true">o</$text></blockQuote>' );
 			} );
 		} );
 
@@ -768,6 +916,95 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph><$text attr="foo">Foo B</$text></paragraph>' +
 					'<paragraph><$text attr="bar">ar</$text></paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from element in different path', () => {
+				john.setData( '<paragraph>F[]oo</paragraph><paragraph bold="true">Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph bold="true">Bar</paragraph>]' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>oo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in different path', () => {
+				john.setData( '<paragraph>F[]oo</paragraph><paragraph><$text bold="true">Bar</$text></paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph><$text bold="true">[Bar]</$text></paragraph>' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>oo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'remove attribute from text in same path #1', () => {
+				john.setData( '<paragraph>F[]o<$text bold="true">o</$text></paragraph>' );
+				kate.setData( '<paragraph>Fo<$text bold="true">[o]</$text></paragraph>' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>oo</paragraph>' );
+			} );
+
+			it( 'remove attribute from text in same path #2', () => {
+				john.setData( '<paragraph>F<$text bold="true">o[]o</$text></paragraph>' );
+				kate.setData( '<paragraph>F<$text bold="true">[oo]</$text></paragraph>' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>Fo</paragraph>' +
+					'<paragraph>o</paragraph>' );
+			} );
+
+			it( 'remove attribute from element in same path', () => {
+				john.setData( '<paragraph bold="true">F[]oo</paragraph>' );
+				kate.setData( '[<paragraph bold="true">Foo</paragraph>]' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>oo</paragraph>' );
+			} );
+
+			it( 'remove attribute from text with 2 attributes in same path', () => {
+				john.setData( '<paragraph>F<$text bold="true" italic="true">o[]o</$text></paragraph>' );
+				kate.setData( '<paragraph>F<$text bold="true" italic="true">[oo]</$text></paragraph>' );
+
+				john.split();
+				kate.removeAttribute( 'bold' );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F<$text italic="true">o</$text></paragraph>' +
+					'<paragraph><$text italic="true">o</$text></paragraph>'
 				);
 			} );
 		} );
