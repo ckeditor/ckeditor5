@@ -3,19 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
  * Checks whether for a given editor instance pasting specific content (input) gives expected result (output).
  *
  * @param {module:core/editor/editor~Editor} editor
  * @param {String} input Data to paste.
- * @param {String} output Expected output.
+ * @param {String} expectedModel Expected model.
+ * @param {String} [expectedView=null] Expected view.
  */
-export function expectPaste( editor, input, output ) {
+export function expectPaste( editor, input, expectedModel, expectedView = null ) {
 	pasteHtml( editor, input );
 
-	expect( getData( editor.model ) ).to.equal( output );
+	expect( getModelData( editor.model ) ).to.equal( expectedModel );
+
+	if ( expectedView ) {
+		expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
+	}
 }
 
 // Fires paste event on a given editor instance with a specific HTML data.
