@@ -102,7 +102,7 @@ export default class Autosave extends Plugin {
 		 * @protected
 		 * @type {Function}
 		 */
-		this._debouncedSave = debounce( this._save.bind( this ), this._debounceTime );
+		this._debouncedSave = debounce( this._save.bind( this ), this._waitingTime );
 
 		/**
 		 * Last document version.

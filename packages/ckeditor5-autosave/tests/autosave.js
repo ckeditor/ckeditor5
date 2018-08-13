@@ -183,9 +183,53 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 500 );
+					sandbox.clock.tick( 499 );
 
 					return Promise.resolve().then( () => {
+						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
+
+						sandbox.clock.tick( 1 );
+
+						return Promise.resolve();
+					} ).then( () => {
+						// Callback should be called exactly after 500ms.
+						sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+					} );
+				} );
+		} );
+
+		it( 'should be default to 2000', () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Autosave, Paragraph ],
+					autosave: {
+						save: sinon.spy()
+					}
+				} )
+				.then( _editor => {
+					editor = _editor;
+
+					const data = '<p>paragraph1</p><p>paragraph2</p>';
+					editor.setData( data );
+
+					editor.model.change( writer => {
+						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+					} );
+
+					sandbox.clock.tick( 1999 );
+
+					return Promise.resolve().then( () => {
+						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
+
+						sandbox.clock.tick( 1 );
+
+						return Promise.resolve();
+					} ).then( () => {
+						// Callback should be called exactly after 2000ms by default.
 						sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
 					} );
 				} );
