@@ -67,6 +67,10 @@ describe( 'Autosave', () => {
 				sandbox.clock.tick( 2000 );
 			} ).to.not.throw();
 		} );
+
+		it( 'should start with the `synchronized` state', () => {
+			expect( autosave.state ).to.equal( 'synchronized' );
+		} );
 	} );
 
 	describe( 'config.autosave.save', () => {
