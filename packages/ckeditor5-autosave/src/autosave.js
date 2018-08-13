@@ -66,6 +66,10 @@ export default class Autosave extends Plugin {
 
 		const config = editor.config.get( 'autosave' ) || {};
 
+		// A minimum amount of time that needs to pass after the last action.
+		// After that time the provided save callbacks are being called.
+		const waitingTime = config.waitingTime || 2000;
+
 		/**
 		 * The adapter is an object with a `save()` method. That method will be called whenever
 		 * the data changes. It might be called some time after the change,
@@ -88,26 +92,18 @@ export default class Autosave extends Plugin {
 		this.set( 'state', 'synchronized' );
 
 		/**
-		 * A minimum amount of time that needs to pass after the last action.
-		 * After that time the provided save callbacks are being called.
+		 * Debounced save method. The `save` method is called the specified `waitingTime` after the `debouncedSave` is called,
+		 * unless new action happens in the meantime.
 		 *
-		 * @protected
-		 * @type {Number}
-		 */
-		this._waitingTime = config.waitingTime || 2000;
-
-		/**
-		 * Throttled save method.
-		 *
-		 * @protected
+		 * @private
 		 * @type {Function}
 		 */
-		this._debouncedSave = debounce( this._save.bind( this ), this._waitingTime );
+		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
 
 		/**
 		 * Last document version.
 		 *
-		 * @protected
+		 * @private
 		 * @type {Number}
 		 */
 		this._lastDocumentVersion = editor.model.document.version;
@@ -121,19 +117,19 @@ export default class Autosave extends Plugin {
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
-		 * An action that will be added to pending action manager for actions happening in that plugin.
-		 *
-		 * @private
-		 * @member {Object} #_action
-		 */
-
-		/**
 		 * The config of this plugins.
 		 *
 		 * @private
 		 * @type {Object}
 		 */
 		this._config = config;
+
+		/**
+		 * An action that will be added to pending action manager for actions happening in that plugin.
+		 *
+		 * @private
+		 * @member {Object} #_action
+		 */
 
 		/**
 		 * Editor's pending actions manager.
