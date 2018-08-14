@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, setTimeout */
+/* globals document */
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
@@ -12,9 +12,11 @@ import DomEventData from '../../../src/view/observer/domeventdata';
 import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'FakeSelectionObserver', () => {
 	let observer, view, viewDocument, root, domRoot;
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		domRoot = createElement( document, 'div', {
@@ -100,7 +102,8 @@ describe( 'FakeSelectionObserver', () => {
 		);
 	} );
 
-	it( 'should fire `selectionChangeDone` event after selection stop changing', done => {
+	it( 'should fire `selectionChangeDone` event after selection stop changing', () => {
+		const clock = testUtils.sinon.useFakeTimers();
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -109,25 +112,21 @@ describe( 'FakeSelectionObserver', () => {
 		changeFakeSelectionPressing( keyCodes.arrowdown );
 
 		// Wait 100ms.
-		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
-		// See: https://github.com/lodash/lodash/issues/304
-		setTimeout( () => {
-			// Check if spy was called.
-			expect( spy.notCalled ).to.true;
+		clock.tick( 100 );
 
-			// Change selection one more time.
-			changeFakeSelectionPressing( keyCodes.arrowdown );
+		// Check if spy was called.
+		expect( spy.notCalled ).to.true;
 
-			// Wait 210ms (debounced function should be called).
-			setTimeout( () => {
-				expect( spy.calledOnce ).to.true;
+		// Change selection one more time.
+		changeFakeSelectionPressing( keyCodes.arrowdown );
 
-				done();
-			}, 210 );
-		}, 100 );
+		// Wait 210ms (debounced function should be called).
+		clock.tick( 210 );
+		sinon.assert.calledOnce( spy.calledOnce );
 	} );
 
-	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', done => {
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', () => {
+		const clock = testUtils.sinon.useFakeTimers();
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -136,20 +135,16 @@ describe( 'FakeSelectionObserver', () => {
 		changeFakeSelectionPressing( keyCodes.arrowdown );
 
 		// Wait 100ms.
-		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
-		// See: https://github.com/lodash/lodash/issues/304
-		setTimeout( () => {
-			// And destroy observer.
-			observer.destroy();
+		clock.tick( 100 );
 
-			// Wait another 110ms.
-			setTimeout( () => {
-				// Check that event won't be called.
-				expect( spy.notCalled ).to.true;
+		// And destroy observer.
+		observer.destroy();
 
-				done();
-			}, 110 );
-		}, 100 );
+		// Wait another 110ms.
+		clock.tick( 110 );
+
+		// Check that event won't be called.
+		sinon.assert.notCalled( spy.notCalled );
 	} );
 
 	// Checks if preventDefault method was called by FakeSelectionObserver for specified key code.
