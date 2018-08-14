@@ -64,7 +64,7 @@ describe( 'Autosave', () => {
 					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 				} );
 
-				sandbox.clock.tick( 2000 );
+				sandbox.clock.tick( 1000 );
 			} ).to.not.throw();
 		} );
 
@@ -109,7 +109,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
@@ -128,7 +128,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -148,7 +148,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledWithExactly( autosave.adapter.save, editor );
@@ -202,7 +202,7 @@ describe( 'Autosave', () => {
 				} );
 		} );
 
-		it( 'should be default to 2000', () => {
+		it( 'should be default to 1000', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
@@ -224,7 +224,7 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 1999 );
+					sandbox.clock.tick( 999 );
 
 					return Promise.resolve().then( () => {
 						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
@@ -233,7 +233,7 @@ describe( 'Autosave', () => {
 
 						return Promise.resolve();
 					} ).then( () => {
-						// Callback should be called exactly after 2000ms by default.
+						// Callback should be called exactly after 1000ms by default.
 						sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
 					} );
 				} );
@@ -274,7 +274,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -314,7 +314,7 @@ describe( 'Autosave', () => {
 
 			sinon.assert.notCalled( spy );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( spy );
@@ -343,7 +343,7 @@ describe( 'Autosave', () => {
 			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			sinon.assert.notCalled( serverActionSpy );
 			expect( pendingActions.hasAny ).to.be.true;
@@ -376,7 +376,7 @@ describe( 'Autosave', () => {
 
 			expect( pendingActions.hasAny ).to.be.true;
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
@@ -403,7 +403,7 @@ describe( 'Autosave', () => {
 			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 			expect( autosave.state ).to.equal( 'saving' );
 
 			return Promise.resolve().then( () => {
@@ -423,7 +423,7 @@ describe( 'Autosave', () => {
 				expect( pendingActions.hasAny ).to.be.true;
 				sinon.assert.calledOnce( serverActionSpy );
 
-				sandbox.clock.tick( 2000 );
+				sandbox.clock.tick( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
@@ -451,7 +451,7 @@ describe( 'Autosave', () => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -470,13 +470,13 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, range } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.updateMarker( 'name', { range: range2 } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -495,13 +495,13 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, range } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.updateMarker( 'name', { range: range2 } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -519,7 +519,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, affectsData: true, range } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -538,7 +538,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, affectsData: true, range } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -547,7 +547,7 @@ describe( 'Autosave', () => {
 					writer.updateMarker( 'name', { range: range2 } );
 				} );
 
-				sandbox.clock.tick( 2000 );
+				sandbox.clock.tick( 1000 );
 
 				return runPromiseCycles().then( () => {
 					sinon.assert.calledTwice( autosave.adapter.save );
@@ -567,7 +567,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'marker-affecting-data', { usingOperation: false, affectsData: false, range } );
 			} );
 
-			sandbox.clock.tick( 2000 );
+			sandbox.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );

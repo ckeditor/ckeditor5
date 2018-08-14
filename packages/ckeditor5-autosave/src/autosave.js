@@ -68,7 +68,7 @@ export default class Autosave extends Plugin {
 
 		// A minimum amount of time that needs to pass after the last action.
 		// After that time the provided save callbacks are being called.
-		const waitingTime = config.waitingTime || 2000;
+		const waitingTime = config.waitingTime || 1000;
 
 		/**
 		 * The adapter is an object with a `save()` method. That method will be called whenever
@@ -347,7 +347,7 @@ mix( Autosave, ObservableMixin );
  *					save( editor ) {
  *						return saveData( editor.getData() );
  *					},
- *					waitingTime: 1000
+ *					waitingTime: 2000
  *				}
  *			} );
  *			.then( ... )
