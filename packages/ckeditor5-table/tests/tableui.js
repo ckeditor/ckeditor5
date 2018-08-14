@@ -16,7 +16,7 @@ import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
 import TableSelection from '../src/tableselection';
 
-describe.only( 'TableUI', () => {
+describe( 'TableUI', () => {
 	let editor, element;
 
 	testUtils.createSinonSandbox();
@@ -329,11 +329,6 @@ describe.only( 'TableUI', () => {
 			expect( labels ).to.deep.equal( [
 				'Merge cells',
 				'|',
-				'Merge cell up',
-				'Merge cell right',
-				'Merge cell down',
-				'Merge cell left',
-				'|',
 				'Split cell vertically',
 				'Split cell horizontally'
 			] );
@@ -342,49 +337,29 @@ describe.only( 'TableUI', () => {
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
-			const mergeCellUpCommand = editor.commands.get( 'mergeTableCellUp' );
-			const mergeCellRightCommand = editor.commands.get( 'mergeTableCellRight' );
-			const mergeCellDownCommand = editor.commands.get( 'mergeTableCellDown' );
-			const mergeCellLeftCommand = editor.commands.get( 'mergeTableCellLeft' );
+			const mergeCellsCommand = editor.commands.get( 'mergeTableCells' );
 			const splitCellVerticallyCommand = editor.commands.get( 'splitTableCellVertically' );
 			const splitCellHorizontallyCommand = editor.commands.get( 'splitTableCellHorizontally' );
 
-			mergeCellUpCommand.isEnabled = true;
-			mergeCellRightCommand.isEnabled = true;
-			mergeCellDownCommand.isEnabled = true;
-			mergeCellLeftCommand.isEnabled = true;
+			mergeCellsCommand.isEnabled = true;
 			splitCellVerticallyCommand.isEnabled = true;
 			splitCellHorizontallyCommand.isEnabled = true;
 
-			expect( items.first.children.first.isEnabled ).to.be.true;
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 0 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			mergeCellUpCommand.isEnabled = false;
+			mergeCellsCommand.isEnabled = false;
 
-			expect( items.first.children.first.isEnabled ).to.be.false;
+			expect( items.get( 0 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
-
-			mergeCellRightCommand.isEnabled = false;
-
-			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-
-			mergeCellDownCommand.isEnabled = false;
-			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
-
-			mergeCellLeftCommand.isEnabled = false;
-			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			splitCellVerticallyCommand.isEnabled = false;
-			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 
 			splitCellHorizontallyCommand.isEnabled = false;
-			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
@@ -403,7 +378,7 @@ describe.only( 'TableUI', () => {
 			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCells' );
 		} );
 	} );
 } );

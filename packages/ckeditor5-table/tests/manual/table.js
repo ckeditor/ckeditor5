@@ -37,7 +37,12 @@ ClassicEditor
 const modelDiv = global.document.querySelector( '#model' );
 
 function printModelContents( editor ) {
-	modelDiv.innerText = formatTable( getData( editor.model ) );
+	modelDiv.innerHTML = formatTable( getData( editor.model ) )
+		.replace( /</g, '&lt;' )
+		.replace( />/g, '&gt;' )
+		.replace( /\n/g, '<br>' )
+		.replace( /\[/g, '<strong>[' )
+		.replace( /]/g, ']</strong>' );
 }
 
 function formatTable( tableString ) {

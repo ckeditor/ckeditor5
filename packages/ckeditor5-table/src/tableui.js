@@ -159,35 +159,6 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
-						commandName: 'mergeTableCellUp',
-						label: t( 'Merge cell up' )
-					}
-				},
-				{
-					type: 'button',
-					model: {
-						commandName: 'mergeTableCellRight',
-						label: t( 'Merge cell right' )
-					}
-				},
-				{
-					type: 'button',
-					model: {
-						commandName: 'mergeTableCellDown',
-						label: t( 'Merge cell down' )
-					}
-				},
-				{
-					type: 'button',
-					model: {
-						commandName: 'mergeTableCellLeft',
-						label: t( 'Merge cell left' )
-					}
-				},
-				{ type: 'separator' },
-				{
-					type: 'button',
-					model: {
 						commandName: 'splitTableCellVertically',
 						label: t( 'Split cell vertically' )
 					}
