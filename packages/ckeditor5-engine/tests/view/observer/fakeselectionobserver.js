@@ -122,7 +122,7 @@ describe( 'FakeSelectionObserver', () => {
 
 		// Wait 210ms (debounced function should be called).
 		clock.tick( 210 );
-		sinon.assert.calledOnce( spy.calledOnce );
+		sinon.assert.calledOnce( spy );
 	} );
 
 	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', () => {
@@ -144,7 +144,7 @@ describe( 'FakeSelectionObserver', () => {
 		clock.tick( 110 );
 
 		// Check that event won't be called.
-		sinon.assert.notCalled( spy.notCalled );
+		sinon.assert.notCalled( spy );
 	} );
 
 	// Checks if preventDefault method was called by FakeSelectionObserver for specified key code.
