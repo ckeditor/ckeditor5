@@ -115,7 +115,7 @@ describe( 'FakeSelectionObserver', () => {
 		clock.tick( 100 );
 
 		// Check if spy was called.
-		expect( spy.notCalled ).to.true;
+		sinon.assert.notCalled( spy );
 
 		// Change selection one more time.
 		changeFakeSelectionPressing( keyCodes.arrowdown );
