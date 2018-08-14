@@ -380,8 +380,14 @@ export default class Node {
 	toJSON() {
 		const json = {};
 
+		// Serializes attributes to the object.
+		// attributes = { a: 'foo', b: 1, c: true }.
 		if ( this._attrs.size ) {
-			json.attributes = [ ...this._attrs ];
+			json.attributes = Array.from( this._attrs ).reduce( ( result, attr ) => {
+				result[ attr[ 0 ] ] = attr[ 1 ];
+
+				return result;
+			}, {} );
 		}
 
 		return json;

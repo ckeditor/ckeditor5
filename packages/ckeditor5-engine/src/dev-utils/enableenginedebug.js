@@ -427,7 +427,7 @@ function enableReplayerTools() {
 			this._appliedOperations = [];
 		}
 
-		this._appliedOperations.push( operation.toJSON() );
+		this._appliedOperations.push( operation );
 
 		return _modelApplyOperation.call( this, operation );
 	} );
@@ -455,7 +455,7 @@ function enableDocumentTools() {
 			this._operationLogs = [];
 		}
 
-		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
+		this._operationLogs.push( JSON.stringify( operation ) );
 
 		return _modelApplyOperation.call( this, operation );
 	} );

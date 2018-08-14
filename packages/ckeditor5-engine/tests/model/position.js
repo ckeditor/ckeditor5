@@ -11,7 +11,6 @@ import TextProxy from '../../src/model/textproxy';
 import Position from '../../src/model/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
 describe( 'Position', () => {
 	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
@@ -805,7 +804,7 @@ describe( 'Position', () => {
 		it( 'should serialize position', () => {
 			const position = new Position( root, [ 0 ] );
 
-			const serialized = jsonParseStringify( position );
+			const serialized = position.toJSON();
 
 			expect( serialized ).to.deep.equal( { root: 'main', path: [ 0 ], stickiness: 'toNone' } );
 		} );
@@ -814,7 +813,7 @@ describe( 'Position', () => {
 			const position = new Position( doc.graveyard, [ 0 ] );
 			position.stickiness = 'toPrevious';
 
-			const serialized = jsonParseStringify( position );
+			const serialized = position.toJSON();
 
 			expect( serialized ).to.deep.equal( { root: '$graveyard', path: [ 0 ], stickiness: 'toPrevious' } );
 		} );

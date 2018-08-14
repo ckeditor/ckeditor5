@@ -56,6 +56,17 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = this.sourcePosition.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	_validate() {
 		if ( this.sourcePosition.root.document ) {
 			/**

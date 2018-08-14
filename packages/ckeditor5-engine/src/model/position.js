@@ -791,6 +791,17 @@ export default class Position {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		return {
+			root: this.root.toJSON(),
+			path: Array.from( this.path ),
+			stickiness: this.stickiness
+		};
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/model/position~Position position},

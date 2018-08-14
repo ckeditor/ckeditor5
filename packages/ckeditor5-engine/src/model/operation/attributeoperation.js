@@ -110,6 +110,17 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.range = this.range.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	_validate() {
 		if ( !this.range.isFlat ) {
 			/**

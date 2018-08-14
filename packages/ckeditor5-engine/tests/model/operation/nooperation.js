@@ -5,7 +5,6 @@
 
 import Model from '../../../src/model/model';
 import NoOperation from '../../../src/model/operation/nooperation';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
 	let model, noop, doc;
@@ -36,7 +35,7 @@ describe( 'NoOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
-			const serialized = jsonParseStringify( noop );
+			const serialized = noop.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.NoOperation',
@@ -47,7 +46,7 @@ describe( 'NoOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper NoOperation from json object', () => {
-			const serialized = jsonParseStringify( noop );
+			const serialized = noop.toJSON();
 			const deserialized = NoOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( noop );

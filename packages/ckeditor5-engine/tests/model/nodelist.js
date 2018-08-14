@@ -6,7 +6,6 @@
 import NodeList from '../../src/model/nodelist';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'NodeList', () => {
@@ -195,11 +194,11 @@ describe( 'NodeList', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize empty node list', () => {
-			expect( jsonParseStringify( new NodeList() ) ).to.deep.equal( [] );
+			expect( ( new NodeList() ).toJSON() ).to.deep.equal( [] );
 		} );
 
 		it( 'should serialize node list with nodes', () => {
-			expect( jsonParseStringify( nodes ) ).to.deep.equal( [
+			expect( nodes.toJSON() ).to.deep.equal( [
 				{ name: 'p' },
 				{ data: 'foo' },
 				{ name: 'image' }

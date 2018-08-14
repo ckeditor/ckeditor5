@@ -109,6 +109,14 @@ export default class MarkerOperation extends Operation {
 	toJSON() {
 		const json = super.toJSON();
 
+		if ( this.oldRange ) {
+			json.oldRange = this.oldRange.toJSON();
+		}
+
+		if ( this.newRange ) {
+			json.newRange = this.newRange.toJSON();
+		}
+
 		delete json._markers;
 
 		return json;

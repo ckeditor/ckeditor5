@@ -165,6 +165,17 @@ export default class RootAttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.root = this.root.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.RootAttributeOperation';
 	}
@@ -186,7 +197,7 @@ export default class RootAttributeOperation extends Operation {
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-fromjson-no-root: Cannot create RootAttributeOperation. Root with specified name does not exist.',
-				{ rootName: json }
+				{ rootName: json.root }
 			);
 		}
 

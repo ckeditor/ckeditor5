@@ -169,6 +169,21 @@ export default class SplitOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.position = this.position.toJSON();
+
+		if ( this.graveyardPosition ) {
+			json.graveyardPosition = this.graveyardPosition.toJSON();
+		}
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.SplitOperation';
 	}

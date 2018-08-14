@@ -5,7 +5,6 @@
 
 import Batch from '../../../src/model/batch';
 import Operation from '../../../src/model/operation/operation';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {
@@ -32,7 +31,7 @@ describe( 'Operation', () => {
 		it( 'should create proper json object #1', () => {
 			const op = new Operation( 4 );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.Operation',
@@ -45,7 +44,7 @@ describe( 'Operation', () => {
 			const batch = new Batch();
 			batch.addOperation( op );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.Operation',
@@ -58,7 +57,7 @@ describe( 'Operation', () => {
 		it( 'should create proper Operation from json object', () => {
 			const op = new Operation( 4 );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = Operation.fromJSON( serialized );
 
 			expect( deserialized ).to.deep.equal( op );

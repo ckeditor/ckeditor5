@@ -18,7 +18,6 @@ import SplitOperation from '../../src/model/operation/splitoperation';
 import WrapOperation from '../../src/model/operation/wrapoperation';
 import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot, gy;
@@ -1268,9 +1267,22 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'toJSON()', () => {
+		it( 'should serialize range', () => {
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+
+			const serialized = range.toJSON();
+
+			expect( serialized ).to.deep.equal( {
+				start: { root: 'main', path: [ 1 ], stickiness: 'toNext' },
+				end: { root: 'main', path: [ 3 ], stickiness: 'toPrevious' }
+			} );
+		} );
+	} );
+
 	describe( 'fromJSON()', () => {
 		it( 'should create range from given JSON object', () => {
-			const serialized = jsonParseStringify( range );
+			const serialized = range.toJSON();
 			const deserialized = Range.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( range );

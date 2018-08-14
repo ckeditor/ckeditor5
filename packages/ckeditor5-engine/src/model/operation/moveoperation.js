@@ -178,6 +178,18 @@ export default class MoveOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = this.sourcePosition.toJSON();
+		json.targetPosition = this.targetPosition.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.MoveOperation';
 	}

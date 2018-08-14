@@ -8,7 +8,6 @@ import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let model, doc, root;
@@ -268,7 +267,7 @@ describe( 'RootAttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized.__className ).to.equal( 'engine.model.operation.RootAttributeOperation' );
 			expect( serialized ).to.deep.equal( {
@@ -286,7 +285,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should create proper RootAttributeOperation from json object', () => {
 			const op = new RootAttributeOperation( root, 'key', null, 'newValue', doc.version );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = RootAttributeOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );
@@ -301,7 +300,8 @@ describe( 'RootAttributeOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
+
 			serialized.root = 'no-root';
 
 			expect( () => {

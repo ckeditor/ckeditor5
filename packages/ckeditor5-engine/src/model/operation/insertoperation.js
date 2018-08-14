@@ -131,6 +131,18 @@ export default class InsertOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.position = this.position.toJSON();
+		json.nodes = this.nodes.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.InsertOperation';
 	}

@@ -469,6 +469,18 @@ export default class Range {
 		return this.start.getCommonAncestor( this.end );
 	}
 
+	/**
+	 * Converts `Range` to plain object and returns it.
+	 *
+	 * @returns {Object} `Node` converted to plain object.
+	 */
+	toJSON() {
+		return {
+			start: this.start.toJSON(),
+			end: this.end.toJSON()
+		};
+	}
+
 	_getTransformedByInsertOperation( operation, spread = false ) {
 		return this._getTransformedByInsertion( operation.position, operation.howMany, spread );
 	}

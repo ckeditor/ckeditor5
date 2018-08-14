@@ -155,6 +155,19 @@ export default class MergeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = json.sourcePosition.toJSON();
+		json.targetPosition = json.targetPosition.toJSON();
+		json.graveyardPosition = json.graveyardPosition.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.MergeOperation';
 	}
