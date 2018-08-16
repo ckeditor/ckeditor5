@@ -8,7 +8,6 @@
  */
 
 import Element from './element';
-import { isPlainObject } from 'lodash-es';
 
 /**
  * View raw writer class. Provides set of methods used to properly manipulate nodes attached to
@@ -35,7 +34,8 @@ export default class RawWriter {
 	 * and sets the parent of these nodes to this element.
 	 *
 	 * @see module:engine/view/element~Element#_appendChild
-	 * @param {module:engine/view/element~Element} element Element to which items will be appended.
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
+	 * to which items will be appended.
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of appended nodes.
@@ -49,21 +49,23 @@ export default class RawWriter {
 	 * this element.
 	 *
 	 * @see module:engine/view/element~Element#_insertChild
-	 * @param {module:engine/view/element~Element} element Element to which items will be inserted.
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
+	 * to which items will be inserted.
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChild( element, index, items ) {
-		return element._insertChild( element, index, items );
+		return element._insertChild( index, items );
 	}
 
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @see module:engine/view/element~Element#_removeChildren
-	 * @param {module:engine/view/element~Element} element Element from which children will be removed.
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
+	 * from which children will be removed.
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @fires module:engine/view/node~Node#change
@@ -77,7 +79,7 @@ export default class RawWriter {
 	 * Removes given element from the view structure. Will not have effect on detached elements.
 	 *
 	 * @param {module:engine/view/element~Element} element Element which will be removed.
-	 * @returns {Array.<module:engine/view/node~Node>|null} The array of removed nodes or null if element was already detached.
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
 	remove( element ) {
 		const parent = element.parent;
@@ -85,7 +87,7 @@ export default class RawWriter {
 			return this.removeChildren( parent, parent.getChildIndex( element ) );
 		}
 
-		return null;
+		return [];
 	}
 
 	/**
@@ -103,9 +105,11 @@ export default class RawWriter {
 
 			this.removeChildren( parent, index );
 			this.insertChild( parent, index, newElement );
+
+			return true;
 		}
 
-		return null;
+		return false;
 	}
 
 	/**
@@ -116,20 +120,19 @@ export default class RawWriter {
 	 *
 	 * @param {module:engine/view/element~Element} element Element to be renamed.
 	 * @param {String} newName New name for element.
-	 * @returns {module:engine/view/element~Element} New element.
+	 * @returns {module:engine/view/element~Element|null} New element or null if the old element
+	 * was not replaced (happens for detached elements).
 	 */
 	rename( element, newName ) {
 		const newElement = new Element( newName, element.getAttributes(), element.getChildren() );
 
-		this.replace( element, newElement );
-
-		return newElement;
+		return this.replace( element, newElement ) ? newElement : null;
 	}
 
 	/**
 	 * Adds or overwrite element's attribute with a specified key and value.
 	 *
-	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 *		writer.setAttribute( linkElement, 'href', 'http://ckeditor.com' );
 	 *
 	 * @see module:engine/view/element~Element#_setAttribute
 	 * @param {module:engine/view/element~Element} element
@@ -143,7 +146,7 @@ export default class RawWriter {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 *		writer.removeAttribute( 'href', linkElement );
+	 *		writer.removeAttribute( linkElement, 'href' );
 	 *
 	 * @see module:engine/view/element~Element#_removeAttribute
 	 * @param {module:engine/view/element~Element} element
@@ -156,8 +159,8 @@ export default class RawWriter {
 	/**
 	 * Adds specified class to the element.
 	 *
-	 *		writer.addClass( 'foo', linkElement );
-	 *		writer.addClass( [ 'foo', 'bar' ], linkElement );
+	 *		writer.addClass( linkElement, 'foo' );
+	 *		writer.addClass( linkElement, [ 'foo', 'bar' ] );
 	 *
 	 * @see module:engine/view/element~Element#_addClass
 	 * @param {module:engine/view/element~Element} element
@@ -170,8 +173,8 @@ export default class RawWriter {
 	/**
 	 * Removes specified class from the element.
 	 *
-	 *		writer.removeClass( 'foo', linkElement );
-	 *		writer.removeClass( [ 'foo', 'bar' ], linkElement );
+	 *		writer.removeClass( linkElement, 'foo' );
+	 *		writer.removeClass( linkElement, [ 'foo', 'bar' ] );
 	 *
 	 * @see module:engine/view/element~Element#_removeClass
 	 * @param {module:engine/view/element~Element} element
@@ -184,11 +187,11 @@ export default class RawWriter {
 	/**
 	 * Adds style to the element.
 	 *
-	 *		writer.setStyle( 'color', 'red', element );
-	 *		writer.setStyle( {
+	 *		writer.setStyle( element, 'color', 'red' );
+	 *		writer.setStyle( element, {
 	 *			color: 'red',
 	 *			position: 'fixed'
-	 *		}, element );
+	 *		} );
 	 *
 	 * @see module:engine/view/element~Element#_setStyle
 	 * @param {module:engine/view/element~Element} element
@@ -196,18 +199,14 @@ export default class RawWriter {
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
 	 */
 	setStyle( element, property, value ) {
-		if ( isPlainObject( property ) && element === undefined ) {
-			element = value;
-		}
-
 		element._setStyle( property, value );
 	}
 
 	/**
 	 * Removes specified style from the element.
 	 *
-	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
-	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 *		writer.removeStyle( element, 'color' );  // Removes 'color' style.
+	 *		writer.removeStyle( element, [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @see module:engine/view/element~Element#_removeStyle
 	 * @param {module:engine/view/element~Element} element
