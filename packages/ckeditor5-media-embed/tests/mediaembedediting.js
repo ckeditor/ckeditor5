@@ -38,133 +38,169 @@ describe( 'MediaEmbedEditing', () => {
 					} );
 			} );
 
-			it( 'upcasts the URL (dailymotion)', () => {
-				testMediaUpcast( [
-					'https://www.dailymotion.com/video/foo',
-					'www.dailymotion.com/video/foo',
-					'dailymotion.com/video/foo',
-				],
-				'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
-					'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
-						'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-						'frameborder="0" width="480" height="270" allowfullscreen="" allow="autoplay">' +
-					'</iframe>' +
-				'</div>' );
-			} );
-
-			it( 'upcasts the URL (instagram)', () => {
-				testMediaUpcast( [
-					'https://www.instagram.com/p/foo',
-					'www.instagram.com/p/foo',
-					'instagram.com/p/foo',
-				] );
-			} );
-
-			describe( 'spotify', () => {
-				it( 'upcasts the URL (artist)', () => {
+			describe( 'with preview', () => {
+				it( 'upcasts the URL (dailymotion)', () => {
 					testMediaUpcast( [
-						'https://www.open.spotify.com/artist/foo',
-						'www.open.spotify.com/artist/foo',
-						'open.spotify.com/artist/foo',
+						'https://www.dailymotion.com/video/foo',
+						'www.dailymotion.com/video/foo',
+						'dailymotion.com/video/foo',
 					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-						'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
+					'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+						'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
 							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'frameborder="0" width="480" height="270" allowfullscreen="" allow="autoplay">' +
 						'</iframe>' +
 					'</div>' );
 				} );
 
-				it( 'upcasts the URL (album)', () => {
+				describe( 'spotify', () => {
+					it( 'upcasts the URL (artist)', () => {
+						testMediaUpcast( [
+							'https://www.open.spotify.com/artist/foo',
+							'www.open.spotify.com/artist/foo',
+							'open.spotify.com/artist/foo',
+						],
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+							'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'</iframe>' +
+						'</div>' );
+					} );
+
+					it( 'upcasts the URL (album)', () => {
+						testMediaUpcast( [
+							'https://www.open.spotify.com/album/foo',
+							'www.open.spotify.com/album/foo',
+							'open.spotify.com/album/foo',
+						],
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+							'<iframe src="https://open.spotify.com/embed/album/foo" ' +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'</iframe>' +
+						'</div>' );
+					} );
+
+					it( 'upcasts the URL (track)', () => {
+						testMediaUpcast( [
+							'https://www.open.spotify.com/track/foo',
+							'www.open.spotify.com/track/foo',
+							'open.spotify.com/track/foo',
+						],
+						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+							'<iframe src="https://open.spotify.com/embed/track/foo" ' +
+								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'</iframe>' +
+						'</div>' );
+					} );
+				} );
+
+				it( 'upcasts the URL (youtube)', () => {
 					testMediaUpcast( [
-						'https://www.open.spotify.com/album/foo',
-						'www.open.spotify.com/album/foo',
-						'open.spotify.com/album/foo',
+						'https://www.youtube.com/watch?v=foo',
+						'www.youtube.com/watch?v=foo',
+						'youtube.com/watch?v=foo',
+
+						'https://www.youtube.com/v/foo',
+						'www.youtube.com/v/foo',
+						'youtube.com/v/foo',
+
+						'https://www.youtube.com/embed/foo',
+						'www.youtube.com/embed/foo',
+						'youtube.com/embed/foo',
+
+						'https://youtu.be/foo',
+						'youtu.be/foo'
 					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-						'<iframe src="https://open.spotify.com/embed/album/foo" ' +
+					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+						'<iframe src="https://www.youtube.com/embed/foo" ' +
 							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
 						'</iframe>' +
 					'</div>' );
 				} );
 
-				it( 'upcasts the URL (track)', () => {
+				it( 'upcasts the URL (vimeo)', () => {
 					testMediaUpcast( [
-						'https://www.open.spotify.com/track/foo',
-						'www.open.spotify.com/track/foo',
-						'open.spotify.com/track/foo',
+						'https://www.vimeo.com/1234',
+						'www.vimeo.com/1234',
+						'vimeo.com/1234',
+
+						'https://www.vimeo.com/foo/foo/video/1234',
+						'www.vimeo.com/foo/foo/video/1234',
+						'vimeo.com/foo/foo/video/1234',
+
+						'https://www.vimeo.com/album/foo/video/1234',
+						'www.vimeo.com/album/foo/video/1234',
+						'vimeo.com/album/foo/video/1234',
+
+						'https://www.vimeo.com/channels/foo/1234',
+						'www.vimeo.com/channels/foo/1234',
+						'vimeo.com/channels/foo/1234',
+
+						'https://www.vimeo.com/groups/foo/videos/1234',
+						'www.vimeo.com/groups/foo/videos/1234',
+						'vimeo.com/groups/foo/videos/1234',
+
+						'https://www.vimeo.com/ondemand/foo/1234',
+						'www.vimeo.com/ondemand/foo/1234',
+						'vimeo.com/ondemand/foo/1234',
+
+						'https://www.player.vimeo.com/video/1234',
+						'www.player.vimeo.com/video/1234',
+						'player.vimeo.com/video/1234'
 					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-						'<iframe src="https://open.spotify.com/embed/track/foo" ' +
+					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+						'<iframe src="https://player.vimeo.com/video/1234" ' +
 							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+							'frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">' +
 						'</iframe>' +
 					'</div>' );
 				} );
 			} );
 
-			it( 'upcasts the URL (youtube)', () => {
-				testMediaUpcast( [
-					'https://www.youtube.com/watch?v=foo',
-					'www.youtube.com/watch?v=foo',
-					'youtube.com/watch?v=foo',
+			describe( 'preview-less', () => {
+				it( 'upcasts the URL (instagram)', () => {
+					testMediaUpcast( [
+						'https://www.instagram.com/p/foo',
+						'www.instagram.com/p/foo',
+						'instagram.com/p/foo',
+					] );
+				} );
 
-					'https://www.youtube.com/v/foo',
-					'www.youtube.com/v/foo',
-					'youtube.com/v/foo',
+				it( 'upcasts the URL (twitter)', () => {
+					testMediaUpcast( [
+						'https://www.twitter.com/foo/bar',
+						'www.twitter.com/foo/bar',
+						'twitter.com/foo/bar',
+					] );
+				} );
 
-					'https://www.youtube.com/embed/foo',
-					'www.youtube.com/embed/foo',
-					'youtube.com/embed/foo',
+				it( 'upcasts the URL (google maps)', () => {
+					testMediaUpcast( [
+						'https://www.google.com/maps/foo',
+						'www.google.com/maps/foo',
+						'google.com/maps/foo',
+					] );
+				} );
 
-					'https://youtu.be/foo',
-					'youtu.be/foo'
-				],
-				'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-					'<iframe src="https://www.youtube.com/embed/foo" ' +
-						'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-						'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
-					'</iframe>' +
-				'</div>' );
-			} );
+				it( 'upcasts the URL (flickr)', () => {
+					testMediaUpcast( [
+						'https://www.flickr.com/foo/bar',
+						'www.flickr.com/foo/bar',
+						'flickr.com/foo/bar',
+					] );
+				} );
 
-			it( 'upcasts the URL (vimeo)', () => {
-				testMediaUpcast( [
-					'https://www.vimeo.com/1234',
-					'www.vimeo.com/1234',
-					'vimeo.com/1234',
-
-					'https://www.vimeo.com/foo/foo/video/1234',
-					'www.vimeo.com/foo/foo/video/1234',
-					'vimeo.com/foo/foo/video/1234',
-
-					'https://www.vimeo.com/album/foo/video/1234',
-					'www.vimeo.com/album/foo/video/1234',
-					'vimeo.com/album/foo/video/1234',
-
-					'https://www.vimeo.com/channels/foo/1234',
-					'www.vimeo.com/channels/foo/1234',
-					'vimeo.com/channels/foo/1234',
-
-					'https://www.vimeo.com/groups/foo/videos/1234',
-					'www.vimeo.com/groups/foo/videos/1234',
-					'vimeo.com/groups/foo/videos/1234',
-
-					'https://www.vimeo.com/ondemand/foo/1234',
-					'www.vimeo.com/ondemand/foo/1234',
-					'vimeo.com/ondemand/foo/1234',
-
-					'https://www.player.vimeo.com/video/1234',
-					'www.player.vimeo.com/video/1234',
-					'player.vimeo.com/video/1234'
-				],
-				'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-					'<iframe src="https://player.vimeo.com/video/1234" ' +
-						'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-						'frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">' +
-					'</iframe>' +
-				'</div>' );
+				it( 'upcasts the URL (facebook)', () => {
+					testMediaUpcast( [
+						'https://www.facebook.com/foo/bar',
+						'www.facebook.com/foo/bar',
+						'facebook.com/foo/bar',
+					] );
+				} );
 			} );
 		} );
 	} );
