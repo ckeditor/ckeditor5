@@ -13,9 +13,7 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
 	const mediaDefinitions = [
-		{
-			url: /^https:\/\/generic/
-		},
+		/^https:\/\/generic/,
 		{
 			url: /(.*)/,
 			html: id => `<iframe src="${ id }"></iframe>`

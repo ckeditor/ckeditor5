@@ -82,7 +82,16 @@ export class MediaRegistry {
 
 		url = url.trim();
 
-		for ( let { url: pattern, html: contentRenderer } of this.providerDefinitions ) {
+		for ( const definition of this.providerDefinitions ) {
+			let pattern, contentRenderer;
+
+			if ( definition instanceof RegExp ) {
+				pattern = definition;
+			} else {
+				pattern = definition.url;
+				contentRenderer = definition.html;
+			}
+
 			if ( !Array.isArray( pattern ) ) {
 				pattern = [ pattern ];
 			}

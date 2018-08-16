@@ -48,10 +48,6 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 
 				{
-					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
-				},
-
-				{
 					url: [
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
@@ -101,21 +97,11 @@ export default class MediaEmbedEditing extends Plugin {
 						'</div>'
 				},
 
-				{
-					url: /^(https:\/\/)?(www\.)?twitter\.com/
-				},
-
-				{
-					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
-				},
-
-				{
-					url: /^(https:\/\/)?(www\.)?flickr\.com/
-				},
-
-				{
-					url: /^(https:\/\/)?(www\.)?facebook\.com/
-				}
+				/^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/,
+				/^(https:\/\/)?(www\.)?twitter\.com/,
+				/^(https:\/\/)?(www\.)?google\.com\/maps/,
+				/^(https:\/\/)?(www\.)?flickr\.com/,
+				/^(https:\/\/)?(www\.)?facebook\.com/
 			]
 		} );
 
