@@ -111,10 +111,10 @@ describe( 'filler', () => {
 
 			expect( isInlineFiller( node ) ).to.be.false;
 		} );
-		
+
 		it( 'should be true for inline filler from inside iframe', () => {
-			const iframe = document.createElement('iframe');
-			document.body.appendChild(iframe);
+			const iframe = document.createElement( 'iframe' );
+			document.body.appendChild( iframe );
 			const node = iframe.contentDocument.createTextNode( INLINE_FILLER );
 
 			expect( isInlineFiller( node ) ).to.be.true;
