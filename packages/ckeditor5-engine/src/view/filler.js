@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, Text */
+/* globals window */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
