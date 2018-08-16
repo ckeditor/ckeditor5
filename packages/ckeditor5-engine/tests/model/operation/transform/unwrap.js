@@ -38,6 +38,28 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData(
+					'<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+				);
+
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>[]Bar</paragraph></blockQuote>'
+				);
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>Foo</blockQuote>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'the same element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -65,10 +87,38 @@ describe( 'transform', () => {
 				syncClients();
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
+
+			it( 'the same text', () => {
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
+			} );
+
+			it( 'the same text, then undo', () => {
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			} );
 		} );
 
 		describe( 'by delete', () => {
-			it( 'text from two elements', () => {
+			it( 'text from two elements #1', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote><paragraph>Bar</paragraph>' );
 				kate.setData( '<blockQuote><paragraph>Fo[o</paragraph></blockQuote><paragraph>Ba]r</paragraph>' );
 

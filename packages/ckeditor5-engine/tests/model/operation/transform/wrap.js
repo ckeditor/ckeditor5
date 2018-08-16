@@ -201,6 +201,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
+
+				john.wrap( 'div' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph><div>Foo</div></paragraph>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'the same element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -228,10 +243,38 @@ describe( 'transform', () => {
 
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
+
+			it( 'the same text', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.wrap( 'div' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote><div>Foo</div></blockQuote>' );
+			} );
+
+			it( 'the same text, then undo', () => {
+				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.wrap( 'div' );
+				kate.unwrap();
+
+				syncClients();
+
+				kate.undo();
+
+				syncClients();
+
+				expectClients( '<blockQuote><paragraph><div>Foo</div></paragraph></blockQuote>' );
+			} );
 		} );
 
 		describe( 'by delete', () => {
-			it( 'text in two elements', () => {
+			it( 'text in two elements #1', () => {
 				john.setData( '[<paragraph>Foo</paragraph>]<paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Fo[o</paragraph><paragraph>Ba]r</paragraph>' );
 
@@ -245,6 +288,18 @@ describe( 'transform', () => {
 						'<paragraph>For</paragraph>' +
 					'</blockQuote>'
 				);
+			} );
+
+			it( 'text in two elements #2', () => {
+				john.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Fo[o</paragraph><paragraph>Ba]r</paragraph>' );
+
+				john.wrap( 'div' );
+				kate.delete();
+
+				syncClients();
+
+				expectClients( '<paragraph><div>Fo</div>r</paragraph>' );
 			} );
 
 			it( 'delete all wrapped content', () => {

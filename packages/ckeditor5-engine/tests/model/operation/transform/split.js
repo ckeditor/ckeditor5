@@ -121,6 +121,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.split();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>F</blockQuote>' +
+					'<blockQuote>oo</blockQuote>'
+				);
+			} );
+
 			it( 'element in same position', () => {
 				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
@@ -145,9 +160,23 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
+			it( 'text in same path, then undo', () => {
+				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.split();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 
 			it( 'multiple elements', () => {
@@ -228,9 +257,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'text in different path', () => {
