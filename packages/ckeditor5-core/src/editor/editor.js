@@ -128,7 +128,11 @@ export default class Editor {
 		 * Defines whether this editor is in read-only mode.
 		 *
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
-		 * to modify document by using them.
+		 * to modify the document by using them. Also, the editable element(s) become non-editable.
+		 *
+		 * In order to make the editor read-only, you can set this value directly:
+		 *
+		 *		editor.isReadOnly = true;
 		 *
 		 * @observable
 		 * @member {Boolean} #isReadOnly
