@@ -18,7 +18,7 @@ import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
  */
 export class MediaRegistry {
 	/**
-	 * Creates an instance of the {@link media-embed/mediaregistry~MediaRegistry} class.
+	 * Creates an instance of the {@link module:media-embed/mediaregistry~MediaRegistry} class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 * @param {Array} providerDefinitions The provider definitions available in this registry.
@@ -118,9 +118,6 @@ class Media {
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
-		 *
-		 * Note: If {@link #locale} instance hasn't been passed to the view this method may not
-		 * be available.
 		 *
 		 * @see module:utils/locale~Locale#t
 		 * @method

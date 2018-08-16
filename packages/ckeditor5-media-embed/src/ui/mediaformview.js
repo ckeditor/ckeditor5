@@ -4,7 +4,7 @@
  */
 
 /**
- * @module media-embed/ui/insertmediaview
+ * @module media-embed/ui/mediaformview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
