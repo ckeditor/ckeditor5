@@ -10,7 +10,9 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import throttle from './throttle';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { debounce } from 'lodash-es';
 
 /* globals window */
 
@@ -62,6 +64,12 @@ export default class Autosave extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		const config = editor.config.get( 'autosave' ) || {};
+
+		// A minimum amount of time that needs to pass after the last action.
+		// After that time the provided save callbacks are being called.
+		const waitingTime = config.waitingTime || 1000;
+
 		/**
 		 * The adapter is an object with a `save()` method. That method will be called whenever
 		 * the data changes. It might be called some time after the change,
@@ -71,17 +79,31 @@ export default class Autosave extends Plugin {
 		 */
 
 		/**
-		 * Throttled save method.
+		 * The state of this plugin.
 		 *
-		 * @protected
+		 * The plugin can be in the following states:
+		 *
+		 * * synchronized - when all changes are saved
+		 * * waiting - when the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`
+		 * * saving - when the provided save method is called and the plugin waits for the response
+		 *
+		 * @member {'synchronized'|'waiting'|'saving'} #state
+		 */
+		this.set( 'state', 'synchronized' );
+
+		/**
+		 * Debounced save method. The `save` method is called the specified `waitingTime` after the `debouncedSave` is called,
+		 * unless new action happens in the meantime.
+		 *
+		 * @private
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), 1000 );
+		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
 
 		/**
 		 * Last document version.
 		 *
-		 * @protected
+		 * @private
 		 * @type {Number}
 		 */
 		this._lastDocumentVersion = editor.model.document.version;
@@ -95,12 +117,12 @@ export default class Autosave extends Plugin {
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
-		 * Save action counter monitors number of actions.
+		 * The config of this plugins.
 		 *
 		 * @private
-		 * @type {Number}
+		 * @type {Object}
 		 */
-		this._saveActionCounter = 0;
+		this._config = config;
 
 		/**
 		 * An action that will be added to pending action manager for actions happening in that plugin.
@@ -108,14 +130,6 @@ export default class Autosave extends Plugin {
 		 * @private
 		 * @member {Object} #_action
 		 */
-
-		/**
-		 * Plugins' config.
-		 *
-		 * @private
-		 * @type {Object}
-		 */
-		this._config = editor.config.get( 'autosave' ) || {};
 
 		/**
 		 * Editor's pending actions manager.
@@ -135,13 +149,24 @@ export default class Autosave extends Plugin {
 		this._pendingActions = editor.plugins.get( PendingActions );
 
 		this.listenTo( doc, 'change:data', () => {
-			this._incrementCounter();
-
-			const willOriginalFunctionBeCalled = this._throttledSave();
-
-			if ( !willOriginalFunctionBeCalled ) {
-				this._decrementCounter();
+			if ( !this._saveCallbacks.length ) {
+				return;
 			}
+
+			if ( this.state == 'synchronized' ) {
+				this._action = this._pendingActions.add( this.editor.t( 'Saving changes' ) );
+				this.state = 'waiting';
+
+				this._debouncedSave();
+			}
+
+			else if ( this.state == 'waiting' ) {
+				this._debouncedSave();
+			}
+
+			// If the plugin is in `saving` state, it will change its state later basing on the `document.version`.
+			// If the `document.version` will be higher than stored `#_lastDocumentVersion`, then it means, that some `change:data`
+			// event has fired in the meantime.
 		} );
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
@@ -175,7 +200,7 @@ export default class Autosave extends Plugin {
 	 * @protected
 	 */
 	_flush() {
-		this._throttledSave.flush();
+		this._debouncedSave.flush();
 	}
 
 	/**
@@ -188,6 +213,46 @@ export default class Autosave extends Plugin {
 	_save() {
 		const version = this.editor.model.document.version;
 
+		// Change may not produce an operation, so the document's version
+		// can be the same after that change.
+		if (
+			version < this._lastDocumentVersion ||
+			this.editor.state === 'initializing'
+		) {
+			this._debouncedSave.cancel();
+
+			return;
+		}
+
+		this._lastDocumentVersion = version;
+
+		this.state = 'saving';
+
+		// Wait one promise cycle to be sure that save callbacks are not called
+		// inside a conversion or when the editor's state changes.
+		Promise.resolve()
+			.then( () => Promise.all(
+				this._saveCallbacks.map( cb => cb( this.editor ) )
+			) )
+			.then( () => {
+				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
+					this.state = 'waiting';
+					this._debouncedSave();
+				} else {
+					this.state = 'synchronized';
+					this._pendingActions.remove( this._action );
+					this._action = null;
+				}
+			} );
+	}
+
+	/**
+	 * Save callbacks.
+	 *
+	 * @private
+	 * @type {Array.<Function>}
+	 */
+	get _saveCallbacks() {
 		const saveCallbacks = [];
 
 		if ( this.adapter && this.adapter.save ) {
@@ -198,63 +263,11 @@ export default class Autosave extends Plugin {
 			saveCallbacks.push( this._config.save );
 		}
 
-		// Change may not produce an operation, so the document's version
-		// can be the same after that change.
-		if (
-			version < this._lastDocumentVersion ||
-			!saveCallbacks.length ||
-			this.editor.state === 'initializing'
-		) {
-			this._throttledSave.flush();
-			this._decrementCounter();
-
-			return;
-		}
-
-		this._lastDocumentVersion = version;
-
-		// Wait one promise cycle to be sure that:
-		// 1. The save method is always asynchronous.
-		// 2. Save callbacks are not called inside conversions or while editor's state changes.
-		Promise.resolve()
-			.then( () => Promise.all(
-				saveCallbacks.map( cb => cb( this.editor ) )
-			) )
-			.then( () => {
-				this._decrementCounter();
-			} );
-	}
-
-	/**
-	 * Increments counter and adds pending action if it not exists.
-	 *
-	 * @private
-	 */
-	_incrementCounter() {
-		const t = this.editor.t;
-
-		this._saveActionCounter++;
-
-		if ( !this._action ) {
-			this._action = this._pendingActions.add( t( 'Saving changes' ) );
-		}
-	}
-
-	/**
-	 * Decrements counter and removes pending action if counter is empty,
-	 * which means, that no new save action occurred.
-	 *
-	 * @private
-	 */
-	_decrementCounter() {
-		this._saveActionCounter--;
-
-		if ( this._saveActionCounter === 0 ) {
-			this._pendingActions.remove( this._action );
-			this._action = null;
-		}
+		return saveCallbacks;
 	}
 }
+
+mix( Autosave, ObservableMixin );
 
 /**
  * An interface that requires the `save()` method.
@@ -323,4 +336,23 @@ export default class Autosave extends Plugin {
  * @method module:autosave/autosave~AutosaveConfig#save
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {Promise.<*>}
+ */
+
+/**
+ * The minimum amount of time that need to pass after last action to call the provided callback.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				autosave: {
+ *					save( editor ) {
+ *						return saveData( editor.getData() );
+ *					},
+ *					waitingTime: 2000
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @property module:autosave/autosave~AutosaveConfig#waitingTime
+ * @type {Number}
  */

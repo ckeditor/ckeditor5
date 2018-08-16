@@ -29,17 +29,38 @@ ClassicEditor
 			save() {
 				const data = editor.getData();
 
-				return saveEditorContentToDatabase( data );
+				return wait( 1000 )
+					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
 			}
 		};
+
+		autosave.listenTo( autosave, 'change:state',
+			( evt, propName, newValue, oldValue ) => console.log( `${ getTime() } Changed state: ${ oldValue } -> ${ newValue }` ) );
 	} );
 
-function saveEditorContentToDatabase( data ) {
+function wait( time ) {
 	return new Promise( res => {
-		window.setTimeout( () => {
-			console.log( data );
-
-			res();
-		}, 1000 );
+		window.setTimeout( res, time );
 	} );
+}
+
+function getTime() {
+	const date = new Date();
+
+	return '[' +
+		date.getHours() + ':' +
+		setDigitSize( date.getMinutes(), 2 ) + ':' +
+		setDigitSize( date.getSeconds(), 2 ) + '.' +
+		setDigitSize( date.getMilliseconds(), 2 ) +
+		']';
+}
+
+function setDigitSize( number, size ) {
+	const string = String( number );
+
+	if ( string.length >= size ) {
+		return string.slice( 0, size );
+	}
+
+	return '0'.repeat( size - string.length ) + string;
 }
