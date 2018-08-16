@@ -118,6 +118,8 @@ describe( 'filler', () => {
 			const node = iframe.contentDocument.createTextNode( INLINE_FILLER );
 
 			expect( isInlineFiller( node ) ).to.be.true;
+
+			document.body.removeChild( iframe );
 		} );
 	} );
 
