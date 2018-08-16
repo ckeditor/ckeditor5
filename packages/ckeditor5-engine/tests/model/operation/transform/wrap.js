@@ -218,30 +218,33 @@ describe( 'transform', () => {
 
 			it( 'the same element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
-				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
+				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
-				john.wrap( 'blockQuote2' );
+				john.wrap( 'div' );
 				kate.unwrap();
 
 				syncClients();
 
-				expectClients( '<blockQuote2><paragraph>Foo</paragraph></blockQuote2>' );
+				expectClients( '<div><paragraph>Foo</paragraph></div>' );
 			} );
 
-			it( 'the same element, then undo', () => {
+			it.skip( 'the same element, then undo', () => {
+				// This is interesting scenario actually. Normally in wrap x wrap situation the stronger wrap just wins
+				// so we won't get incorrect model. But John was actually to make a wrap like this then he had
+				// <bq><div><p> structure for a while. So it should be possible to revert to it.
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
-				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
+				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
-				john.wrap( 'blockQuote2' );
+				john.wrap( 'div' );
 				kate.unwrap();
 
 				syncClients();
+				expectClients( '<div><paragraph>Foo</paragraph></div>' );
 
 				kate.undo();
 
 				syncClients();
-
-				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+				expectClients( '<blockQuote><div><paragraph>Foo</paragraph></div></blockQuote>' );
 			} );
 
 			it( 'the same text', () => {
@@ -256,7 +259,10 @@ describe( 'transform', () => {
 				expectClients( '<blockQuote><div>Foo</div></blockQuote>' );
 			} );
 
-			it( 'the same text, then undo', () => {
+			it.skip( 'the same text, then undo', () => {
+				// This is interesting scenario actually. Normally in wrap x wrap situation the stronger wrap just wins
+				// so we won't get incorrect model. But John was actually to make a wrap like this then he had
+				// <bq><p><div> structure for a while. So it should be possible to revert to it.
 				john.setData( '<blockQuote><paragraph>[Foo]</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
@@ -264,6 +270,7 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
+				expectClients( '<blockQuote><div>Foo</div></blockQuote>' );
 
 				kate.undo();
 

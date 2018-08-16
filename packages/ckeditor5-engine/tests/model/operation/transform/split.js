@@ -130,10 +130,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote>F</blockQuote>' +
-					'<blockQuote>oo</blockQuote>'
-				);
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 
 			it( 'element in same position', () => {
