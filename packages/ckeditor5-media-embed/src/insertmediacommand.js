@@ -47,7 +47,7 @@ export default class InsertMediaCommand extends Command {
 	 * Executes the command, which either:
 	 *
 	 * * updates the URL of a selected media,
-	 * * inserts the new media into the editor and selects it as a whole
+	 * * inserts the new media into the editor and puts the selection around it.
 	 *
 	 * @fires execute
 	 * @param {String} url The URL of the media.

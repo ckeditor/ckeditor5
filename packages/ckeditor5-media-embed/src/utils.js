@@ -28,20 +28,35 @@ export function toMediaWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label } );
 }
 
-// Creates a view element representing the media.
-//
-//		<figure class="media"></figure>
-//
-// @private
-// @param {module:engine/view/writer~Writer} writer
-// @returns {module:engine/view/containerelement~ContainerElement}
+/**
+ * Creates a view element representing the media. Either "semantic" one for the data pipeline:
+ *
+ *		<figure class="media">
+ *			<oembed url="foo"></div>
+ *		</figure>
+ *
+ * or "non-semantic" (for editing view pipeline):
+ *
+ *		<figure class="media">
+ *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
+ *		</figure>
+ *
+ * @param {module:engine/view/writer~Writer} writer
+ * @param {module:media-embed/mediaregistry~MediaRegistry} mediaRegistry
+ * @param {String} url
+ * @param {Object} options
+ * @param {String} [options.renderContent]
+ * @param {String} [options.useSemanticWrapper]
+ * @param {String} [options.renderForEditingView]
+ * @returns {module:engine/view/containerelement~ContainerElement}
+ */
 export function createMediaFigureElement( writer, mediaRegistry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
 	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
 	// its only child is the UIElement (wrapper).
 	//
-	// Note: The hack comes from widget utils; it makes the figure act like it's a widget.
+	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
 	writer.insert( ViewPosition.createAt( figure ), mediaRegistry.getMediaViewElement( writer, url, options ) );
@@ -49,6 +64,12 @@ export function createMediaFigureElement( writer, mediaRegistry, url, options ) 
 	return figure;
 }
 
+/**
+ * Returns a selected media element in model, if any.
+ *
+ * @param {module:engine/model/selection~Selection} selection
+ * @returns {module:engine/model/element~Element|null}
+ */
 export function getSelectedMediaElement( selection ) {
 	const selectedElement = selection.getSelectedElement();
 

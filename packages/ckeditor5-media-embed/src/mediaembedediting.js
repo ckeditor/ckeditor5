@@ -115,13 +115,16 @@ export default class MediaEmbedEditing extends Plugin {
 
 				{
 					url: /^(https:\/\/)?(www\.)?facebook\.com/
-				},
-
-				{
-					url: /.*/
 				}
 			]
 		} );
+
+		/**
+		 * The media registry managing the media providers in the editor.
+		 *
+		 * @member {module:media-embed/mediaregistry~MediaRegistry} #mediaRegistry
+		 */
+		this.mediaRegistry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed.media' ) );
 	}
 
 	/**
@@ -133,7 +136,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
-		const mediaRegistry = this.mediaRegistry = new MediaRegistry( this.editor );
+		const mediaRegistry = this.mediaRegistry;
 
 		editor.commands.add( 'insertMedia', new InsertMediaCommand( editor ) );
 

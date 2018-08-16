@@ -18,8 +18,8 @@ import '../theme/mediaembed.css';
 /**
  * The media embed plugin.
  *
- * It loads the {@link module:table/mediaembedediting~MediaEmbedEditing media embed editing feature}
- * and {@link module:table/mediaembedui~TableUI media embed UI feature}.
+ * It loads the {@link module:media-embed/mediaembedediting~MediaEmbedEditing media embed editing feature}
+ * and {@link module:media-embed/mediaembedui~MediaEmbedUI media embed UI feature}.
  *
  * For a detailed overview, check the {@glink features/mediaembed Media Embed feature documentation}.
  *
