@@ -7,7 +7,6 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import DocumentFragment from '../../src/model/documentfragment';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'DocumentFragment', () => {
@@ -263,7 +262,7 @@ describe( 'DocumentFragment', () => {
 		it( 'should serialize empty document fragment', () => {
 			const frag = new DocumentFragment();
 
-			expect( jsonParseStringify( frag ) ).to.deep.equal( [] );
+			expect( frag.toJSON() ).to.deep.equal( [] );
 		} );
 
 		it( 'should serialize document fragment with children', () => {
@@ -274,7 +273,7 @@ describe( 'DocumentFragment', () => {
 
 			const frag = new DocumentFragment( [ one, two, three ] );
 
-			expect( jsonParseStringify( frag ) ).to.deep.equal( [
+			expect( frag.toJSON() ).to.deep.equal( [
 				{ name: 'one' },
 				{
 					name: 'two',
@@ -293,7 +292,7 @@ describe( 'DocumentFragment', () => {
 		it( 'should create document fragment without children', () => {
 			const frag = new DocumentFragment();
 
-			const serialized = jsonParseStringify( frag );
+			const serialized = frag.toJSON();
 			const deserialized = DocumentFragment.fromJSON( serialized );
 
 			expect( deserialized.isEmpty ).to.be.true;
@@ -304,7 +303,7 @@ describe( 'DocumentFragment', () => {
 			const foo = new Text( 'foo' );
 			const frag = new DocumentFragment( [ p, foo ] );
 
-			const serialized = jsonParseStringify( frag );
+			const serialized = frag.toJSON();
 			const deserialized = DocumentFragment.fromJSON( serialized );
 
 			expect( deserialized.childCount ).to.equal( 2 );

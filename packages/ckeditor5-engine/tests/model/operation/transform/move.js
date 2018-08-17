@@ -224,21 +224,6 @@ describe( 'transform', () => {
 					'</blockQuote>'
 				);
 			} );
-
-			it( 'intersecting wrap', () => {
-				john.setData( '<paragraph>F[oo]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>[Foo]</paragraph><paragraph>Bar</paragraph>' );
-
-				john.move( [ 1, 0 ] );
-				kate.wrap( 'div' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph><div>F</div></paragraph>' +
-					'<paragraph>ooBar</paragraph>'
-				);
-			} );
 		} );
 
 		describe( 'by unwrap', () => {
@@ -272,6 +257,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>F[oo]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
+
+				john.move( [ 0, 0 ] );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>ooF</paragraph>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'element in same path', () => {
 				john.setData( '<blockQuote><paragraph>F[oo]</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -281,9 +281,19 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>ooF</paragraph>'
-				);
+				expectClients( '<paragraph>ooF</paragraph>' );
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>F[oo]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.move( [ 0, 0, 0 ] );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>ooF</blockQuote>' );
 			} );
 		} );
 
@@ -335,7 +345,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'text in other user\'s selection', () => {
+			it( 'text in other user\'s selection', () => {
 				john.setData( '<paragraph>[Foo] Bar</paragraph>' );
 				kate.setData( '<paragraph>F[]oo Bar</paragraph>' );
 
@@ -366,7 +376,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it.skip( 'inside moved text', () => {
+			it( 'inside moved text', () => {
 				john.setData( '<paragraph>F[oo Ba]r</paragraph><paragraph>Abc</paragraph>' );
 				kate.setData( '<paragraph>Foo[] Bar</paragraph><paragraph>Abc</paragraph>' );
 
@@ -374,10 +384,6 @@ describe( 'transform', () => {
 				kate.split();
 
 				syncClients();
-
-				// Actual result for Kate:
-				// <paragraph>F</paragraph><paragraph>r</paragraph><paragraph> BaooAbc</paragraph>
-				// Move operations have wrong targets when they target at same place.
 
 				expectClients(
 					'<paragraph>F</paragraph>' +
@@ -479,9 +485,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 		} );
 
@@ -495,9 +499,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>ooFBar</paragraph>'
-				);
+				expectClients( '<paragraph>ooFBar</paragraph>' );
 			} );
 
 			it( 'element into paragraph #2', () => {
@@ -509,9 +511,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>arFooB</paragraph>'
-				);
+				expectClients( '<paragraph>arFooB</paragraph>' );
 			} );
 
 			it( 'element into paragraph #3', () => {
@@ -523,9 +523,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooBar</paragraph>'
-				);
+				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #1', () => {
@@ -537,9 +535,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>ooFBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>ooFBar</paragraph></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #2', () => {
@@ -551,9 +547,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>arFooB</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>arFooB</paragraph></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #3', () => {
@@ -565,9 +559,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FooBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
 			} );
 
 			it( 'moved element', () => {
@@ -598,94 +590,33 @@ describe( 'transform', () => {
 
 				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
-		} );
 
-		describe( 'by remove attribute', () => {
-			it( 'from element in different path', () => {
-				john.setData( '<paragraph>F[oo]</paragraph><paragraph bold="true">Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph>[<paragraph bold="true">Bar</paragraph>]' );
+			it( 'moved text', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph>B[ar]</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
-				john.move( [ 1, 0 ] );
-				kate.removeAttribute( 'bold' );
+				john.move( [ 0, 0 ] );
+				kate.merge();
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>F</paragraph>' +
-					'<paragraph>ooBar</paragraph>'
-				);
+				expectClients( '<paragraph>arFooB</paragraph>' );
 			} );
 
-			it( 'from text in different path', () => {
-				john.setData( '<paragraph>F[oo]</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+			it( 'moved text, then undo', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph>B[ar]</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 
-				john.move( [ 1, 0 ] );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph>F</paragraph>' +
-					'<paragraph>ooBar</paragraph>'
-				);
-			} );
-
-			it( 'from text in same path', () => {
-				john.setData( '<paragraph>[Fo]<$text bold="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true">[o]</$text></paragraph>' );
-
-				john.move( [ 0, 3 ] );
-				kate.removeAttribute( 'bold' );
+				john.move( [ 0, 0 ] );
+				kate.merge();
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>oFo</paragraph>'
-				);
-			} );
-
-			it( 'from element in same path', () => {
-				john.setData( '<paragraph bold="true">[Fo]o</paragraph>' );
-				kate.setData( '[<paragraph bold="true">Foo</paragraph>]' );
-
-				john.move( [ 0, 3 ] );
-				kate.removeAttribute( 'bold' );
+				john.undo();
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>oFo</paragraph>'
-				);
-			} );
-
-			it( 'from text with 2 attributes in same path', () => {
-				john.setData( '<paragraph>[Fo]<$text bold="true" italic="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true" italic="true">[o]</$text></paragraph>' );
-
-				john.move( [ 0, 3 ] );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph><$text italic="true">o</$text>Fo</paragraph>'
-				);
-			} );
-
-			it( 'from text in other user\'s selection', () => {
-				john.setData( '<paragraph><$text bold="true">[Foo]</$text></paragraph><paragraph></paragraph>' );
-				kate.setData( '<paragraph><$text bold="true">[Foo]</$text></paragraph><paragraph></paragraph>' );
-
-				john.move( [ 1, 0 ] );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph></paragraph>' +
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 		} );
 

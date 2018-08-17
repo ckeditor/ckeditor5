@@ -7,11 +7,10 @@ import Model from '../../../src/model/model';
 import NodeList from '../../../src/model/nodelist';
 import Element from '../../../src/model/element';
 import InsertOperation from '../../../src/model/operation/insertoperation';
-import RemoveOperation from '../../../src/model/operation/removeoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let model, doc, root;
@@ -107,7 +106,7 @@ describe( 'InsertOperation', () => {
 		expect( root.getChild( 0 ).data ).to.equal( 'fooxbar' );
 	} );
 
-	it( 'should create a RemoveOperation as a reverse', () => {
+	it( 'should create a MoveOperation as a reverse', () => {
 		const position = new Position( root, [ 0 ] );
 		const operation = new InsertOperation(
 			position,
@@ -117,7 +116,7 @@ describe( 'InsertOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		expect( reverse ).to.be.an.instanceof( RemoveOperation );
+		expect( reverse ).to.be.an.instanceof( MoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.sourcePosition.isEqual( position ) ).to.be.true;
 		expect( reverse.howMany ).to.equal( 7 );
@@ -223,13 +222,13 @@ describe( 'InsertOperation', () => {
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
 			op.shouldReceiveAttributes = true;
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.InsertOperation',
 				baseVersion: 0,
-				nodes: jsonParseStringify( new NodeList( [ new Text( 'x' ) ] ) ),
-				position: jsonParseStringify( position ),
+				nodes: ( new NodeList( [ new Text( 'x' ) ] ) ).toJSON(),
+				position: position.toJSON(),
 				shouldReceiveAttributes: true
 			} );
 		} );
@@ -244,7 +243,7 @@ describe( 'InsertOperation', () => {
 				doc.version
 			);
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = InsertOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

@@ -7,7 +7,7 @@ import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
-import transform from '../../../../src/model/operation/transform';
+import { transformSets } from '../../../../src/model/operation/transform';
 import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 import OperationFactory from '../../../../src/model/operation/operationfactory';
@@ -253,16 +253,34 @@ function bufferOperations( operations, client ) {
 }
 
 export function syncClients() {
-	for ( const client of clients ) {
-		for ( const item of bufferedOperations ) {
-			const remoteOperations = item.operations.map( op => OperationFactory.fromJSON( JSON.parse( op ), client.document ) );
-			const remoteClient = item.client;
+	const clientsOperations = {};
 
-			if ( remoteClient == client ) {
+	// For each client, flatten all buffered operations into one set.
+	for ( const item of bufferedOperations ) {
+		const name = item.client.name;
+
+		if ( !clientsOperations[ name ] ) {
+			clientsOperations[ name ] = [];
+		}
+
+		clientsOperations[ name ].push( ...item.operations );
+	}
+
+	for ( const localClient of clients ) {
+		for ( const remoteClient of clients ) {
+			if ( remoteClient == localClient ) {
 				continue;
 			}
 
-			const clientOperations = Array.from( client.document.history.getOperations( client.syncedVersion ) );
+			const remoteOperationsJson = clientsOperations[ remoteClient.name ];
+
+			if ( !remoteOperationsJson ) {
+				continue;
+			}
+
+			const remoteOperations = remoteOperationsJson.map( op => OperationFactory.fromJSON( JSON.parse( op ), localClient.document ) );
+
+			const localOperations = Array.from( localClient.document.history.getOperations( localClient.syncedVersion ) );
 
 			let remoteOperationsTransformed = null;
 
@@ -271,21 +289,21 @@ export function syncClients() {
 				padWithNoOps: true
 			};
 
-			if ( client.orderNumber < remoteClient.orderNumber ) {
-				remoteOperationsTransformed = transform.transformSets( clientOperations, remoteOperations, options ).operationsB;
+			if ( localClient.orderNumber < remoteClient.orderNumber ) {
+				remoteOperationsTransformed = transformSets( localOperations, remoteOperations, options ).operationsB;
 			} else {
-				remoteOperationsTransformed = transform.transformSets( remoteOperations, clientOperations, options ).operationsA;
+				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
-			client.editor.model.enqueueChange( 'transparent', writer => {
+			localClient.editor.model.enqueueChange( 'transparent', writer => {
 				for ( const operation of remoteOperationsTransformed ) {
 					writer.batch.addOperation( operation );
-					client.editor.model.applyOperation( operation );
+					localClient.editor.model.applyOperation( operation );
 				}
 			} );
 		}
 
-		client.syncedVersion = client.document.version;
+		localClient.syncedVersion = localClient.document.version;
 	}
 
 	bufferedOperations.clear();

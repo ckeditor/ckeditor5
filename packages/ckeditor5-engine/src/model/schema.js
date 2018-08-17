@@ -665,38 +665,54 @@ export default class Schema {
 	 *
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Array.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
-	getValidRanges( ranges, attribute ) {
-		const validRanges = [];
+	* getValidRanges( ranges, attribute ) {
+		ranges = convertToMinimalFlatRanges( ranges );
 
 		for ( const range of ranges ) {
-			let last = range.start;
-			let from = range.start;
-			const to = range.end;
-
-			for ( const value of range.getWalker() ) {
-				if ( !this.checkAttribute( value.item, attribute ) ) {
-					if ( !from.isEqual( last ) ) {
-						validRanges.push( new Range( from, last ) );
-					}
-
-					from = value.nextPosition;
-				}
-
-				last = value.nextPosition;
-			}
-
-			if ( from && !from.isEqual( to ) ) {
-				validRanges.push( new Range( from, to ) );
-			}
+			yield* this._getValidRangesForRange( range, attribute );
 		}
-
-		return validRanges;
 	}
 
 	/**
-	 * Basing on given the `position`, finds and returns a {@link module:engine/model/range~Range range} which is
+	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
+	 * inside the given range on which the attribute can be applied.
+	 *
+	 * This is a helper function for {@link ~Schema#getValidRanges}.
+	 *
+	 * @private
+	 * @param {module:engine/model/range~Range} range Range to process.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	* _getValidRangesForRange( range, attribute ) {
+		let start = range.start;
+		let end = range.start;
+
+		for ( const item of range.getItems( { shallow: true } ) ) {
+			if ( item.is( 'element' ) ) {
+				yield* this._getValidRangesForRange( Range.createIn( item ), attribute );
+			}
+
+			if ( !this.checkAttribute( item, attribute ) ) {
+				if ( !start.isEqual( end ) ) {
+					yield new Range( start, end );
+				}
+
+				start = Position.createAfter( item );
+			}
+
+			end = Position.createAfter( item );
+		}
+
+		if ( !start.isEqual( end ) ) {
+			yield new Range( start, end );
+		}
+	}
+
+	/**
+	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range range} which is
 	 * nearest to that `position` and is a correct range for selection.
 	 *
 	 * The correct selection range might be collapsed when it is located in a position where the text node can be placed.
@@ -1570,5 +1586,16 @@ function* combineWalkers( backward, forward ) {
 				};
 			}
 		}
+	}
+}
+
+// Takes an array of non-intersecting ranges. For each of them gets minimal flat ranges covering that range and returns
+// all those minimal flat ranges.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges Ranges to process.
+// @returns {Iterator.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
+function* convertToMinimalFlatRanges( ranges ) {
+	for ( const range of ranges ) {
+		yield* range.getMinimalFlatRanges();
 	}
 }

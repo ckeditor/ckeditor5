@@ -175,9 +175,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph></paragraph>'
-				);
+				expectClients( '<paragraph></paragraph>' );
 			} );
 		} );
 
@@ -213,6 +211,21 @@ describe( 'transform', () => {
 						'<paragraph>Abc</paragraph>' +
 					'</blockQuote>' +
 					'<paragraph>B</paragraph>'
+				);
+			} );
+
+			it( 'text at different paths', () => {
+				john.setData( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>B[ar]</paragraph>' );
+
+				john.type( 'Abc' );
+				kate.move( [ 1, 0 ] );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>AbcFoo</paragraph>' +
+					'<paragraph>arB</paragraph>'
 				);
 			} );
 
@@ -254,7 +267,7 @@ describe( 'transform', () => {
 		} );
 
 		describe( 'by wrap', () => {
-			it( 'element in same path', () => {
+			it( 'element in same path #1', () => {
 				john.setData( '<paragraph>Foo Bar</paragraph>[]' );
 				kate.setData( '[<paragraph>Foo Bar</paragraph>]' );
 
@@ -271,7 +284,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'element in same path', () => {
+			it( 'element in same path #2', () => {
 				john.setData( '<paragraph>Foo[]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
@@ -287,7 +300,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'element in different paths', () => {
+			it( 'element in different paths #1', () => {
 				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
 
@@ -305,7 +318,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'element in different paths', () => {
+			it( 'element in different paths #2', () => {
 				john.setData( '<paragraph>Foo</paragraph><paragraph>Bar[]</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]<paragraph>Bar</paragraph>' );
 
@@ -444,9 +457,19 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooAbc</paragraph><paragraph>Bar</paragraph>'
-				);
+				expectClients( '<paragraph>FooAbc</paragraph><paragraph>Bar</paragraph>' );
+			} );
+
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>Foo[]</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
+
+				john.type( 'Abc' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<paragraph>FooAbc</paragraph><blockQuote>Bar</blockQuote>' );
 			} );
 
 			it( 'element in same path #1', () => {
@@ -458,9 +481,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 
 			it( 'element in same path #2', () => {
@@ -476,6 +497,18 @@ describe( 'transform', () => {
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>'
 				);
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.type( ' Bar' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo Bar</blockQuote>' );
 			} );
 
 			it( 'element, then insert text and move', () => {
@@ -700,9 +733,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooAbc</paragraph><paragraph></paragraph>'
-				);
+				expectClients( '<paragraph>FooAbc</paragraph><paragraph></paragraph>' );
 			} );
 
 			it( 'text in same path', () => {
@@ -714,9 +745,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Bar</paragraph>' );
 			} );
 
 			it( 'element in different path', () => {
@@ -811,7 +840,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph><paragraph>BarAbc</paragraph>' );
 			} );
 
-			it.skip( 'element, then add marker, split and undo with type #2', () => {
+			it( 'element, then add marker, split and undo with type #2', () => {
 				john.setData( '<paragraph>Foo</paragraph>[]' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
@@ -845,8 +874,6 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				// Actual content:
-				// <paragraph></paragraph><paragraph>Ba</paragraph><paragraph></paragraph>
 				expectClients( '<paragraph>Foo</paragraph><paragraph>BarAbc</paragraph>' );
 			} );
 		} );
@@ -861,9 +888,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo Bar</paragraph>'
-				);
+				expectClients( '<paragraph>Foo Bar</paragraph>' );
 			} );
 		} );
 
@@ -908,74 +933,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>BarFo<m1:start></m1:start>o<m1:end></m1:end></paragraph>'
-				);
-			} );
-		} );
-
-		// This should be moved to attribute.js.
-		describe( 'by remove attribute', () => {
-			it( 'from element in different path', () => {
-				john.setData( '<paragraph>[]Foo</paragraph><paragraph bold="true">Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph>[<paragraph bold="true">Bar</paragraph>]' );
-
-				john.type( 'Abc' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients( '<paragraph>AbcFoo</paragraph><paragraph>Bar</paragraph>' );
-			} );
-
-			it( 'from text in different path', () => {
-				john.setData( '<paragraph>[]Foo</paragraph><paragraph><$text bold="true">Bar</$text></paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph><$text bold="true">[Bar]</$text></paragraph>' );
-
-				john.type( 'Abc' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients( '<paragraph>AbcFoo</paragraph><paragraph>Bar</paragraph>' );
-			} );
-
-			it( 'from text in same path', () => {
-				john.setData( '<paragraph>[]Fo<$text bold="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true">[o]</$text></paragraph>' );
-
-				john.type( 'Bar' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients( '<paragraph>BarFoo</paragraph>' );
-			} );
-
-			it( 'from element in same path', () => {
-				john.setData( '<paragraph bold="true">[]Foo</paragraph>' );
-				kate.setData( '[<paragraph bold="true">Foo</paragraph>]' );
-
-				john.type( 'Bar' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients( '<paragraph>BarFoo</paragraph>' );
-			} );
-
-			it( 'from text with 2 attributes in same path', () => {
-				john.setData( '<paragraph>[]Fo<$text bold="true" italic="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true" italic="true">[o]</$text></paragraph>' );
-
-				john.type( 'Bar' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<paragraph>BarFo<$text italic="true">o</$text></paragraph>'
-				);
+				expectClients( '<paragraph>BarFo<m1:start></m1:start>o<m1:end></m1:end></paragraph>' );
 			} );
 		} );
 

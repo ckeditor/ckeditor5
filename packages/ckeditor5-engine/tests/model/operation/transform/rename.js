@@ -15,94 +15,6 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'rename', () => {
-		describe( 'by remove attribute', () => {
-			it( 'from element in different path', () => {
-				john.setData( '<paragraph>F[]oo</paragraph><paragraph bold="true">Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph>[<paragraph bold="true">Bar</paragraph>]' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>' +
-					'<paragraph>Bar</paragraph>'
-				);
-			} );
-
-			it( 'from text in different path', () => {
-				john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
-				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>' +
-					'<paragraph>Bar</paragraph>'
-				);
-			} );
-
-			it( 'from text in same path', () => {
-				john.setData( '<paragraph>F[]o<$text bold="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true">[o]</$text></paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>'
-				);
-			} );
-
-			it( 'from element in same path', () => {
-				john.setData( '<paragraph bold="true">F[]oo</paragraph>' );
-				kate.setData( '[<paragraph bold="true">Foo</paragraph>]' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>'
-				);
-			} );
-
-			it( 'from text with 2 attributes in same path', () => {
-				john.setData( '<paragraph>F[o]<$text bold="true" italic="true">o</$text></paragraph>' );
-				kate.setData( '<paragraph>Fo<$text bold="true" italic="true">[o]</$text></paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Fo<$text italic="true">o</$text></heading1>'
-				);
-			} );
-
-			it( 'from text in other user\'s selection', () => {
-				john.setData( '<paragraph><$text bold="true">[Foo]</$text></paragraph>' );
-				kate.setData( '<paragraph><$text bold="true">[Foo]</$text></paragraph>' );
-
-				john.rename( 'heading1' );
-				kate.removeAttribute( 'bold' );
-
-				syncClients();
-
-				expectClients(
-					'<heading1>Foo</heading1>'
-				);
-			} );
-		} );
-
 		describe( 'by rename', () => {
 			it( 'elements in different paths #1', () => {
 				john.setData( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
@@ -129,15 +41,15 @@ describe( 'transform', () => {
 			} );
 
 			it( 'the same element', () => {
-				john.setData( '<blockQuote>[]<paragraph>Foo Bar</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote>[]<paragraph>Foo Bar</paragraph></blockQuote>' );
+				john.setData( '<blockQuote><paragraph>[]Foo Bar</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo Bar</paragraph></blockQuote>' );
 
-				john.rename( 'blockQuote2' );
-				kate.rename( 'blockQuote3' );
+				john.rename( 'heading1' );
+				kate.rename( 'heading2' );
 
 				syncClients();
 
-				expectClients( '<blockQuote2><paragraph>Foo Bar</paragraph></blockQuote2>' );
+				expectClients( '<blockQuote><heading1>Foo Bar</heading1></blockQuote>' );
 			} );
 		} );
 
@@ -247,6 +159,21 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData( '<paragraph>F[]oo</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
+
+				john.rename( 'heading1' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<heading1>Foo</heading1>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'element in same path', () => {
 				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -256,9 +183,19 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<heading1>Foo</heading1>'
-				);
+				expectClients( '<heading1>Foo</heading1>' );
+			} );
+
+			it( 'text in same path', () => {
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.rename( 'heading1' );
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 		} );
 
@@ -272,9 +209,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<heading1>FooBar</heading1>'
-				);
+				expectClients( '<heading1>FooBar</heading1>' );
 			} );
 
 			it( 'element into paragraph #2', () => {
@@ -286,9 +221,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<paragraph>FooBar</paragraph>'
-				);
+				expectClients( '<paragraph>FooBar</paragraph>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #1', () => {
@@ -300,9 +233,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><heading1>FooBar</heading1></blockQuote>'
-				);
+				expectClients( '<blockQuote><heading1>FooBar</heading1></blockQuote>' );
 			} );
 
 			it( 'wrapped element into wrapped paragraph #2', () => {
@@ -314,9 +245,7 @@ describe( 'transform', () => {
 
 				syncClients();
 
-				expectClients(
-					'<blockQuote><paragraph>FooBar</paragraph></blockQuote>'
-				);
+				expectClients( '<blockQuote><paragraph>FooBar</paragraph></blockQuote>' );
 			} );
 		} );
 	} );

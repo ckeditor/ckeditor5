@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Position from '../position';
 import NodeList from '../nodelist';
-import RemoveOperation from './removeoperation';
+import MoveOperation from './moveoperation';
 import { _insert, _normalizeNodes } from './utils';
 import Text from '../text';
 import Element from '../element';
@@ -87,13 +87,13 @@ export default class InsertOperation extends Operation {
 	/**
 	 * See {@link module:engine/model/operation/operation~Operation#getReversed `Operation#getReversed()`}.
 	 *
-	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
+	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	getReversed() {
 		const graveyard = this.position.root.document.graveyard;
 		const gyPosition = new Position( graveyard, [ 0 ] );
 
-		return new RemoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion + 1 );
+		return new MoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -126,6 +126,18 @@ export default class InsertOperation extends Operation {
 		this.nodes = new NodeList( [ ...originalNodes ].map( node => node._clone( true ) ) );
 
 		_insert( this.position, originalNodes );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.position = this.position.toJSON();
+		json.nodes = this.nodes.toJSON();
+
+		return json;
 	}
 
 	/**

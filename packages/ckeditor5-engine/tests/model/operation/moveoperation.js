@@ -9,26 +9,29 @@ import Position from '../../../src/model/position';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'MoveOperation', () => {
-	let model, doc, root;
+	let model, doc, root, gy;
 
 	beforeEach( () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
+		gy = doc.graveyard;
 	} );
 
 	it( 'should have proper type', () => {
-		const op = new MoveOperation(
-			new Position( root, [ 0, 0 ] ),
-			1,
-			new Position( root, [ 1, 0 ] ),
-			doc.version
-		);
+		const move = new MoveOperation( new Position( root, [ 0, 0 ] ), 1, new Position( root, [ 1, 0 ] ), 0 );
+		expect( move.type ).to.equal( 'move' );
 
-		expect( op.type ).to.equal( 'move' );
+		const remove1 = new MoveOperation( new Position( root, [ 0, 0 ] ), 1, new Position( gy, [ 0 ] ), 0 );
+		expect( remove1.type ).to.equal( 'remove' );
+
+		const remove2 = new MoveOperation( new Position( gy, [ 0 ] ), 1, new Position( gy, [ 1 ] ), 0 );
+		expect( remove2.type ).to.equal( 'remove' );
+
+		const reinsert = new MoveOperation( new Position( gy, [ 0 ] ), 1, new Position( root, [ 0, 0 ] ), 0 );
+		expect( reinsert.type ).to.equal( 'reinsert' );
 	} );
 
 	it( 'should move from one node to another', () => {
@@ -266,14 +269,14 @@ describe( 'MoveOperation', () => {
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.MoveOperation',
 				baseVersion: 0,
 				howMany: 1,
-				sourcePosition: jsonParseStringify( op.sourcePosition ),
-				targetPosition: jsonParseStringify( op.targetPosition )
+				sourcePosition: op.sourcePosition.toJSON(),
+				targetPosition: op.targetPosition.toJSON()
 			} );
 		} );
 	} );
@@ -284,7 +287,7 @@ describe( 'MoveOperation', () => {
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = MoveOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

@@ -133,6 +133,18 @@ export default class UnwrapOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.position = this.position.toJSON();
+		json.graveyardPosition = this.graveyardPosition.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.operation.UnwrapOperation';
 	}

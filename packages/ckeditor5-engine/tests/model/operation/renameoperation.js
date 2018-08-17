@@ -8,7 +8,6 @@ import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';
@@ -106,12 +105,12 @@ describe( 'RenameOperation', () => {
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
 				__className: 'engine.model.operation.RenameOperation',
 				baseVersion: 0,
-				position: jsonParseStringify( op.position ),
+				position: op.position.toJSON(),
 				newName: 'newName',
 				oldName: 'oldName'
 			} );
@@ -122,7 +121,7 @@ describe( 'RenameOperation', () => {
 		it( 'should create proper AttributeOperation from json object', () => {
 			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
 
-			const serialized = jsonParseStringify( op );
+			const serialized = op.toJSON();
 			const deserialized = RenameOperation.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( op );

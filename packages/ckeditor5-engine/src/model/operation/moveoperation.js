@@ -64,6 +64,12 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	get type() {
+		if ( this.targetPosition.root.rootName == '$graveyard' ) {
+			return 'remove';
+		} else if ( this.sourcePosition.root.rootName == '$graveyard' ) {
+			return 'reinsert';
+		}
+
 		return 'move';
 	}
 
@@ -167,6 +173,18 @@ export default class MoveOperation extends Operation {
 	 */
 	_execute() {
 		_move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = this.sourcePosition.toJSON();
+		json.targetPosition = this.targetPosition.toJSON();
+
+		return json;
 	}
 
 	/**

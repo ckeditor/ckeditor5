@@ -643,7 +643,15 @@ export default class Selection {
 	 */
 	_addRange( range, isBackward = false ) {
 		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
+			/**
+			 * Selection range set to an object that is not an instance of {@link module:engine/view/range~Range}.
+			 *
+			 * @error view-selection-add-range-not-range
+			 */
+			throw new CKEditorError(
+				'view-selection-add-range-not-range: ' +
+				'Selection range set to an object that is not an instance of view.Range'
+			);
 		}
 
 		this._pushRange( range );

@@ -12,7 +12,6 @@ import Range from '../../src/model/range';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { jsonParseStringify } from './_utils/utils';
 
 describe( 'Document', () => {
 	let model, doc;
@@ -500,7 +499,7 @@ describe( 'Document', () => {
 	} );
 
 	it( 'should be correctly converted to json', () => {
-		const serialized = jsonParseStringify( doc );
+		const serialized = doc.toJSON();
 
 		expect( serialized.selection ).to.equal( '[engine.model.DocumentSelection]' );
 		expect( serialized.model ).to.equal( '[engine.model.Model]' );

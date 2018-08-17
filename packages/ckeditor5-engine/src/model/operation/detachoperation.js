@@ -56,11 +56,21 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = this.sourcePosition.toJSON();
+
+		return json;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	_validate() {
 		if ( this.sourcePosition.root.document ) {
 			/**
 			 * Cannot detach document node.
-			 * Use {@link module:engine/model/operation/removeoperation~RemoveOperation remove operation} instead.
 			 *
 			 * @error detach-operation-on-document-node
 			 */

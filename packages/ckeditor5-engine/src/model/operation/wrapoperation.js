@@ -30,8 +30,8 @@ export default class WrapOperation extends Operation {
 	 * the first {@link module:engine/model/item~Item model item} to wrap.
 	 * @param {Number} howMany Offset size of wrapped range. Wrapped range will start at `position.offset` and end at
 	 * `position.offset + howMany`.
-	 * @param {module:engine/model/element~Element|module:engine/model/position~Position} elementOrPosition Element to
-	 * wrap with or position in graveyard before the element which should be used as a wrapper.
+	 * @param {module:engine/model/element~Element|module:engine/model/position~Position} elementOrPosition Wrapper
+	 * element or position in graveyard before the element which should be used as a wrapper.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
@@ -62,6 +62,10 @@ export default class WrapOperation extends Operation {
 		this.element = elementOrPosition instanceof Element ? elementOrPosition : null;
 
 		this.graveyardPosition = elementOrPosition instanceof Element ? null : Position.createFromPosition( elementOrPosition );
+
+		if ( this.graveyardPosition ) {
+			this.graveyardPosition.stickiness = 'toNext';
+		}
 	}
 
 	/**
@@ -148,12 +152,34 @@ export default class WrapOperation extends Operation {
 		const targetPosition = new Position( this.position.root, targetPath );
 
 		if ( this.element ) {
-			_insert( insertPosition, this.element._clone() );
+			const originalElement = this.element;
+			this.element = this.element._clone();
+
+			_insert( insertPosition, originalElement );
 		} else {
 			_move( Range.createFromPositionAndShift( this.graveyardPosition, 1 ), insertPosition );
 		}
 
 		_move( wrappedRange, targetPosition );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.position = this.position.toJSON();
+
+		if ( this.element ) {
+			json.element = this.element.toJSON();
+			delete json.graveyardPosition;
+		} else {
+			json.graveyardPosition = this.graveyardPosition.toJSON();
+			delete json.element;
+		}
+
+		return json;
 	}
 
 	/**

@@ -431,7 +431,21 @@ export default class Selection {
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
 		const anyNewRange = newRanges.some( newRange => {
 			if ( !( newRange instanceof Range ) ) {
-				throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+				/**
+				 * Selection range set to an object that is not an instance of {@link module:engine/model/range~Range}.
+				 *
+				 * Only {@link module:engine/model/range~Range} instances can be used to set a selection.
+				 * Common mistakes leading to this error are:
+				 *
+				 * * using DOM `Range` object,
+				 * * incorrect CKEditor 5 installation with multiple `ckeditor5-engine` packages having different versions.
+				 *
+				 * @error model-selection-set-ranges-not-range
+				 */
+				throw new CKEditorError(
+					'model-selection-set-ranges-not-range: ' +
+					'Selection range set to an object that is not an instance of model.Range.'
+				);
 			}
 
 			return this._ranges.every( oldRange => {

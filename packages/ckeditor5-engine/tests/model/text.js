@@ -5,7 +5,6 @@
 
 import Text from '../../src/model/text';
 import Node from '../../src/model/node';
-import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {
@@ -67,8 +66,8 @@ describe( 'Text', () => {
 		it( 'should serialize text node', () => {
 			const text = new Text( 'foo', { bold: true } );
 
-			expect( jsonParseStringify( text ) ).to.deep.equal( {
-				attributes: [ [ 'bold', true ] ],
+			expect( text.toJSON() ).to.deep.equal( {
+				attributes: { bold: true },
 				data: 'foo'
 			} );
 		} );
@@ -78,7 +77,7 @@ describe( 'Text', () => {
 		it( 'should create text node', () => {
 			const text = new Text( 'foo', { bold: true } );
 
-			const serialized = jsonParseStringify( text );
+			const serialized = text.toJSON();
 			const deserialized = Text.fromJSON( serialized );
 
 			expect( deserialized.data ).to.equal( 'foo' );
@@ -87,7 +86,7 @@ describe( 'Text', () => {
 
 		it( 'should support unicode', () => {
 			const textQ = new Text( 'நி' );
-			const json = jsonParseStringify( textQ );
+			const json = textQ.toJSON();
 
 			expect( json ).to.deep.equal( {
 				data: 'நி'

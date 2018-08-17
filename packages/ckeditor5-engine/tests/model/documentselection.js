@@ -13,7 +13,6 @@ import LiveRange from '../../src/model/liverange';
 import DocumentSelection from '../../src/model/documentselection';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
-import RemoveOperation from '../../src/model/operation/removeoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -334,7 +333,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-set-ranges-not-range/ );
 		} );
 
 		it( 'should log a warning when trying to set selection to the graveyard', () => {
@@ -1029,7 +1028,7 @@ describe( 'DocumentSelection', () => {
 				} );
 
 				const batch = new Batch();
-				const splitOperation = new SplitOperation( new Position( root, [ 1, 2 ] ), null, 0 );
+				const splitOperation = new SplitOperation( new Position( root, [ 1, 2 ] ), 4, null, 0 );
 
 				batch.addOperation( splitOperation );
 				model.applyOperation( splitOperation );
@@ -1131,12 +1130,12 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		describe( 'RemoveOperation', () => {
+		describe( 'MoveOperation to graveyard', () => {
 			it( 'fix selection range if it ends up in graveyard #1', () => {
 				selection._setTo( new Position( root, [ 1, 3 ] ) );
 
 				model.applyOperation(
-					new RemoveOperation(
+					new MoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
@@ -1151,7 +1150,7 @@ describe( 'DocumentSelection', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
 
 				model.applyOperation(
-					new RemoveOperation(
+					new MoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
@@ -1166,7 +1165,7 @@ describe( 'DocumentSelection', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
 				model.applyOperation(
-					new RemoveOperation(
+					new MoveOperation(
 						new Position( root, [ 1 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
@@ -1179,7 +1178,7 @@ describe( 'DocumentSelection', () => {
 
 			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
 				model.applyOperation(
-					new RemoveOperation(
+					new MoveOperation(
 						new Position( root, [ 0 ] ),
 						3,
 						new Position( doc.graveyard, [ 0 ] ),

@@ -25,7 +25,6 @@ import MoveOperation from '../model/operation/moveoperation';
 import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
-import transform from '../model/operation/transform';
 import Model from '../model/model';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
@@ -349,24 +348,6 @@ function enableLoggingTools() {
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
 	} );
 
-	const _transformTransform = transform.transform;
-
-	sandbox.mock( transform, 'transform', function( a, b, context ) {
-		let results;
-
-		try {
-			results = _transformTransform( a, b, context );
-		} catch ( e ) {
-			logger.error( 'Error during operation transformation!' );
-			logger.error( a.toString() + ( context.isStrong ? ' (important)' : '' ) );
-			logger.error( b.toString() + ( context.isStrong ? '' : ' (important)' ) );
-
-			throw e;
-		}
-
-		return results;
-	} );
-
 	sandbox.mock( ViewText.prototype, 'toString', function() {
 		return `#${ this.data }`;
 	} );
@@ -446,7 +427,7 @@ function enableReplayerTools() {
 			this._appliedOperations = [];
 		}
 
-		this._appliedOperations.push( operation.toJSON() );
+		this._appliedOperations.push( operation );
 
 		return _modelApplyOperation.call( this, operation );
 	} );
@@ -474,7 +455,7 @@ function enableDocumentTools() {
 			this._operationLogs = [];
 		}
 
-		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
+		this._operationLogs.push( JSON.stringify( operation ) );
 
 		return _modelApplyOperation.call( this, operation );
 	} );

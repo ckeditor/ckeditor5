@@ -3,13 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Batch from '../../src/model/batch';
 import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import Position from '../../src/model/position';
 import LiveRange from '../../src/model/liverange';
 import Range from '../../src/model/range';
 import Text from '../../src/model/text';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
 import { stringify, setData } from '../../src/dev-utils/model';
 
 describe( 'LiveRange', () => {
@@ -90,7 +91,7 @@ describe( 'LiveRange', () => {
 		range.detach();
 	} );
 
-	it( 'should fire change:range event with proper data when its boundaries are changed', () => {
+	it( 'should fire change:range event with when its boundaries are changed', () => {
 		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 		const copy = Range.createFromRange( live );
 
@@ -99,15 +100,11 @@ describe( 'LiveRange', () => {
 
 		const sourcePosition = new Position( root, [ 2 ] );
 		const targetPosition = new Position( root, [ 0 ] );
-		const batch = new Batch();
-		let op = null;
 
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
 
 			writer.move( sourceRange, targetPosition );
-
-			op = batch.operations[ 0 ];
 		} );
 
 		expect( spy.calledOnce ).to.be.true;
@@ -115,11 +112,11 @@ describe( 'LiveRange', () => {
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
 		expect( spy.args[ 0 ][ 1 ].isEqual( copy ) ).to.be.true;
 
-		// Second parameter is the operation that changed the range.
-		expect( spy.args[ 0 ][ 2 ] ).to.equal( op );
+		// Second parameter is null for operations that did not move the range into graveyard.
+		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
 	} );
 
-	it( 'should fire change:content event with proper data when content inside the range has changed', () => {
+	it( 'should fire change:content event when content inside the range has changed', () => {
 		const live = new LiveRange( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 3 ] ) );
 
 		const spy = sinon.spy();
@@ -127,15 +124,11 @@ describe( 'LiveRange', () => {
 
 		const sourcePosition = new Position( root, [ 0, 2, 0 ] );
 		const targetPosition = new Position( root, [ 0, 4, 0 ] );
-		const batch = new Batch();
-		let op = null;
 
-		model.enqueueChange( batch, writer => {
+		model.change( writer => {
 			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
 
 			writer.move( sourceRange, targetPosition );
-
-			op = batch.operations[ 0 ];
 		} );
 
 		expect( spy.calledOnce ).to.be.true;
@@ -143,8 +136,63 @@ describe( 'LiveRange', () => {
 		// First parameter available in event should be a range that is equal to the live range before the live range changed.
 		expect( spy.args[ 0 ][ 1 ].isEqual( live ) ).to.be.true;
 
-		// Second parameter is the operation that changed the range.
-		expect( spy.args[ 0 ][ 2 ] ).to.equal( op );
+		// Second parameter is null for operations that did not move the range into graveyard.
+		expect( spy.args[ 0 ][ 2 ].deletionPosition ).to.be.null;
+	} );
+
+	it( 'should pass deletion position if range was removed (remove)', () => {
+		const live = new LiveRange( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
+
+		const spy = sinon.spy();
+		live.on( 'change:range', spy );
+
+		const sourcePosition = new Position( root, [ 0, 0 ] );
+
+		model.change( writer => {
+			writer.remove( Range.createFromPositionAndShift( sourcePosition, 6 ) );
+		} );
+
+		// Second parameter is deletion position.
+		expect( spy.args[ 0 ][ 2 ].deletionPosition.isEqual( sourcePosition ) ).to.be.true;
+	} );
+
+	// This scenario is hypothetically possible during OT if the element to merge-into was removed.
+	// In that case a live range inside the merged element will be merged into an element which is in graveyard.
+	// Because it may happen only in OT, in the test below we will generate operations by hand.
+	it( 'should pass deletion position if range was removed (merge)', () => {
+		const live = new LiveRange( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 1 ] ) );
+
+		const spy = sinon.spy();
+		live.on( 'change:range', spy );
+
+		model.change( writer => {
+			const batch = writer.batch;
+			const gy = model.document.graveyard;
+
+			const remove = new MoveOperation(
+				new Position( root, [ 0 ] ),
+				1,
+				new Position( gy, [ 0 ] ),
+				model.document.version
+			);
+
+			const merge = new MergeOperation(
+				new Position( root, [ 0, 0 ] ),
+				10,
+				new Position( gy, [ 0, 0 ] ),
+				new Position( gy, [ 0 ] ),
+				model.document.version + 1
+			);
+
+			batch.addOperation( remove );
+			model.applyOperation( remove );
+
+			batch.addOperation( merge );
+			model.applyOperation( merge );
+		} );
+
+		// Second parameter is deletion position.
+		expect( spy.args[ 1 ][ 2 ].deletionPosition.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 	} );
 
 	describe( 'should get transformed and fire change:range if', () => {

@@ -7,8 +7,6 @@
  * @module engine/model/operation/operation
  */
 
-import { clone } from 'lodash-es';
-
 /**
  * Abstract base operation class.
  *
@@ -94,7 +92,9 @@ export default class Operation {
 	 * @returns {Object} Clone of this object with the operation property replaced with string.
 	 */
 	toJSON() {
-		const json = clone( this, true );
+		// This method creates only a shallow copy, all nested objects should be defined separately.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/1477.
+		const json = Object.assign( {}, this );
 
 		json.__className = this.constructor.className;
 

@@ -37,15 +37,6 @@ export function getNodesAndText( range ) {
 }
 
 /**
- * Returns object JSON representation. It passes an object by JSON.stringify and JSON.parse functions.
- *
- * @param {Object|Array} object
- */
-export function jsonParseStringify( object ) {
-	return JSON.parse( JSON.stringify( object ) );
-}
-
-/**
  * Returns a {@link engine.model.Node} or if it starts at given offset, or {@link engine.model.TextProxy} with one
  * character, if given offset is occupied by a {@link engine.model.Text}.
  *

@@ -30,12 +30,13 @@ export default class MergeOperation extends Operation {
 	 *
 	 * @param {module:engine/model/position~Position} sourcePosition Position inside the merged element. All nodes from that
 	 * element after that position will be moved to {@link ~#targetPosition}.
+	 * @param {Number} howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param {module:engine/model/position~Position} targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param {module:engine/model/position~Position} graveyardPosition Position in graveyard to which the merged element will be moved.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( sourcePosition, targetPosition, graveyardPosition, baseVersion ) {
+	constructor( sourcePosition, howMany, targetPosition, graveyardPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
@@ -56,6 +57,8 @@ export default class MergeOperation extends Operation {
 		// is it? think about reversed split operations, undo, etc.
 
 		this.graveyardPosition = Position.createFromPosition( graveyardPosition );
+
+		this.howMany = howMany;
 	}
 
 	/**
@@ -94,7 +97,7 @@ export default class MergeOperation extends Operation {
 	 * @returns {module:engine/model/operation/mergeoperation~MergeOperation} Clone of this operation.
 	 */
 	clone() {
-		return new this.constructor( this.sourcePosition, this.targetPosition, this.graveyardPosition, this.baseVersion );
+		return new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.graveyardPosition, this.baseVersion );
 	}
 
 	/**
@@ -103,7 +106,7 @@ export default class MergeOperation extends Operation {
 	 * @returns {module:engine/model/operation/splitoperation~SplitOperation}
 	 */
 	getReversed() {
-		return new SplitOperation( this.targetPosition, this.graveyardPosition, this.baseVersion + 1 );
+		return new SplitOperation( this.targetPosition, this.howMany, this.graveyardPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -128,6 +131,13 @@ export default class MergeOperation extends Operation {
 			 * @error merge-operation-target-position-invalid
 			 */
 			throw new CKEditorError( 'merge-operation-target-position-invalid: Merge target position is invalid.' );
+		} else if ( this.howMany != sourceElement.maxOffset ) {
+			/**
+			 * Merge operation specifies wrong number of nodes to move.
+			 *
+			 * @error merge-operation-how-many-invalid
+			 */
+			throw new CKEditorError( 'merge-operation-how-many-invalid: Merge operation specifies wrong number of nodes to move.' );
 		}
 	}
 
@@ -140,6 +150,19 @@ export default class MergeOperation extends Operation {
 
 		_move( sourceRange, this.targetPosition );
 		_move( Range.createOn( mergedElement ), this.graveyardPosition );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	toJSON() {
+		const json = super.toJSON();
+
+		json.sourcePosition = json.sourcePosition.toJSON();
+		json.targetPosition = json.targetPosition.toJSON();
+		json.graveyardPosition = json.graveyardPosition.toJSON();
+
+		return json;
 	}
 
 	/**
@@ -161,6 +184,6 @@ export default class MergeOperation extends Operation {
 		const targetPosition = Position.fromJSON( json.targetPosition, document );
 		const graveyardPosition = Position.fromJSON( json.graveyardPosition, document );
 
-		return new this( sourcePosition, targetPosition, graveyardPosition, json.baseVersion );
+		return new this( sourcePosition, json.howMany, targetPosition, graveyardPosition, json.baseVersion );
 	}
 }

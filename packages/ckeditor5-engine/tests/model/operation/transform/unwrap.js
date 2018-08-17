@@ -38,6 +38,28 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'text in different path', () => {
+				john.setData(
+					'<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+				);
+
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>[]Bar</paragraph></blockQuote>'
+				);
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients(
+					'<blockQuote>Foo</blockQuote>' +
+					'<blockQuote>Bar</blockQuote>'
+				);
+			} );
+
 			it( 'the same element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
 				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
@@ -50,7 +72,7 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
-			it.skip( 'the same element, then undo', () => {
+			it( 'the same element, then undo', () => {
 				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
@@ -63,15 +85,40 @@ describe( 'transform', () => {
 				john.undo();
 
 				syncClients();
-				// Actual content for Kate:
-				// <paragraph><paragraph>Foo</paragraph></paragraph>
-				// Kate has a different order of nodes in graveyard after syncing.
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+			} );
+
+			it( 'the same text', () => {
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				expectClients( '<blockQuote>Foo</blockQuote>' );
+			} );
+
+			it( 'the same text, then undo', () => {
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
 				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
 		} );
 
 		describe( 'by delete', () => {
-			it( 'text from two elements', () => {
+			it( 'text from two elements #1', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote><paragraph>Bar</paragraph>' );
 				kate.setData( '<blockQuote><paragraph>Fo[o</paragraph></blockQuote><paragraph>Ba]r</paragraph>' );
 
@@ -124,6 +171,21 @@ describe( 'transform', () => {
 			it( 'unwrapped element', () => {
 				john.setData( '<paragraph>Foo</paragraph><blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>' );
 				kate.setData( '<paragraph>Foo</paragraph>[]<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+
+				john.unwrap();
+				kate.merge();
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'unwrap merge target element', () => {
+				john.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote><paragraph>Foo</paragraph></blockQuote>[]<blockQuote><paragraph>Bar</paragraph></blockQuote>' );
 
 				john.unwrap();
 				kate.merge();
