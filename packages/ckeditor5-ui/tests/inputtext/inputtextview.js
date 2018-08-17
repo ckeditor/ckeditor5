@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global Event */
+
 import InputTextView from '../../src/inputtext/inputtextview';
 
 describe( 'InputTextView', () => {
@@ -96,6 +98,27 @@ describe( 'InputTextView', () => {
 				view.isReadOnly = true;
 
 				expect( view.element.readOnly ).to.true;
+			} );
+		} );
+
+		describe( 'hasErrors', () => {
+			it( 'should react on view#hasErrors', () => {
+				expect( view.element.classList.contains( 'ck-error' ) ).to.be.false;
+
+				view.hasError = true;
+
+				expect( view.element.classList.contains( 'ck-error' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'input event', () => {
+			it( 'triggers view#input', () => {
+				const spy = sinon.spy();
+
+				view.on( 'input', spy );
+
+				view.element.dispatchEvent( new Event( 'input' ) );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

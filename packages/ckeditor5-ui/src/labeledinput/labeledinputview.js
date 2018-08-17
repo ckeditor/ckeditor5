@@ -30,14 +30,6 @@ export default class LabeledInputView extends View {
 		const id = `ck-input-${ uid() }`;
 
 		/**
-		 * The error associated with the field.
-		 *
-		 * @observable
-		 * @member {String} #error
-		 */
-		this.set( 'errorText', null );
-
-		/**
 		 * The text of the label.
 		 *
 		 * @observable
@@ -60,6 +52,14 @@ export default class LabeledInputView extends View {
 		 * @member {Boolean} #isReadOnly
 		 */
 		this.set( 'isReadOnly', false );
+
+		/**
+		 * The error text associated with the field.
+		 *
+		 * @observable
+		 * @member {String} #error
+		 */
+		this.set( 'errorText', null );
 
 		/**
 		 * The label view.
@@ -143,7 +143,7 @@ export default class LabeledInputView extends View {
 		inputView.on( 'input', () => {
 			// UX: Make the error text disappear and disable the error indicator as the user
 			// starts fixing the errors.
-			this.errorText = false;
+			this.errorText = null;
 		} );
 
 		return inputView;

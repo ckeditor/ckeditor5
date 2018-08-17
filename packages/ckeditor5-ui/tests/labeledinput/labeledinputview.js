@@ -23,6 +23,10 @@ describe( 'LabeledInputView', () => {
 			expect( view.locale ).to.deep.equal( locale );
 		} );
 
+		it( 'should set view#errorText', () => {
+			expect( view.errorText ).to.be.null;
+		} );
+
 		it( 'should create view#inputView', () => {
 			expect( view.inputView ).to.instanceOf( InputView );
 		} );
@@ -50,6 +54,14 @@ describe( 'LabeledInputView', () => {
 			expect( view.template.children[ 1 ] ).to.equal( view.inputView );
 		} );
 
+		it( 'should have the error container', () => {
+			const errorContainer = view.element.lastChild;
+
+			expect( errorContainer.tagName ).to.equal( 'DIV' );
+			expect( errorContainer.classList.contains( 'ck' ) ).to.be.true;
+			expect( errorContainer.classList.contains( 'ck-labeled-input__error' ) ).to.be.true;
+		} );
+
 		describe( 'DOM bindings', () => {
 			describe( 'class', () => {
 				it( 'should react on view#isReadOnly', () => {
@@ -58,6 +70,20 @@ describe( 'LabeledInputView', () => {
 
 					view.isReadOnly = true;
 					expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+				} );
+			} );
+
+			describe( 'error container', () => {
+				it( 'should react on view#errorText', () => {
+					const errorContainer = view.element.lastChild;
+
+					view.errorText = '';
+					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( errorContainer.innerHTML ).to.equal( '' );
+
+					view.errorText = 'foo';
+					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( errorContainer.innerHTML ).to.equal( 'foo' );
 				} );
 			} );
 		} );
@@ -79,11 +105,26 @@ describe( 'LabeledInputView', () => {
 		it( 'should bind view#isreadOnly to view.inputView#isReadOnly', () => {
 			view.isReadOnly = false;
 
-			expect( view.inputView.isReadOnly ).to.false;
+			expect( view.inputView.isReadOnly ).to.be.false;
 
 			view.isReadOnly = true;
 
-			expect( view.inputView.isReadOnly ).to.true;
+			expect( view.inputView.isReadOnly ).to.be.true;
+		} );
+
+		it( 'should bind view#errorText to view.inputView#hasError', () => {
+			view.errorText = '';
+			expect( view.inputView.hasError ).to.be.false;
+
+			view.errorText = 'foo';
+			expect( view.inputView.hasError ).to.be.true;
+		} );
+
+		it( 'should clear view#errorText upon view.inputView#input', () => {
+			view.errorText = 'foo';
+
+			view.inputView.fire( 'input' );
+			expect( view.errorText ).to.be.null;
 		} );
 	} );
 
