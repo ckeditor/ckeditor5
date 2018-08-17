@@ -187,7 +187,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'text in same path', () => {
-				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				john.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
 
 				john.rename( 'heading1' );

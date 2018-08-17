@@ -1514,6 +1514,12 @@ setTransformation( RenameOperation, WrapOperation, ( a, b ) => {
 } );
 
 setTransformation( RenameOperation, UnwrapOperation, ( a, b ) => {
+	if ( a.position.isEqual( b.targetPosition ) ) {
+		a.position = Position.createFromPosition( b.graveyardPosition );
+
+		return [ a ];
+	}
+
 	a.position = a.position._getTransformedByUnwrapOperation( b );
 
 	return [ a ];

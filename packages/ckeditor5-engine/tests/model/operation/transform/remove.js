@@ -240,7 +240,11 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
+				expectClients( '<blockQuote></blockQuote>' );
 
+				john.undo();
+
+				syncClients();
 				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 

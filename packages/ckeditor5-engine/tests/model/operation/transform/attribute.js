@@ -331,7 +331,7 @@ describe( 'transform', () => {
 				john.setData( '<paragraph>F<$text bold="true" italic="true">o[]o</$text></paragraph>' );
 				kate.setData( '<paragraph>F<$text bold="true" italic="true">[oo]</$text></paragraph>' );
 
-				john.type( 'Bar' );
+				john.type( 'Bar', john.document.selection.getAttributes() );
 				kate.removeAttribute( 'bold' );
 
 				syncClients();
