@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/converters
+ * @module media-embed/converters
  */
 
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
