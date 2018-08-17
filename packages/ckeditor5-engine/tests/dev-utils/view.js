@@ -364,6 +364,22 @@ describe( 'view test utils', () => {
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
 
+		it( 'should stringify UIElement (custom render function)', () => {
+			const span = new UIElement( 'span' );
+
+			span.render = function( domDocument ) {
+				const domElement = this.toDomElement( domDocument );
+
+				domElement.innerHTML = '<b>foo</b>';
+
+				return domElement;
+			};
+
+			const p = new ContainerElement( 'p', null, span );
+			expect( stringify( p, null, { showType: true } ) )
+				.to.equal( '<container:p><ui:span><b>foo</b></ui:span></container:p>' );
+		} );
+
 		it( 'should sort classes in specified element', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', {
