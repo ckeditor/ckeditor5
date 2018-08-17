@@ -8,65 +8,7 @@
  */
 
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-import first from '@ckeditor/ckeditor5-utils/src/first';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-
-/**
- * Returns a function that converts the view media:
- *
- *		<figure class="media">
- *			<div data-oembed-url="...">[ media content ]</div>
- *		</figure>
- *
- * to the model representation:
- *
- *		<media url="..."></media>
- *
- * @returns {Function}
- */
-export function viewFigureToModel() {
-	return dispatcher => {
-		dispatcher.on( 'element:figure', converter );
-	};
-
-	function converter( evt, data, conversionApi ) {
-		// Do not convert if this is not a "media figure".
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'media' } ) ) {
-			return;
-		}
-
-		// Find a div wrapper element inside the figure element.
-		const viewWrapper = Array.from( data.viewItem.getChildren() )
-			.find( viewChild => viewChild.is( 'div' ) );
-
-		// Do not convert if:
-		// * the div wrapper element is absent,
-		// * the wrapper is missing the "data-oembed-url" attribute,
-		// * or the wrapper has already been converted.
-		if ( !viewWrapper ||
-			!viewWrapper.hasAttribute( 'data-oembed-url' ) ||
-			!conversionApi.consumable.test( viewWrapper, { name: true } ) ) {
-			return;
-		}
-
-		// Convert view wrapper to model attribute.
-		const conversionResult = conversionApi.convertItem( viewWrapper, data.modelCursor );
-
-		// Get the model wrapper from conversion result.
-		const mediaElement = first( conversionResult.modelRange.getItems() );
-
-		// If the media has not been successfully converted, finish the conversion.
-		if ( !mediaElement ) {
-			return;
-		}
-
-		// Set media range as conversion result.
-		data.modelRange = conversionResult.modelRange;
-
-		// Continue conversion where media conversion ends.
-		data.modelCursor = conversionResult.modelCursor;
-	}
-}
 
 /**
  * Returns a function that converts the model "url" attribute to the view representation.

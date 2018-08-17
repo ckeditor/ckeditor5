@@ -9,11 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import {
-	viewFigureToModel,
-	modelToViewUrlAttributeConverter
-} from './converters';
-
+import { modelToViewUrlAttributeConverter } from './converters';
 import InsertMediaCommand from './insertmediacommand';
 import { toMediaWidget, createMediaFigureElement } from './utils';
 import { MediaRegistry } from './mediaregistry';
@@ -206,7 +202,6 @@ export default class MediaEmbedEditing extends Plugin {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
-			} ) )
-			.add( viewFigureToModel() );
+			} ) );
 	}
 }
