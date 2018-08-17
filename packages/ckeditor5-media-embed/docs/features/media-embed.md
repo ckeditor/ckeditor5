@@ -6,7 +6,15 @@ category: features
 
 # Media embed
 
+The {@link module:mediaembed/mediaembed~MediaEmbed} feature brings a basic support for embeddable, synchronous media in the editor content.
+
 ## Demo
+
+### Example URLs
+
+* <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
+* <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
+* <input class="example-input" type="text" value="https://www.instagram.com/p/BmMZgokAGGQ/?taken-by=nasa">
 
 {@snippet features/media-embed}
 
