@@ -49,10 +49,10 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * At this stage the dataTransfer object can be processed by the features, which want to transform the original dataTransform.
  *
- *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
- *			const content = customTransform( data.dataTransfer.get( 'text/html' ) );
+ *		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
+ *			const content = customTransform( data.dataTransfer.getData( 'text/html' ) );
  *			const transformedContent = transform( content );
- *			data.dataTransfer.set( 'text/html', transformedContent );
+ *			data.dataTransfer.setData( 'text/html', transformedContent );
  *		} );
  *
  * ## On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
