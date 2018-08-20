@@ -43,10 +43,6 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Configuring the media
-
-TODO
-
 ## Common API
 
 The {@link module:mediaembed/mediaembed~MediaEmbed} plugin registers:
