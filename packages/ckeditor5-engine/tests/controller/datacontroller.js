@@ -4,7 +4,8 @@
  */
 
 import Model from '../../src/model/model';
-import Range from '../../src/model/range';
+import ModelRange from '../../src/model/range';
+import ViewRange from '../../src/view/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -406,7 +407,7 @@ describe( 'DataController', () => {
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
-				const range = Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
 				writer.addMarker( 'marker:a', { range, usingOperation: true } );
 			} );
 
@@ -429,8 +430,8 @@ describe( 'DataController', () => {
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
 
-				const rangeA = Range.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 );
-				const rangeB = Range.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 );
+				const rangeA = ModelRange.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 );
+				const rangeB = ModelRange.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 );
 
 				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
 				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
@@ -453,6 +454,28 @@ describe( 'DataController', () => {
 			expect( viewElement.name ).to.equal( 'p' );
 			expect( viewElement.childCount ).to.equal( 1 );
 			expect( viewElement.getChild( 0 ).data ).to.equal( 'foo' );
+		} );
+
+		it( 'should keep view-model mapping', () => {
+			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
+			const viewDocumentFragment = data.toView( modelDocumentFragment );
+
+			const firstModelElement = modelDocumentFragment.getChild( 0 );
+			const firstViewElement = viewDocumentFragment.getChild( 0 );
+
+			const modelRange = ModelRange.createOn( firstModelElement );
+			const viewRange = ViewRange.createOn( firstViewElement );
+
+			const mappedModelRange = data.mapper.toModelRange( viewRange );
+			const mappedViewRange = data.mapper.toViewRange( modelRange );
+
+			expect( mappedModelRange ).to.be.instanceOf( ModelRange );
+			expect( mappedViewRange ).to.be.instanceOf( ViewRange );
+
+			expect( mappedModelRange.end.nodeBefore ).to.equal( firstModelElement );
+			expect( mappedModelRange.end.nodeAfter ).to.equal( modelDocumentFragment.getChild( 1 ) );
+			expect( mappedViewRange.end.nodeBefore ).to.equal( firstViewElement );
+			expect( mappedViewRange.end.nodeAfter ).to.equal( viewDocumentFragment.getChild( 1 ) );
 		} );
 	} );
 

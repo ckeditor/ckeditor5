@@ -145,6 +145,9 @@ export default class DataController {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
 	toView( modelElementOrFragment ) {
+		// Clear bindings so the call to this method gives correct results.
+		this.mapper.clearBindings();
+
 		// First, convert elements.
 		const modelRange = ModelRange.createIn( modelElementOrFragment );
 
@@ -166,9 +169,6 @@ export default class DataController {
 				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 			}
 		}
-
-		// Clear bindings so the next call to this method gives correct results.
-		this.mapper.clearBindings();
 
 		return viewDocumentFragment;
 	}
