@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, Text */
+/* globals window */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * Set of utils related to block and inline fillers handling.
@@ -84,7 +85,7 @@ for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
  * @returns {Boolean} True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function startsWithFiller( domNode ) {
-	return ( domNode instanceof Text ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
+	return isText( domNode ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
 /**
