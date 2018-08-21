@@ -4,7 +4,6 @@
  */
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 const htmlDataProcessor = new HtmlDataProcessor();
 
@@ -87,23 +86,6 @@ export function stylesToStylesheet( data, domDocument ) {
 			.replace( /@list /g, 'at_list ' );
 
 		data.stylesheet = parseCSS( styles, domDocument );
-	}
-
-	return data;
-}
-
-/**
- * Stringifies provided view instance.
- *
- * @param {Object} data
- * @param {module:engine/view/view~View} data.view The {@link module:engine/view/view~View} instance.
- * @returns {Object} result
- * @returns {String|null} result.view String representing contents of a given {@link module:engine/view/view~View} instance
- * or `null` if `data.view` was not provided.
- */
-export function stringifyView( data ) {
-	if ( data.view ) {
-		data.view = stringify( data.view );
 	}
 
 	return data;
