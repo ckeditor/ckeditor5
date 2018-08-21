@@ -12,13 +12,13 @@ CKEditor 5 classic editor implementation
 
 The classic editor implementation for CKEditor 5.
 
-This package contains the [`ClassicEditor`](https://docs.ckeditor.com/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package contains the [`ClassicEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about [CKEditor 5 Builds](https://docs.ckeditor.com/ckeditor5/latest/builds/index.html).
+This package contains the source version of the classic editor. This editor implementation is also available in the [classic build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic). Read more about [CKEditor 5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-editor-classic` package](https://docs.ckeditor.com/ckeditor5/latest/api/editor-classic.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-editor-classic` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-classic.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
