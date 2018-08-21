@@ -6,7 +6,7 @@ category: features
 
 # Media embed
 
-The {@link module:mediaembed/mediaembed~MediaEmbed} feature brings a basic support for embeddable, synchronous media in the editor content.
+The {@link module:media-embed/mediaembed~MediaEmbed} feature brings a basic support for embeddable, synchronous media in the editor content.
 
 ## Demo
 
@@ -43,11 +43,37 @@ ClassicEditor
 	.catch( ... );
 ```
 
+## Configuration
+
+### Output type
+
+To satisfy most of the use–cases, the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `semanticDataOutput`} option to output different kind data:
+
+* **Non–semantic** (default) – outputs media in the same way it works in the editor, i.e. the media preview is saved to the database.
+
+   ```html
+   <figure class="media">
+   	<div data-oembed-url="https://url">
+   		<iframe src="https://preview"></iframe>
+   	</div>
+   </figure>
+   ```
+
+* **Semantic** – does not include the preview of the media, just just the `<oembed>` tag with the `url` attribute. Best when the application processes (expands) the media on the server–side or directly in the front–end, preserving the versatile database representation.
+
+   ```html
+   <figure class="media">
+   	<oembed url="https://url"></oembed>
+   </figure>
+   ```
+
+### Media providers
+
 ## Common API
 
-The {@link module:mediaembed/mediaembed~MediaEmbed} plugin registers:
+The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
 * the `'insertMedia'` UI button component,
-* the `'insertMedia'` command implemented by {@link module:mediaembed/insertmediacommand~InsertMediaCommand}.
+* the `'insertMedia'` command implemented by {@link module:media-embed/insertmediacommand~InsertMediaCommand}.
 
 	You can insert a new media or update the selected media URL by executing the following code:
 
