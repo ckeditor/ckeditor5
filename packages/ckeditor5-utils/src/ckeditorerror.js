@@ -11,7 +11,7 @@
  * URL to the documentation with error codes.
  */
 export const DOCUMENTATION_URL =
-	'https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/error-codes.html';
+	'https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/error-codes.html';
 
 /**
  * The CKEditor error class.
