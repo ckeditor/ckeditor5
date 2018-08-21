@@ -14,7 +14,7 @@ This package implements block quote support for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-block-quote` package](https://docs.ckeditor.com/ckeditor5/latest/api/block-quote.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-block-quote` package](https://ckeditor.com/docs/ckeditor5/latest/api/block-quote.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
