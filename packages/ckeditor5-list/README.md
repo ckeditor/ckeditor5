@@ -14,7 +14,7 @@ This package implements bulleted and numbered list feature for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-list` package](https://docs.ckeditor.com/ckeditor5/latest/api/list.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-list` package](https://ckeditor.com/docs/ckeditor5/latest/api/list.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
