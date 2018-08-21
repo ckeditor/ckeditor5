@@ -93,7 +93,7 @@ Changelog
 
 In 1.0.0-beta.1 the engine's API has underwent a thorough review which resulted in a deep refactoring. Most of the underlying concepts and architecture remained untouched. The API, though, is brand new. The changes are huge and, in this package exclusively, resulted in changing 40.000 LOC. Therefore, the list of changes below is neither complete nor will explain you how the engine is structured now and how to should migrate to this version.
 
-Instead, we recommend reading https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html once more (it will be updated in a couple of days after the release).
+Instead, we recommend reading https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/editing-engine.html once more (it will be updated in a couple of days after the release).
 
 The good news is that the our focus when designing the new API was on developer experience. APIs which were dangerous or confusing were removed or hidden and new APIs were added in their place. The engine is now safer and more useful library and we hope you'll enjoy it :).
 

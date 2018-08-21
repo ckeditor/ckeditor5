@@ -16,7 +16,7 @@ The CKEditor 5 editing engine implements a flexible MVC-based architecture for c
 
 * **Custom data model.** CKEditor 5 implements a tree-structured custom data model, designed to fit multiple requirements such as enabling real-time collaboration and complex editing features (like tables or nested blocks).
 * **Virtual DOM.** CKEditor 5's editing engine features a custom, editing-oriented virtual DOM implementation that aims to hide browser quirks from your sight. **No more `contentEditable` nightmares!**
-* **Real-time collaborative editing**. The editor implements Operational Transformation for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! [Check the collaboration demo](https://docs.ckeditor.com/ckeditor5/latest/features/collaboration/overview.html).
+* **Real-time collaborative editing**. The editor implements Operational Transformation for the tree-structured model as well as many other mechanisms which were required to create a seamless collaborative UX. Additionally, we provide cloud infrastructure and plugins enabling real-time collaborative editing in your application! [Check the collaboration demo](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html).
 * **Extensible.** The entire editor architecture was designed for maximum flexibility. The code is event-based and highly decoupled, allowing you to plug in or replace selected pieces. Features do not directly depend on each other and communicate in standardized ways.
 * **Schema-less core**. The core makes minimal assumptions and can be controlled through the schema. This leaves all decisions to plugins and to you.
 * **Modular architecture.** Not only can the core modules be reused and recomposed but even the features were implemented in a highly granular way. Feel like running a headless CKEditor 5 with a couple of features in Node.js? Not a problem!
@@ -26,9 +26,9 @@ The CKEditor 5 editing engine implements a flexible MVC-based architecture for c
 
 ## Documentation
 
-For a general introduction see the [Overview of CKEditor 5 Framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html) guide and then the [Editing engine architecture](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html) guide.
+For a general introduction see the [Overview of CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html) guide and then the [Editing engine architecture](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/editing-engine.html) guide.
 
-Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://docs.ckeditor.com/ckeditor5/latest/api/engine.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/) for even more information.
+Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://ckeditor.com/docs/ckeditor5/latest/api/engine.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/) for even more information.
 
 ## License
 
