@@ -349,7 +349,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_alignClasses">image2_alignClasses</a></td>
-			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
+			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_prefillDimensions">image2_prefillDimensions</a>.</td>
