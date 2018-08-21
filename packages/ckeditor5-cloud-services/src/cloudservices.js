@@ -126,7 +126,7 @@ CloudServices.Token = Token;
  * CKEditor Ecosystem dashboard.
  *
  * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
- * Check [Collaboration overview](https://docs.ckeditor.com/ckeditor5/latest/features/collaboration/overview.html) for more details.
+ * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#webSocketUrl
  */
@@ -137,7 +137,7 @@ CloudServices.Token = Token;
  * The ID is usually a primary key of the document in the database, but you are free to provide whatever identifier fits your scenario.
  *
  * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
- * Check [Collaboration overview](https://docs.ckeditor.com/ckeditor5/latest/features/collaboration/overview.html) for more details.
+ * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#documentId
  */
