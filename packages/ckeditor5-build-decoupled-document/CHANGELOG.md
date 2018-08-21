@@ -12,7 +12,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `DecoupledEditor#element` property was renamed to `DecoupledEditor#sourceElement`.
 
-If you maintain a [custom build of CKEditor 5](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
 Blog post is coming soon...
 
@@ -214,7 +214,7 @@ Major releases (contain breaking changes):
 
 * Image styles's default configuration has been changed to: left-aligned, right-aligned image and full-size image (instead of the typical: side-image and full-size image). This change makes content previously created with this build incompatible with the new setup.
 
-   You can [configure image styles](https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles) in order to bring back the old setting (`[ 'full', 'side' ]`).
+   You can [configure image styles](https://ckeditor.com/docs/ckeditor5/latest/features/image.html#image-styles) in order to bring back the old setting (`[ 'full', 'side' ]`).
 
    Closes [#10](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/10). ([75855d9](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/75855d9))
 
