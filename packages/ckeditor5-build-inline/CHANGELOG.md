@@ -12,7 +12,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 This is a major releases that introduces many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4`, simplified structure of the build repository). Additionally, the `InlineEditor#element` property was renamed to `InlineEditor#sourceElement` and the `InlineEditor#updateElement()` method was renamed to `InlineEditor#updateSourceElement()`.
 
-If you maintain a [custom build of CKEditor 5](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
 Blog post is coming soon...
 
