@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
 import { extractBody, bodyToView, extractStyles } from './filters/common';
 import { paragraphsToLists } from './filters/list';
@@ -52,18 +53,19 @@ export default class PasteFromWord extends Plugin {
 	 * @private
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {String} input Word input.
-	 * @returns {module:engine/view/view~View} view Normalized input as {module:engine/view/view~View} instance.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} view Normalized input.
 	 */
 	_normalizeWordInput( input, editor ) {
 		const editorDocument = editor.editing.view.getDomRoot();
 		const ownerDocument = editorDocument ? editorDocument.ownerDocument : null;
 
-		return transformInput( input, ownerDocument,
+		const transofrmedInput = transformInput( input, ownerDocument,
 			extractBody,
 			bodyToView,
 			extractStyles,
-			paragraphsToLists
-		).view;
+			paragraphsToLists );
+
+		return transofrmedInput.view || new DocumentFragment();
 	}
 }
 

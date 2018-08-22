@@ -30,8 +30,9 @@ export function extractBody( data ) {
  * @param {Object} data
  * @param {String} data.body HTML string which should be parsed.
  * @returns {Object} result
- * @returns {module:engine/view/view~View|null} result.view The {@link module:engine/view/view~View} class instance
- * created based on provided HTML string. Return `null` if `data.body` parameter was empty.
+ * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} result.view
+ * The {@link module:engine/view/view~View} class instance created based on provided HTML string.
+ * Returns `null` if `data.body` parameter was empty.
  */
 export function bodyToView( data ) {
 	data.view = data.body ? htmlDataProcessor.toView( data.body ) : null;
