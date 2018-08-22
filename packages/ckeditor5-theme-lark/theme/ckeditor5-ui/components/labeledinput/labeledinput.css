@@ -6,4 +6,5 @@
 .ck.ck-labeled-input .ck-labeled-input__error {
 	font-size: var(--ck-font-size-small);
 	color: var(--ck-color-base-error);
+	margin-top: var(--ck-spacing-small);
 }
