@@ -42,6 +42,62 @@ export default class MediaEmbed extends Plugin {
 }
 
 /**
+ * The media embed provider descriptor. Used in
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
+ *
+ * See {@link module:media-embed/mediaembed~MediaEmbedConfig} to learn more.
+ *
+ *		{
+ *			name: 'example',
+ *
+ *			// The following RegExp matches https://www.example.com/media/{media id}
+ *			// with optional "https://" and "www" prefixes.
+ *			url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
+ *
+ *			// The rendering function of the provider.
+ *			// Used to represent the media when editing the content (i.e. in the view)
+ *			// and also in the data output of the editor if semantic data output is disabled.
+ *			html: mediaId => `The HTML representing the media with ID=${ mediaId }.`
+ *		}
+ *
+ * You can allow any sort of media in the editor using the "allow–all" `RegExp`.
+ * But mind that, since URLs are processed in the order of configuration, if one of the previous
+ * `RegExps` matches the URL, it will have a precedence over this one.
+ *
+ *		{
+ *			name: 'allow-all',
+ *			url: /^(https:\/\/)?(www\.)?.+/
+ *		}
+ *
+ * To implement a responsive media, you can use the following HTML structure:
+ *
+ *		{
+ *			...
+ *			html: mediaId =>
+ *				'<div style="position:relative; padding-bottom:100%; height:0">' +
+ *					'<iframe src="..." frameborder="0" ' +
+ *						'style="position:absolute; width:100%; height:100%; top:0; left:0">' +
+ *					'</iframe>' +
+ *				'</div>'
+ *		}
+ *
+ * @typedef {Object} module:media-embed/mediaembed~MediaEmbedProvider
+ * @property {String} name The name of the provider. Used e.g. when
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders removing providers}.
+ * @property {RegExp|Array.<RegExp>} url The `RegExp` object (or array of objects) defining the URL of the media.
+ * If any URL matches the `RegExp`, it becomes the media in editor model, as defined by the provider. The content
+ * of the last matching group is passed to the `html` rendering function of the media.
+ * @property {Function} [html] (optional) Rendering function of the media. The function receives the content of
+ * the last matching group from the corresponding `url` `RegExp` as an argument, allowing rendering a dedicated
+ * preview of a media identified by a certain id or a hash. When not defined, the media embed feature
+ * will use a generic media representation in the view and output data.
+ * Note that when
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`}
+ * is `true`, the rendering function **will not** be used for the media in the editor data output.
+ */
+
+/**
  * The configuration of the {@link module:media-embed/mediaembed~MediaEmbed} feature.
  *
  * Read more in {@link module:media-embed/mediaembed~MediaEmbedConfig}.
@@ -50,7 +106,8 @@ export default class MediaEmbed extends Plugin {
  */
 
 /**
- * The configuration of the media embed features. Used by the media embed features in the `@ckeditor/ckeditor5-media-embed` package.
+ * The configuration of the media embed features.
+ * Used by the media embed features in the `@ckeditor/ckeditor5-media-embed` package.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -65,85 +122,100 @@ export default class MediaEmbed extends Plugin {
  */
 
 /**
- * The available media providers. By default, the following providers are supported
- * by the editor:
+ * The default media providers supported by the editor.
  *
- * With media previews:
+ * Names of providers with rendering functions (previews):
  *
- * * Dailymotion
- * * Spotify
- * * YouTube
- * * Vimeo
+ * * "dailymotion",
+ * * "spotify",
+ * * "youtube",
+ * * "vimeo"
  *
- * Without media previews:
+ * Names of providers without rendering functions:
  *
- * * Instagram
- * * Twitter
- * * Google Maps
- * * Flickr
- * * Facebook
+ * * "instagram",
+ * * "twitter",
+ * * "google",
+ * * "flickr",
+ * * "facebook"
  *
- * **Note:** The default media provider configuration may not support all possible media URLs,
+ * See the {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax} to learn more about
+ * different kinds of media and media providers.
+ *
+ * **Note**: The default media provider configuration may not support all possible media URLs,
  * only the most common are included.
  *
- * Media providers can be configured as an array of URL `RegExp` patterns with optional
- * preview rendering functions. The media URLs are processed according to the order of configuration
- * creating as a cascade: the URL is matched against all `RegExp` patterns until one of them passes
- * and allows the media into the editor (and optionally defines its preview).
- * If the URL matches none of the `RegExp` patterns, it is not allowed in the editor.
- *
- * The preview functions accept the content of the last matching group from the corresponding `RegExp`
- * as an argument, allowing rendering a dedicated preview of a media identified by a certain id or a hash.
- *
- * **Note:**: Preview–less media are always represented in the data using the "semantic" markup. See
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `semanticDataOutput`} to
+ * **Note**: Media without are always represented in the data using the "semantic" markup. See
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`} to
  * learn more about possible data outputs.
  *
- *		media: [
- *			{
- *				// The following RegExp definitions support the following URLs:
- *				//
- *				// https://www.ckeditor.com/some/path/{number}
- *				// https://www.ckeditor.com/another/path/{number}
- *				//
- *				// with optional "https://" and "www" prefixes.
- *				url: [
- *					/^(https:\/\/)?(www\.)?ckeditor\.com\/some\/path\/(\d+)/,
- *					/^(https:\/\/)?(www\.)?ckeditor\.com\/another\/path\/(\d+)/
- *				],
- *				// The preview rendering function for the media. It will be always used when
- *				// editing the content (view) and, if config.media.semanticDataOutput is "false", also
- *				// in the data output of the editor.
- *				html: mediaId =>
- *					// Create an optional responsive container for the media.
- *					'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
- *						// The preview rendered using the mediaId value as defined in the RegExp.
- *						// Usually an iframe, which scales along with the responsive wrapper, e.g.:
- *						`<iframe src="http://ckeditor.com/media/preview/${ mediaId }" ` +
- *							'frameborder="0" width="480" height="270" ' +
- *							'style="position: absolute;width: 100%;height: 100%;top: 0;left: 0;">' +
- *						'</iframe>' +
- *					'</div>'
- *			},
+ * **Note:**: The priority of media providers corresponds to the order of configuration. The first provider
+ * to match the URL is always used, even if there are other providers which support a particular URL.
+ * The URL is never matched against remaining providers.
  *
- *			// Another media with the preview.
- *			{
- *				...
- *			},
+ * To discard **all** default media providers, simply override this config with your own
+ * {@link module:media-embed/mediaembed~MediaEmbedProvider definitions}:
  *
- *			// This RegExp will allow all media URL starting with https://cksource.com.
- *			// Those media will have no preview and will be displayed with as generic media.
- *			// Generic media are always represented in the output using the semantic HTML markup.
- *			// See config.media.semanticDataOutput to learn more about media representation in the data.
- *			/^(https:\/\/)?cksource\.com/,
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				mediaEmbed: {
+ *					providers: [
+ *						{
+ *							 name: 'myProvider',
+ *							 url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
+ *							 html: mediaId => '...'
+ *						},
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
  *
- *			// You can allow any sort of media in the editor using the "allow–all" wildcard RegExp.
- *			// Note that, since media are processed in the order of configuration so if one of the previous
- *			// RegExp matches the URL, it will have a precedence over this one.
- *			/^(https:\/\/)?(www\.)?.+/
- *		]
+ * To **extend** the list of default providers, use
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
  *
- * @member {Array} module:media-embed/mediaembed~MediaEmbedConfig#media
+ * To **remove** certain providers, use
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.premoveProviders`}.
+ *
+ * @member {Array.<module:media-embed/mediaembed~MediaEmbedProvider>} module:media-embed/mediaembed~MediaEmbedConfig#providers
+ */
+
+/**
+ * The additional media providers supported by the editor. This configuration helps extend the default
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				mediaEmbed: {
+ *					extraProviders: [
+ *						{
+ *							 name: 'extraProvider',
+ *							 url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
+ *							 html: mediaId => '...'
+ *						},
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See the {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax} to learn more.
+ *
+ * @member {Array.<module:media-embed/mediaembed~MediaEmbedProvider>} module:media-embed/mediaembed~MediaEmbedConfig#extraProviders
+ */
+
+/**
+ * The list of media providers which should not be used despite being available in
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}
+ *
+ *		mediaEmbed: {
+ *			removeProviders: [ 'youtube', 'twitter' ]
+ *		}
+ *
+ * @member {Array.<String>} module:media-embed/mediaembed~MediaEmbedConfig#removeProviders
  */
 
 /**
@@ -167,8 +239,8 @@ export default class MediaEmbed extends Plugin {
  *
  * **Note:** Preview–less media are always represented in the data using the "semantic" markup
  * regardless of the value of the `semanticDataOutput`. Learn more about different kinds of media
- * in the {@link module:media-embed/mediaembed~MediaEmbedConfig#media `media`} configuration
- * description.
+ * in the {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
+ * configuration description.
  *
  * @member {Boolean} [module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput=false]
  */

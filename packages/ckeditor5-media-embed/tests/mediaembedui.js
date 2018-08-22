@@ -21,8 +21,9 @@ describe( 'MediaEmbedUI', () => {
 			.create( editorElement, {
 				plugins: [ MediaEmbed ],
 				mediaEmbed: {
-					media: [
+					providers: [
 						{
+							name: 'valid-media',
 							url: /^https:\/\/valid\/(.*)/,
 							html: id => `<iframe src="${ id }"></iframe>`
 						}

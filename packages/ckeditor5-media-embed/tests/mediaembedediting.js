@@ -7,220 +7,440 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import MediaEmbedEditing from '../src/mediaembedediting';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
-	const mediaDefinitions = [
-		/^https:\/\/generic/,
-		{
-			url: /(.*)/,
-			html: id => `<iframe src="${ id }"></iframe>`
-		}
-	];
 
 	testUtils.createSinonSandbox();
 
+	const testProviders = {
+		A: {
+			name: 'A',
+			url: /^foo\.com\/(\w+)/,
+			html: id => `A, id=${ id }`
+		},
+		B: {
+			name: 'B',
+			url: /^bar\.com\/(\w+)/,
+			html: id => `B, id=${ id }`
+		},
+		C: {
+			name: 'C',
+			url: /^\w+\.com\/(\w+)/,
+			html: id => `C, id=${ id }`
+		},
+
+		extraA: {
+			name: 'extraA',
+			url: /^foo\.com\/(\w+)/,
+			html: id => `extraA, id=${ id }`
+		},
+		extraB: {
+			name: 'extraB',
+			url: /^\w+\.com\/(\w+)/,
+			html: id => `extraB, id=${ id }`
+		},
+
+		previewLess: {
+			name: 'preview-less',
+			url: /^https:\/\/preview-less/
+		},
+		allowEverything: {
+			name: 'allow-everything',
+			url: /(.*)/,
+			html: id => `allow-everything, id=${ id }`
+		}
+	};
+
 	describe( 'constructor()', () => {
-		describe( 'config.mediaEmbed.media', () => {
-			beforeEach( () => {
-				return VirtualTestEditor
-					.create( {
-						plugins: [ MediaEmbedEditing ],
-						mediaEmbed: {
+		describe( 'configuration', () => {
+			describe( '#providers', () => {
+				it( 'should warn when provider has no name', () => {
+					const logSpy = testUtils.sinon.stub( log, 'warn' );
+					const provider = {
+						url: /.*/
+					};
+
+					return createTestEditor( {
+						providers: [ provider ]
+					} ).then( () => {
+						expect( logSpy.calledOnce ).to.equal( true );
+						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
+					} );
+				} );
+
+				it( 'can override all providers', () => {
+					return createTestEditor( {
+						providers: []
+					} ).then( editor => {
+						editor.setData( '<figure class="media"><div data-oembed-url="foo.com"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal( '' );
+					} );
+				} );
+
+				it( 'upcast media according to the order', () => {
+					return createTestEditor( {
+						providers: [
+							testProviders.A,
+							testProviders.B,
+							testProviders.C,
+						]
+					} ).then( editor => {
+						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="foo.com/123">' +
+									'A, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+
+						editor.setData( '<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+									'B, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+
+						editor.setData( '<figure class="media"><div data-oembed-url="anything.com/123"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="anything.com/123">' +
+									'C, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+					} );
+				} );
+
+				describe( 'default value', () => {
+					beforeEach( () => {
+						return createTestEditor( {
 							semanticDataOutput: true
-						}
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-						view = editor.editing.view;
+						} )
+							.then( newEditor => {
+								editor = newEditor;
+								view = editor.editing.view;
+							} );
 					} );
+
+					describe( 'with preview', () => {
+						it( 'upcasts the URL (dailymotion)', () => {
+							testMediaUpcast( [
+								'https://www.dailymotion.com/video/foo',
+								'www.dailymotion.com/video/foo',
+								'dailymotion.com/video/foo',
+							],
+							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+								'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" width="480" height="270" allowfullscreen="" allow="autoplay">' +
+								'</iframe>' +
+							'</div>' );
+						} );
+
+						describe( 'spotify', () => {
+							it( 'upcasts the URL (artist)', () => {
+								testMediaUpcast( [
+									'https://www.open.spotify.com/artist/foo',
+									'www.open.spotify.com/artist/foo',
+									'open.spotify.com/artist/foo',
+								],
+								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+									'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
+										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+									'</iframe>' +
+								'</div>' );
+							} );
+
+							it( 'upcasts the URL (album)', () => {
+								testMediaUpcast( [
+									'https://www.open.spotify.com/album/foo',
+									'www.open.spotify.com/album/foo',
+									'open.spotify.com/album/foo',
+								],
+								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+									'<iframe src="https://open.spotify.com/embed/album/foo" ' +
+										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+									'</iframe>' +
+								'</div>' );
+							} );
+
+							it( 'upcasts the URL (track)', () => {
+								testMediaUpcast( [
+									'https://www.open.spotify.com/track/foo',
+									'www.open.spotify.com/track/foo',
+									'open.spotify.com/track/foo',
+								],
+								'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+									'<iframe src="https://open.spotify.com/embed/track/foo" ' +
+										'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+										'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+									'</iframe>' +
+								'</div>' );
+							} );
+						} );
+
+						it( 'upcasts the URL (youtube)', () => {
+							testMediaUpcast( [
+								'https://www.youtube.com/watch?v=foo',
+								'www.youtube.com/watch?v=foo',
+								'youtube.com/watch?v=foo',
+
+								'https://www.youtube.com/v/foo',
+								'www.youtube.com/v/foo',
+								'youtube.com/v/foo',
+
+								'https://www.youtube.com/embed/foo',
+								'www.youtube.com/embed/foo',
+								'youtube.com/embed/foo',
+
+								'https://youtu.be/foo',
+								'youtu.be/foo'
+							],
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								'<iframe src="https://www.youtube.com/embed/foo" ' +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
+								'</iframe>' +
+							'</div>' );
+						} );
+
+						it( 'upcasts the URL (vimeo)', () => {
+							testMediaUpcast( [
+								'https://www.vimeo.com/1234',
+								'www.vimeo.com/1234',
+								'vimeo.com/1234',
+
+								'https://www.vimeo.com/foo/foo/video/1234',
+								'www.vimeo.com/foo/foo/video/1234',
+								'vimeo.com/foo/foo/video/1234',
+
+								'https://www.vimeo.com/album/foo/video/1234',
+								'www.vimeo.com/album/foo/video/1234',
+								'vimeo.com/album/foo/video/1234',
+
+								'https://www.vimeo.com/channels/foo/1234',
+								'www.vimeo.com/channels/foo/1234',
+								'vimeo.com/channels/foo/1234',
+
+								'https://www.vimeo.com/groups/foo/videos/1234',
+								'www.vimeo.com/groups/foo/videos/1234',
+								'vimeo.com/groups/foo/videos/1234',
+
+								'https://www.vimeo.com/ondemand/foo/1234',
+								'www.vimeo.com/ondemand/foo/1234',
+								'vimeo.com/ondemand/foo/1234',
+
+								'https://www.player.vimeo.com/video/1234',
+								'www.player.vimeo.com/video/1234',
+								'player.vimeo.com/video/1234'
+							],
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								'<iframe src="https://player.vimeo.com/video/1234" ' +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">' +
+								'</iframe>' +
+							'</div>' );
+						} );
+					} );
+
+					describe( 'preview-less', () => {
+						it( 'upcasts the URL (instagram)', () => {
+							testMediaUpcast( [
+								'https://www.instagram.com/p/foo',
+								'www.instagram.com/p/foo',
+								'instagram.com/p/foo',
+							] );
+						} );
+
+						it( 'upcasts the URL (twitter)', () => {
+							testMediaUpcast( [
+								'https://www.twitter.com/foo/bar',
+								'www.twitter.com/foo/bar',
+								'twitter.com/foo/bar',
+							] );
+						} );
+
+						it( 'upcasts the URL (google maps)', () => {
+							testMediaUpcast( [
+								'https://www.google.com/maps/foo',
+								'www.google.com/maps/foo',
+								'google.com/maps/foo',
+							] );
+						} );
+
+						it( 'upcasts the URL (flickr)', () => {
+							testMediaUpcast( [
+								'https://www.flickr.com/foo/bar',
+								'www.flickr.com/foo/bar',
+								'flickr.com/foo/bar',
+							] );
+						} );
+
+						it( 'upcasts the URL (facebook)', () => {
+							testMediaUpcast( [
+								'https://www.facebook.com/foo/bar',
+								'www.facebook.com/foo/bar',
+								'facebook.com/foo/bar',
+							] );
+						} );
+					} );
+				} );
 			} );
 
-			describe( 'with preview', () => {
-				it( 'upcasts the URL (dailymotion)', () => {
-					testMediaUpcast( [
-						'https://www.dailymotion.com/video/foo',
-						'www.dailymotion.com/video/foo',
-						'dailymotion.com/video/foo',
-					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
-						'<iframe src="https://www.dailymotion.com/embed/video/foo" ' +
-							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" width="480" height="270" allowfullscreen="" allow="autoplay">' +
-						'</iframe>' +
-					'</div>' );
-				} );
+			describe( '#extraProviders', () => {
+				it( 'should warn when provider has no name', () => {
+					const logSpy = testUtils.sinon.stub( log, 'warn' );
+					const provider = {
+						url: /.*/
+					};
 
-				describe( 'spotify', () => {
-					it( 'upcasts the URL (artist)', () => {
-						testMediaUpcast( [
-							'https://www.open.spotify.com/artist/foo',
-							'www.open.spotify.com/artist/foo',
-							'open.spotify.com/artist/foo',
-						],
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-							'<iframe src="https://open.spotify.com/embed/artist/foo" ' +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>' +
-						'</div>' );
-					} );
-
-					it( 'upcasts the URL (album)', () => {
-						testMediaUpcast( [
-							'https://www.open.spotify.com/album/foo',
-							'www.open.spotify.com/album/foo',
-							'open.spotify.com/album/foo',
-						],
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-							'<iframe src="https://open.spotify.com/embed/album/foo" ' +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>' +
-						'</div>' );
-					} );
-
-					it( 'upcasts the URL (track)', () => {
-						testMediaUpcast( [
-							'https://www.open.spotify.com/track/foo',
-							'www.open.spotify.com/track/foo',
-							'open.spotify.com/track/foo',
-						],
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-							'<iframe src="https://open.spotify.com/embed/track/foo" ' +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>' +
-						'</div>' );
+					return createTestEditor( {
+						extraProviders: [ provider ]
+					} ).then( () => {
+						expect( logSpy.calledOnce ).to.equal( true );
+						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
 					} );
 				} );
 
-				it( 'upcasts the URL (youtube)', () => {
-					testMediaUpcast( [
-						'https://www.youtube.com/watch?v=foo',
-						'www.youtube.com/watch?v=foo',
-						'youtube.com/watch?v=foo',
+				it( 'extend #providers but with the lower priority', () => {
+					return createTestEditor( {
+						providers: [
+							testProviders.A,
+						],
+						extraProviders: [
+							testProviders.extraA,
+							testProviders.extraB,
+						]
+					} ).then( editor => {
+						editor.setData( '<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' );
 
-						'https://www.youtube.com/v/foo',
-						'www.youtube.com/v/foo',
-						'youtube.com/v/foo',
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="foo.com/123">' +
+									'A, id=123' +
+								'</div>' +
+							'</figure>'
+						);
 
-						'https://www.youtube.com/embed/foo',
-						'www.youtube.com/embed/foo',
-						'youtube.com/embed/foo',
+						editor.setData( '<figure class="media"><div data-oembed-url="anything.com/123"></div></figure>' );
 
-						'https://youtu.be/foo',
-						'youtu.be/foo'
-					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-						'<iframe src="https://www.youtube.com/embed/foo" ' +
-							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
-						'</iframe>' +
-					'</div>' );
-				} );
-
-				it( 'upcasts the URL (vimeo)', () => {
-					testMediaUpcast( [
-						'https://www.vimeo.com/1234',
-						'www.vimeo.com/1234',
-						'vimeo.com/1234',
-
-						'https://www.vimeo.com/foo/foo/video/1234',
-						'www.vimeo.com/foo/foo/video/1234',
-						'vimeo.com/foo/foo/video/1234',
-
-						'https://www.vimeo.com/album/foo/video/1234',
-						'www.vimeo.com/album/foo/video/1234',
-						'vimeo.com/album/foo/video/1234',
-
-						'https://www.vimeo.com/channels/foo/1234',
-						'www.vimeo.com/channels/foo/1234',
-						'vimeo.com/channels/foo/1234',
-
-						'https://www.vimeo.com/groups/foo/videos/1234',
-						'www.vimeo.com/groups/foo/videos/1234',
-						'vimeo.com/groups/foo/videos/1234',
-
-						'https://www.vimeo.com/ondemand/foo/1234',
-						'www.vimeo.com/ondemand/foo/1234',
-						'vimeo.com/ondemand/foo/1234',
-
-						'https://www.player.vimeo.com/video/1234',
-						'www.player.vimeo.com/video/1234',
-						'player.vimeo.com/video/1234'
-					],
-					'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-						'<iframe src="https://player.vimeo.com/video/1234" ' +
-							'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-							'frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="">' +
-						'</iframe>' +
-					'</div>' );
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="anything.com/123">' +
+									'extraB, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+					} );
 				} );
 			} );
 
-			describe( 'preview-less', () => {
-				it( 'upcasts the URL (instagram)', () => {
-					testMediaUpcast( [
-						'https://www.instagram.com/p/foo',
-						'www.instagram.com/p/foo',
-						'instagram.com/p/foo',
-					] );
+			describe( '#removeProviders', () => {
+				it( 'removes #providers', () => {
+					return createTestEditor( {
+						providers: [
+							testProviders.A,
+							testProviders.B
+						],
+						removeProviders: [ 'A' ]
+					} ).then( editor => {
+						editor.setData(
+							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
+							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+									'B, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+					} );
 				} );
 
-				it( 'upcasts the URL (twitter)', () => {
-					testMediaUpcast( [
-						'https://www.twitter.com/foo/bar',
-						'www.twitter.com/foo/bar',
-						'twitter.com/foo/bar',
-					] );
+				it( 'removes #extraProviders', () => {
+					return createTestEditor( {
+						providers: [],
+						extraProviders: [
+							testProviders.A,
+							testProviders.B,
+						],
+						removeProviders: [ 'A' ]
+					} ).then( editor => {
+						editor.setData(
+							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
+							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+									'B, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+					} );
 				} );
 
-				it( 'upcasts the URL (google maps)', () => {
-					testMediaUpcast( [
-						'https://www.google.com/maps/foo',
-						'www.google.com/maps/foo',
-						'google.com/maps/foo',
-					] );
-				} );
+				it( 'removes even when the name of the provider repeats', () => {
+					return createTestEditor( {
+						providers: [
+							testProviders.A,
+							testProviders.A
+						],
+						extraProviders: [
+							testProviders.A,
+							testProviders.A,
+							testProviders.B
+						],
+						removeProviders: [ 'A' ]
+					} ).then( editor => {
+						editor.setData(
+							'<figure class="media"><div data-oembed-url="foo.com/123"></div></figure>' +
+							'<figure class="media"><div data-oembed-url="bar.com/123"></div></figure>' );
 
-				it( 'upcasts the URL (flickr)', () => {
-					testMediaUpcast( [
-						'https://www.flickr.com/foo/bar',
-						'www.flickr.com/foo/bar',
-						'flickr.com/foo/bar',
-					] );
-				} );
-
-				it( 'upcasts the URL (facebook)', () => {
-					testMediaUpcast( [
-						'https://www.facebook.com/foo/bar',
-						'www.facebook.com/foo/bar',
-						'facebook.com/foo/bar',
-					] );
+						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
+							'<figure class="ck-widget media" contenteditable="false">' +
+								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+									'B, id=123' +
+								'</div>' +
+							'</figure>'
+						);
+					} );
 				} );
 			} );
 		} );
 	} );
 
 	describe( 'init()', () => {
+		const providerDefinitions = [
+			testProviders.previewLess,
+			testProviders.allowEverything
+		];
+
 		it( 'should be loaded', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ MediaEmbedEditing ],
-				} )
+			return createTestEditor()
 				.then( newEditor => {
 					expect( newEditor.plugins.get( MediaEmbedEditing ) ).to.be.instanceOf( MediaEmbedEditing );
 				} );
 		} );
 
 		it( 'should set proper schema rules', () => {
-			return VirtualTestEditor
-				.create( {
-					plugins: [ MediaEmbedEditing ],
-				} )
+			return createTestEditor()
 				.then( newEditor => {
 					model = newEditor.model;
 
@@ -238,14 +458,10 @@ describe( 'MediaEmbedEditing', () => {
 		describe( 'conversion in the data pipeline', () => {
 			describe( 'semanticDataOutput=true', () => {
 				beforeEach( () => {
-					return VirtualTestEditor
-						.create( {
-							plugins: [ MediaEmbedEditing ],
-							mediaEmbed: {
-								semanticDataOutput: true,
-								media: mediaDefinitions
-							}
-						} )
+					return createTestEditor( {
+						semanticDataOutput: true,
+						providers: providerDefinitions
+					} )
 						.then( newEditor => {
 							editor = newEditor;
 							model = editor.model;
@@ -273,12 +489,12 @@ describe( 'MediaEmbedEditing', () => {
 							'</figure>' );
 					} );
 
-					it( 'should convert (generic media)', () => {
-						setModelData( model, '<media url="https://generic"></media>' );
+					it( 'should convert (preview-less media)', () => {
+						setModelData( model, '<media url="https://preview-less"></media>' );
 
 						expect( editor.getData() ).to.equal(
 							'<figure class="media">' +
-								'<oembed url="https://generic"></oembed>' +
+								'<oembed url="https://preview-less"></oembed>' +
 							'</figure>' );
 					} );
 				} );
@@ -367,26 +583,19 @@ describe( 'MediaEmbedEditing', () => {
 					} );
 
 					it( 'should not convert unknown media', () => {
-						return VirtualTestEditor
-							.create( {
-								plugins: [ MediaEmbedEditing ],
-								mediaEmbed: {
-									semanticDataOutput: true,
-									media: [
-										{
-											url: /^https:\/\/known\.media/,
-											html: () => 'known-media'
-										}
-									]
-								}
-							} )
+						return createTestEditor( {
+							semanticDataOutput: true,
+							providers: [
+								testProviders.A
+							]
+						} )
 							.then( newEditor => {
 								newEditor.setData(
-									'<figure class="media"><oembed url="https://unknown.media"></oembed></figure>' +
-									'<figure class="media"><oembed url="https://known.media"></oembed></figure>' );
+									'<figure class="media"><oembed url="unknown.media"></oembed></figure>' +
+									'<figure class="media"><oembed url="foo.com/123"></oembed></figure>' );
 
 								expect( getModelData( newEditor.model, { withoutSelection: true } ) )
-									.to.equal( '<media url="https://known.media"></media>' );
+									.to.equal( '<media url="foo.com/123"></media>' );
 
 								return newEditor.destroy();
 							} );
@@ -396,13 +605,9 @@ describe( 'MediaEmbedEditing', () => {
 
 			describe( 'semanticDataOutput=false', () => {
 				beforeEach( () => {
-					return VirtualTestEditor
-						.create( {
-							plugins: [ MediaEmbedEditing ],
-							mediaEmbed: {
-								media: mediaDefinitions
-							}
-						} )
+					return createTestEditor( {
+						providers: providerDefinitions
+					} )
 						.then( newEditor => {
 							editor = newEditor;
 							model = editor.model;
@@ -419,7 +624,7 @@ describe( 'MediaEmbedEditing', () => {
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
 									'<div data-oembed-url="https://ckeditor.com">' +
-										'<iframe src="https://ckeditor.com"></iframe>' +
+										'allow-everything, id=https://ckeditor.com' +
 									'</div>' +
 								'</figure>' );
 						} );
@@ -434,12 +639,12 @@ describe( 'MediaEmbedEditing', () => {
 								'</figure>' );
 						} );
 
-						it( 'should convert (generic media)', () => {
-							setModelData( model, '<media url="https://generic"></media>' );
+						it( 'should convert (preview-less media)', () => {
+							setModelData( model, '<media url="https://preview-less"></media>' );
 
 							expect( editor.getData() ).to.equal(
 								'<figure class="media">' +
-									'<oembed url="https://generic"></oembed>' +
+									'<oembed url="https://preview-less"></oembed>' +
 								'</figure>' );
 						} );
 					} );
@@ -449,7 +654,7 @@ describe( 'MediaEmbedEditing', () => {
 							editor.setData(
 								'<figure class="media">' +
 									'<div data-oembed-url="https://ckeditor.com">' +
-										'<iframe src="https://cksource.com"></iframe>' +
+										'allow-everything, id=https://cksource.com></iframe>' +
 									'</div>' +
 								'</figure>' );
 
@@ -492,7 +697,7 @@ describe( 'MediaEmbedEditing', () => {
 								'<div>' +
 									'<figure class="media">' +
 										'<div data-oembed-url="https://ckeditor.com">' +
-											'<iframe src="https://cksource.com"></iframe>' +
+											'<iframe src="this should be discarded"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -511,7 +716,7 @@ describe( 'MediaEmbedEditing', () => {
 								'<div>' +
 									'<figure class="media">' +
 										'<div data-oembed-url="https://ckeditor.com">' +
-											'<iframe src="https://cksource.com"></iframe>' +
+											'<iframe src="this should be discarded"></iframe>' +
 										'</div>' +
 									'</figure>' +
 								'</div>' );
@@ -544,31 +749,22 @@ describe( 'MediaEmbedEditing', () => {
 						} );
 
 						it( 'should not convert unknown media', () => {
-							return VirtualTestEditor
-								.create( {
-									plugins: [ MediaEmbedEditing ],
-									mediaEmbed: {
-										media: [
-											{
-												url: /^https:\/\/known\.media/,
-												html: () => 'known-media'
-											}
-										]
-									}
-								} )
+							return createTestEditor( {
+								providers: [
+									testProviders.A
+								]
+							} )
 								.then( newEditor => {
 									newEditor.setData(
 										'<figure class="media">' +
-											'<div data-oembed-url="https://known.media">' +
-											'</div>' +
+											'<div data-oembed-url="foo.com/123"></div>' +
 										'</figure>' +
 										'<figure class="media">' +
-											'<div data-oembed-url="https://unknown.media">' +
-											'</div>' +
+											'<div data-oembed-url="unknown.media/123"></div>' +
 										'</figure>' );
 
 									expect( getModelData( newEditor.model, { withoutSelection: true } ) )
-										.to.equal( '<media url="https://known.media"></media>' );
+										.to.equal( '<media url="foo.com/123"></media>' );
 
 									return newEditor.destroy();
 								} );
@@ -581,14 +777,10 @@ describe( 'MediaEmbedEditing', () => {
 		describe( 'conversion in the editing pipeline', () => {
 			describe( 'semanticDataOutput=true', () => {
 				beforeEach( () => {
-					return VirtualTestEditor
-						.create( {
-							plugins: [ MediaEmbedEditing ],
-							mediaEmbed: {
-								media: mediaDefinitions,
-								semanticDataOutput: true
-							}
-						} )
+					return createTestEditor( {
+						providers: providerDefinitions,
+						semanticDataOutput: true
+					} )
 						.then( newEditor => {
 							editor = newEditor;
 							model = editor.model;
@@ -602,13 +794,9 @@ describe( 'MediaEmbedEditing', () => {
 
 			describe( 'semanticDataOutput=false', () => {
 				beforeEach( () => {
-					return VirtualTestEditor
-						.create( {
-							plugins: [ MediaEmbedEditing ],
-							mediaEmbed: {
-								media: mediaDefinitions
-							}
-						} )
+					return createTestEditor( {
+						providers: providerDefinitions
+					} )
 						.then( newEditor => {
 							editor = newEditor;
 							model = editor.model;
@@ -628,7 +816,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
-									'<iframe src="https://ckeditor.com"></iframe>' +
+									'allow-everything, id=https://ckeditor.com' +
 								'</div>' +
 							'</figure>'
 						);
@@ -645,7 +833,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
-									'<iframe src="https://cksource.com"></iframe>' +
+									'allow-everything, id=https://cksource.com' +
 								'</div>' +
 							'</figure>'
 						);
@@ -683,7 +871,7 @@ describe( 'MediaEmbedEditing', () => {
 						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
-									'<iframe src="https://ckeditor.com"></iframe>' +
+									'allow-everything, id=https://ckeditor.com' +
 								'</div>' +
 							'</figure>'
 						);
@@ -719,5 +907,13 @@ describe( 'MediaEmbedEditing', () => {
 
 			expect( normalizeHtml( viewData ) ).to.match( expectedRegExp, `assertion for "${ url }"` );
 		}
+	}
+
+	function createTestEditor( mediaEmbedConfig ) {
+		return VirtualTestEditor
+			.create( {
+				plugins: [ MediaEmbedEditing ],
+				mediaEmbed: mediaEmbedConfig
+			} );
 	}
 } );

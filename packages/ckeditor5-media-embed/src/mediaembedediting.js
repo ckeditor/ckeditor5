@@ -29,11 +29,10 @@ export default class MediaEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'mediaEmbed', {
-			media: [
+			providers: [
 				{
-					url: [
-						/^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/
-					],
+					name: 'dailymotion',
+					url: /^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/,
 					html: id =>
 						'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
 							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
@@ -44,6 +43,7 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 
 				{
+					name: 'spotify',
 					url: [
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
 						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
@@ -59,6 +59,7 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 
 				{
+					name: 'youtube',
 					url: [
 						/^(https:\/\/)?(www\.)?youtube\.com\/watch\?v=(\w+)/,
 						/^(https:\/\/)?(www\.)?youtube\.com\/v\/(\w+)/,
@@ -75,6 +76,7 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 
 				{
+					name: 'vimeo',
 					url: [
 						/^(https:\/\/)?(www\.)?vimeo\.com\/(\d+)/,
 						/^(https:\/\/)?(www\.)?vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
@@ -93,11 +95,26 @@ export default class MediaEmbedEditing extends Plugin {
 						'</div>'
 				},
 
-				/^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/,
-				/^(https:\/\/)?(www\.)?twitter\.com/,
-				/^(https:\/\/)?(www\.)?google\.com\/maps/,
-				/^(https:\/\/)?(www\.)?flickr\.com/,
-				/^(https:\/\/)?(www\.)?facebook\.com/
+				{
+					name: 'instagram',
+					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
+				},
+				{
+					name: 'twitter',
+					url: /^(https:\/\/)?(www\.)?twitter\.com/
+				},
+				{
+					name: 'google',
+					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
+				},
+				{
+					name: 'flickr',
+					url: /^(https:\/\/)?(www\.)?flickr\.com/
+				},
+				{
+					name: 'facebook',
+					url: /^(https:\/\/)?(www\.)?facebook\.com/
+				},
 			]
 		} );
 
@@ -106,7 +123,7 @@ export default class MediaEmbedEditing extends Plugin {
 		 *
 		 * @member {module:media-embed/mediaregistry~MediaRegistry} #mediaRegistry
 		 */
-		this.mediaRegistry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed.media' ) );
+		this.mediaRegistry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' ) );
 	}
 
 	/**

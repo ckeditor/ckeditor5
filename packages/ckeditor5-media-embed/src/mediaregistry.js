@@ -8,6 +8,7 @@
  */
 
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * A bridge between the raw media content provider definitions and editor view content.
@@ -21,9 +22,34 @@ export class MediaRegistry {
 	 * Creates an instance of the {@link module:media-embed/mediaregistry~MediaRegistry} class.
 	 *
 	 * @param {module:utils/locale~Locale} locale The localization services instance.
-	 * @param {Array} providerDefinitions The provider definitions available in this registry.
+	 * @param {module:media-embed/mediaembed~MediaEmbedConfig} config The configuration of the media embed feature.
 	 */
-	constructor( locale, providerDefinitions ) {
+	constructor( locale, config ) {
+		const providers = config.providers || [];
+		const extraProviders = config.extraProviders || [];
+		const removedProviders = new Set( config.removeProviders );
+		const providerDefinitions = providers
+			.concat( extraProviders )
+			.filter( provider => {
+				const name = provider.name;
+
+				if ( !name ) {
+					/**
+					 * One of the providers (or extraProviders) specified in the mediaEmbed configuration
+					 * has no name and will not be used by the editor. In order to get this media
+					 * provider working, double check your editor configuration.
+					 *
+					 * @warning media-embed-no-provider-name
+					 */
+					log.warn( 'media-embed-no-provider-name: The configured media provider has no name and cannot be used.',
+						{ provider } );
+
+					return false;
+				}
+
+				return !removedProviders.has( name );
+			} );
+
 		/**
 		 * The locale {@link module:utils/locale~Locale} instance.
 		 *
