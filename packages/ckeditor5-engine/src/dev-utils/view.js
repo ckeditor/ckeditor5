@@ -51,6 +51,8 @@ const allowedTypes = {
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param {Boolean} [options.showAttributeElementId=false] When set to `true`, attribute element's id will be printed
  * (`<span id="marker:foo">`).
+ * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
+ * {@link module:engine/view/uielement~UIElement} will be printed.
  * @returns {String} The stringified data.
  */
 export function getData( view, options = {} ) {
@@ -65,6 +67,7 @@ export function getData( view, options = {} ) {
 	const stringifyOptions = {
 		showType: options.showType,
 		showPriority: options.showPriority,
+		renderUIElements: options.renderUIElements,
 		ignoreRoot: true
 	};
 
@@ -224,6 +227,8 @@ setData._parse = parse;
  * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~Document document's} root element.
  * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true`, the selection inside the text will be marked as
  *  `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both will be marked as `[` and `]` only.
+ * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
+ * {@link module:engine/view/uielement~UIElement} will be printed.
  * @returns {String} An HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -607,6 +612,8 @@ class ViewStringify {
 	 * be outputted.
 	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true`, the selection inside the text is marked as
 	 * `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both are marked as `[` and `]`.
+	 * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
+	 * {@link module:engine/view/uielement~UIElement} will be printed.
 	 */
 	constructor( root, selection, options ) {
 		this.root = root;
@@ -622,6 +629,7 @@ class ViewStringify {
 		this.showAttributeElementId = !!options.showAttributeElementId;
 		this.ignoreRoot = !!options.ignoreRoot;
 		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
+		this.renderUIElements = !!options.renderUIElements;
 	}
 
 	/**
@@ -654,7 +662,7 @@ class ViewStringify {
 				callback( this._stringifyElementOpen( root ) );
 			}
 
-			if ( root.is( 'uiElement' ) ) {
+			if ( this.renderUIElements && root.is( 'uiElement' ) ) {
 				callback( root.render( document ).innerHTML );
 			} else {
 				let offset = 0;
