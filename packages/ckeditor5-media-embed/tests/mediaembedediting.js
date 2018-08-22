@@ -625,7 +625,7 @@ describe( 'MediaEmbedEditing', () => {
 					it( 'should convert', () => {
 						setModelData( model, '<media url="https://ckeditor.com"></media>' );
 
-						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
 									'<iframe src="https://ckeditor.com"></iframe>' +
@@ -642,7 +642,7 @@ describe( 'MediaEmbedEditing', () => {
 							writer.setAttribute( 'url', 'https://cksource.com', media );
 						} );
 
-						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://cksource.com">' +
 									'<iframe src="https://cksource.com"></iframe>' +
@@ -659,7 +659,7 @@ describe( 'MediaEmbedEditing', () => {
 							writer.removeAttribute( 'url', media );
 						} );
 
-						expect( getViewData( view, { withoutSelection: true } ) )
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) )
 							.to.equal(
 								'<figure class="ck-widget media" contenteditable="false">' +
 									'<div class="ck-media__wrapper">' +
@@ -680,7 +680,7 @@ describe( 'MediaEmbedEditing', () => {
 							writer.removeAttribute( 'url', media );
 						} );
 
-						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						expect( getViewData( view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
 								'<div class="ck-media__wrapper" data-oembed-url="https://ckeditor.com">' +
 									'<iframe src="https://ckeditor.com"></iframe>' +
@@ -698,7 +698,7 @@ describe( 'MediaEmbedEditing', () => {
 			editor.setData(
 				`<figure class="media"><div data-oembed-url="${ url }"></div></figure>` );
 
-			const viewData = getViewData( view, { withoutSelection: true } );
+			const viewData = getViewData( view, { withoutSelection: true, renderUIElements: true } );
 			let expectedRegExp;
 
 			if ( expected ) {
