@@ -8,7 +8,6 @@
 .ck-content .media {
     & .ck-media__wrapper {
 		margin: 0 auto;
-		max-width: 640px;
 
 		& > *:not(.ck-media__placeholder) {
 			pointer-events: none;
@@ -34,20 +33,16 @@
 				text-overflow: ellipsis;
 				overflow: hidden;
 				color: hsl(0, 0%, 46%);
-				max-width: 80%;
 				white-space: nowrap;
 				text-align: center;
+
+				/* Otherwise the URL will overflow when the content is very narrow. */
+				max-width: 100%;
 
 				&:hover {
 					color: hsl(0, 0%, 0%);
 				}
 			}
-		}
-
-		&[data-oembed-url*="youtube.com"],
-		&[data-oembed-url*="vimeo.com"] {
-			max-width: 640px;
-			max-height: 360px;
 		}
 
 		&[data-oembed-url*="open.spotify.com"] {
