@@ -43,7 +43,7 @@ describe( 'MediaEmbedUI', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should add the "insertMedia" component to the factory', () => {
+	it( 'should add the "mediaEmbed" component to the factory', () => {
 		expect( dropdown ).to.be.instanceOf( DropdownView );
 	} );
 

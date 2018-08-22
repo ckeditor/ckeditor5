@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { modelToViewUrlAttributeConverter } from './converters';
-import InsertMediaCommand from './insertmediacommand';
+import MediaEmbedCommand from './mediaembedcommand';
 import { toMediaWidget, createMediaFigureElement } from './utils';
 import { MediaRegistry } from './mediaregistry';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
@@ -120,7 +120,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
 		const mediaRegistry = this.mediaRegistry;
 
-		editor.commands.add( 'mediaEmbed', new InsertMediaCommand( editor ) );
+		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );
 
 		// Configure the schema.
 		schema.register( 'media', {

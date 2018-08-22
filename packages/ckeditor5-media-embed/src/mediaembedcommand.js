@@ -4,7 +4,7 @@
  */
 
 /**
- * @module media-embed/insertmediacommand
+ * @module media-embed/mediaembedcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -22,7 +22,7 @@ import { getSelectedMediaElement } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class InsertMediaCommand extends Command {
+export default class MediaEmbedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

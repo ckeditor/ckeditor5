@@ -73,7 +73,7 @@ To satisfy most of the use–cases, the feature can be configured using the {@li
 
 The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
 * the `'mediaEmbed'` UI button component,
-* the `'mediaEmbed'` command implemented by {@link module:media-embed/insertmediacommand~InsertMediaCommand}.
+* the `'mediaEmbed'` command implemented by {@link module:media-embed/mediaembedcommand~MediaEmbedCommand}.
 
 	You can insert a new media or update the selected media URL by executing the following code:
 
