@@ -19,14 +19,14 @@ import PasteFromWord from '../../src/pastefromword';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { expectPaste } from '../_utils/utils';
 
-import simple from '../data/integration/list/simple/input.word2016.html';
-import styled from '../data/integration/list/styled/input.word2016.html';
-import multiple from '../data/integration/list/multiple/input.word2016.html';
-import multipleCombined from '../data/integration/list/multiple-combined/input.word2016.html';
-import manyOneItem from '../data/integration/list/many-one-item/input.word2016.html';
-import heading1 from '../data/integration/list/heading1/input.word2016.html';
-import heading3Styled from '../data/integration/list/heading3-styled/input.word2016.html';
-import heading7 from '../data/integration/list/heading7/input.word2016.html';
+import simple from '../_data/list/simple/input.word2016.html';
+import styled from '../_data/list/styled/input.word2016.html';
+import multiple from '../_data/list/multiple/input.word2016.html';
+import multipleCombined from '../_data/list/multiple-combined/input.word2016.html';
+import manyOneItem from '../_data/list/many-one-item/input.word2016.html';
+import heading1 from '../_data/list/heading1/input.word2016.html';
+import heading3Styled from '../_data/list/heading3-styled/input.word2016.html';
+import heading7 from '../_data/list/heading7/input.word2016.html';
 
 describe( 'List – integration', () => {
 	let element, editor;

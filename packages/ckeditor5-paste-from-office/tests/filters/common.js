@@ -6,6 +6,7 @@
 /* globals document, CSSStyleSheet */
 
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import { extractBody, bodyToView, extractStyles, stylesToStylesheet } from '../../src/filters/common';
 
@@ -84,6 +85,8 @@ describe( 'Filters – common', () => {
 	} );
 
 	describe( 'stylesToStylesheet', () => {
+		testUtils.createSinonSandbox();
+
 		let spy = null;
 
 		const shadowDomSupported = document.head && document.head.attachShadow;
