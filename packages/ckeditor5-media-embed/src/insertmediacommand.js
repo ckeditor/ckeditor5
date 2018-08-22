@@ -14,11 +14,11 @@ import { getSelectedMediaElement } from './utils';
 /**
  * The insert media command.
  *
- * The command is registered by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} as `'insertMedia'`.
+ * The command is registered by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} as `'mediaEmbed'`.
  *
  * To insert a media at the current selection, execute the command and specify the URL:
  *
- *		editor.execute( 'insertMedia', 'http://url.to.the/media' );
+ *		editor.execute( 'mediaEmbed', 'http://url.to.the/media' );
  *
  * @extends module:core/command~Command
  */

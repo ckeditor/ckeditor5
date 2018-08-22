@@ -34,7 +34,7 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/table';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ MediaEmbed, ... ],
-		toolbar: [ 'insertMedia', ... ]
+		toolbar: [ 'mediaEmbed', ... ]
 		mediaEmbed: {
 			...
 		}
@@ -72,13 +72,13 @@ To satisfy most of the use–cases, the feature can be configured using the {@li
 ## Common API
 
 The {@link module:media-embed/mediaembed~MediaEmbed} plugin registers:
-* the `'insertMedia'` UI button component,
-* the `'insertMedia'` command implemented by {@link module:media-embed/insertmediacommand~InsertMediaCommand}.
+* the `'mediaEmbed'` UI button component,
+* the `'mediaEmbed'` command implemented by {@link module:media-embed/insertmediacommand~InsertMediaCommand}.
 
 	You can insert a new media or update the selected media URL by executing the following code:
 
 	```js
-	editor.execute( 'insertMedia', { url: 'http://url.to.the/media' } );
+	editor.execute( 'mediaEmbed', { url: 'http://url.to.the/media' } );
 	```
 
 ## Contribute

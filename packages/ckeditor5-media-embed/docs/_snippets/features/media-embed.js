@@ -12,7 +12,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'insertMedia', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
+				'mediaEmbed', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		},

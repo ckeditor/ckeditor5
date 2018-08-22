@@ -31,11 +31,11 @@ export default class MediaEmbedUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'insertMedia' );
+		const command = editor.commands.get( 'mediaEmbed' );
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
 		// Setup `imageUpload` button.
-		editor.ui.componentFactory.add( 'insertMedia', locale => {
+		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
 			const form = new MediaFormView( getFormValidators( editor.t, mediaRegistry ), locale );
 			const dropdown = createDropdown( locale );
 
@@ -76,7 +76,7 @@ export default class MediaEmbedUI extends Plugin {
 
 		dropdown.on( 'submit', () => {
 			if ( form.isValid() ) {
-				editor.execute( 'insertMedia', form.url );
+				editor.execute( 'mediaEmbed', form.url );
 				closeUI();
 			}
 		} );

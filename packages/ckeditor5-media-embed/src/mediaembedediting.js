@@ -120,7 +120,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
 		const mediaRegistry = this.mediaRegistry;
 
-		editor.commands.add( 'insertMedia', new InsertMediaCommand( editor ) );
+		editor.commands.add( 'mediaEmbed', new InsertMediaCommand( editor ) );
 
 		// Configure the schema.
 		schema.register( 'media', {

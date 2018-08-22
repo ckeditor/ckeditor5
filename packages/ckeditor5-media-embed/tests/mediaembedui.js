@@ -31,7 +31,7 @@ describe( 'MediaEmbedUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				dropdown = editor.ui.componentFactory.create( 'insertMedia' );
+				dropdown = editor.ui.componentFactory.create( 'mediaEmbed' );
 				button = dropdown.buttonView;
 				form = dropdown.panelView.children.get( 0 );
 			} );
@@ -49,7 +49,7 @@ describe( 'MediaEmbedUI', () => {
 
 	describe( 'dropdown', () => {
 		it( 'should bind #isEnabled to the command', () => {
-			const command = editor.commands.get( 'insertMedia' );
+			const command = editor.commands.get( 'mediaEmbed' );
 
 			expect( dropdown.isEnabled ).to.be.true;
 
@@ -89,7 +89,7 @@ describe( 'MediaEmbedUI', () => {
 				} );
 
 				it( 'should update form\'s #url', () => {
-					const command = editor.commands.get( 'insertMedia' );
+					const command = editor.commands.get( 'mediaEmbed' );
 
 					button.fire( 'open' );
 					expect( form.url ).to.equal( '' );
@@ -126,7 +126,7 @@ describe( 'MediaEmbedUI', () => {
 
 			it( 'executes the command and closes the UI (if the form is valid)', () => {
 				const viewFocusSpy = sinon.spy( editor.editing.view, 'focus' );
-				const commandSpy = sinon.spy( editor.commands.get( 'insertMedia' ), 'execute' );
+				const commandSpy = sinon.spy( editor.commands.get( 'mediaEmbed' ), 'execute' );
 
 				// The form is invalid.
 				form.url = 'https://invalid/url';
@@ -186,7 +186,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		it( 'binds urlInputView#isReadOnly to command#isEnabled', () => {
-			const command = editor.commands.get( 'insertMedia' );
+			const command = editor.commands.get( 'mediaEmbed' );
 
 			expect( form.urlInputView.isReadOnly ).to.be.false;
 
@@ -195,7 +195,7 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		it( 'binds saveButtonView#isEnabled to command#isEnabled', () => {
-			const command = editor.commands.get( 'insertMedia' );
+			const command = editor.commands.get( 'mediaEmbed' );
 
 			expect( form.saveButtonView.isEnabled ).to.be.true;
 
