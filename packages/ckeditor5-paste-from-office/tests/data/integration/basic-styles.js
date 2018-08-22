@@ -15,14 +15,14 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { expectPaste } from '../_utils/utils';
+import { expectPaste } from '../../_utils/utils';
 
-import boldWithinText from '../_data/basic-styles/bold-within-text/input.word2016.html';
-import italicStartingText from '../_data/basic-styles/italic-starting-text/input.word2016.html';
-import underlinedText from '../_data/basic-styles/underlined-text/input.word2016.html';
-import strikethroughEndingText from '../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
-import multipleStylesSingleLine from '../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
-import multipleStylesMultiline from '../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
+import boldWithinText from '../../_data/basic-styles/bold-within-text/input.word2016.html';
+import italicStartingText from '../../_data/basic-styles/italic-starting-text/input.word2016.html';
+import underlinedText from '../../_data/basic-styles/underlined-text/input.word2016.html';
+import strikethroughEndingText from '../../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
+import multipleStylesSingleLine from '../../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
+import multipleStylesMultiline from '../../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
 
 describe( 'Basic Styles – integration', () => {
 	let element, editor;
