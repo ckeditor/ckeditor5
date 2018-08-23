@@ -122,7 +122,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Removed `createListDropdown()` and `ListDropdownView`. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
 * The DOM structure of the dropdown component has changed. Please refer to the documentation to find out more.
 * Basic properties of the balloon panel component have changed (i.e. the location of the arrow, the default positions), which may have an impact on existing integrations.
-* The styles are no longer developed in SASS which means the `.scss` files became unavailable. Please refer to the [Theme Customization](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
+* The styles are no longer developed in SASS which means the `.scss` files became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
@@ -140,14 +140,14 @@ Internal changes only (updated dependencies, documentation, etc.).
 
    Additionally, from now on `View#setTemplate()` and `View#extendTemplate()` methods are recommended as a shorthand for `view.template = new Template( { ... } )` and `Template.extend( view.template )`.
 
-    Please refer to the updated [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#ui-library) to learn more.
+    Please refer to the updated [documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/intro.html#ui-library) to learn more.
 * Removed legacy `width` and `height` attributes from the `BoxedEditorUIView`. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
 * The `ComponentFactory` should be case-insensitive. Closes [#324](https://github.com/ckeditor/ckeditor5-ui/issues/324). ([94417e9](https://github.com/ckeditor/ckeditor5-ui/commit/94417e9))
 * Updated translations. ([186f365](https://github.com/ckeditor/ckeditor5-ui/commit/186f365))
 
 ### BREAKING CHANGES
 
-* The `View#init()` method in UI components has been renamed to `render()`. Please refer to the [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#UI-library) to learn more.
+* The `View#init()` method in UI components has been renamed to `render()`. Please refer to the [documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/intro.html#UI-library) to learn more.
 * The `View#element` is no longer a getter which renders an element when first referenced. Use the `View#render()` method instead.
 * `Template#children` property became an `Array` (previously `ViewCollection`).
 * `View#addChildren()` and `View#removeChildren()` methods became `#registerChildren()` and `#deregisterChildren()`.
