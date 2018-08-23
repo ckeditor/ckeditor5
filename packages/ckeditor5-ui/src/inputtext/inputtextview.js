@@ -64,7 +64,7 @@ export default class InputTextView extends View {
 
 		/**
 		 * The `id` of the element describing this field, e.g. when it has
-		 * some error, which helps screen readers read the error text.
+		 * some error, it helps screen readers read the error text.
 		 *
 		 * @observable
 		 * @member {Boolean} #ariaDesribedById
@@ -93,6 +93,13 @@ export default class InputTextView extends View {
 				input: bind.to( 'input' )
 			}
 		} );
+
+		/**
+		 * Fired when the user types in the input. Corresponds to the native
+		 * DOM `input` event.
+		 *
+		 * @event input
+		 */
 	}
 
 	/**

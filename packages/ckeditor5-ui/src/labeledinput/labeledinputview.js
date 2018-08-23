@@ -55,7 +55,17 @@ export default class LabeledInputView extends View {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * The error text associated with the field.
+		 * The validation error text. When set, it will be displayed
+		 * next to the {@link #inputView} as a typical validation error message.
+		 * Set it to `null` to hide the message.
+		 *
+		 * **Note:** Setting this property to anything but `null` will automatically
+		 * make the {@link module:ui/inputtext/inputtextview~InputTextView#hasError `hasError`}
+		 * of the {@link #inputView} `true`.
+		 *
+		 * **Note:** Typing in the {@link #inputView} which fires the
+		 * {@link module:ui/inputtext/inputtextview~InputTextView#event:input `input` event}
+		 * resets this property back to `null`, indicating that the input field can be re–validated.
 		 *
 		 * @observable
 		 * @member {String|null} #errorText
@@ -72,7 +82,7 @@ export default class LabeledInputView extends View {
 		/**
 		 * The input view.
 		 *
-		 * @member {module:ui/view~View} #inputView
+		 * @member {module:ui/inputtext/inputtextview~InputTextView} #inputView
 		 */
 		this.inputView = this._createInputView( InputView, inputUid, errorUid );
 
