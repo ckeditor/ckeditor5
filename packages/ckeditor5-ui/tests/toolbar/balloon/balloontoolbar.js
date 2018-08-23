@@ -21,11 +21,9 @@ import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-u
 /* global document, setTimeout, window, Event */
 
 describe( 'BalloonToolbar', () => {
-	let sandbox, editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
+	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
 
 	beforeEach( () => {
-		sandbox = sinon.sandbox.create();
-
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -45,8 +43,8 @@ describe( 'BalloonToolbar', () => {
 				editingView.attachDomRoot( editorElement );
 
 				// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
-				sandbox.stub( balloon.view, 'attachTo' ).returns( {} );
-				sandbox.stub( balloon.view, 'pin' ).returns( {} );
+				sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+				sinon.stub( balloon.view, 'pin' ).returns( {} );
 
 				// Focus the engine.
 				editingView.document.isFocused = true;
@@ -58,7 +56,7 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	afterEach( () => {
-		sandbox.restore();
+		sinon.restore();
 		editorElement.remove();
 
 		return editor.destroy();
@@ -106,7 +104,7 @@ describe( 'BalloonToolbar', () => {
 		// doesn't work with lodash. Lodash keeps time related stuff in a closure
 		// and sinon is not able to override it.
 
-		const spy = sandbox.spy();
+		const spy = sinon.spy();
 		setData( model, '<paragraph>[bar]</paragraph>' );
 		balloonToolbar.on( '_selectionChangeDebounced', spy );
 
@@ -193,7 +191,7 @@ describe( 'BalloonToolbar', () => {
 				forwardSelectionRect
 			] );
 
-			balloonAddSpy = sandbox.spy( balloon, 'add' );
+			balloonAddSpy = sinon.spy( balloon, 'add' );
 			editingView.document.isFocused = true;
 		} );
 
@@ -301,7 +299,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should update balloon position on ui#update event when #toolbarView is already added to the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sandbox.spy( balloon, 'updatePosition' );
+			const spy = sinon.spy( balloon, 'updatePosition' );
 
 			editor.ui.fire( 'update' );
 
@@ -355,7 +353,7 @@ describe( 'BalloonToolbar', () => {
 		let removeBalloonSpy;
 
 		beforeEach( () => {
-			removeBalloonSpy = sandbox.stub( balloon, 'remove' ).returns( {} );
+			removeBalloonSpy = sinon.stub( balloon, 'remove' ).returns( {} );
 			editingView.document.isFocused = true;
 		} );
 
@@ -371,7 +369,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should stop update balloon position on ui#update event', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sandbox.spy( balloon, 'updatePosition' );
+			const spy = sinon.spy( balloon, 'updatePosition' );
 
 			balloonToolbar.show();
 			balloonToolbar.hide();
@@ -396,7 +394,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', done => {
-			const spy = sandbox.spy();
+			const spy = sinon.spy();
 
 			balloonToolbar.on( '_selectionChangeDebounced', spy );
 
@@ -417,8 +415,8 @@ describe( 'BalloonToolbar', () => {
 		beforeEach( () => {
 			setData( model, '<paragraph>[bar]</paragraph>' );
 
-			showPanelSpy = sandbox.spy( balloonToolbar, 'show' );
-			hidePanelSpy = sandbox.spy( balloonToolbar, 'hide' );
+			showPanelSpy = sinon.spy( balloonToolbar, 'show' );
+			hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
 		} );
 
 		it( 'should show when selection stops changing', () => {
@@ -497,7 +495,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should hide on #focusTracker blur', () => {
 			balloonToolbar.focusTracker.isFocused = true;
 
-			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
+			const stub = sinon.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -513,7 +511,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should not hide on #focusTracker blur when toolbar is not in the balloon stack', () => {
 			balloonToolbar.focusTracker.isFocused = true;
 
-			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => null );
+			const stub = sinon.stub( balloon, 'visibleView' ).get( () => null );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -529,7 +527,7 @@ describe( 'BalloonToolbar', () => {
 
 	describe( 'show event', () => {
 		it( 'should fire `show` event just before panel shows', () => {
-			const spy = sandbox.spy();
+			const spy = sinon.spy();
 
 			balloonToolbar.on( 'show', spy );
 			setData( model, '<paragraph>b[a]r</paragraph>' );
@@ -539,7 +537,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should not show the panel when `show` event is stopped', () => {
-			const balloonAddSpy = sandbox.spy( balloon, 'add' );
+			const balloonAddSpy = sinon.spy( balloon, 'add' );
 
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
@@ -554,10 +552,10 @@ describe( 'BalloonToolbar', () => {
 		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
 
 		// Mock selection rect.
-		sandbox.stub( editingView.domConverter, 'viewRangeToDom' ).callsFake( ( ...args ) => {
+		sinon.stub( editingView.domConverter, 'viewRangeToDom' ).callsFake( ( ...args ) => {
 			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
 
-			sandbox.stub( domRange, 'getClientRects' )
+			sinon.stub( domRange, 'getClientRects' )
 				.returns( rects );
 
 			return domRange;
