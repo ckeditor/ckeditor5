@@ -13,14 +13,13 @@ import Position from '../../src/model/position';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'model test utils', () => {
-	let model, document, root, selection, sandbox;
+	let model, document, root, selection;
 
 	beforeEach( () => {
 		model = new Model();
 		document = model.document;
 		root = document.createRoot();
 		selection = document.selection;
-		sandbox = sinon.sandbox.create();
 
 		model.change( writer => {
 			writer.setSelection( null );
@@ -51,12 +50,12 @@ describe( 'model test utils', () => {
 	} );
 
 	afterEach( () => {
-		sandbox.restore();
+		sinon.restore();
 	} );
 
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
-			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			const stringifySpy = sinon.spy( getData, '_stringify' );
 			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
@@ -65,7 +64,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should use stringify method with selection', () => {
-			const stringifySpy = sandbox.spy( getData, '_stringify' );
+			const stringifySpy = sinon.spy( getData, '_stringify' );
 			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
 				writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
@@ -84,7 +83,7 @@ describe( 'model test utils', () => {
 
 	describe( 'setData', () => {
 		it( 'should use parse method', () => {
-			const parseSpy = sandbox.spy( setData, '_parse' );
+			const parseSpy = sinon.spy( setData, '_parse' );
 			const options = {};
 			const data = '<b>btext</b>text';
 
@@ -97,7 +96,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should use parse method with selection', () => {
-			const parseSpy = sandbox.spy( setData, '_parse' );
+			const parseSpy = sinon.spy( setData, '_parse' );
 			const options = {};
 			const data = '[<b>btext</b>]';
 

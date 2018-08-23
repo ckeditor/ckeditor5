@@ -22,20 +22,14 @@ import createViewRoot from '../view/_utils/createroot';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {
-		let sandbox;
-
-		beforeEach( () => {
-			sandbox = sinon.sandbox.create();
-		} );
-
 		afterEach( () => {
-			sandbox.restore();
+			sinon.restore();
 		} );
 
 		describe( 'getData', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
-				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const stringifySpy = sinon.spy( getData, '_stringify' );
 				const view = new View();
 				const viewDocument = view.document;
 				const options = {
@@ -62,7 +56,7 @@ describe( 'view test utils', () => {
 
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
-				const stringifySpy = sandbox.spy( getData, '_stringify' );
+				const stringifySpy = sinon.spy( getData, '_stringify' );
 				const view = new View();
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
@@ -97,7 +91,7 @@ describe( 'view test utils', () => {
 				const view = new View();
 				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
-				const parseSpy = sandbox.spy( setData, '_parse' );
+				const parseSpy = sinon.spy( setData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
 				setData( view, data );
@@ -116,7 +110,7 @@ describe( 'view test utils', () => {
 				const view = new View();
 				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
-				const parseSpy = sandbox.spy( setData, '_parse' );
+				const parseSpy = sinon.spy( setData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
 				setData( view, data );
