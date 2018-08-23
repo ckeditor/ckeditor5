@@ -13,16 +13,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 
 describe( 'Autosave', () => {
-	const sandbox = sinon.sandbox;
-
 	let editor, element, autosave;
 
 	beforeEach( () => {
-		sandbox.useFakeTimers( { now: Date.now() } );
+		sinon.useFakeTimers( { now: Date.now() } );
 	} );
 
 	afterEach( () => {
-		sandbox.restore();
+		sinon.restore();
 	} );
 
 	it( 'should have static pluginName property', () => {
@@ -64,7 +62,7 @@ describe( 'Autosave', () => {
 					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 				} );
 
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 			} ).to.not.throw();
 		} );
 
@@ -109,7 +107,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
@@ -128,7 +126,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -148,7 +146,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledWithExactly( autosave.adapter.save, editor );
@@ -187,12 +185,12 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 499 );
+					sinon.clock.tick( 499 );
 
 					return Promise.resolve().then( () => {
 						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
 
-						sandbox.clock.tick( 1 );
+						sinon.clock.tick( 1 );
 
 						return Promise.resolve();
 					} ).then( () => {
@@ -224,12 +222,12 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 999 );
+					sinon.clock.tick( 999 );
 
 					return Promise.resolve().then( () => {
 						sinon.assert.notCalled( editor.config.get( 'autosave' ).save );
 
-						sandbox.clock.tick( 1 );
+						sinon.clock.tick( 1 );
 
 						return Promise.resolve();
 					} ).then( () => {
@@ -274,7 +272,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -298,14 +296,14 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
 				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
@@ -314,7 +312,7 @@ describe( 'Autosave', () => {
 
 			sinon.assert.notCalled( spy );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				sinon.assert.calledOnce( spy );
@@ -343,14 +341,14 @@ describe( 'Autosave', () => {
 			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			sinon.assert.notCalled( serverActionSpy );
 			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
 			return Promise.resolve().then( () => {
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 
 				return runPromiseCycles().then( () => {
 					sinon.assert.calledOnce( serverActionSpy );
@@ -376,7 +374,7 @@ describe( 'Autosave', () => {
 
 			expect( pendingActions.hasAny ).to.be.true;
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
@@ -403,7 +401,7 @@ describe( 'Autosave', () => {
 			expect( pendingActions.hasAny ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 			expect( autosave.state ).to.equal( 'saving' );
 
 			return Promise.resolve().then( () => {
@@ -414,7 +412,7 @@ describe( 'Autosave', () => {
 					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 				} );
 
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
@@ -423,7 +421,7 @@ describe( 'Autosave', () => {
 				expect( pendingActions.hasAny ).to.be.true;
 				sinon.assert.calledOnce( serverActionSpy );
 
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
@@ -432,7 +430,7 @@ describe( 'Autosave', () => {
 				sinon.assert.calledOnce( serverActionSpy );
 
 				// Wait for the second server response.
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 
 				return runPromiseCycles();
 			} ).then( () => {
@@ -444,14 +442,14 @@ describe( 'Autosave', () => {
 
 		it( 'should filter out selection changes', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -460,7 +458,7 @@ describe( 'Autosave', () => {
 
 		it( 'should filter out markers that does not affect the data', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
@@ -470,13 +468,13 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, range } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.updateMarker( 'name', { range: range2 } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -485,7 +483,7 @@ describe( 'Autosave', () => {
 
 		it( 'should filter out markers that does not affect the data #2', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
@@ -495,13 +493,13 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, range } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.updateMarker( 'name', { range: range2 } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.notCalled( autosave.adapter.save );
@@ -510,7 +508,7 @@ describe( 'Autosave', () => {
 
 		it( 'should call the save method when some marker affects the data', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
@@ -519,7 +517,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: true, affectsData: true, range } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -528,7 +526,7 @@ describe( 'Autosave', () => {
 
 		it( 'should call the save method when some marker affects the data #2', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
@@ -538,7 +536,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'name', { usingOperation: false, affectsData: true, range } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -547,7 +545,7 @@ describe( 'Autosave', () => {
 					writer.updateMarker( 'name', { range: range2 } );
 				} );
 
-				sandbox.clock.tick( 1000 );
+				sinon.clock.tick( 1000 );
 
 				return runPromiseCycles().then( () => {
 					sinon.assert.calledTwice( autosave.adapter.save );
@@ -557,7 +555,7 @@ describe( 'Autosave', () => {
 
 		it( 'should call the save method when some marker affects the data #3', () => {
 			autosave.adapter = {
-				save: sandbox.spy()
+				save: sinon.spy()
 			};
 
 			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
@@ -567,7 +565,7 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'marker-affecting-data', { usingOperation: false, affectsData: false, range } );
 			} );
 
-			sandbox.clock.tick( 1000 );
+			sinon.clock.tick( 1000 );
 
 			return runPromiseCycles().then( () => {
 				sinon.assert.calledOnce( autosave.adapter.save );
@@ -575,7 +573,7 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should flush remaining call after editor\'s destroy', () => {
-			const spy = sandbox.spy();
+			const spy = sinon.spy();
 			const savedStates = [];
 
 			autosave.adapter = {
@@ -624,7 +622,7 @@ describe( 'Autosave', () => {
 			return editor.destroy()
 				.then( () => {
 					expect( pendingActions.hasAny ).to.be.true;
-					sandbox.clock.tick( 1000 );
+					sinon.clock.tick( 1000 );
 				} )
 				.then( () => Promise.resolve() )
 				.then( () => {
@@ -654,7 +652,7 @@ describe( 'Autosave', () => {
 						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
 					} );
 
-					sandbox.clock.tick( 10 );
+					sinon.clock.tick( 10 );
 				} );
 			}
 		}
