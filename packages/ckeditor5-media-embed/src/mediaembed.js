@@ -158,6 +158,7 @@ export default class MediaEmbed extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
+ *				plugins: [ MediaEmbed, ... ],
  *				mediaEmbed: {
  *					providers: [
  *						{
@@ -187,6 +188,7 @@ export default class MediaEmbed extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
+ *				plugins: [ MediaEmbed, ... ],
  *				mediaEmbed: {
  *					extraProviders: [
  *						{
