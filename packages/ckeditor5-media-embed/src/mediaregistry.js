@@ -25,7 +25,7 @@ export class MediaRegistry {
 	 * @param {module:media-embed/mediaembed~MediaEmbedConfig} config The configuration of the media embed feature.
 	 */
 	constructor( locale, config ) {
-		const providers = config.providers || [];
+		const providers = config.providers;
 		const extraProviders = config.extraProviders || [];
 		const removedProviders = new Set( config.removeProviders );
 		const providerDefinitions = providers
@@ -109,14 +109,8 @@ export class MediaRegistry {
 		url = url.trim();
 
 		for ( const definition of this.providerDefinitions ) {
-			let pattern, contentRenderer;
-
-			if ( definition instanceof RegExp ) {
-				pattern = definition;
-			} else {
-				pattern = definition.url;
-				contentRenderer = definition.html;
-			}
+			const contentRenderer = definition.html;
+			let pattern = definition.url;
 
 			if ( !Array.isArray( pattern ) ) {
 				pattern = [ pattern ];
