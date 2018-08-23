@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import View from '../../src/view';
 import LabeledInputView from '../../src/labeledinput/labeledinputview';
 import InputView from '../../src/inputtext/inputtextview';
 import LabelView from '../../src/label/labelview';
@@ -35,8 +36,20 @@ describe( 'LabeledInputView', () => {
 			expect( view.labelView ).to.instanceOf( LabelView );
 		} );
 
-		it( 'should pair inputView and labelView by unique id', () => {
-			expect( view.labelView.for ).to.equal( view.inputView.id ).to.ok;
+		it( 'should create view#errorView', () => {
+			expect( view.errorView ).to.instanceOf( View );
+
+			expect( view.errorView.element.tagName ).to.equal( 'DIV' );
+			expect( view.errorView.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.errorView.element.classList.contains( 'ck-labeled-input__error' ) ).to.be.true;
+		} );
+
+		it( 'should pair #inputView and #labelView by unique id', () => {
+			expect( view.labelView.for ).to.equal( view.inputView.id );
+		} );
+
+		it( 'should pair #inputView and #errorView by unique id', () => {
+			expect( view.inputView.ariaDesribedById ).to.equal( view.errorView.element.id );
 		} );
 	} );
 
@@ -55,11 +68,7 @@ describe( 'LabeledInputView', () => {
 		} );
 
 		it( 'should have the error container', () => {
-			const errorContainer = view.element.lastChild;
-
-			expect( errorContainer.tagName ).to.equal( 'DIV' );
-			expect( errorContainer.classList.contains( 'ck' ) ).to.be.true;
-			expect( errorContainer.classList.contains( 'ck-labeled-input__error' ) ).to.be.true;
+			expect( view.template.children[ 2 ] ).to.equal( view.errorView );
 		} );
 
 		describe( 'DOM bindings', () => {

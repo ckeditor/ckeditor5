@@ -27,7 +27,8 @@ export default class LabeledInputView extends View {
 	constructor( locale, InputView ) {
 		super( locale );
 
-		const id = `ck-input-${ uid() }`;
+		const inputUid = `ck-input-${ uid() }`;
+		const errorUid = `ck-error-${ uid() }`;
 
 		/**
 		 * The text of the label.
@@ -57,7 +58,7 @@ export default class LabeledInputView extends View {
 		 * The error text associated with the field.
 		 *
 		 * @observable
-		 * @member {String} #error
+		 * @member {String|null} #errorText
 		 */
 		this.set( 'errorText', null );
 
@@ -66,14 +67,21 @@ export default class LabeledInputView extends View {
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
 		 */
-		this.labelView = this._createLabelView( id );
+		this.labelView = this._createLabelView( inputUid );
 
 		/**
 		 * The input view.
 		 *
 		 * @member {module:ui/view~View} #inputView
 		 */
-		this.inputView = this._createInputView( InputView, id );
+		this.inputView = this._createInputView( InputView, inputUid, errorUid );
+
+		/**
+		 * The error view for the {@link #inputView}.
+		 *
+		 * @member {module:ui/view~View} #errorView
+		 */
+		this.errorView = this._createErrorView( errorUid );
 
 		const bind = this.bindTemplate;
 
@@ -89,21 +97,7 @@ export default class LabeledInputView extends View {
 			children: [
 				this.labelView,
 				this.inputView,
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck',
-							'ck-labeled-input__error',
-							bind.if( 'errorText', 'ck-hidden', value => !value )
-						]
-					},
-					children: [
-						{
-							text: bind.to( 'errorText' )
-						}
-					]
-				}
+				this.errorView
 			]
 		} );
 	}
@@ -129,13 +123,15 @@ export default class LabeledInputView extends View {
 	 *
 	 * @private
 	 * @param {Function} InputView Input view constructor.
-	 * @param {String} id Unique id to set as inputView#id attribute.
+	 * @param {String} inputUid Unique id to set as inputView#id attribute.
+	 * @param {String} errorUid Unique id of the error for the input's `aria-describedby` attribute.
 	 * @returns {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	_createInputView( InputView, id ) {
-		const inputView = new InputView( this.locale );
+	_createInputView( InputView, inputUid, errorUid ) {
+		const inputView = new InputView( this.locale, errorUid );
 
-		inputView.id = id;
+		inputView.id = inputUid;
+		inputView.ariaDesribedById = errorUid;
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
 		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
@@ -147,6 +143,37 @@ export default class LabeledInputView extends View {
 		} );
 
 		return inputView;
+	}
+
+	/**
+	 * Creates the error view instance.
+	 *
+	 * @private
+	 * @param {String} errorUid Unique id of the error, shared with the input's `aria-describedby` attribute.
+	 * @returns {module:ui/view~View}
+	 */
+	_createErrorView( errorUid ) {
+		const errorView = new View( this.locale );
+		const bind = this.bindTemplate;
+
+		errorView.setTemplate( 				{
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-labeled-input__error',
+					bind.if( 'errorText', 'ck-hidden', value => !value )
+				],
+				id: errorUid
+			},
+			children: [
+				{
+					text: bind.to( 'errorText' )
+				}
+			]
+		} );
+
+		return errorView;
 	}
 
 	/**

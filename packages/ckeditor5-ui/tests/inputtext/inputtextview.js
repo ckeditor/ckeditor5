@@ -8,9 +8,10 @@
 import InputTextView from '../../src/inputtext/inputtextview';
 
 describe( 'InputTextView', () => {
-	let view;
+	let view, ariaDesribedById;
 
 	beforeEach( () => {
+		ariaDesribedById = 'ck-error-1234567890';
 		view = new InputTextView();
 
 		view.render();
@@ -101,13 +102,33 @@ describe( 'InputTextView', () => {
 			} );
 		} );
 
-		describe( 'hasErrors', () => {
+		describe( 'class', () => {
 			it( 'should react on view#hasErrors', () => {
 				expect( view.element.classList.contains( 'ck-error' ) ).to.be.false;
 
 				view.hasError = true;
 
 				expect( view.element.classList.contains( 'ck-error' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'aria-invalid', () => {
+			it( 'should react on view#hasError', () => {
+				expect( view.element.getAttribute( 'aria-invalid' ) ).to.be.null;
+
+				view.hasError = true;
+
+				expect( view.element.getAttribute( 'aria-invalid' ) ).to.equal( 'true' );
+			} );
+		} );
+
+		describe( 'aria-describedby', () => {
+			it( 'should react on view#hasError', () => {
+				expect( view.element.getAttribute( 'aria-describedby' ) ).to.be.null;
+
+				view.ariaDesribedById = ariaDesribedById;
+
+				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( ariaDesribedById );
 			} );
 		} );
 

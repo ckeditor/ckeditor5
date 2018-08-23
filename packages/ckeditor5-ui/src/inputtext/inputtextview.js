@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-
 import '../../theme/components/inputtext/inputtext.css';
 
 /**
@@ -59,9 +58,18 @@ export default class InputTextView extends View {
 		 * `true` when the field has some error.
 		 *
 		 * @observable
-		 * @member {Boolean} #error
+		 * @member {Boolean} #hasError
 		 */
 		this.set( 'hasError', false );
+
+		/**
+		 * The `id` of the element describing this field, e.g. when it has
+		 * some error, which helps screen readers read the error text.
+		 *
+		 * @observable
+		 * @member {Boolean} #ariaDesribedById
+		 */
+		this.set( 'ariaDesribedById' );
 
 		const bind = this.bindTemplate;
 
@@ -77,7 +85,9 @@ export default class InputTextView extends View {
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' )
+				readonly: bind.to( 'isReadOnly' ),
+				'aria-invalid': bind.if( 'hasError', true ),
+				'aria-describedby': bind.to( 'ariaDesribedById' ),
 			},
 			on: {
 				input: bind.to( 'input' )
