@@ -60,13 +60,12 @@ describe( 'EasyImage', () => {
 
 	describe( 'integration tests', () => {
 		const CSUploader = CloudServicesUploadAdapter._UploadGateway;
-		const sandbox = sinon.sandbox.create();
 		let div;
 
 		before( () => {
 			// Mock uploader.
 			CloudServicesUploadAdapter._UploadGateway = UploadGatewayMock;
-			sandbox.stub( window, 'FileReader' ).callsFake( () => {
+			sinon.stub( window, 'FileReader' ).callsFake( () => {
 				const reader = {
 					readAsDataURL: () => {
 						reader.result = 'http://some-fake-url.jpg';
@@ -81,7 +80,6 @@ describe( 'EasyImage', () => {
 		after( () => {
 			// Restore original uploader.
 			CloudServicesUploadAdapter._UploadGateway = CSUploader;
-			sandbox.restore();
 		} );
 
 		beforeEach( () => {
@@ -91,6 +89,7 @@ describe( 'EasyImage', () => {
 
 		afterEach( () => {
 			window.document.body.removeChild( div );
+			sinon.restore();
 		} );
 
 		it( 'should enable easy image uploading', () => {
