@@ -38,11 +38,13 @@ export function createDataTransfer( data ) {
 	};
 }
 
-// Fires paste event on a given editor instance with a specific HTML data.
-//
-// @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
-// @param {String} html The HTML data with which paste event will be fired.
-function pasteHtml( editor, html ) {
+/**
+ * Fires paste event on a given editor instance with a specific HTML data.
+ *
+ * @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
+ * @param {String} html The HTML data with which paste event will be fired.
+ */
+export function pasteHtml( editor, html ) {
 	editor.editing.view.document.fire( 'paste', {
 		dataTransfer: createDataTransfer( { 'text/html': html } ),
 		preventDefault() {}

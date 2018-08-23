@@ -14,10 +14,11 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import PasteFromWord from '../../../src/pastefromword';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { expectPaste } from '../../_utils/utils';
+import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { pasteHtml } from '../../_utils/utils';
 
 import simple from '../../_data/list/simple/input.word2016.html';
 import styled from '../../_data/list/styled/input.word2016.html';
@@ -29,7 +30,9 @@ import heading3Styled from '../../_data/list/heading3-styled/input.word2016.html
 import heading7 from '../../_data/list/heading7/input.word2016.html';
 
 describe( 'List – integration', () => {
-	let element, editor;
+	let element, editor, insertContentStub, insertedModel;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		element = document.createElement( 'div' );
@@ -40,6 +43,16 @@ describe( 'List – integration', () => {
 			.create( element, { plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, PasteFromWord ] } )
 			.then( editorInstance => {
 				editor = editorInstance;
+
+				const model = editor.model;
+				const insertContent = model.insertContent;
+
+				insertContentStub = sinon.stub( editor.model, 'insertContent' ).callsFake( ( content, selection ) => {
+					// Save model string representation now as it may change after `insertContent()` function call
+					// so accessing it later may not work as it may have empty/changed structure.
+					insertedModel = stringify( content );
+					insertContent.call( model, content, selection );
+				} );
 			} );
 	} );
 
@@ -47,7 +60,13 @@ describe( 'List – integration', () => {
 		setData( editor.model, '<paragraph>[]</paragraph>' );
 	} );
 
+	afterEach( () => {
+		insertedModel = null;
+	} );
+
 	after( () => {
+		insertContentStub.restore();
+
 		editor.destroy();
 
 		element.remove();
@@ -63,9 +82,9 @@ describe( 'List – integration', () => {
 	//		<ol><li>Item1</li><li>Item2</li></ol>
 	it( 'pastes simple list', () => {
 		const expectedModel = '<listItem listIndent="0" listType="numbered">Item1</listItem>' +
-			'<listItem listIndent="0" listType="numbered">Item 2[]</listItem>';
+			'<listItem listIndent="0" listType="numbered">Item 2</listItem>';
 
-		expectPaste( editor, simple, expectedModel );
+		expectContent( simple, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -89,9 +108,9 @@ describe( 'List – integration', () => {
 			'<listItem listIndent="0" listType="bulleted"><$text linkHref="https://cksource.com">Lin</$text>k</listItem>' +
 			'<listItem listIndent="0" listType="bulleted"><$text italic="true">M</$text><$text bold="true" italic="true">ul</$text>' +
 			'<$text bold="true" italic="true" underline="true">tip</$text>' +
-			'<$text italic="true" underline="true">le[]</$text></listItem>';
+			'<$text italic="true" underline="true">le</$text></listItem>';
 
-		expectPaste( editor, styled, expectedModel );
+		expectContent( styled, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -115,9 +134,9 @@ describe( 'List – integration', () => {
 		const expectedModel = '<listItem listIndent="0" listType="numbered">Item1</listItem>' +
 			'<listItem listIndent="0" listType="numbered">Item 2</listItem>' +
 			'<paragraph>Some text</paragraph>' +
-			'<listItem listIndent="0" listType="bulleted">Bullet 1[]</listItem>';
+			'<listItem listIndent="0" listType="bulleted">Bullet 1</listItem>';
 
-		expectPaste( editor, multiple, expectedModel );
+		expectContent( multiple, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -143,9 +162,9 @@ describe( 'List – integration', () => {
 		const expectedModel = '<listItem listIndent="0" listType="numbered">Item1</listItem>' +
 			'<listItem listIndent="0" listType="numbered">Item 2</listItem>' +
 			'<listItem listIndent="0" listType="numbered">Item 1</listItem>' +
-			'<listItem listIndent="0" listType="numbered">Item2[]</listItem>';
+			'<listItem listIndent="0" listType="numbered">Item2</listItem>';
 
-		expectPaste( editor, multipleCombined, expectedModel );
+		expectContent( multipleCombined, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -200,9 +219,9 @@ describe( 'List – integration', () => {
 			'<listItem listIndent="0" listType="bulleted">J</listItem>' +
 			'<listItem listIndent="0" listType="bulleted">k</listItem>' +
 			'<paragraph></paragraph>' +
-			'<listItem listIndent="0" listType="numbered">h1[]</listItem>';
+			'<listItem listIndent="0" listType="numbered">h1</listItem>';
 
-		expectPaste( editor, manyOneItem, expectedModel );
+		expectContent( manyOneItem, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -220,9 +239,9 @@ describe( 'List – integration', () => {
 	// Since headings cannot be used inside lists, they should be transformed to a regular text.
 	it( 'pastes list created from headings (h1)', () => {
 		const expectedModel = '<listItem listIndent="0" listType="numbered">H1 1</listItem>' +
-			'<listItem listIndent="0" listType="numbered">H1 2[]</listItem>';
+			'<listItem listIndent="0" listType="numbered">H1 2</listItem>';
 
-		expectPaste( editor, heading1, expectedModel );
+		expectContent( heading1, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -241,9 +260,9 @@ describe( 'List – integration', () => {
 	it( 'pastes list created from styled headings (h3)', () => {
 		const expectedModel = '<listItem listIndent="0" listType="bulleted">H<$text bold="true">2 1</$text></listItem>' +
 			'<listItem listIndent="0" listType="bulleted"><$text italic="true" underline="true">H</$text>' +
-			'<$text underline="true">2</$text> 2[]</listItem>';
+			'<$text underline="true">2</$text> 2</listItem>';
 
-		expectPaste( editor, heading3Styled, expectedModel );
+		expectContent( heading3Styled, expectedModel );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -258,8 +277,14 @@ describe( 'List – integration', () => {
 	//
 	// In Word `Heading 7` is represented as `<p class="MsoHeading7"...>`.
 	it( 'pastes list created from styled headings (h3)', () => {
-		const expectedModel = '<listItem listIndent="0" listType="numbered">H 7[]</listItem>';
+		const expectedModel = '<listItem listIndent="0" listType="numbered">H 7</listItem>';
 
-		expectPaste( editor, heading7, expectedModel );
+		expectContent( heading7, expectedModel );
 	} );
+
+	function expectContent( input, expectedModel ) {
+		pasteHtml( editor, input );
+
+		expect( insertedModel ).to.equal( expectedModel );
+	}
 } );
