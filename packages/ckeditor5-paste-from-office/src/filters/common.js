@@ -13,7 +13,7 @@ const htmlDataProcessor = new HtmlDataProcessor();
  * @param {Object} data
  * @param {String} data.html HTML string from which `body` contents will be extracted.
  * @returns {Object} result
- * @returns {String|null} result.body Extracted `body` contents. If `body` tag was not present null is returned.
+ * @returns {String|null} result.body Extracted `body` contents. If `body` tag was not present or empty, `null` is returned.
  */
 export function extractBody( data ) {
 	const bodyRegexp = /<body[^>]*>([\s*|\S*]*?)<\/body>/i;
@@ -25,14 +25,15 @@ export function extractBody( data ) {
 }
 
 /**
- * Parses provided HTML string to {@link module:engine/view/view~View} element.
+ * Parses provided HTML string to {@link module:engine/view/node~Node}
+ * or {@link module:engine/view/documentfragment~DocumentFragment} instance.
  *
  * @param {Object} data
  * @param {String} data.body HTML string which should be parsed.
  * @returns {Object} result
  * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} result.view
- * The {@link module:engine/view/view~View} class instance created based on provided HTML string.
- * Returns `null` if `data.body` parameter was empty.
+ * The {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment} class
+ * instance created based on provided HTML string. Returns `null` if `data.body` parameter was empty.
  */
 export function bodyToView( data ) {
 	data.view = data.body ? htmlDataProcessor.toView( data.body ) : null;
@@ -68,6 +69,9 @@ export function extractStyles( data ) {
 /**
  * Parses given styles string returning native `CSSStyleSheet` object.
  *
+ * **Important**: during parsing, the browser will remove all invalid properties (e.g. all `mso-something-something: ...`)
+ * and all invalid selectors (like `@list l1:level1`).
+ *
  * @param {Object} data
  * @param {String} data.styles Styles to be parse.
  * @param {Document} domDocument Document used to create helper element in which stylesheet will be injected.
@@ -94,7 +98,7 @@ export function stylesToStylesheet( data, domDocument ) {
 
 // Parses provided CSS string creating native `CSSStyleSheet` object.
 //
-// If available this function use shadow DOM element to parse CSS. If not it fallback to ifrmae element.
+// If available this function uses shadow DOM element to parse CSS. If not, it fallbacks to the iframe element.
 //
 // @param {String} cssString String containing CSS rules/stylsheet to be parsed.
 // @param {Document} domDocument Document used to create helper element in which stylesheet will be injected.

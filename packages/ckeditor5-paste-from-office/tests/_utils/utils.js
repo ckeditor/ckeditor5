@@ -25,6 +25,19 @@ export function expectPaste( editor, input, expectedModel, expectedView = null )
 }
 
 /**
+ * Fires paste event on a given editor instance with a specific HTML data.
+ *
+ * @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
+ * @param {String} html The HTML data with which paste event will be fired.
+ */
+export function pasteHtml( editor, html ) {
+	editor.editing.view.document.fire( 'paste', {
+		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		preventDefault() {}
+	} );
+}
+
+/**
  * Mocks dataTransfer object which can be used for simulating paste.
  *
  * @param {Object} data Object containing "mime type - data" pairs.
@@ -36,17 +49,4 @@ export function createDataTransfer( data ) {
 			return data[ type ];
 		}
 	};
-}
-
-/**
- * Fires paste event on a given editor instance with a specific HTML data.
- *
- * @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
- * @param {String} html The HTML data with which paste event will be fired.
- */
-export function pasteHtml( editor, html ) {
-	editor.editing.view.document.fire( 'paste', {
-		dataTransfer: createDataTransfer( { 'text/html': html } ),
-		preventDefault() {}
-	} );
 }

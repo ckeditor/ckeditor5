@@ -18,10 +18,11 @@ import RawWriter from '@ckeditor/ckeditor5-engine/src/view/rawwriter';
  *		<h1 style='mso-list:l0 level1 lfo1'>...</h1> // Heading 1 based list.
  *
  * @param {Object} data
- * @param {module:engine/view/view~View} data.view The {@link module:engine/view/view~View} instance.
+ * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} data.view The view
+ * structure which to transform.
  * @returns {Object} result
- * @returns {module:engine/view/view~View} result.view The {@link module:engine/view/view~View} instance
- * with list-like elements transformed into semantic lists.
+ * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} result.view The view
+ * structure instance with list-like elements transformed into semantic lists.
  */
 export function paragraphsToLists( data ) {
 	if ( data.view ) {
@@ -59,6 +60,7 @@ const listBulletMatcher = new Matcher( {
 //
 // @param {module:engine/src/view/position~Position} startPosition Position from which to start looking.
 // @returns {Array.<Object>} Array of found list items. Each item is an object containing:
+//
 //		* {module:engine/src/view/element~Element} element List-like element.
 //		* {Number} id List item id parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} order List item creation order parsed from `mso-list` style (see `getListItemData()` function).
@@ -84,8 +86,8 @@ function findAllListNodes( startPosition ) {
 	return listNodes;
 }
 
-// Transforms given list-like nodes into semantic lists. As the function operates on provided
-// {module:engine/src/view/element~Element elements}, it will modify the view structure to which list elements belongs.
+// Transforms given list-like nodes into semantic lists. As the function operates on a provided
+// {module:engine/src/view/element~Element elements}, it will modify the view structure to which those list elements belongs.
 //
 // @param {Array.<Object>} listItems Array containing list items data. Usually it is the output of `findAllListNodes()` function.
 // @param {String} styles CSS styles which may contain additional data about lists format.
@@ -115,7 +117,7 @@ function createLists( listItems, styles ) {
 
 // Extracts list information from Word specific list style like:
 //
-//		`mso-list:l1 level1 lfo1`
+//		`style="mso-list:l1 level1 lfo1"`
 //
 // where:
 //
@@ -141,15 +143,19 @@ function getListItemData( element ) {
 	return data;
 }
 
-// Checks list item style based on provided CSS. List item style is extracted from CSS stylesheet. Each list with its specific
-// styling `mso-list:l1 level1 lfo1` has its dedicated properties in a stylesheet defined with selector like:
+// Checks list item style based on a provided CSS.
+//
+// List item style is extracted from CSS stylesheet. Each list with its specific style attribute value (`mso-list:l1 level1 lfo1`)
+// has its dedicated properties in a CSS stylesheet defined with a selector like:
 //
 // 		@list l1:level1 { ... }
 //
-// which contains `mso-level-number-format` property which defines list numbering/bullet style. If this property
+// It contains `mso-level-number-format` property which defines list numbering/bullet style. If this property
 // is not defined it means default `decimal` numbering.
 //
-// @param {Object} listItem List item for which list style will be find.
+// Here CSS string representation is used as `mso-level-number-format` is invalid CSS property which gets removed during parsing.
+//
+// @param {Object} listItem List item for which list style will be searched for.
 // @param {String} styles CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type Type of the list, could be `ul` or `ol`.
