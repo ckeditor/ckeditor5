@@ -6,11 +6,13 @@ category: features
 
 # Media embed
 
-The {@link module:media-embed/mediaembed~MediaEmbed} feature brings a basic support for embeddable, synchronous media in the editor content.
+The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for embeddable media (such as YouTube videos or tweets) in the editor content.
+
+Depending on configuration, it may require using services like [iframely](http://iframe.ly/) or [embed.ly](https://embed.ly/) to display content of these embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
 
 ## Demo
 
-### Example URLs
+Example URLs:
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -29,14 +31,14 @@ npm install --save @ckeditor/ckeditor5-media-embed
 Then add `'MediaEmbed'` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature:
 
 ```js
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/table';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ MediaEmbed, ... ],
 		toolbar: [ 'mediaEmbed', ... ]
 		mediaEmbed: {
-			...
+			// configuration...
 		}
 	} )
 	.then( ... )
@@ -49,7 +51,9 @@ ClassicEditor
 
 The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`}:
 
-* **Non–semantic** (when `false`, default) – outputs media in the same way it works in the editor, i.e. the media preview is saved to the database.
+#### Non–semantic output
+
+TODO (when `false`, default) – outputs media in the same way it works in the editor, i.e. the media preview is saved to the database.
 
    ```html
    <figure class="media">
@@ -59,7 +63,9 @@ The data output format of the feature can be configured using the {@link module:
    </figure>
    ```
 
-* **Semantic** (when `true`) – does not include the preview of the media, just just the `<oembed>` tag with the `url` attribute. Best when the application processes (expands) the media on the server–side or directly in the front–end, preserving the versatile database representation.
+##### Semantic output
+
+TODO (when `true`) – does not include the preview of the media, just just the `<oembed>` tag with the `url` attribute. Best when the application processes (expands) the media on the server–side or directly in the front–end, preserving the versatile database representation.
 
    ```html
    <figure class="media">
@@ -125,7 +131,11 @@ To extend the default list of default providers, use {@link module:media-embed/m
 
 To remove certain providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.premoveProviders`}.
 
-## Using media in the front–end
+## Displaying embedded media on your website
+
+The media embed feature produces output that may not contain previews of some embedded media. That happens for all media types when the feature is configured to produce a [semantic output](#semantic-output) and for non-previewable media in the default configuration. That means that you need to transform the output `<oembed>` elements into real media on your target website.
+
+There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your backend service and you can use different services than described in this section.
 
 ### Iframely
 
