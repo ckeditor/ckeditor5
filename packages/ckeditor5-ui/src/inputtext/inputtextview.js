@@ -55,7 +55,8 @@ export default class InputTextView extends View {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * `true` when the field has some error.
+		 * Set to `true` when the field has some error. Usually controlled via
+		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
 		 *
 		 * @observable
 		 * @member {Boolean} #hasError
@@ -87,7 +88,7 @@ export default class InputTextView extends View {
 				placeholder: bind.to( 'placeholder' ),
 				readonly: bind.to( 'isReadOnly' ),
 				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDesribedById' ),
+				'aria-describedby': bind.to( 'ariaDesribedById' )
 			},
 			on: {
 				input: bind.to( 'input' )
