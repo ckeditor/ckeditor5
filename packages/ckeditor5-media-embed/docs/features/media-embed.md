@@ -104,7 +104,7 @@ Names of providers **without previews**:
 
 * `'instagram'`,
 * `'twitter'`,
-* `'google'`,
+* `'googleMaps'`,
 * `'flickr'`,
 * `'facebook'`
 
@@ -128,7 +128,7 @@ ClassicEditor
 		plugins: [ MediaEmbed, ... ],
 		toolbar: [ 'mediaEmbed', ... ]
 		mediaEmbed: {
-			removeProviders: [ 'instagram', 'twitter', 'google', 'flickr', 'facebook' ]
+			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 		}
 	} )
 	.then( ... )

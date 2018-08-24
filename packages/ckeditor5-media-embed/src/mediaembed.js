@@ -133,7 +133,7 @@ export default class MediaEmbed extends Plugin {
  *
  * * "instagram",
  * * "twitter",
- * * "google",
+ * * "googleMaps",
  * * "flickr",
  * * "facebook"
  *

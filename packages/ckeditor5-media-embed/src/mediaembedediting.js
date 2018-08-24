@@ -106,7 +106,7 @@ export default class MediaEmbedEditing extends Plugin {
 					url: /^(https:\/\/)?(www\.)?twitter\.com/
 				},
 				{
-					name: 'google',
+					name: 'googleMaps',
 					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
 				},
 				{
@@ -195,7 +195,7 @@ export default class MediaEmbedEditing extends Plugin {
 				view: {
 					name: 'oembed',
 					attributes: {
-						'url': true
+						url: true
 					}
 				},
 				model: ( viewMedia, modelWriter ) => {

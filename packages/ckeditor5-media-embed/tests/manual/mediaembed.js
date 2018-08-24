@@ -16,7 +16,7 @@ ClassicEditor
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		],
 		mediaEmbed: {
-			removeProviders: [ 'instagram', 'twitter', 'google', 'flickr', 'facebook' ]
+			removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
 		}
 	} )
 	.then( editor => {
