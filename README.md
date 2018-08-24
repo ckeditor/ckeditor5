@@ -73,7 +73,7 @@ Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
 ```
 
-Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#create) method:
+Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#static-function-create) method:
 
 ```html
 <script>
