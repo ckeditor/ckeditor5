@@ -14,7 +14,7 @@ This package implements font size and font family support for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-font` package](https://docs.ckeditor.com/ckeditor5/latest/api/font.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-font` package](https://ckeditor.com/docs/ckeditor5/latest/api/font.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
