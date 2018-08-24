@@ -59,7 +59,7 @@ describe( 'transform', () => {
 	};
 
 	it( 'error logging', () => {
-		const spy = sinon.spy( log, 'error' );
+		const spy = sinon.stub( log, 'error' );
 
 		const nodeA = new Node();
 		const nodeB = new Node();
