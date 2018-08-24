@@ -48,6 +48,8 @@ import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
 import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
 
+import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
+
 import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
 
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
@@ -84,6 +86,9 @@ const icons = {
 
 	// list
 	bulletedList, numberedList,
+
+	// media-embed
+	media,
 
 	// paragraph
 	paragraph,

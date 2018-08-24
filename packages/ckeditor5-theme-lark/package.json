@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-highlight": "^10.0.2",
     "@ckeditor/ckeditor5-link": "^10.0.3",
     "@ckeditor/ckeditor5-list": "^11.0.1",
+    "@ckeditor/ckeditor5-media-embed": "^0.0.1",
     "@ckeditor/ckeditor5-paragraph": "^10.0.2",
     "@ckeditor/ckeditor5-undo": "^10.0.2",
     "@ckeditor/ckeditor5-utils": "^10.2.0",
