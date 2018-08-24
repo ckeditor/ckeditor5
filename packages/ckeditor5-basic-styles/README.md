@@ -14,7 +14,7 @@ This package contains CKEditor 5 features allowing to apply basic text formattin
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-basic-styles` package](https://docs.ckeditor.com/ckeditor5/latest/api/basic-styles.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-basic-styles` package](https://ckeditor.com/docs/ckeditor5/latest/api/basic-styles.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
