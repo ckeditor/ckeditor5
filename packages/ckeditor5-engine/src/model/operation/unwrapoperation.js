@@ -26,9 +26,10 @@ export default class UnwrapOperation extends Operation {
 	 * Creates an unwrap operation.
 	 *
 	 * @param {module:engine/model/position~Position} position Position inside the element to unwrap.
-	 * @param {Number} howMany How many nodes are inside unwrapped element.
+	 * @param {Number} howMany Total offset size of nodes that are inside unwrapped element.
+	 * @param {module:engine/model/position~Position} graveyardPosition Position in the graveyard root to which
+	 * the unwrapped element will be moved.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
-	 * @param {module:engine/model/position~Position} graveyardPosition Position in graveyard to which the unwrapped element will be moved.
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position, howMany, graveyardPosition, baseVersion ) {
@@ -37,19 +38,24 @@ export default class UnwrapOperation extends Operation {
 		/**
 		 * Position inside the element to unwrap.
 		 *
+		 * It should be a position at the beginning of that element.
+		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/unwrapoperation~UnwrapOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 		this.position.stickiness = 'toPrevious'; // Keep the position always at the beginning of the element.
 
+		/**
+		 * Position in the graveyard root to which the unwrapped element will be moved.
+		 *
+		 * @member {module:engine/model/position~Position} module:engine/model/operation/unwrapoperation~UnwrapOperation#graveyardPosition
+		 */
 		this.graveyardPosition = Position.createFromPosition( graveyardPosition );
 
 		/**
-		 * How many nodes are inside unwrapped element.
+		 * Total offset size of nodes that are inside unwrapped element.
 		 *
-		 * This information is needed to properly reverse `UnwrapOperation` and to properly transform by `UnwrapOperation`.
-		 *
-		 * @member {Number} module:engine/model/operation/unwrapoperation~UnwrapOperation#_howMany
+		 * @member {Number} module:engine/model/operation/unwrapoperation~UnwrapOperation#howMany
 		 */
 		this.howMany = howMany;
 	}
@@ -71,6 +77,12 @@ export default class UnwrapOperation extends Operation {
 		return Range.createFromPositionAndShift( this.position, this.howMany );
 	}
 
+	/**
+	 * A position where the unwrapped nodes will be moved. At the same time, it is the position before the unwrapped element.
+	 *
+	 * @readonly
+	 * @type {module:engine/model/position~Position}
+	 */
 	get targetPosition() {
 		const path = this.position.path.slice( 0, -1 );
 

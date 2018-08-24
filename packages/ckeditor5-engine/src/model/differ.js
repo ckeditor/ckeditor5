@@ -119,6 +119,10 @@ export default class Differ {
 	 * @param {module:engine/model/operation/operation~Operation} operation An operation to buffer.
 	 */
 	bufferOperation( operation ) {
+		// Below we take an operation, check its type, then use its parameters in marking (private) methods.
+		// The general rule is to not mark elements inside inserted element. All inserted elements are re-rendered.
+		// Marking changes in them would cause a "double" changing then.
+		//
 		switch ( operation.type ) {
 			case 'insert': {
 				if ( this._isInInsertedElement( operation.position.parent ) ) {

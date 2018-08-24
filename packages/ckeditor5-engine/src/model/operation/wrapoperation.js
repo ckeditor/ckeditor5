@@ -17,8 +17,7 @@ import { _insert, _move } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Operation to wrap a range of {@link module:engine/model/item~Item model items} with
- * a {@link module:engine/model/element~Element model element}.
+ * Operation to wrap a range of {@link module:engine/model/node~Node nodes} with an {@link module:engine/model/element~Element element}.
  *
  * @extends module:engine/model/operation/operation~Operation
  */
@@ -39,28 +38,38 @@ export default class WrapOperation extends Operation {
 		super( baseVersion );
 
 		/**
-		 * Position before the first {@link module:engine/model/item~Item model item} to wrap.
+		 * Position before the first {@link module:engine/model/node~Node node} to wrap.
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/wrapoperation~WrapOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 		this.position.stickiness = 'toNext';
-		// maybe change to a range
 
 		/**
-		 * Offset size of wrapped range.
+		 * Total offset size of the wrapped range.
+		 *
+		 * Wrapped range will start at `position.offset` and end at `position.offset + howMany`.
 		 *
 		 * @member {Number} module:engine/model/operation/wrapoperation~WrapOperation#howMany
 		 */
 		this.howMany = howMany;
 
 		/**
-		 * Element to wrap with.
+		 * Wrapper element that will be used to wrap nodes.
+		 *
+		 * Is `null` if `elementOrPosition` was a {@link module:engine/model/position~Position}.
 		 *
 		 * @member {module:engine/model/element~Element} module:engine/model/operation/wrapoperation~WrapOperation#element
 		 */
 		this.element = elementOrPosition instanceof Element ? elementOrPosition : null;
 
+		/**
+		 * Position in the graveyard root before the element that will be used as a wrapper element.
+		 *
+		 * Is `null` if `elementOrPosition` was a {@link module:engine/model/element~Element}.
+		 *
+		 * @member {module:engine/model/element~Element} module:engine/model/operation/wrapoperation~WrapOperation#graveyardPosition
+		 */
 		this.graveyardPosition = elementOrPosition instanceof Element ? null : Position.createFromPosition( elementOrPosition );
 
 		if ( this.graveyardPosition ) {

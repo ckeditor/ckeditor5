@@ -123,7 +123,7 @@ export function _move( sourceRange, targetPosition ) {
  *
  * @protected
  * @function module:engine/model/operation/utils~utils._setAttribute
- * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Should be flat.
+ * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Must be a flat range.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
  */

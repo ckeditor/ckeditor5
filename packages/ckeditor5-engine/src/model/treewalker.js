@@ -90,7 +90,7 @@ export default class TreeWalker {
 			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
-		// Reset position stickiness in case it was set to other value.
+		// Reset position stickiness in case it was set to other value, as the stickiness is kept after cloning.
 		this.position.stickiness = 'toNone';
 
 		/**

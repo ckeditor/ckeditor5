@@ -34,8 +34,7 @@ export default class LivePosition extends Position {
 	 * @see module:engine/model/position~Position
 	 * @param {module:engine/model/rootelement~RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {module:engine/model/position~PositionStickiness} [stickiness] Position stickiness. Defaults to `'toNone'`.
-	 * See {@link module:engine/model/liveposition~LivePosition#stickiness}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
 	 */
 	constructor( root, path, stickiness = 'toNone' ) {
 		super( root, path, stickiness );
@@ -50,12 +49,6 @@ export default class LivePosition extends Position {
 				'model-liveposition-root-not-rootelement: LivePosition\'s root has to be an instance of RootElement.'
 			);
 		}
-
-		/**
-		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
-		 *
-		 * @member {module:engine/model/position~PositionStickiness} module:engine/model/liveposition~LivePosition#stickiness
-		 */
 
 		bindWithDocument.call( this );
 	}
