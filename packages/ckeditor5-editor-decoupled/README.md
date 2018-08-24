@@ -12,13 +12,13 @@ CKEditor 5 decoupled editor implementation
 
 The decoupled editor implementation for CKEditor 5.
 
-This package contains the [`DecoupledEditor`](https://docs.ckeditor.com/ckeditor5/latest/api/module_editor-decoupled_decouplededitor-DecoupledEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
+This package contains the [`DecoupledEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-decoupled_decouplededitor-DecoupledEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the decoupled editor. This editor implementation is also available in the [document build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document). Read more about [CKEditor 5 Builds](https://docs.ckeditor.com/ckeditor5/latest/builds/index.html).
+This package contains the source version of the decoupled editor. This editor implementation is also available in the [document build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document). Read more about [CKEditor 5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-editor-decoupled` package](https://docs.ckeditor.com/ckeditor5/latest/api/editor-decoupled.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-editor-decoupled` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-decoupled.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
