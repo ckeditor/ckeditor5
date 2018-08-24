@@ -175,7 +175,7 @@ export default class MediaEmbed extends Plugin {
  * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.
  *
  * To **remove** certain providers, use
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.premoveProviders`}.
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
  *
  * @member {Array.<module:media-embed/mediaembed~MediaEmbedProvider>} module:media-embed/mediaembed~MediaEmbedConfig#providers
  */

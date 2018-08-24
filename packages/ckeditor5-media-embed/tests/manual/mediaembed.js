@@ -14,7 +14,10 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, MediaEmbed ],
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
-		]
+		],
+		mediaEmbed: {
+			removeProviders: [ 'instagram', 'twitter', 'google', 'flickr', 'facebook' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
