@@ -7,6 +7,8 @@
  * General test utils for CKEditor.
  */
 const utils = {
+	sinon,
+
 	/**
 	 * Creates Sinon sandbox in {@link utils#sinon} and plugs `afterEach()` callback which
 	 * restores all spies and stubs created in this sandbox.
@@ -30,11 +32,8 @@ const utils = {
 	 * **Note**: Do not use `testUtils.createSinonSandbox()` outside `describe()` block as it will attach `afterEach()` calls
 	 * to all test - not only those in current file.
 	 */
-	createSinonSandbox() {
-		before( () => {
-			utils.sinon = sinon.sandbox.create();
-		} );
 
+	createSinonSandbox() {
 		afterEach( () => {
 			utils.sinon.restore();
 		} );
