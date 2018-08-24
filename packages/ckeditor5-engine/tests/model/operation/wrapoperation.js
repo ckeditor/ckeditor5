@@ -42,7 +42,7 @@ describe( 'WrapOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.WrapOperation',
+				__className: 'WrapOperation',
 				baseVersion: 0,
 				position: op.position.toJSON(),
 				graveyardPosition: op.graveyardPosition.toJSON(),
@@ -61,7 +61,7 @@ describe( 'WrapOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.WrapOperation',
+				__className: 'WrapOperation',
 				baseVersion: 0,
 				position: op.position.toJSON(),
 				element: op.element.toJSON(),

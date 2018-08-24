@@ -34,7 +34,7 @@ describe( 'Operation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.Operation',
+				__className: 'Operation',
 				baseVersion: 4
 			} );
 		} );
@@ -47,7 +47,7 @@ describe( 'Operation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.Operation',
+				__className: 'Operation',
 				baseVersion: 4
 			} );
 		} );

@@ -108,7 +108,7 @@ describe( 'RenameOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.RenameOperation',
+				__className: 'RenameOperation',
 				baseVersion: 0,
 				position: op.position.toJSON(),
 				newName: 'newName',

@@ -186,7 +186,7 @@ export default class WrapOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.WrapOperation';
+		return 'WrapOperation';
 	}
 
 	/**

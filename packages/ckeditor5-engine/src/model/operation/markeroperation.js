@@ -126,7 +126,7 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.MarkerOperation';
+		return 'MarkerOperation';
 	}
 
 	/**

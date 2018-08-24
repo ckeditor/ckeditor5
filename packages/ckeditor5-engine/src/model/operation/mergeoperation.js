@@ -169,7 +169,7 @@ export default class MergeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.MergeOperation';
+		return 'MergeOperation';
 	}
 
 	/**
