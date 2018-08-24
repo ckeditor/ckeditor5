@@ -132,7 +132,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 * Various CSS variables (mostly colors) have been removed. Please make sure your code uses the latest theme API.
 * From now on there's only one subset of the theme, aligned to the default look of CKEditor 5.
 * Various UI components' styles have been rewritten. The CSS selectors that used to style them may have a different specificity and appear in a different order.
-* The styles are no longer developed in SASS which means various `.scss` files (including variables, mixins, etc.) became unavailable. Please refer to the [Theme Customization](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
+* The styles are no longer developed in SASS which means various `.scss` files (including variables, mixins, etc.) became unavailable. Please refer to the [Theme Customization](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
