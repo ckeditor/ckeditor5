@@ -12,16 +12,16 @@ CKEditor 5 essentials plugin
 
 Essential editing features for CKEditor 5 wrapped in one plugin.
 
-The [`Essentials`](https://docs.ckeditor.com/ckeditor5/latest/api/module_essentials_essentials-Essentials.html) plugin includes all fundamental editing features:
+The [`Essentials`](https://ckeditor.com/docs/ckeditor5/latest/api/module_essentials_essentials-Essentials.html) plugin includes all fundamental editing features:
 
-* [`Clipboard`](https://docs.ckeditor.com/ckeditor5/latest/api/module_clipboard_clipboard-Clipboard.html)
-* [`Enter`](https://docs.ckeditor.com/ckeditor5/latest/api/module_enter_enter-Enter.html)
-* [`Typing`](https://docs.ckeditor.com/ckeditor5/latest/api/module_typing_typing-Typing.html)
-* [`Undo`](https://docs.ckeditor.com/ckeditor5/latest/api/module_undo_undo-Undo.html)
+* [`Clipboard`](https://ckeditor.com/docs/ckeditor5/latest/api/module_clipboard_clipboard-Clipboard.html)
+* [`Enter`](https://ckeditor.com/docs/ckeditor5/latest/api/module_enter_enter-Enter.html)
+* [`Typing`](https://ckeditor.com/docs/ckeditor5/latest/api/module_typing_typing-Typing.html)
+* [`Undo`](https://ckeditor.com/docs/ckeditor5/latest/api/module_undo_undo-Undo.html)
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-essentials` package](https://docs.ckeditor.com/ckeditor5/latest/api/essentials.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-essentials` package](https://ckeditor.com/docs/ckeditor5/latest/api/essentials.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
