@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
+    "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
