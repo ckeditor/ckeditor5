@@ -9,8 +9,8 @@
 
 import View from '../view';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
-
 import LabelView from '../label/labelview';
+import '../../theme/components/labeledinput/labeledinput.css';
 
 /**
  * The labeled input view class.
@@ -27,7 +27,8 @@ export default class LabeledInputView extends View {
 	constructor( locale, InputView ) {
 		super( locale );
 
-		const id = `ck-input-${ uid() }`;
+		const inputUid = `ck-input-${ uid() }`;
+		const errorUid = `ck-error-${ uid() }`;
 
 		/**
 		 * The text of the label.
@@ -54,18 +55,43 @@ export default class LabeledInputView extends View {
 		this.set( 'isReadOnly', false );
 
 		/**
+		 * The validation error text. When set, it will be displayed
+		 * next to the {@link #inputView} as a typical validation error message.
+		 * Set it to `null` to hide the message.
+		 *
+		 * **Note:** Setting this property to anything but `null` will automatically
+		 * make the {@link module:ui/inputtext/inputtextview~InputTextView#hasError `hasError`}
+		 * of the {@link #inputView} `true`.
+		 *
+		 * **Note:** Typing in the {@link #inputView} which fires the
+		 * {@link module:ui/inputtext/inputtextview~InputTextView#event:input `input` event}
+		 * resets this property back to `null`, indicating that the input field can be re–validated.
+		 *
+		 * @observable
+		 * @member {String|null} #errorText
+		 */
+		this.set( 'errorText', null );
+
+		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
 		 */
-		this.labelView = this._createLabelView( id );
+		this.labelView = this._createLabelView( inputUid );
 
 		/**
 		 * The input view.
 		 *
-		 * @member {module:ui/view~View} #inputView
+		 * @member {module:ui/inputtext/inputtextview~InputTextView} #inputView
 		 */
-		this.inputView = this._createInputView( InputView, id );
+		this.inputView = this._createInputView( InputView, inputUid, errorUid );
+
+		/**
+		 * The error view for the {@link #inputView}.
+		 *
+		 * @member {module:ui/view~View} #errorView
+		 */
+		this.errorView = this._createErrorView( errorUid );
 
 		const bind = this.bindTemplate;
 
@@ -80,7 +106,8 @@ export default class LabeledInputView extends View {
 			},
 			children: [
 				this.labelView,
-				this.inputView
+				this.inputView,
+				this.errorView
 			]
 		} );
 	}
@@ -106,17 +133,57 @@ export default class LabeledInputView extends View {
 	 *
 	 * @private
 	 * @param {Function} InputView Input view constructor.
-	 * @param {String} id Unique id to set as inputView#id attribute.
+	 * @param {String} inputUid Unique id to set as inputView#id attribute.
+	 * @param {String} errorUid Unique id of the error for the input's `aria-describedby` attribute.
 	 * @returns {module:ui/inputtext/inputtextview~InputTextView}
 	 */
-	_createInputView( InputView, id ) {
-		const inputView = new InputView( this.locale );
+	_createInputView( InputView, inputUid, errorUid ) {
+		const inputView = new InputView( this.locale, errorUid );
 
-		inputView.id = id;
+		inputView.id = inputUid;
+		inputView.ariaDesribedById = errorUid;
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
+		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
+
+		inputView.on( 'input', () => {
+			// UX: Make the error text disappear and disable the error indicator as the user
+			// starts fixing the errors.
+			this.errorText = null;
+		} );
 
 		return inputView;
+	}
+
+	/**
+	 * Creates the error view instance.
+	 *
+	 * @private
+	 * @param {String} errorUid Unique id of the error, shared with the input's `aria-describedby` attribute.
+	 * @returns {module:ui/view~View}
+	 */
+	_createErrorView( errorUid ) {
+		const errorView = new View( this.locale );
+		const bind = this.bindTemplate;
+
+		errorView.setTemplate( 				{
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ck-labeled-input__error',
+					bind.if( 'errorText', 'ck-hidden', value => !value )
+				],
+				id: errorUid
+			},
+			children: [
+				{
+					text: bind.to( 'errorText' )
+				}
+			]
+		} );
+
+		return errorView;
 	}
 
 	/**

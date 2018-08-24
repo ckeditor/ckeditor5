@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-
 import '../../theme/components/inputtext/inputtext.css';
 
 /**
@@ -55,6 +54,24 @@ export default class InputTextView extends View {
 		 */
 		this.set( 'isReadOnly', false );
 
+		/**
+		 * Set to `true` when the field has some error. Usually controlled via
+		 * {@link module:ui/labeledinput/labeledinputview~LabeledInputView#errorText}.
+		 *
+		 * @observable
+		 * @member {Boolean} #hasError
+		 */
+		this.set( 'hasError', false );
+
+		/**
+		 * The `id` of the element describing this field, e.g. when it has
+		 * some error, it helps screen readers read the error text.
+		 *
+		 * @observable
+		 * @member {Boolean} #ariaDesribedById
+		 */
+		this.set( 'ariaDesribedById' );
+
 		const bind = this.bindTemplate;
 
 		this.setTemplate( {
@@ -64,13 +81,26 @@ export default class InputTextView extends View {
 				class: [
 					'ck',
 					'ck-input',
-					'ck-input-text'
+					'ck-input-text',
+					bind.if( 'hasError', 'ck-error' )
 				],
 				id: bind.to( 'id' ),
 				placeholder: bind.to( 'placeholder' ),
-				readonly: bind.to( 'isReadOnly' )
+				readonly: bind.to( 'isReadOnly' ),
+				'aria-invalid': bind.if( 'hasError', true ),
+				'aria-describedby': bind.to( 'ariaDesribedById' )
+			},
+			on: {
+				input: bind.to( 'input' )
 			}
 		} );
+
+		/**
+		 * Fired when the user types in the input. Corresponds to the native
+		 * DOM `input` event.
+		 *
+		 * @event input
+		 */
 	}
 
 	/**

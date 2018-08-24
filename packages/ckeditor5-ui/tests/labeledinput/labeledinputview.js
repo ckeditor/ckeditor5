@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import View from '../../src/view';
 import LabeledInputView from '../../src/labeledinput/labeledinputview';
 import InputView from '../../src/inputtext/inputtextview';
 import LabelView from '../../src/label/labelview';
@@ -23,6 +24,10 @@ describe( 'LabeledInputView', () => {
 			expect( view.locale ).to.deep.equal( locale );
 		} );
 
+		it( 'should set view#errorText', () => {
+			expect( view.errorText ).to.be.null;
+		} );
+
 		it( 'should create view#inputView', () => {
 			expect( view.inputView ).to.instanceOf( InputView );
 		} );
@@ -31,8 +36,20 @@ describe( 'LabeledInputView', () => {
 			expect( view.labelView ).to.instanceOf( LabelView );
 		} );
 
-		it( 'should pair inputView and labelView by unique id', () => {
-			expect( view.labelView.for ).to.equal( view.inputView.id ).to.ok;
+		it( 'should create view#errorView', () => {
+			expect( view.errorView ).to.instanceOf( View );
+
+			expect( view.errorView.element.tagName ).to.equal( 'DIV' );
+			expect( view.errorView.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.errorView.element.classList.contains( 'ck-labeled-input__error' ) ).to.be.true;
+		} );
+
+		it( 'should pair #inputView and #labelView by unique id', () => {
+			expect( view.labelView.for ).to.equal( view.inputView.id );
+		} );
+
+		it( 'should pair #inputView and #errorView by unique id', () => {
+			expect( view.inputView.ariaDesribedById ).to.equal( view.errorView.element.id );
 		} );
 	} );
 
@@ -50,6 +67,10 @@ describe( 'LabeledInputView', () => {
 			expect( view.template.children[ 1 ] ).to.equal( view.inputView );
 		} );
 
+		it( 'should have the error container', () => {
+			expect( view.template.children[ 2 ] ).to.equal( view.errorView );
+		} );
+
 		describe( 'DOM bindings', () => {
 			describe( 'class', () => {
 				it( 'should react on view#isReadOnly', () => {
@@ -58,6 +79,20 @@ describe( 'LabeledInputView', () => {
 
 					view.isReadOnly = true;
 					expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+				} );
+			} );
+
+			describe( 'error container', () => {
+				it( 'should react on view#errorText', () => {
+					const errorContainer = view.element.lastChild;
+
+					view.errorText = '';
+					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.true;
+					expect( errorContainer.innerHTML ).to.equal( '' );
+
+					view.errorText = 'foo';
+					expect( errorContainer.classList.contains( 'ck-hidden' ) ).to.be.false;
+					expect( errorContainer.innerHTML ).to.equal( 'foo' );
 				} );
 			} );
 		} );
@@ -79,11 +114,26 @@ describe( 'LabeledInputView', () => {
 		it( 'should bind view#isreadOnly to view.inputView#isReadOnly', () => {
 			view.isReadOnly = false;
 
-			expect( view.inputView.isReadOnly ).to.false;
+			expect( view.inputView.isReadOnly ).to.be.false;
 
 			view.isReadOnly = true;
 
-			expect( view.inputView.isReadOnly ).to.true;
+			expect( view.inputView.isReadOnly ).to.be.true;
+		} );
+
+		it( 'should bind view#errorText to view.inputView#hasError', () => {
+			view.errorText = '';
+			expect( view.inputView.hasError ).to.be.false;
+
+			view.errorText = 'foo';
+			expect( view.inputView.hasError ).to.be.true;
+		} );
+
+		it( 'should clear view#errorText upon view.inputView#input', () => {
+			view.errorText = 'foo';
+
+			view.inputView.fire( 'input' );
+			expect( view.errorText ).to.be.null;
 		} );
 	} );
 
