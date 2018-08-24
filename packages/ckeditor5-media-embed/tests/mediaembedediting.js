@@ -900,7 +900,15 @@ describe( 'MediaEmbedEditing', () => {
 				expectedRegExp = new RegExp(
 					'<figure[^>]+>' +
 						'<div[^>]+>' +
-							'<div class="ck-media__placeholder">.*</div>' +
+							'<div class="ck ck-media__placeholder ck-reset_all">' +
+								'<div class="ck-media__placeholder__icon">.*</div>' +
+								`<a class="ck-media__placeholder__url" href="${ url }" target="new">` +
+									`<span class="ck-media__placeholder__url__text">${ url }</span>` +
+									'<span class="ck ck-tooltip ck-tooltip_s">' +
+										'<span class="ck ck-tooltip__text">Open media in new tab</span>' +
+									'</span>' +
+								'</a>' +
+							'</div>' +
 						'</div>' +
 					'</figure>' );
 			}

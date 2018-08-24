@@ -13,8 +13,6 @@ import MediaEmbedEditing from './mediaembedediting';
 import MediaEmbedUI from './mediaembedui';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import '../theme/mediaembed.css';
-
 /**
  * The media embed plugin.
  *

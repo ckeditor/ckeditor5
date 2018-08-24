@@ -16,6 +16,8 @@ import { MediaRegistry } from './mediaregistry';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
+import '../theme/mediaembedediting.css';
+
 /**
  * The media embed editing feature.
  *

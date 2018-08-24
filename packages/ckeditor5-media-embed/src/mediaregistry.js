@@ -9,6 +9,11 @@
 
 import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import TooltipView from '@ckeditor/ckeditor5-ui/src/tooltip/tooltipview';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
+
+const mediaPlaceholderIconViewBox = '0 0 64 42';
 
 /**
  * A bridge between the raw media content provider definitions and editor view content.
@@ -236,11 +241,47 @@ class Media {
 	 * @returns {String}
 	 */
 	_getPlaceholderHtml() {
-		return '<div class="ck-media__placeholder">' +
-			`<div class="ck-media__placeholder__icon">${ mediaPlaceholderIcon }</div>` +
-			`<a class="ck-media__placeholder__url" target="new" href="${ this.url }" title="${ this._t( 'Open media in new tab' ) }">` +
-				this.url +
-			'</a>' +
-		'</div>';
+		const tooltip = new TooltipView();
+		const icon = new IconView();
+
+		tooltip.text = this._t( 'Open media in new tab' );
+		icon.content = mediaPlaceholderIcon;
+		icon.viewBox = mediaPlaceholderIconViewBox;
+
+		const placeholder = new Template( {
+			tag: 'div',
+			attributes: {
+				class: 'ck ck-reset_all ck-media__placeholder'
+			},
+			children: [
+				{
+					tag: 'div',
+					attributes: {
+						class: 'ck-media__placeholder__icon'
+					},
+					children: [ icon ]
+				},
+				{
+					tag: 'a',
+					attributes: {
+						class: 'ck-media__placeholder__url',
+						target: 'new',
+						href: this.url
+					},
+					children: [
+						{
+							tag: 'span',
+							attributes: {
+								class: 'ck-media__placeholder__url__text'
+							},
+							children: [ this.url ]
+						},
+						tooltip
+					]
+				}
+			]
+		} ).render();
+
+		return placeholder.outerHTML;
 	}
 }
