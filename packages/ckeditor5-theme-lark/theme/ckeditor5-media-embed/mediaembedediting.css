@@ -54,7 +54,7 @@
 
 	&[data-oembed-url*="twitter.com"] {
 		& .ck.ck-media__placeholder {
-			/* Use gradient to contrast with focused widget. */
+			/* Use gradient to contrast with focused widget (ckeditor/ckeditor5-media-embed#22). */
 			background: linear-gradient( to right, hsl(201, 85%, 70%), hsl(201, 85%, 35%) );
 
 			& .ck-media__placeholder__icon {
