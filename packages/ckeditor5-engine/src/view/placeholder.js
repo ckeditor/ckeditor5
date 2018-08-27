@@ -66,7 +66,7 @@ export function detachPlaceholder( view, element ) {
 //
 // @private
 // @param {module:engine/view/document~Document} view
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function updateAllPlaceholders( document, writer ) {
 	const placeholders = documentPlaceholders.get( document );
 	let changed = false;
@@ -83,7 +83,7 @@ function updateAllPlaceholders( document, writer ) {
 // Updates placeholder class of given element.
 //
 // @private
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/element~Element} element
 // @param {Object} info
 function updateSinglePlaceholder( writer, element, info ) {

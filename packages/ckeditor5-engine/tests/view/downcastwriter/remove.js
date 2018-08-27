@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import ContainerElement from '../../../src/view/containerelement';
 import Range from '../../../src/view/range';
 import DocumentFragment from '../../../src/view/documentfragment';
@@ -14,7 +14,7 @@ import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'remove()', () => {
 		let writer;
 
@@ -34,7 +34,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		it( 'should throw when range placed in two containers', () => {

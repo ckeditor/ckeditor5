@@ -4,7 +4,7 @@
  */
 
 /**
- * @module module:engine/view/writer
+ * @module module:engine/view/downcastwriter
  */
 
 import Position from './position';
@@ -25,7 +25,7 @@ import { isPlainObject } from 'lodash-es';
  * {@link module:engine/view/document~Document view document}. It is not recommended to use it directly. To get an instance
  * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
  */
-export default class Writer {
+export default class DowncastWriter {
 	constructor( document ) {
 		/**
 		 * @readonly
@@ -88,7 +88,7 @@ export default class Writer {
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
-	 * `Writer#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `DowncastWriter#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Sets selection as backward.
 	 *		writer.setSelection( range, { backward: true } );
@@ -369,8 +369,8 @@ export default class Writer {
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 	 *
-	 * **Note:** Difference between {@link module:engine/view/writer~Writer#breakAttributes breakAttributes} and
-	 * {@link module:engine/view/writer~Writer#breakContainer breakContainer} is that `breakAttributes` breaks all
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer} is that `breakAttributes` breaks all
 	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
 	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
@@ -389,7 +389,7 @@ export default class Writer {
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/writer~Writer#breakContainer
+	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
 	 * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where
 	 * to break attribute elements.
 	 * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
@@ -413,15 +413,15 @@ export default class Writer {
 	 *        <p>^foobar</p> -> ^<p>foobar</p>
 	 *        <p>foobar^</p> -> <p>foobar</p>^
 	 *
-	 * **Note:** Difference between {@link module:engine/view/writer~Writer#breakAttributes breakAttributes} and
-	 * {@link module:engine/view/writer~Writer#breakContainer breakContainer} is that `breakAttributes` breaks all
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer} is that `breakAttributes` breaks all
 	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
 	 * `breakContainer` assumes that given `position` is directly in container element and breaks that container element.
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/writer~Writer#breakAttributes
+	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
 	 * @param {module:engine/view/position~Position} position Position where to break element.
 	 * @returns {module:engine/view/position~Position} Position between broken elements. If element has not been broken,
 	 * the returned position is placed either before it or after it.
@@ -480,14 +480,14 @@ export default class Writer {
 	 *        <p><b>[]</b></p> -> <p>[]</p>
 	 *        <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
 	 *
-	 * **Note:** Difference between {@link module:engine/view/writer~Writer#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/writer~Writer#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
 	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/writer~Writer#mergeContainers
+	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeContainers
 	 * @param {module:engine/view/position~Position} position Merge position.
 	 * @returns {module:engine/view/position~Position} Position after merge.
 	 */
@@ -547,14 +547,14 @@ export default class Writer {
 	 *        <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
 	 *        <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
 	 *
-	 * **Note:** Difference between {@link module:engine/view/writer~Writer#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/writer~Writer#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
 	 * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~AttributeElement
 	 * @see module:engine/view/containerelement~ContainerElement
-	 * @see module:engine/view/writer~Writer#mergeAttributes
+	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeAttributes
 	 * @param {module:engine/view/position~Position} position Merge position.
 	 * @returns {module:engine/view/position~Position} Position after merge.
 	 */
@@ -1304,7 +1304,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Helper function used by other `Writer` methods. Breaks attribute elements at the boundaries of given range.
+	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at the boundaries of given range.
 	 *
 	 * @private
 	 * @param {module:engine/view/range~Range} range Range which `start` and `end` positions will be used to break attributes.
@@ -1336,7 +1336,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Helper function used by other `Writer` methods. Breaks attribute elements at given position.
+	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at given position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
 	 * is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.

@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import Document from '../../../src/view/document';
 import EditableElement from '../../../src/view/editableelement';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
 		doc = new Document();
 		root = createViewRoot( doc );
-		writer = new Writer( doc );
+		writer = new DowncastWriter( doc );
 	} );
 
 	describe( 'setSelection()', () => {

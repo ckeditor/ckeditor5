@@ -109,7 +109,7 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	// More tests are available in Writer tests.
+	// More tests are available in DowncastWriter tests.
 	describe( 'getElementsWithSameId', () => {
 		it( 'should return a copy of _clonesGroup set', () => {
 			const attributeA = new AttributeElement( 'b' );

@@ -23,7 +23,7 @@ export default class UIElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` when third parameter is passed,
 	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
 	 *
-	 * @see module:engine/view/writer~Writer#createUIElement
+	 * @see module:engine/view/downcastwriter~DowncastWriter#createUIElement
 	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attributes] Collection of attributes.

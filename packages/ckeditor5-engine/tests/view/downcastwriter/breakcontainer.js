@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContainerElement from '../../../src/view/containerelement';
 import Position from '../../../src/view/position';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'breakContainer()', () => {
 		let writer;
 
@@ -27,7 +27,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		it( 'break inside element - should break container element at given position', () => {

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import { parse } from '../../../src/dev-utils/view';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'rename()', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		beforeEach( () => {

@@ -15,7 +15,7 @@ const DEFAULT_PRIORITY = 10;
 
 /**
  * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link module:engine/view/writer~Writer view writer}.
+ * Attributes can be broken and merged by the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}.
  *
  * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
@@ -27,7 +27,7 @@ export default class AttributeElement extends Element {
 	/**
 	 * Creates a attribute element.
 	 *
-	 * @see module:engine/view/writer~Writer#createAttributeElement
+	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
 	 * @protected
 	 * @see module:engine/view/element~Element
 	 */
@@ -43,7 +43,7 @@ export default class AttributeElement extends Element {
 		this.getFillerOffset = getFillerOffset;
 
 		/**
-		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
+		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
 		 * @member {Number}
@@ -63,7 +63,7 @@ export default class AttributeElement extends Element {
 		 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
 		 * and still exist in the view tree.
 		 *
-		 * This property is managed by {@link module:engine/view/writer~Writer}.
+		 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
 		 * @member {Set|null}
@@ -72,7 +72,7 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly
 	 * @returns {Number}
@@ -142,10 +142,10 @@ export default class AttributeElement extends Element {
 	 * elements have to have the same {@link module:engine/view/attributeelement~AttributeElement#id} value to be
 	 * considered similar.
 	 *
-	 * Similarity is important for {@link module:engine/view/writer~Writer}. For example:
+	 * Similarity is important for {@link module:engine/view/downcastwriter~DowncastWriter}. For example:
 	 *
 	 * * two following similar elements can be merged together into one, longer element,
-	 * * {@link module:engine/view/writer~Writer#unwrap} checks similarity of passed element and processed element to
+	 * * {@link module:engine/view/downcastwriter~DowncastWriter#unwrap} checks similarity of passed element and processed element to
 	 * decide whether processed element should be unwrapped,
 	 * * etc.
 	 *

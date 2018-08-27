@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import ContainerElement from '../../../src/view/containerelement';
 import Element from '../../../src/view/element';
 import EmptyElement from '../../../src/view/emptyelement';
@@ -14,7 +14,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import AttributeElement from '../../../src/view/attributeelement';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'insert()', () => {
 		let writer;
 
@@ -32,7 +32,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		it( 'should return collapsed range in insertion position when using empty array', () => {

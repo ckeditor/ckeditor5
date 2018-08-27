@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import ContainerElement from '../../../src/view/containerelement';
 import Text from '../../../src/view/text';
 import Position from '../../../src/view/position';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'mergeAttributes', () => {
 		let writer;
 
@@ -26,7 +26,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		it( 'should not merge if inside text node', () => {

@@ -23,16 +23,15 @@ import Element from './element';
  * DOM properly. {@link module:engine/view/domconverter~DomConverter} will ensure that `ContainerElement` is editable and it is possible
  * to put caret inside it, even if the container is empty.
  *
- * Secondly, {@link module:engine/view/writer~Writer view writer} uses this information.
- * Nodes {@link module:engine/view/writer~Writer#breakAttributes breaking} and {@link module:engine/view/writer~Writer#mergeAttributes
- * merging}
- * is performed only in a bounds of a container nodes.
+ * Secondly, {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} uses this information.
+ * Nodes {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breaking} and
+ * {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes merging} is performed only in a bounds of a container nodes.
  *
  * For instance if `<p>` is an container and `<b>` is attribute:
  *
  *		<p><b>fo^o</b></p>
  *
- * {@link module:engine/view/writer~Writer#breakAttributes breakAttributes} will create:
+ * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} will create:
  *
  *		<p><b>fo</b><b>o</b></p>
  *
@@ -49,7 +48,7 @@ export default class ContainerElement extends Element {
 	 * Creates a container element.
 	 *
 	 * @see module:engine/view/element~Element
-	 * @see module:engine/view/writer~Writer#createContainerElement
+	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
 	 * @protected
 	 */
 	constructor( name, attrs, children ) {

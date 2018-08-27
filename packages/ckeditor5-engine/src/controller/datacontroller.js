@@ -21,7 +21,7 @@ import { convertText, convertToModelFragment } from '../conversion/upcast-conver
 
 import ViewDocumentFragment from '../view/documentfragment';
 import ViewDocument from '../view/document';
-import ViewWriter from '../view/writer';
+import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
 
@@ -153,9 +153,9 @@ export default class DataController {
 
 		const viewDocumentFragment = new ViewDocumentFragment();
 
-		// Create separate ViewWriter just for data conversion purposes.
+		// Create separate ViewDowncastWriter just for data conversion purposes.
 		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
-		const viewWriter = new ViewWriter( new ViewDocument() );
+		const viewWriter = new ViewDowncastWriter( new ViewDocument() );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
