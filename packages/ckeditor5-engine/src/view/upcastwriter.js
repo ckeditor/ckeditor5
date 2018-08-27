@@ -4,18 +4,18 @@
  */
 
 /**
- * @module module:engine/view/rawwriter
+ * @module module:engine/view/upcastwriter
  */
 
 import Element from './element';
 
 /**
- * View raw writer class. Provides set of methods used to properly manipulate nodes attached to
+ * View upcast writer class. Provides set of methods used to properly manipulate nodes attached to
  * {@link module:engine/view/view~View view instance}. It should be only used to manipulate non-semantic view
  * (view created from HTML string). For view which was downcasted from the {@link module:engine/model/model~Model model}
  * see {@link module:engine/view/writer~Writer writer}.
  */
-export default class RawWriter {
+export default class UpcastWriter {
 	/**
 	 * Clones provided element.
 	 *

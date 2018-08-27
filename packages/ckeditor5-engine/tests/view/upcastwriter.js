@@ -4,14 +4,14 @@
  */
 
 import Element from '../../src/view/element';
-import RawWriter from '../../src/view/rawwriter';
+import UpcastWriter from '../../src/view/upcastwriter';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
-describe( 'RawWriter', () => {
+describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor;
 
 	before( () => {
-		writer = new RawWriter();
+		writer = new UpcastWriter();
 		dataprocessor = new HtmlDataProcessor();
 	} );
 
