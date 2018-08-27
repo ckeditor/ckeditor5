@@ -540,15 +540,10 @@ export default class Range {
 		let end = this.end._getTransformedByMergeOperation( operation );
 
 		if ( start.root != end.root ) {
-			// This happens when only start or end was next to the merged (deleted) element. In this case we need to fix
+			// This happens when the end position was next to the merged (deleted) element.
+			// Then, the end position was moved to the graveyard root. In this case we need to fix
 			// the range cause its boundaries would be in different roots.
-			if ( start.root != this.root ) {
-				// Fix start position root at it was the only one that was moved.
-				start = this.start;
-			} else {
-				// Fix end position root.
-				end = this.end.getShiftedBy( -1 );
-			}
+			end = this.end.getShiftedBy( -1 );
 		}
 
 		if ( start.isAfter( end ) ) {
@@ -745,8 +740,6 @@ export default class Range {
 
 			if ( result.length == 2 ) {
 				result.splice( 1, 0, transformedCommon );
-			} else if ( result.length > 0 && common.start.isBefore( result[ 0 ].start ) ) {
-				result.unshift( transformedCommon );
 			} else {
 				result.push( transformedCommon );
 			}

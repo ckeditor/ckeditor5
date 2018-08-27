@@ -5,6 +5,7 @@
 
 import Model from '../../../src/model/model';
 import Text from '../../../src/model/text';
+import Element from '../../../src/model/element';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
@@ -244,6 +245,25 @@ describe( 'AttributeOperation', () => {
 
 				operation._validate();
 			} ).to.not.throw();
+		} );
+
+		it( 'should throw for a non-flat range', () => {
+			root._insertChild( 0, [
+				new Element( 'paragraph', null, new Text( 'Foo' ) ),
+				new Element( 'paragraph', null, new Text( 'Bar' ) )
+			] );
+
+			expect( () => {
+				const operation = new AttributeOperation(
+					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) ),
+					'x',
+					null,
+					2,
+					doc.version
+				);
+
+				operation._validate();
+			} ).to.throw( CKEditorError, /attribute-operation-range-not-flat/ );
 		} );
 	} );
 

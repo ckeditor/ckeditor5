@@ -125,9 +125,9 @@ export default class UnwrapOperation extends Operation {
 			/**
 			 * Operation specifies incorrect number of nodes to unwrap.
 			 *
-			 * @error unwrap-operation-incorrect-how-many
+			 * @error unwrap-operation-how-many-invalid
 			 */
-			throw new CKEditorError( 'unwrap-operation-incorrect-how-many: Operation specifies incorrect number of nodes to unwrap.' );
+			throw new CKEditorError( 'unwrap-operation-how-many-invalid: Operation specifies incorrect number of nodes to unwrap.' );
 		}
 	}
 

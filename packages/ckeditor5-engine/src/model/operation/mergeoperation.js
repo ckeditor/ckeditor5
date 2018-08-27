@@ -137,6 +137,13 @@ export default class MergeOperation extends Operation {
 			 * @error merge-operation-source-position-invalid
 			 */
 			throw new CKEditorError( 'merge-operation-source-position-invalid: Merge source position is invalid.' );
+		} else if ( !sourceElement.parent ) {
+			/**
+			 * Element to merge is a root.
+			 *
+			 * @error merge-operation-source-position-invalid
+			 */
+			throw new CKEditorError( 'merge-operation-source-position-invalid: Element to merge is a root.' );
 		} else if ( !targetElement || !targetElement.is( 'element' ) ) {
 			/**
 			 * Merge target position is invalid.

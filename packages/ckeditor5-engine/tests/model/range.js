@@ -9,6 +9,7 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Model from '../../src/model/model';
 import TreeWalker from '../../src/model/treewalker';
+import MarkerOperation from '../../src/model/operation/markeroperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
@@ -20,10 +21,10 @@ import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Range', () => {
-	let doc, range, start, end, root, otherRoot, gy;
+	let doc, range, start, end, root, otherRoot, gy, model;
 
 	beforeEach( () => {
-		const model = new Model();
+		model = new Model();
 
 		doc = model.document;
 		root = doc.createRoot();
@@ -670,6 +671,39 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( '_getTransformedByDeletion()', () => {
+		it( 'should return a transformed range', () => {
+			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new Position( root, [ 1 ] ), 1 );
+
+			expect( transformed.start.offset ).to.equal( 2 );
+			expect( transformed.end.offset ).to.equal( 4 );
+		} );
+
+		it( 'should shrink the range if removed range was intersecting #1', () => {
+			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new Position( root, [ 2 ] ), 2 );
+
+			expect( transformed.start.offset ).to.equal( 2 );
+			expect( transformed.end.offset ).to.equal( 3 );
+		} );
+
+		it( 'should shrink the range if removed range was intersecting #2', () => {
+			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new Position( root, [ 4 ] ), 2 );
+
+			expect( transformed.start.offset ).to.equal( 3 );
+			expect( transformed.end.offset ).to.equal( 4 );
+		} );
+
+		it( 'should return null if the transformed range was contained in the removed range', () => {
+			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new Position( root, [ 2 ] ), 7 );
+
+			expect( transformed ).to.be.null;
+		} );
+	} );
+
 	describe( 'getDifference()', () => {
 		let range;
 
@@ -807,6 +841,18 @@ describe( 'Range', () => {
 
 			it( 'insert after range', () => {
 				const op = new InsertOperation( new Position( root, [ 6 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expectRange( transformed[ 0 ], 2, 5 );
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'nothing should change', () => {
+				const op = new MarkerOperation(
+					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, 1, true
+				);
+
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -1057,6 +1103,102 @@ describe( 'Range', () => {
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
+			} );
+
+			it( 'merge at the beginning of the range', () => {
+				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 2, 0 ] ),
+					4,
+					new Position( root, [ 1, 1 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3 ] );
+			} );
+
+			it( 'merge at the end of the range', () => {
+				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 3, 0 ] ),
+					4,
+					new Position( root, [ 2, 1 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3 ] );
+			} );
+
+			it( 'merged element is the only node in the range', () => {
+				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 2, 0 ] ),
+					4,
+					new Position( root, [ 1, 1 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2 ] );
+			} );
+
+			it( 'range start is between merged elements #1', () => {
+				// <p>aa</p>{<p>b}b</p><p>cc</p>
+				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 1 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 1, 0 ] ),
+					2,
+					new Position( root, [ 0, 2 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				// <p>aa{b}b</p><p>cc</p>
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+			} );
+
+			it( 'range start is between merged elements #2', () => {
+				// <p>aa</p>{<p>cc</p><p>b}b</p>
+				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) );
+
+				const op = new MergeOperation(
+					new Position( root, [ 2, 0 ] ),
+					2,
+					new Position( root, [ 0, 2 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				// <p>aa{bb</p><p>cc</p>}
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2 ] );
 			} );
 		} );
 
