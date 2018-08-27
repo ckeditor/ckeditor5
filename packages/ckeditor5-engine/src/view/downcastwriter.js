@@ -21,9 +21,11 @@ import EditableElement from './editableelement';
 import { isPlainObject } from 'lodash-es';
 
 /**
- * View writer class. Provides set of methods used to properly manipulate nodes attached to
+ * View downcast writer class. Provides set of methods used to properly manipulate nodes attached to
  * {@link module:engine/view/document~Document view document}. It is not recommended to use it directly. To get an instance
  * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
+ * The `DowncastWriter` is designed to work with semantic view which is the view downcasted from model. For working with
+ * ordinary view (e.g. parsed from string) {@link module:engine/view/upcastwriter~UpcastWriter upcast writer} should be used.
  */
 export default class DowncastWriter {
 	constructor( document ) {
