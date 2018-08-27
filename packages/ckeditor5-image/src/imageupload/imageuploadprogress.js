@@ -127,7 +127,7 @@ const placeholderSymbol = Symbol( 'placeholder' );
 // Adds ck-appear class to the image figure if one is not already applied.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _startAppearEffect( viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-appear' ) ) {
 		writer.addClass( 'ck-appear', viewFigure );
@@ -137,7 +137,7 @@ function _startAppearEffect( viewFigure, writer ) {
 // Removes ck-appear class to the image figure if one is not already removed.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _stopAppearEffect( viewFigure, writer ) {
 	writer.removeClass( 'ck-appear', viewFigure );
 }
@@ -146,7 +146,7 @@ function _stopAppearEffect( viewFigure, writer ) {
 //
 // @param {String} Data-uri with a svg placeholder.
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _showPlaceholder( placeholder, viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
@@ -166,7 +166,7 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 // Removes placeholder together with infinite progress bar on given image figure.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _hidePlaceholder( viewFigure, writer ) {
 	if ( viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
@@ -179,7 +179,7 @@ function _hidePlaceholder( viewFigure, writer ) {
 // Attaches it to the file loader to update when upload percentace is changed.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:upload/filerepository~FileLoader} loader
 // @param {module:engine/view/view~View} view
 function _showProgressBar( viewFigure, writer, loader, view ) {
@@ -197,7 +197,7 @@ function _showProgressBar( viewFigure, writer, loader, view ) {
 // Hides upload progress bar.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _hideProgressBar( viewFigure, writer ) {
 	_removeUIElement( viewFigure, writer, progressBarSymbol );
 }
@@ -205,7 +205,7 @@ function _hideProgressBar( viewFigure, writer ) {
 // Shows complete icon and hides after a certain amount of time.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/view~View} view
 function _showCompleteIcon( viewFigure, writer, view ) {
 	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
@@ -220,7 +220,7 @@ function _showCompleteIcon( viewFigure, writer, view ) {
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
 //
 // @private
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @returns {module:engine/view/uielement~UIElement}
 function _createProgressBar( writer ) {
 	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
@@ -233,7 +233,7 @@ function _createProgressBar( writer ) {
 // Create placeholder element using {@link module:engine/view/uielement~UIElement}.
 //
 // @private
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @returns {module:engine/view/uielement~UIElement}
 function _createPlaceholder( writer ) {
 	const placeholder = writer.createUIElement( 'div', { class: 'ck-upload-placeholder-loader' } );
@@ -262,7 +262,7 @@ function _getUIElement( imageFigure, uniqueProperty ) {
 //
 // @private
 // @param {module:engine/view/element~Element} imageFigure
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {Symbol} uniqueProperty
 function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 	const element = _getUIElement( viewFigure, uniqueProperty );
