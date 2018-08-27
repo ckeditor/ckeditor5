@@ -13,7 +13,7 @@ import Element from './element';
  * View upcast writer class. Provides set of methods used to properly manipulate nodes attached to
  * {@link module:engine/view/view~View view instance}. It should be only used to manipulate non-semantic view
  * (view created from HTML string). For view which was downcasted from the {@link module:engine/model/model~Model model}
- * see {@link module:engine/view/writer~Writer writer}.
+ * see {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
  */
 export default class UpcastWriter {
 	/**
