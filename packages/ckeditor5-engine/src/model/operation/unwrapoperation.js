@@ -146,7 +146,7 @@ export default class UnwrapOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.UnwrapOperation';
+		return 'UnwrapOperation';
 	}
 
 	/**

@@ -63,7 +63,7 @@ describe( 'DetachOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.DetachOperation',
+				__className: 'DetachOperation',
 				baseVersion: null,
 				sourcePosition: position.toJSON(),
 				howMany: 1

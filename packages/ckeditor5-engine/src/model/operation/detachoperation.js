@@ -89,6 +89,6 @@ export default class DetachOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.DetachOperation';
+		return 'DetachOperation';
 	}
 }

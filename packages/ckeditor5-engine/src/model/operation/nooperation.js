@@ -49,6 +49,6 @@ export default class NoOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.NoOperation';
+		return 'NoOperation';
 	}
 }

@@ -185,7 +185,7 @@ export default class SplitOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.SplitOperation';
+		return 'SplitOperation';
 	}
 
 	/**

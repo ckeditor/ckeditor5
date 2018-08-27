@@ -131,7 +131,7 @@ export default class RenameOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.RenameOperation';
+		return 'RenameOperation';
 	}
 
 	/**

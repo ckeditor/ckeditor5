@@ -137,7 +137,7 @@ describe( 'MarkerOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.MarkerOperation',
+				__className: 'MarkerOperation',
 				baseVersion: 0,
 				name: 'name',
 				oldRange: null,

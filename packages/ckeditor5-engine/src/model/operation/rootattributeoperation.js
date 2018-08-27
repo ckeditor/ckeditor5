@@ -177,7 +177,7 @@ export default class RootAttributeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.RootAttributeOperation';
+		return 'RootAttributeOperation';
 	}
 
 	/**

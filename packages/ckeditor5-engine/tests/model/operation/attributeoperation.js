@@ -378,10 +378,10 @@ describe( 'AttributeOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized.__className ).to.equal( 'engine.model.operation.AttributeOperation' );
+			expect( serialized.__className ).to.equal( 'AttributeOperation' );
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.AttributeOperation',
+				__className: 'AttributeOperation',
 				baseVersion: 0,
 				key: 'key',
 				newValue: 'newValue',

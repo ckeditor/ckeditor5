@@ -269,9 +269,9 @@ describe( 'RootAttributeOperation', () => {
 
 			const serialized = op.toJSON();
 
-			expect( serialized.__className ).to.equal( 'engine.model.operation.RootAttributeOperation' );
+			expect( serialized.__className ).to.equal( 'RootAttributeOperation' );
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.RootAttributeOperation',
+				__className: 'RootAttributeOperation',
 				baseVersion: 0,
 				key: 'key',
 				newValue: 'newValue',

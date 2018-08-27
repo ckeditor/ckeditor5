@@ -175,7 +175,7 @@ function getFirstOperation() {
 				data: 'The great world of open Web standards'
 			} ]
 		} ],
-		__className: 'engine.model.operation.InsertOperation'
+		__className: 'InsertOperation'
 	};
 }
 
@@ -192,6 +192,6 @@ function getSecondOperation() {
 				data: 'The great world of open Web standards'
 			} ]
 		} ],
-		__className: 'engine.model.operation.InsertOperation'
+		__className: 'InsertOperation'
 	};
 }

@@ -191,7 +191,7 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.MoveOperation';
+		return 'MoveOperation';
 	}
 
 	/**
