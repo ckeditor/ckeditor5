@@ -1,4 +1,4 @@
-## Paste from Word
+## Paste from Office
 
 Simple test for Paste from Word.
 
