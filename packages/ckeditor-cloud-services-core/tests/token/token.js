@@ -26,7 +26,9 @@ describe( 'Token', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should throw error when no tokenUrl provided', () => {
-			expect( () => new Token() ).to.throw( '`tokenUrl` must be provided' );
+			expect( () => new Token() ).to.throw(
+				'A `tokenUrl` or a `tokenRefresh` function must be provided as the first constructor argument.'
+			);
 		} );
 
 		it( 'should set a init token value', () => {
@@ -48,6 +50,13 @@ describe( 'Token', () => {
 
 			requests[ 0 ].respond( 200, '', 'token-value' );
 		} );
+
+		it( 'should accept the callback in the constructor', () => {
+			expect( () => {
+				// eslint-disable-next-line
+				const token = new Token( () => Promise.resolve( 'token' ) );
+			} ).to.not.throw();
+		} );
 	} );
 
 	describe( 'init()', () => {
@@ -62,6 +71,15 @@ describe( 'Token', () => {
 				} );
 
 			requests[ 0 ].respond( 200, '', 'token-value' );
+		} );
+
+		it( 'should get a token from the refreshToken function when is provided', () => {
+			const token = new Token( () => Promise.resolve( 'token-value' ), { autoRefresh: false } );
+
+			return token.init()
+				.then( () => {
+					expect( token.value ).to.equal( 'token-value' );
+				} );
 		} );
 
 		it( 'should start token refresh every 1 hour', done => {
@@ -100,7 +118,16 @@ describe( 'Token', () => {
 			requests[ 0 ].respond( 200, '', 'token-value' );
 		} );
 
-		it( 'should throw error when cannot download new token ', done => {
+		it( 'should get a token from the specified callback function', () => {
+			const token = new Token( () => Promise.resolve( 'token-value' ), { initValue: 'initValue', autoRefresh: false } );
+
+			return token._refreshToken()
+				.then( newToken => {
+					expect( newToken.value ).to.equal( 'token-value' );
+				} );
+		} );
+
+		it( 'should throw an error when cannot download new token', done => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
@@ -113,7 +140,7 @@ describe( 'Token', () => {
 			requests[ 0 ].respond( 401 );
 		} );
 
-		it( 'should throw error when response is aborted', done => {
+		it( 'should throw an error when the response is aborted', done => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
@@ -126,7 +153,7 @@ describe( 'Token', () => {
 			requests[ 0 ].abort();
 		} );
 
-		it( 'should throw error event when network error occurs', done => {
+		it( 'should throw an error when network error occurs', done => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
 
 			token._refreshToken()
@@ -137,6 +164,15 @@ describe( 'Token', () => {
 				} );
 
 			requests[ 0 ].error();
+		} );
+
+		it( 'should throw an error when the callback throws error', () => {
+			const token = new Token( () => Promise.reject( 'Custom error occurred' ), { initValue: 'initValue', autoRefresh: false } );
+
+			token._refreshToken()
+				.catch( error => {
+					expect( error ).to.equal( 'Custom error occurred' );
+				} );
 		} );
 	} );
 

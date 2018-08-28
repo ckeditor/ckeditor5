@@ -31,7 +31,7 @@ class Token {
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
 	constructor( tokenUrlOrTokenRefresh, options = DEFAULT_OPTIONS ) {
-		if ( !tokenUrl ) {
+		if ( !tokenUrlOrTokenRefresh ) {
 			throw new Error( 'A `tokenUrl` or a `tokenRefresh` function must be provided as the first constructor argument.' );
 		}
 
@@ -48,33 +48,35 @@ class Token {
 		this.set( 'value', options.initValue );
 
 		/**
+		 * Refresh token function.
+		 *
+		 * @member {Function} #_refreshToken
+		 * @protected
+		 */
+		if ( typeof tokenUrlOrTokenRefresh === 'function' ) {
+			this._refreshToken = () => {
+				return tokenUrlOrTokenRefresh()
+					.then( value => this.set( 'value', value ) )
+					.then( () => this );
+			};
+		} else {
+			this._refreshToken = this._defaultRefreshToken.bind( this );
+		}
+
+		/**
 		 * A token Url, which is requested by the {@link #_defaultRefreshToken} function.
 		 * An empty string when the callback is provided in the constructor.
 		 *
 		 * @type {String}
 		 * @private
 		 */
-		this._tokenUrl = typeof tokenUrlOrTokenRefresh === 'string' ? tokenUrl : '';
+		this._tokenUrl = typeof tokenUrlOrTokenRefresh === 'string' ? tokenUrlOrTokenRefresh : '';
 
 		/**
 		 * @type {Object}
 		 * @private
 		 */
 		this._options = Object.assign( {}, DEFAULT_OPTIONS, options );
-
-		/**
-		 * Refresh token function.
-		 *
-		 * @member {Function} #_refreshToken
-		 * @private
-		 */
-		if ( typeof tokenUrlOrTokenRefresh === 'function' ) {
-			this._refreshToken = () => {
-				return tokenUrlOrTokenRefresh().then( value => this.set( 'value', value ) );
-			}
-		} else {
-			this._refreshToken = this._defaultRefreshToken.bind( this );
-		}
 	}
 
 	/**
@@ -104,7 +106,7 @@ class Token {
 	 * The default function to get the new token.
 	 *
 	 * @protected
-	 * @returns {Promise.<Token>}
+	 * @returns {Promise}
 	 */
 	_defaultRefreshToken() {
 		return new Promise( ( resolve, reject ) => {
