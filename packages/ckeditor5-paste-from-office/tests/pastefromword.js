@@ -7,10 +7,10 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import PasteFromWord from '../src/pastefromword';
+import PasteFromOffice from '../src/pastefromoffice';
 import { createDataTransfer } from './_utils/utils';
 
-describe( 'Paste from Word plugin', () => {
+describe( 'Paste from Office plugin', () => {
 	let editor, normalizeSpy;
 
 	testUtils.createSinonSandbox();
@@ -18,11 +18,11 @@ describe( 'Paste from Word plugin', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, PasteFromWord ]
+				plugins: [ Clipboard, PasteFromOffice ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				normalizeSpy = sinon.spy( editor.plugins.get( 'PasteFromWord' ), '_normalizeWordInput' );
+				normalizeSpy = sinon.spy( editor.plugins.get( 'PasteFromOffice' ), '_normalizeWordInput' );
 			} );
 	} );
 

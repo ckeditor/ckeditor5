@@ -14,8 +14,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import PasteFromWord from '../../../src/pastefromword';
+import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { pasteHtml } from '../../_utils/utils';
@@ -30,9 +29,7 @@ import heading3Styled from '../../_data/list/heading3-styled/input.word2016.html
 import heading7 from '../../_data/list/heading7/input.word2016.html';
 
 describe( 'List – integration', () => {
-	let element, editor, insertContentStub, insertedModel;
-
-	testUtils.createSinonSandbox();
+	let element, editor, insertedModel;
 
 	before( () => {
 		element = document.createElement( 'div' );
@@ -40,14 +37,14 @@ describe( 'List – integration', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, PasteFromWord ] } )
+			.create( element, { plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, PasteFromOffice ] } )
 			.then( editorInstance => {
 				editor = editorInstance;
 
 				const model = editor.model;
 				const insertContent = model.insertContent;
 
-				insertContentStub = sinon.stub( editor.model, 'insertContent' ).callsFake( ( content, selection ) => {
+				sinon.stub( editor.model, 'insertContent' ).callsFake( ( content, selection ) => {
 					// Save model string representation now as it may change after `insertContent()` function call
 					// so accessing it later may not work as it may have empty/changed structure.
 					insertedModel = stringify( content );
@@ -65,7 +62,7 @@ describe( 'List – integration', () => {
 	} );
 
 	after( () => {
-		insertContentStub.restore();
+		sinon.restore();
 
 		editor.destroy();
 

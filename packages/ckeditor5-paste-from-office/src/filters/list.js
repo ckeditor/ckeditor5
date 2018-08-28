@@ -7,7 +7,7 @@ import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
-import RawWriter from '@ckeditor/ckeditor5-engine/src/view/rawwriter';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
  * Transforms Word specific list-like elements to the semantic HTML lists.
@@ -38,7 +38,7 @@ export function paragraphsToLists( data ) {
 }
 
 // Writer used for View elements manipulation.
-const writer = new RawWriter();
+const writer = new UpcastWriter();
 
 // Matcher for finding list-like elements.
 const listMatcher = new Matcher( {

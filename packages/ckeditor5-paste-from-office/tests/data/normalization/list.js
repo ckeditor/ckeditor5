@@ -6,7 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import PasteFromWord from '../../../src/pastefromword';
+import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
@@ -30,52 +30,52 @@ import heading3StyledNormalized from '../../_data/list/heading3-styled/normalize
 import heading7Normalized from '../../_data/list/heading7/normalized.word2016.html';
 
 describe( 'List – normalization', () => {
-	let editor, pasteFromWordPlugin;
+	let editor, pasteFromOfficePlugin;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, PasteFromWord ]
+				plugins: [ Clipboard, PasteFromOffice ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				pasteFromWordPlugin = editor.plugins.get( 'PasteFromWord' );
+				pasteFromOfficePlugin = editor.plugins.get( 'PasteFromOffice' );
 			} );
 	} );
 
 	it( 'normalizes simple list', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( simple, editor ), simpleNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( simple, editor ), simpleNormalized );
 	} );
 
 	it( 'normalizes list with styled items prepended by a paragraph', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( styled, editor ), styledNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( styled, editor ), styledNormalized );
 	} );
 
 	it( 'normalizes multiple lists separated by the paragraph', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( multiple, editor ), multipleNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( multiple, editor ), multipleNormalized );
 	} );
 
 	it( 'normalizes multiple lists one right after another', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( multipleCombined, editor ), multipleCombinedNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( multipleCombined, editor ), multipleCombinedNormalized );
 	} );
 
 	it( 'normalizes many one item lists', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( manyOneItem, editor ), manyOneItemNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( manyOneItem, editor ), manyOneItemNormalized );
 	} );
 
 	it( 'normalizes list created from headings (h1)', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( heading1, editor ), heading1Normalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( heading1, editor ), heading1Normalized );
 	} );
 
 	it( 'normalizes list created from styled headings (h3)', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( heading3Styled, editor ), heading3StyledNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( heading3Styled, editor ), heading3StyledNormalized );
 	} );
 
 	it( 'normalizes list created from heading (h7)', () => {
-		expectNormalized( pasteFromWordPlugin._normalizeWordInput( heading7, editor ), heading7Normalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( heading7, editor ), heading7Normalized );
 	} );
 } );
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module pastefromword/pastefromword
+ * @module pastefromoffice/pastefromoffice
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,12 +19,12 @@ import { paragraphsToLists } from './filters/list';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class PasteFromWord extends Plugin {
+export default class PasteFromOffice extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'PasteFromWord';
+		return 'PasteFromOffice';
 	}
 
 	/**
