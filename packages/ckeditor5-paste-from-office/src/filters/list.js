@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module pastefromoffice/filters/list
+ */
+
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -17,24 +21,20 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  *		<p class=MsoListParagraphCxSpFirst style='mso-list:l1 level1 lfo1'>...</p> // Paragraph based list.
  *		<h1 style='mso-list:l0 level1 lfo1'>...</h1> // Heading 1 based list.
  *
- * @param {Object} data
- * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} data.view The view
+ * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} bodyView The view
  * structure which to transform.
- * @returns {Object} result
- * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} result.view The view
+ * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} The view
  * structure instance with list-like elements transformed into semantic lists.
  */
-export function paragraphsToLists( data ) {
-	if ( data.view ) {
-		const firstChild = data.view.getChild( 0 );
+export function paragraphsToLists( bodyView, stylesString ) {
+	const firstChild = bodyView.getChild( 0 );
 
-		if ( firstChild ) {
-			const listNodes = findAllListNodes( Position.createBefore( firstChild ) );
-			createLists( listNodes, data.styles );
-		}
+	if ( firstChild ) {
+		const listNodes = findAllListNodes( Position.createBefore( firstChild ) );
+		createLists( listNodes, stylesString );
 	}
 
-	return data;
+	return bodyView;
 }
 
 // Writer used for View elements manipulation.
@@ -172,7 +172,7 @@ function findListType( listItem, styles ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
 
 		if ( listStyleTypeMatch && listStyleTypeMatch[ 1 ] ) {
-			listStyleType = listStyleTypeMatch[ 1 ];
+			listStyleType = listStyleTypeMatch[ 1 ].trim();
 		}
 	}
 
