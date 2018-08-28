@@ -23,16 +23,16 @@ class Token {
 	 * Creates `Token` instance.
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
-	 * @param {String|Function} tokenUrlOrTokenRefresh Endpoint address to download the token or a callback that provides the token. If the
+	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
-	constructor( tokenUrlOrTokenRefresh, options = DEFAULT_OPTIONS ) {
-		if ( !tokenUrlOrTokenRefresh ) {
-			throw new Error( 'A `tokenUrl` or a `tokenRefresh` function must be provided as the first constructor argument.' );
+	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
+		if ( !tokenUrlOrRefreshToken ) {
+			throw new Error( 'A `tokenUrl` or a `refreshToken` function must be provided as the first constructor argument.' );
 		}
 
 		/**
@@ -53,9 +53,9 @@ class Token {
 		 * @member {Function} #_refreshToken
 		 * @protected
 		 */
-		if ( typeof tokenUrlOrTokenRefresh === 'function' ) {
+		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
 			this._refreshToken = () => {
-				return tokenUrlOrTokenRefresh()
+				return tokenUrlOrRefreshToken()
 					.then( value => this.set( 'value', value ) )
 					.then( () => this );
 			};
@@ -70,7 +70,7 @@ class Token {
 		 * @type {String}
 		 * @private
 		 */
-		this._tokenUrl = typeof tokenUrlOrTokenRefresh === 'string' ? tokenUrlOrTokenRefresh : '';
+		this._tokenUrl = typeof tokenUrlOrRefreshToken === 'string' ? tokenUrlOrRefreshToken : '';
 
 		/**
 		 * @type {Object}
@@ -155,7 +155,7 @@ class Token {
 	/**
 	 * Creates a initialized {@link Token} instance.
 	 *
-	 * @param {String|Function} tokenUrlOrTokenRefresh Endpoint address to download the token or a callback that provides the token. If the
+	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
@@ -163,8 +163,8 @@ class Token {
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<Token>}
 	 */
-	static create( tokenUrlOrTokenRefresh, options = DEFAULT_OPTIONS ) {
-		const token = new Token( tokenUrlOrTokenRefresh, options );
+	static create( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
+		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();
 	}
