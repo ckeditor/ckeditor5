@@ -23,15 +23,16 @@ class Token {
 	 * Creates `Token` instance.
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
-	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String|Function} tokenUrlOrTokenRefresh Endpoint address to download the token or a callback that provides the token. If the
+	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
-	constructor( tokenUrl, options = DEFAULT_OPTIONS ) {
+	constructor( tokenUrlOrTokenRefresh, options = DEFAULT_OPTIONS ) {
 		if ( !tokenUrl ) {
-			throw new Error( '`tokenUrl` must be provided' );
+			throw new Error( 'A `tokenUrl` or a `tokenRefresh` function must be provided as the first constructor argument.' );
 		}
 
 		/**
@@ -40,24 +41,40 @@ class Token {
 		 * `create` method creates token with initialized value from url.
 		 *
 		 * @name value
-		 * @type {String}
+		 * @member {String} #value
 		 * @observable
 		 * @readonly
-		 * @memberOf Token#
 		 */
 		this.set( 'value', options.initValue );
 
 		/**
+		 * A token Url, which is requested by the {@link #_defaultRefreshToken} function.
+		 * An empty string when the callback is provided in the constructor.
+		 *
 		 * @type {String}
 		 * @private
 		 */
-		this._tokenUrl = tokenUrl;
+		this._tokenUrl = typeof tokenUrlOrTokenRefresh === 'string' ? tokenUrl : '';
 
 		/**
 		 * @type {Object}
 		 * @private
 		 */
 		this._options = Object.assign( {}, DEFAULT_OPTIONS, options );
+
+		/**
+		 * Refresh token function.
+		 *
+		 * @member {Function} #_refreshToken
+		 * @private
+		 */
+		if ( typeof tokenUrlOrTokenRefresh === 'function' ) {
+			this._refreshToken = () => {
+				return tokenUrlOrTokenRefresh().then( value => this.set( 'value', value ) );
+			}
+		} else {
+			this._refreshToken = this._defaultRefreshToken.bind( this );
+		}
 	}
 
 	/**
@@ -84,12 +101,12 @@ class Token {
 	}
 
 	/**
-	 * Gets the new token.
+	 * The default function to get the new token.
 	 *
 	 * @protected
 	 * @returns {Promise.<Token>}
 	 */
-	_refreshToken() {
+	_defaultRefreshToken() {
 		return new Promise( ( resolve, reject ) => {
 			const xhr = new XMLHttpRequest();
 
@@ -121,7 +138,7 @@ class Token {
 	 * @protected
 	 */
 	_startRefreshing() {
-		this._refreshInterval = setInterval( this._refreshToken.bind( this ), this._options.refreshInterval );
+		this._refreshInterval = setInterval( this._refreshToken, this._options.refreshInterval );
 	}
 
 	/**
@@ -136,20 +153,30 @@ class Token {
 	/**
 	 * Creates a initialized {@link Token} instance.
 	 *
-	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String|Function} tokenUrlOrTokenRefresh Endpoint address to download the token or a callback that provides the token. If the
+	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<Token>}
 	 */
-	static create( tokenUrl, options = DEFAULT_OPTIONS ) {
-		const token = new Token( tokenUrl, options );
+	static create( tokenUrlOrTokenRefresh, options = DEFAULT_OPTIONS ) {
+		const token = new Token( tokenUrlOrTokenRefresh, options );
 
 		return token.init();
 	}
 }
 
 mix( Token, ObservableMixin );
+
+/**
+ * This function is called in a defined interval by the {@link ~Token} class.
+ * It should return a promise, which resolves with the new token url.
+ * If any error occurs it should return a rejected promise with an error message.
+ *
+ * @function refreshToken
+ * @returns {Promise.<String>}
+ */
 
 export default Token;
