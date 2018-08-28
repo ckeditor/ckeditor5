@@ -4,8 +4,6 @@
  */
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { paragraphsToLists } from '../../src/filters/list';
@@ -18,45 +16,52 @@ describe( 'Filters – list', () => {
 			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( { view } );
+			const result = paragraphsToLists( view, '' );
 
-			expect( result.view.childCount ).to.equal( 1 );
-			expect( result.view.getChild( 0 ).name ).to.equal( 'ol' );
-			expect( stringify( result.view ) ).to.equal( '<ol><li style="mso-list:l0 level1 lfo0">Item 1</li></ol>' );
+			expect( result.childCount ).to.equal( 1 );
+			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
+			expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:l0 level1 lfo0">Item 1</li></ol>' );
 		} );
 
-		it( 'has no effect if `data.view` is not set', () => {
-			const result = paragraphsToLists( {} );
+		it( 'replaces list-like elements with semantic lists with proper bullet type based on styles', () => {
+			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
+			const view = htmlDataProcessor.toView( html );
 
-			expect( result ).to.empty;
-		} );
+			const result = paragraphsToLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
 
-		it( 'has no effect if `data.view` has no children', () => {
-			const view = new DocumentFragment();
-			const result = paragraphsToLists( { view } );
-
-			expect( result.view.childCount ).to.equal( 0 );
+			expect( result.childCount ).to.equal( 1 );
+			expect( result.getChild( 0 ).name ).to.equal( 'ul' );
+			expect( stringify( result ) ).to.equal( '<ul><li style="mso-list:l0 level1 lfo0">Item 1</li></ul>' );
 		} );
 
 		it( 'does not modify the view if there are no list-like elements', () => {
 			const html = '<h1>H1</h1><p>Foo Bar</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( { view } );
+			const result = paragraphsToLists( view, '' );
 
-			expect( result.view.childCount ).to.equal( 2 );
-			expect( stringify( result.view ) ).to.equal( html );
+			expect( result.childCount ).to.equal( 2 );
+			expect( stringify( result ) ).to.equal( html );
 		} );
 
-		it( 'can handle empty `mso-list` style', () => {
+		it( 'handles empty `mso-list` style correctly', () => {
 			const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( { view } );
+			const result = paragraphsToLists( view, '' );
 
-			expect( result.view.childCount ).to.equal( 1 );
-			expect( result.view.getChild( 0 ).name ).to.equal( 'ol' );
-			expect( stringify( result.view ) ).to.equal( '<ol><li style="mso-list:">Item 1</li></ol>' );
+			expect( result.childCount ).to.equal( 1 );
+			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
+			expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:">Item 1</li></ol>' );
+		} );
+
+		it( 'handles empty body correctly', () => {
+			const view = htmlDataProcessor.toView( '' );
+
+			const result = paragraphsToLists( view, '' );
+
+			expect( result.childCount ).to.equal( 0 );
+			expect( stringify( result ) ).to.equal( '' );
 		} );
 	} );
 } );

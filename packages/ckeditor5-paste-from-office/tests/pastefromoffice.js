@@ -22,12 +22,8 @@ describe( 'Paste from Office plugin', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				normalizeSpy = sinon.spy( editor.plugins.get( 'PasteFromOffice' ), '_normalizeWordInput' );
+				normalizeSpy = testUtils.sinon.spy( editor.plugins.get( 'PasteFromOffice' ), '_normalizeWordInput' );
 			} );
-	} );
-
-	afterEach( () => {
-		normalizeSpy.restore();
 	} );
 
 	it( 'runs normalizations if Word meta tag detected #1', () => {

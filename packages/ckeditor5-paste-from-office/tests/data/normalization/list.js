@@ -4,7 +4,6 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
@@ -31,8 +30,6 @@ import heading7Normalized from '../../_data/list/heading7/normalized.word2016.ht
 
 describe( 'List – normalization', () => {
 	let editor, pasteFromOfficePlugin;
-
-	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
