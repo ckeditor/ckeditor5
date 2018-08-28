@@ -49,7 +49,7 @@ export default class PasteFromOffice extends Plugin {
 	/**
 	 * Normalizes input pasted from Word to format suitable for editor {@link module:engine/model/model~Model}.
 	 *
-	 * **Notice**: this function was extracted mainly for testing purposes and should not be called directly.
+	 * **Notice**: this function was exposed mainly for testing purposes and should not be called directly.
 	 *
 	 * @protected
 	 * @param {String} input Word input.
