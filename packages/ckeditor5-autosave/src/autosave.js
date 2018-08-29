@@ -272,7 +272,7 @@ mix( Autosave, ObservableMixin );
 /**
  * An interface that requires the `save()` method.
  *
- * Used by {module:autosave/autosave~Autosave#adapter}
+ * Used by {@link module:autosave/autosave~Autosave#adapter}
  *
  * @interface module:autosave/autosave~AutosaveAdapter
  */
