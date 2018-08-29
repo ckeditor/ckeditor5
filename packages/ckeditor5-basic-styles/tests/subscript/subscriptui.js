@@ -1,0 +1,68 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* globals document */
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import SubscriptEditing from '../../src/subscript/subscriptediting';
+import SubscriptUI from '../../src/subscript/subscriptui';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+describe( 'SubscriptUI', () => {
+	let editor, subView;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, SubscriptEditing, SubscriptUI ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+
+				subView = editor.ui.componentFactory.create( 'sub' );
+			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	it( 'should register subscript feature component', () => {
+		expect( subView ).to.be.instanceOf( ButtonView );
+		expect( subView.isOn ).to.be.false;
+		expect( subView.label ).to.equal( 'Subscript' );
+		expect( subView.icon ).to.match( /<svg / );
+	} );
+
+	it( 'should execute sub command on model execute event', () => {
+		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+		subView.fire( 'execute' );
+
+		sinon.assert.calledOnce( executeSpy );
+		sinon.assert.calledWithExactly( executeSpy, 'sub' );
+	} );
+
+	it( 'should bind model to sub command', () => {
+		const command = editor.commands.get( 'sub' );
+
+		expect( subView.isOn ).to.be.false;
+		expect( subView.isEnabled ).to.be.true;
+
+		command.value = true;
+		expect( subView.isOn ).to.be.true;
+
+		command.isEnabled = false;
+		expect( subView.isEnabled ).to.be.false;
+	} );
+} );
