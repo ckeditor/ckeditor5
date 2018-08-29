@@ -34,7 +34,7 @@ export default class MediaEmbedEditing extends Plugin {
 			providers: [
 				{
 					name: 'dailymotion',
-					url: /^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/,
+					url: /^dailymotion\.com\/video\/(\w+)/,
 					html: id =>
 						'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
 							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
@@ -47,9 +47,9 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'spotify',
 					url: [
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(track\/\w+)/
+						/^open\.spotify\.com\/(artist\/\w+)/,
+						/^open\.spotify\.com\/(album\/\w+)/,
+						/^open\.spotify\.com\/(track\/\w+)/
 					],
 					html: id =>
 						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
@@ -63,10 +63,10 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'youtube',
 					url: [
-						/^(https:\/\/)?(www\.)?youtube\.com\/watch\?v=(\w+)/,
-						/^(https:\/\/)?(www\.)?youtube\.com\/v\/(\w+)/,
-						/^(https:\/\/)?(www\.)?youtube\.com\/embed\/(\w+)/,
-						/^(https:\/\/)?youtu\.be\/(\w+)/
+						/^youtube\.com\/watch\?v=(\w+)/,
+						/^youtube\.com\/v\/(\w+)/,
+						/^youtube\.com\/embed\/(\w+)/,
+						/^youtu\.be\/(\w+)/
 					],
 					html: id =>
 						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
@@ -80,13 +80,13 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'vimeo',
 					url: [
-						/^(https:\/\/)?(www\.)?vimeo\.com\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/channels\/[^/]+\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
-						/^(https:\/\/)?(www\.)?player\.vimeo\.com\/video\/(\d+)/
+						/^vimeo\.com\/(\d+)/,
+						/^vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
+						/^vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
+						/^vimeo\.com\/channels\/[^/]+\/(\d+)/,
+						/^vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
+						/^vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
+						/^player\.vimeo\.com\/video\/(\d+)/
 					],
 					html: id =>
 						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
@@ -99,23 +99,23 @@ export default class MediaEmbedEditing extends Plugin {
 
 				{
 					name: 'instagram',
-					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
+					url: /^instagram\.com\/p\/(\w+)/
 				},
 				{
 					name: 'twitter',
-					url: /^(https:\/\/)?(www\.)?twitter\.com/
+					url: /^twitter\.com/
 				},
 				{
 					name: 'googleMaps',
-					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
+					url: /^google\.com\/maps/
 				},
 				{
 					name: 'flickr',
-					url: /^(https:\/\/)?(www\.)?flickr\.com/
+					url: /^flickr\.com/
 				},
 				{
 					name: 'facebook',
-					url: /^(https:\/\/)?(www\.)?facebook\.com/
+					url: /^facebook\.com/
 				},
 			]
 		} );

@@ -122,12 +122,47 @@ export class MediaRegistry {
 			}
 
 			for ( const subPattern of pattern ) {
-				const match = url.match( subPattern );
+				const match = this._getUrlMatches( url, subPattern );
 
 				if ( match ) {
 					return new Media( this.locale, url, match, contentRenderer );
 				}
 			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tries to match `url` to `pattern`.
+	 *
+	 * @private
+	 * @param {String} url The url of the media.
+	 * @param {RegExp} pattern The pattern that should accept the media url.
+	 * @returns {Array|null}
+	 */
+	_getUrlMatches( url, pattern ) {
+		// 1. Try to match without stripping the protocol and "www" sub-domain.
+		let match = url.match( pattern );
+
+		if ( match ) {
+			return match;
+		}
+
+		// 2. Try to match after stripping the protocol.
+		let rawUrl = url.replace( /^https?:\/\//, '' );
+		match = rawUrl.match( pattern );
+
+		if ( match ) {
+			return match;
+		}
+
+		// 3. Try to match after stripping the "www" sub-domain.
+		rawUrl = rawUrl.replace( /^www\./, '' );
+		match = rawUrl.match( pattern );
+
+		if ( match ) {
+			return match;
 		}
 
 		return null;
@@ -148,7 +183,7 @@ class Media {
 		 *
 		 * @member {String}
 		 */
-		this.url = url;
+		this.url = this._getValidUrl( url );
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
@@ -283,5 +318,23 @@ class Media {
 		} ).render();
 
 		return placeholder.outerHTML;
+	}
+
+	/**
+	 * Returns full url to specified media.
+	 *
+	 * @param {String} url The url of the media.
+	 * @returns {String|null}
+	 */
+	_getValidUrl( url ) {
+		if ( !url ) {
+			return null;
+		}
+
+		if ( url.match( /^https?/ ) ) {
+			return url;
+		}
+
+		return 'https://' + url;
 	}
 }
