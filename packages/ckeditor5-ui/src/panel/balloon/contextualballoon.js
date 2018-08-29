@@ -14,7 +14,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 /**
  * Provides the common contextual balloon panel for the editor.
  *
- * This plugin allows reusing a single {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
+ * This plugin allows reusing a single {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
  * to display multiple contextual balloon panels in the editor.
  *
  * Child views of such a panel are stored in the stack and the last one in the stack is visible. When the
@@ -22,7 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * views in the stack, the balloon panel will hide.
  *
  * It simplifies managing the views and helps
- * avoid the unnecessary complexity of handling multiple {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+ * avoid the unnecessary complexity of handling multiple {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
  * instances in the editor.
  *
  * @extends module:core/plugin~Plugin

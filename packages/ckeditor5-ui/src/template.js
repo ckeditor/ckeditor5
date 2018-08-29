@@ -1348,7 +1348,7 @@ function extendObjectValueArray( obj, ext ) {
 }
 
 // A helper for {@link module:ui/template~Template#extend}. Recursively extends {@link module:ui/template~Template} instance
-// with content from {module:ui/template~TemplateDefinition}. See {@link module:ui/template~Template#extend} to learn more.
+// with content from {@link module:ui/template~TemplateDefinition}. See {@link module:ui/template~Template#extend} to learn more.
 //
 // @param {module:ui/template~Template} def A template instance to be extended.
 // @param {module:ui/template~TemplateDefinition} def A definition which is to extend the template instance.
