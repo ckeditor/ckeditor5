@@ -35,8 +35,8 @@ describe( 'SuperEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'sup' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'sup' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'super' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'super' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -49,20 +49,20 @@ describe( 'SuperEditing', () => {
 	} );
 
 	describe( 'data pipeline conversions', () => {
-		it( 'should convert <sup> to sup attribute', () => {
+		it( 'should convert <sup> to super attribute', () => {
 			editor.setData( '<p><sup>foo</sup>bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sup="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text super="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sup>foo</sup>bar</p>' );
 		} );
 
-		it( 'should convert vertical-align:super to sup attribute', () => {
-			editor.setData( '<p><span style="vertical-align: sup;">foo</span>bar</p>' );
+		it( 'should convert vertical-align:super to super attribute', () => {
+			editor.setData( '<p><span style="vertical-align: super;">foo</span>bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sup="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text super="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sup>foo</sup>bar</p>' );
 		} );
@@ -71,7 +71,7 @@ describe( 'SuperEditing', () => {
 			editor.setData( '<sup>foo</sup>bar' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sup="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text super="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sup>foo</sup>bar</p>' );
 		} );
@@ -79,7 +79,7 @@ describe( 'SuperEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( model, '<paragraph><$text sup="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text super="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><sup>foo</sup>bar</p>' );
 		} );
