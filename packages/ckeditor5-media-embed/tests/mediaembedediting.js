@@ -10,6 +10,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
@@ -54,6 +55,11 @@ describe( 'MediaEmbedEditing', () => {
 			html: match => `allow-everything, id=${ match[ 1 ] }`
 		}
 	};
+
+	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+	} );
 
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
