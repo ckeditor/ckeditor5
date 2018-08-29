@@ -147,9 +147,9 @@ export function getLabel( element ) {
 }
 
 /**
- * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+ * Adds functionality to provided {@link module:engine/view/editableelement~EditableElement} to act as a widget's editable:
  * * adds `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
- * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
+ * * sets `contenteditable` as `true` when {@link module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
  * otherwise set `false`,
  * * adds `ck-editor__nested-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
