@@ -69,7 +69,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sum of {module:engine/model/node~Node#offsetSize offset sizes} of all of this element's children.
+	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all of this element's children.
 	 *
 	 * @readonly
 	 * @type {Number}

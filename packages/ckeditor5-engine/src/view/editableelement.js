@@ -18,7 +18,7 @@ const documentSymbol = Symbol( 'document' );
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
  * or nested editable area in the editor.
  *
- * Editable is automatically read-only when its {module:engine/view/document~Document Document} is read-only.
+ * Editable is automatically read-only when its {@link module:engine/view/document~Document Document} is read-only.
  *
  * @extends module:engine/view/containerelement~ContainerElement
  * @mixes module:utils/observablemixin~ObservableMixin

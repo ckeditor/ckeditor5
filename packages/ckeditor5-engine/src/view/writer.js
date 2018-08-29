@@ -787,7 +787,7 @@ export default class Writer {
      * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
      *
      * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-     * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+     * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
      *
      * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
      * is collapsed and different than view selection.
@@ -1059,7 +1059,7 @@ export default class Writer {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
 	 * @private
 	 * @param {module:engine/view/range~Range} range
@@ -1122,7 +1122,7 @@ export default class Writer {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
 	 *
 	 * @private
 	 * @param {module:engine/view/position~Position} position
