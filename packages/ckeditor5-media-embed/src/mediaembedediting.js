@@ -35,13 +35,18 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'dailymotion',
 					url: /^dailymotion\.com\/video\/(\w+)/,
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
-							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match.slice( -1 );
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+								`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
@@ -51,13 +56,18 @@ export default class MediaEmbedEditing extends Plugin {
 						/^open\.spotify\.com\/(album\/\w+)/,
 						/^open\.spotify\.com\/(track\/\w+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-							`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match.slice( -1 );
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+								`<iframe src="https://open.spotify.com/embed/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
@@ -68,13 +78,18 @@ export default class MediaEmbedEditing extends Plugin {
 						/^youtube\.com\/embed\/(\w+)/,
 						/^youtu\.be\/(\w+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-							`<iframe src="https://www.youtube.com/embed/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match.slice( -1 );
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								`<iframe src="https://www.youtube.com/embed/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
@@ -88,13 +103,18 @@ export default class MediaEmbedEditing extends Plugin {
 						/^vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
 						/^player\.vimeo\.com\/video\/(\d+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-							`<iframe src="https://player.vimeo.com/video/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match.slice( -1 );
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								`<iframe src="https://player.vimeo.com/video/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{

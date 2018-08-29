@@ -20,28 +20,28 @@ describe( 'MediaEmbedEditing', () => {
 		A: {
 			name: 'A',
 			url: /^foo\.com\/(\w+)/,
-			html: id => `A, id=${ id }`
+			html: match => `A, id=${ match[ 1 ] }`
 		},
 		B: {
 			name: 'B',
 			url: /^bar\.com\/(\w+)/,
-			html: id => `B, id=${ id }`
+			html: match => `B, id=${ match[ 1 ] }`
 		},
 		C: {
 			name: 'C',
 			url: /^\w+\.com\/(\w+)/,
-			html: id => `C, id=${ id }`
+			html: match => `C, id=${ match[ 1 ] }`
 		},
 
 		extraA: {
 			name: 'extraA',
 			url: /^foo\.com\/(\w+)/,
-			html: id => `extraA, id=${ id }`
+			html: match => `extraA, id=${ match[ 1 ] }`
 		},
 		extraB: {
 			name: 'extraB',
 			url: /^\w+\.com\/(\w+)/,
-			html: id => `extraB, id=${ id }`
+			html: match => `extraB, id=${ match[ 1 ] }`
 		},
 
 		previewLess: {
@@ -51,7 +51,7 @@ describe( 'MediaEmbedEditing', () => {
 		allowEverything: {
 			name: 'allow-everything',
 			url: /(.*)/,
-			html: id => `allow-everything, id=${ id }`
+			html: match => `allow-everything, id=${ match[ 1 ] }`
 		}
 	};
 
@@ -888,7 +888,7 @@ describe( 'MediaEmbedEditing', () => {
 			const viewData = getViewData( view, { withoutSelection: true, renderUIElements: true } );
 			let expectedRegExp;
 
-			const expectedUrl = url.startsWith( 'http' ) ? url : 'https://' + url;
+			const expectedUrl = url.match( /^https?:\/\// ) ? url : 'https://' + url;
 
 			if ( expected ) {
 				expectedRegExp = new RegExp(

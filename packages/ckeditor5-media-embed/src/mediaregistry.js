@@ -258,7 +258,7 @@ class Media {
 	 */
 	_getContentHtml( options ) {
 		if ( this._contentRenderer ) {
-			return this._contentRenderer( this._match.pop() );
+			return this._contentRenderer( this._match );
 		} else {
 			// The placeholder only makes sense for editing view and media which have URLs.
 			// Placeholder is never displayed in data and URL-less media have no content.
