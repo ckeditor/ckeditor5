@@ -238,9 +238,8 @@ describe( 'SelectionObserver', () => {
 		}
 	} );
 
-	it( 'should fire `selectionChangeDone` event after selection stop changing', () => {
+	it( 'should fire `selectionChangeDone` event after selection stop changing', done => {
 		const spy = sinon.spy();
-		const clock = testUtils.sinon.useFakeTimers();
 
 		viewDocument.on( 'selectionChangeDone', spy );
 
@@ -251,39 +250,43 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 
 		// Wait 100ms.
-		clock.tick( 100 );
-		// Check if spy was called.
-		sinon.assert.notCalled( spy );
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+		setTimeout( () => {
+			// Check if spy was called.
+			expect( spy.notCalled ).to.true;
 
-		// Change selection one more time.
-		changeDomSelection();
+			// Change selection one more time.
+			changeDomSelection();
 
-		// Wait 210ms (debounced function should be called).
-		clock.tick( 210 );
+			// Wait 210ms (debounced function should be called).
+			setTimeout( () => {
+				const data = spy.firstCall.args[ 1 ];
 
-		const data = spy.firstCall.args[ 1 ];
+				expect( spy.calledOnce ).to.true;
+				expect( data ).to.have.property( 'domSelection' ).to.equal( domDocument.getSelection() );
 
-		sinon.assert.calledOnce( spy );
-		expect( data ).to.have.property( 'domSelection' ).to.equal( domDocument.getSelection() );
+				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( DocumentSelection );
+				expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
-		expect( data ).to.have.property( 'oldSelection' ).to.instanceof( DocumentSelection );
-		expect( data.oldSelection.rangeCount ).to.equal( 0 );
+				expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
+				expect( data.newSelection.rangeCount ).to.equal( 1 );
 
-		expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
-		expect( data.newSelection.rangeCount ).to.equal( 1 );
+				const newViewRange = data.newSelection.getFirstRange();
+				const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
-		const newViewRange = data.newSelection.getFirstRange();
-		const viewFoo = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+				expect( newViewRange.start.parent ).to.equal( viewFoo );
+				expect( newViewRange.start.offset ).to.equal( 3 );
+				expect( newViewRange.end.parent ).to.equal( viewFoo );
+				expect( newViewRange.end.offset ).to.equal( 3 );
 
-		expect( newViewRange.start.parent ).to.equal( viewFoo );
-		expect( newViewRange.start.offset ).to.equal( 3 );
-		expect( newViewRange.end.parent ).to.equal( viewFoo );
-		expect( newViewRange.end.offset ).to.equal( 3 );
+				done();
+			}, 210 );
+		}, 100 );
 	} );
 
-	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', () => {
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', done => {
 		const spy = sinon.spy();
-		const clock = testUtils.sinon.useFakeTimers();
 
 		viewDocument.on( 'selectionChangeDone', spy );
 
@@ -291,14 +294,20 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 
 		// Wait 100ms.
-		clock.tick( 100 );
-		// And destroy observer.
-		selectionObserver.destroy();
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+		setTimeout( () => {
+			// And destroy observer.
+			selectionObserver.destroy();
 
-		// Wait another 110ms.
-		clock.tick( 110 );
-		// Check that event won't be called.
-		sinon.assert.notCalled( spy );
+			// Wait another 110ms.
+			setTimeout( () => {
+				// Check that event won't be called.
+				expect( spy.notCalled ).to.true;
+
+				done();
+			}, 110 );
+		}, 100 );
 	} );
 
 	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
