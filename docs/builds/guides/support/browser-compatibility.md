@@ -42,6 +42,8 @@ CKEditor 5 is currently supported in the following mobile environments:
 
 * Android (all vendor-supported versions)
 * iOS (all vendor-supported versions)
+* Android WebView
+* iOS WebView (UIWebView and WKWebView)
 
 ## Quality assurance
 
