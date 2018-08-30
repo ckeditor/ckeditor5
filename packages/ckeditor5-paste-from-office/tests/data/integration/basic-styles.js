@@ -13,6 +13,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { expectPaste } from '../../_utils/utils';
@@ -33,7 +34,7 @@ describe( 'Basic Styles – integration', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Strikethrough ] } )
+			.create( element, { plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Strikethrough, PasteFromOffice ] } )
 			.then( editorInstance => {
 				editor = editorInstance;
 			} );

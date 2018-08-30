@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { stringify, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
  * Checks whether for a given editor instance pasting specific content (input) gives expected result (output).
@@ -49,4 +51,50 @@ export function createDataTransfer( data ) {
 			return data[ type ];
 		}
 	};
+}
+
+const spacesElementsOnlyRegex = />(\s+)<\//g;
+
+/**
+ * Compares two HTML strings.
+ *
+ * This function is designed for comparing normalized data so expected input is preprocessed before comparing:
+ *
+ *		* Tabs on the lines beginning are removed.
+ *		* Line breaks and empty lines are removed.
+ *		* Space preceding `<o:p></o:p>` tag is replaced with `&nbsp;`.
+ *		* Elements with spaces only have them replaced with `&nbsp;`'s.
+ *
+ * The expected input should be prepared in the above in mind which means every element containing text nodes must start
+ * and end in the same line. So expected input may be formatted like:
+ *
+ * 		<span lang=PL style='mso-ansi-language:PL'>	03<span style='mso-spacerun:yes'>   </span><o:p></o:p></span>
+ *
+ * 	but not like:
+ *
+ * 		<span lang=PL style='mso-ansi-language:PL'>
+ * 			03<span style='mso-spacerun:yes'>   </span>
+ * 			<o:p></o:p>
+ * 		</span>
+ *
+ * 	because tabulator preceding `03` text will be treated as formatting character and will be removed.
+ *
+ * @param {String} actual
+ * @param {String} expected
+ */
+export function expectNormalized( actual, expected ) {
+	let expectedNormalized = expected
+		// Replace tabs on the lines beginning as normalized input files are formatted.
+		.replace( /^\t*</gm, '<' )
+		// Replace line breaks (after closing tags), as they may produce additional spaces during HTML normalization.
+		.replace( /[\r\n]/gm, '' )
+		// Replaces space before Word `<o:p></o:p>` tags so it is not removed during `normalizeHtml()` function call.
+		.replace( / <o:p>/g, '\u00A0<o:p>' );
+
+	// Replace spaces with `&nbsp;` inside elements with spaces only to prevent them from being removed during normalization.
+	expectedNormalized = expectedNormalized.replace( spacesElementsOnlyRegex, ( match, spaces ) => {
+		return `>${ Array( spaces.length + 1 ).join( '\u00A0' ) }</`;
+	} );
+
+	expect( stringify( actual ) ).to.equal( normalizeHtml( expectedNormalized ) );
 }
