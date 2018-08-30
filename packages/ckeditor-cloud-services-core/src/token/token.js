@@ -32,7 +32,7 @@ class Token {
 	 */
 	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
 		if ( !tokenUrlOrRefreshToken ) {
-			throw new Error( 'A `tokenUrl` or a `refreshToken` function must be provided as the first constructor argument.' );
+			throw new Error( 'A `tokenUrl` must be provided as the first constructor argument.' );
 		}
 
 		/**
@@ -47,30 +47,23 @@ class Token {
 		 */
 		this.set( 'value', options.initValue );
 
+		let refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
+
+		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
+			refresh = tokenUrlOrRefreshToken;
+		}
+
 		/**
 		 * Refresh token function.
 		 *
 		 * @member {Function} #_refreshToken
 		 * @protected
 		 */
-		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
-			this._refreshToken = () => {
-				return tokenUrlOrRefreshToken()
-					.then( value => this.set( 'value', value ) )
-					.then( () => this );
-			};
-		} else {
-			this._refreshToken = this._defaultRefreshToken.bind( this );
-		}
-
-		/**
-		 * A token Url, which is requested by the {@link #_defaultRefreshToken} function.
-		 * An empty string when the callback is provided in the constructor.
-		 *
-		 * @type {String}
-		 * @private
-		 */
-		this._tokenUrl = typeof tokenUrlOrRefreshToken === 'string' ? tokenUrlOrRefreshToken : '';
+		this._refreshToken = () => {
+			return refresh()
+				.then( value => this.set( 'value', value ) )
+				.then( () => this );
+		};
 
 		/**
 		 * @type {Object}
@@ -99,38 +92,6 @@ class Token {
 			}
 
 			resolve( this );
-		} );
-	}
-
-	/**
-	 * The default function to get the new token.
-	 *
-	 * @protected
-	 * @returns {Promise}
-	 */
-	_defaultRefreshToken() {
-		return new Promise( ( resolve, reject ) => {
-			const xhr = new XMLHttpRequest();
-
-			xhr.open( 'GET', this._tokenUrl );
-
-			xhr.addEventListener( 'load', () => {
-				const statusCode = xhr.status;
-				const xhrResponse = xhr.response;
-
-				if ( statusCode < 200 || statusCode > 299 ) {
-					return reject( 'Cannot download new token!' );
-				}
-
-				this.set( 'value', xhrResponse );
-
-				return resolve( this );
-			} );
-
-			xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
-			xhr.addEventListener( 'abort', () => reject( 'Abort' ) );
-
-			xhr.send();
 		} );
 	}
 
@@ -180,5 +141,33 @@ mix( Token, ObservableMixin );
  * @function refreshToken
  * @returns {Promise.<String>}
  */
+
+/**
+ * @private
+ * @param {String} tokenUrl
+ */
+function defaultRefreshToken( tokenUrl ) {
+	return new Promise( ( resolve, reject ) => {
+		const xhr = new XMLHttpRequest();
+
+		xhr.open( 'GET', tokenUrl );
+
+		xhr.addEventListener( 'load', () => {
+			const statusCode = xhr.status;
+			const xhrResponse = xhr.response;
+
+			if ( statusCode < 200 || statusCode > 299 ) {
+				return reject( 'Cannot download new token!' );
+			}
+
+			return resolve( xhrResponse );
+		} );
+
+		xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
+		xhr.addEventListener( 'abort', () => reject( 'Abort' ) );
+
+		xhr.send();
+	} );
+};
 
 export default Token;

@@ -27,7 +27,7 @@ describe( 'Token', () => {
 	describe( 'constructor()', () => {
 		it( 'should throw error when no tokenUrl provided', () => {
 			expect( () => new Token() ).to.throw(
-				'A `tokenUrl` or a `tokenRefresh` function must be provided as the first constructor argument.'
+				'A `tokenUrl` must be provided as the first constructor argument.'
 			);
 		} );
 
