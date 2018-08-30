@@ -173,36 +173,36 @@ export function transformSets( operationsA, operationsB, options ) {
 	//
 	// The transformation process can be visualized on a transformation diagram ("diamond diagram"):
 	//
-	//	  [the initial state]
-	//	 [common for a1 and b1]
+	//          [the initial state]
+	//         [common for a1 and b1]
 	//
-	//             *
-	//            / \
-	//           /   \
-	//         b1     a1
-	//         /       \
-	//        /         \
-	//       *           *
-	//      / \         / \
-	//     /   \       /   \
-	//   b2    a1'   b1'    a2
-	//   /       \   /       \
-	//  /         \ /         \
-	// *           *           *
-	//  \         / \         /
-	//   \       /   \       /
-	//  a1''   b2'   a2'   b1''
-	//     \   /       \   /
-	//      \ /         \ /
-	//       *           *
-	//        \         /
-	//         \       /
-	//        a2''   b2''
-	//           \   /
-	//            \ /
-	//             *
+	//                   *
+	//                  / \
+	//                 /   \
+	//               b1     a1
+	//               /       \
+	//              /         \
+	//             *           *
+	//            / \         / \
+	//           /   \       /   \
+	//         b2    a1'   b1'    a2
+	//         /       \   /       \
+	//        /         \ /         \
+	//       *           *           *
+	//        \         / \         /
+	//         \       /   \       /
+	//        a1''   b2'   a2'   b1''
+	//           \   /       \   /
+	//            \ /         \ /
+	//             *           *
+	//              \         /
+	//               \       /
+	//              a2''   b2''
+	//                 \   /
+	//                  \ /
+	//                   *
 	//
-	//	    [the final state]
+	//           [the final state]
 	//
 	// The final state can be reached from the initial state by applying `a1`, `a2`, `b1''` and `b2''`, as well as by
 	// applying `b1`, `b2`, `a1''`, `a2''`. Note how the operations get to a proper common state before each pair is
@@ -222,39 +222,39 @@ export function transformSets( operationsA, operationsB, options ) {
 	// the only thing to do is to store both pieces of operation `b`, so that the next transformed operation `a` will
 	// be transformed by both of them.
 	//
-	//                 *
-	//                / \
-	//               /   \
-	//              /     \
-	//            b1       a1
-	//            /         \
-	//           /           \
-	//          /             \
-	//         *               *
-	//        / \             / \
-	//       /  a11'         /   \
-	//      /     \         /     \
-	//    b2       *      b1'      a2
-	//    /       / \     /         \
-	//   /       /  a12' /           \
-	//  /       /     \ /             \
-	// *       b2'     *               *
-	//  \     /       / \             /
-	// a11'' /     b21'' \           /
-	//    \ /       /     \         /
-	//     *       *      a2'     b1''
-	//      \     / \       \     /
-	//    a12'' b22''\       \   /
-	//        \ /     \       \ /
-	//         *      a2''     *
-	//          \       \     /
-	//           \       \  b21'''
-	//            \       \ /
-	//          a2'''      *
-	//              \     /
-	//               \  b22'''
-	//                \ /
-	//                 *
+	//                       *
+	//                      / \
+	//                     /   \
+	//                    /     \
+	//                  b1       a1
+	//                  /         \
+	//                 /           \
+	//                /             \
+	//               *               *
+	//              / \             / \
+	//             /  a11'         /   \
+	//            /     \         /     \
+	//          b2       *      b1'      a2
+	//          /       / \     /         \
+	//         /       /  a12' /           \
+	//        /       /     \ /             \
+	//       *       b2'     *               *
+	//        \     /       / \             /
+	//       a11'' /     b21'' \           /
+	//          \ /       /     \         /
+	//           *       *      a2'     b1''
+	//            \     / \       \     /
+	//          a12'' b22''\       \   /
+	//              \ /     \       \ /
+	//               *      a2''     *
+	//                \       \     /
+	//                 \       \  b21'''
+	//                  \       \ /
+	//                a2'''      *
+	//                    \     /
+	//                     \  b22'''
+	//                      \ /
+	//                       *
 	//
 	// Note, how `a1` is broken and transformed into `a11'` and `a12'`, while `b2'` got broken and transformed into `b21''` and `b22''`.
 	//
