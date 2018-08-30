@@ -103,14 +103,10 @@ export default class LivePosition extends Position {
 	 */
 }
 
-/**
- * Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
- * this position's {@link module:engine/model/position~Position#root root}.
- *
- * @ignore
- * @private
- * @method module:engine/model/liveposition~LivePosition.bindWithDocument
- */
+// Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
+// this position's {@link module:engine/model/position~Position#root root}.
+//
+// @private
 function bindWithDocument() {
 	this.listenTo(
 		this.root.document.model,
@@ -128,14 +124,10 @@ function bindWithDocument() {
 	);
 }
 
-/**
- * Updates this position accordingly to the updates applied to the model. Bases on change events.
- *
- * @ignore
- * @private
- * @method transform
- * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
- */
+// Updates this position accordingly to the updates applied to the model. Bases on change events.
+//
+// @private
+// @param {module:engine/model/operation/operation~Operation} operation Executed operation.
 function transform( operation ) {
 	const result = this.getTransformedByOperation( operation );
 

@@ -97,18 +97,14 @@ export default class LiveRange extends Range {
 	 * change range.
 	 * @param {Object} data Object with additional information about the change.
 	 * @param {null} data.deletionPosition Due to the nature of this event, this property is always set to `null`. It is passed
-	 * for compatibility with {@link module:engine/model/liverange~LiveRange#event:change:range} event.
+	 * for compatibility with the {@link module:engine/model/liverange~LiveRange#event:change:range} event.
 	 */
 }
 
-/**
- * Binds this `LiveRange` to the {@link module:engine/model/document~Document document}
- * that owns this range's {@link module:engine/model/range~Range#root root}.
- *
- * @ignore
- * @private
- * @method module:engine/model/liverange~LiveRange#bindWithDocument
- */
+// Binds this `LiveRange` to the {@link module:engine/model/document~Document document}
+// that owns this range's {@link module:engine/model/range~Range#root root}.
+//
+// @private
 function bindWithDocument() {
 	this.listenTo(
 		this.root.document.model,
@@ -126,14 +122,10 @@ function bindWithDocument() {
 	);
 }
 
-/**
- * Updates this range accordingly to the updates applied to the model. Bases on change events.
- *
- * @ignore
- * @private
- * @method transform
- * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
- */
+// Updates this range accordingly to the updates applied to the model. Bases on change events.
+//
+// @private
+// @param {module:engine/model/operation/operation~Operation} operation Executed operation.
 function transform( operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
@@ -169,16 +161,12 @@ function transform( operation ) {
 	}
 }
 
-/**
- * Checks whether given operation changes something inside the range (even if it does not change boundaries).
- *
- * @ignore
- * @private
- * @method doesOperationChangeRangeContent
- * @param {module:engine/model/range~Range} range Range to check.
- * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
- * @returns {Boolean}
- */
+// Checks whether given operation changes something inside the range (even if it does not change boundaries).
+//
+// @private
+// @param {module:engine/model/range~Range} range Range to check.
+// @param {module:engine/model/operation/operation~Operation} operation Executed operation.
+// @returns {Boolean}
 function doesOperationChangeRangeContent( range, operation ) {
 	switch ( operation.type ) {
 		case 'insert':

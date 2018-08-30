@@ -226,6 +226,8 @@ export default class Position {
 	/**
 	 * Checks whether this position is before or after given position.
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {module:engine/model/position~PositionRelation}
 	 */
@@ -285,7 +287,7 @@ export default class Position {
 	 * Returns a path to this position's parent. Parent path is equal to position {@link module:engine/model/position~Position#path path}
 	 * but without the last item.
 	 *
-	 * This method returns the parent path even if the parent does not exists.
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @returns {Array.<Number>} Path to the parent.
 	 */
@@ -309,6 +311,8 @@ export default class Position {
 	/**
 	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
 	 * of these two paths must be identical.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @param {module:engine/model/position~Position} position The second position.
 	 * @returns {Array.<Number>} The common path.
@@ -350,6 +354,8 @@ export default class Position {
 	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
@@ -365,8 +371,9 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * @see module:engine/model/position~Position#isBefore
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
+	 * @see module:engine/model/position~Position#isBefore
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
 	 */
@@ -402,6 +409,8 @@ export default class Position {
 	 *			// do A.
 	 *		}
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.
 	 */
@@ -411,6 +420,8 @@ export default class Position {
 
 	/**
 	 * Checks whether this position is equal to given position.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
@@ -423,8 +434,6 @@ export default class Position {
 	 * Checks whether this position is touching given position. Positions touch when there are no text nodes
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
 	 * they are very similar or even indistinguishable.
-	 *
-	 * **Note:** this method traverses model document so it can be only used when range is up-to-date with model document.
 	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
@@ -481,10 +490,9 @@ export default class Position {
 	/**
 	 * Checks if two positions are in the same parent.
 	 *
-	 * This method uses position {@link ~Position#path}s to compare position so it is safe to use it on non-existing positions
-	 * (for example during operational transformation).
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
-	 * @param {@link ~Position} position Position to compare with.
+	 * @param {~Position} position Position to compare with.
 	 * @returns {Boolean} `true` if positions have the same parent, `false` otherwise.
 	 */
 	hasSameParentAs( position ) {
@@ -505,6 +513,8 @@ export default class Position {
 	 *
 	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~Position#offset} will be
 	 * increased by `n`. If the position was in a merged element, it will be accordingly moved to the new element, etc.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to transform by.
 	 * @returns {module:engine/model/position~Position} Transformed position.
