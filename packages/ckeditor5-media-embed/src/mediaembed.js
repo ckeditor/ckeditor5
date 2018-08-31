@@ -14,7 +14,7 @@ import MediaEmbedUI from './mediaembedui';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
 /**
  * The media embed plugin.
@@ -49,12 +49,26 @@ export default class MediaEmbed extends Plugin {
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
-			const url = data.content.getChild( 0 ).data;
+			// We assume that single node was pasted.
+			if ( data.content.childCount > 1 ) {
+				return;
+			}
 
+			const firstChild = data.content.getChild( 0 );
+
+			// If the node is not a text, skip it.
+			if ( !firstChild.is( 'text' ) ) {
+				return;
+			}
+
+			const url = firstChild.data;
+
+			// If the url does not match to universal url regexp, let's skip that.
 			if ( !url.match( URL_REGEXP ) ) {
 				return;
 			}
 
+			// If the url is valid from MediaEmbed plugin, let's use it.
 			if ( mediaRegistry.hasMedia( url ) ) {
 				this.editor.commands.execute( 'mediaEmbed', url );
 				evt.stop();
