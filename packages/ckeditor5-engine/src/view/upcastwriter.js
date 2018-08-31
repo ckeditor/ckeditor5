@@ -8,6 +8,7 @@
  */
 
 import Element from './element';
+import { isPlainObject } from 'lodash-es';
 
 /**
  * View upcast writer class. Provides set of methods used to properly manipulate nodes attached to
@@ -85,7 +86,7 @@ export default class UpcastWriter {
 		const parent = element.parent;
 
 		if ( parent ) {
-			return this.removeChildren( parent, parent.getChildIndex( element ) );
+			return this.removeChildren( parent.getChildIndex( element ), 1, parent );
 		}
 
 		return [];
@@ -104,8 +105,8 @@ export default class UpcastWriter {
 		if ( parent ) {
 			const index = parent.getChildIndex( oldElement );
 
-			this.removeChildren( parent, index );
-			this.insertChild( parent, index, newElement );
+			this.removeChildren( index, 1, parent );
+			this.insertChild( index, newElement, parent );
 
 			return true;
 		}
@@ -200,6 +201,9 @@ export default class UpcastWriter {
 	 * @param {module:engine/view/element~Element} element Element for which style will be added.
 	 */
 	setStyle( property, value, element ) {
+		if ( isPlainObject( property ) && element === undefined ) {
+			element = value;
+		}
 		element._setStyle( property, value );
 	}
 
