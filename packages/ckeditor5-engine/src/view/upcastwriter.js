@@ -34,13 +34,13 @@ export default class UpcastWriter {
 	 * and sets the parent of these nodes to this element.
 	 *
 	 * @see module:engine/view/element~Element#_appendChild
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
 	 * to which items will be appended.
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @fires module:engine/view/node~Node#change
+	 * @fires module:engine/view/node~Node#event:change
 	 * @returns {Number} Number of appended nodes.
 	 */
-	appendChild( element, items ) {
+	appendChild( items, element ) {
 		return element._appendChild( items );
 	}
 
@@ -49,14 +49,14 @@ export default class UpcastWriter {
 	 * this element.
 	 *
 	 * @see module:engine/view/element~Element#_insertChild
+	 * @param {Number} index Offset at which nodes should be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
 	 * to which items will be inserted.
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @fires module:engine/view/node~Node#change
+	 * @fires module:engine/view/node~Node#event:change
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	insertChild( element, index, items ) {
+	insertChild( index, items, element ) {
 		return element._insertChild( index, items );
 	}
 
@@ -64,14 +64,14 @@ export default class UpcastWriter {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @see module:engine/view/element~Element#_removeChildren
+	 * @param {Number} index Offset from which nodes will be removed.
+	 * @param {Number} howMany Number of nodes to remove.
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} element Element
-	 * from which children will be removed.
-	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @fires module:engine/view/node~Node#change
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 * which children will be removed.
+	 * @fires module:engine/view/node~Node#event:change
+	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
-	removeChildren( element, index, howMany = 1 ) {
+	removeChildren( index, howMany, element ) {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -79,10 +79,11 @@ export default class UpcastWriter {
 	 * Removes given element from the view structure. Will not have effect on detached elements.
 	 *
 	 * @param {module:engine/view/element~Element} element Element which will be removed.
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 * @returns {Array.<module:engine/view/node~Node>} The array containing removed nodes.
 	 */
 	remove( element ) {
 		const parent = element.parent;
+
 		if ( parent ) {
 			return this.removeChildren( parent, parent.getChildIndex( element ) );
 		}
@@ -94,7 +95,7 @@ export default class UpcastWriter {
 	 * Replaces given element with the new one in the view structure. Will not have effect on detached elements.
 	 *
 	 * @param {module:engine/view/element~Element} oldElement Element which will be replaced.
-	 * @param {module:engine/view/element~Element} newElement Element which will inserted in the place of the old element.
+	 * @param {module:engine/view/element~Element} newElement Element which will be inserted in the place of the old element.
 	 * @returns {Boolean} Whether old element was successfully replaced.
 	 */
 	replace( oldElement, newElement ) {
@@ -113,33 +114,33 @@ export default class UpcastWriter {
 	}
 
 	/**
-	 * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
+	 * Renames element by creating a copy of a given element but with its name changed and then moving contents of the
 	 * old element to the new one.
 	 *
 	 * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
 	 *
+	 * @param {String} newName New element name.
 	 * @param {module:engine/view/element~Element} element Element to be renamed.
-	 * @param {String} newName New name for element.
 	 * @returns {module:engine/view/element~Element|null} New element or null if the old element
 	 * was not replaced (happens for detached elements).
 	 */
-	rename( element, newName ) {
+	rename( newName, element ) {
 		const newElement = new Element( newName, element.getAttributes(), element.getChildren() );
 
 		return this.replace( element, newElement ) ? newElement : null;
 	}
 
 	/**
-	 * Adds or overwrite element's attribute with a specified key and value.
+	 * Adds or overwrites element's attribute with a specified key and value.
 	 *
 	 *		writer.setAttribute( linkElement, 'href', 'http://ckeditor.com' );
 	 *
 	 * @see module:engine/view/element~Element#_setAttribute
-	 * @param {module:engine/view/element~Element} element
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
+	 * @param {module:engine/view/element~Element} element Element for which attribute will be set.
 	 */
-	setAttribute( element, key, value ) {
+	setAttribute( key, value, element ) {
 		element._setAttribute( key, value );
 	}
 
@@ -149,10 +150,10 @@ export default class UpcastWriter {
 	 *		writer.removeAttribute( linkElement, 'href' );
 	 *
 	 * @see module:engine/view/element~Element#_removeAttribute
-	 * @param {module:engine/view/element~Element} element
 	 * @param {String} key Attribute key.
+	 * @param {module:engine/view/element~Element} element Element from which attribute will be removed.
 	 */
-	removeAttribute( element, key ) {
+	removeAttribute( key, element ) {
 		element._removeAttribute( key );
 	}
 
@@ -163,10 +164,10 @@ export default class UpcastWriter {
 	 *		writer.addClass( linkElement, [ 'foo', 'bar' ] );
 	 *
 	 * @see module:engine/view/element~Element#_addClass
-	 * @param {module:engine/view/element~Element} element
-	 * @param {Array.<String>|String} className
+	 * @param {Array.<String>|String} className Single class name or array of class names which will be added.
+	 * @param {module:engine/view/element~Element} element Element for which class will be added.
 	 */
-	addClass( element, className ) {
+	addClass( className, element ) {
 		element._addClass( className );
 	}
 
@@ -177,10 +178,10 @@ export default class UpcastWriter {
 	 *		writer.removeClass( linkElement, [ 'foo', 'bar' ] );
 	 *
 	 * @see module:engine/view/element~Element#_removeClass
-	 * @param {module:engine/view/element~Element} element
-	 * @param {Array.<String>|String} className
+	 * @param {Array.<String>|String} className Single class name or array of class names which will be removed.
+	 * @param {module:engine/view/element~Element} element Element from which class will be removed.
 	 */
-	removeClass( element, className ) {
+	removeClass( className, element ) {
 		element._removeClass( className );
 	}
 
@@ -194,11 +195,11 @@ export default class UpcastWriter {
 	 *		} );
 	 *
 	 * @see module:engine/view/element~Element#_setStyle
-	 * @param {module:engine/view/element~Element} element
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @param {module:engine/view/element~Element} element Element for which style will be added.
 	 */
-	setStyle( element, property, value ) {
+	setStyle( property, value, element ) {
 		element._setStyle( property, value );
 	}
 
@@ -209,10 +210,10 @@ export default class UpcastWriter {
 	 *		writer.removeStyle( element, [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @see module:engine/view/element~Element#_removeStyle
-	 * @param {module:engine/view/element~Element} element
-	 * @param {Array.<String>|String} property
+	 * @param {Array.<String>|String} property Style property name or names to be removed.
+	 * @param {module:engine/view/element~Element} element Element from which style will be removed.
 	 */
-	removeStyle( element, property ) {
+	removeStyle( property, element ) {
 		element._removeStyle( property );
 	}
 
@@ -221,11 +222,11 @@ export default class UpcastWriter {
 	 * so they can be used to add special data to elements.
 	 *
 	 * @see module:engine/view/element~Element#_setCustomProperty
-	 * @param {module:engine/view/element~Element} element
-	 * @param {String|Symbol} key
-	 * @param {*} value
+	 * @param {String|Symbol} key Custom property name/key.
+	 * @param {*} value Custom property value to be stored.
+	 * @param {module:engine/view/element~Element} element Element for which custom property will be set.
 	 */
-	setCustomProperty( element, key, value ) {
+	setCustomProperty( key, value, element ) {
 		element._setCustomProperty( key, value );
 	}
 
@@ -233,11 +234,11 @@ export default class UpcastWriter {
 	 * Removes a custom property stored under the given key.
 	 *
 	 * @see module:engine/view/element~Element#_removeCustomProperty
-	 * @param {module:engine/view/element~Element} element
-	 * @param {String|Symbol} key
+	 * @param {String|Symbol} key Name/key of the custom property to be removed.
+	 * @param {module:engine/view/element~Element} element Element from which the custom property will be removed.
 	 * @returns {Boolean} Returns true if property was removed.
 	 */
-	removeCustomProperty( element, key ) {
+	removeCustomProperty( key, element ) {
 		return element._removeCustomProperty( key );
 	}
 }
