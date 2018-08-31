@@ -47,23 +47,16 @@ class Token {
 		 */
 		this.set( 'value', options.initValue );
 
-		let refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
+		/**
+		 * Base refreshing function.
+		 *
+		 * @private
+		 */
+		this._refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
 
 		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
-			refresh = tokenUrlOrRefreshToken;
+			this._refresh = tokenUrlOrRefreshToken;
 		}
-
-		/**
-		 * Refresh token function.
-		 *
-		 * @member {Function} #_refreshToken
-		 * @protected
-		 */
-		this._refreshToken = () => {
-			return refresh()
-				.then( value => this.set( 'value', value ) )
-				.then( () => this );
-		};
 
 		/**
 		 * @type {Object}
@@ -93,6 +86,17 @@ class Token {
 
 			resolve( this );
 		} );
+	}
+
+	/**
+	 * Refresh token method. Useful in a method form as it can be override in tests.
+	 *
+	 * @protected
+	 */
+	_refreshToken() {
+		return this._refresh()
+				.then( value => this.set( 'value', value ) )
+				.then( () => this );
 	}
 
 	/**
