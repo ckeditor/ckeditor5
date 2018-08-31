@@ -225,7 +225,7 @@ describe( 'InsertOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.InsertOperation',
+				__className: 'InsertOperation',
 				baseVersion: 0,
 				nodes: ( new NodeList( [ new Text( 'x' ) ] ) ).toJSON(),
 				position: position.toJSON(),

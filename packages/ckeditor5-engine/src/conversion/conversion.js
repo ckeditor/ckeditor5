@@ -59,7 +59,7 @@ import {
  * Model element to view element and vice versa.
  * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} &ndash;
  * Model attribute to view element and vice versa.
- * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} &ndash;
+ * * {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} &ndash;
  * Model attribute to view element and vice versa.
  */
 export default class Conversion {

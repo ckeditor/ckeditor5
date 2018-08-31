@@ -38,7 +38,7 @@ describe( 'NoOperation', () => {
 			const serialized = noop.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.NoOperation',
+				__className: 'NoOperation',
 				baseVersion: 0
 			} );
 		} );

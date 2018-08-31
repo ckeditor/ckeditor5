@@ -112,7 +112,7 @@ export default class Operation {
 	 * @type {String}
 	 */
 	static get className() {
-		return 'engine.model.operation.Operation';
+		return 'Operation';
 	}
 
 	/**

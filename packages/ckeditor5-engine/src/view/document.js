@@ -32,7 +32,7 @@ export default class Document {
 		this.selection = new DocumentSelection();
 
 		/**
-		 * Roots of the view tree. Collection of the {module:engine/view/element~Element view elements}.
+		 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
 		 *
 		 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
 		 * {@link module:engine/model/document~Document#roots} and this is handled by

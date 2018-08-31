@@ -179,7 +179,7 @@ export default class AttributeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.AttributeOperation';
+		return 'AttributeOperation';
 	}
 
 	/**

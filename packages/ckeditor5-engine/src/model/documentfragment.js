@@ -76,7 +76,7 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Sum of {module:engine/model/node~Node#offsetSize offset sizes} of all of this document fragment's children.
+	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all of this document fragment's children.
 	 *
 	 * @readonly
 	 * @type {Number}

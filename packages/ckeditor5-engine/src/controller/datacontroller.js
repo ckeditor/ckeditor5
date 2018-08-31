@@ -253,7 +253,7 @@ export default class DataController {
 	/**
 	 * Returns the result of the given {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
-	 * {@link #upcastDispatcher view-to-model converters}, wrapped by {module:engine/model/documentfragment~DocumentFragment}.
+	 * {@link #upcastDispatcher view-to-model converters}, wrapped by {@link module:engine/model/documentfragment~DocumentFragment}.
 	 *
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.

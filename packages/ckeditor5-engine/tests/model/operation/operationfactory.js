@@ -16,7 +16,7 @@ describe( 'OperationFactory', () => {
 
 	it( 'should create operation from JSON', () => {
 		const operation = OperationFactory.fromJSON( {
-			__className: 'engine.model.operation.NoOperation',
+			__className: 'NoOperation',
 			baseVersion: 0
 		}, model.doc );
 
