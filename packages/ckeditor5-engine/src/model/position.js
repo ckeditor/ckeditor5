@@ -41,7 +41,7 @@ export default class Position {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
 	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param {module:engine/model/position~PositionStickiness} stickiness Position stickiness. Defaults to `'toNone'`.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
 	 * See {@link module:engine/model/position~PositionStickiness}.
 	 */
 	constructor( root, path, stickiness = 'toNone' ) {
@@ -113,10 +113,6 @@ export default class Position {
 
 		/**
 		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
-		 *
-		 * Regular `Position` (not {@link module:engine/model/liveposition~LivePosition}) should always be not-sticky
-		 * (`'toNone'`), unless it is a {@link module:engine/model/range~Range} boundary. Note, that `Range`
-		 * automatically creates positions with correct stickiness.
 		 *
 		 * @member {module:engine/model/position~PositionStickiness} module:engine/model/position~Position#stickiness
 		 */
@@ -230,6 +226,8 @@ export default class Position {
 	/**
 	 * Checks whether this position is before or after given position.
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {module:engine/model/position~PositionRelation}
 	 */
@@ -289,7 +287,7 @@ export default class Position {
 	 * Returns a path to this position's parent. Parent path is equal to position {@link module:engine/model/position~Position#path path}
 	 * but without the last item.
 	 *
-	 * This method returns the parent path even if the parent does not exists.
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @returns {Array.<Number>} Path to the parent.
 	 */
@@ -313,6 +311,8 @@ export default class Position {
 	/**
 	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
 	 * of these two paths must be identical.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @param {module:engine/model/position~Position} position The second position.
 	 * @returns {Array.<Number>} The common path.
@@ -354,6 +354,8 @@ export default class Position {
 	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
@@ -369,8 +371,9 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * @see module:engine/model/position~Position#isBefore
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
+	 * @see module:engine/model/position~Position#isBefore
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
 	 */
@@ -406,6 +409,8 @@ export default class Position {
 	 *			// do A.
 	 *		}
 	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.
 	 */
@@ -415,6 +420,8 @@ export default class Position {
 
 	/**
 	 * Checks whether this position is equal to given position.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
@@ -427,8 +434,6 @@ export default class Position {
 	 * Checks whether this position is touching given position. Positions touch when there are no text nodes
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
 	 * they are very similar or even indistinguishable.
-	 *
-	 * **Note:** this method traverses model document so it can be only used when range is up-to-date with model document.
 	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
@@ -482,6 +487,14 @@ export default class Position {
 		}
 	}
 
+	/**
+	 * Checks if two positions are in the same parent.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
+	 * @param {~Position} position Position to compare with.
+	 * @returns {Boolean} `true` if positions have the same parent, `false` otherwise.
+	 */
 	hasSameParentAs( position ) {
 		if ( this.root !== position.root ) {
 			return false;
@@ -493,6 +506,19 @@ export default class Position {
 		return compareArrays( thisParentPath, posParentPath ) == 'same';
 	}
 
+	/**
+	 * Returns a copy of this position that is transformed by given `operation`.
+	 *
+	 * The new position's parameters are updated accordingly to the effect of the `operation`.
+	 *
+	 * For example, if `n` nodes are inserted before the position, the returned position {@link ~Position#offset} will be
+	 * increased by `n`. If the position was in a merged element, it will be accordingly moved to the new element, etc.
+	 *
+	 * This method is safe to use it on non-existing positions (for example during operational transformation).
+	 *
+	 * @param {module:engine/model/operation/operation~Operation} operation Operation to transform by.
+	 * @returns {module:engine/model/position~Position} Transformed position.
+	 */
 	getTransformedByOperation( operation ) {
 		let result;
 
@@ -525,14 +551,35 @@ export default class Position {
 		return result;
 	}
 
+	/**
+	 * Returns a copy of this position transformed by an insert operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/insertoperation~InsertOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedByInsertOperation( operation ) {
 		return this._getTransformedByInsertion( operation.position, operation.howMany );
 	}
 
+	/**
+	 * Returns a copy of this position transformed by a move operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/moveoperation~MoveOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedByMoveOperation( operation ) {
 		return this._getTransformedByMove( operation.sourcePosition, operation.targetPosition, operation.howMany );
 	}
 
+	/**
+	 * Returns a copy of this position transformed by a split operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/splitoperation~SplitOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedBySplitOperation( operation ) {
 		const movedRange = operation.movedRange;
 
@@ -550,6 +597,13 @@ export default class Position {
 		}
 	}
 
+	/**
+	 * Returns a copy of this position transformed by merge operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/mergeoperation~MergeOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedByMergeOperation( operation ) {
 		const movedRange = operation.movedRange;
 		const isContained = movedRange.containsPosition( this ) || movedRange.start.isEqual( this );
@@ -572,6 +626,13 @@ export default class Position {
 		return pos;
 	}
 
+	/**
+	 * Returns a copy of this position transformed by wrap operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/wrapoperation~WrapOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedByWrapOperation( operation ) {
 		const wrappedRange = operation.wrappedRange;
 
@@ -594,6 +655,13 @@ export default class Position {
 		}
 	}
 
+	/**
+	 * Returns a copy of this position transformed by unwrap operation.
+	 *
+	 * @protected
+	 * @param {module:engine/model/operation/unwrapoperation~UnwrapOperation} operation
+	 * @returns {module:engine/model/position~Position}
+	 */
 	_getTransformedByUnwrapOperation( operation ) {
 		const unwrappedRange = operation.unwrappedRange;
 

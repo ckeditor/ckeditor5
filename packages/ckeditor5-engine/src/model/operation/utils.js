@@ -123,7 +123,7 @@ export function _move( sourceRange, targetPosition ) {
  *
  * @protected
  * @function module:engine/model/operation/utils~utils._setAttribute
- * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Should be flat.
+ * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set. Must be a flat range.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
  */
@@ -200,17 +200,14 @@ export function _normalizeNodes( nodes ) {
 	return normalized;
 }
 
-/**
- * Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
- * merges them into one node if they have same attributes.
- *
- * Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
- *
- * @ignore
- * @private
- * @param {module:engine/model/element~Element} element Parent element of nodes to merge.
- * @param {Number} index Index between nodes to merge.
- */
+// Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
+// merges them into one node if they have same attributes.
+//
+// Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
+//
+// @private
+// @param {module:engine/model/element~Element} element Parent element of nodes to merge.
+// @param {Number} index Index between nodes to merge.
 function _mergeNodesAtIndex( element, index ) {
 	const nodeBefore = element.getChild( index - 1 );
 	const nodeAfter = element.getChild( index );
@@ -228,14 +225,11 @@ function _mergeNodesAtIndex( element, index ) {
 	}
 }
 
-/**
- * Checks if given position is in a text node, and if so, splits the text node in two text nodes, each of them
- * containing a part of original text node.
- *
- * @ignore
- * @private
- * @param {module:engine/model/position~Position} position Position at which node should be split.
- */
+// Checks if given position is in a text node, and if so, splits the text node in two text nodes, each of them
+// containing a part of original text node.
+//
+// @private
+// @param {module:engine/model/position~Position} position Position at which node should be split.
 function _splitNodeAtPosition( position ) {
 	const textNode = position.textNode;
 	const element = position.parent;
@@ -253,15 +247,12 @@ function _splitNodeAtPosition( position ) {
 	}
 }
 
-/**
- * Checks whether two given nodes have same attributes.
- *
- * @ignore
- * @private
- * @param {module:engine/model/node~Node} nodeA Node to check.
- * @param {module:engine/model/node~Node} nodeB Node to check.
- * @returns {Boolean} `true` if nodes have same attributes, `false` otherwise.
- */
+// Checks whether two given nodes have same attributes.
+//
+// @private
+// @param {module:engine/model/node~Node} nodeA Node to check.
+// @param {module:engine/model/node~Node} nodeB Node to check.
+// @returns {Boolean} `true` if nodes have same attributes, `false` otherwise.
 function _haveSameAttributes( nodeA, nodeB ) {
 	const iteratorA = nodeA.getAttributes();
 	const iteratorB = nodeB.getAttributes();

@@ -543,6 +543,7 @@ export default class Writer {
 	 * Performs merge action in a detached tree.
 	 *
 	 * @private
+	 * @param {module:engine/model/position~Position} position Position between merged elements.
 	 */
 	_mergeDetached( position ) {
 		const nodeBefore = position.nodeBefore;
@@ -1222,6 +1223,8 @@ export default class Writer {
 // Because attribute operation needs to have the same attribute value on the whole range, this function splits
 // the range into smaller parts.
 //
+// Given `range` must be flat.
+//
 // @private
 // @param {module:engine/model/writer~Writer} writer
 // @param {String} key Attribute key.
@@ -1336,7 +1339,7 @@ function applyMarkerOperation( writer, name, oldRange, newRange, affectsData ) {
 // @private
 // @param {module:engine/model/position~Position} position Position from which nodes are removed.
 // @param {Number} howMany Number of nodes to remove.
-// @param {Batch} batch
+// @param {Batch} batch Batch to which the operation will be added.
 // @param {module:engine/model/model~Model} model Model instance on which operation will be applied.
 function applyRemoveOperation( position, howMany, batch, model ) {
 	let operation;

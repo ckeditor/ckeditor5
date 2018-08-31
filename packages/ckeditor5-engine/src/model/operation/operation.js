@@ -38,6 +38,12 @@ export default class Operation {
 		 */
 		this.isDocumentOperation = this.baseVersion !== null;
 
+		/**
+		 * {@link module:engine/model/batch~Batch Batch} to which the operation is added or `null` if the operation is not
+		 * added to any batch yet.
+		 *
+		 * @member {module:engine/model/batch~Batch|null} #batch
+		 */
 		this.batch = null;
 
 		/**
@@ -98,6 +104,7 @@ export default class Operation {
 
 		json.__className = this.constructor.className;
 
+		// Remove reference to the parent `Batch` to avoid circular dependencies.
 		delete json.batch;
 
 		// Only document operations are shared with other clients so it is not necessary to keep this information.

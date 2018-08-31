@@ -34,8 +34,7 @@ export default class LivePosition extends Position {
 	 * @see module:engine/model/position~Position
 	 * @param {module:engine/model/rootelement~RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {module:engine/model/position~PositionStickiness} [stickiness] Position stickiness. Defaults to `'toNone'`.
-	 * See {@link module:engine/model/liveposition~LivePosition#stickiness}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
 	 */
 	constructor( root, path, stickiness = 'toNone' ) {
 		super( root, path, stickiness );
@@ -50,12 +49,6 @@ export default class LivePosition extends Position {
 				'model-liveposition-root-not-rootelement: LivePosition\'s root has to be an instance of RootElement.'
 			);
 		}
-
-		/**
-		 * Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
-		 *
-		 * @member {module:engine/model/position~PositionStickiness} module:engine/model/liveposition~LivePosition#stickiness
-		 */
 
 		bindWithDocument.call( this );
 	}
@@ -110,14 +103,10 @@ export default class LivePosition extends Position {
 	 */
 }
 
-/**
- * Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
- * this position's {@link module:engine/model/position~Position#root root}.
- *
- * @ignore
- * @private
- * @method module:engine/model/liveposition~LivePosition.bindWithDocument
- */
+// Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
+// this position's {@link module:engine/model/position~Position#root root}.
+//
+// @private
 function bindWithDocument() {
 	this.listenTo(
 		this.root.document.model,
@@ -135,14 +124,10 @@ function bindWithDocument() {
 	);
 }
 
-/**
- * Updates this position accordingly to the updates applied to the model. Bases on change events.
- *
- * @ignore
- * @private
- * @method transform
- * @param {module:engine/model/operation/operation~Operation} operation Executed operation.
- */
+// Updates this position accordingly to the updates applied to the model. Bases on change events.
+//
+// @private
+// @param {module:engine/model/operation/operation~Operation} operation Executed operation.
 function transform( operation ) {
 	const result = this.getTransformedByOperation( operation );
 

@@ -84,7 +84,7 @@ const treeDump = Symbol( '_treeDump' );
 // Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
 
-// Separator used to separate stringified operations
+// Separator used to separate stringified operations.
 const LOG_SEPARATOR = '-------';
 
 // Specified whether debug tools were already enabled.

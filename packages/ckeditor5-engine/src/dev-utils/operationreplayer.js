@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/dev-utils/replayer
+ * @module engine/dev-utils/operationreplayer
  */
 
 /* global setTimeout */

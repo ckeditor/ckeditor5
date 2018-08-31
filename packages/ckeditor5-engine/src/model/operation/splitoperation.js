@@ -16,8 +16,9 @@ import { _insert, _move } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Operation to split {@link module:engine/model/element~Element an element} at
- * given {@link module:engine/model/position~Position position} into two elements, both containing a part of the element's content.
+ * Operation to split {@link module:engine/model/element~Element an element} at given
+ * {@link module:engine/model/operation/splitoperation~SplitOperation#position position} into two elements,
+ * both containing a part of the element's original content.
  *
  * @extends module:engine/model/operation/operation~Operation
  */
@@ -26,8 +27,8 @@ export default class SplitOperation extends Operation {
 	 * Creates a split operation.
 	 *
 	 * @param {module:engine/model/position~Position} position Position at which an element should be split.
-	 * @param {Number}
-	 * @param {module:engine/model/position~Position|null} graveyardPosition Position in graveyard before the element which
+	 * @param {Number} howMany Total offset size of elements that are in the split element after `position`.
+	 * @param {module:engine/model/position~Position|null} graveyardPosition Position in the graveyard root before the element which
 	 * should be used as a parent of the nodes after `position`. If it is not set, a copy of the the `position` parent will be used.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
@@ -41,15 +42,30 @@ export default class SplitOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/splitoperation~SplitOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
+		// Keep position sticking to the next node. This way any new content added at the place where the element is split
+		// will be left in the original element.
 		this.position.stickiness = 'toNext';
 
+		/**
+		 * Total offset size of elements that are in the split element after `position`.
+		 *
+		 * @member {Number} module:engine/model/operation/splitoperation~SplitOperation#howMany
+		 */
+		this.howMany = howMany;
+
+		/**
+		 * Position in the graveyard root before the element which should be used as a parent of the nodes after `position`.
+		 * If it is not set, a copy of the the `position` parent will be used.
+		 *
+		 * The default behavior is to clone the split element. Element from graveyard is used during undo.
+		 *
+		 * @member {module:engine/model/position~Position|null} #graveyardPosition
+		 */
 		this.graveyardPosition = graveyardPosition ? Position.createFromPosition( graveyardPosition ) : null;
 
 		if ( this.graveyardPosition ) {
 			this.graveyardPosition.stickiness = 'toNext';
 		}
-
-		this.howMany = howMany;
 	}
 
 	/**
@@ -60,8 +76,9 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
-	 * Position after the split element. This is a position at which the clone of split element will be inserted.
-	 * Calculated based on the split position.
+	 * Position after the split element.
+	 *
+	 * This is a position at which the clone of split element (or element from graveyard) will be inserted.
 	 *
 	 * @readonly
 	 * @type {module:engine/model/position~Position}
@@ -74,8 +91,9 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
-	 * Position inside the new clone of a split element. This is a position where nodes from after the split position will
-	 * be moved to. Calculated based on the split position.
+	 * Position inside the new clone of a split element.
+	 *
+	 * This is a position where nodes that are after the split position will be moved to.
 	 *
 	 * @readonly
 	 * @type {module:engine/model/position~Position}
