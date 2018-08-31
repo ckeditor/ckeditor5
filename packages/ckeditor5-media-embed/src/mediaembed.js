@@ -12,6 +12,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MediaEmbedEditing from './mediaembedediting';
 import MediaEmbedUI from './mediaembedui';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+
+const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 
 /**
  * The media embed plugin.
@@ -28,7 +31,7 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ MediaEmbedEditing, MediaEmbedUI, Widget ];
+		return [ MediaEmbedEditing, MediaEmbedUI, Widget, Clipboard ];
 	}
 
 	/**
@@ -36,6 +39,27 @@ export default class MediaEmbed extends Plugin {
 	 */
 	static get pluginName() {
 		return 'MediaEmbed';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
+
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
+			const url = data.content.getChild( 0 ).data;
+
+			if ( !url.match( URL_REGEXP ) ) {
+				return;
+			}
+
+			if ( mediaRegistry.hasMedia( url ) ) {
+				this.editor.commands.execute( 'mediaEmbed', url );
+				evt.stop();
+			}
+		} );
 	}
 }
 
