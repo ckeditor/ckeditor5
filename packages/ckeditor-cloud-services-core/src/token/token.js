@@ -135,7 +135,7 @@ mix( Token, ObservableMixin );
 
 /**
  * This function is called in a defined interval by the {@link ~Token} class.
- * It should return a promise, which resolves with the new token url.
+ * It should return a promise, which resolves with the new token value.
  * If any error occurs it should return a rejected promise with an error message.
  *
  * @function refreshToken
