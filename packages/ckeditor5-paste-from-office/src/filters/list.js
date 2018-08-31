@@ -102,13 +102,13 @@ function createLists( listItems, styles ) {
 			if ( !previousListItem || previousListItem.id !== listItem.id ) {
 				const listStyle = findListType( listItem, styles );
 				currentList = new Element( listStyle.type );
-				writer.insertChild( listNode.parent, listNode.parent.getChildIndex( listNode ), currentList );
+				writer.insertChild( listNode.parent.getChildIndex( listNode ), currentList, listNode.parent );
 			}
 
 			removeBulletElement( listNode );
 
-			writer.appendChild( currentList, listNode );
-			writer.rename( listNode, 'li' );
+			writer.appendChild( listNode, currentList );
+			writer.rename( 'li', listNode );
 
 			previousListItem = listItem;
 		}
