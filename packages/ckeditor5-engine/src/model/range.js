@@ -547,16 +547,16 @@ export default class Range {
 		}
 
 		if ( start.isAfter( end ) ) {
-			// This happens in the following two, similar cases:
+			// This happens in three following cases:
 			//
-			// Case 1: Range start is directly before merged node.
-			//         Resulting range should include only nodes from the merged element:
+			// Case 1: Merge operation source position is before the target position (due to some transformations, OT, etc.)
+			//         This means that start can be moved before the end of the range.
 			//
-			// Before: <p>aa</p>{<p>b}b</p><p>cc</p>
-			// Merge:  <p>aab}b</p>{<p>cc</p>
-			// Fix:    <p>aa{b}b</p><p>cc</p>
+			// Before: <p>a{a</p><p>b}b</p><p>cc</p>
+			// Merge:  <p>b}b</p><p>cca{a</p>
+			// Fix:    <p>{b}b</p><p>ccaa</p>
 			//
-			// Case 2: Range start is not directly before merged node.
+			// Case 2: Range start is before merged node but not directly.
 			//         Result should include all nodes that were in the original range.
 			//
 			// Before: <p>aa</p>{<p>cc</p><p>b}b</p>
@@ -565,13 +565,27 @@ export default class Range {
 			//
 			//         The range is expanded by an additional `b` letter but it is better than dropping the whole `cc` paragraph.
 			//
-			if ( !operation.deletionPosition.isEqual( start ) ) {
-				// Case 2.
-				end = operation.deletionPosition;
-			}
+			// Case 3: Range start is directly before merged node.
+			//         Resulting range should include only nodes from the merged element:
+			//
+			// Before: <p>aa</p>{<p>b}b</p><p>cc</p>
+			// Merge:  <p>aab}b</p>{<p>cc</p>
+			// Fix:    <p>aa{b}b</p><p>cc</p>
+			//
 
-			// In both cases start is at the end of the merge-to element.
-			start = operation.targetPosition;
+			if ( operation.sourcePosition.isBefore( operation.targetPosition ) ) {
+				// Case 1.
+				start = Position.createFromPosition( end );
+				start.offset = 0;
+			} else {
+				if ( !operation.deletionPosition.isEqual( start ) ) {
+					// Case 2.
+					end = operation.deletionPosition;
+				}
+
+				// In both case 2 and 3 start is at the end of the merge-to element.
+				start = operation.targetPosition;
+			}
 
 			return new Range( start, end );
 		}

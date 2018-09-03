@@ -1,4 +1,4 @@
-import { Client, syncClients, expectClients } from './utils.js';
+import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
 	let john, kate;
@@ -11,12 +11,14 @@ describe( 'transform', () => {
 	} );
 
 	afterEach( () => {
+		clearBuffer();
+
 		return Promise.all( [ john.destroy(), kate.destroy() ] );
 	} );
 
 	describe( 'split', () => {
 		describe( 'by wrap', () => {
-			it( 'element in same path', () => {
+			it( 'split inside wrapped element', () => {
 				john.setData( '<paragraph>F[]oo</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
@@ -33,7 +35,7 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'element in same path, then undo', () => {
+			it( 'split inside wrapped element, then undo', () => {
 				john.setData( '<paragraph>F[]oo</paragraph>' );
 				kate.setData( '[<paragraph>Foo</paragraph>]' );
 
@@ -49,6 +51,47 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph>F</paragraph>' +
 					'<paragraph>oo</paragraph>'
+				);
+			} );
+
+			it( 'element in same path, then undo', () => {
+				// This is pretty weird case. Right now it cannot be reproduced with the features that we have.
+				john.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
+				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+
+				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
+				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+
+				john.setData( '<listItem><paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph></listItem>' );
+				kate.setData( '<listItem><paragraph>A</paragraph><paragraph>B</paragraph>[<paragraph>C</paragraph>]</listItem>' );
+
+				john.split();
+				kate.wrap( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<listItem>' +
+						'<paragraph>A</paragraph>' +
+					'</listItem>' +
+					'<listItem>' +
+						'<paragraph>B</paragraph>' +
+						'<blockQuote>' +
+							'<paragraph>C</paragraph>' +
+						'</blockQuote>' +
+					'</listItem>'
+				);
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+
+				expectClients(
+					'<listItem>' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+						'<paragraph>C</paragraph>' +
+					'</listItem>'
 				);
 			} );
 
@@ -158,6 +201,23 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
+			it( 'element in same path, then undo both', () => {
+				john.setData( '<blockQuote><paragraph>F[]oo</paragraph></blockQuote>' );
+				kate.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
+
+				john.split();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
 			} );
 
 			it( 'text in same path, then undo', () => {
@@ -382,6 +442,24 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph>F</paragraph>' +
 					'<paragraph>oo B</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'by move', () => {
+			it( 'move inside split element after split position', () => {
+				john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>[Ba]r</paragraph>' );
+
+				john.split();
+				kate.move( [ 0, 3 ] );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>F</paragraph>' +
+					'<paragraph>ooBa</paragraph>' +
+					'<paragraph>r</paragraph>'
 				);
 			} );
 		} );

@@ -1,4 +1,4 @@
-import { Client, syncClients, expectClients } from './utils.js';
+import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
 	let john, kate;
@@ -11,6 +11,8 @@ describe( 'transform', () => {
 	} );
 
 	afterEach( () => {
+		clearBuffer();
+
 		return Promise.all( [ john.destroy(), kate.destroy() ] );
 	} );
 
@@ -1435,6 +1437,23 @@ describe( 'transform', () => {
 
 				syncClients();
 				expectClients( '<paragraph>Foo</paragraph><paragraph bold="true">Bar</paragraph>' );
+			} );
+
+			it( 'element in same path', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>[<paragraph>Baz</paragraph>]' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph><paragraph>Baz</paragraph>' );
+
+				john.setAttribute( 'bold', 'true' );
+				kate.merge();
+
+				syncClients();
+				expectClients( '<paragraph>FooBar</paragraph><paragraph bold="true">Baz</paragraph>' );
+
+				kate.undo();
+				john.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Baz</paragraph>' );
 			} );
 		} );
 	} );

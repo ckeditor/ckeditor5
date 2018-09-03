@@ -203,7 +203,7 @@ describe( 'MergeOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.MergeOperation',
+				__className: 'MergeOperation',
 				baseVersion: 0,
 				howMany: 1,
 				sourcePosition: op.sourcePosition.toJSON(),

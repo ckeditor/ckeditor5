@@ -1,4 +1,4 @@
-import { Client, syncClients, expectClients } from './utils.js';
+import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
 	let john, kate;
@@ -11,6 +11,8 @@ describe( 'transform', () => {
 	} );
 
 	afterEach( () => {
+		clearBuffer();
+
 		return Promise.all( [ john.destroy(), kate.destroy() ] );
 	} );
 
@@ -589,6 +591,22 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph>FooBar</paragraph>' );
+			} );
+
+			it( 'move multiple elements, then undo', () => {
+				john.setData( '<paragraph>A</paragraph>[<paragraph>B</paragraph><paragraph>C</paragraph>]' );
+				kate.setData( '<paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph>' );
+
+				john.move( [ 0 ] );
+				kate.merge();
+
+				syncClients();
+				expectClients( '<paragraph>C</paragraph><paragraph>AB</paragraph>' );
+
+				john.undo();
+
+				syncClients();
+				expectClients( '<paragraph>AB</paragraph><paragraph>C</paragraph>' );
 			} );
 
 			it( 'moved text', () => {

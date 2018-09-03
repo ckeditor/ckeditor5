@@ -1,4 +1,4 @@
-import { Client, syncClients, expectClients } from './utils.js';
+import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
 	let john, kate;
@@ -11,20 +11,22 @@ describe( 'transform', () => {
 	} );
 
 	afterEach( () => {
+		clearBuffer();
+
 		return Promise.all( [ john.destroy(), kate.destroy() ] );
 	} );
 
 	describe( 'unwrap', () => {
 		describe( 'by unwrap', () => {
-			it( 'element in different path', () => {
+			it( 'unwrap two siblings', () => {
 				john.setData(
-					'<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' +
+					'<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' +
 					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
 				);
 
 				kate.setData(
 					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-					'<blockQuote>[<paragraph>Bar</paragraph>]</blockQuote>'
+					'<blockQuote>[]<paragraph>Bar</paragraph></blockQuote>'
 				);
 
 				john.unwrap();
@@ -35,6 +37,32 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>'
+				);
+			} );
+
+			it( 'unwrap two siblings then undo', () => {
+				john.setData(
+					'<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
+				);
+
+				kate.setData(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote>[]<paragraph>Bar</paragraph></blockQuote>'
+				);
+
+				john.unwrap();
+				kate.unwrap();
+
+				syncClients();
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients(
+					'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
+					'<blockQuote><paragraph>Bar</paragraph></blockQuote>'
 				);
 			} );
 
@@ -195,6 +223,157 @@ describe( 'transform', () => {
 				expectClients(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph>Bar</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'by split', () => {
+			it( 'unwrap, then split and undo', () => {
+				// This is pretty weird case. Right now it cannot be reproduced with the features that we have.
+				john.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
+				john.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+
+				kate.editor.model.schema.extend( 'paragraph', { allowIn: 'listItem' } );
+				kate.editor.model.schema.extend( 'blockQuote', { allowIn: 'listItem' } );
+
+				john.setData(
+					'<listItem>' +
+						'<blockQuote>' +
+							'[]' +
+							'<paragraph>A</paragraph>' +
+							'<paragraph>B</paragraph>' +
+						'</blockQuote>' +
+					'</listItem>'
+				);
+
+				kate.setData(
+					'<listItem>' +
+						'<blockQuote>' +
+							'[]' +
+							'<paragraph>A</paragraph>' +
+							'<paragraph>B</paragraph>' +
+						'</blockQuote>' +
+					'</listItem>'
+				);
+
+				john.unwrap();
+
+				syncClients();
+				expectClients(
+					'<listItem>' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+					'</listItem>'
+				);
+
+				john.undo();
+				kate.setSelection( [ 0, 1 ] );
+				kate.split();
+
+				syncClients();
+				expectClients(
+					'<listItem>' +
+						'<paragraph>A</paragraph>' +
+					'</listItem>' +
+					'<listItem>' +
+						'<paragraph>B</paragraph>' +
+					'</listItem>'
+				);
+
+				kate.undo();
+
+				syncClients();
+				expectClients(
+					'<listItem>' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+					'</listItem>'
+				);
+			} );
+		} );
+
+		describe( 'by wrap', () => {
+			it( 'unwrap, then undo and wrap #1', () => {
+				john.setData(
+					'<blockQuote>' +
+						'[]' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+						'<paragraph>C</paragraph>' +
+					'</blockQuote>'
+				);
+
+				kate.setData(
+					'<blockQuote>' +
+						'[]' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+						'<paragraph>C</paragraph>' +
+					'</blockQuote>'
+				);
+
+				john.unwrap();
+
+				syncClients();
+				expectClients(
+					'<paragraph>A</paragraph>' +
+					'<paragraph>B</paragraph>' +
+					'<paragraph>C</paragraph>'
+				);
+
+				john.undo();
+				kate.setSelection( [ 1 ], [ 2 ] );
+				kate.wrap( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>A</paragraph>' +
+						'<paragraph>B</paragraph>' +
+						'<paragraph>C</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'unwrap, then undo and wrap #2', () => {
+				john.setData(
+					'<paragraph>A</paragraph>' +
+					'<blockQuote>' +
+						'[]' +
+						'<paragraph>B</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>C</paragraph>'
+				);
+
+				kate.setData(
+					'<paragraph>A</paragraph>' +
+					'<blockQuote>' +
+						'[]' +
+						'<paragraph>B</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>C</paragraph>'
+				);
+
+				john.unwrap();
+
+				syncClients();
+				expectClients(
+					'<paragraph>A</paragraph>' +
+					'<paragraph>B</paragraph>' +
+					'<paragraph>C</paragraph>'
+				);
+
+				john.undo();
+				kate.setSelection( [ 1 ], [ 2 ] );
+				kate.wrap( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<paragraph>A</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>B</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>C</paragraph>'
 				);
 			} );
 		} );

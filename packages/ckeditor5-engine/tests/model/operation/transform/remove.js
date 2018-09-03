@@ -1,4 +1,4 @@
-import { Client, syncClients, expectClients } from './utils.js';
+import { Client, syncClients, expectClients, clearBuffer } from './utils.js';
 
 describe( 'transform', () => {
 	let john, kate;
@@ -11,6 +11,8 @@ describe( 'transform', () => {
 	} );
 
 	afterEach( () => {
+		clearBuffer();
+
 		return Promise.all( [ john.destroy(), kate.destroy() ] );
 	} );
 

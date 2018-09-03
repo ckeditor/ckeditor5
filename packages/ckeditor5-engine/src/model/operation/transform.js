@@ -533,7 +533,6 @@ function initializeContext( operationsA, operationsB, options ) {
  * @param {Object} context
  */
 function updateRelations( opA, opB, context ) {
-	//
 	// The use of relations is described in a bigger detail in transformation functions.
 	//
 	// In brief, this function, for specified pairs of operation types, checks how positions defined in those operations relate.
@@ -547,7 +546,6 @@ function updateRelations( opA, opB, context ) {
 				case MergeOperation: {
 					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
 						setRelation( context, opA, opB, 'insertAtSource' );
-						setRelation( context, opB, opA, 'splitBefore' );
 					} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
 						setRelation( context, opA, opB, 'insertBetween' );
 					}
@@ -558,17 +556,15 @@ function updateRelations( opA, opB, context ) {
 				case MoveOperation: {
 					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
 						setRelation( context, opA, opB, 'insertBefore' );
-						setRelation( context, opB, opA, 'insertAfter' );
 					} else {
 						setRelation( context, opA, opB, 'insertAfter' );
-						setRelation( context, opB, opA, 'insertBefore' );
 					}
 
 					break;
 				}
 
 				case UnwrapOperation: {
-					const isInside = opA.targetPosition.hasSameParentAs( opB.targetPosition );
+					const isInside = opA.targetPosition.hasSameParentAs( opB.position );
 
 					if ( isInside ) {
 						setRelation( context, opA, opB, 'insertInside' );
@@ -594,17 +590,6 @@ function updateRelations( opA, opB, context ) {
 				case MoveOperation: {
 					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
 						setRelation( context, opA, opB, 'splitBefore' );
-						setRelation( context, opB, opA, 'insertAtSource' );
-					}
-
-					break;
-				}
-
-				case UnwrapOperation: {
-					const isInside = opA.position.hasSameParentAs( opB.position );
-
-					if ( isInside ) {
-						setRelation( context, opA, opB, 'splitInside' );
 					}
 
 					break;
@@ -1543,21 +1528,6 @@ setTransformation( MergeOperation, WrapOperation, ( a, b ) => {
 		a.howMany = a.howMany + 1 - b.howMany;
 	}
 
-	// Case 1:
-	//
-	// Wrap is with an element from graveyard, which also is merge operation target. This happens
-	// in some undo scenarios. In this case, the target position needs to be properly transformed.
-	//
-	const path = a.targetPosition.path.slice( 0, -1 );
-	const posBeforeTargetElement = new Position( a.targetPosition.root, path );
-
-	if ( b.graveyardPosition && b.graveyardPosition.isEqual( posBeforeTargetElement ) ) {
-		a.sourcePosition = a.sourcePosition._getTransformedByWrapOperation( b );
-		a.targetPosition = b.targetPosition.getShiftedBy( b.howMany );
-
-		return [ a ];
-	}
-
 	// Case 2:
 	//
 	// Merged element is wrapped and this is the last (only) element in the wrap.
@@ -1608,6 +1578,28 @@ setTransformation( MergeOperation, UnwrapOperation, ( a, b, context ) => {
 		a.howMany = 0;
 
 		return [ a ];
+	}
+
+	// Case 2:	The element to merge into got unwrapped.
+	//
+	//			In this case there is nothing to merge into. We can imagine, that the merge operation was a little earlier
+	//			than unwrap operation, so first elements got merged, and then both were unwrapped. To simulate this,
+	//			we will change this merge into unwrap.
+	//
+	//			We have this:
+	//			<blockQuote><p>Foo</p></blockQuote><blockQuote><p>Bar</p></blockQuote>
+	//
+	//			Unwrap already happened:
+	//			<p>Foo</p><blockQuote><p>Bar</p></blockQuote>
+	//
+	//			Let's act like merge happened first and lead to this state:
+	//			<p>Foo</p><p>Bar</p>
+	//
+	if ( a.targetPosition.hasSameParentAs( b.position ) ) {
+		const graveyard = a.sourcePosition.root.document.graveyard;
+		const graveyardPosition = new Position( graveyard, [ 0 ] );
+
+		return [ new UnwrapOperation( a.sourcePosition, a.howMany, graveyardPosition, 0 ) ];
 	}
 
 	// The default case.
@@ -1844,6 +1836,8 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// In this case the default range transformation will not work correctly as the element created by
 	// split operation would be outside the range. The range to move needs to be fixed manually.
+	// Do it only if this is a "natural" split, not a one that comes from undo.
+	// TODO: this should be done on relations
 	//
 	const moveRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 
@@ -1982,6 +1976,15 @@ setTransformation( MoveOperation, WrapOperation, ( a, b, context ) => {
 
 	// Case 1:
 	//
+	// Move operation targets to the beginning of the wrapped range. We need to decide if the moved nodes
+	// should also be wrapped.
+	//
+	if ( a.targetPosition.isEqual( b.position ) && context.abRelation == 'insertInside' ) {
+		newTargetPosition = b.targetPosition;
+	}
+
+	// Case 2:
+	//
 	// Some of the nodes to move got wrapped. In this case multiple ranges to move might need to be generated.
 	//
 	// First paragraph and the image should are wrapped, while the two images are moved after the last paragraph:
@@ -2020,15 +2023,6 @@ setTransformation( MoveOperation, WrapOperation, ( a, b, context ) => {
 		}
 
 		return result;
-	}
-
-	// Case 2:
-	//
-	// Move operation targets to the beginning of the wrapped range. We need to decide if the moved nodes
-	// should also be wrapped.
-	//
-	if ( a.targetPosition.isEqual( b.position ) && context.abRelation == 'insertInside' ) {
-		newTargetPosition = b.targetPosition;
 	}
 
 	// The default case.
@@ -2195,6 +2189,10 @@ setTransformation( SplitOperation, InsertOperation, ( a, b, context ) => {
 } );
 
 setTransformation( SplitOperation, MergeOperation, ( a, b ) => {
+	if ( a.position.hasSameParentAs( b.deletionPosition ) && !a.position.isAfter( b.deletionPosition ) ) {
+		a.howMany--;
+	}
+
 	if ( a.position.hasSameParentAs( b.targetPosition ) ) {
 		a.howMany += b.howMany;
 	}
@@ -2252,7 +2250,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
 	// "split operation point of view". See also `SplitOperation` x `InsertOperation` for similar case.
 	//
-	if ( a.position.isEqual( b.targetPosition ) && context.abRelation == 'splitBefore' ) {
+	if ( a.position.isEqual( b.targetPosition ) && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
 		a.howMany += b.howMany;
 		a.position = a.position._getTransformedByDeletion( b.sourcePosition, b.howMany );
 
@@ -2261,7 +2259,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	if ( a.position.hasSameParentAs( b.sourcePosition ) && a.position.offset < b.sourcePosition.offset ) {
+	if ( a.position.hasSameParentAs( b.sourcePosition ) && a.position.offset <= b.sourcePosition.offset ) {
 		a.howMany -= b.howMany;
 	}
 
@@ -2269,7 +2267,10 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		a.howMany += b.howMany;
 	}
 
+	// Change position stickiness to force a correct transformation.
+	a.position.stickiness = 'toNone';
 	a.position = a.position._getTransformedByMoveOperation( b );
+	a.position.stickiness = 'toNext';
 
 	return [ a ];
 } );
@@ -2296,6 +2297,10 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 		if ( a.graveyardPosition && b.graveyardPosition && a.graveyardPosition.isEqual( b.graveyardPosition ) ) {
 			return [ new NoOperation( 0 ) ];
 		}
+	}
+
+	if ( a.graveyardPosition && b.graveyardPosition ) {
+		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
 	}
 
 	// Case 2:
@@ -2331,14 +2336,14 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 
 	a.position = a.position._getTransformedBySplitOperation( b );
 
-	if ( a.graveyardPosition && b.graveyardPosition ) {
-		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
-	}
-
 	return [ a ];
 } );
 
-setTransformation( SplitOperation, WrapOperation, ( a, b, context ) => {
+setTransformation( SplitOperation, WrapOperation, ( a, b ) => {
+	if ( a.graveyardPosition ) {
+		a.graveyardPosition = a.graveyardPosition._getTransformedByWrapOperation( b );
+	}
+
 	// Case 1:
 	//
 	// If split position has been wrapped, reverse the wrapping so that split can be applied as intended.
@@ -2348,28 +2353,18 @@ setTransformation( SplitOperation, WrapOperation, ( a, b, context ) => {
 	if ( a.position.hasSameParentAs( b.position ) && b.wrappedRange.containsPosition( a.position ) ) {
 		const reversed = b.getReversed();
 
-		// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
-		// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
-		// update a position in graveyard.
-		if ( !b.graveyardPosition && a.graveyardPosition ) {
-			a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
-		}
-
 		return [ reversed, a ];
-	}
-
-	if ( a.graveyardPosition ) {
-		a.graveyardPosition = a.graveyardPosition._getTransformedByWrapOperation( b );
 	}
 
 	// Case 2:
 	//
-	// Split position is at the beginning of wrapped range. We need to decide if split should be inside the
-	// wrapper element, or before the wrapper element.
+	// Split position is in a wrapper element in graveyard. This is a case that happens in undo. Earlier, `SplitOperation`
+	// was transformed by `UnwrapOperation` and it was left in the unwrapped node. Now the unwrapped node will be re-used
+	// and we need to fix `howMany` property in the `SplitOperation`.
 	//
-	if ( a.position.isEqual( b.position ) && context.abRelation == 'splitInside' ) {
-		a.position = b.targetPosition;
-		a.howMany = b.howMany;
+	if ( b.graveyardPosition && a.insertionPosition.isEqual( b.graveyardPosition.getShiftedBy( 1 ) ) ) {
+		a.position = a.position._getCombined( b.graveyardPosition, b.position );
+		a.howMany = a.howMany + b.howMany;
 
 		return [ a ];
 	}
@@ -2404,12 +2399,18 @@ setTransformation( SplitOperation, UnwrapOperation, ( a, b, context ) => {
 	//
 	const splitInside = a.position.hasSameParentAs( b.position );
 
-	if ( splitInside && !context.bWasUndone ) {
+	if ( splitInside ) {
 		const path = b.graveyardPosition.path.slice();
 		path.push( 0 );
 
 		a.position = new Position( b.graveyardPosition.root, path );
-		a.howMany = 0;
+
+		if ( !context.bWasUndone ) {
+			a.howMany = 0;
+		} else {
+			// New `howMany` will be 0 or below. Will be fixed in SplitOperation x WrapOperation.
+			a.howMany = a.howMany - b.howMany;
+		}
 
 		return [ a ];
 	}
@@ -2521,16 +2522,14 @@ setTransformation( WrapOperation, MoveOperation, ( a, b, context ) => {
 	return [ a ];
 } );
 
-setTransformation( WrapOperation, SplitOperation, ( a, b, context ) => {
+setTransformation( WrapOperation, SplitOperation, ( a, b ) => {
 	// Case 1:
 	//
-	// If range to wrap got split cancel the wrapping.
-	// Do that only if this is not undo mode. If `b` operation was earlier transformed by unwrap operation
-	// and the split position was inside the unwrapped range, then proceed without special case.
+	// If range to wrap got split cancel the wrapping. See `SplitOperation` x `WrapOperation`.
 	//
 	const isInside = a.position.hasSameParentAs( b.position ) && a.wrappedRange.containsPosition( b.position );
 
-	if ( isInside && context.baRelation !== 'splitInside' ) {
+	if ( isInside ) {
 		// We cannot just return no-op in this case, because in the mirror case scenario the wrap is reversed, which
 		// might introduce a new node in the graveyard (if the wrap didn't have `graveyardPosition`, then the wrap
 		// created a new element which was put to the graveyard when the wrap was reversed).
@@ -2543,7 +2542,13 @@ setTransformation( WrapOperation, SplitOperation, ( a, b, context ) => {
 
 			return [ new InsertOperation( graveyardPosition, a.element, 0 ) ];
 		} else {
-			return [ new NoOperation( 0 ) ];
+			// If `WrapOperation` comes from undo then the, in `SplitOperation` x `WrapOperation`, after it is reversed
+			// that element will be moved to graveyard, at offset `0`. We should reflect it here to avoid different
+			// graveyard root states.
+			//
+			const gyPos = new Position( a.graveyardPosition.root, [ 0 ] );
+
+			return [ new MoveOperation( a.graveyardPosition, 1, gyPos, 0 ) ];
 		}
 	}
 
@@ -2625,11 +2630,8 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 				// If ranges are equal and `a` is a stronger operation, reverse `b` operation and then apply `a` operation.
 				const reversed = b.getReversed();
 
-				// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
-				// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
-				// update a position in graveyard.
-				if ( !b.graveyardPosition && a.graveyardPosition ) {
-					a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
+				if ( a.graveyardPosition ) {
+					a.graveyardPosition = a.graveyardPosition._getTransformedByUnwrapOperation( reversed );
 				}
 
 				return [ reversed, a ];
@@ -2666,11 +2668,8 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 					//
 					const reversed = b.getReversed();
 
-					// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
-					// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
-					// update a position in graveyard.
-					if ( !b.graveyardPosition && a.graveyardPosition ) {
-						a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
+					if ( a.graveyardPosition ) {
+						a.graveyardPosition = a.graveyardPosition._getTransformedByUnwrapOperation( reversed );
 					}
 
 					const bOnlyRange = b.wrappedRange.getDifference( a.wrappedRange )[ 0 ];
@@ -2694,11 +2693,8 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 			else {
 				const reversed = b.getReversed();
 
-				// Unwrap operation (reversed wrap) always puts a node into a graveyard. Not every wrap operation pulls a node
-				// from the graveyard, though. This means that after reversing a wrap operation, there might be a need to
-				// update a position in graveyard.
-				if ( !b.graveyardPosition && a.graveyardPosition ) {
-					a.graveyardPosition = a.graveyardPosition._getTransformedByInsertion( reversed.graveyardPosition, 1 );
+				if ( a.graveyardPosition ) {
+					a.graveyardPosition = a.graveyardPosition._getTransformedByUnwrapOperation( reversed );
 				}
 
 				return [ reversed, a ];

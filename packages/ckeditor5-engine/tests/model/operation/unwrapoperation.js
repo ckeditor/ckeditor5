@@ -149,7 +149,7 @@ describe( 'UnwrapOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.UnwrapOperation',
+				__className: 'UnwrapOperation',
 				baseVersion: 0,
 				howMany: 4,
 				position: op.position.toJSON(),

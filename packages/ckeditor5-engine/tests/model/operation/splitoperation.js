@@ -205,7 +205,7 @@ describe( 'SplitOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.SplitOperation',
+				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
 				position: op.position.toJSON(),
@@ -220,7 +220,7 @@ describe( 'SplitOperation', () => {
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
-				__className: 'engine.model.operation.SplitOperation',
+				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
 				position: op.position.toJSON(),
