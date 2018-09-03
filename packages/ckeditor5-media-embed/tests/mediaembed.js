@@ -61,7 +61,7 @@ describe( 'MediaEmbed', () => {
 		expect( MediaEmbed.pluginName ).to.equal( 'MediaEmbed' );
 	} );
 
-	describe.only( 'auto-media embed', () => {
+	describe( 'auto-media embed', () => {
 		it( 'works for a full URL (https + "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
