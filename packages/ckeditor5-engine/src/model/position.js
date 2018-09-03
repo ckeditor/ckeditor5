@@ -492,7 +492,7 @@ export default class Position {
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 *
-	 * @param {~Position} position Position to compare with.
+	 * @param {module:engine/model/position~Position} position Position to compare with.
 	 * @returns {Boolean} `true` if positions have the same parent, `false` otherwise.
 	 */
 	hasSameParentAs( position ) {
