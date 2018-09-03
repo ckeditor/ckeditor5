@@ -13,6 +13,7 @@ import MediaEmbedEditing from './mediaembedediting';
 import MediaEmbedUI from './mediaembedui';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
@@ -31,7 +32,7 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ MediaEmbedEditing, MediaEmbedUI, Widget, Clipboard ];
+		return [ MediaEmbedEditing, MediaEmbedUI, Widget, Clipboard, Enter ];
 	}
 
 	/**
@@ -46,23 +47,30 @@ export default class MediaEmbed extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 		const modelDocument = editor.model.document;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
-			// We assume that single node was pasted.
-			if ( data.content.childCount > 1 ) {
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			data.preventDefault();
+
+			// The soft enter key is handled by the ShiftEnter plugin.
+			if ( data.isSoft ) {
 				return;
 			}
 
-			const firstChild = data.content.getChild( 0 );
+			const selectionWrapper = modelDocument.selection.getFirstPosition().parent;
 
-			// If the node is not a text, skip it.
-			if ( !firstChild.is( 'text' ) ) {
+			if ( !selectionWrapper || !selectionWrapper.is( 'element', 'paragraph' ) ) {
 				return;
 			}
 
-			const url = firstChild.data;
+			let url = '';
+
+			for ( const child of selectionWrapper.getChildren() ) {
+				url += child.data;
+			}
 
 			// If the url does not match to universal url regexp, let's skip that.
 			if ( !url.match( URL_REGEXP ) ) {
@@ -72,23 +80,57 @@ export default class MediaEmbed extends Plugin {
 			// If the url is valid from MediaEmbed plugin, let's use it.
 			if ( mediaRegistry.hasMedia( url ) ) {
 				const model = this.editor.model;
-				let textNode;
 
-				// Insert the URL as text...
 				model.change( writer => {
-					textNode = writer.createText( url );
-					writer.insert( textNode, modelDocument.selection.getFirstPosition() );
-				} );
-
-				// ...then replace it with <media> element. Thanks to that auto-embeding is undoable.
-				model.change( writer => {
-					writer.remove( textNode );
+					writer.remove( selectionWrapper );
 					editor.commands.execute( 'mediaEmbed', url );
 				} );
 
 				evt.stop();
+				view.scrollToTheSelection();
 			}
 		} );
+
+		// this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
+		// 	// We assume that single node was pasted.
+		// 	if ( data.content.childCount > 1 ) {
+		// 		return;
+		// 	}
+		//
+		// 	const firstChild = data.content.getChild( 0 );
+		//
+		// 	// If the node is not a text, skip it.
+		// 	if ( !firstChild.is( 'text' ) ) {
+		// 		return;
+		// 	}
+		//
+		// 	const url = firstChild.data;
+		//
+		// 	// If the url does not match to universal url regexp, let's skip that.
+		// 	if ( !url.match( URL_REGEXP ) ) {
+		// 		return;
+		// 	}
+		//
+		// 	// If the url is valid from MediaEmbed plugin, let's use it.
+		// 	if ( mediaRegistry.hasMedia( url ) ) {
+		// 		const model = this.editor.model;
+		// 		let textNode;
+		//
+		// 		// Insert the URL as text...
+		// 		model.change( writer => {
+		// 			textNode = writer.createText( url );
+		// 			writer.insert( textNode, modelDocument.selection.getFirstPosition() );
+		// 		} );
+		//
+		// 		// ...then replace it with <media> element. Thanks to that auto-embeding is undoable.
+		// 		model.change( writer => {
+		// 			writer.remove( textNode );
+		// 			editor.commands.execute( 'mediaEmbed', url );
+		// 		} );
+		//
+		// 		evt.stop();
+		// 	}
+		// } );
 	}
 }
 
