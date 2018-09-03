@@ -46,6 +46,7 @@ export default class MediaEmbed extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const modelDocument = editor.model.document;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
@@ -70,7 +71,21 @@ export default class MediaEmbed extends Plugin {
 
 			// If the url is valid from MediaEmbed plugin, let's use it.
 			if ( mediaRegistry.hasMedia( url ) ) {
-				this.editor.commands.execute( 'mediaEmbed', url );
+				const model = this.editor.model;
+				let textNode;
+
+				// Insert the URL as text...
+				model.change( writer => {
+					textNode = writer.createText( url );
+					writer.insert( textNode, modelDocument.selection.getFirstPosition() );
+				} );
+
+				// ...then replace it with <media> element. Thanks to that auto-embeding is undoable.
+				model.change( writer => {
+					writer.remove( textNode );
+					editor.commands.execute( 'mediaEmbed', url );
+				} );
+
 				evt.stop();
 			}
 		} );
