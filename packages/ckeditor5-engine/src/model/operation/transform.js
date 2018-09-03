@@ -785,11 +785,13 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 			// <p>Fo[z{<$text highlight="red">}x</$text>b]ar</p>    <--- Change range `{}` from `red` to `null`.
 			// <p>Fo[zxb]ar</p>                                     <--- Now change from `null` to `yellow` is completely fine.
 			//
-			// Of course, there might be multiple extra operations added -- one for each unfitting node.
-			//
 
-			// Generate those operations. Be sure to add them before the original operation.
-			result.unshift( ..._getComplementaryAttributeOperations( b, a.key, a.oldValue ) );
+			// Generate complementary attribute operation. Be sure to add it before the original operation.
+			const op = _getComplementaryAttributeOperations( b, a.key, a.oldValue );
+
+			if ( op ) {
+				result.unshift( op );
+			}
 		}
 
 		// If nodes should not receive new attribute, we are done here.
@@ -805,65 +807,28 @@ setTransformation( AttributeOperation, InsertOperation, ( a, b ) => {
 /**
  * Helper function for `AttributeOperation` x `InsertOperation` (and reverse) transformation.
  *
- * For given `insertOperation` it checks the inserted nodes if they have an attribute `key` set to a value different
- * than `newValue`. If so, for such each node, it generates an `AttributeOperation` which changes the value of
- * `key` attribute to `newValue`.
+ * For given `insertOperation` it checks the inserted node if it has an attribute `key` set to a value different
+ * than `newValue`. If so, it generates an `AttributeOperation` which changes the value of `key` attribute to `newValue`.
  *
  * @private
  * @param {module:engine/model/operation/insertoperation~InsertOperation} insertOperation
  * @param {String} key
  * @param {*} newValue
- * @returns {Array.<module:engine/model/operation/attributeoperation~AttributeOperation>}
+ * @returns {module:engine/model/operation/attributeoperation~AttributeOperation|null}
  */
 function _getComplementaryAttributeOperations( insertOperation, key, newValue ) {
 	const nodes = insertOperation.nodes;
-	const result = [];
 
 	// At the beginning we store the attribute value from the first node.
-	let val = nodes.getNode( 0 ).getAttribute( key );
+	const insertValue = nodes.getNode( 0 ).getAttribute( key );
 
-	// This stores the offset in the node list where the attribute value has changed.
-	let startOffset = 0;
-
-	// Sum of offsets of already processed nodes.
-	let offsetSum = nodes.getNode( 0 ).offsetSize;
-
-	for ( let i = 1; i < nodes.length; i++ ) {
-		const node = nodes.getNode( i );
-
-		// If previous node has different attribute value, we will create an attribute operation with the range from `startOffset`
-		// to the position before the current node.
-		if ( node.getAttribute( key ) != val ) {
-			// New operation is created only when it is needed. If given node already has a proper value for this
-			// attribute we simply skip it without adding a new operation.
-			if ( val != newValue ) {
-				addOperation();
-			}
-
-			// Update "current" value and move the `startOffset` so that the next operation will start from this node.
-			val = node.getAttribute( key );
-			startOffset = offsetSum;
-		}
-
-		offsetSum = offsetSum + node.offsetSize;
+	if ( insertValue == newValue ) {
+		return null;
 	}
 
-	// At the end we have to add additional `AttributeOperation` for the last part of node list.
-	// If all nodes on the node list had same attributes, this will be the only returned operation.
-	addOperation();
+	const range = new Range( insertOperation.position, insertOperation.position.getShiftedBy( insertOperation.howMany ) );
 
-	return result;
-
-	function addOperation() {
-		const range = new Range(
-			insertOperation.position.getShiftedBy( startOffset ),
-			insertOperation.position.getShiftedBy( offsetSum )
-		);
-
-		result.push(
-			new AttributeOperation( range, key, val, newValue, 0 )
-		);
-	}
+	return new AttributeOperation( range, key, insertValue, newValue, 0 );
 }
 
 setTransformation( AttributeOperation, MergeOperation, ( a, b ) => {
@@ -1111,7 +1076,11 @@ setTransformation( InsertOperation, AttributeOperation, ( a, b ) => {
 	// inserted nodes and that's it.
 	//
 	if ( a.shouldReceiveAttributes && a.position.hasSameParentAs( b.range.start ) && b.range.containsPosition( a.position ) ) {
-		result.push( ..._getComplementaryAttributeOperations( a, b.key, b.newValue ) );
+		const op = _getComplementaryAttributeOperations( a, b.key, b.newValue );
+
+		if ( op ) {
+			result.push( op );
+		}
 	}
 
 	// The default case is: do nothing.
