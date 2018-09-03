@@ -99,7 +99,7 @@ export function transform( a, b, context = {} ) {
 
 		return transformationFunction( a, b, context );
 	} catch ( e ) {
-		log.error( 'Error during operation transformation!' );
+		log.error( 'Error during operation transformation!', e.message );
 		log.error( 'Transformed operation', a );
 		log.error( 'Operation transformed by', b );
 		log.error( 'context.aIsStrong', context.aIsStrong );
