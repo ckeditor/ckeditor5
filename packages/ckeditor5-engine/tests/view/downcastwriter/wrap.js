@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Writer from '../../../src/view/writer';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import View from '../../../src/view/view';
 import DocumentFragment from '../../../src/view/documentfragment';
 import Element from '../../../src/view/element';
@@ -19,12 +19,12 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import createViewRoot from '../_utils/createroot';
 import Document from '../../../src/view/document';
 
-describe( 'Writer', () => {
+describe( 'DowncastWriter', () => {
 	describe( 'wrap()', () => {
 		let writer;
 
 		before( () => {
-			writer = new Writer( new Document() );
+			writer = new DowncastWriter( new Document() );
 		} );
 
 		describe( 'non-collapsed range', () => {

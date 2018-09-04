@@ -112,8 +112,8 @@ export default class Document {
 	 * to elements based on the view structure or selection. However, is you need DOM elements to be already updated, use
 	 * {@link module:engine/view/view~View#event:render render event}.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/writer~Writer writer} instance connected with the
-	 * executed changes block.
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
+	 * instance connected with the executed changes block.
 	 *
 	 * @param {Function} postFixer
 	 */
@@ -125,7 +125,7 @@ export default class Document {
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected
-	 * @param {module:engine/view/writer~Writer} writer
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	_callPostFixers( writer ) {
 		let wasFixed = false;

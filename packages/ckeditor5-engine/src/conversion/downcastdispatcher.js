@@ -74,7 +74,7 @@ import { extend } from 'lodash-es';
  * converted the change should also stop the event (for efficiency purposes).
  *
  * When providing custom listeners for `DowncastDispatcher` remember to use provided
- * {@link module:engine/view/writer~Writer view writer} to apply changes to the view document.
+ * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
  *
  * Example of a custom converter for `DowncastDispatcher`:
  *
@@ -120,7 +120,7 @@ export default class DowncastDispatcher {
 	 * Takes {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
 	 *
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertChanges( differ, writer ) {
 		// Before the view is updated, remove markers which have changed.
@@ -155,7 +155,7 @@ export default class DowncastDispatcher {
 	 * @fires insert
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range Inserted range.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertInsert( range, writer ) {
 		this.conversionApi.writer = writer;
@@ -195,7 +195,7 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/position~Position} position Position from which node was removed.
 	 * @param {Number} length Offset size of removed node.
 	 * @param {String} name Name of removed node.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertRemove( position, length, name, writer ) {
 		this.conversionApi.writer = writer;
@@ -215,7 +215,7 @@ export default class DowncastDispatcher {
 	 * @param {String} key Key of the attribute that has changed.
 	 * @param {*} oldValue Attribute value before the change or `null` if the attribute has not been set before.
 	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertAttribute( range, key, oldValue, newValue, writer ) {
 		this.conversionApi.writer = writer;
@@ -251,7 +251,7 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
 	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Array of markers containing model markers.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertSelection( selection, markers, writer ) {
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
@@ -308,7 +308,7 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertMarkerAdd( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
@@ -357,7 +357,7 @@ export default class DowncastDispatcher {
 	 * @fires removeMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
-	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
 	 */
 	convertMarkerRemove( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).

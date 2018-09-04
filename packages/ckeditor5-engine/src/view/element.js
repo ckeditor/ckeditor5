@@ -22,15 +22,15 @@ import { isPlainObject } from 'lodash-es';
  * This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
- * * {@link module:engine/view/writer~Writer#createContainerElement `writer.createContainerElement()`} in order to create
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `writer.createContainerElement()`} in order to create
  * a {@link module:engine/view/containerelement~ContainerElement},
- * * {@link module:engine/view/writer~Writer#createAttributeElement `writer.createAttributeElement()`} in order to create
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `writer.createAttributeElement()`} in order to create
  * a {@link module:engine/view/attributeelement~AttributeElement},
- * * {@link module:engine/view/writer~Writer#createEmptyElement `writer.createEmptyElement()`} in order to create
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `writer.createEmptyElement()`} in order to create
  * a {@link module:engine/view/emptyelement~EmptyElement}.
- * * {@link module:engine/view/writer~Writer#createUIElement `writer.createUIElement()`} in order to create
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `writer.createUIElement()`} in order to create
  * a {@link module:engine/view/uielement~UIElement}.
- * * {@link module:engine/view/writer~Writer#createEditableElement `writer.createEditableElement()`} in order to create
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `writer.createEditableElement()`} in order to create
  * a {@link module:engine/view/editableelement~EditableElement}.
  *
  * Note that for view elements which are not created from the model, like elements from mutations, paste or
@@ -50,11 +50,11 @@ export default class Element extends Node {
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code. Use the
-	 * {@link module:engine/view/writer~Writer#createAttributeElement} for inline element,
-	 * {@link module:engine/view/writer~Writer#createContainerElement} for block element,
-	 * {@link module:engine/view/writer~Writer#createEditableElement} for editable element,
-	 * {@link module:engine/view/writer~Writer#createEmptyElement} for empty element or
-	 * {@link module:engine/view/writer~Writer#createUIElement} for UI element instead.
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement} for inline element,
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} for block element,
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement} for editable element,
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} for empty element or
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} for UI element instead.
 	 *
 	 * @protected
 	 * @param {String} name Node name.
@@ -527,7 +527,7 @@ export default class Element extends Node {
 	 * {@link module:engine/view/element~Element#_insertChild Insert} a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
-	 * @see module:engine/view/writer~Writer#insert
+	 * @see module:engine/view/downcastwriter~DowncastWriter#insert
 	 * @protected
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @fires module:engine/view/node~Node#change
@@ -541,7 +541,7 @@ export default class Element extends Node {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 * @see module:engine/view/writer~Writer#insert
+	 * @see module:engine/view/downcastwriter~DowncastWriter#insert
 	 * @protected
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
@@ -573,7 +573,7 @@ export default class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * @see module:engine/view/writer~Writer#remove
+	 * @see module:engine/view/downcastwriter~DowncastWriter#remove
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @fires module:engine/view/node~Node#change
@@ -592,7 +592,7 @@ export default class Element extends Node {
 	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
-	 * @see module:engine/view/writer~Writer#setAttribute
+	 * @see module:engine/view/downcastwriter~DowncastWriter#setAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
@@ -615,7 +615,7 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 * @see module:engine/view/writer~Writer#removeAttribute
+	 * @see module:engine/view/downcastwriter~DowncastWriter#removeAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
@@ -656,7 +656,7 @@ export default class Element extends Node {
 	 *		element._addClass( 'foo' ); // Adds 'foo' class.
 	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
 	 *
-	 * @see module:engine/view/writer~Writer#addClass
+	 * @see module:engine/view/downcastwriter~DowncastWriter#addClass
 	 * @protected
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
@@ -674,7 +674,7 @@ export default class Element extends Node {
 	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
 	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 *
-	 * @see module:engine/view/writer~Writer#removeClass
+	 * @see module:engine/view/downcastwriter~DowncastWriter#removeClass
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
@@ -694,7 +694,7 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
-	 * @see module:engine/view/writer~Writer#setStyle
+	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
 	 * @protected
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
@@ -720,7 +720,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
-	 * @see module:engine/view/writer~Writer#removeStyle
+	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
 	 * @protected
 	 * @param {Array.<String>|String} property
 	 * @fires module:engine/view/node~Node#change
@@ -736,7 +736,7 @@ export default class Element extends Node {
 	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
-	 * @see module:engine/view/writer~Writer#setCustomProperty
+	 * @see module:engine/view/downcastwriter~DowncastWriter#setCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @param {*} value
@@ -748,7 +748,7 @@ export default class Element extends Node {
 	/**
 	 * Removes the custom property stored under the given key.
 	 *
-	 * @see module:engine/view/writer~Writer#removeCustomProperty
+	 * @see module:engine/view/downcastwriter~DowncastWriter#removeCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @returns {Boolean} Returns true if property was removed.

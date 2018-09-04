@@ -27,7 +27,7 @@ export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
 	 *
-	 * @see module:engine/view/writer~Writer#createEditableElement
+	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
 	 * @protected
 	 */
 	constructor( name, attrs, children ) {

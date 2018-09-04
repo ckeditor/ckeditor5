@@ -8,7 +8,7 @@
  */
 
 import Document from './document';
-import Writer from './writer';
+import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
 import DomConverter from './domconverter';
 
@@ -33,7 +33,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * View controller renders view document to DOM whenever view structure changes. To determine when view can be rendered,
  * all changes need to be done using the {@link module:engine/view/view~View#change} method, using
- * {@link module:engine/view/writer~Writer}:
+ * {@link module:engine/view/downcastwriter~DowncastWriter}:
  *
  *		view.change( writer => {
  *			writer.insert( position, writer.createText( 'foo' ) );
@@ -127,12 +127,12 @@ export default class View {
 		this._postFixersInProgress = false;
 
 		/**
-		 * Writer instance used in {@link #change change method) callbacks.
+		 * DowncastWriter instance used in {@link #change change method) callbacks.
 		 *
 		 * @private
-		 * @member {module:engine/view/writer~Writer} module:engine/view/view~View#_writer
+		 * @member {module:engine/view/downcastwriter~DowncastWriter} module:engine/view/view~View#_writer
 		 */
-		this._writer = new Writer( this.document );
+		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
 		this.addObserver( MutationObserver );

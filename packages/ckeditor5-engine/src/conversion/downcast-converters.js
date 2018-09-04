@@ -364,7 +364,7 @@ function _normalizeToElementConfig( view, viewElementType ) {
 // Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
 //
 // @param {module:engine/view/elementdefinition~ElementDefinition} viewElementDefinition
-// @param {module:engine/view/writer~Writer} viewWriter
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @param {'container'|'attribute'|'ui'} viewElementType
 // @returns {module:engine/view/element~Element}
 function _createViewElementFromDefinition( viewElementDefinition, viewWriter, viewElementType ) {
