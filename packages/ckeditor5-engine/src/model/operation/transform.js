@@ -401,13 +401,21 @@ class ContextFactory {
 		this._relations = new Map();
 	}
 
-	// Rewrites information about original operation to the new operations.
+	// Sets "original operation" for given operations.
 	//
-	// Used when `newOps` are generated from `oldOp` (during transformation). It takes `oldOp`'s original operation and
-	// sets it as `newOps` original operation.
+	// During transformation process, operations are cloned, then changed, then processed again, sometimes broken into two
+	// or multiple operations. When gathering additional data it is important that all operations can be somehow linked
+	// so a cloned and transformed "version" still kept track of the data assigned earlier to it.
 	//
-	// It also means that if an operation is broken into multiple during transformation, all those broken "pieces" are pointing
-	// to the same operation as their original operation.
+	// The original operation object will be used as such an universal linking id. Throughout the transformation process
+	// all cloned operations will refer to "the original operation" when storing and reading additional data.
+	//
+	// If `takeFrom` is not set, each operation from `operations` array will be assigned itself as "the original operation".
+	// This should be used as an initialization step.
+	//
+	// If `takeFrom` is set, each operation from `operations` will be assigned the same original operation as assigned
+	// for `takeFrom` operation. This should be used to update original operations. It should be used in a way that
+	// `operations` are the result of `takeFrom` transformation to ensure proper "original operation propagation".
 	//
 	// @param {Array.<module:engine/model/operation/operation~Operation>} operations
 	// @param {module:engine/model/operation/operation~Operation|null} [takeFrom=null]
@@ -501,8 +509,6 @@ class ContextFactory {
 	// @returns {module:engine/model/operation/transform~TransformationContext}
 	getContext( opA, opB, aIsStrong ) {
 		if ( !this._useContext ) {
-			// Additional contextual data is `false` or `null` if additional context is not used.
-
 			return {
 				aIsStrong,
 				aWasUndone: false,
