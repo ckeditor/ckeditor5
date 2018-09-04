@@ -302,7 +302,9 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const context = initializeContext( operationsA, operationsB, options );
+	const contextFactory = new ContextFactory( options.document, options.useContext );
+	contextFactory.setOriginalOperations( operationsA );
+	contextFactory.setOriginalOperations( operationsB );
 
 	// Index of currently transformed operation `a`.
 	let i = 0;
@@ -323,35 +325,16 @@ export function transformSets( operationsA, operationsB, options ) {
 
 		const opB = operationsB[ indexB ];
 
-		// Evaluate `TransformationContext` objects for operation transformation.
-		const contextAB = {
-			aIsStrong: true,
-			aWasUndone: context.wasUndone( opA ),
-			bWasUndone: context.wasUndone( opB ),
-			abRelation: context.getRelation( opA, opB ),
-			baRelation: context.getRelation( opB, opA )
-		};
-
-		const contextBA = {
-			aIsStrong: false,
-			aWasUndone: context.wasUndone( opB ),
-			bWasUndone: context.wasUndone( opA ),
-			abRelation: context.getRelation( opB, opA ),
-			baRelation: context.getRelation( opA, opB )
-		};
-
 		// Transform `a` by `b` and `b` by `a`.
-		const newOpsA = transform( opA, opB, contextAB );
-		const newOpsB = transform( opB, opA, contextBA );
+		const newOpsA = transform( opA, opB, contextFactory.getContext( opA, opB, true ) );
+		const newOpsB = transform( opB, opA, contextFactory.getContext( opB, opA, false ) );
 		// As a result we get one or more `newOpsA` and one or more `newOpsB` operations.
 
 		// Update contextual information about operations.
-		if ( options.useContext ) {
-			updateRelations( opA, opB, context );
+		contextFactory.updateRelation( opA, opB );
 
-			updateOriginalOperation( opA, newOpsA, context );
-			updateOriginalOperation( opB, newOpsB, context );
-		}
+		contextFactory.setOriginalOperations( newOpsA, opA );
+		contextFactory.setOriginalOperations( newOpsB, opB );
 
 		// For new `a` operations, update their index of the next operation `b` to transform them by.
 		//
@@ -391,6 +374,259 @@ export function transformSets( operationsA, operationsB, options ) {
 	return { operationsA, operationsB };
 }
 
+// Gathers additional data about operations processed during transformation. Can be used to obtain contextual information
+// about two operations that are about to be transformed. This contextual information can be used for better conflict resolution.
+class ContextFactory {
+	// Creates `ContextFactory` instance.
+	//
+	// @param {module:engine/model/document~Document} document Document which the operations change.
+	// @param {Boolean} useContext Whether during transformation additional context information should be gathered and used.
+	constructor( document, useContext ) {
+		// `model.History` instance which information about undone operations will be taken from.
+		this._history = document.history;
+
+		// Whether additional context should be used.
+		this._useContext = useContext;
+
+		// For each operation that is created during transformation process, we keep a reference to the original operation
+		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
+		// gathered during transformation that we want to save for given operation, is actually saved for the original operation.
+		// This way no matter if operation `a` is cloned, then transformed, even breaks, we still have access to the previously
+		// gathered data through original operation reference.
+		this._originalOperations = new Map();
+
+		// Relations is a double-map structure (maps in map) where for two operations we store how those operations were related
+		// to each other. Those relations are evaluated during transformation process. For every transformated pair of operations
+		// we keep relations between them.
+		this._relations = new Map();
+	}
+
+	// Sets "original operation" for given operations.
+	//
+	// During transformation process, operations are cloned, then changed, then processed again, sometimes broken into two
+	// or multiple operations. When gathering additional data it is important that all operations can be somehow linked
+	// so a cloned and transformed "version" still kept track of the data assigned earlier to it.
+	//
+	// The original operation object will be used as such an universal linking id. Throughout the transformation process
+	// all cloned operations will refer to "the original operation" when storing and reading additional data.
+	//
+	// If `takeFrom` is not set, each operation from `operations` array will be assigned itself as "the original operation".
+	// This should be used as an initialization step.
+	//
+	// If `takeFrom` is set, each operation from `operations` will be assigned the same original operation as assigned
+	// for `takeFrom` operation. This should be used to update original operations. It should be used in a way that
+	// `operations` are the result of `takeFrom` transformation to ensure proper "original operation propagation".
+	//
+	// @param {Array.<module:engine/model/operation/operation~Operation>} operations
+	// @param {module:engine/model/operation/operation~Operation|null} [takeFrom=null]
+	setOriginalOperations( operations, takeFrom = null ) {
+		const originalOperation = takeFrom ? this._originalOperations.get( takeFrom ) : null;
+
+		for ( const operation of operations ) {
+			this._originalOperations.set( operation, originalOperation || operation );
+		}
+	}
+
+	// Saves a relation between operations `opA` and `opB`.
+	//
+	// Relations are then later used to help solve conflicts when operations are transformed.
+	//
+	// @param {module:engine/model/operation/operation~Operation} opA
+	// @param {module:engine/model/operation/operation~Operation} opB
+	updateRelation( opA, opB ) {
+		// The use of relations is described in a bigger detail in transformation functions.
+		//
+		// In brief, this function, for specified pairs of operation types, checks how positions defined in those operations relate.
+		// Then those relations are saved. For example, for two move operations, it is saved if one of those operations target
+		// position is before the other operation source position. This kind of information gives contextual information when
+		// transformation is used during undo. Similar checks are done for other pairs of operations.
+		//
+		switch ( opA.constructor ) {
+			case MoveOperation: {
+				switch ( opB.constructor ) {
+					case MergeOperation: {
+						if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
+							this._setRelation( opA, opB, 'insertAtSource' );
+						} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
+							this._setRelation( opA, opB, 'insertBetween' );
+						}
+
+						break;
+					}
+
+					case MoveOperation: {
+						if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
+							this._setRelation( opA, opB, 'insertBefore' );
+						} else {
+							this._setRelation( opA, opB, 'insertAfter' );
+						}
+
+						break;
+					}
+
+					case UnwrapOperation: {
+						const isInside = opA.targetPosition.hasSameParentAs( opB.position );
+
+						if ( isInside ) {
+							this._setRelation( opA, opB, 'insertInside' );
+						}
+
+						break;
+					}
+				}
+
+				break;
+			}
+
+			case SplitOperation: {
+				switch ( opB.constructor ) {
+					case MergeOperation: {
+						if ( opA.position.isBefore( opB.sourcePosition ) ) {
+							this._setRelation( opA, opB, 'splitBefore' );
+						}
+
+						break;
+					}
+
+					case MoveOperation: {
+						if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
+							this._setRelation( opA, opB, 'splitBefore' );
+						}
+
+						break;
+					}
+				}
+
+				break;
+			}
+		}
+	}
+
+	// Evaluates and returns contextual information about two given operations `opA` and `opB` which are about to be transformed.
+	//
+	// @param {module:engine/model/operation/operation~Operation} opA
+	// @param {module:engine/model/operation/operation~Operation} opB
+	// @returns {module:engine/model/operation/transform~TransformationContext}
+	getContext( opA, opB, aIsStrong ) {
+		if ( !this._useContext ) {
+			return {
+				aIsStrong,
+				aWasUndone: false,
+				bWasUndone: false,
+				abRelation: null,
+				baRelation: null
+			};
+		}
+
+		return {
+			aIsStrong,
+			aWasUndone: this._wasUndone( opA ),
+			bWasUndone: this._wasUndone( opB ),
+			abRelation: this._getRelation( opA, opB ),
+			baRelation: this._getRelation( opB, opA )
+		};
+	}
+
+	// Returns whether given operation `op` has already been undone.
+	//
+	// This is only used when additional context mode is on (options.useContext == true).
+	//
+	// Information whether an operation was undone gives more context when making a decision when two operations are in conflict.
+	//
+	// @param {module:engine/model/operation/operation~Operation} op
+	// @returns {Boolean}
+	_wasUndone( op ) {
+		// For `op`, get its original operation. After all, if `op` is a clone (or even transformed clone) of another
+		// operation, literally `op` couldn't be undone. It was just generated. If anything, it was the operation it origins
+		// from which was undone. So get that original operation.
+		const originalOp = this._originalOperations.get( op );
+
+		// And check with the document if the original operation was undone.
+		return this._history.isUndoneOperation( originalOp );
+	}
+
+	// Returns a relation between `opA` and an operation which is undone by `opB`. This can be `String` value if a relation
+	// was set earlier or `null` if there was no relation between those operations.
+	//
+	// This is only used when additional context mode is on (options.useContext == true).
+	//
+	// This is a little tricky to understand, so let's compare it to `ContextFactory#_wasUndone`.
+	//
+	// When `wasUndone( opB )` is used, we check if the `opB` has already been undone. It is obvious, that the
+	// undoing operation must happen after the undone operation. So, essentially, we have `opB`, we take document history,
+	// we look forward in the future and ask if in that future `opB` was undone.
+	//
+	// Relations is a backward process to `wasUndone()`.
+	//
+	// Long story short - using relations is asking what happened in the past. Looking back. This time we have an undoing
+	// operation `opB` which has undone some other operation. When there is a transformation `opA` x `opB` and there is
+	// a conflict to solve and `opB` is an undoing operation, we can look back in the history and see what was a relation
+	// between `opA` and the operation which `opB` undone. Basing on that relation from the past, we can now make
+	// a better decision when resolving a conflict between two operations, because we know more about the context of
+	// those two operations.
+	//
+	// This is why this function does not return a relation directly between `opA` and `opB` because we need to look
+	// back to search for a meaningful contextual information.
+	//
+	// @param {module:engine/model/operation/operation~Operation} opA
+	// @param {module:engine/model/operation/operation~Operation} opB
+	// @returns {String|null}
+	_getRelation( opA, opB ) {
+		// Get the original operation. Similarly as in `wasUndone()` it is used as an universal identifier for stored data.
+		const origB = this._originalOperations.get( opB );
+		const undoneB = this._history.getUndoneOperation( origB );
+
+		// If `opB` is not undoing any operation, there is no relation.
+		if ( !undoneB ) {
+			return null;
+		}
+
+		const origA = this._originalOperations.get( opA );
+		const relationsA = this._relations.get( origA );
+
+		// Get all relations for `opA`, and check if there is a relation with `opB`-undone-counterpart. If so, return it.
+		if ( relationsA ) {
+			return relationsA.get( undoneB ) || null;
+		}
+
+		return null;
+	}
+
+	// Helper function for `ContextFactory#updateRelations`.
+	//
+	// @private
+	// @param {module:engine/model/operation/operation~Operation} opA
+	// @param {module:engine/model/operation/operation~Operation} opB
+	// @param {String} relation
+	_setRelation( opA, opB, relation ) {
+		// As always, setting is for original operations, not the clones/transformed operations.
+		const origA = this._originalOperations.get( opA );
+		const origB = this._originalOperations.get( opB );
+
+		let relationsA = this._relations.get( origA );
+
+		if ( !relationsA ) {
+			relationsA = new Map();
+			this._relations.set( origA, relationsA );
+		}
+
+		relationsA.set( origB, relation );
+	}
+}
+
+/**
+ * Holds additional contextual information about a transformed pair of operations (`a` and `b`). Those information
+ * can be used for better conflict resolving.
+ *
+ * @typedef {Object} module:engine/model/operation/transform~TransformationContext
+ *
+ * @property {Boolean} aIsStrong Whether `a` is strong operation in this transformation, or weak.
+ * @property {Boolean} aWasUndone Whether `a` operation was undone.
+ * @property {Boolean} bWasUndone Whether `b` operation was undone.
+ * @property {String|null} abRelation The relation between `a` operation and an operation undone by `b` operation.
+ * @property {String|null} baRelation The relation between `b` operation and an operation undone by `a` operation.
+ */
+
 /**
  * An utility function that updates {@link module:engine/model/operation/operation~Operation#baseVersion base versions}
  * of passed operations.
@@ -420,245 +656,6 @@ function padWithNoOps( operations, howMany ) {
 		operations.push( new NoOperation( 0 ) );
 	}
 }
-
-/**
- * Initializes transformation process data used to evaluate context between two transformed operations.
- *
- * @param {Array.<module:engine/model/operation/operation~Operation>} operationsA
- * @param {Array.<module:engine/model/operation/operation~Operation>} operationsB
- * @param {Object} options Additional transformation options. See {@link module:engine/model/operation/transform~transformSets}
- * @returns {Object} Transformation process data object.
- */
-function initializeContext( operationsA, operationsB, options ) {
-	const context = {};
-
-	// For each operation that is created during transformation process, we keep a reference to the original operation
-	// which it comes from. The original operation works as a kind of "identifier". Every contextual information
-	// gathered during transformation that we want to save for given operation, is actually saved for the original operation.
-	// This way no matter if operation `a` is cloned, then transformed, even breaks, we still have access to the previously
-	// gathered data through original operation reference.
-	context.originalOperations = new Map();
-
-	// At the beginning for each operation, set the original operation reference to itself.
-	for ( const op of operationsA.concat( operationsB ) ) {
-		context.originalOperations.set( op, op );
-	}
-
-	context.document = options.document;
-
-	// Relations is a double-map structure (maps in map) where for two operations we store how those operations were related
-	// to each other. Those relations are evaluated during transformation process. For every transformated pair of operations
-	// we keep relations between them.
-	context.relations = new Map();
-
-	// Returns whether given operation `op` has already been undone.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
-	//
-	// Information whether an operation was undone gives more context when making a decision when two operations are in conflict.
-	context.wasUndone = function( op ) {
-		// If additional context is not used, just return false.
-		if ( !options.useContext ) {
-			return false;
-		}
-
-		// For `op`, get its original operation. After all, if `op` is a clone (or even transformed clone) of another
-		// operation, literally `op` couldn't be undone. It was just generated. If anything, it was the operation it origins
-		// from which was undone. So get that original operation.
-		const originalOp = this.originalOperations.get( op );
-
-		// And check with the document if the original operation was undone.
-		return this.document.history.isUndoneOperation( originalOp );
-	};
-
-	// Returns a relation between `opA` and an operation which is undone by `opB`. This can be `String` value if a relation
-	// was set earlier or `null` if there was no relation between those operations.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
-	//
-	// This is a little tricky to understand, so let's compare it to `wasUndone()`.
-	//
-	// When `wasUndone( opB )` is used, we check if the `opB` has already been undone. It is obvious, that the
-	// undoing operation must happen after the undone operation. So, essentially, we have `opB`, we take document history,
-	// we look forward in the future and ask if in that future `opB` was undone.
-	//
-	// Relations is a backward process to `wasUndone()`.
-	//
-	// Long story short - using relations is asking what happened in the past. Looking back. This time we have an undoing
-	// operation `opB` which has undone some other operation. When there is a transformation `opA` * `opB` and there is
-	// a conflict to solve and `opB` is an undoing operation, we can look back in the history and see what was a relation
-	// between `opA` and the operation which `opB` undone. Basing on that relation from the past, we can now make
-	// a better decision when resolving a conflict between two operations, because we know more about the context of
-	// those two operations.
-	//
-	// This is why this function does not return a relation directly between `opA` and `opB` because we need to look
-	// back to search for a meaningful contextual information.
-	context.getRelation = function( opA, opB ) {
-		// If additional context is not used, there is no relation.
-		if ( !options.useContext ) {
-			return null;
-		}
-
-		// Get the original operation. Similarly as in `wasUndone()` it is used as an universal identifier for stored data.
-		const origB = this.originalOperations.get( opB );
-		const undoneB = this.document.history.getUndoneOperation( origB );
-
-		// If `opB` is not undoing any operation, there is no relation.
-		if ( !undoneB ) {
-			return null;
-		}
-
-		const origA = this.originalOperations.get( opA );
-		const relationsA = this.relations.get( origA );
-
-		// Get all relations for `opA`, and check if there is a relation with `opB`-undone-counterpart. If so, return it.
-		if ( relationsA ) {
-			return relationsA.get( undoneB ) || null;
-		}
-
-		return null;
-	};
-
-	return context;
-}
-
-/**
- * Saves a relation between operations `opA` and `opB`.
- *
- * Relations are then later used to help solve conflicts when operations are transformed.
- *
- * @private
- * @param {module:engine/model/operation/operation~Operation} opA
- * @param {module:engine/model/operation/operation~Operation} opB
- * @param {Object} context
- */
-function updateRelations( opA, opB, context ) {
-	// The use of relations is described in a bigger detail in transformation functions.
-	//
-	// In brief, this function, for specified pairs of operation types, checks how positions defined in those operations relate.
-	// Then those relations are saved. For example, for two move operations, it is saved if one of those operations target
-	// position is before the other operation source position. This kind of information gives contextual information when
-	// transformation is used during undo. Similar checks are done for other pairs of operations.
-	//
-	switch ( opA.constructor ) {
-		case MoveOperation: {
-			switch ( opB.constructor ) {
-				case MergeOperation: {
-					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
-						setRelation( context, opA, opB, 'insertAtSource' );
-					} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
-						setRelation( context, opA, opB, 'insertBetween' );
-					}
-
-					break;
-				}
-
-				case MoveOperation: {
-					if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'insertBefore' );
-					} else {
-						setRelation( context, opA, opB, 'insertAfter' );
-					}
-
-					break;
-				}
-
-				case UnwrapOperation: {
-					const isInside = opA.targetPosition.hasSameParentAs( opB.position );
-
-					if ( isInside ) {
-						setRelation( context, opA, opB, 'insertInside' );
-					}
-
-					break;
-				}
-			}
-
-			break;
-		}
-
-		case SplitOperation: {
-			switch ( opB.constructor ) {
-				case MergeOperation: {
-					if ( opA.position.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'splitBefore' );
-					}
-
-					break;
-				}
-
-				case MoveOperation: {
-					if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
-						setRelation( context, opA, opB, 'splitBefore' );
-					}
-
-					break;
-				}
-			}
-
-			break;
-		}
-	}
-}
-
-/**
- * Helper function for {@link module:engine/model/operation/transform~updateRelations}.
- *
- * @private
- * @param {Object} context
- * @param {module:engine/model/operation/operation~Operation} opA
- * @param {module:engine/model/operation/operation~Operation} opB
- * @param {String} relation
- */
-function setRelation( context, opA, opB, relation ) {
-	// As always, setting is for original operations, not the clones/transformed operations.
-	const origA = context.originalOperations.get( opA );
-	const origB = context.originalOperations.get( opB );
-
-	let relationsA = context.relations.get( origA );
-
-	if ( !relationsA ) {
-		relationsA = new Map();
-		context.relations.set( origA, relationsA );
-	}
-
-	relationsA.set( origB, relation );
-}
-
-/**
- * Rewrites information about original operation to the new operations.
- *
- * Used when `newOps` are generated from `oldOp` (during transformation). It takes `oldOp`'s original operation and
- * sets it as `newOps` original operation.
- *
- * It also means that if an operation is broken into multiple during transformation, all those broken "pieces" are pointing
- * to the same operation as their original operation.
- *
- * @private
- * @param {module:engine/model/operation/operation~Operation} oldOp
- * @param {Array.<module:engine/model/operation/operation~Operation>} newOps
- * @param {Object} context
- */
-function updateOriginalOperation( oldOp, newOps, context ) {
-	const originalOp = context.originalOperations.get( oldOp );
-
-	for ( const op of newOps ) {
-		context.originalOperations.set( op, originalOp );
-	}
-}
-
-/**
- * Holds additional contextual information about a transformed pair of operations (`a` and `b`). Those information
- * can be used for better conflict resolving.
- *
- * @typedef {Object} module:engine/model/operation/transform~TransformationContext
- *
- * @property {Boolean} aIsStrong Whether `a` is strong operation in this transformation, or weak.
- * @property {Boolean} aWasUndone Whether `a` operation was undone.
- * @property {Boolean} bWasUndone Whether `b` operation was undone.
- * @property {String|null} abRelation The relation between `a` operation and an operation undone by `b` operation.
- * @property {String|null} baRelation The relation between `b` operation and an operation undone by `a` operation.
- */
 
 // -----------------------
 

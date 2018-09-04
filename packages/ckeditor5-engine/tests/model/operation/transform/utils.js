@@ -285,6 +285,7 @@ export function syncClients() {
 			let remoteOperationsTransformed = null;
 
 			const options = {
+				document: localClient.document,
 				useContext: false,
 				padWithNoOps: true
 			};
