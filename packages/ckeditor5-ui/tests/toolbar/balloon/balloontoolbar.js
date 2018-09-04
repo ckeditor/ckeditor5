@@ -18,10 +18,13 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-/* global document, setTimeout, window, Event */
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+/* global document, window, Event */
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -99,12 +102,10 @@ describe( 'BalloonToolbar', () => {
 			} );
 	} );
 
-	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', done => {
-		// This test uses setTimeout to test lodash#debounce because sinon fake timers
-		// doesn't work with lodash. Lodash keeps time related stuff in a closure
-		// and sinon is not able to override it.
+	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', () => {
+		const clock = testUtils.sinon.useFakeTimers();
+		const spy = testUtils.sinon.spy();
 
-		const spy = sinon.spy();
 		setData( model, '<paragraph>[bar]</paragraph>' );
 		balloonToolbar.on( '_selectionChangeDebounced', spy );
 
@@ -114,26 +115,22 @@ describe( 'BalloonToolbar', () => {
 		sinon.assert.notCalled( spy );
 
 		// Lets wait 100 ms.
-		setTimeout( () => {
-			// Still not yet.
-			sinon.assert.notCalled( spy );
+		clock.tick( 100 );
+		// Still not yet.
+		sinon.assert.notCalled( spy );
 
-			// Fire event one more time.
-			selection.fire( 'change:range', {} );
+		// Fire event one more time.
+		selection.fire( 'change:range', {} );
 
-			// Another 100 ms waiting.
-			setTimeout( () => {
-				// Still not yet.
-				sinon.assert.notCalled( spy );
+		// Another 100 ms waiting.
+		clock.tick( 100 );
+		// Still not yet.
+		sinon.assert.notCalled( spy );
 
-				// Another waiting.
-				setTimeout( () => {
-					// And here it is.
-					sinon.assert.calledOnce( spy );
-					done();
-				}, 110 );
-			}, 101 );
-		}, 100 );
+		// Another waiting.
+		clock.tick( 110 );
+		// And here it is.
+		sinon.assert.calledOnce( spy );
 	} );
 
 	describe( 'pluginName', () => {
@@ -393,8 +390,9 @@ describe( 'BalloonToolbar', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', done => {
-			const spy = sinon.spy();
+		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', () => {
+			const clock = testUtils.sinon.useFakeTimers();
+			const spy = testUtils.sinon.spy();
 
 			balloonToolbar.on( '_selectionChangeDebounced', spy );
 
@@ -402,10 +400,8 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.destroy();
 
-			setTimeout( () => {
-				sinon.assert.notCalled( spy );
-				done();
-			}, 200 );
+			clock.tick( 200 );
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 
