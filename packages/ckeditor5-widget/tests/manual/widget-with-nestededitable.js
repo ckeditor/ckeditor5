@@ -50,7 +50,7 @@ ClassicEditor
 			.add( downcastElementToElement( {
 				model: 'nested',
 				view: ( modelItem, writer ) => {
-					return writer.createEditableElement( 'div', { class: 'nested' } );
+					return writer.createContainerElement( 'div', { class: 'nested' } );
 				}
 			} ) );
 
