@@ -10,7 +10,7 @@
 /**
  * Creates list item {@link module:engine/view/containerelement~ContainerElement}.
  *
- * @param {module:engine/view/writer~Writer} writer The writer instance.
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer The writer instance.
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createViewListItemElement( writer ) {

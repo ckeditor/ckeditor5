@@ -5,14 +5,14 @@
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import { createViewListItemElement } from '../src/utils';
 
 describe( 'utils', () => {
 	let writer;
 
 	beforeEach( () => {
-		writer = new ViewWriter( {} );
+		writer = new ViewDowncastWriter( {} );
 	} );
 
 	describe( 'createViewListItemElement()', () => {
