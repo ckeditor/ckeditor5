@@ -5,7 +5,7 @@
 
 /* global document */
 
-import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -32,7 +32,7 @@ describe( 'widget utils', () => {
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 		viewDocument = new ViewDocument();
-		writer = new Writer( viewDocument );
+		writer = new DowncastWriter( viewDocument );
 
 		element = writer.createContainerElement( 'div' );
 		toWidget( element, writer );
