@@ -13,6 +13,10 @@ import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import SplitOperation from '../../src/model/operation/splitoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
+import WrapOperation from '../../src/model/operation/wrapoperation';
+import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 
 describe( 'Differ', () => {
 	let doc, differ, root, model;
@@ -300,7 +304,7 @@ describe( 'Differ', () => {
 				remove( position, 1 );
 
 				expectChanges( [
-					{ type: 'remove', name: '$text', length: 1, position: new Position( root, [ 0, 1 ] ) }
+					{ type: 'remove', name: '$text', length: 1, position }
 				] );
 			} );
 		} );
@@ -1254,6 +1258,202 @@ describe( 'Differ', () => {
 		} );
 	} );
 
+	describe( 'split', () => {
+		it( 'split an element', () => {
+			const position = new Position( root, [ 0, 2 ] );
+
+			model.change( () => {
+				split( position );
+
+				expectChanges( [
+					{ type: 'remove', name: '$text', length: 1, position },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'split a new element', () => {
+			model.change( () => {
+				insert(
+					new Element( 'paragraph', null, new Text( 'Ab' ) ),
+					new Position( root, [ 0 ] )
+				);
+
+				split( new Position( root, [ 0, 1 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'split an element inside a new element', () => {
+			model.change( () => {
+				insert(
+					new Element( 'blockQuote', null, new Element( 'paragraph', null, new Text( 'Ab' ) ) ),
+					new Position( root, [ 0 ] )
+				);
+
+				split( new Position( root, [ 0, 0, 1 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+	} );
+
+	describe( 'merge', () => {
+		it( 'merge two elements', () => {
+			model.change( () => {
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'merge a new element', () => {
+			model.change( () => {
+				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 1 ] ) );
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0, 3 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'merge into a new element', () => {
+			model.change( () => {
+				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 0 ] ) );
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 2 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'merge elements inside a new element', () => {
+			model.change( () => {
+				insert(
+					new Element( 'blockQuote', null, [
+						new Element( 'paragraph', null, new Text( 'Ab' ) ),
+						new Element( 'paragraph', null, new Text( 'Xyz' ) )
+					] ),
+					new Position( root, [ 0 ] )
+				);
+
+				merge( new Position( root, [ 0, 1, 0 ] ), new Position( root, [ 0, 0, 2 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+	} );
+
+	describe( 'wrap', () => {
+		it( 'wrap elements', () => {
+			model.change( () => {
+				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'wrap old and new elements', () => {
+			model.change( () => {
+				insert( new Element( 'paragraph' ), new Position( root, [ 0 ] ) );
+				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'wrap inside a new element', () => {
+			model.change( () => {
+				insert(
+					new Element( 'div', null, [
+						new Element( 'paragraph' ),
+						new Element( 'paragraph' )
+					] ),
+					new Position( root, [ 0 ] )
+				);
+				wrap( new Position( root, [ 0, 0 ] ), 2, new Element( 'blockQuote' ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+	} );
+
+	describe( 'unwrap', () => {
+		it( 'unwrap elements', () => {
+			model.change( () => {
+				unwrap( new Position( root, [ 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'unwrap a new element', () => {
+			model.change( () => {
+				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 0 ] ) );
+				unwrap( new Position( root, [ 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'unwrap element with new nodes', () => {
+			model.change( () => {
+				insert( new Text( 'Ab' ), new Position( root, [ 0, 1 ] ) );
+				unwrap( new Position( root, [ 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: '$text', length: 5, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'unwrap element inside a new element', () => {
+			model.change( () => {
+				insert(
+					new Element( 'blockQuote', null, [
+						new Element( 'paragraph', null, new Text( 'Ab' ) )
+					] ),
+					new Position( root, [ 0 ] )
+				);
+
+				unwrap( new Position( root, [ 0, 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+	} );
+
 	describe( 'markers', () => {
 		let range, rangeB;
 
@@ -1610,6 +1810,33 @@ describe( 'Differ', () => {
 
 	function insert( item, position ) {
 		const operation = new InsertOperation( position, item, doc.version );
+
+		model.applyOperation( operation );
+	}
+
+	function split( position ) {
+		const howMany = position.parent.maxOffset - position.offset;
+		const operation = new SplitOperation( position, howMany, null, doc.version );
+
+		model.applyOperation( operation );
+	}
+
+	function merge( source, target ) {
+		const howMany = source.parent.maxOffset;
+		const operation = new MergeOperation( source, howMany, target, new Position( doc.graveyard, [ 0 ] ), doc.version );
+
+		model.applyOperation( operation );
+	}
+
+	function wrap( position, howMany, element ) {
+		const operation = new WrapOperation( position, howMany, element, doc.version );
+
+		model.applyOperation( operation );
+	}
+
+	function unwrap( position ) {
+		const howMany = position.parent.maxOffset;
+		const operation = new UnwrapOperation( position, howMany, new Position( doc.graveyard, [ 0 ] ), doc.version );
 
 		model.applyOperation( operation );
 	}

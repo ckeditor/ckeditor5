@@ -135,16 +135,29 @@ export default class WrapOperation extends Operation {
 	 */
 	_validate() {
 		const element = this.position.parent;
-		const offset = this.position.offset;
 
 		// Validate whether wrap operation has correct parameters.
-		if ( !element || offset + this.howMany > element.maxOffset ) {
+		if ( !element || this.position.offset > element.maxOffset ) {
 			/**
-			 * Wrap range is invalid.
+			 * Wrap position is invalid.
 			 *
-			 * @error wrap-operation-range-invalid
+			 * @error wrap-operation-position-invalid
 			 */
-			throw new CKEditorError( 'wrap-operation-range-invalid: Wrap range is invalid.' );
+			throw new CKEditorError( 'wrap-operation-position-invalid: Wrap position is invalid.' );
+		} else if ( this.position.offset + this.howMany > element.maxOffset ) {
+			/**
+			 * Invalid number of nodes to wrap.
+			 *
+			 * @error wrap-operation-how-many-invalid
+			 */
+			throw new CKEditorError( 'wrap-operation-how-many-invalid: Invalid number of nodes to wrap.' );
+		} else if ( this.graveyardPosition && !this.graveyardPosition.nodeAfter ) {
+			/**
+			 * Graveyard position invalid.
+			 *
+			 * @error wrap-operation-graveyard-position-invalid
+			 */
+			throw new CKEditorError( 'wrap-operation-graveyard-position-invalid: Graveyard position invalid.' );
 		}
 	}
 

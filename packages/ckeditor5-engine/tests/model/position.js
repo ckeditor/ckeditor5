@@ -9,11 +9,21 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import Position from '../../src/model/position';
+import Range from '../../src/model/range';
+import MarkerOperation from '../../src/model/operation/markeroperation';
+import AttributeOperation from '../../src/model/operation/attributeoperation';
+import InsertOperation from '../../src/model/operation/insertoperation';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import RenameOperation from '../../src/model/operation/renameoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
+import SplitOperation from '../../src/model/operation/splitoperation';
+import WrapOperation from '../../src/model/operation/wrapoperation';
+import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Position', () => {
-	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
+	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
 
 	testUtils.createSinonSandbox();
 
@@ -29,7 +39,7 @@ describe( 'Position', () => {
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 	before( () => {
-		const model = new Model();
+		model = new Model();
 
 		doc = model.document;
 		root = doc.createRoot();
@@ -495,6 +505,32 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	describe( 'hasSameParentAs()', () => {
+		it( 'should return false if positions have different roots', () => {
+			const posA = new Position( root, [ 1, 2 ] );
+			const posB = new Position( doc.graveyard, [ 1, 0 ] );
+
+			expect( posA.hasSameParentAs( posB ) ).to.be.false;
+			expect( posB.hasSameParentAs( posA ) ).to.be.false;
+		} );
+
+		it( 'should return false if positions have different parents', () => {
+			const posA = new Position( root, [ 0, 1 ] );
+			const posB = new Position( root, [ 1, 1 ] );
+
+			expect( posA.hasSameParentAs( posB ) ).to.be.false;
+			expect( posB.hasSameParentAs( posA ) ).to.be.false;
+		} );
+
+		it( 'should return true if positions have same parent', () => {
+			const posA = new Position( root, [ 0, 4, 8 ] );
+			const posB = new Position( root, [ 0, 4, 2 ] );
+
+			expect( posA.hasSameParentAs( posB ) ).to.be.true;
+			expect( posB.hasSameParentAs( posA ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'isAtStart()', () => {
 		it( 'should return true if position is at the beginning of its parent', () => {
 			expect( new Position( root, [ 0 ] ).isAtStart ).to.be.true;
@@ -604,6 +640,287 @@ describe( 'Position', () => {
 		} );
 	} );
 
+	// Note: We don't create model element structure in these tests because this method
+	// is used by OT so it must not check the structure.
+	describe( 'getTransformedByOperation()', () => {
+		let pos;
+
+		beforeEach( () => {
+			pos = new Position( root, [ 3, 2 ] );
+		} );
+
+		describe( 'by AttributeOperation', () => {
+			it( 'nothing should change', () => {
+				const op = new AttributeOperation( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+		} );
+
+		describe( 'by InsertOperation', () => {
+			it( 'should use _getTransformedByInsertion', () => {
+				sinon.spy( pos, '_getTransformedByInsertion' );
+
+				const op = new InsertOperation( new Position( root, [ 1 ] ), [ new Element( 'paragraph' ) ], 1 );
+				pos.getTransformedByOperation( op );
+
+				expect( pos._getTransformedByInsertion.calledWithExactly( op.position, op.howMany ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'nothing should change', () => {
+				const op = new MarkerOperation(
+					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, 1, true
+				);
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+		} );
+
+		describe( 'by MoveOperation', () => {
+			it( 'should use _getTransformedByMove', () => {
+				sinon.spy( pos, '_getTransformedByMove' );
+
+				const op = new MoveOperation( new Position( root, [ 1 ] ), 2, new Position( root, [ 5 ] ), 1 );
+				pos.getTransformedByOperation( op );
+
+				expect( pos._getTransformedByMove.calledWithExactly( op.sourcePosition, op.targetPosition, op.howMany ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'nothing should change', () => {
+				const op = new RenameOperation( new Position( root, [ 3 ] ), 'old', 'new', 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+		} );
+
+		describe( 'by SplitOperation', () => {
+			it( 'transformed position is at the split position', () => {
+				const op = new SplitOperation( new Position( root, [ 3, 2 ] ), 3, null, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'transformed position is after the split position', () => {
+				const op = new SplitOperation( new Position( root, [ 3, 1 ] ), 3, null, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 4, 1 ] );
+			} );
+
+			it( 'transformed position is before the split position', () => {
+				const op = new SplitOperation( new Position( root, [ 3, 3 ] ), 3, null, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'transformed position is after the split element', () => {
+				const op = new SplitOperation( new Position( root, [ 3, 1, 5 ] ), 3, null, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 3 ] );
+			} );
+
+			it( 'transformed position is before the split element', () => {
+				const op = new SplitOperation( new Position( root, [ 3, 3, 5 ] ), 3, null, 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'transformed position is in graveyard and split position uses graveyard element', () => {
+				pos = new Position( doc.graveyard, [ 1 ] );
+
+				const op = new SplitOperation( new Position( root, [ 3, 2 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 0 ] );
+			} );
+		} );
+
+		describe( 'by MergeOperation', () => {
+			it( 'position is inside merged element', () => {
+				const op = new MergeOperation(
+					new Position( root, [ 3, 0 ] ), 3, new Position( root, [ 2, 2 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 2, 4 ] );
+			} );
+
+			it( 'position is inside merged-to element', () => {
+				const op = new MergeOperation(
+					new Position( root, [ 4, 0 ] ), 3, new Position( root, [ 3, 5 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is before merged element', () => {
+				const op = new MergeOperation(
+					new Position( root, [ 3, 2, 0 ] ), 3, new Position( root, [ 3, 1, 2 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is after merged element', () => {
+				const op = new MergeOperation(
+					new Position( root, [ 3, 1, 0 ] ), 3, new Position( root, [ 3, 0, 2 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 1 ] );
+			} );
+
+			it( 'position is inside graveyard', () => {
+				pos = new Position( doc.graveyard, [ 0 ] );
+
+				const op = new MergeOperation(
+					new Position( root, [ 3, 1, 0 ] ), 3, new Position( root, [ 3, 0, 2 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'merge source position is before merge target position and position is in merged element', () => {
+				const op = new MergeOperation(
+					new Position( root, [ 3, 0 ] ), 3, new Position( root, [ 4, 5 ] ), new Position( doc.graveyard, [ 0 ] ), 1
+				);
+
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 7 ] );
+			} );
+		} );
+
+		describe( 'by WrapOperation', () => {
+			it( 'position is before the wrapped range', () => {
+				const op = new WrapOperation( new Position( root, [ 3, 3 ] ), 3, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is at the beginning of wrapped range and sticks to previous', () => {
+				pos.stickiness = 'toPrevious';
+
+				const op = new WrapOperation( new Position( root, [ 3, 2 ] ), 3, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is at the beginning of wrapped range and sticks to next', () => {
+				pos.stickiness = 'toNext';
+
+				const op = new WrapOperation( new Position( root, [ 3, 2 ] ), 3, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2, 0 ] );
+			} );
+
+			it( 'position is inside wrapped range', () => {
+				const op = new WrapOperation( new Position( root, [ 3, 1 ] ), 3, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 1, 1 ] );
+			} );
+
+			it( 'position is at the end of wrapped range and sticks to previous', () => {
+				pos.stickiness = 'toPrevious';
+
+				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 2, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 0, 2 ] );
+			} );
+
+			it( 'position is at the end of wrapped range and sticks to next', () => {
+				pos.stickiness = 'toNext';
+
+				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 2, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 1 ] );
+			} );
+
+			it( 'position is after the wrapped range', () => {
+				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 1, new Element( 'paragraph' ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is inside the graveyard and the operation uses element from graveyard', () => {
+				pos = new Position( doc.graveyard, [ 1 ] );
+
+				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 0 ] );
+			} );
+		} );
+
+		describe( 'by UnwrapOperation', () => {
+			it( 'position is before unwrapped element', () => {
+				const op = new UnwrapOperation( new Position( root, [ 3, 2, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
+			} );
+
+			it( 'position is inside unwrapped element', () => {
+				const op = new UnwrapOperation( new Position( root, [ 3, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 5 ] );
+			} );
+
+			it( 'position is after unwrapped element', () => {
+				const op = new UnwrapOperation( new Position( root, [ 3, 1, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 3, 4 ] );
+			} );
+
+			it( 'position is in graveyard', () => {
+				pos = new Position( doc.graveyard, [ 0 ] );
+
+				const op = new UnwrapOperation( new Position( root, [ 3, 2, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 1 ] );
+			} );
+
+			it( 'unwrap is in the graveyard and position is before the unwrapped node', () => {
+				// This is an edge case scenario for unwrap operation that is unwrapping an element which is already in graveyard.
+				pos = new Position( doc.graveyard, [ 0 ] );
+
+				const op = new UnwrapOperation( new Position( doc.graveyard, [ 0, 0 ] ), 0, new Position( doc.graveyard, [ 0 ] ), 1 );
+				const transformed = pos.getTransformedByOperation( op );
+
+				expect( transformed.path ).to.deep.equal( [ 0 ] );
+			} );
+		} );
+	} );
+
 	describe( '_getTransformedByInsertion()', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
@@ -662,6 +979,13 @@ describe( 'Position', () => {
 			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
+		} );
+
+		it( 'should not update if insertion is in different path', () => {
+			const position = new Position( root, [ 1, 1 ] );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 2, 0 ] ), 2 );
+
+			expect( transformed.path ).to.deep.equal( [ 1, 1 ] );
 		} );
 	} );
 
@@ -760,6 +1084,22 @@ describe( 'Position', () => {
 			const transformed = position._getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
+		} );
+
+		it( 'should not update if targetPosition is equal to sourcePosition (because nothing is really moving)', () => {
+			const position = new Position( root, [ 3 ] );
+			const transformed = position._getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ), 3, false );
+
+			expect( transformed.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		it( 'should update if position is before moved range and sticks to next node', () => {
+			const position = new Position( root, [ 2, 1 ] );
+			position.stickiness = 'toNext';
+
+			const transformed = position._getTransformedByMove( new Position( root, [ 2, 1 ] ), new Position( root, [ 3, 3 ] ), 2, false );
+
+			expect( transformed.path ).to.deep.equal( [ 3, 3 ] );
 		} );
 	} );
 

@@ -130,14 +130,14 @@ export default class MergeOperation extends Operation {
 		const targetElement = this.targetPosition.parent;
 
 		// Validate whether merge operation has correct parameters.
-		if ( !sourceElement || !sourceElement.is( 'element' ) ) {
+		if ( !sourceElement || !sourceElement.is( 'element' ) || !sourceElement.parent ) {
 			/**
 			 * Merge source position is invalid.
 			 *
 			 * @error merge-operation-source-position-invalid
 			 */
 			throw new CKEditorError( 'merge-operation-source-position-invalid: Merge source position is invalid.' );
-		} else if ( !targetElement || !targetElement.is( 'element' ) ) {
+		} else if ( !targetElement || !targetElement.is( 'element' ) || !targetElement.parent ) {
 			/**
 			 * Merge target position is invalid.
 			 *
