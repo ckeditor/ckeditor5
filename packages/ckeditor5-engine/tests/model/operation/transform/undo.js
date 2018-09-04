@@ -200,4 +200,23 @@ describe( 'transform', () => {
 
 		expectClients( '<paragraph>Ab</paragraph><paragraph>Xy</paragraph>' );
 	} );
+
+	it( 'undoing split after the element created by split has been removed', () => {
+		// This example is ported here from ckeditor5-undo to keep 100% CC in ckeditor5-engine alone.
+		john.setData( '<paragraph>Foo[]bar</paragraph>' );
+
+		john.split();
+		john.setSelection( [ 0, 3 ], [ 1, 3 ] );
+		john.delete();
+
+		expectClients( '<paragraph>Foo</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foobar</paragraph>' );
+	} );
 } );
