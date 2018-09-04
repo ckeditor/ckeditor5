@@ -374,7 +374,7 @@ export default class Widget extends Plugin {
 	 * Removes CSS class from previously selected widgets.
 	 *
 	 * @private
-	 * @param {module:engine/view/writer~Writer} writer
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	_clearPreviouslySelectedWidgets( writer ) {
 		for ( const widget of this._previouslySelected ) {

@@ -50,7 +50,7 @@ export function isWidget( element ) {
  * * implements `addHighlight` and `removeHighlight` custom properties to handle view highlight on widgets.
  *
  * @param {module:engine/view/element~Element} element
- * @param {module:engine/view/writer~Writer} writer
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
@@ -96,7 +96,7 @@ export function toWidget( element, writer, options = {} ) {
  * properly determine which highlight descriptor should be used at given time.
  *
  * @param {module:engine/view/element~Element} element
- * @param {module:engine/view/writer~Writer} writer
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {Function} add
  * @param {Function} remove
  */
@@ -124,7 +124,7 @@ export function setHighlightHandling( element, writer, add, remove ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {String|Function} labelOrCreator
- * @param {module:engine/view/writer~Writer} writer
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  */
 export function setLabel( element, labelOrCreator, writer ) {
 	writer.setCustomProperty( labelSymbol, labelOrCreator, element );
@@ -154,7 +154,7 @@ export function getLabel( element ) {
  * * adds `ck-editor__nested-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
- * @param {module:engine/view/writer~Writer} writer
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
 export function toWidgetEditable( editable, writer ) {
@@ -193,7 +193,7 @@ function getFillerOffset() {
 // Adds a drag handler to the editable element.
 //
 // @param {module:engine/view/editableelement~EditableElement}
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function addSelectionHandler( editable, writer ) {
 	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );

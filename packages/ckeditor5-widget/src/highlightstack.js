@@ -34,7 +34,7 @@ export default class HighlightStack {
 	 *
 	 * @fires change:top
 	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
-	 * @param {module:engine/view/writer~Writer} writer
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	add( descriptor, writer ) {
 		const stack = this._stack;
@@ -59,7 +59,7 @@ export default class HighlightStack {
 	 *
 	 * @fires change:top
 	 * @param {String} id Id of the descriptor to remove.
-	 * @param {module:engine/view/writer~Writer} writer
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	remove( id, writer ) {
 		const stack = this._stack;
@@ -172,5 +172,5 @@ function classesToString( classes ) {
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} [data.oldDescriptor] Old highlight
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
- * @param {module:engine/view/writer~Writer} writer View writer that can be used to modify element.
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that can be used to modify element.
  */
