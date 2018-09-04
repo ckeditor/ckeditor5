@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [10.2.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.1.0...v10.2.0) (2018-07-18)
+
+### Features
+
+* Implemented a CSS–styled image upload loader. Closes [#207](https://github.com/ckeditor/ckeditor5-image/issues/207). ([997d39b](https://github.com/ckeditor/ckeditor5-image/commit/997d39b))
+* Introduced `ImageLoadObserver`. Closes [#213](https://github.com/ckeditor/ckeditor5-image/issues/213). ([1128cb8](https://github.com/ckeditor/ckeditor5-image/commit/1128cb8))
+
+### Bug fixes
+
+* Complete upload icon should not be rendered in Edge due to an [Edge's bug](https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/105834/). Closes https://github.com/ckeditor/ckeditor5/issues/1066. ([9a62cf1](https://github.com/ckeditor/ckeditor5-image/commit/9a62cf1))
+* The UI should update once the image is loaded. Closes [#142](https://github.com/ckeditor/ckeditor5-image/issues/142). ([dee20c0](https://github.com/ckeditor/ckeditor5-image/commit/dee20c0))
+
+  Used the `EditorUI#update` event instead of `View#render` to attach the UI components (see [ckeditor/ckeditor5-core#130](https://github.com/ckeditor/ckeditor5-core/issues/130)).
+
+### Other changes
+
+* Updated translations. ([e6f77fe](https://github.com/ckeditor/ckeditor5-image/commit/e6f77fe))
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.0.0...v10.1.0) (2018-06-21)
 
 ### Features

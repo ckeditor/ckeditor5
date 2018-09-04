@@ -25,6 +25,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
@@ -48,6 +49,9 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 

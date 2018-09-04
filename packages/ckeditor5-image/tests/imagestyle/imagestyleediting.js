@@ -12,11 +12,17 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-testUtils.createSinonSandbox();
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageStyleEditing', () => {
 	let editor, model, document, viewDocument;
+
+	testUtils.createSinonSandbox( 'ImageStyleEditing' );
+
+	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+	} );
 
 	afterEach( () => {
 		editor.destroy();

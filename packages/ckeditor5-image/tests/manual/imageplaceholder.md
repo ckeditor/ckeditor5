@@ -1,3 +1,3 @@
 ## Image placeholder
 
-Check if image placeholder is visible.
+Check if the image placeholder is visible and looks OK after window resize.

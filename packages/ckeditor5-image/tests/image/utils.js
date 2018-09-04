@@ -6,7 +6,7 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
-import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
+import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -17,7 +17,7 @@ describe( 'image widget utils', () => {
 	let element, image, writer;
 
 	beforeEach( () => {
-		writer = new ViewWriter( new ViewDocument() );
+		writer = new ViewDowncastWriter( new ViewDocument() );
 		image = new ViewElement( 'img' );
 		element = new ViewElement( 'figure', null, image );
 		toImageWidget( element, writer, 'image widget' );

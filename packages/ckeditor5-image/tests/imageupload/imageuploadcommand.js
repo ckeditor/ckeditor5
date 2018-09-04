@@ -87,11 +87,11 @@ describe( 'ImageUploadCommand', () => {
 			setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas ).to.length( 0 );
+				expect( writer.batch.operations ).to.length( 0 );
 
 				command.execute( { file } );
 
-				expect( writer.batch.deltas ).to.length.above( 0 );
+				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
 		} );
 
