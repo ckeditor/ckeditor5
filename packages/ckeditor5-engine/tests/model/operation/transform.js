@@ -465,7 +465,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -896,7 +896,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -1994,7 +1994,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 2, 2, 3 ] ), new Position( root, [ 2, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2131,7 +2131,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2254,7 +2254,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no operation update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2422,7 +2422,7 @@ describe( 'transform', () => {
 		beforeEach( () => {
 			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
 			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
-			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, 0 );
+			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, false, 0 );
 
 			expected = {
 				name: 'name',
@@ -2571,7 +2571,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'different marker name: no operation update', () => {
-				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2581,7 +2581,7 @@ describe( 'transform', () => {
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2593,7 +2593,7 @@ describe( 'transform', () => {
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, 0 );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy, strongContext );
 

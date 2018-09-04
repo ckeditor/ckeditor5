@@ -24,7 +24,7 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should have property type equal to "marker"', () => {
-		const op = new MarkerOperation( 'name', null, range, model.markers, 0, true );
+		const op = new MarkerOperation( 'name', null, range, model.markers, true, 0 );
 		expect( op.type ).to.equal( 'marker' );
 	} );
 
@@ -32,7 +32,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( model.markers, '_set' );
 
 		model.applyOperation(
-			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
+			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
 		expect( doc.version ).to.equal( 1 );
@@ -42,7 +42,7 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should update marker in document marker collection', () => {
 		model.applyOperation(
-			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
+			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
@@ -50,7 +50,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( model.markers, '_set' );
 
 		model.applyOperation(
-			new MarkerOperation( 'name', range, range2, model.markers, doc.version, true )
+			new MarkerOperation( 'name', range, range2, model.markers, true, doc.version )
 		);
 
 		expect( doc.version ).to.equal( 2 );
@@ -60,13 +60,13 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should remove marker from document marker collection', () => {
 		model.applyOperation(
-			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
+			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
 		sinon.spy( model.markers, '_remove' );
 
 		model.applyOperation(
-			new MarkerOperation( 'name', range, null, model.markers, doc.version, true )
+			new MarkerOperation( 'name', range, null, model.markers, true, doc.version )
 		);
 
 		expect( doc.version ).to.equal( 2 );
@@ -78,7 +78,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( model.markers, 'fire' );
 
 		model.applyOperation(
-			new MarkerOperation( 'name', null, null, model.markers, doc.version, true )
+			new MarkerOperation( 'name', null, null, model.markers, true, doc.version )
 		);
 
 		expect( model.markers.fire.notCalled ).to.be.true;
@@ -92,7 +92,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( model.markers, 'fire' );
 
 		model.applyOperation(
-			new MarkerOperation( 'name', range, range, model.markers, doc.version, false )
+			new MarkerOperation( 'name', range, range, model.markers, false, doc.version )
 		);
 
 		expect( model.markers.fire.notCalled ).to.be.true;
@@ -101,10 +101,10 @@ describe( 'MarkerOperation', () => {
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 
-		const op1 = new MarkerOperation( 'name', null, range, model.markers, doc.version, true );
+		const op1 = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
 		const reversed1 = op1.getReversed();
 
-		const op2 = new MarkerOperation( 'name', range, range2, model.markers, doc.version, true );
+		const op2 = new MarkerOperation( 'name', range, range2, model.markers, true, doc.version );
 		const reversed2 = op2.getReversed();
 
 		expect( reversed1 ).to.be.an.instanceof( MarkerOperation );
@@ -124,7 +124,7 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should create a MarkerOperation with the same parameters when cloned', () => {
-		const op = new MarkerOperation( 'name', null, range, model.markers, 0, true );
+		const op = new MarkerOperation( 'name', null, range, model.markers, true, 0 );
 		const clone = op.clone();
 
 		expect( clone ).to.be.an.instanceof( MarkerOperation );
@@ -133,7 +133,7 @@ describe( 'MarkerOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const op = new MarkerOperation( 'name', null, range, model.markers, doc.version, true );
+			const op = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
@@ -149,7 +149,7 @@ describe( 'MarkerOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper MarkerOperation from json object #1', () => {
-			const op = new MarkerOperation( 'name', null, range, model.markers, doc.version, true );
+			const op = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
 
 			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
@@ -159,7 +159,7 @@ describe( 'MarkerOperation', () => {
 
 		it( 'should create proper MarkerOperation from json object #2', () => {
 			// Gotta love 100% CC.
-			const op = new MarkerOperation( 'name', range, null, model.markers, doc.version, true );
+			const op = new MarkerOperation( 'name', range, null, model.markers, true, doc.version );
 
 			const serialized = op.toJSON();
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );

@@ -34,10 +34,10 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 
 			model.change( () => {
 				// Add marker.
-				model.applyOperation( new MarkerOperation( 'name', null, range, model.markers, 0 ) );
+				model.applyOperation( new MarkerOperation( 'name', null, range, model.markers, false, 0 ) );
 
 				// Remove marker.
-				model.applyOperation( new MarkerOperation( 'name', range, null, model.markers, 1 ) );
+				model.applyOperation( new MarkerOperation( 'name', range, null, model.markers, false, 1 ) );
 
 				sinon.assert.notCalled( spy );
 			} );

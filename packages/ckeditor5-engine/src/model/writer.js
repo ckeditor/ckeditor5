@@ -1327,7 +1327,7 @@ function applyMarkerOperation( writer, name, oldRange, newRange, affectsData ) {
 	const model = writer.model;
 	const doc = model.document;
 
-	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version, affectsData );
+	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, affectsData, doc.version );
 
 	writer.batch.addOperation( operation );
 	model.applyOperation( operation );
