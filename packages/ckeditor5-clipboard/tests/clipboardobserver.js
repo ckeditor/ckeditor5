@@ -7,7 +7,7 @@
 
 import ClipboardObserver from '../src/clipboardobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
+import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import DataTransfer from '../src/datatransfer';
@@ -19,7 +19,7 @@ describe( 'ClipboardObserver', () => {
 	beforeEach( () => {
 		view = new View();
 		doc = view.document;
-		writer = new Writer( doc );
+		writer = new DowncastWriter( doc );
 		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
