@@ -114,7 +114,7 @@ export default class ImageEditing extends Plugin {
 // Note that `alt` and `src` attributes are converted separately, so they are not included.
 //
 // @private
-// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
