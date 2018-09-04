@@ -51,11 +51,12 @@ class Token {
 		 * Base refreshing function.
 		 *
 		 * @private
+		 * @member {String|Function} #_refresh
 		 */
-		this._refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
-
 		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
 			this._refresh = tokenUrlOrRefreshToken;
+		} else {
+			this._refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
 		}
 
 		/**
