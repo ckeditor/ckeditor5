@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import InsertDelta from '@ckeditor/ckeditor5-engine/src/model/delta/insertdelta';
+import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ShiftEnter from '../src/shiftenter';
 
@@ -49,30 +49,30 @@ describe( 'ShiftEnterCommand', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			model.change( writer => {
-				expect( writer.batch.deltas ).to.length( 0 );
+				expect( writer.batch.operations ).to.length( 0 );
 				editor.execute( 'shiftEnter' );
-				expect( writer.batch.deltas ).to.length.above( 0 );
+				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
 		} );
 
-		it( 'creates InsertDelta if soft enter is at the beginning of block', () => {
+		it( 'creates InsertOperation if soft enter is at the beginning of block', () => {
 			setData( model, '<p>[]foo</p>' );
 
 			editor.execute( 'shiftEnter' );
 
-			const deltas = Array.from( doc.history.getDeltas() );
+			const operations = Array.from( doc.history.getOperations() );
 
-			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
+			expect( operations[ operations.length - 1 ] ).to.be.instanceof( InsertOperation );
 		} );
 
-		it( 'creates InsertDelta if soft enter is at the end of block', () => {
+		it( 'creates InsertOperation if soft enter is at the end of block', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			editor.execute( 'shiftEnter' );
 
-			const deltas = Array.from( doc.history.getDeltas() );
+			const operations = Array.from( doc.history.getOperations() );
 
-			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
+			expect( operations[ operations.length - 1 ] ).to.be.instanceof( InsertOperation );
 		} );
 	} );
 
@@ -295,7 +295,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -307,7 +307,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -319,7 +319,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<img>[]</img>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -327,15 +327,25 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in element inside a block limit element', () => {
-			setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
+			model.change( () => {
+				setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Refresh it manually because we're in the middle of a change block.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for non-collapsed selection which ends in element inside a block limit element', () => {
-			setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
+			model.change( () => {
+				setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Refresh it manually because we're in the middle of a change block.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for multi-ranges selection (1)', () => {
