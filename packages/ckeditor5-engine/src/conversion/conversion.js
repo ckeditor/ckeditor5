@@ -43,9 +43,9 @@ import {
  *		editor.conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
  *
  *		// Add a converter to the data pipepline only:
- *		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( config ) );
+ *		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( dataConversionConfig ) );
  *		// And a slightly different one for the editing pipeline:
- *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToWidget( config ) );
+ *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( editingConversionConfig ) );
  *
  * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
  * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
