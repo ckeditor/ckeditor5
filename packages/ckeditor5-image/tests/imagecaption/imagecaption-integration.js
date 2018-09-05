@@ -13,7 +13,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'ImageCaption integration', () => {
@@ -54,7 +53,13 @@ describe( 'ImageCaption integration', () => {
 				'<paragraph>Foo.</paragraph><image src="foo.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
 			);
 
-			viewDocument.fire( 'enter', new DomEventData( viewDocument, getDomEvent(), { isSoft: true } ) );
+			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const preventDefaultOriginal = domEvent.preventDefault;
+			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
+
+			viewDocument.fire( 'enter', domEvent );
+
+			expect( preventDefaultStub.callCount ).to.equal( 1 );
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
@@ -63,19 +68,6 @@ describe( 'ImageCaption integration', () => {
 				'</image>' +
 				'<paragraph>Bar.</paragraph>'
 			);
-
-			/* eslint-disable max-len */
-			assertViewData(
-				'<p>Foo.</p>' +
-				'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="foo.png"></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter image caption">' +
-						'Foo.{}' +
-					'</figcaption>' +
-				'</figure>' +
-				'<p>Bar.</p>'
-			);
-			/* eslint-enable max-len */
 		} );
 	} );
 
@@ -105,7 +97,14 @@ describe( 'ImageCaption integration', () => {
 				'<paragraph>Foo.</paragraph><image src="foo.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
 			);
 
-			viewDocument.fire( 'enter', new DomEventData( viewDocument, getDomEvent(), { isSoft: true } ) );
+			const domEvent = new DomEventData( viewDocument, getDomEvent(), { isSoft: true } );
+			const preventDefaultOriginal = domEvent.preventDefault;
+			const preventDefaultStub = sinon.stub( domEvent, 'preventDefault' ).callsFake( preventDefaultOriginal );
+
+			viewDocument.fire( 'enter', domEvent );
+
+			// One call comes from Enter plugin, the second one from ShiftEnter.
+			expect( preventDefaultStub.callCount ).to.equal( 2 );
 
 			assertModelData(
 				'<paragraph>Foo.</paragraph>' +
@@ -114,70 +113,6 @@ describe( 'ImageCaption integration', () => {
 					'</image>' +
 				'<paragraph>Bar.</paragraph>'
 			);
-
-			/* eslint-disable max-len */
-			assertViewData(
-				'<p>Foo.</p>' +
-				'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="foo.png"></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter image caption">' +
-						'Foo.<br></br>[]' +
-					'</figcaption>' +
-				'</figure>' +
-				'<p>Bar.</p>'
-			);
-			/* eslint-enable max-len */
-		} );
-	} );
-
-	describe( 'Enter and ShiftEnter plugins', () => {
-		beforeEach( () => {
-			return ClassicEditor
-				.create( editorElement, {
-					plugins: [
-						ShiftEnter, Typing, Paragraph, Image, ImageCaption
-					]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					view = editor.editing.view;
-					viewDocument = view.document;
-				} );
-		} );
-
-		afterEach( () => {
-			return editor.destroy();
-		} );
-
-		it( 'inserts soft break and text in the caption element', () => {
-			setModelData(
-				model,
-				'<paragraph>Foo.</paragraph><image src="foo.png"><caption>Foo.[]</caption></image><paragraph>Bar.</paragraph>'
-			);
-
-			viewDocument.fire( 'enter', new DomEventData( viewDocument, getDomEvent(), { isSoft: true } ) );
-			editor.commands.execute( 'input', { text: 'Abc.' } );
-			viewDocument.fire( 'enter', new DomEventData( viewDocument, getDomEvent(), { isSoft: false } ) );
-
-			assertModelData(
-				'<paragraph>Foo.</paragraph>' +
-					'<image src="foo.png"><caption>Foo.<softBreak></softBreak>Abc.[]</caption></image>' +
-				'<paragraph>Bar.</paragraph>'
-			);
-
-			/* eslint-disable max-len */
-			assertViewData(
-				'<p>Foo.</p>' +
-				'<figure class="ck-widget image" contenteditable="false">' +
-					'<img src="foo.png"></img>' +
-					'<figcaption class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" data-placeholder="Enter image caption">' +
-						'Foo.<br></br>Abc.{}' +
-					'</figcaption>' +
-				'</figure>' +
-				'<p>Bar.</p>'
-			);
-			/* eslint-enable max-len */
 		} );
 	} );
 
@@ -189,9 +124,5 @@ describe( 'ImageCaption integration', () => {
 
 	function assertModelData( output ) {
 		expect( getModelData( model ) ).to.equal( output );
-	}
-
-	function assertViewData( output ) {
-		expect( getViewData( view ) ).to.equal( output );
 	}
 } );
