@@ -19,12 +19,12 @@ export default class MarkerOperation extends Operation {
 	 * @param {module:engine/model/range~Range} oldRange Marker range before the change.
 	 * @param {module:engine/model/range~Range} newRange Marker range after the change.
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Marker collection on which change should be executed.
-	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * @param {Boolean} affectsData Specifies whether the marker operation affects the data produced by the data pipeline
 	 * (is persisted in the editor's data).
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( name, oldRange, newRange, markers, baseVersion, affectsData ) {
+	constructor( name, oldRange, newRange, markers, affectsData, baseVersion ) {
 		super( baseVersion );
 
 		/**
@@ -82,7 +82,7 @@ export default class MarkerOperation extends Operation {
 	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation} Clone of this operation.
 	 */
 	clone() {
-		return new MarkerOperation( this.name, this.oldRange, this.newRange, this._markers, this.baseVersion, this.affectsData );
+		return new MarkerOperation( this.name, this.oldRange, this.newRange, this._markers, this.affectsData, this.baseVersion );
 	}
 
 	/**
@@ -91,7 +91,7 @@ export default class MarkerOperation extends Operation {
 	 * @returns {module:engine/model/operation/markeroperation~MarkerOperation}
 	 */
 	getReversed() {
-		return new MarkerOperation( this.name, this.newRange, this.oldRange, this._markers, this.baseVersion + 1, this.affectsData );
+		return new MarkerOperation( this.name, this.newRange, this.oldRange, this._markers, this.affectsData, this.baseVersion + 1 );
 	}
 
 	/**
@@ -142,8 +142,8 @@ export default class MarkerOperation extends Operation {
 			json.oldRange ? Range.fromJSON( json.oldRange, document ) : null,
 			json.newRange ? Range.fromJSON( json.newRange, document ) : null,
 			document.model.markers,
-			json.baseVersion,
-			json.affectsData
+			json.affectsData,
+			json.baseVersion
 		);
 	}
 }

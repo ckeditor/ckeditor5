@@ -294,7 +294,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MarkerOperation', () => {
-				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, 0 );
+				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, false, 0 );
 
 				expect( op.toString() ).to.equal( 'MarkerOperation( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 

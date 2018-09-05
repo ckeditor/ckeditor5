@@ -672,7 +672,7 @@ describe( 'Position', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
-					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, 1, true
+					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, true, 1
 				);
 				const transformed = pos.getTransformedByOperation( op );
 
