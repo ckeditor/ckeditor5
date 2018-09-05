@@ -7,13 +7,16 @@
  * @module media-embed/mediaembed
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import MediaEmbedEditing from './mediaembedediting';
 import MediaEmbedUI from './mediaembedui';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
+import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
@@ -32,7 +35,7 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ MediaEmbedEditing, MediaEmbedUI, Widget, Clipboard, Enter ];
+		return [ MediaEmbedEditing, MediaEmbedUI, Widget, Clipboard ];
 	}
 
 	/**
@@ -46,30 +49,59 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		this._attachAutoEmbedingEvents();
+	}
+
+	/**
+	 * Attach events required for "auto-embeding" feature.
+	 *
+	 * @private
+	 */
+	_attachAutoEmbedingEvents() {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
 		const modelDocument = editor.model.document;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			data.preventDefault();
+		let leftLivePosition, rightLivePosition;
 
-			// The soft enter key is handled by the ShiftEnter plugin.
-			if ( data.isSoft ) {
+		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
+		// After pasting a content, between those position can be located a URL that should be transformed to media.
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
+			const firstRange = modelDocument.selection.getFirstRange();
+
+			leftLivePosition = LivePosition.createFromPosition( firstRange.start );
+			leftLivePosition.stickiness = 'toPrevious';
+
+			rightLivePosition = LivePosition.createFromPosition( firstRange.end );
+			rightLivePosition.stickiness = 'toNext';
+		} );
+
+		// Detach the live positions after pasting the content.
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
+			leftLivePosition.detach();
+			rightLivePosition.detach();
+
+			leftLivePosition = null;
+			rightLivePosition = null;
+		}, { priority: 'lowest' } );
+
+		modelDocument.on( 'change:data', () => {
+			if ( !leftLivePosition ) {
 				return;
 			}
 
-			const selectionWrapper = modelDocument.selection.getFirstPosition().parent;
-
-			if ( !selectionWrapper || !selectionWrapper.is( 'element', 'paragraph' ) ) {
-				return;
-			}
+			const urlRange = new Range( leftLivePosition, rightLivePosition );
+			const walker = new TreeWalker( { boundaries: urlRange } );
 
 			let url = '';
 
-			for ( const child of selectionWrapper.getChildren() ) {
-				url += child.data;
+			for ( const node of walker ) {
+				if ( !node.type === 'text' ) {
+					return;
+				}
+
+				url += node.item.data;
 			}
 
 			// If the url does not match to universal url regexp, let's skip that.
@@ -77,60 +109,26 @@ export default class MediaEmbed extends Plugin {
 				return;
 			}
 
-			// If the url is valid from MediaEmbed plugin, let's use it.
-			if ( mediaRegistry.hasMedia( url ) ) {
-				const model = this.editor.model;
-
-				model.change( writer => {
-					writer.remove( selectionWrapper );
-					editor.commands.execute( 'mediaEmbed', url );
-				} );
-
-				evt.stop();
-				view.scrollToTheSelection();
+			// If the url is valid from MediaEmbed plugin point of view, let's use it.
+			if ( !mediaRegistry.hasMedia( url ) ) {
+				return;
 			}
-		} );
 
-		// this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
-		// 	// We assume that single node was pasted.
-		// 	if ( data.content.childCount > 1 ) {
-		// 		return;
-		// 	}
-		//
-		// 	const firstChild = data.content.getChild( 0 );
-		//
-		// 	// If the node is not a text, skip it.
-		// 	if ( !firstChild.is( 'text' ) ) {
-		// 		return;
-		// 	}
-		//
-		// 	const url = firstChild.data;
-		//
-		// 	// If the url does not match to universal url regexp, let's skip that.
-		// 	if ( !url.match( URL_REGEXP ) ) {
-		// 		return;
-		// 	}
-		//
-		// 	// If the url is valid from MediaEmbed plugin, let's use it.
-		// 	if ( mediaRegistry.hasMedia( url ) ) {
-		// 		const model = this.editor.model;
-		// 		let textNode;
-		//
-		// 		// Insert the URL as text...
-		// 		model.change( writer => {
-		// 			textNode = writer.createText( url );
-		// 			writer.insert( textNode, modelDocument.selection.getFirstPosition() );
-		// 		} );
-		//
-		// 		// ...then replace it with <media> element. Thanks to that auto-embeding is undoable.
-		// 		model.change( writer => {
-		// 			writer.remove( textNode );
-		// 			editor.commands.execute( 'mediaEmbed', url );
-		// 		} );
-		//
-		// 		evt.stop();
-		// 	}
-		// } );
+			// `leftLivePosition` won't be available in `setTimeout` function so let's clone it.
+			const positionToInsert = Position.createFromPosition( leftLivePosition );
+
+			global.window.setTimeout( () => {
+				editor.model.change( writer => {
+					const mediaElement = writer.createElement( 'media', { url } );
+
+					writer.remove( urlRange );
+					writer.insert( mediaElement, positionToInsert );
+					writer.setSelection( mediaElement, 'on' );
+
+					view.scrollToTheSelection();
+				} );
+			}, 500 );
+		} );
 	}
 }
 
