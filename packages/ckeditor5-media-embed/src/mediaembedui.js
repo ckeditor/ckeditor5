@@ -32,11 +32,11 @@ export default class MediaEmbedUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'mediaEmbed' );
-		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
+		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
-			const form = new MediaFormView( getFormValidators( editor.t, mediaRegistry ), locale );
+			const form = new MediaFormView( getFormValidators( editor.t, registry ), locale );
 			const dropdown = createDropdown( locale );
 
 			this._setUpDropdown( dropdown, form, command, editor );
@@ -100,7 +100,7 @@ export default class MediaEmbedUI extends Plugin {
 	}
 }
 
-function getFormValidators( t, mediaRegistry ) {
+function getFormValidators( t, registry ) {
 	return [
 		form => {
 			if ( !form.url.length ) {
@@ -108,7 +108,7 @@ function getFormValidators( t, mediaRegistry ) {
 			}
 		},
 		form => {
-			if ( !mediaRegistry.hasMedia( form.url ) ) {
+			if ( !registry.hasMedia( form.url ) ) {
 				return t( 'This media URL is not supported.' );
 			}
 		}
