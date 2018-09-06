@@ -143,9 +143,9 @@ export default class MediaEmbedEditing extends Plugin {
 		/**
 		 * The media registry managing the media providers in the editor.
 		 *
-		 * @member {module:media-embed/mediaregistry~MediaRegistry} #mediaRegistry
+		 * @member {module:media-embed/mediaregistry~MediaRegistry} #registry
 		 */
-		this.mediaRegistry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' ) );
+		this.registry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' ) );
 	}
 
 	/**
@@ -157,7 +157,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
-		const mediaRegistry = this.mediaRegistry;
+		const registry = this.registry;
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );
 
@@ -175,7 +175,7 @@ export default class MediaEmbedEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
 
-				return createMediaFigureElement( viewWriter, mediaRegistry, url, {
+				return createMediaFigureElement( viewWriter, registry, url, {
 					useSemanticWrapper: semanticDataOutput || !url,
 					renderContent: !semanticDataOutput
 				} );
@@ -184,7 +184,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add(
-			modelToViewUrlAttributeConverter( mediaRegistry, {
+			modelToViewUrlAttributeConverter( registry, {
 				semanticDataOutput
 			} ) );
 
@@ -193,7 +193,7 @@ export default class MediaEmbedEditing extends Plugin {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
-				const figure = createMediaFigureElement( viewWriter, mediaRegistry, url, {
+				const figure = createMediaFigureElement( viewWriter, registry, url, {
 					renderForEditingView: true,
 					renderContent: true
 				} );
@@ -204,7 +204,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' ).add(
-			modelToViewUrlAttributeConverter( mediaRegistry, {
+			modelToViewUrlAttributeConverter( registry, {
 				renderForEditingView: true
 			} ) );
 
@@ -221,7 +221,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
-					if ( mediaRegistry.hasMedia( url ) ) {
+					if ( registry.hasMedia( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
@@ -237,7 +237,7 @@ export default class MediaEmbedEditing extends Plugin {
 				model: ( viewMedia, modelWriter ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
-					if ( mediaRegistry.hasMedia( url ) ) {
+					if ( registry.hasMedia( url ) ) {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}

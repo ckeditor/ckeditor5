@@ -87,7 +87,7 @@ export default class MediaRegistry {
 	 *
 	 * **Note:** If no URL is specified, an empty view element is returned.
 	 *
-	 * @param {module:engine/view/writer~Writer} writer The view writer used to produce a view element.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {String} url The url to be translated into a view element.
 	 * @param {Object} options
 	 * @param {String} [options.renderContent]
@@ -211,7 +211,7 @@ class Media {
 	/**
 	 * Returns view element representation of the media.
 	 *
-	 * @param {module:engine/view/writer~Writer} writer The view writer used to produce a view element.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
 	 * @param {String} [options.renderContent]
 	 * @param {String} [options.useSemanticWrapper]
@@ -251,7 +251,7 @@ class Media {
 	/**
 	 * Returns the HTML string of the media content preview.
 	 *
-	 * @param {module:engine/view/writer~Writer} writer The view writer used to produce a view element.
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {String}

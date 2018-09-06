@@ -18,7 +18,7 @@ const mediaSymbol = Symbol( 'isMedia' );
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param {module:engine/view/element~Element} viewElement
- * @param {module:engine/view/writer~Writer} writer An instance of the view writer.
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
  * @param {String} label The element's label.
  * @returns {module:engine/view/element~Element}
  */
@@ -41,8 +41,8 @@ export function toMediaWidget( viewElement, writer, label ) {
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
  *		</figure>
  *
- * @param {module:engine/view/writer~Writer} writer
- * @param {module:media-embed/mediaregistry~MediaRegistry} mediaRegistry
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
  * @param {String} [options.renderContent]
@@ -50,7 +50,7 @@ export function toMediaWidget( viewElement, writer, label ) {
  * @param {String} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createMediaFigureElement( writer, mediaRegistry, url, options ) {
+export function createMediaFigureElement( writer, registry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
 	// TODO: This is a hack. Without it, the figure in the data pipeline will contain &nbsp; because
@@ -59,7 +59,7 @@ export function createMediaFigureElement( writer, mediaRegistry, url, options ) 
 	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
-	writer.insert( ViewPosition.createAt( figure ), mediaRegistry.getMediaViewElement( writer, url, options ) );
+	writer.insert( ViewPosition.createAt( figure ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
 }
