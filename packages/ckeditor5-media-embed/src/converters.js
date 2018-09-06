@@ -28,7 +28,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  * **Note:** Changing the model "url" attribute replaces the entire content of the
  * `<figure>` in the view.
  *
- * @param {module:media-embed/mediaregistry~MediaRegistry} mediaRegistry The registry providing
+ * @param {module:media-embed/mediaregistry~MediaRegistry} registry The registry providing
  * the media and their content.
  * @param {Object} options
  * @param {String} [options.semanticDataOutput] When `true`, the converter will create view in the semantic form.
@@ -36,7 +36,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  * editing pipeline (e.g. including CSS classes, content placeholders).
  * @returns {Function}
  */
-export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
+export function modelToViewUrlAttributeConverter( registry, options ) {
 	const mediaViewElementOptions = {
 		useSemanticWrapper: options.semanticDataOutput,
 		renderContent: !options.semanticDataOutput,
@@ -59,7 +59,7 @@ export function modelToViewUrlAttributeConverter( mediaRegistry, options ) {
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
 		viewWriter.remove( ViewRange.createIn( figure ) );
 
-		const mediaViewElement = mediaRegistry.getMediaViewElement( viewWriter, url, mediaViewElementOptions );
+		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, mediaViewElementOptions );
 
 		viewWriter.insert( ViewPosition.createAt( figure ), mediaViewElement );
 	}
