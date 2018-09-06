@@ -31,6 +31,19 @@ describe( 'InsertOperation', () => {
 		expect( op.type ).to.equal( 'insert' );
 	} );
 
+	it( 'should have proper position stickiness', () => {
+		const pos = new Position( root, [ 0 ] );
+		pos.stickiness = 'toNext';
+
+		const op = new InsertOperation(
+			new Position( root, [ 0 ] ),
+			new Text( 'x' ),
+			doc.version
+		);
+
+		expect( op.position.stickiness ).to.equal( 'toNone' );
+	} );
+
 	it( 'should insert text node', () => {
 		model.applyOperation(
 			new InsertOperation(
