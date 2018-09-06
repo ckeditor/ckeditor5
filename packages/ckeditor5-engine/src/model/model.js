@@ -231,10 +231,28 @@ export default class Model {
 	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
 	 * inside a {@link #change `change()` block}.
 	 *
+	 * # Conversion and schema
+	 *
+	 * Inserting elements and text nodes into the model is not enough to make CKEditor 5 render that content
+	 * to the user. CKEditor 5 implements a model-view-controller architecture and what `model.insertContent()` does
+	 * is only adding nodes to the model. Additionally, you need to define
+	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
+	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
+	 *
+	 * So, while this method may seem similar to CKEditor 4's `editor.insertHtml()` (in fact, both methods
+	 * are used for paste-like content insertion), CKEditor 5's method cannot be use to insert arbitrary HTML
+	 * unless converters are defined for all elements and attributes in that HTML.
+	 *
 	 * # Examples
 	 *
 	 * Using `insertContent()` with a manually created model structure:
 	 *
+	 *		// Let's create a document fragment containing such a content:
+	 *		//
+	 *		// <paragrap>foo</paragraph>
+	 *		// <blockQuote>
+	 *		//    <paragraph>bar</paragraph>
+	 *		// </blockQuote>
 	 *		const docFrag = editor.model.change( writer => {
 	 *			const p1 = writer.createElement( 'paragraph' );
 	 *			const p2 = writer.createElement( 'paragraph' );
@@ -246,10 +264,6 @@ export default class Model {
 	 *			writer.append( p2, blockQuote );
 	 *			writer.insertText( 'foo', p1 );
 	 *			writer.insertText( 'bar', p2 );
-	 *			// <paragrap>foo</paragraph>
-	 *			// <blockQuote>
-	 *			//    <paragraph>bar</paragraph>
-	 *			// </blockQuote>
 	 *
 	 *			return docFrag;
 	 *		} );
