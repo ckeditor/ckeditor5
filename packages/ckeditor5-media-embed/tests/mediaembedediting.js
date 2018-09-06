@@ -201,23 +201,23 @@ describe( 'MediaEmbedEditing', () => {
 
 						it( 'upcasts the URL (youtube)', () => {
 							testMediaUpcast( [
-								'https://www.youtube.com/watch?v=foo',
-								'www.youtube.com/watch?v=foo',
-								'youtube.com/watch?v=foo',
+								'https://www.youtube.com/watch?v=f-oo',
+								'www.youtube.com/watch?v=f-oo',
+								'youtube.com/watch?v=f-oo',
 
-								'https://www.youtube.com/v/foo',
-								'www.youtube.com/v/foo',
-								'youtube.com/v/foo',
+								'https://www.youtube.com/v/f-oo',
+								'www.youtube.com/v/f-oo',
+								'youtube.com/v/f-oo',
 
-								'https://www.youtube.com/embed/foo',
-								'www.youtube.com/embed/foo',
-								'youtube.com/embed/foo',
+								'https://www.youtube.com/embed/f-oo',
+								'www.youtube.com/embed/f-oo',
+								'youtube.com/embed/f-oo',
 
-								'https://youtu.be/foo',
-								'youtu.be/foo'
+								'https://youtu.be/f-oo',
+								'youtu.be/f-oo'
 							],
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-								'<iframe src="https://www.youtube.com/embed/foo" ' +
+								'<iframe src="https://www.youtube.com/embed/f-oo" ' +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
 								'</iframe>' +

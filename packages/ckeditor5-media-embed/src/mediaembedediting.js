@@ -73,10 +73,10 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'youtube',
 					url: [
-						/^youtube\.com\/watch\?v=(\w+)/,
-						/^youtube\.com\/v\/(\w+)/,
-						/^youtube\.com\/embed\/(\w+)/,
-						/^youtu\.be\/(\w+)/
+						/^youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+						/^youtube\.com\/v\/([a-zA-Z0-9_-]+)/,
+						/^youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
+						/^youtu\.be\/([a-zA-Z0-9_-]+)/
 					],
 					html: match => {
 						const id = match.slice( -1 );
