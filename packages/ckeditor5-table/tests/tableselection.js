@@ -6,7 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { defaultConversion, defaultSchema, modelTable } from './_utils/utils';
+import { defaultConversion, defaultSchema, formatTable, modelTable } from './_utils/utils';
 
 import TableSelection from '../src/tableselection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -63,30 +63,6 @@ describe( 'TableSelection', () => {
 			tableSelection.startSelection( nodeByPath );
 
 			expect( Array.from( tableSelection.getSelection() ) ).to.deep.equal( [ nodeByPath ] );
-		} );
-
-		it( 'should set view selection', () => {
-			setData( model, modelTable( [
-				[ '00[]', '01', '02' ],
-				[ '10', '11', '12' ]
-			] ) );
-
-			tableSelection.startSelection( root.getNodeByPath( [ 0, 0, 0 ] ) );
-
-			expect( getViewData( editor.editing.view ) ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'[<td>00</td>]<td>01</td><td>02</td>' +
-							'</tr>' +
-							'<tr>' +
-								'<td>10</td><td>11</td><td>12</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
 		} );
 	} );
 
@@ -161,34 +137,6 @@ describe( 'TableSelection', () => {
 
 			expect( tableSelection.isSelecting ).to.be.false;
 			expect( Array.from( tableSelection.getSelection() ) ).to.deep.equal( [ root.getNodeByPath( [ 0, 0, 0 ] ) ] );
-		} );
-
-		it( 'should update view selection', () => {
-			setData( model, modelTable( [
-				[ '00[]', '01', '02' ],
-				[ '10', '11', '12' ]
-			] ) );
-
-			const startNode = root.getNodeByPath( [ 0, 0, 0 ] );
-			const firstEndNode = root.getNodeByPath( [ 0, 0, 1 ] );
-
-			tableSelection.startSelection( startNode );
-			tableSelection.stopSelection( firstEndNode );
-
-			expect( getViewData( editor.editing.view ) ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'[<td>00</td>][<td>01</td>]<td>02</td>' +
-							'</tr>' +
-							'<tr>' +
-								'<td>10</td><td>11</td><td>12</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
 		} );
 	} );
 
@@ -266,12 +214,12 @@ describe( 'TableSelection', () => {
 			tableSelection.startSelection( startNode );
 			tableSelection.updateSelection( firstEndNode );
 
-			expect( getViewData( editor.editing.view ) ).to.equal(
+			expect( formatTable( getViewData( editor.editing.view ) ) ).to.equal( formatTable(
 				'<figure class="table">' +
 					'<table>' +
 						'<tbody>' +
 							'<tr>' +
-								'[<td>00</td>][<td>01</td>]<td>02</td>' +
+								'[<td class="selected">00</td>][<td class="selected">01</td>]<td>02</td>' +
 							'</tr>' +
 							'<tr>' +
 								'<td>10</td><td>11</td><td>12</td>' +
@@ -279,7 +227,7 @@ describe( 'TableSelection', () => {
 						'</tbody>' +
 					'</table>' +
 				'</figure>'
-			);
+			) );
 		} );
 	} );
 

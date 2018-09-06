@@ -7,13 +7,13 @@
  * @module table/tableediting
  */
 
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 import { findAncestor } from './commands/utils';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 export default class TableSelection extends Plugin {
 	/**
@@ -73,14 +73,16 @@ export default class TableSelection extends Plugin {
 				domEventData.preventDefault();
 
 				if ( wasOne ) {
-					editor.editing.view.change( writer => {
-						const viewElement = editor.editing.mapper.toViewElement( this._startElement );
-
-						writer.setSelection( ViewRange.createIn( viewElement ), {
-							fake: true,
-							label: 'fake selection over table cell'
-						} );
-					} );
+					// TODO:
+					// editor.editing.view.change( writer => {
+					// 	// TODO const viewElement = editor.editing.mapper.toViewElement( this._startElement );
+					//
+					// 	// Set selection to the first selected table cell.
+					// 	// writer.setSelection( ViewRange.createIn( viewElement ), {
+					// 	// 	fake: true,
+					// 	// 	label: 'fake selection over table cell'
+					// 	// } );
+					// } );
 				}
 
 				this.redrawSelection();
@@ -111,6 +113,9 @@ export default class TableSelection extends Plugin {
 		this._isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
+
+		// todo: stop rendering
+		this.editor.editing.view._renderer.renderSelection = false;
 	}
 
 	updateSelection( tableCell ) {
@@ -143,6 +148,7 @@ export default class TableSelection extends Plugin {
 		}
 
 		this._isSelecting = false;
+		this.editor.editing.view._renderer.renderSelection = true;
 	}
 
 	clearSelection() {
@@ -151,6 +157,8 @@ export default class TableSelection extends Plugin {
 		this._isSelecting = false;
 		this.clearPreviousSelection();
 		this._highlighted.clear();
+
+		this.editor.editing.view._renderer.renderSelection = true;
 	}
 
 	* getSelection() {
@@ -179,7 +187,12 @@ export default class TableSelection extends Plugin {
 	}
 
 	redrawSelection() {
-		const viewRanges = [];
+		const editor = this.editor;
+		const mapper = editor.editing.mapper;
+		const view = editor.editing.view;
+		const model = editor.model;
+
+		const modelRanges = [];
 
 		const selected = [ ...this.getSelection() ];
 		const previous = [ ...this._highlighted.values() ];
@@ -187,13 +200,18 @@ export default class TableSelection extends Plugin {
 		this._highlighted.clear();
 
 		for ( const tableCell of selected ) {
-			const viewElement = this.editor.editing.mapper.toViewElement( tableCell );
-			viewRanges.push( ViewRange.createOn( viewElement ) );
+			const viewElement = mapper.toViewElement( tableCell );
+			modelRanges.push( Range.createOn( tableCell ) );
 
 			this._highlighted.add( viewElement );
 		}
 
-		this.editor.editing.view.change( writer => {
+		// Update model's selection
+		model.change( writer => {
+			writer.setSelection( modelRanges );
+		} );
+
+		view.change( writer => {
 			for ( const previouslyHighlighted of previous ) {
 				if ( !selected.includes( previouslyHighlighted ) ) {
 					writer.removeClass( 'selected', previouslyHighlighted );
@@ -203,9 +221,6 @@ export default class TableSelection extends Plugin {
 			for ( const currently of this._highlighted ) {
 				writer.addClass( 'selected', currently );
 			}
-
-			// TODO works on FF ony... :|
-			writer.setSelection( viewRanges, { fake: true, label: 'fake selection over table cell' } );
 		} );
 	}
 

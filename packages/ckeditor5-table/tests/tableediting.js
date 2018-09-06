@@ -17,7 +17,7 @@ import InsertColumnCommand from '../src/commands/insertcolumncommand';
 import RemoveRowCommand from '../src/commands/removerowcommand';
 import RemoveColumnCommand from '../src/commands/removecolumncommand';
 import SplitCellCommand from '../src/commands/splitcellcommand';
-import MergeCellCommand from '../src/commands/mergecellcommand';
+import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import TableSelection from '../src/tableselection';
@@ -113,20 +113,8 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'splitTableCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
 	} );
 
-	it( 'adds mergeCellRight command', () => {
-		expect( editor.commands.get( 'mergeTableCellRight' ) ).to.be.instanceOf( MergeCellCommand );
-	} );
-
-	it( 'adds mergeCellLeft command', () => {
-		expect( editor.commands.get( 'mergeTableCellLeft' ) ).to.be.instanceOf( MergeCellCommand );
-	} );
-
-	it( 'adds mergeCellDown command', () => {
-		expect( editor.commands.get( 'mergeTableCellDown' ) ).to.be.instanceOf( MergeCellCommand );
-	} );
-
-	it( 'adds mergeCellUp command', () => {
-		expect( editor.commands.get( 'mergeTableCellUp' ) ).to.be.instanceOf( MergeCellCommand );
+	it( 'adds mergeTableCells command', () => {
+		expect( editor.commands.get( 'mergeTableCells' ) ).to.be.instanceOf( MergeCellsCommand );
 	} );
 
 	it( 'adds setColumnHeader command', () => {
@@ -256,7 +244,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[12]' ]
+					[ '11', '[<paragraph>12</paragraph>]' ]
 				] ) );
 			} );
 
@@ -269,7 +257,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[]', '' ]
+					[ '[<paragraph></paragraph>]', '' ]
 				] ) );
 			} );
 
@@ -283,7 +271,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[21]', '22' ]
+					[ '[<paragraph>21</paragraph>]', '22' ]
 				] ) );
 			} );
 
@@ -298,7 +286,7 @@ describe( 'TableEditing', () => {
 					[
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
-						'[13]'
+						'[<paragraph>13</paragraph>]'
 					],
 				] ) );
 			} );
@@ -347,7 +335,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 					expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-						[ '[11]', '12' ]
+						[ '[<paragraph>11</paragraph>]', '12' ]
 					] ) );
 
 					// Should cancel event - so no other tab handler is called.
@@ -407,7 +395,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '[11]', '12' ]
+					[ '[<paragraph>11</paragraph>]', '12' ]
 				] ) );
 			} );
 
@@ -432,7 +420,7 @@ describe( 'TableEditing', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[12]' ],
+					[ '11', '[<paragraph>12</paragraph>]' ],
 					[ '21', '22' ]
 				] ) );
 			} );
@@ -446,7 +434,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[
-						'[11]',
+						'[<paragraph>11</paragraph>]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'13'
 					],

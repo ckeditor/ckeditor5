@@ -25,11 +25,11 @@ import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
 import SplitCellCommand from './commands/splitcellcommand';
-import MergeCellCommand from './commands/mergecellcommand';
 import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
+import MergeCellsCommand from './commands/mergecellscommand';
 import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
 
@@ -37,7 +37,6 @@ import injectTablePostFixer from './converters/table-post-fixer';
 import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 import '../theme/tableediting.css';
-import MergeCellsCommand from './commands/mergecellscommand';
 
 /**
  * The table editing feature.
@@ -133,11 +132,6 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'splitTableCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
 		editor.commands.add( 'splitTableCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
-
-		editor.commands.add( 'mergeTableCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
-		editor.commands.add( 'mergeTableCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
-		editor.commands.add( 'mergeTableCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
-		editor.commands.add( 'mergeTableCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
 
 		editor.commands.add( 'mergeTableCells', new MergeCellsCommand( editor ) );
 
