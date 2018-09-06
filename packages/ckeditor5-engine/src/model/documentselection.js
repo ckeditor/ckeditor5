@@ -45,6 +45,8 @@ const storePrefix = 'selection:';
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection Selection class} instead.
+ *
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class DocumentSelection {
 	/**

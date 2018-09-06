@@ -23,7 +23,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  *
- * @mixes {module:utils/emittermixin~EmitterMixin}
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Selection {
 	/**
