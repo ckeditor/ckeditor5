@@ -220,6 +220,65 @@ export default class Model {
 	 * Inserts content into the editor (specified selection) as one would expect the paste
 	 * functionality to work.
 	 *
+	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
+	 * the content, clears the given selection's content before inserting nodes and moves the selection
+	 * to its target position at the end of the process.
+	 * It can split elements, merge them, wrap bare text nodes in paragraphs, etc. – just like the
+	 * pasting feature should do.
+	 *
+	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
+	 *
+	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
+	 * inside a {@link #change `change()` block}.
+	 *
+	 * # Examples
+	 *
+	 * Using `insertContent()` with a manually created model structure:
+	 *
+	 *		const docFrag = editor.model.change( writer => {
+	 *			const p1 = writer.createElement( 'paragraph' );
+	 *			const p2 = writer.createElement( 'paragraph' );
+	 *			const blockQuote = writer.createElement( 'blockQuote' );
+	 *			const docFrag = writer.createDocumentFragment();
+	 *
+	 *			writer.append( p1, docFrag );
+	 *			writer.append( blockQuote, docFrag );
+	 *			writer.append( p2, blockQuote );
+	 *			writer.insertText( 'foo', p1 );
+	 *			writer.insertText( 'bar', p2 );
+	 *			// <paragrap>foo</paragraph>
+	 *			// <blockQuote>
+	 *			//    <paragraph>bar</paragraph>
+	 *			// </blockQuote>
+	 *
+	 *			return docFrag;
+	 *		} );
+	 *
+	 *		// insertContent() doesn't have to be used in a change() block. It can, though,
+	 *		// so this code could be moved to the callback defined above.
+	 *		editor.model.insertContent( docFrag, editor.model.document.selection );
+	 *
+	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
+	 *
+	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
+	 *		// if you haven't overriden the default one (which is HtmlDataProcessor instance).
+	 *		const htmlDP = new HtmlDataProcessor();
+	 *
+	 *		// Convert an HTML string to a view document fragment.
+	 *		const viewFragment = htmlDP.toView( htmlString );
+	 *
+	 *		// Convert a view document fragment to a model document fragment
+	 *		// in the context of $root. This conversion takes schema into
+	 *		// the account so if e.g. the view document fragment contained a bare text node
+	 *		// then that text node cannot be a child of $root, so it will be automatically
+	 *		// wrapped with a <paragraph>. You can define the context yourself (in the 2nd parameter),
+	 *		// and e.g. convert the content like it would happen in a <paragraph>.
+	 *		// Note: the clipboard feature uses a custom context called $clipboardHolder
+	 *		// which has a loosened schema.
+	 *		const modelFragment = editor.data.toModel( viewFragment );
+	 *
+	 *		editor.model.insertContent( modelFragment, editor.model.document.selection );
+	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
