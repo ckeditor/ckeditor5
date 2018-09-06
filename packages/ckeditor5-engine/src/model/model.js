@@ -207,10 +207,15 @@ export default class Model {
 	}
 
 	/**
-	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function to apply
-	 * {@link module:engine/model/operation/operation~Operation operations} on the model.
+	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function for applying
+	 * {@link module:engine/model/operation/operation~Operation operations} to the model.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to apply
+	 * This is a low-level way of changing the model. It is exposed for very specific use cases (like the undo feature).
+	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~Writer `Writer`}.
+	 * See also {@glink framework/guides/architecture/editing-engine#changing-the-model Changing the model} section
+	 * of the {@glink framework/guides/architecture/editing-engine Editing architecture} guide.
+	 *
+	 * @param {module:engine/model/operation/operation~Operation} operation The operation to apply.
 	 */
 	applyOperation( operation ) {
 		operation._execute();
@@ -320,10 +325,10 @@ export default class Model {
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
 	 *
-	 * For example `<heading>x[x</heading><paragraph>y]y</paragraph>` will become:
+	 * For example `<heading1>x[x</heading1><paragraph>y]y</paragraph>` will become:
 	 *
-	 * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
-	 * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
+	 * * `<heading1>x^y</heading1>` with the option disabled (`leaveUnmerged == false`)
+	 * * `<heading1>x^</heading1><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
 	 *
 	 * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
 	 * elements will not be merged.
@@ -331,10 +336,10 @@ export default class Model {
 	 * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
 	 * paragraph when the entire content was selected.
 	 *
-	 * For example `<heading>[x</heading><paragraph>y]</paragraph>` will become:
+	 * For example `<heading1>[x</heading1><paragraph>y]</paragraph>` will become:
 	 *
 	 * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
-	 * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`)
+	 * * `<heading1>^</heading1>` with enabled (`doNotResetEntireContent == true`)
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
@@ -379,13 +384,22 @@ export default class Model {
 	 * For example, for the following selection:
 	 *
 	 * ```html
-	 * <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
+	 * <paragraph>x</paragraph>
+	 * <blockQuote>
+	 *	<paragraph>y</paragraph>
+	 *	<heading1>fir[st</heading1>
+	 * </blockQuote>
+	 * <paragraph>se]cond</paragraph>
+	 * <paragraph>z</paragraph>
 	 * ```
 	 *
 	 * It will return a document fragment with such a content:
 	 *
 	 * ```html
-	 * <quote><h>st</h></quote><p>se</p>
+	 * <blockQuote>
+	 *	<heading1>st</heading1>
+	 * </blockQuote>
+	 * <paragraph>se</paragraph>
 	 * ```
 	 *
 	 * @fires getSelectedContent
