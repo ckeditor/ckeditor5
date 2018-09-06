@@ -36,7 +36,7 @@ export default class MediaEmbedEditing extends Plugin {
 					name: 'dailymotion',
 					url: /^dailymotion\.com\/video\/(\w+)/,
 					html: match => {
-						const id = match.slice( -1 );
+						const id = match[ 1 ];
 
 						return (
 							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
@@ -57,7 +57,7 @@ export default class MediaEmbedEditing extends Plugin {
 						/^open\.spotify\.com\/(track\/\w+)/
 					],
 					html: match => {
-						const id = match.slice( -1 );
+						const id = match[ 1 ];
 
 						return (
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
@@ -79,7 +79,7 @@ export default class MediaEmbedEditing extends Plugin {
 						/^youtu\.be\/([a-zA-Z0-9_-]+)/
 					],
 					html: match => {
-						const id = match.slice( -1 );
+						const id = match[ 1 ];
 
 						return (
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
@@ -104,7 +104,7 @@ export default class MediaEmbedEditing extends Plugin {
 						/^player\.vimeo\.com\/video\/(\d+)/
 					],
 					html: match => {
-						const id = match.slice( -1 );
+						const id = match[ 1 ];
 
 						return (
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
