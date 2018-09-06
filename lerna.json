@@ -1,14 +1,14 @@
 {
-  "lerna": "2.0.0-rc.1",
   "packages": [
     "packages/*",
     "."
   ],
   "hoist": true,
   "nohoist": "husky",
-  "commands": {
+  "command": {
     "bootstrap": {
       "concurrency": 1
     }
-  }
+  },
+  "version": "0.0.0"
 }
