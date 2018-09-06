@@ -22,7 +22,7 @@ const mediaPlaceholderIconViewBox = '0 0 64 42';
  *
  * Mostly used by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} plugin.
  */
-export class MediaRegistry {
+export default class MediaRegistry {
 	/**
 	 * Creates an instance of the {@link module:media-embed/mediaregistry~MediaRegistry} class.
 	 *
