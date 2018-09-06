@@ -421,7 +421,9 @@ describe( 'Table post-fixer', () => {
 			const table = root.getChild( 0 );
 			const tableRow = table.getChild( rowIndex );
 
-			writer.insertElement( 'tableCell', tableRow, index );
+			const tableCell = writer.createElement( 'tableCell' );
+			writer.insert( tableCell, tableRow, index );
+			writer.insertElement( 'paragraph', tableCell );
 		}
 
 		function _setAttribute( writer, attributeKey, attributeValue, path ) {
@@ -441,9 +443,10 @@ describe( 'Table post-fixer', () => {
 
 			for ( const index of rows ) {
 				const tableRow = table.getChild( index );
-				const tableCell = writer.createElement( 'tableCell' );
 
+				const tableCell = writer.createElement( 'tableCell' );
 				writer.insert( tableCell, tableRow, columnIndex );
+				writer.insertElement( 'paragraph', tableCell );
 			}
 		}
 	} );

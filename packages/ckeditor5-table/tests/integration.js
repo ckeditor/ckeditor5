@@ -55,7 +55,10 @@ describe( 'TableToolbar integration', () => {
 		} );
 
 		it( 'should allow the BalloonToolbar to be displayed when a table content is selected', () => {
-			setModelData( newEditor.model, '<paragraph>foo</paragraph><table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
+			setModelData(
+				newEditor.model,
+				'<paragraph>foo</paragraph><table><tableRow><tableCell><paragraph>x[y]z</paragraph></tableCell></tableRow></table>'
+			);
 
 			balloonToolbar.show();
 
@@ -63,7 +66,10 @@ describe( 'TableToolbar integration', () => {
 		} );
 
 		it( 'should prevent the BalloonToolbar from being displayed when a table is selected as whole', () => {
-			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell>foo</tableCell></tableRow></table>]' );
+			setModelData(
+				newEditor.model,
+				'<paragraph>foo</paragraph>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
+			);
 
 			balloonToolbar.show();
 
@@ -76,7 +82,10 @@ describe( 'TableToolbar integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an table
-			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell>x</tableCell></tableRow></table>]' );
+			setModelData(
+				newEditor.model,
+				'<paragraph>foo</paragraph>[<table><tableRow><tableCell><paragraph>x</paragraph></tableCell></tableRow></table>]'
+			);
 
 			newEditor.listenTo( balloonToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
 			newEditor.listenTo( balloonToolbar, 'show', highPrioritySpy, { priority: 'high' } );

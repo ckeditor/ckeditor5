@@ -7,8 +7,8 @@
  * @module table/utils
  */
 
-import { toWidget, isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { getParentTable } from './commands/utils';
+import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { findAncestor } from './commands/utils';
 
 const tableSymbol = Symbol( 'isTable' );
 
@@ -57,7 +57,7 @@ export function isTableWidgetSelected( selection ) {
  * @returns {Boolean}
  */
 export function isTableContentSelected( selection ) {
-	const parentTable = getParentTable( selection.getFirstPosition() );
+	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
 
 	return !!( parentTable && isTableWidget( parentTable.parent ) );
 }

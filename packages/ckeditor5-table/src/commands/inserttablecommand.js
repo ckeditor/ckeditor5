@@ -62,7 +62,7 @@ export default class InsertTableCommand extends Command {
 		model.change( writer => {
 			const table = tableUtils.createTable( insertPosition, rows, columns );
 
-			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ) ) );
+			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
 		} );
 	}
 }

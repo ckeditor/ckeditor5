@@ -9,6 +9,7 @@
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import { createEmptyTableCell } from '../commands/utils';
 
 /**
  * View table element to model table element conversion helper.
@@ -44,6 +45,12 @@ export default function upcastTable() {
 
 			// Insert element on allowed position.
 			const splitResult = conversionApi.splitToAllowedParent( table, data.modelCursor );
+
+			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+			if ( !splitResult ) {
+				return;
+			}
+
 			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
@@ -53,9 +60,9 @@ export default function upcastTable() {
 			} else {
 				// Create one row and one table cell for empty table.
 				const row = conversionApi.writer.createElement( 'tableRow' );
-
 				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
-				conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
+
+				createEmptyTableCell( conversionApi.writer, ModelPosition.createAt( row, 'end' ) );
 			}
 
 			// Set conversion result range.
@@ -81,7 +88,56 @@ export default function upcastTable() {
 			} else {
 				data.modelCursor = data.modelRange.end;
 			}
-		}, { priority: 'normal' } );
+		} );
+	};
+}
+
+export function upcastTableCell( elementName ) {
+	return dispatcher => {
+		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
+			const viewTableCell = data.viewItem;
+
+			// When element was already consumed then skip it.
+			if ( !conversionApi.consumable.test( viewTableCell, { name: true } ) ) {
+				return;
+			}
+
+			const tableCell = conversionApi.writer.createElement( 'tableCell' );
+
+			// Insert element on allowed position.
+			const splitResult = conversionApi.splitToAllowedParent( tableCell, data.modelCursor );
+
+			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+			if ( !splitResult ) {
+				return;
+			}
+
+			conversionApi.writer.insert( tableCell, splitResult.position );
+			conversionApi.consumable.consume( viewTableCell, { name: true } );
+
+			for ( const child of viewTableCell.getChildren() ) {
+				const { modelCursor } = conversionApi.convertItem( child, ModelPosition.createAt( tableCell, 'end' ) );
+
+				// Ensure empty paragraph in table cell.
+				if ( modelCursor.parent.name == 'tableCell' && !modelCursor.parent.childCount ) {
+					conversionApi.writer.insertElement( 'paragraph', modelCursor );
+				}
+			}
+
+			// Set conversion result range.
+			data.modelRange = new ModelRange(
+				// Range should start before inserted element
+				ModelPosition.createBefore( tableCell ),
+				// Should end after but we need to take into consideration that children could split our
+				// element, so we need to move range after parent of the last converted child.
+				// before: <allowed>[]</allowed>
+				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
+				ModelPosition.createAfter( tableCell )
+			);
+
+			// Continue after inserted element.
+			data.modelCursor = data.modelRange.end;
+		} );
 	};
 }
 

@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import { getParentTable, updateNumericAttribute } from './utils';
+import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -37,9 +37,8 @@ export default class SetHeaderRowCommand extends Command {
 		const selection = doc.selection;
 
 		const position = selection.getFirstPosition();
-		const tableParent = getParentTable( position );
-
-		const isInTable = !!tableParent;
+		const tableCell = findAncestor( 'tableCell', position );
+		const isInTable = !!tableCell;
 
 		this.isEnabled = isInTable;
 
@@ -51,7 +50,7 @@ export default class SetHeaderRowCommand extends Command {
 		 * @readonly
 		 * @member {Boolean} #value
 		 */
-		this.value = isInTable && this._isInHeading( position.parent, tableParent );
+		this.value = isInTable && this._isInHeading( tableCell, tableCell.parent.parent );
 	}
 
 	/**
@@ -69,7 +68,7 @@ export default class SetHeaderRowCommand extends Command {
 		const selection = doc.selection;
 
 		const position = selection.getFirstPosition();
-		const tableCell = position.parent;
+		const tableCell = findAncestor( 'tableCell', position );
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
@@ -170,8 +169,9 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
 			const tableRow = table.getChild( row );
+			const tableCellPosition = Position.createFromParentAndOffset( tableRow, cellIndex );
 
-			writer.insertElement( 'tableCell', attributes, Position.createFromParentAndOffset( tableRow, cellIndex ) );
+			createEmptyTableCell( writer, tableCellPosition, attributes );
 		}
 	}
 

@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getParentTable } from './utils';
+import { findAncestor } from './utils';
 import TableUtils from '../tableutils';
 
 /**
@@ -54,7 +54,7 @@ export default class InsertRowCommand extends Command {
 	refresh() {
 		const selection = this.editor.model.document.selection;
 
-		const tableParent = getParentTable( selection.getFirstPosition() );
+		const tableParent = findAncestor( 'table', selection.getFirstPosition() );
 
 		this.isEnabled = !!tableParent;
 	}
@@ -71,10 +71,11 @@ export default class InsertRowCommand extends Command {
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		const tableCell = selection.getFirstPosition().parent;
-		const table = getParentTable( selection.getFirstPosition() );
+		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
 
-		const row = table.getChildIndex( tableCell.parent );
+		const row = table.getChildIndex( tableRow );
 		const insertAt = this.order === 'below' ? row + 1 : row;
 
 		tableUtils.insertRows( table, { rows: 1, at: insertAt } );

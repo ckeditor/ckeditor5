@@ -74,7 +74,7 @@ export function downcastInsertTable( options = {} ) {
 
 		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : figureElement );
 		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : figureElement );
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -117,7 +117,7 @@ export function downcastInsertRow( options = {} ) {
 
 			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -159,7 +159,7 @@ export function downcastInsertCell( options = {} ) {
 				return;
 			}
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -236,7 +236,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 		function isBetween( index, lower, upper ) {
 			return index > lower && index < upper;
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -274,7 +274,7 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 
 			renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget );
 		}
-	}, { priority: 'normal' } );
+	} );
 }
 
 /**
@@ -375,8 +375,32 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 	const tableCell = tableWalkerValue.cell;
 
-	conversionApi.mapper.bindElements( tableCell, cellElement );
+	const isSingleParagraph = tableCell.childCount === 1 && tableCell.getChild( 0 ).name === 'paragraph';
+
 	conversionApi.writer.insert( insertPosition, cellElement );
+
+	if ( isSingleParagraph ) {
+		const innerParagraph = tableCell.getChild( 0 );
+		const paragraphInsertPosition = ViewPosition.createAt( cellElement, 'end' );
+
+		conversionApi.consumable.consume( innerParagraph, 'insert' );
+
+		if ( options.asWidget ) {
+			const containerName = [ ...innerParagraph.getAttributeKeys() ].length ? 'p' : 'span';
+
+			const fakeParagraph = conversionApi.writer.createContainerElement( containerName );
+
+			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
+			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
+
+			conversionApi.mapper.bindElements( tableCell, cellElement );
+		} else {
+			conversionApi.mapper.bindElements( tableCell, cellElement );
+			conversionApi.mapper.bindElements( innerParagraph, cellElement );
+		}
+	} else {
+		conversionApi.mapper.bindElements( tableCell, cellElement );
+	}
 }
 
 // Creates or returns an existing `<tr>` element from the view.

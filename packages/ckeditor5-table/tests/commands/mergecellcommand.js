@@ -5,19 +5,9 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import MergeCellCommand from '../../src/commands/mergecellcommand';
-import {
-	downcastInsertCell,
-	downcastInsertRow,
-	downcastInsertTable,
-	downcastRemoveRow,
-	downcastTableHeadingColumnsChange,
-	downcastTableHeadingRowsChange
-} from '../../src/converters/downcast';
-import upcastTable from '../../src/converters/upcasttable';
-import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 
 describe( 'MergeCellCommand', () => {
@@ -33,48 +23,8 @@ describe( 'MergeCellCommand', () => {
 				model = editor.model;
 				root = model.document.getRoot( 'main' );
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
-
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', { allowIn: 'table' } );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isLimit: true
-				} );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-				// Insert row conversion.
-				conversion.for( 'downcast' ).add( downcastInsertRow() );
-
-				// Remove row conversion.
-				conversion.for( 'downcast' ).add( downcastRemoveRow() );
-
-				// Table cell conversion.
-				conversion.for( 'downcast' ).add( downcastInsertCell() );
-
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-				// Table attributes conversion.
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
-
-				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
-				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
+				defaultSchema( model.schema );
+				defaultConversion( editor.conversion );
 			} );
 	} );
 
@@ -139,7 +89,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -152,6 +102,14 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable sibling if in cell that has sibling on the right (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00', '<paragraph>[]01</paragraph>', '02' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 2 ] ) );
 			} );
 
 			it( 'should be undefined if last cell of a row', () => {
@@ -179,14 +137,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '[]00', '01' ]
 				] ) );
@@ -194,7 +152,61 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ { colspan: 2, contents: '[0001]' } ]
+					[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single empty paragraph if both cells are empty', () => {
+				setData( model, modelTable( [
+					[ '[]', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (other cell is empty)', () => {
+				setData( model, modelTable( [
+					[ 'foo[]', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (selection cell is empty)', () => {
+				setData( model, modelTable( [
+					[ '[]', 'foo' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should not merge other empty blocks to single block', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block',
+					isBlock: true
+				} );
+
+				setData( model, modelTable( [
+					[ '<block>[]</block>', '<block></block>' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<block>[</block><block>]</block>' } ]
 				] ) );
 			} );
 		} );
@@ -257,7 +269,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -267,6 +279,14 @@ describe( 'MergeCellCommand', () => {
 			it( 'should be set to mergeable sibling if in cell that has sibling on the left', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			} );
+
+			it( 'should be set to mergeable sibling if in cell that has sibling on the left (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00', '<paragraph>01[]</paragraph>', '02' ]
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
@@ -297,14 +317,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '[]01' ]
 				] ) );
@@ -312,7 +332,61 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ { colspan: 2, contents: '[0001]' } ]
+					[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single empty paragraph if both cells are empty', () => {
+				setData( model, modelTable( [
+					[ '', '[]' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (other cell is empty)', () => {
+				setData( model, modelTable( [
+					[ '', 'foo[]' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (selection cell is empty)', () => {
+				setData( model, modelTable( [
+					[ 'foo', '[]' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ]
+				] ) );
+			} );
+
+			it( 'should not merge other empty blocks to single block', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block',
+					isBlock: true
+				} );
+
+				setData( model, modelTable( [
+					[ '<block></block>', '<block>[]</block>' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { colspan: 2, contents: '<block>[</block><block>]</block>' } ]
 				] ) );
 			} );
 		} );
@@ -361,7 +435,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -384,6 +458,16 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable cell (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>10[]</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 2, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in last row', () => {
@@ -424,14 +508,14 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ],
 					[ '10', '11' ]
@@ -440,8 +524,70 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', { rowspan: 2, contents: '[0111]' } ],
+					[ '00', { rowspan: 2, contents: '<paragraph>[01</paragraph><paragraph>11]</paragraph>' } ],
 					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should result in single empty paragraph if both cells are empty', () => {
+				setData( model, modelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (other cell is empty)', () => {
+				setData( model, modelTable( [
+					[ 'foo[]', '' ],
+					[ '', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[foo]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (selection cell is empty)', () => {
+				setData( model, modelTable( [
+					[ '[]', '' ],
+					[ 'foo', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[foo]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should not merge other empty blocks to single block', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block',
+					isBlock: true
+				} );
+
+				setData( model, modelTable( [
+					[ '<block>[]</block>', '' ],
+					[ '<block></block>', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '<block>[</block><block>]</block>' }, '' ],
+					[ '' ]
 				] ) );
 			} );
 
@@ -455,7 +601,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', '[0111]', { rowspan: 2, contents: '02' } ],
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>', { rowspan: 2, contents: '02' } ],
 					[ '20', '21' ]
 				] ) );
 			} );
@@ -474,7 +620,7 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
-					[ '20', '[2131]', { rowspan: 2, contents: '22' } ],
+					[ '20', '<paragraph>[21</paragraph><paragraph>31]</paragraph>', { rowspan: 2, contents: '22' } ],
 					[ '40', '41' ]
 				] ) );
 			} );
@@ -524,7 +670,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be false if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.isEnabled ).to.be.false;
 			} );
@@ -547,6 +693,16 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be set to mergeable cell (selection in block content)', () => {
+				setData( model, modelTable( [
+					[ '00' ],
+					[ '<paragraph>10[]</paragraph>' ],
+					[ '20' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
 			it( 'should be undefined if in first row', () => {
@@ -588,7 +744,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 
 			it( 'should be undefined if not in a cell', () => {
-				setData( model, '<p>11[]</p>' );
+				setData( model, '<paragraph>11[]</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 			} );
@@ -604,8 +760,70 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', { rowspan: 2, contents: '[0111]' } ],
+					[ '00', { rowspan: 2, contents: '<paragraph>[01</paragraph><paragraph>11]</paragraph>' } ],
 					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should result in single empty paragraph if both cells are empty', () => {
+				setData( model, modelTable( [
+					[ '', '' ],
+					[ '[]', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (other cell is empty)', () => {
+				setData( model, modelTable( [
+					[ '', '' ],
+					[ 'foo[]', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[foo]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should result in single paragraph (selection cell is empty)', () => {
+				setData( model, modelTable( [
+					[ 'foo', '' ],
+					[ '[]', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '[foo]' }, '' ],
+					[ '' ]
+				] ) );
+			} );
+
+			it( 'should not merge other empty blocks to single block', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block',
+					isBlock: true
+				} );
+
+				setData( model, modelTable( [
+					[ '<block></block>', '' ],
+					[ '<block>[]</block>', '' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '<block>[</block><block>]</block>' }, '' ],
+					[ '' ]
 				] ) );
 			} );
 
@@ -621,7 +839,11 @@ describe( 'MergeCellCommand', () => {
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ { rowspan: 3, contents: '00' }, '11', '12', '13' ],
-					[ { rowspan: 2, contents: '21' }, '22', { rowspan: 3, contents: '[2333]' } ],
+					[
+						{ rowspan: 2, contents: '21' },
+						'22',
+						{ rowspan: 3, contents: '<paragraph>[23</paragraph><paragraph>33]</paragraph>' }
+					],
 					[ '32' ],
 					[ { colspan: 2, contents: '40' }, '42' ]
 				] ) );
@@ -637,7 +859,7 @@ describe( 'MergeCellCommand', () => {
 				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', '[0111]', { rowspan: 2, contents: '02' } ],
+					[ '00', '<paragraph>[01</paragraph><paragraph>11]</paragraph>', { rowspan: 2, contents: '02' } ],
 					[ '20', '21' ]
 				] ) );
 			} );
@@ -656,7 +878,7 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ { rowspan: 2, contents: '00' }, '01', '02' ],
 					[ '11', '12' ],
-					[ '20', '[2131]', { rowspan: 2, contents: '22' } ],
+					[ '20', '<paragraph>[21</paragraph><paragraph>31]</paragraph>', { rowspan: 2, contents: '22' } ],
 					[ '40', '41' ]
 				] ) );
 			} );

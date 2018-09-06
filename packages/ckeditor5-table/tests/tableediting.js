@@ -7,6 +7,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import TableEditing from '../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
@@ -26,7 +27,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph ]
+				plugins: [ TableEditing, Paragraph, ImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -40,6 +41,39 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		// Table:
+		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
+		expect( model.schema.isObject( 'table' ) ).to.be.true;
+		expect( model.schema.isLimit( 'table' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingRows' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'table' ], 'headingColumns' ) ).to.be.true;
+
+		// Table row:
+		expect( model.schema.isRegistered( 'tableRow' ) ).to.be.true;
+		expect( model.schema.isLimit( 'tableRow' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'tableRow' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'table' ], 'tableRow' ) ).to.be.true;
+
+		// Table cell:
+		expect( model.schema.isRegistered( 'tableCell' ) ).to.be.true;
+		expect( model.schema.isLimit( 'tableCell' ) ).to.be.true;
+
+		expect( model.schema.checkChild( [ '$root' ], 'tableCell' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'table' ], 'tableCell' ) ).to.be.false;
+		expect( model.schema.checkChild( [ 'tableRow' ], 'tableCell' ) ).to.be.true;
+		expect( model.schema.checkChild( [ 'tableCell' ], 'tableCell' ) ).to.be.false;
+
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'colspan' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ 'tableCell' ], 'rowspan' ) ).to.be.true;
+
+		// Table cell contents:
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'image' ) ).to.be.false;
 	} );
 
 	it( 'adds insertTable command', () => {
@@ -105,7 +139,7 @@ describe( 'TableEditing', () => {
 	describe( 'conversion in data pipeline', () => {
 		describe( 'model to view', () => {
 			it( 'should create tbody section', () => {
-				setModelData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+				setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
@@ -119,7 +153,10 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should create thead section', () => {
-				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+				setModelData(
+					model,
+					'<table headingRows="1"><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>'
+				);
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
@@ -138,7 +175,14 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell>foo</tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with image', () => {
+				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );
@@ -242,6 +286,40 @@ describe( 'TableEditing', () => {
 				] ) );
 			} );
 
+			it( 'should move to the next table cell if part of block content is selected', () => {
+				setModelData( model, modelTable( [
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[
+						'11',
+						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
+						'[13]'
+					],
+				] ) );
+			} );
+
+			it( 'should listen with lower priority then its children', () => {
+				// Cancel TAB event.
+				editor.keystrokes.set( 'Tab', ( data, cancel ) => cancel() );
+
+				setModelData( model, modelTable( [
+					[ '11[]', '12' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11[]', '12' ]
+				] ) );
+			} );
+
 			describe( 'on table widget selected', () => {
 				beforeEach( () => {
 					editor.model.schema.register( 'block', {
@@ -256,7 +334,7 @@ describe( 'TableEditing', () => {
 				it( 'should move caret to the first table cell on TAB', () => {
 					const spy = sinon.spy();
 
-					editor.editing.view.document.on( 'keydown', spy );
+					editor.keystrokes.set( 'Tab', spy, { priority: 'lowest' } );
 
 					setModelData( model, '[' + modelTable( [
 						[ '11', '12' ]
@@ -326,6 +404,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '[11]', '12' ]
 				] ) );
@@ -356,6 +435,96 @@ describe( 'TableEditing', () => {
 					[ '21', '22' ]
 				] ) );
 			} );
+
+			it( 'should move to the previous table cell if part of block content is selected', () => {
+				setModelData( model, modelTable( [
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[
+						'[11]',
+						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
+						'13'
+					],
+				] ) );
+			} );
+		} );
+	} );
+
+	describe( 'enter key', () => {
+		let evtDataStub, viewDocument;
+
+		beforeEach( () => {
+			evtDataStub = {
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy(),
+				isSoft: false
+			};
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ TableEditing, Paragraph ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					sinon.stub( editor, 'execute' );
+
+					viewDocument = editor.editing.view.document;
+					model = editor.model;
+				} );
+		} );
+
+		it( 'should do nothing if not in table cell', () => {
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		} );
+
+		it( 'should do nothing if table cell has already a block content', () => {
+			setModelData( model, modelTable( [
+				[ '<paragraph>[]11</paragraph>' ]
+			] ) );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '<paragraph>[]11</paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should do nothing if table cell with a block content is selected as a whole', () => {
+			setModelData( model, modelTable( [
+				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
+			] ) );
+
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			setModelData( model, modelTable( [
+				[ '<paragraph>[1</paragraph><paragraph>1]</paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should allow default behavior of Shift+Enter pressed', () => {
+			setModelData( model, modelTable( [
+				[ '[]11' ]
+			] ) );
+
+			evtDataStub.isSoft = true;
+			viewDocument.fire( 'enter', evtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]11' ]
+			] ) );
 		} );
 	} );
 } );

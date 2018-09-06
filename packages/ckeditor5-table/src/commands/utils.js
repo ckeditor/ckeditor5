@@ -8,16 +8,17 @@
  */
 
 /**
- * Returns the parent table.
+ * Returns the parent element of given name. Returns undefined if position is not inside desired parent.
  *
- * @param {module:engine/model/position~Position} position
+ * @param {String} parentName Name of parent element to find.
+ * @param {module:engine/model/position~Position|module:engine/model/position~Position} position Position to start searching.
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
-export function getParentTable( position ) {
+export function findAncestor( parentName, position ) {
 	let parent = position.parent;
 
 	while ( parent ) {
-		if ( parent.name === 'table' ) {
+		if ( parent.name === parentName ) {
 			return parent;
 		}
 
@@ -40,4 +41,17 @@ export function updateNumericAttribute( key, value, item, writer, defaultValue =
 	} else {
 		writer.removeAttribute( key, item );
 	}
+}
+
+/**
+ * Common method to create empty table cell - it will create proper model structure as table cell must have at least one block inside.
+ *
+ * @param {module:engine/model/writer~Writer} writer Model writer.
+ * @param {module:engine/model/position~Position} insertPosition Position at which table cell should be inserted.
+ * @param {Object} attributes Element's attributes.
+ */
+export function createEmptyTableCell( writer, insertPosition, attributes = {} ) {
+	const tableCell = writer.createElement( 'tableCell', attributes );
+	writer.insertElement( 'paragraph', tableCell );
+	writer.insert( tableCell, insertPosition );
 }

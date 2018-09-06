@@ -3,6 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
+import {
+	downcastInsertCell,
+	downcastInsertRow,
+	downcastInsertTable,
+	downcastRemoveRow,
+	downcastTableHeadingColumnsChange,
+	downcastTableHeadingRowsChange
+} from '../../src/converters/downcast';
+import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
+
 /**
  * Returns a model representation of a table shorthand notation:
  *
@@ -31,7 +43,13 @@
  * @returns {String}
  */
 export function modelTable( tableData, attributes ) {
-	const tableRows = makeRows( tableData, 'tableCell', 'tableRow', 'tableCell' );
+	const tableRows = makeRows( tableData, {
+		cellElement: 'tableCell',
+		rowElement: 'tableRow',
+		headingElement: 'tableCell',
+		wrappingElement: 'paragraph',
+		enforceWrapping: true
+	} );
 
 	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
 }
@@ -67,15 +85,35 @@ export function modelTable( tableData, attributes ) {
  */
 export function viewTable( tableData, attributes = {} ) {
 	const headingRows = attributes.headingRows || 0;
+	const asWidget = !!attributes.asWidget;
 
-	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), 'th', 'tr' ) }</thead>` : '';
-	const tbody = tableData.length > headingRows ? `<tbody>${ makeRows( tableData.slice( headingRows ), 'td', 'tr' ) }</tbody>` : '';
+	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), {
+		cellElement: 'th',
+		rowElement: 'tr',
+		headingElement: 'th',
+		wrappingElement: asWidget ? 'span' : 'p',
+		enforceWrapping: asWidget,
+		asWidget
+	} ) }</thead>` : '';
 
-	return `<figure class="table"><table>${ thead }${ tbody }</table></figure>`;
+	const tbody = tableData.length > headingRows ?
+		`<tbody>${ makeRows( tableData.slice( headingRows ), {
+			cellElement: 'td',
+			rowElement: 'tr',
+			headingElement: 'th',
+			wrappingElement: asWidget ? 'span' : 'p',
+			enforceWrapping: asWidget,
+			asWidget
+		} ) }</tbody>` : '';
+
+	const figureAttributes = asWidget ? 'class="ck-widget ck-widget_selectable table" contenteditable="false"' : 'class="table"';
+	const widgetHandler = '<div class="ck ck-widget__selection-handler"></div>';
+
+	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
 }
 
 /**
- * Formats model or view table - useful for chai assertions debuging.
+ * Formats model or view table - useful for chai assertions debugging.
  *
  * @param {String} tableString
  * @returns {String}
@@ -118,6 +156,72 @@ export function formattedViewTable( tableData, attributes ) {
 	return formatTable( viewTable( tableData, attributes ) );
 }
 
+export function defaultSchema( schema, registerParagraph = true ) {
+	schema.register( 'table', {
+		allowWhere: '$block',
+		allowAttributes: [ 'headingRows', 'headingColumns' ],
+		isLimit: true,
+		isObject: true
+	} );
+
+	schema.register( 'tableRow', {
+		allowIn: 'table',
+		isLimit: true
+	} );
+
+	schema.register( 'tableCell', {
+		allowIn: 'tableRow',
+		allowAttributes: [ 'colspan', 'rowspan' ],
+		isLimit: true
+	} );
+
+	// Allow all $block content inside table cell.
+	schema.extend( '$block', { allowIn: 'tableCell' } );
+
+	// Disallow table in table.
+	schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'table' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+
+	// Disallow image in table.
+	schema.addChildCheck( ( context, childDefinition ) => {
+		if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			return false;
+		}
+	} );
+
+	if ( registerParagraph ) {
+		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+	}
+}
+
+export function defaultConversion( conversion, asWidget = false ) {
+	conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+	// Table conversion.
+	conversion.for( 'upcast' ).add( upcastTable() );
+	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
+
+	// Table row conversion.
+	conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
+	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
+
+	// Table cell conversion.
+	conversion.for( 'upcast' ).add( upcastTableCell( 'td' ) );
+	conversion.for( 'upcast' ).add( upcastTableCell( 'th' ) );
+	conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget } ) );
+
+	// Table attributes conversion.
+	conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+	conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+	conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget } ) );
+	conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget } ) );
+}
+
 // Formats table cell attributes
 //
 // @param {Object} attributes Attributes of a cell.
@@ -131,23 +235,24 @@ function formatAttributes( attributes ) {
 			attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
 		}
 	}
+
 	return attributesString;
 }
 
 // Formats passed table data to a set of table rows.
-function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
+function makeRows( tableData, options ) {
+	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget } = options;
+
 	return tableData
 		.reduce( ( previousRowsString, tableRow ) => {
 			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
-				let tableCell = tableCellData;
-
 				const isObject = typeof tableCellData === 'object';
+
+				let contents = isObject ? tableCellData.contents : tableCellData;
 
 				let resultingCellElement = cellElement;
 
 				if ( isObject ) {
-					tableCell = tableCellData.contents;
-
 					if ( tableCellData.isHeading ) {
 						resultingCellElement = headingElement;
 					}
@@ -156,8 +261,19 @@ function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
 					delete tableCellData.isHeading;
 				}
 
-				const formattedAttributes = formatAttributes( isObject ? tableCellData : '' );
-				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ tableCell }</${ resultingCellElement }>`;
+				const attributes = isObject ? tableCellData : {};
+
+				if ( asWidget ) {
+					attributes.class = 'ck-editor__editable ck-editor__nested-editable';
+					attributes.contenteditable = 'true';
+				}
+
+				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
+					contents = `<${ wrappingElement }>${ contents }</${ wrappingElement }>`;
+				}
+
+				const formattedAttributes = formatAttributes( attributes );
+				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
 
 				return tableRowString;
 			}, '' );
