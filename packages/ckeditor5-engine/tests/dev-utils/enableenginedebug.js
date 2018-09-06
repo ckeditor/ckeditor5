@@ -21,6 +21,10 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
+import SplitOperation from '../../src/model/operation/splitoperation';
+import WrapOperation from '../../src/model/operation/wrapoperation';
+import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -311,16 +315,6 @@ describe( 'debug tools', () => {
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
-			it( 'MoveOperation sticky', () => {
-				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
-				op.isSticky = true;
-
-				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ] (sticky)' );
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
 			it( 'NoOperation', () => {
 				const op = new NoOperation( 0 );
 
@@ -343,6 +337,103 @@ describe( 'debug tools', () => {
 				const op = new RootAttributeOperation( modelRoot, 'key', 'old', null, 0 );
 
 				expect( op.toString() ).to.equal( 'RootAttributeOperation( 0 ): "key": "old" -> null, main' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'MergeOperation', () => {
+				const op = new MergeOperation(
+					new ModelPosition( modelRoot, [ 1, 0 ] ),
+					2,
+					new ModelPosition( modelRoot, [ 0, 2 ] ),
+					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'MergeOperation( 0 ): main [ 1, 0 ] -> main [ 0, 2 ] ( 2 ), $graveyard [ 0 ]'
+				);
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'SplitOperation without graveyard position', () => {
+				const op = new SplitOperation(
+					new ModelPosition( modelRoot, [ 1, 4 ] ),
+					6,
+					null,
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 )'
+				);
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'SplitOperation with graveyard position', () => {
+				const op = new SplitOperation(
+					new ModelPosition( modelRoot, [ 1, 4 ] ),
+					6,
+					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ), $graveyard [ 0 ]'
+				);
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'WrapOperation with element', () => {
+				const op = new WrapOperation(
+					new ModelPosition( modelRoot, [ 3 ] ),
+					2,
+					new ModelElement( 'blockQuote' ),
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with <blockQuote>'
+				);
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'WrapOperation with graveyard position', () => {
+				const op = new WrapOperation(
+					new ModelPosition( modelRoot, [ 3 ] ),
+					2,
+					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with $graveyard [ 0 ]'
+				);
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'UnwrapOperation', () => {
+				const op = new UnwrapOperation(
+					new ModelPosition( modelRoot, [ 1, 0 ] ),
+					2,
+					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
+					0
+				);
+
+				expect( op.toString() ).to.equal(
+					'UnwrapOperation( 0 ): main [ 1, 0 ] ( 2 ), $graveyard [ 0 ]'
+				);
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
