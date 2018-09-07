@@ -59,9 +59,8 @@ export default class MediaEmbed extends Plugin {
 	 */
 	_attachAutoEmbedingEvents() {
 		const editor = this.editor;
-		const view = editor.editing.view;
 		const modelDocument = editor.model.document;
-		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).mediaRegistry;
+		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		let leftLivePosition, rightLivePosition;
 
@@ -77,28 +76,19 @@ export default class MediaEmbed extends Plugin {
 			rightLivePosition.stickiness = 'toNext';
 		} );
 
-		// Detach the live positions after pasting the content.
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
-			leftLivePosition.detach();
-			rightLivePosition.detach();
-
-			leftLivePosition = null;
-			rightLivePosition = null;
-		}, { priority: 'lowest' } );
-
 		modelDocument.on( 'change:data', () => {
 			if ( !leftLivePosition ) {
 				return;
 			}
 
 			const urlRange = new Range( leftLivePosition, rightLivePosition );
-			const walker = new TreeWalker( { boundaries: urlRange } );
+			const walker = new TreeWalker( { boundaries: urlRange, ignoreElementEnd: true } );
 
 			let url = '';
 
 			for ( const node of walker ) {
-				if ( !node.type === 'text' ) {
-					return;
+				if ( node.type === 'elementStart' ) {
+					return detach();
 				}
 
 				url += node.item.data;
@@ -106,12 +96,12 @@ export default class MediaEmbed extends Plugin {
 
 			// If the url does not match to universal url regexp, let's skip that.
 			if ( !url.match( URL_REGEXP ) ) {
-				return;
+				return detach();
 			}
 
 			// If the url is valid from MediaEmbed plugin point of view, let's use it.
 			if ( !mediaRegistry.hasMedia( url ) ) {
-				return;
+				return detach();
 			}
 
 			// `leftLivePosition` won't be available in `setTimeout` function so let's clone it.
@@ -119,16 +109,23 @@ export default class MediaEmbed extends Plugin {
 
 			global.window.setTimeout( () => {
 				editor.model.change( writer => {
-					const mediaElement = writer.createElement( 'media', { url } );
+					// const mediaElement = writer.createElement( 'media', { url } );
 
 					writer.remove( urlRange );
-					writer.insert( mediaElement, positionToInsert );
-					writer.setSelection( mediaElement, 'on' );
-
-					view.scrollToTheSelection();
+					// writer.insert( mediaElement, positionToInsert );
+					writer.setSelection( positionToInsert );
+					editor.commands.execute( 'mediaEmbed', url );
 				} );
 			}, 500 );
 		} );
+
+		function detach() {
+			leftLivePosition.detach();
+			rightLivePosition.detach();
+
+			leftLivePosition = null;
+			rightLivePosition = null;
+		}
 	}
 }
 
