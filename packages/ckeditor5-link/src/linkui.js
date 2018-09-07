@@ -186,7 +186,7 @@ export default class LinkUI extends Plugin {
 			button.tooltip = true;
 
 			// Bind button to the command.
-			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
+			button.bind( 'isOn', 'isEnabled' ).to( linkCommand, 'value', 'isEnabled' );
 
 			// Show the panel on button click.
 			this.listenTo( button, 'execute', () => this._showUI() );
