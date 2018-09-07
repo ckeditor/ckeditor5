@@ -106,7 +106,7 @@ class Token {
 	 * @protected
 	 */
 	_startRefreshing() {
-		this._refreshInterval = setInterval( this._refreshToken, this._options.refreshInterval );
+		this._refreshInterval = setInterval( () => this._refreshToken(), this._options.refreshInterval );
 	}
 
 	/**
