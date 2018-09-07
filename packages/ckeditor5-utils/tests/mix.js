@@ -60,7 +60,7 @@ describe( 'utils', () => {
 				set foo( v ) {
 					this._foo = v;
 				}
-				get foo() {}
+				get foo() { return 'whatever'; }
 			}
 
 			const Mixin = {

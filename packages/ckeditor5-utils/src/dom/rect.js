@@ -14,6 +14,8 @@ import log from '../log';
 import isText from './istext';
 import { isElement } from 'lodash-es';
 
+const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
@@ -380,8 +382,6 @@ export default class Rect {
 		return rects;
 	}
 }
-
-const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 // Acquires all the rect properties from the passed source.
 //
