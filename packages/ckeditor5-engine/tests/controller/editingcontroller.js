@@ -339,6 +339,112 @@ describe( 'EditingController', () => {
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
+
+		describe( 'rendering preventing in the change block', () => {
+			let renderSpy;
+
+			beforeEach( () => {
+				renderSpy = sinon.spy();
+
+				editing.view.on( 'render', renderSpy );
+			} );
+
+			it( 'should not call render in the change block', () => {
+				model.change( writer => {
+					executeSomeModelAction( writer );
+
+					expect( renderSpy.called ).to.be.false;
+				} );
+
+				expect( renderSpy.called ).to.be.true;
+			} );
+
+			it( 'should not call render in the change block even if view change was called', () => {
+				model.change( writer => {
+					executeSomeModelAction( writer );
+
+					editing.view.change( writer => executeSomeViewAction( writer ) );
+
+					expect( renderSpy.called ).to.be.false;
+				} );
+
+				expect( renderSpy.called ).to.be.true;
+			} );
+
+			it( 'should not call render in the list of pending changes', () => {
+				model.enqueueChange( writer => {
+					executeSomeModelAction( writer );
+
+					expect( renderSpy.called ).to.be.false;
+
+					model.enqueueChange( writer => {
+						executeSomeOtherModelAction( writer );
+
+						expect( renderSpy.called ).to.be.false;
+					} );
+
+					expect( renderSpy.called ).to.be.false;
+				} );
+
+				expect( renderSpy.called ).to.be.true;
+			} );
+
+			it( 'should not call render if some model changes were executed in the post fixer', () => {
+				const postfixerSpy = sinon.spy();
+
+				model.document.registerPostFixer( () => {
+					model.change( writer => executeSomeOtherModelAction( writer ) );
+
+					expect( renderSpy.called ).to.be.false;
+
+					postfixerSpy();
+				} );
+
+				model.change( writer => {
+					executeSomeModelAction( writer );
+
+					expect( renderSpy.called ).to.be.false;
+				} );
+
+				expect( renderSpy.called ).to.be.true;
+				expect( postfixerSpy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not call render if some view changes were executed in the change listener', () => {
+				const changeListenerSpy = sinon.spy();
+
+				model.document.on( 'change', () => {
+					editing.view.change( writer => executeSomeViewAction( writer ) );
+
+					expect( renderSpy.called ).to.be.false;
+
+					changeListenerSpy();
+				} );
+
+				model.change( writer => {
+					executeSomeModelAction( writer );
+
+					expect( renderSpy.called ).to.be.false;
+				} );
+
+				expect( renderSpy.called ).to.be.true;
+				expect( changeListenerSpy.calledOnce ).to.be.true;
+			} );
+
+			function executeSomeModelAction( writer ) {
+				const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
+				writer.addMarker( 'marker1', { range, usingOperation: true } );
+			}
+
+			function executeSomeOtherModelAction( writer ) {
+				const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
+				writer.addMarker( 'marker2', { range, usingOperation: true } );
+			}
+
+			function executeSomeViewAction( writer ) {
+				writer.addClass( 'foo', editing.view.document.getRoot() );
+			}
+		} );
 	} );
 
 	describe( 'destroy()', () => {
