@@ -84,9 +84,15 @@ describe( 'LinkUI', () => {
 				const command = editor.commands.get( 'link' );
 
 				command.isEnabled = true;
+				command.value = true;
+
+				expect( linkButton.isOn ).to.be.true;
 				expect( linkButton.isEnabled ).to.be.true;
 
 				command.isEnabled = false;
+				command.value = false;
+
+				expect( linkButton.isOn ).to.be.false;
 				expect( linkButton.isEnabled ).to.be.false;
 			} );
 
