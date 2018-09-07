@@ -370,6 +370,8 @@ export default class Model {
 	_runPendingChanges() {
 		const ret = [];
 
+		this.fire( '_beforeChanges', this._currentWriter );
+
 		while ( this._pendingChanges.length ) {
 			// Create a new writer using batch instance created for this chain of changes.
 			const currentBatch = this._pendingChanges[ 0 ].batch;
@@ -385,6 +387,8 @@ export default class Model {
 			this._pendingChanges.shift();
 			this._currentWriter = null;
 		}
+
+		this.fire( '_afterChanges', this._currentWriter );
 
 		return ret;
 	}

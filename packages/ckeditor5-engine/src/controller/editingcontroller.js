@@ -73,6 +73,15 @@ export default class EditingController {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
+		this.listenTo( this.model, '_beforeChanges', () => {
+			this.view.disabledRendering = true;
+		}, { priority: 'highest' } );
+
+		this.listenTo( this.model, '_afterChanges', () => {
+			this.view.disabledRendering = false;
+			this.view.render();
+		}, { priority: 'lowest' } );
+
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, writer );

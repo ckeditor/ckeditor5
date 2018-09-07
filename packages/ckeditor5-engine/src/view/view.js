@@ -358,7 +358,10 @@ export default class View {
 		this.document._callPostFixers( this._writer );
 		this._postFixersInProgress = false;
 
-		this.fire( 'render' );
+
+		if( !this.disabledRendering ) {
+			this.fire( 'render' );
+		}
 	}
 
 	/**
