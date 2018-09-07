@@ -370,7 +370,7 @@ export default class Model {
 	_runPendingChanges() {
 		const ret = [];
 
-		this.fire( '_beforeChanges', this._currentWriter );
+		this.fire( '_beforeChanges' );
 
 		while ( this._pendingChanges.length ) {
 			// Create a new writer using batch instance created for this chain of changes.
@@ -388,7 +388,7 @@ export default class Model {
 			this._currentWriter = null;
 		}
 
-		this.fire( '_afterChanges', this._currentWriter );
+		this.fire( '_afterChanges' );
 
 		return ret;
 	}
@@ -402,6 +402,22 @@ export default class Model {
 	 * @protected
 	 * @event _change
 	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
+	 */
+
+	/**
+	 * Fired when enter the first {@link module:engine/model/model~Model#enqueueChange} or
+	 * {@link module:engine/model/model~Model#change} block of the pending changes.
+	 *
+	 * @protected
+	 * @event _beforeChanges
+	 */
+
+	/**
+	 * Fired when leave the last {@link module:engine/model/model~Model#enqueueChange} or
+	 * {@link module:engine/model/model~Model#change} block of the pending changes.
+	 *
+	 * @protected
+	 * @event _afterChanges
 	 */
 
 	/**

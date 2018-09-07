@@ -70,18 +70,22 @@ export default class EditingController {
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
-		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
-		// Do it on 'low' priority, so changes are converted after other listeners did their job.
-		// Also convert model selection.
+		// Various plugins listen on model changes (on selection change, post fixers, etc.) and changes the view as a
+		// result of the model change, what causes rendering in the middle of conversion, sometimes before the selection
+		// is converted. This is why we want to disable rendering as long as one is in the `model.change` block.
+		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
-			this.view.disabledRendering = true;
+			this.view._disabledRendering = true;
 		}, { priority: 'highest' } );
 
 		this.listenTo( this.model, '_afterChanges', () => {
-			this.view.disabledRendering = false;
+			this.view._disabledRendering = false;
 			this.view.render();
 		}, { priority: 'lowest' } );
 
+		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
+		// Do it on 'low' priority, so changes are converted after other listeners did their job.
+		// Also convert model selection.
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, writer );

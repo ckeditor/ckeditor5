@@ -127,6 +127,14 @@ export default class View {
 		this._postFixersInProgress = false;
 
 		/**
+		 * Internal flag to temporary disable rendering. See usage in the editing controller.
+		 *
+		 * @protected
+		 * @member {Boolean} module:engine/view/view~View#_disabledRendering
+		 */
+		this._disabledRendering = false;
+
+		/**
 		 * DowncastWriter instance used in {@link #change change method) callbacks.
 		 *
 		 * @private
@@ -358,7 +366,7 @@ export default class View {
 		this.document._callPostFixers( this._writer );
 		this._postFixersInProgress = false;
 
-		if ( !this.disabledRendering ) {
+		if ( !this._disabledRendering ) {
 			this.fire( 'render' );
 		}
 	}
