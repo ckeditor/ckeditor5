@@ -358,8 +358,7 @@ export default class View {
 		this.document._callPostFixers( this._writer );
 		this._postFixersInProgress = false;
 
-
-		if( !this.disabledRendering ) {
+		if ( !this.disabledRendering ) {
 			this.fire( 'render' );
 		}
 	}
