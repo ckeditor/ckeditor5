@@ -405,7 +405,7 @@ export default class Model {
 	 */
 
 	/**
-	 * Fired when enter the first {@link module:engine/model/model~Model#enqueueChange} or
+	 * Fired when entering the first {@link module:engine/model/model~Model#enqueueChange} or
 	 * {@link module:engine/model/model~Model#change} block of the pending changes.
 	 *
 	 * @protected
@@ -413,7 +413,7 @@ export default class Model {
 	 */
 
 	/**
-	 * Fired when leave the last {@link module:engine/model/model~Model#enqueueChange} or
+	 * Fired when leaving the last {@link module:engine/model/model~Model#enqueueChange} or
 	 * {@link module:engine/model/model~Model#change} block of the pending changes.
 	 *
 	 * @protected

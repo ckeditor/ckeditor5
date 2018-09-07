@@ -351,7 +351,7 @@ describe( 'EditingController', () => {
 
 			it( 'should not call render in the change block', () => {
 				model.change( writer => {
-					executeSomeModelAction( writer );
+					executeSomeModelChange( writer );
 
 					expect( renderSpy.called ).to.be.false;
 				} );
@@ -361,9 +361,9 @@ describe( 'EditingController', () => {
 
 			it( 'should not call render in the change block even if view change was called', () => {
 				model.change( writer => {
-					executeSomeModelAction( writer );
+					executeSomeModelChange( writer );
 
-					editing.view.change( writer => executeSomeViewAction( writer ) );
+					editing.view.change( writer => executeSomeViewChange( writer ) );
 
 					expect( renderSpy.called ).to.be.false;
 				} );
@@ -371,14 +371,14 @@ describe( 'EditingController', () => {
 				expect( renderSpy.called ).to.be.true;
 			} );
 
-			it( 'should not call render in the list of pending changes', () => {
+			it( 'should not call render in enqueued changes', () => {
 				model.enqueueChange( writer => {
-					executeSomeModelAction( writer );
+					executeSomeModelChange( writer );
 
 					expect( renderSpy.called ).to.be.false;
 
 					model.enqueueChange( writer => {
-						executeSomeOtherModelAction( writer );
+						executeSomeOtherModelChange( writer );
 
 						expect( renderSpy.called ).to.be.false;
 					} );
@@ -393,7 +393,7 @@ describe( 'EditingController', () => {
 				const postfixerSpy = sinon.spy();
 
 				model.document.registerPostFixer( () => {
-					model.change( writer => executeSomeOtherModelAction( writer ) );
+					model.change( writer => executeSomeOtherModelChange( writer ) );
 
 					expect( renderSpy.called ).to.be.false;
 
@@ -401,7 +401,7 @@ describe( 'EditingController', () => {
 				} );
 
 				model.change( writer => {
-					executeSomeModelAction( writer );
+					executeSomeModelChange( writer );
 
 					expect( renderSpy.called ).to.be.false;
 				} );
@@ -414,7 +414,7 @@ describe( 'EditingController', () => {
 				const changeListenerSpy = sinon.spy();
 
 				model.document.on( 'change', () => {
-					editing.view.change( writer => executeSomeViewAction( writer ) );
+					editing.view.change( writer => executeSomeViewChange( writer ) );
 
 					expect( renderSpy.called ).to.be.false;
 
@@ -422,7 +422,7 @@ describe( 'EditingController', () => {
 				} );
 
 				model.change( writer => {
-					executeSomeModelAction( writer );
+					executeSomeModelChange( writer );
 
 					expect( renderSpy.called ).to.be.false;
 				} );
@@ -431,17 +431,17 @@ describe( 'EditingController', () => {
 				expect( changeListenerSpy.calledOnce ).to.be.true;
 			} );
 
-			function executeSomeModelAction( writer ) {
+			function executeSomeModelChange( writer ) {
 				const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 				writer.addMarker( 'marker1', { range, usingOperation: true } );
 			}
 
-			function executeSomeOtherModelAction( writer ) {
+			function executeSomeOtherModelChange( writer ) {
 				const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 				writer.addMarker( 'marker2', { range, usingOperation: true } );
 			}
 
-			function executeSomeViewAction( writer ) {
+			function executeSomeViewChange( writer ) {
 				writer.addClass( 'foo', editing.view.document.getRoot() );
 			}
 		} );
