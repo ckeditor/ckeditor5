@@ -87,7 +87,13 @@ export default class SplitOperation extends Operation {
 		const path = this.position.path.slice( 0, -1 );
 		path[ path.length - 1 ]++;
 
-		return new Position( this.position.root, path );
+		let pos = new Position( this.position.root, path );
+
+		if ( this.graveyardPosition && this.graveyardPosition.root == pos.root ) {
+			pos = pos._getTransformedByDeletion( this.graveyardPosition, 1 );
+		}
+
+		return pos;
 	}
 
 	/**
@@ -103,7 +109,13 @@ export default class SplitOperation extends Operation {
 		path[ path.length - 1 ]++;
 		path.push( 0 );
 
-		return new Position( this.position.root, path );
+		let pos = new Position( this.position.root, path );
+
+		if ( this.graveyardPosition && this.graveyardPosition.root == pos.root ) {
+			pos = pos._getTransformedByDeletion( this.graveyardPosition, 1 );
+		}
+
+		return pos;
 	}
 
 	/**

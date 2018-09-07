@@ -2205,7 +2205,7 @@ setTransformation( SplitOperation, WrapOperation, ( a, b ) => {
 	// was transformed by `UnwrapOperation` and it was left in the unwrapped node. Now the unwrapped node will be re-used
 	// and we need to fix `howMany` property in the `SplitOperation`.
 	//
-	if ( b.graveyardPosition && a.insertionPosition.isEqual( b.graveyardPosition.getShiftedBy( 1 ) ) ) {
+	if ( b.graveyardPosition && compareArrays( b.graveyardPosition.path, a.position.getParentPath() ) == 'same' ) {
 		a.position = a.position._getCombined( b.graveyardPosition, b.position );
 		a.howMany = a.howMany + b.howMany;
 
