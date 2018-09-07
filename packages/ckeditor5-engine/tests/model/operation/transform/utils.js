@@ -66,6 +66,11 @@ export class Client {
 
 		model.document.selection._setTo( ranges );
 
+		// Purify graveyard so there are no artifact nodes there remaining after setting new data.
+		// Because of those old nodes some tests may pass even though they fail in real scenarios (those tests
+		// involve bringing back elements from graveyard, like wrap or split).
+		model.document.graveyard._removeChildren( 0, model.document.graveyard.childCount );
+
 		this.syncedVersion = this.document.version;
 	}
 
