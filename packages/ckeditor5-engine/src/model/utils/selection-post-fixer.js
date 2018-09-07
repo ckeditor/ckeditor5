@@ -90,22 +90,9 @@ function selectionPostFixer( writer, model ) {
 		}
 	}
 
-	// If any of ranges were corrected update the selection.
+	// Update the selection only when at least one range was fixed.
 	if ( wasFixed ) {
-		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
-		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		let fixedRanges = ranges;
-
-		// Fixing selection with many ranges usually breaks the selection in Firefox. As only Firefox supports multiple selection ranges
-		// we simply create one continuous range from fixed selection ranges (even if they are not adjacent).
-		if ( ranges.length > 1 ) {
-			const selectionStart = ranges[ 0 ].start;
-			const selectionEnd = ranges[ ranges.length - 1 ].end;
-
-			fixedRanges = [ new Range( selectionStart, selectionEnd ) ];
-		}
-
-		writer.setSelection( fixedRanges, { backward: selection.isBackward } );
+		writer.setSelection( mergeIntersectingRanges( ranges ), { backward: selection.isBackward } );
 	}
 }
 
@@ -239,4 +226,31 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
 	return startIsOnBlock && endIsOnBlock;
+}
+
+// Merges intersecting ranges to make ranges safe for setting in selection.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges
+// @returns {Array.<module:engine/model/range~Range>}
+function mergeIntersectingRanges( ranges ) {
+	// Do not modify original array.
+	const rangesCopy = [ ...ranges ];
+	const deIntersected = [];
+
+	// First range will be always de-intersected.
+	deIntersected.push( rangesCopy.pop() );
+
+	for ( const range of rangesCopy ) {
+		if ( range.isIntersecting( deIntersected[ deIntersected.length - 1 ] ) ) {
+			const lastRange = deIntersected.pop();
+
+			const merged = new Range( lastRange.start, range.end );
+
+			deIntersected.push( merged );
+		} else {
+			deIntersected.push( range );
+		}
+	}
+
+	return deIntersected;
 }
