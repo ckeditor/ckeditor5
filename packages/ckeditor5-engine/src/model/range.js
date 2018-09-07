@@ -918,12 +918,14 @@ export default class Range {
 
 		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
-		for ( let i = refIndex - 1; i >= 0; i++ ) {
-			if ( ranges[ i ].end.isEqual( result.start ) ) {
-				result.start = Position.createFromPosition( ranges[ i ].start );
-			} else {
-				// If ranges are not starting/ending at the same position there is no point in looking further.
-				break;
+		if ( refIndex > 0 ) {
+			for ( let i = refIndex - 1; true; i++ ) {
+				if ( ranges[ i ].end.isEqual( result.start ) ) {
+					result.start = Position.createFromPosition( ranges[ i ].start );
+				} else {
+					// If ranges are not starting/ending at the same position there is no point in looking further.
+					break;
+				}
 			}
 		}
 
