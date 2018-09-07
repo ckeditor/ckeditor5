@@ -1241,7 +1241,7 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	// Handle positions in graveyard.
 	// If graveyard positions are same and `a` operation is strong - do not transform.
 	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
-		a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
+		a.graveyardPosition = a.graveyardPosition._getTransformedByMergeOperation( b );
 	}
 
 	return [ a ];
@@ -1475,7 +1475,7 @@ setTransformation( MergeOperation, UnwrapOperation, ( a, b, context ) => {
 	// Handle positions in graveyard.
 	// If graveyard positions are same and `a` operation is strong - do not transform.
 	if ( !a.graveyardPosition.isEqual( b.graveyardPosition ) || !context.aIsStrong ) {
-		a.graveyardPosition._getTransformedByInsertion( b.graveyardPosition, 1 );
+		a.graveyardPosition = a.graveyardPosition._getTransformedByUnwrapOperation( b );
 	}
 
 	return [ a ];

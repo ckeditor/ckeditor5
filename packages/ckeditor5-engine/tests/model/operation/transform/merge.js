@@ -30,6 +30,22 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>FooBarAbc</paragraph>' );
 			} );
 
+			it( 'elements into paragraph with undo', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph><paragraph>Abc</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>[]<paragraph>Abc</paragraph>' );
+
+				john.merge();
+				kate.merge();
+
+				syncClients();
+
+				kate.undo();
+				john.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>' );
+			} );
+
 			it.skip( 'same element with undo', () => {
 				// Unnecessary SplitOperation.
 				john.setData( '<paragraph>Foo</paragraph>[]<paragraph></paragraph>' );
