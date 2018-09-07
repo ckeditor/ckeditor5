@@ -41,6 +41,7 @@ export default class MoveOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
+		// `'toNext'` because `sourcePosition` is a bit like a start of the moved range.
 		this.sourcePosition.stickiness = 'toNext';
 
 		/**
