@@ -70,9 +70,10 @@ export default class EditingController {
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
-		// Various plugins listen on model changes (on selection change, post fixers, etc.) and change the view as a
-		// result of the model change, what causes rendering in the middle of conversion, sometimes before the selection
-		// is converted. This is why we want to disable rendering as long as one is in the `model.change` block.
+		// When plugins listen on model changes (on selection change, post fixers, etc) and change the view as a result of
+		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
+		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
+		//
 		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
 			this.view._disabledRendering = true;

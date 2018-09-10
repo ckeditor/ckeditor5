@@ -492,16 +492,16 @@ export default class Model {
 	 */
 
 	/**
-	 * Fired when entering the first {@link module:engine/model/model~Model#enqueueChange} or
-	 * {@link module:engine/model/model~Model#change} block of the pending changes.
+	 * Fired when entering the outermost {@link module:engine/model/model~Model#enqueueChange} or
+	 * {@link module:engine/model/model~Model#change} block.
 	 *
 	 * @protected
 	 * @event _beforeChanges
 	 */
 
 	/**
-	 * Fired when leaving the last {@link module:engine/model/model~Model#enqueueChange} or
-	 * {@link module:engine/model/model~Model#change} block of the pending changes.
+	 * Fired when leaving the outermost {@link module:engine/model/model~Model#enqueueChange} or
+	 * {@link module:engine/model/model~Model#change} block.
 	 *
 	 * @protected
 	 * @event _afterChanges
