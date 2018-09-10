@@ -119,7 +119,11 @@ function tryFixingRange( range, schema ) {
 function tryFixingCollapsedRange( range, schema ) {
 	const originalPosition = range.start;
 
-	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
+	let nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
+
+	// console.log( '-------------------' );
+	// console.log( range.start.path, range.end.path );
+	// console.log( nearestSelectionRange.start.path, nearestSelectionRange.end.path );
 
 	// This might be null ie when editor data is empty.
 	// In such cases there is no need to fix the selection range.
@@ -127,7 +131,20 @@ function tryFixingCollapsedRange( range, schema ) {
 		return null;
 	}
 
-	const fixedPosition = nearestSelectionRange.start;
+	let fixedPosition = nearestSelectionRange.start;
+
+	const startLimitElement = schema.getLimitElement( originalPosition );
+
+	// TODO: beautify or unify with non-collapsed:
+	const shouldTryHarderFix = startLimitElement &&
+		fixedPosition.nodeAfter &&
+		!schema.checkChild( fixedPosition, '$text' ) &&
+		schema.isLimit( fixedPosition.nodeAfter );
+
+	if ( shouldTryHarderFix ) {
+		nearestSelectionRange = schema.getNearestSelectionRange( Position.createAt( fixedPosition.nodeAfter ) );
+		fixedPosition = nearestSelectionRange.start;
+	}
 
 	// Fixed position is the same as original - no need to return corrected range.
 	if ( originalPosition.isEqual( fixedPosition ) ) {
@@ -184,10 +201,18 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	// At this point we eliminated valid positions on text nodes so if one of range positions is placed inside a limit element
 	// then the range crossed limit element boundaries and needs to be fixed.
 	if ( isStartInLimit || isEndInLimit ) {
+		const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
+		const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
+
+		const bothInSameParent = ( !!start.nodeAfter && !!end.nodeBefore ) && start.nodeAfter === end.nodeBefore;
+
+		const expandStart = isStartInLimit && ( !bothInSameParent || !isStartObject );
+		const expandEnd = isEndInLimit && ( !bothInSameParent || !isEndObject );
+
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
-		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
-		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
+		const fixedStart = expandStart ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
+		const fixedEnd = expandEnd ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
 
 		return new Range( fixedStart, fixedEnd );
 	}
@@ -238,7 +263,7 @@ function mergeIntersectingRanges( ranges ) {
 	const deIntersected = [];
 
 	// First range will be always de-intersected.
-	deIntersected.push( rangesCopy.pop() );
+	deIntersected.push( rangesCopy.shift() );
 
 	for ( const range of rangesCopy ) {
 		if ( range.isIntersecting( deIntersected[ deIntersected.length - 1 ] ) ) {

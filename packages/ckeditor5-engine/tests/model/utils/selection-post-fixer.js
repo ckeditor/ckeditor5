@@ -30,7 +30,6 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'table', {
 				allowWhere: '$block',
 				allowAttributes: [ 'headingRows', 'headingColumns' ],
-				isLimit: true,
 				isObject: true
 			} );
 
@@ -42,7 +41,7 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isLimit: true
+				isObject: true
 			} );
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
@@ -113,7 +112,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #1', () => {
+			it( 'should fix #1 - range start outside table, end on table cell', () => {
 				// <paragraph>f[oo</paragraph><table><tableRow><tableCell></tableCell>]<tableCell>...
 				model.change( writer => {
 					writer.setSelection( ModelRange.createFromParentsAndOffsets(
@@ -134,7 +133,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #2', () => {
+			it( 'should fix #2 - range start on table cell, end outside table', () => {
 				// ...<table><tableRow><tableCell></tableCell>[<tableCell></tableCell></tableRow></table><paragraph>b]ar</paragraph>
 				model.change( writer => {
 					writer.setSelection( ModelRange.createFromParentsAndOffsets(
@@ -194,43 +193,6 @@ describe( 'Selection post-fixer', () => {
 						'</tableRow>' +
 					'</table>]' +
 					'<paragraph>bar</paragraph>'
-				);
-			} );
-
-			it( 'should fix #5', () => {
-				setModelData( model,
-					'<paragraph>foo</paragraph>' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'[]' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
-							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>baz</paragraph>'
-				);
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph>foo</paragraph>' +
-					'[<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>]' +
-					'<table>' +
-						'<tableRow>' +
-							'<tableCell><paragraph>xxx</paragraph></tableCell>' +
-							'<tableCell><paragraph>yyy</paragraph></tableCell>' +
-						'</tableRow>' +
-					'</table>' +
-					'<paragraph>baz</paragraph>'
 				);
 			} );
 
@@ -461,6 +423,44 @@ describe( 'Selection post-fixer', () => {
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>b]a[r]</paragraph>'
+				);
+			} );
+
+			it( 'should not fix multiple ranges #1 - table selection', () => {
+				setModelData( model,
+					'<table>' +
+					'<tableRow>' +
+					'[<tableCell><paragraph>a</paragraph></tableCell>]' +
+					'[<tableCell><paragraph>b</paragraph></tableCell>]' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'[<tableCell><paragraph>c</paragraph></tableCell>]' +
+					'<tableCell><paragraph>d</paragraph></tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+
+				// model.change( writer => {
+				// 	const ranges = [
+				// 		new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
+				// 		new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 1 ] ) ),
+				// 		new ModelRange( new ModelPosition( modelRoot, [ 2, 2 ] ), new ModelPosition( modelRoot, [ 2, 3 ] ) )
+				// 	];
+				//
+				// 	writer.setSelection( ranges );
+				// } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<table>' +
+					'<tableRow>' +
+					'[<tableCell><paragraph>a</paragraph></tableCell>]' +
+					'[<tableCell><paragraph>b</paragraph></tableCell>]' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'[<tableCell><paragraph>c</paragraph></tableCell>]' +
+					'<tableCell><paragraph>d</paragraph></tableCell>' +
+					'</tableRow>' +
+					'</table>'
 				);
 			} );
 
@@ -806,79 +806,89 @@ describe( 'Selection post-fixer', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
-			beforeEach( () => {
+			it( 'should fix #1 - selection in limit element & before limit element', () => {
 				setModelData( model,
-					'<paragraph>[]foo</paragraph>' +
+					'<paragraph>foo</paragraph>' +
 					'<table>' +
-					'<tableRow>' +
-					'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-					'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-					'</tableRow>' +
+						'[]<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
-			} );
-
-			it( 'should fix #1', () => {
-				// <table>[]<tableRow>...
-				model.change( writer => {
-					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
-					);
-				} );
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo[]</paragraph>' +
 					'<table>' +
-					'<tableRow>' +
-					'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-					'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
-			it( 'should fix #2', () => {
-				// <table><tableRow>[]<tableCell>...
-				model.change( writer => {
-					const row = modelRoot.getChild( 1 ).getChild( 0 );
-
-					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( row, 0, row, 0 )
-					);
-				} );
+			it( 'should fix #2 - selection in limit element & before limit+object element', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'[]<tableCell><paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
-					'<tableRow>' +
-					'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
-					'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should fix #3 - selection in limit&object element & before object element', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[]<paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
+						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should not fix multiple ranges #1', () => {
-				// []<paragraph>foo</paragraph>[]<table>...
-				model.change( writer => {
-					writer.setSelection(
-						[
-							ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 ),
-							ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 )
-						]
-					);
-				} );
+				setModelData( model,
+					'[]<paragraph>foo</paragraph>[]' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>[]foo[]</paragraph>' +
 					'<table>' +
-					'<tableRow>' +
-					'<tableCell><paragraph>aaa</paragraph></tableCell>' +
-					'<tableCell><paragraph>bbb</paragraph></tableCell>' +
-					'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
+						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
