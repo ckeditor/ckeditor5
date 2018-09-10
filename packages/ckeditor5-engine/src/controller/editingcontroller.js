@@ -70,6 +70,20 @@ export default class EditingController {
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
+		// When plugins listen on model changes (on selection change, post fixers, etc) and change the view as a result of
+		// model's change, they might trigger view rendering before the conversion is completed (e.g. before the selection
+		// is converted). We disable rendering for the length of the outermost model change() block to prevent that.
+		//
+		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
+		this.listenTo( this.model, '_beforeChanges', () => {
+			this.view._renderingDisabled = true;
+		}, { priority: 'highest' } );
+
+		this.listenTo( this.model, '_afterChanges', () => {
+			this.view._renderingDisabled = false;
+			this.view.render();
+		}, { priority: 'lowest' } );
+
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
