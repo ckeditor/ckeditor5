@@ -340,7 +340,7 @@ describe( 'EditingController', () => {
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
 
-		describe( 'rendering preventing in the change block', () => {
+		describe( 'preventing rendering while in the model.change() block', () => {
 			let renderSpy;
 
 			beforeEach( () => {
@@ -349,7 +349,7 @@ describe( 'EditingController', () => {
 				editing.view.on( 'render', renderSpy );
 			} );
 
-			it( 'should not call render in the change block', () => {
+			it( 'should not call render in the model.change() block', () => {
 				model.change( writer => {
 					executeSomeModelChange( writer );
 
@@ -359,7 +359,7 @@ describe( 'EditingController', () => {
 				expect( renderSpy.called ).to.be.true;
 			} );
 
-			it( 'should not call render in the change block even if view change was called', () => {
+			it( 'should not call render in the model.change() block even if view.change() was called', () => {
 				model.change( writer => {
 					executeSomeModelChange( writer );
 
