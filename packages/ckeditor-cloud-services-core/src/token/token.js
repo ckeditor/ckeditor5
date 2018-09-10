@@ -101,6 +101,13 @@ class Token {
 	}
 
 	/**
+	 * Destroys token instance. Stops refreshing.
+	 */
+	destroy() {
+		this._stopRefreshing();
+	}
+
+	/**
 	 * Starts value refreshing every `refreshInterval` time.
 	 *
 	 * @protected

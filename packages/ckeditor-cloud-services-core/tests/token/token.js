@@ -104,6 +104,29 @@ describe( 'Token', () => {
 		} );
 	} );
 
+	describe( 'destroy', () => {
+		it( 'should stop refreshing the token', () => {
+			const clock = sinon.useFakeTimers( { toFake: [ 'setInterval', 'clearInterval' ] } );
+			const token = new Token( 'http://token-endpoint', { initValue: 'initValue' } );
+
+			return token.init()
+				.then( () => {
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+
+					expect( requests.length ).to.equal( 2 );
+
+					token.destroy();
+
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+					clock.tick( 3600000 );
+
+					expect( requests.length ).to.equal( 2 );
+				} );
+		} );
+	} );
+
 	describe( '_refreshToken()', () => {
 		it( 'should get a token from the specified address', done => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
