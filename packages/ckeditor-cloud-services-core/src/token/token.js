@@ -96,8 +96,8 @@ class Token {
 	 */
 	_refreshToken() {
 		return this._refresh()
-				.then( value => this.set( 'value', value ) )
-				.then( () => this );
+			.then( value => this.set( 'value', value ) )
+			.then( () => this );
 	}
 
 	/**
@@ -162,14 +162,14 @@ function defaultRefreshToken( tokenUrl ) {
 			const xhrResponse = xhr.response;
 
 			if ( statusCode < 200 || statusCode > 299 ) {
-				return reject( 'Cannot download new token!' );
+				return reject( new Error( 'Cannot download new token!' ) );
 			}
 
 			return resolve( xhrResponse );
 		} );
 
-		xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
-		xhr.addEventListener( 'abort', () => reject( 'Abort' ) );
+		xhr.addEventListener( 'error', () => reject( new Error( 'Network Error' ) ) );
+		xhr.addEventListener( 'abort', () => reject( new Error( 'Abort' ) ) );
 
 		xhr.send();
 	} );

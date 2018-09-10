@@ -127,43 +127,43 @@ describe( 'Token', () => {
 				} );
 		} );
 
-		it( 'should throw an error when cannot download new token', done => {
+		it( 'should throw an error when cannot download new token', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
-
-			token._refreshToken()
-				.catch( error => {
-					expect( error ).to.equal( 'Cannot download new token!' );
-
-					done();
-				} );
+			const promise = token._refresh();
 
 			requests[ 0 ].respond( 401 );
+
+			return promise.then( () => {
+				throw new Error( 'Promise should be rejected' );
+			}, error => {
+				expect( error ).to.match( /Cannot download new token!/ );
+			} )
 		} );
 
-		it( 'should throw an error when the response is aborted', done => {
+		it( 'should throw an error when the response is aborted', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
-
-			token._refreshToken()
-				.catch( error => {
-					expect( error ).to.equal( 'Abort' );
-
-					done();
-				} );
+			const promise = token._refresh();
 
 			requests[ 0 ].abort();
+
+			return promise.then( () => {
+				throw new Error( 'Promise should be rejected' );
+			}, error => {
+				expect( error ).to.match( /Abort/ );
+			} )
 		} );
 
-		it( 'should throw an error when network error occurs', done => {
+		it( 'should throw an error when network error occurs', () => {
 			const token = new Token( 'http://token-endpoint', { initValue: 'initValue', autoRefresh: false } );
-
-			token._refreshToken()
-				.catch( error => {
-					expect( error ).to.equal( 'Network Error' );
-
-					done();
-				} );
+			const promise = token._refresh();
 
 			requests[ 0 ].error();
+
+			return promise.then( () => {
+				throw new Error( 'Promise should be rejected' );
+			}, error => {
+				expect( error ).to.match( /Network Error/ );
+			} )
 		} );
 
 		it( 'should throw an error when the callback throws error', () => {
