@@ -141,7 +141,7 @@ function renameParagraphIfDifferent( modelElement, desiredElementName, writer, m
 
 	// Unbind current view element as it should be cleared from mapper.
 	mapper.unbindViewElement( viewElement );
-	const renamedViewElement = writer.rename( viewElement, desiredElementName );
+	const renamedViewElement = writer.rename( desiredElementName, viewElement );
 	// Bind paragraph inside table cell to the renamed view element.
 	mapper.bindElements( modelElement, renamedViewElement );
 

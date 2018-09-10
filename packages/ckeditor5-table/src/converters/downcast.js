@@ -333,7 +333,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 		conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell ) );
 		conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
 	} else {
-		renamedCell = conversionApi.writer.rename( viewCell, desiredCellElementName );
+		renamedCell = conversionApi.writer.rename( desiredCellElementName, viewCell );
 	}
 
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
