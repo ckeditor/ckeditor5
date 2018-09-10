@@ -183,23 +183,44 @@ export default class Differ {
 			case 'split': {
 				const splitElement = operation.position.parent;
 
+				// Mark that children of the split element were removed.
 				if ( !this._isInInsertedElement( splitElement ) ) {
 					this._markRemove( splitElement, operation.position.offset, operation.howMany );
 				}
 
+				// Mark that the new element (split copy) was inserted.
 				if ( !this._isInInsertedElement( splitElement.parent ) ) {
 					this._markInsert( splitElement.parent, operation.insertionPosition.offset, 1 );
+				}
+
+				// If the split took the element from the graveyard, mark that the element from the graveyard was removed.
+				if ( operation.graveyardPosition ) {
+					const graveyardParent = operation.graveyardPosition.parent;
+
+					this._markRemove( graveyardParent, operation.graveyardPosition.offset, 1 );
 				}
 
 				break;
 			}
 			case 'merge': {
+				// Mark that the merged element was removed.
 				const mergedElement = operation.sourcePosition.parent;
-				const mergedIntoElement = operation.targetPosition.parent;
 
 				if ( !this._isInInsertedElement( mergedElement.parent ) ) {
 					this._markRemove( mergedElement.parent, mergedElement.startOffset, 1 );
 				}
+
+				// Mark that the merged element was inserted into graveyard.
+				// The `isInsertedElement` check might not be needed but there is one case in OT where merged element
+				// is inserted into wrapping element.
+				const graveyardParent = operation.graveyardPosition.parent;
+
+				if ( !this._isInInsertedElement( graveyardParent ) ) {
+					this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
+				}
+
+				// Mark that children of merged element were inserted at new parent.
+				const mergedIntoElement = operation.targetPosition.parent;
 
 				if ( !this._isInInsertedElement( mergedIntoElement ) ) {
 					this._markInsert( mergedIntoElement, operation.targetPosition.offset, mergedElement.maxOffset );
@@ -208,14 +229,25 @@ export default class Differ {
 				break;
 			}
 			case 'wrap': {
+				// Mark that some elements were removed from their original parent and that a new (wrapper) element
+				// was added in that parent.
 				if ( !this._isInInsertedElement( operation.position.parent ) ) {
 					this._markRemove( operation.position.parent, operation.position.offset, operation.howMany );
 					this._markInsert( operation.position.parent, operation.position.offset, 1 );
 				}
 
+				// If the wrap took the element from the graveyard, mark that the element from the graveyard was removed.
+				if ( operation.graveyardPosition ) {
+					const graveyardParent = operation.graveyardPosition.parent;
+
+					this._markRemove( graveyardParent, operation.graveyardPosition.offset, 1 );
+				}
+
 				break;
 			}
 			case 'unwrap': {
+				// Mark that the unwrapped element was removed from its original parent and that new (unwrapped) nodes
+				// were inserted in that parent.
 				const elementToUnwrap = operation.position.parent;
 				const offset = elementToUnwrap.startOffset;
 				const parent = elementToUnwrap.parent;
@@ -224,6 +256,11 @@ export default class Differ {
 					this._markRemove( parent, offset, 1 );
 					this._markInsert( parent, offset, elementToUnwrap.maxOffset );
 				}
+
+				// Mark that the unwrapped element was moved to the graveyard.
+				const graveyardParent = operation.graveyardPosition.parent;
+
+				this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
 
 				break;
 			}

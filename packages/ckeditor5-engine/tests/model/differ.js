@@ -1302,6 +1302,29 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		it( 'should correctly mark a change in graveyard', () => {
+			model.change( () => {
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
+			} );
+
+			model.change( () => {
+				const operation = new SplitOperation(
+					new Position( root, [ 0, 3 ] ),
+					3,
+					new Position( doc.graveyard, [ 0 ] ),
+					doc.version
+				);
+
+				model.applyOperation( operation );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'remove', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				], true );
+			} );
+		} );
 	} );
 
 	describe( 'merge', () => {
@@ -1356,6 +1379,18 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		it( 'should correctly mark a change in graveyard', () => {
+			model.change( () => {
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				], true );
+			} );
+		} );
 	} );
 
 	describe( 'wrap', () => {
@@ -1397,6 +1432,24 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
+			} );
+		} );
+
+		it( 'should correctly mark a change in graveyard', () => {
+			model.change( () => {
+				unwrap( new Position( root, [ 0, 0 ] ) );
+			} );
+
+			model.change( () => {
+				const operation = new WrapOperation( new Position( root, [ 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
+
+				model.applyOperation( operation );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'remove', name: '$text', length: 3, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) }
+				], true );
 			} );
 		} );
 	} );
@@ -1450,6 +1503,18 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
+			} );
+		} );
+
+		it( 'should correctly mark a change in graveyard', () => {
+			model.change( () => {
+				unwrap( new Position( root, [ 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0 ] ) }
+				], true );
 			} );
 		} );
 	} );
