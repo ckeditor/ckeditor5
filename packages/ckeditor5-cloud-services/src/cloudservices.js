@@ -32,7 +32,8 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
-		 * The authentication token URL for CKEditor Cloud Services.
+		 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
+		 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
 		 *
 		 * @readonly
 		 * @member {String|Function|undefined} #tokenUrl
