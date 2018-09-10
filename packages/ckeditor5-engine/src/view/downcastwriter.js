@@ -908,10 +908,10 @@ export default class DowncastWriter {
 	 *
 	 * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
 	 *
-	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 * @param {String} newName New name for element.
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 */
-	rename( viewElement, newName ) {
+	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
 		this.insert( Position.createAfter( viewElement ), newElement );
