@@ -25,6 +25,10 @@ import MoveOperation from '../model/operation/moveoperation';
 import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
+import WrapOperation from '../model/operation/wrapoperation';
+import UnwrapOperation from '../model/operation/unwrapoperation';
+import SplitOperation from '../model/operation/splitoperation';
+import MergeOperation from '../model/operation/mergeoperation';
 import Model from '../model/model';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
@@ -330,8 +334,7 @@ function enableLoggingTools() {
 	sandbox.mock( MoveOperation.prototype, 'toString', function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ range } -> ${ this.targetPosition }${ this.isSticky ? ' (sticky)' : '' }`;
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ range } -> ${ this.targetPosition }`;
 	} );
 
 	sandbox.mock( NoOperation.prototype, 'toString', function() {
@@ -346,6 +349,27 @@ function enableLoggingTools() {
 	sandbox.mock( RootAttributeOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
+	} );
+
+	sandbox.mock( MergeOperation.prototype, 'toString', function() {
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+			`${ this.sourcePosition } -> ${ this.targetPosition } ( ${ this.howMany } ), ${ this.graveyardPosition }`;
+	} );
+
+	sandbox.mock( SplitOperation.prototype, 'toString', function() {
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+			`${ this.position } ( ${ this.howMany } )${ this.graveyardPosition ? ', ' + this.graveyardPosition : '' }`;
+	} );
+
+	sandbox.mock( WrapOperation.prototype, 'toString', function() {
+		const range = ModelRange.createFromPositionAndShift( this.position, this.howMany );
+
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
+			`${ range } with ${ this.element ? this.element : this.graveyardPosition }`;
+	} );
+
+	sandbox.mock( UnwrapOperation.prototype, 'toString', function() {
+		return getClassName( this ) + `( ${ this.baseVersion } ): ${ this.position } ( ${ this.howMany } ), ${ this.graveyardPosition }`;
 	} );
 
 	sandbox.mock( ViewText.prototype, 'toString', function() {
@@ -547,9 +571,7 @@ function dumpTrees( document, version ) {
 // @param {module:engine/model/operation/operation~Operation}
 // @returns {String} Class name.
 function getClassName( obj ) {
-	const path = obj.constructor.className.split( '.' );
-
-	return path[ path.length - 1 ];
+	return obj.constructor.className;
 }
 
 // Helper function, converts a map to the {"key1":"value1","key2":"value2"} format.

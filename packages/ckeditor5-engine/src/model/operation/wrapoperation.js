@@ -43,6 +43,7 @@ export default class WrapOperation extends Operation {
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/wrapoperation~WrapOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
+		// `'toNext'` because `position` is a bit like a start of the wrapped range.
 		this.position.stickiness = 'toNext';
 
 		/**

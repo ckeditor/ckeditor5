@@ -145,6 +145,9 @@ export default class Writer {
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
 	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
+	 * **Note:** For a paste-like content insertion mechanism see
+	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`}.
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment} item Item or document
 	 * fragment to insert.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition

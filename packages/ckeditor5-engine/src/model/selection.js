@@ -17,19 +17,23 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
- * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
- * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}.
- * Additionally, `Selection` may have it's own attributes.
+ * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
+ * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}
+ * (it can be {@link module:engine/model/selection~Selection#isBackward forward or backward}).
+ * Additionally, selection may have its own attributes (think – whether text typed in in this selection
+ * should have those attributes – e.g. whether you type a bolded text).
  *
- * @mixes {module:utils/emittermixin~EmitterMixin}
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Selection {
 	/**
-	 * Creates new selection instance on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges}
-	 * or creates an empty selection if no arguments passed.
+	 * Creates a new selection instance
+	 * based on the given {@link module:engine/model/selection~Selection selection},
+	 * or based on the given {@link module:engine/model/range~Range range},
+	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
+	 * or at the given {@link module:engine/model/position~Position position},
+	 * or on the given {@link module:engine/model/element~Element element},
+	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = new Selection();
@@ -68,7 +72,7 @@ export default class Selection {
 	 * 		// just after the item.
 	 *		const selection = new Selection( paragraph, 'on' );
 	 *
-	 * `Selection`'s constructor allow passing additional options (`backward`) as the last argument.
+	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
 	 *
 	 * 		// Creates backward selection.
 	 *		const selection = new Selection( range, { backward: true } );
@@ -111,12 +115,17 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
-	 * Together with {@link #focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 * Selection anchor. Anchor is the position from which the selection was started. If a user is making a selection
+	 * by dragging the mouse, the anchor is where the user pressed the mouse button (the beggining of the selection).
 	 *
-	 * Is set to `null` if there are no ranges in selection.
+	 * Anchor and {@link #focus} define the direction of the selection, which is important
+	 * when expanding/shrinking selection. The focus moves, while the anchor should remain in the same place.
+	 *
+	 * Anchor is always set to the {@link module:engine/model/range~Range#start start} or
+	 * {@link module:engine/model/range~Range#end end} position of the last of selection's ranges. Whether it is
+	 * the `start` or `end` depends on the specified `options.backward`. See the {@link #setTo `setTo()`} method.
+	 *
+	 * May be set to `null` if there are no ranges in the selection.
 	 *
 	 * @see #focus
 	 * @readonly
@@ -133,9 +142,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection focus. Focus is a position where the selection ends.
+	 * Selection focus. Focus is the position where the selection ends. If a user is making a selection
+	 * by dragging the mouse, the focus is where the mouse cursor is.
 	 *
-	 * Is set to `null` if there are no ranges in selection.
+	 * May be set to `null` if there are no ranges in the selection.
 	 *
 	 * @see #anchor
 	 * @readonly
@@ -152,8 +162,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
-	 * collapsed.
+	 * Whether the selection is collapsed. Selection is collapsed when there is exactly one range in it
+	 * and it is collapsed.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -169,7 +179,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns number of ranges in selection.
+	 * Returns the number of ranges in the selection.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -179,8 +189,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the {@link #focus}
-	 * precedes {@link #anchor}.
+	 * Specifies whether the selection's {@link #focus} precedes the selection's {@link #anchor}.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -190,8 +199,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether this selection is equal to given selection. Selections are equal if they have same directions,
-	 * same number of ranges and all ranges from one selection equal to a range from other selection.
+	 * Checks whether this selection is equal to the given selection. Selections are equal if they have the same directions,
+	 * the same number of ranges and all ranges from one selection equal to ranges from the another selection.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} otherSelection
 	 * Selection to compare with.
@@ -227,7 +236,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterable that iterates over copies of selection ranges.
+	 * Returns an iterable object that iterates over copies of selection ranges.
 	 *
 	 * @returns {Iterable.<module:engine/model/range~Range>}
 	 */
@@ -703,14 +712,14 @@ export default class Selection {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**
-				 * Trying to add a range that intersects with another range from selection.
+				 * Trying to add a range that intersects with another range in the selection.
 				 *
 				 * @error model-selection-range-intersects
 				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/model/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'model-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					'model-selection-range-intersects: Trying to add a range that intersects with another range in the selection.',
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}

@@ -207,10 +207,15 @@ export default class Model {
 	}
 
 	/**
-	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function to apply
-	 * {@link module:engine/model/operation/operation~Operation operations} on the model.
+	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function for applying
+	 * {@link module:engine/model/operation/operation~Operation operations} to the model.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to apply
+	 * This is a low-level way of changing the model. It is exposed for very specific use cases (like the undo feature).
+	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~Writer `Writer`}.
+	 * See also {@glink framework/guides/architecture/editing-engine#changing-the-model Changing the model} section
+	 * of the {@glink framework/guides/architecture/editing-engine Editing architecture} guide.
+	 *
+	 * @param {module:engine/model/operation/operation~Operation} operation The operation to apply.
 	 */
 	applyOperation( operation ) {
 		operation._execute();
@@ -219,6 +224,79 @@ export default class Model {
 	/**
 	 * Inserts content into the editor (specified selection) as one would expect the paste
 	 * functionality to work.
+	 *
+	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
+	 * the content, clears the given selection's content before inserting nodes and moves the selection
+	 * to its target position at the end of the process.
+	 * It can split elements, merge them, wrap bare text nodes in paragraphs, etc. – just like the
+	 * pasting feature should do.
+	 *
+	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
+	 *
+	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
+	 * inside a {@link #change `change()` block}.
+	 *
+	 * # Conversion and schema
+	 *
+	 * Inserting elements and text nodes into the model is not enough to make CKEditor 5 render that content
+	 * to the user. CKEditor 5 implements a model-view-controller architecture and what `model.insertContent()` does
+	 * is only adding nodes to the model. Additionally, you need to define
+	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
+	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
+	 *
+	 * So, while this method may seem similar to CKEditor 4's `editor.insertHtml()` (in fact, both methods
+	 * are used for paste-like content insertion), CKEditor 5's method cannot be use to insert arbitrary HTML
+	 * unless converters are defined for all elements and attributes in that HTML.
+	 *
+	 * # Examples
+	 *
+	 * Using `insertContent()` with a manually created model structure:
+	 *
+	 *		// Let's create a document fragment containing such a content:
+	 *		//
+	 *		// <paragrap>foo</paragraph>
+	 *		// <blockQuote>
+	 *		//    <paragraph>bar</paragraph>
+	 *		// </blockQuote>
+	 *		const docFrag = editor.model.change( writer => {
+	 *			const p1 = writer.createElement( 'paragraph' );
+	 *			const p2 = writer.createElement( 'paragraph' );
+	 *			const blockQuote = writer.createElement( 'blockQuote' );
+	 *			const docFrag = writer.createDocumentFragment();
+	 *
+	 *			writer.append( p1, docFrag );
+	 *			writer.append( blockQuote, docFrag );
+	 *			writer.append( p2, blockQuote );
+	 *			writer.insertText( 'foo', p1 );
+	 *			writer.insertText( 'bar', p2 );
+	 *
+	 *			return docFrag;
+	 *		} );
+	 *
+	 *		// insertContent() doesn't have to be used in a change() block. It can, though,
+	 *		// so this code could be moved to the callback defined above.
+	 *		editor.model.insertContent( docFrag, editor.model.document.selection );
+	 *
+	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
+	 *
+	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
+	 *		// if you haven't overriden the default one (which is HtmlDataProcessor instance).
+	 *		const htmlDP = new HtmlDataProcessor();
+	 *
+	 *		// Convert an HTML string to a view document fragment.
+	 *		const viewFragment = htmlDP.toView( htmlString );
+	 *
+	 *		// Convert a view document fragment to a model document fragment
+	 *		// in the context of $root. This conversion takes schema into
+	 *		// the account so if e.g. the view document fragment contained a bare text node
+	 *		// then that text node cannot be a child of $root, so it will be automatically
+	 *		// wrapped with a <paragraph>. You can define the context yourself (in the 2nd parameter),
+	 *		// and e.g. convert the content like it would happen in a <paragraph>.
+	 *		// Note: the clipboard feature uses a custom context called $clipboardHolder
+	 *		// which has a loosened schema.
+	 *		const modelFragment = editor.data.toModel( viewFragment );
+	 *
+	 *		editor.model.insertContent( modelFragment, editor.model.document.selection );
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
@@ -247,10 +325,10 @@ export default class Model {
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
 	 *
-	 * For example `<heading>x[x</heading><paragraph>y]y</paragraph>` will become:
+	 * For example `<heading1>x[x</heading1><paragraph>y]y</paragraph>` will become:
 	 *
-	 * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
-	 * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
+	 * * `<heading1>x^y</heading1>` with the option disabled (`leaveUnmerged == false`)
+	 * * `<heading1>x^</heading1><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
 	 *
 	 * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
 	 * elements will not be merged.
@@ -258,10 +336,10 @@ export default class Model {
 	 * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
 	 * paragraph when the entire content was selected.
 	 *
-	 * For example `<heading>[x</heading><paragraph>y]</paragraph>` will become:
+	 * For example `<heading1>[x</heading1><paragraph>y]</paragraph>` will become:
 	 *
 	 * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
-	 * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`)
+	 * * `<heading1>^</heading1>` with enabled (`doNotResetEntireContent == true`)
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
@@ -306,13 +384,22 @@ export default class Model {
 	 * For example, for the following selection:
 	 *
 	 * ```html
-	 * <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
+	 * <paragraph>x</paragraph>
+	 * <blockQuote>
+	 *	<paragraph>y</paragraph>
+	 *	<heading1>fir[st</heading1>
+	 * </blockQuote>
+	 * <paragraph>se]cond</paragraph>
+	 * <paragraph>z</paragraph>
 	 * ```
 	 *
 	 * It will return a document fragment with such a content:
 	 *
 	 * ```html
-	 * <quote><h>st</h></quote><p>se</p>
+	 * <blockQuote>
+	 *	<heading1>st</heading1>
+	 * </blockQuote>
+	 * <paragraph>se</paragraph>
 	 * ```
 	 *
 	 * @fires getSelectedContent

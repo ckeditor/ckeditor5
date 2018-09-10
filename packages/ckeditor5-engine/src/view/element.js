@@ -840,8 +840,7 @@ function parseInlineStyles( stylesMap, stylesString ) {
 
 					break;
 
-				// eslint-disable-next-line no-case-declarations
-				case ';':
+				case ';': {
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
 					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
@@ -857,6 +856,7 @@ function parseInlineStyles( stylesMap, stylesString ) {
 					propertyNameStart = i + 1;
 
 					break;
+				}
 			}
 		} else if ( char === quoteType ) {
 			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.
