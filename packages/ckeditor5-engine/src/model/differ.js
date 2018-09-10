@@ -182,14 +182,13 @@ export default class Differ {
 			}
 			case 'split': {
 				const splitElement = operation.position.parent;
-				const howManyMoved = splitElement.maxOffset - operation.position.offset;
 
 				if ( !this._isInInsertedElement( splitElement ) ) {
-					this._markRemove( splitElement, operation.position.offset, howManyMoved );
+					this._markRemove( splitElement, operation.position.offset, operation.howMany );
 				}
 
 				if ( !this._isInInsertedElement( splitElement.parent ) ) {
-					this._markInsert( splitElement.parent, splitElement.startOffset + 1, 1 );
+					this._markInsert( splitElement.parent, operation.insertionPosition.offset, 1 );
 				}
 
 				break;
