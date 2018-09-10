@@ -76,11 +76,11 @@ export default class EditingController {
 		//
 		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
-			this.view._disabledRendering = true;
+			this.view._renderingDisabled = true;
 		}, { priority: 'highest' } );
 
 		this.listenTo( this.model, '_afterChanges', () => {
-			this.view._disabledRendering = false;
+			this.view._renderingDisabled = false;
 			this.view.render();
 		}, { priority: 'lowest' } );
 
