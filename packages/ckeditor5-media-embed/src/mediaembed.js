@@ -50,9 +50,11 @@ export default class MediaEmbed extends Plugin {
  *			name: 'example',
  *
  *			// The following RegExp matches https://www.example.com/media/{media id},
- *			// (either with "https://" and "www" or without), so the valid URLs are:
- *			// * https://www.example.com/media/{media id}
- *			// * www.example.com/media/{media id}
+ *			// (either with "http(s)://" and "www" or without), so the valid URLs are:
+ *			//
+ *			// * https://www.example.com/media/{media id},
+ *			// * http://www.example.com/media/{media id},
+ *			// * www.example.com/media/{media id},
  *			// * example.com/media/{media id}
  *			url: /^example\.com\/media\/(\w+)/,
  *
@@ -90,8 +92,8 @@ export default class MediaEmbed extends Plugin {
  * If any URL matches the `RegExp`, it becomes the media in editor model, as defined by the provider. The result
  * of matching (output of `String.prototype.match()`) is passed to the `html` rendering function of the media.
  *
- * **Note:** You do not need to include the protocol (`https://`) and `www` sub–domain in your `RegExps`, they are
- * stripped from the URLs before matching anyway.
+ * **Note:** You do not need to include the protocol (`http://`, `https://`) and `www` sub–domain in your `RegExps`,
+ * they are stripped from the URLs before matching anyway.
  * @property {Function} [html] (optional) Rendering function of the media. The function receives the entire matching
  * array from the corresponding `url` `RegExp` as an argument, allowing rendering a dedicated
  * preview of a media identified by a certain id or a hash. When not defined, the media embed feature
