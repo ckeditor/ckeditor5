@@ -102,7 +102,7 @@ export default class MediaRegistry {
 	/**
 	 * Returns a `Media` instance for the given URL.
 	 *
-	 * @private
+	 * @protected
 	 * @param {String} url The url of the media.
 	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there's none.
 	 */
