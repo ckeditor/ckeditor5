@@ -22,7 +22,7 @@ const mediaPlaceholderIconViewBox = '0 0 64 42';
  *
  * Mostly used by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} plugin.
  */
-export class MediaRegistry {
+export default class MediaRegistry {
 	/**
 	 * Creates an instance of the {@link module:media-embed/mediaregistry~MediaRegistry} class.
 	 *
@@ -102,7 +102,7 @@ export class MediaRegistry {
 	/**
 	 * Returns a `Media` instance for the given URL.
 	 *
-	 * @private
+	 * @protected
 	 * @param {String} url The url of the media.
 	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there's none.
 	 */
@@ -122,12 +122,47 @@ export class MediaRegistry {
 			}
 
 			for ( const subPattern of pattern ) {
-				const match = url.match( subPattern );
+				const match = this._getUrlMatches( url, subPattern );
 
 				if ( match ) {
 					return new Media( this.locale, url, match, contentRenderer );
 				}
 			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tries to match `url` to `pattern`.
+	 *
+	 * @private
+	 * @param {String} url The url of the media.
+	 * @param {RegExp} pattern The pattern that should accept the media url.
+	 * @returns {Array|null}
+	 */
+	_getUrlMatches( url, pattern ) {
+		// 1. Try to match without stripping the protocol and "www" sub-domain.
+		let match = url.match( pattern );
+
+		if ( match ) {
+			return match;
+		}
+
+		// 2. Try to match after stripping the protocol.
+		let rawUrl = url.replace( /^https?:\/\//, '' );
+		match = rawUrl.match( pattern );
+
+		if ( match ) {
+			return match;
+		}
+
+		// 3. Try to match after stripping the "www" sub-domain.
+		rawUrl = rawUrl.replace( /^www\./, '' );
+		match = rawUrl.match( pattern );
+
+		if ( match ) {
+			return match;
 		}
 
 		return null;
@@ -148,7 +183,7 @@ class Media {
 		 *
 		 * @member {String}
 		 */
-		this.url = url;
+		this.url = this._getValidUrl( url );
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
@@ -223,7 +258,7 @@ class Media {
 	 */
 	_getContentHtml( options ) {
 		if ( this._contentRenderer ) {
-			return this._contentRenderer( this._match.pop() );
+			return this._contentRenderer( this._match );
 		} else {
 			// The placeholder only makes sense for editing view and media which have URLs.
 			// Placeholder is never displayed in data and URL-less media have no content.
@@ -283,5 +318,23 @@ class Media {
 		} ).render();
 
 		return placeholder.outerHTML;
+	}
+
+	/**
+	 * Returns full url to specified media.
+	 *
+	 * @param {String} url The url of the media.
+	 * @returns {String|null}
+	 */
+	_getValidUrl( url ) {
+		if ( !url ) {
+			return null;
+		}
+
+		if ( url.match( /^https?/ ) ) {
+			return url;
+		}
+
+		return 'https://' + url;
 	}
 }

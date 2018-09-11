@@ -49,14 +49,19 @@ export default class MediaEmbed extends Plugin {
  *		{
  *			name: 'example',
  *
- *			// The following RegExp matches https://www.example.com/media/{media id}
- *			// with optional "https://" and "www" prefixes.
- *			url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
+ *			// The following RegExp matches https://www.example.com/media/{media id},
+ *			// (either with "http(s)://" and "www" or without), so the valid URLs are:
+ *			//
+ *			// * https://www.example.com/media/{media id},
+ *			// * http://www.example.com/media/{media id},
+ *			// * www.example.com/media/{media id},
+ *			// * example.com/media/{media id}
+ *			url: /^example\.com\/media\/(\w+)/,
  *
  *			// The rendering function of the provider.
  *			// Used to represent the media when editing the content (i.e. in the view)
  *			// and also in the data output of the editor if semantic data output is disabled.
- *			html: mediaId => `The HTML representing the media with ID=${ mediaId }.`
+ *			html: match => `The HTML representing the media with ID=${ match[ 1 ] }.`
  *		}
  *
  * You can allow any sort of media in the editor using the "allow–all" `RegExp`.
@@ -65,14 +70,14 @@ export default class MediaEmbed extends Plugin {
  *
  *		{
  *			name: 'allow-all',
- *			url: /^(https:\/\/)?(www\.)?.+/
+ *			url: /^.+/
  *		}
  *
  * To implement a responsive media, you can use the following HTML structure:
  *
  *		{
  *			...
- *			html: mediaId =>
+ *			html: match =>
  *				'<div style="position:relative; padding-bottom:100%; height:0">' +
  *					'<iframe src="..." frameborder="0" ' +
  *						'style="position:absolute; width:100%; height:100%; top:0; left:0">' +
@@ -84,10 +89,13 @@ export default class MediaEmbed extends Plugin {
  * @property {String} name The name of the provider. Used e.g. when
  * {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders removing providers}.
  * @property {RegExp|Array.<RegExp>} url The `RegExp` object (or array of objects) defining the URL of the media.
- * If any URL matches the `RegExp`, it becomes the media in editor model, as defined by the provider. The content
- * of the last matching group is passed to the `html` rendering function of the media.
- * @property {Function} [html] (optional) Rendering function of the media. The function receives the content of
- * the last matching group from the corresponding `url` `RegExp` as an argument, allowing rendering a dedicated
+ * If any URL matches the `RegExp`, it becomes the media in editor model, as defined by the provider. The result
+ * of matching (output of `String.prototype.match()`) is passed to the `html` rendering function of the media.
+ *
+ * **Note:** You do not need to include the protocol (`http://`, `https://`) and `www` sub–domain in your `RegExps`,
+ * they are stripped from the URLs before matching anyway.
+ * @property {Function} [html] (optional) Rendering function of the media. The function receives the entire matching
+ * array from the corresponding `url` `RegExp` as an argument, allowing rendering a dedicated
  * preview of a media identified by a certain id or a hash. When not defined, the media embed feature
  * will use a generic media representation in the view and output data.
  * Note that when
@@ -161,8 +169,8 @@ export default class MediaEmbed extends Plugin {
  *					providers: [
  *						{
  *							 name: 'myProvider',
- *							 url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
- *							 html: mediaId => '...'
+ *							 url: /^example\.com\/media\/(\w+)/,
+ *							 html: match => '...'
  *						},
  *						...
  * 					]
@@ -191,8 +199,8 @@ export default class MediaEmbed extends Plugin {
  *					extraProviders: [
  *						{
  *							 name: 'extraProvider',
- *							 url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
- *							 html: mediaId => '...'
+ *							 url: /^example\.com\/media\/(\w+)/,
+ *							 html: match => '...'
  *						},
  *						...
  * 					]
