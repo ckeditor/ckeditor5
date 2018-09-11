@@ -148,7 +148,7 @@ ClassicEditor
 			providers: [
 				{
 					// An URL regexp or array of URL regexps:
-					url: /^(https:\/\/)?(www\.)?example\.com\/media\/(\w+)/,
+					url: /^example\.com\/media\/(\w+)/,
 
 					// To be defined only if the media is previewable:
 					html: mediaId => '...'
@@ -365,7 +365,7 @@ mediaEmbed: {
 	extraProviders: [
 		{
 			name: 'ckeditor',
-			url: /^(https:\/\/)?(www\.)?ckeditor\.com/
+			url: /^ckeditor\.com/
 		}
 	]
 }
