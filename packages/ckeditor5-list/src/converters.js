@@ -117,7 +117,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 	// We cannot just change name property, because that would not render properly.
 	let viewList = viewItem.parent;
 	const listName = data.attributeNewValue == 'numbered' ? 'ol' : 'ul';
-	viewList = viewWriter.rename( viewList, listName );
+	viewList = viewWriter.rename( listName, viewList );
 
 	// 3. Merge the changed view list with other lists, if possible.
 	mergeViewLists( viewWriter, viewList, viewList.nextSibling );
