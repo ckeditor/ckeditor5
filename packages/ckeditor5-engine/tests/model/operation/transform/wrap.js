@@ -218,7 +218,29 @@ describe( 'transform', () => {
 				);
 			} );
 
-			it( 'the same element', () => {
+			it( 'the same element through undo', () => {
+				john.setData( '[<paragraph>Foo</paragraph>]' );
+				kate.setData( '<paragraph>[]Foo</paragraph>' );
+
+				john.wrap( 'blockQuote' );
+
+				syncClients();
+				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+
+				kate.setSelection( [ 0, 0 ] );
+				kate.unwrap();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
+			it( 'wrap in unwrapped element', () => {
 				john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]</blockQuote>' );
 				kate.setData( '<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>' );
 
@@ -230,7 +252,7 @@ describe( 'transform', () => {
 				expectClients( '<div><paragraph>Foo</paragraph></div>' );
 			} );
 
-			it.skip( 'the same element, then undo', () => {
+			it.skip( 'wrap in unwrapped element, then undo', () => {
 				// This is interesting scenario actually. Normally in wrap x wrap situation the stronger wrap just wins
 				// so we won't get incorrect model. But John was actually to make a wrap like this then he had
 				// <bq><div><p> structure for a while. So it should be possible to revert to it.

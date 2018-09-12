@@ -2546,6 +2546,14 @@ setTransformation( WrapOperation, WrapOperation, ( a, b, context ) => {
 } );
 
 setTransformation( WrapOperation, UnwrapOperation, ( a, b ) => {
+	// Case 1:
+	//
+	// Wrapping element from graveyard got unwrapped. See `UnwrapOperation` x `WrapOperation` mirror case.
+	//
+	if ( a.graveyardPosition && b.targetPosition.isEqual( a.graveyardPosition ) ) {
+		return [ new NoOperation( 0 ) ];
+	}
+
 	const transformed = a.wrappedRange._getTransformedByUnwrapOperation( b );
 
 	a.position = transformed.start;
@@ -2699,7 +2707,7 @@ setTransformation( UnwrapOperation, WrapOperation, ( a, b ) => {
 	// is going to be transformed by a wrap operation which undoes the previous operation. Operation `a` is
 	// in a state that is ready for this, but `howMany` has to be set again to a proper value.
 	//
-	if ( b.graveyardPosition && compareArrays( a.position.getParentPath(), b.graveyardPosition.path ) == 'same' ) {
+	if ( b.graveyardPosition && a.targetPosition.isEqual( b.graveyardPosition ) ) {
 		a.howMany = b.howMany;
 	}
 
