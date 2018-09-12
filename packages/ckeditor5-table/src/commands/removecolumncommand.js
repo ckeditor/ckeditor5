@@ -12,7 +12,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import TableUtils from '../tableutils';
 import { findAncestor, updateNumericAttribute } from './utils';
-import Range from '../../../ckeditor5-engine/src/model/range';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The remove column command.

@@ -250,20 +250,26 @@ function makeRows( tableData, options ) {
 				let contents = isObject ? tableCellData.contents : tableCellData;
 
 				let resultingCellElement = cellElement;
+				let isSelected = false;
 
 				if ( isObject ) {
 					if ( tableCellData.isHeading ) {
 						resultingCellElement = headingElement;
 					}
 
+					isSelected = !!tableCellData.isSelected;
+
 					delete tableCellData.contents;
 					delete tableCellData.isHeading;
+					delete tableCellData.isSelected;
 				}
 
 				const attributes = isObject ? tableCellData : {};
 
 				if ( asWidget ) {
-					attributes.class = 'ck-editor__editable ck-editor__nested-editable';
+					attributes.class = attributes.class ? ' ' + attributes.class : '';
+					attributes.class = 'ck-editor__editable ck-editor__nested-editable' + attributes.class;
+
 					attributes.contenteditable = 'true';
 				}
 
@@ -272,7 +278,9 @@ function makeRows( tableData, options ) {
 				}
 
 				const formattedAttributes = formatAttributes( attributes );
-				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
+				const tableCell = `<${ resultingCellElement }${ formattedAttributes }>${ contents }</${ resultingCellElement }>`;
+
+				tableRowString += isSelected ? `[${ tableCell }]` : tableCell;
 
 				return tableRowString;
 			}, '' );

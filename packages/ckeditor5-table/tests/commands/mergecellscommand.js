@@ -10,7 +10,7 @@ import MergeCellsCommand from '../../src/commands/mergecellscommand';
 import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
 import TableSelection from '../../src/tableselection';
-import Range from '../../../ckeditor5-engine/src/model/range';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'MergeCellsCommand', () => {
 	let editor, model, command, root;

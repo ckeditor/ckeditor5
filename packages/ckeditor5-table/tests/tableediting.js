@@ -6,11 +6,12 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 
 import TableEditing from '../src/tableediting';
-import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
+import { formatTable, formattedModelTable, formattedViewTable, modelTable } from './_utils/utils';
 import InsertRowCommand from '../src/commands/insertrowcommand';
 import InsertTableCommand from '../src/commands/inserttablecommand';
 import InsertColumnCommand from '../src/commands/insertcolumncommand';
@@ -21,6 +22,7 @@ import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import TableSelection from '../src/tableselection';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -132,11 +134,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><td>foo</td></tr>' +
-							'</tbody>' +
-						'</table>' +
+					'<table>' +
+					'<tbody>' +
+					'<tr><td>foo</td></tr>' +
+					'</tbody>' +
+					'</table>' +
 					'</figure>'
 				);
 			} );
@@ -149,11 +151,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-						'<table>' +
-							'<thead>' +
-								'<tr><th>foo</th></tr>' +
-							'</thead>' +
-						'</table>' +
+					'<table>' +
+					'<thead>' +
+					'<tr><th>foo</th></tr>' +
+					'</thead>' +
+					'</table>' +
 					'</figure>'
 				);
 			} );
@@ -274,7 +276,7 @@ describe( 'TableEditing', () => {
 
 			it( 'should move to the next table cell if part of block content is selected', () => {
 				setModelData( model, modelTable( [
-					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -284,7 +286,7 @@ describe( 'TableEditing', () => {
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'[13]'
-					],
+					]
 				] ) );
 			} );
 
@@ -423,7 +425,7 @@ describe( 'TableEditing', () => {
 
 			it( 'should move to the previous table cell if part of block content is selected', () => {
 				setModelData( model, modelTable( [
-					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ],
+					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -433,7 +435,7 @@ describe( 'TableEditing', () => {
 						'[11]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'13'
-					],
+					]
 				] ) );
 			} );
 		} );
@@ -512,4 +514,312 @@ describe( 'TableEditing', () => {
 			] ) );
 		} );
 	} );
+
+	describe.only( 'table selection', () => {
+		let view, domEvtDataStub;
+
+		beforeEach( () => {
+			view = editor.editing.view;
+
+			domEvtDataStub = {
+				domEvent: {
+					buttons: 1
+				},
+				target: undefined,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
+
+		it( 'should not start table selection when mouse move is inside one table cell', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should start table selection when mouse move expands over two cells', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[ '10', '11' ]
+			], { asWidget: true } ) );
+		} );
+
+		it( 'should select rectangular table cells when mouse moved to diagonal cell (up -> down)', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
+			], { asWidget: true } ) );
+		} );
+
+		it( 'should select rectangular table cells when mouse moved to diagonal cell (down -> up)', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '[]11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '10', '[]11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true } ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[ { contents: '10', class: 'selected', isSelected: true }, { contents: '11', class: 'selected', isSelected: true } ]
+			], { asWidget: true } ) );
+		} );
+
+		it( 'should update view selection after changing selection rect', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 2, 2 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, { contents: '02', isSelected: true } ],
+				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, { contents: '12', isSelected: true } ],
+				[ { contents: '20', isSelected: true }, { contents: '21', isSelected: true }, { contents: '22', isSelected: true } ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[
+					{ contents: '00', class: 'selected', isSelected: true },
+					{ contents: '01', class: 'selected', isSelected: true },
+					{ contents: '02', class: 'selected', isSelected: true }
+				],
+				[
+					{ contents: '10', class: 'selected', isSelected: true },
+					{ contents: '11', class: 'selected', isSelected: true },
+					{ contents: '12', class: 'selected', isSelected: true }
+				],
+				[
+					{ contents: '20', class: 'selected', isSelected: true },
+					{ contents: '21', class: 'selected', isSelected: true },
+					{ contents: '22', class: 'selected', isSelected: true }
+				]
+			], { asWidget: true } ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
+				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[
+					{ contents: '00', class: 'selected', isSelected: true },
+					{ contents: '01', class: 'selected', isSelected: true },
+					'02'
+				],
+				[
+					{ contents: '10', class: 'selected', isSelected: true },
+					{ contents: '11', class: 'selected', isSelected: true },
+					'12'
+				],
+				[
+					'20',
+					'21',
+					'22'
+				]
+			], { asWidget: true } ) );
+		} );
+
+		it( 'should stop selecting after "mouseup" event', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			view.document.fire( 'mouseup', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[ '10', '11' ]
+			], { asWidget: true } ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should stop selection mode on "mouseleve" event', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			view.document.fire( 'mouseleave', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ { contents: '00', class: 'selected', isSelected: true }, { contents: '01', class: 'selected', isSelected: true } ],
+				[ '10', '11' ]
+			], { asWidget: true } ) );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 1, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true } ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should clear view table selection after mouse click outside table', () => {
+			setModelData( model, modelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) + '<paragraph>foo</paragraph>' );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 0 );
+			view.document.fire( 'mousedown', domEvtDataStub );
+
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '10', '11' ]
+			] ) + '<paragraph>foo</paragraph>' );
+
+			selectTableCell( domEvtDataStub, view, 0, 0, 0, 1 );
+			view.document.fire( 'mousemove', domEvtDataStub );
+
+			domEvtDataStub.target = view.document.getRoot().getChild( 1 );
+
+			view.document.fire( 'mousemove', domEvtDataStub );
+			view.document.fire( 'mousedown', domEvtDataStub );
+			view.document.fire( 'mouseup', domEvtDataStub );
+
+			// The click in the DOM would trigger selection change and it will set the selection:
+			model.change( writer => {
+				writer.setSelection( Range.createCollapsedAt( model.document.getRoot().getChild( 1 ) ) );
+			} );
+
+			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { asWidget: true } ) + '<p>{}foo</p>' );
+		} );
+	} );
 } );
+
+function selectTableCell( domEvtDataStub, view, tableIndex, sectionIndex, rowInSectionIndex, tableCellIndex ) {
+	domEvtDataStub.target = view.document.getRoot()
+		.getChild( tableIndex )
+		.getChild( 1 ) // Table is second in widget
+		.getChild( sectionIndex )
+		.getChild( rowInSectionIndex )
+		.getChild( tableCellIndex );
+}
