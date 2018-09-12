@@ -221,17 +221,14 @@ describe( 'TableEditing', () => {
 
 		describe( 'on TAB', () => {
 			it( 'should do nothing if selection is not in a table', () => {
-				setModelData( model, '[]' + modelTable( [
-					[ '11', '12' ]
-				] ) );
+				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [ [ '11', '12' ] ] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
-					[ '11', '12' ]
-				] ) );
+				expect( formatTable( getModelData( model ) ) )
+					.to.equal( '<paragraph>[]</paragraph>' + formattedModelTable( [ [ '11', '12' ] ] ) );
 			} );
 
 			it( 'should move to next cell', () => {
@@ -244,7 +241,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[<paragraph>12</paragraph>]' ]
+					[ '11', '[12]' ]
 				] ) );
 			} );
 
@@ -257,7 +254,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[<paragraph></paragraph>]', '' ]
+					[ '[]', '' ]
 				] ) );
 			} );
 
@@ -271,7 +268,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
-					[ '[<paragraph>21</paragraph>]', '22' ]
+					[ '[21]', '22' ]
 				] ) );
 			} );
 
@@ -286,7 +283,7 @@ describe( 'TableEditing', () => {
 					[
 						'11',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
-						'[<paragraph>13</paragraph>]'
+						'[13]'
 					],
 				] ) );
 			} );
@@ -335,7 +332,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 					expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-						[ '[<paragraph>11</paragraph>]', '12' ]
+						[ '[11]', '12' ]
 					] ) );
 
 					// Should cancel event - so no other tab handler is called.
@@ -368,7 +365,7 @@ describe( 'TableEditing', () => {
 			} );
 
 			it( 'should do nothing if selection is not in a table', () => {
-				setModelData( model, '[]' + modelTable( [
+				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [
 					[ '11', '12' ]
 				] ) );
 
@@ -379,9 +376,8 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
-					[ '11', '12' ]
-				] ) );
+				expect( formatTable( getModelData( model ) ) )
+					.to.equal( '<paragraph>[]</paragraph>' + formattedModelTable( [ [ '11', '12' ] ] ) );
 			} );
 
 			it( 'should move to previous cell', () => {
@@ -395,7 +391,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '[<paragraph>11</paragraph>]', '12' ]
+					[ '[11]', '12' ]
 				] ) );
 			} );
 
@@ -420,7 +416,7 @@ describe( 'TableEditing', () => {
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[<paragraph>12</paragraph>]' ],
+					[ '11', '[12]' ],
 					[ '21', '22' ]
 				] ) );
 			} );
@@ -434,7 +430,7 @@ describe( 'TableEditing', () => {
 
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[
-						'[<paragraph>11</paragraph>]',
+						'[11]',
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'13'
 					],

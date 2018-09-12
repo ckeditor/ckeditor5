@@ -64,8 +64,8 @@ describe( 'RemoveRowCommand', () => {
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '<paragraph>01[]</paragraph>' ],
-				[ '20', '21' ]
+				[ '00', '01' ],
+				[ '[]20', '21' ]
 			] ) );
 		} );
 
@@ -79,7 +79,7 @@ describe( 'RemoveRowCommand', () => {
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '<paragraph>[]10</paragraph>', '11' ],
+				[ '[]10', '11' ],
 				[ '20', '21' ]
 			] ) );
 		} );
@@ -94,8 +94,8 @@ describe( 'RemoveRowCommand', () => {
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '<paragraph>01[]</paragraph>' ],
-				[ '20', '21' ]
+				[ '00', '01' ],
+				[ '[]20', '21' ]
 			], { headingRows: 1 } ) );
 		} );
 
@@ -111,8 +111,8 @@ describe( 'RemoveRowCommand', () => {
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
-				[ '13', '<paragraph>14[]</paragraph>' ],
-				[ '30', '31', '32', '33', '34' ]
+				[ '13', '14' ],
+				[ '30', '[]31', '32', '33', '34' ]
 			] ) );
 		} );
 

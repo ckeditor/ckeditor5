@@ -160,7 +160,6 @@ export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'table', {
 		allowWhere: '$block',
 		allowAttributes: [ 'headingRows', 'headingColumns' ],
-		isLimit: true,
 		isObject: true
 	} );
 
@@ -172,7 +171,7 @@ export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'tableCell', {
 		allowIn: 'tableRow',
 		allowAttributes: [ 'colspan', 'rowspan' ],
-		isLimit: true
+		isObject: true
 	} );
 
 	// Allow all $block content inside table cell.

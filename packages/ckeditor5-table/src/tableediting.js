@@ -56,7 +56,6 @@ export default class TableEditing extends Plugin {
 		schema.register( 'table', {
 			allowWhere: '$block',
 			allowAttributes: [ 'headingRows', 'headingColumns' ],
-			isLimit: true,
 			isObject: true
 		} );
 
@@ -175,7 +174,7 @@ export default class TableEditing extends Plugin {
 			cancel();
 
 			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+				writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
 			} );
 		}
 	}

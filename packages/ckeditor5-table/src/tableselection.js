@@ -44,10 +44,26 @@ export default class TableSelection extends Plugin {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
 
+		this.listenTo( viewDocument, 'keydown', () => {
+			if ( this.size > 1 ) {
+				this.stopSelection();
+				const tableCell = this._startElement;
+				this.clearSelection();
+
+				editor.model.change( writer => {
+					// Select the contents of table cell.
+					writer.setSelection( Range.createIn( tableCell ) );
+				} );
+			}
+		} );
+
 		this.listenTo( viewDocument, 'mousedown', ( eventInfo, domEventData ) => {
 			const tableCell = getTableCell( domEventData, this.editor );
 
 			if ( !tableCell ) {
+				this.stopSelection();
+				this.clearSelection();
+
 				return;
 			}
 
@@ -65,25 +81,10 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			const wasOne = this.size === 1;
-
 			this.updateSelection( tableCell );
 
 			if ( this.size > 1 ) {
 				domEventData.preventDefault();
-
-				if ( wasOne ) {
-					// TODO:
-					// editor.editing.view.change( writer => {
-					// 	// TODO const viewElement = editor.editing.mapper.toViewElement( this._startElement );
-					//
-					// 	// Set selection to the first selected table cell.
-					// 	// writer.setSelection( ViewRange.createIn( viewElement ), {
-					// 	// 	fake: true,
-					// 	// 	label: 'fake selection over table cell'
-					// 	// } );
-					// } );
-				}
 
 				this.redrawSelection();
 			}
@@ -97,6 +98,14 @@ export default class TableSelection extends Plugin {
 			const tableCell = getTableCell( domEventData, this.editor );
 
 			this.stopSelection( tableCell );
+		} );
+
+		this.listenTo( viewDocument, 'mouseleave', () => {
+			if ( !this.isSelecting ) {
+				return;
+			}
+
+			this.stopSelection();
 		} );
 	}
 
@@ -113,9 +122,6 @@ export default class TableSelection extends Plugin {
 		this._isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
-
-		// todo: stop rendering
-		this.editor.editing.view._renderer.renderSelection = false;
 	}
 
 	updateSelection( tableCell ) {
@@ -148,7 +154,6 @@ export default class TableSelection extends Plugin {
 		}
 
 		this._isSelecting = false;
-		this.editor.editing.view._renderer.renderSelection = true;
 	}
 
 	clearSelection() {
@@ -157,8 +162,6 @@ export default class TableSelection extends Plugin {
 		this._isSelecting = false;
 		this.clearPreviousSelection();
 		this._highlighted.clear();
-
-		this.editor.editing.view._renderer.renderSelection = true;
 	}
 
 	* getSelection() {
