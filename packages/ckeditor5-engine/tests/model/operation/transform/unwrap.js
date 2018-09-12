@@ -113,7 +113,12 @@ describe( 'transform', () => {
 				john.undo();
 
 				syncClients();
-				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+				expectClients( '<paragraph>Foo</paragraph>' );
+
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'the same text', () => {
@@ -136,12 +141,17 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 
 				john.undo();
 
 				syncClients();
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 
-				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+				kate.undo();
+
+				syncClients();
+				expectClients( '<blockQuote>Foo</blockQuote>' );
 			} );
 		} );
 
