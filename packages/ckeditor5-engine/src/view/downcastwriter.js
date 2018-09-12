@@ -651,11 +651,14 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
 	 * same parent container.
 	 *
-	 * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
+	 * @param {module:engine/view/range~Range|module:engine/view/item~Item} rangeOrItem Range to remove from container
+	 * or an {@link module:engine/view/item~Item item} to remove. If range is provided, after removing, it will be updated
 	 * to a collapsed range showing the new position.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
 	 */
-	remove( range ) {
+	remove( rangeOrItem ) {
+		const range = rangeOrItem instanceof Range ? rangeOrItem : Range.createOn( rangeOrItem );
+
 		validateRangeContainer( range );
 
 		// If range is collapsed - nothing to remove.
@@ -905,10 +908,10 @@ export default class DowncastWriter {
 	 *
 	 * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
 	 *
-	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 * @param {String} newName New name for element.
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
 	 */
-	rename( viewElement, newName ) {
+	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
 		this.insert( Position.createAfter( viewElement ), newElement );
