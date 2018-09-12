@@ -53,8 +53,6 @@ export function createDataTransfer( data ) {
 	};
 }
 
-const spacesElementsOnlyRegex = />(\s+)<\//g;
-
 /**
  * Compares two HTML strings.
  *
@@ -62,8 +60,6 @@ const spacesElementsOnlyRegex = />(\s+)<\//g;
  *
  *		* Tabs on the lines beginning are removed.
  *		* Line breaks and empty lines are removed.
- *		* Space preceding `<o:p></o:p>` tag is replaced with `&nbsp;`.
- *		* Elements with spaces only have them replaced with `&nbsp;`'s.
  *
  * The expected input should be prepared in the above in mind which means every element containing text nodes must start
  * and end in the same line. So expected input may be formatted like:
@@ -83,18 +79,11 @@ const spacesElementsOnlyRegex = />(\s+)<\//g;
  * @param {String} expected
  */
 export function expectNormalized( actual, expected ) {
-	let expectedNormalized = expected
+	const expectedInlined = expected
 		// Replace tabs on the lines beginning as normalized input files are formatted.
 		.replace( /^\t*</gm, '<' )
-		// Replace line breaks (after closing tags), as they may produce additional spaces during HTML normalization.
-		.replace( /[\r\n]/gm, '' )
-		// Replaces space before Word `<o:p></o:p>` tags so it is not removed during `normalizeHtml()` function call.
-		.replace( / <o:p>/g, '\u00A0<o:p>' );
+		// Replace line breaks (after closing tags) too.
+		.replace( /[\r\n]/gm, '' );
 
-	// Replace spaces with `&nbsp;` inside elements with spaces only to prevent them from being removed during normalization.
-	expectedNormalized = expectedNormalized.replace( spacesElementsOnlyRegex, ( match, spaces ) => {
-		return `>${ Array( spaces.length + 1 ).join( '\u00A0' ) }</`;
-	} );
-
-	expect( stringify( actual ) ).to.equal( normalizeHtml( expectedNormalized ) );
+	expect( stringify( actual ) ).to.equal( normalizeHtml( expectedInlined ) );
 }
