@@ -11,8 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
+import MediaRegistry from './mediaregistry';
 import { toMediaWidget, createMediaFigureElement } from './utils';
-import { MediaRegistry } from './mediaregistry';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
@@ -34,88 +34,108 @@ export default class MediaEmbedEditing extends Plugin {
 			providers: [
 				{
 					name: 'dailymotion',
-					url: /^(https:\/\/)?(www\.)?dailymotion\.com\/video\/(\w+)/,
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
-							`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
-							'</iframe>' +
-						'</div>'
+					url: /^dailymotion\.com\/video\/(\w+)/,
+					html: match => {
+						const id = match[ 1 ];
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+								`<iframe src="https://www.dailymotion.com/embed/video/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" width="480" height="270" allowfullscreen allow="autoplay">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
 					name: 'spotify',
 					url: [
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(artist\/\w+)/,
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(album\/\w+)/,
-						/^(https:\/\/)?(www\.)?open\.spotify\.com\/(track\/\w+)/
+						/^open\.spotify\.com\/(artist\/\w+)/,
+						/^open\.spotify\.com\/(album\/\w+)/,
+						/^open\.spotify\.com\/(track\/\w+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
-							`<iframe src="https://open.spotify.com/embed/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match[ 1 ];
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 126%;">' +
+								`<iframe src="https://open.spotify.com/embed/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allowtransparency="true" allow="encrypted-media">' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
 					name: 'youtube',
 					url: [
-						/^(https:\/\/)?(www\.)?youtube\.com\/watch\?v=(\w+)/,
-						/^(https:\/\/)?(www\.)?youtube\.com\/v\/(\w+)/,
-						/^(https:\/\/)?(www\.)?youtube\.com\/embed\/(\w+)/,
-						/^(https:\/\/)?youtu\.be\/(\w+)/
+						/^youtube\.com\/watch\?v=([\w-]+)/,
+						/^youtube\.com\/v\/([\w-]+)/,
+						/^youtube\.com\/embed\/([\w-]+)/,
+						/^youtu\.be\/([\w-]+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-							`<iframe src="https://www.youtube.com/embed/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match[ 1 ];
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								`<iframe src="https://www.youtube.com/embed/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
 					name: 'vimeo',
 					url: [
-						/^(https:\/\/)?(www\.)?vimeo\.com\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/channels\/[^/]+\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
-						/^(https:\/\/)?(www\.)?vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
-						/^(https:\/\/)?(www\.)?player\.vimeo\.com\/video\/(\d+)/
+						/^vimeo\.com\/(\d+)/,
+						/^vimeo\.com\/[^/]+\/[^/]+\/video\/(\d+)/,
+						/^vimeo\.com\/album\/[^/]+\/video\/(\d+)/,
+						/^vimeo\.com\/channels\/[^/]+\/(\d+)/,
+						/^vimeo\.com\/groups\/[^/]+\/videos\/(\d+)/,
+						/^vimeo\.com\/ondemand\/[^/]+\/(\d+)/,
+						/^player\.vimeo\.com\/video\/(\d+)/
 					],
-					html: id =>
-						'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
-							`<iframe src="https://player.vimeo.com/video/${ id }" ` +
-								'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
-								'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
-							'</iframe>' +
-						'</div>'
+					html: match => {
+						const id = match[ 1 ];
+
+						return (
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								`<iframe src="https://player.vimeo.com/video/${ id }" ` +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+								'</iframe>' +
+							'</div>'
+						);
+					}
 				},
 
 				{
 					name: 'instagram',
-					url: /^(https:\/\/)?(www\.)?instagram\.com\/p\/(\w+)/
+					url: /^instagram\.com\/p\/(\w+)/
 				},
 				{
 					name: 'twitter',
-					url: /^(https:\/\/)?(www\.)?twitter\.com/
+					url: /^twitter\.com/
 				},
 				{
 					name: 'googleMaps',
-					url: /^(https:\/\/)?(www\.)?google\.com\/maps/
+					url: /^google\.com\/maps/
 				},
 				{
 					name: 'flickr',
-					url: /^(https:\/\/)?(www\.)?flickr\.com/
+					url: /^flickr\.com/
 				},
 				{
 					name: 'facebook',
-					url: /^(https:\/\/)?(www\.)?facebook\.com/
+					url: /^facebook\.com/
 				},
 			]
 		} );

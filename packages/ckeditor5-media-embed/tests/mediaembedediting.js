@@ -10,6 +10,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
@@ -20,28 +21,28 @@ describe( 'MediaEmbedEditing', () => {
 		A: {
 			name: 'A',
 			url: /^foo\.com\/(\w+)/,
-			html: id => `A, id=${ id }`
+			html: match => `A, id=${ match[ 1 ] }`
 		},
 		B: {
 			name: 'B',
 			url: /^bar\.com\/(\w+)/,
-			html: id => `B, id=${ id }`
+			html: match => `B, id=${ match[ 1 ] }`
 		},
 		C: {
 			name: 'C',
 			url: /^\w+\.com\/(\w+)/,
-			html: id => `C, id=${ id }`
+			html: match => `C, id=${ match[ 1 ] }`
 		},
 
 		extraA: {
 			name: 'extraA',
 			url: /^foo\.com\/(\w+)/,
-			html: id => `extraA, id=${ id }`
+			html: match => `extraA, id=${ match[ 1 ] }`
 		},
 		extraB: {
 			name: 'extraB',
 			url: /^\w+\.com\/(\w+)/,
-			html: id => `extraB, id=${ id }`
+			html: match => `extraB, id=${ match[ 1 ] }`
 		},
 
 		previewLess: {
@@ -51,9 +52,14 @@ describe( 'MediaEmbedEditing', () => {
 		allowEverything: {
 			name: 'allow-everything',
 			url: /(.*)/,
-			html: id => `allow-everything, id=${ id }`
+			html: match => `allow-everything, id=${ match[ 1 ] }`
 		}
 	};
+
+	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+	} );
 
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
@@ -95,7 +101,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="foo.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://foo.com/123">' +
 									'A, id=123' +
 								'</div>' +
 							'</figure>'
@@ -105,7 +111,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
 							'</figure>'
@@ -115,7 +121,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="anything.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://anything.com/123">' +
 									'C, id=123' +
 								'</div>' +
 							'</figure>'
@@ -212,6 +218,19 @@ describe( 'MediaEmbedEditing', () => {
 							],
 							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
 								'<iframe src="https://www.youtube.com/embed/foo" ' +
+									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
+								'</iframe>' +
+							'</div>' );
+						} );
+
+						// See: https://github.com/ckeditor/ckeditor5-media-embed/issues/26
+						it( 'upcasts the URL that contains a dash (youtube)', () => {
+							testMediaUpcast( [
+								'https://www.youtube.com/watch?v=euqbMkM-QQk'
+							],
+							'<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">' +
+								'<iframe src="https://www.youtube.com/embed/euqbMkM-QQk" ' +
 									'style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" ' +
 									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="">' +
 								'</iframe>' +
@@ -331,7 +350,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="foo.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://foo.com/123">' +
 									'A, id=123' +
 								'</div>' +
 							'</figure>'
@@ -341,7 +360,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="anything.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://anything.com/123">' +
 									'extraB, id=123' +
 								'</div>' +
 							'</figure>'
@@ -365,7 +384,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
 							'</figure>'
@@ -388,7 +407,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
 							'</figure>'
@@ -415,7 +434,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						expect( getViewData( editor.editing.view, { withoutSelection: true, renderUIElements: true } ) ).to.equal(
 							'<figure class="ck-widget media" contenteditable="false">' +
-								'<div class="ck-media__wrapper" data-oembed-url="bar.com/123">' +
+								'<div class="ck-media__wrapper" data-oembed-url="https://bar.com/123">' +
 									'B, id=123' +
 								'</div>' +
 							'</figure>'
@@ -883,11 +902,12 @@ describe( 'MediaEmbedEditing', () => {
 
 	function testMediaUpcast( urls, expected ) {
 		for ( const url of urls ) {
-			editor.setData(
-				`<figure class="media"><div data-oembed-url="${ url }"></div></figure>` );
+			editor.setData( `<figure class="media"><div data-oembed-url="${ url }"></div></figure>` );
 
 			const viewData = getViewData( view, { withoutSelection: true, renderUIElements: true } );
 			let expectedRegExp;
+
+			const expectedUrl = url.match( /^https?:\/\// ) ? url : 'https://' + url;
 
 			if ( expected ) {
 				expectedRegExp = new RegExp(
@@ -902,8 +922,8 @@ describe( 'MediaEmbedEditing', () => {
 						'<div[^>]+>' +
 							'<div class="ck ck-media__placeholder ck-reset_all">' +
 								'<div class="ck-media__placeholder__icon">.*</div>' +
-								`<a class="ck-media__placeholder__url" href="${ url }" target="new">` +
-									`<span class="ck-media__placeholder__url__text">${ url }</span>` +
+								`<a class="ck-media__placeholder__url" href="${ expectedUrl }" target="new">` +
+									`<span class="ck-media__placeholder__url__text">${ expectedUrl }</span>` +
 									'<span class="ck ck-tooltip ck-tooltip_s">' +
 										'<span class="ck ck-tooltip__text">Open media in new tab</span>' +
 									'</span>' +
