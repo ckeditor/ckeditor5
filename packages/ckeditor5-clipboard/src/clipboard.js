@@ -193,7 +193,7 @@ export default class Clipboard extends Plugin {
 
 			content = this._htmlDataProcessor.toView( content );
 
-			this.fire( 'inputTransformation', { content } );
+			this.fire( 'inputTransformation', { content, dataTransfer } );
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
@@ -253,8 +253,9 @@ export default class Clipboard extends Plugin {
 }
 
 /**
- * Fired with a `content`, which comes from the clipboard (was pasted or dropped) and
- * should be processed in order to be inserted into the editor.
+ * Fired with a `content` and `dataTransfer` objects. The `content` which comes from the clipboard (was pasted or dropped)
+ * should be processed in order to be inserted into the editor. The `dataTransfer` object is available
+ * in case the transformation functions needs access to a raw clipboard data.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
@@ -263,6 +264,7 @@ export default class Clipboard extends Plugin {
  * @param {Object} data Event data.
  * @param {module:engine/view/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
  * It can be modified by the event listeners. Read more about the clipboard pipelines in {@link module:clipboard/clipboard~Clipboard}
+ * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
  */
 
 /**
