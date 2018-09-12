@@ -1220,13 +1220,17 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	// Doing this instead of returning `NoOperation` allows for a correct undo later.
 	//
 	if ( a.sourcePosition.isEqual( b.sourcePosition ) && a.targetPosition.isEqual( b.targetPosition ) ) {
-		const path = b.graveyardPosition.path.slice();
-		path.push( 0 );
+		if ( context.bWasUndone ) {
+			const path = b.graveyardPosition.path.slice();
+			path.push( 0 );
 
-		a.sourcePosition = new Position( b.graveyardPosition.root, path );
-		a.howMany = 0;
+			a.sourcePosition = new Position( b.graveyardPosition.root, path );
+			a.howMany = 0;
 
-		return [ a ];
+			return [ a ];
+		} else {
+			return [ new NoOperation( 0 ) ];
+		}
 	}
 
 	// The default case.

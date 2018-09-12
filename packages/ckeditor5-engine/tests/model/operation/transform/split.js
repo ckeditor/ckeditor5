@@ -317,6 +317,25 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
+			it( 'text in same position, then undo and redo', () => {
+				john.setData( '<paragraph>F[]oo</paragraph>' );
+				kate.setData( '<paragraph>F[]oo</paragraph>' );
+
+				john.split();
+				kate.split();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				kate.undo();
+				kate.redo();
+
+				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
 			it( 'text in different path', () => {
 				john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );

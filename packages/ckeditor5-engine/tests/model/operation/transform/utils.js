@@ -189,6 +189,10 @@ export class Client {
 		this._processExecute( 'undo' );
 	}
 
+	redo() {
+		this._processExecute( 'redo' );
+	}
+
 	_processExecute( commandName, commandArgs ) {
 		const oldVersion = this.document.version;
 
