@@ -372,6 +372,16 @@ describe( 'Model', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
 
+		it( 'should use current model selection if no selectable passed', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			model.insertContent( new ModelText( 'ob' ) );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+		} );
+
 		it( 'should use parent batch', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>[]</paragraph>' );

@@ -12,6 +12,7 @@ import Selection from '../../../src/model/selection';
 import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
+import Range from '../../../src/model/range';
 
 describe( 'DataController utils', () => {
 	let model, doc;
@@ -44,6 +45,52 @@ describe( 'DataController utils', () => {
 			model.change( () => {
 				insertContent( model, new Text( 'x' ), selection );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom position', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const position = new Position( doc.getRoot(), [ 2 ] );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), position );
+				expect( getData( model ) ).to.equal( 'a[]bxc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom range', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const range = new Range( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 3 ] ) );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), range );
+				expect( getData( model ) ).to.equal( 'a[]bx' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if none passed', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ) );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
 			} );
 		} );
 
