@@ -122,7 +122,7 @@ export default class AutoMediaEmbed extends Plugin {
 		// Positions won't be available in `setTimeout` function so let's clone it.
 		const positionToInsert = Position.createFromPosition( leftPosition );
 
-		// This action mustn't be executed if undo was called between pasting and ąuto-embeding.
+		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
 			editor.model.change( writer => {
 				this._timeoutId = null;
