@@ -11,18 +11,35 @@ import DomEmitterMixin from './dom/emittermixin';
 import { getCode, parseKeystroke } from './keyboard';
 
 /**
- * Keystroke handler registers keystrokes so the callbacks associated
- * with these keystrokes will be executed if the matching `keydown` is fired
- * by a defined emitter.
+ * Keystroke handler allows registering callbacks for given keystrokes.
  *
- *		const handler = new KeystrokeHandler();
+ * The most frequent use of this class is through the {@link module:core/editor/editor~Editor#keystrokes `editor.keystrokes`}
+ * property. It allows listening to keystrokes executed in the editing view:
  *
- *		handler.listenTo( emitter );
- *
- *		handler.set( 'Ctrl+A', ( keyEvtData, cancel ) => {
+ *		editor.keystrokes.set( 'Ctrl+A', ( keyEvtData, cancel ) => {
  *			console.log( 'Ctrl+A has been pressed' );
  *			cancel();
  *		} );
+ *
+ * However, this utility class can be used in various part of the UI. For instance, a certain {@link module:ui/view~View}
+ * can use it like this:
+ *
+ *		class MyView extends View {
+ *			constructor() {
+ *				this.keystrokes = new KeystrokeHandler();
+ *
+ * 				this.keystrokes.set( 'tab', handleTabKey );
+ *			}
+ *
+ *			render() {
+ *				super.render();
+ *
+ *				this.keystrokes.listenTo( this.element );
+ *			}
+ *		}
+ *
+ * That keystroke handler will listen to `keydown` events fired in this view's main element.
+ *
  */
 export default class KeystrokeHandler {
 	/**
