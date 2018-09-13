@@ -73,6 +73,7 @@ describe( 'Clipboard feature', () => {
 
 				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( stringifyView( data.content ) ).to.equal( '<p>x</p>' );
 
 					done();
@@ -109,6 +110,7 @@ describe( 'Clipboard feature', () => {
 
 				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 					expect( data.content ).is.instanceOf( ViewDocumentFragment );
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
 					expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
 
 					done();
@@ -136,6 +138,7 @@ describe( 'Clipboard feature', () => {
 
 			clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 				expect( data.content ).is.instanceOf( ViewDocumentFragment );
+				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( stringifyView( data.content ) ).to.equal( '' );
 
 				expect( editorViewCalled.calledOnce ).to.be.true;
