@@ -45,7 +45,6 @@ export default class AutoMediaEmbed extends Plugin {
 	init() {
 		const editor = this.editor;
 		const modelDocument = editor.model.document;
-		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 
 		let leftLivePosition, rightLivePosition, timeoutId;
 
@@ -59,6 +58,15 @@ export default class AutoMediaEmbed extends Plugin {
 
 			rightLivePosition = LivePosition.createFromPosition( firstRange.end );
 			rightLivePosition.stickiness = 'toNext';
+
+			modelDocument.once( 'change:data', () => {
+				this._autoEmbedingEventHandler( leftLivePosition, rightLivePosition )
+					.then( _timeoutId => {
+						timeoutId = _timeoutId;
+						leftLivePosition = null;
+						rightLivePosition = null;
+					} );
+			}, { priority: 'high' } );
 		} );
 
 		editor.commands.get( 'undo' ).on( 'execute', () => {
@@ -67,55 +75,59 @@ export default class AutoMediaEmbed extends Plugin {
 				timeoutId = null;
 			}
 		}, { priority: 'high' } );
+	}
 
-		modelDocument.on( 'change:data', () => {
-			if ( !leftLivePosition ) {
-				return;
-			}
+	/**
+	 * A handler that replaces the pasted URL with `<media>` element.
+	 *
+	 * @private
+	 * @param {module:engine/model/liveposition} leftPosition Left position of the selection.
+	 * @param {module:engine/model/liveposition} rightPosition Right position of the selection.
+	 * @returns {Promise}
+	 */
+	_autoEmbedingEventHandler( leftPosition, rightPosition ) {
+		const editor = this.editor;
+		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
+		const urlRange = new LiveRange( leftPosition, rightPosition );
+		const walker = new TreeWalker( { boundaries: urlRange, ignoreElementEnd: true } );
 
-			const urlRange = new LiveRange( leftLivePosition, rightLivePosition );
-			const walker = new TreeWalker( { boundaries: urlRange, ignoreElementEnd: true } );
+		let url = '';
 
-			let url = '';
+		for ( const node of walker ) {
+			url += node.item.data;
+		}
 
-			for ( const node of walker ) {
-				if ( node.type === 'elementStart' ) {
-					return detach();
-				}
+		url = url.trim();
 
-				url += node.item.data;
-			}
+		// If the url does not match to universal url regexp, let's skip that.
+		if ( !url.match( URL_REGEXP ) ) {
+			return detach();
+		}
 
-			url = url.trim();
+		// If the url is valid from MediaEmbed plugin point of view, let's use it.
+		if ( !mediaRegistry.hasMedia( url ) ) {
+			return detach();
+		}
 
-			// If the url does not match to universal url regexp, let's skip that.
-			if ( !url.match( URL_REGEXP ) ) {
-				return detach();
-			}
+		// Positions won't be available in `setTimeout` function so let's clone it.
+		const positionToInsert = Position.createFromPosition( leftPosition );
 
-			// If the url is valid from MediaEmbed plugin point of view, let's use it.
-			if ( !mediaRegistry.hasMedia( url ) ) {
-				return detach();
-			}
+		// This action mustn't be executed if undo was called between pasting and ąuto-embeding.
+		const timeoutId = global.window.setTimeout( () => {
+			editor.model.change( writer => {
+				writer.remove( urlRange );
+				writer.setSelection( positionToInsert );
+				editor.commands.execute( 'mediaEmbed', url );
+			} );
+		}, 100 );
 
-			// `leftLivePosition` won't be available in `setTimeout` function so let's clone it.
-			const positionToInsert = Position.createFromPosition( leftLivePosition );
-
-			timeoutId = global.window.setTimeout( () => {
-				editor.model.change( writer => {
-					writer.remove( urlRange );
-					writer.setSelection( positionToInsert );
-					editor.commands.execute( 'mediaEmbed', url );
-				} );
-			}, 100 );
-		} );
+		return detach().then( () => timeoutId );
 
 		function detach() {
-			leftLivePosition.detach();
-			rightLivePosition.detach();
+			leftPosition.detach();
+			rightPosition.detach();
 
-			leftLivePosition = null;
-			rightLivePosition = null;
+			return Promise.resolve();
 		}
 	}
 }

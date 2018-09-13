@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global setTimeout */
+
 import MediaEmbed from '../src/mediaembed';
 import AutoMediaEmbed from '../src/automediaembed';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -11,7 +13,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -24,7 +25,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Undo ]
+				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -45,7 +46,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 		expect( AutoMediaEmbed.pluginName ).to.equal( 'AutoMediaEmbed' );
 	} );
 
-	describe( 'auto-media embed', () => {
+	describe( 'use fake timers', () => {
 		let clock;
 
 		beforeEach( () => {
@@ -258,7 +259,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
-		it( 'does nothing if pastes a block of content that looks like a URL', () => {
+		it( 'does nothing if pasted a paragraph with the url', () => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, '<p>https://www.youtube.com/watch?v=H08tGjXNHO4</p>' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
+		} );
+
+		it( 'does nothing if pasted a block of content that looks like a URL', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, '<ul><li>https://</li><li>youtube.com/watch?</li></ul><p>v=H08tGjXNHO4</p>' );
 
@@ -307,21 +319,42 @@ describe( 'AutoMediaEmbed - integration', () => {
 					return editor.destroy();
 				} );
 		} );
-
-		function pasteHtml( editor, html ) {
-			editor.editing.view.document.fire( 'paste', {
-				dataTransfer: createDataTransfer( { 'text/html': html } ),
-				preventDefault() {
-				}
-			} );
-		}
-
-		function createDataTransfer( data ) {
-			return {
-				getData( type ) {
-					return data[ type ];
-				}
-			};
-		}
 	} );
+
+	describe( 'real timers', () => {
+		it( 'undo breaks the auto-media embed feature', done => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
+
+			setTimeout( () => {
+				editor.commands.execute( 'undo' );
+
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>[]</paragraph>'
+				);
+
+				done();
+			} );
+		} );
+	} );
+
+	function pasteHtml( editor, html ) {
+		editor.editing.view.document.fire( 'paste', {
+			dataTransfer: createDataTransfer( { 'text/html': html } ),
+			preventDefault() {
+			}
+		} );
+	}
+
+	function createDataTransfer( data ) {
+		return {
+			getData( type ) {
+				return data[ type ];
+			}
+		};
+	}
 } );
