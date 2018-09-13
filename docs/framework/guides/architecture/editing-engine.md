@@ -182,7 +182,7 @@ The schema is, by default, configured by editor plugins. It is recommended that 
 	Currently, there is [no straightforward way to override the schema](https://github.com/ckeditor/ckeditor5-engine/issues/1367) preconfigured by features. If you want to override the default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance of it. This, however, requires rebuilding the editor.
 </info-box>
 
-The instance of the schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}. Read an extensive guide about using the schema API in the {@link module:engine/model/schema~Schema API documentation for the `Schema` class}.
+The instance of the schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}. Read an extensive guide about using the schema API in the {@link framework/guides/deep-dive/schema Schema deep dive} guide.
 
 ## View
 
