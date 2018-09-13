@@ -17,8 +17,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * commands) to make changes in the model. Commands are available in every part of code that has access to
  * the {@link module:core/editor/editor~Editor editor} instance.
  *
- * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands}.
- * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute}.
+ * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands `editor.commands`}.
+ * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute `editor.execute()`}.
  *
  * By default commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode.
  *
@@ -40,12 +40,14 @@ export default class Command {
 		this.editor = editor;
 
 		/**
-		 * The value of a command. Concrete command class should define what it represents.
+		 * The value of the command. A concrete command class should define what it represents for it.
 		 *
-		 * For example, the `bold` command's value is whether the selection starts in a bolded text.
+		 * For example, the `bold` command's value indicates whether the selection starts in a bolded text.
 		 * And the value of the `link` command may be an object with links details.
 		 *
-		 * It's possible for a command to have no value (e.g. for stateless actions such as `imageUpload`).
+		 * It is possible for a command to have no value (e.g. for stateless actions such as `imageUpload`).
+		 *
+		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *
 		 * @observable
 		 * @readonly
@@ -55,7 +57,38 @@ export default class Command {
 
 		/**
 		 * Flag indicating whether a command is enabled or disabled.
-		 * A disabled command should do nothing when executed.
+		 * A disabled command will do nothing when executed.
+		 *
+		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
+		 *
+		 * It is possible to disable a command from "outside". For instance, in your integration you may want to disable
+		 * a certain set of commands for the time being. To do that, you can use the fact that `isEnabled` is observable
+		 * and it fires the `set:isEnabled` event every time anyone tries to modify its value:
+		 *
+		 *		function disableCommand( cmd ) {
+		 *			cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+		 *
+		 *			cmd.isEnabled = false;
+		 *
+		 *			// Make it possible to enable the command again.
+		 *			return () => {
+		 *				cmd.off( 'set:isEnabled', forceDisable );
+		 *				cmd.refresh();
+		 *			}
+		 *
+		 *			function forceDisable( evt ) {
+		 *				evt.return = false;
+		 *				evt.stop();
+		 *			}
+		 *		}
+		 *
+		 *		// Usage:
+		 *
+		 *		// Disabling the command.
+		 *		const enableBold = disableCommand( editor.commands.get( 'bold' ) );
+		 *
+		 *		// Enabling the command again.
+		 *		enableBold();
 		 *
 		 * @observable
 		 * @readonly
@@ -89,7 +122,7 @@ export default class Command {
 	}
 
 	/**
-	 * Refreshes the command. The command should update its {@link #isEnabled} and {@link #value} property
+	 * Refreshes the command. The command should update its {@link #isEnabled} and {@link #value} properties
 	 * in this method.
 	 *
 	 * This method is automatically called when
@@ -102,11 +135,13 @@ export default class Command {
 	/**
 	 * Executes the command.
 	 *
-	 * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute}
+	 * A command may accept parameters. They will be passed from {@link module:core/editor/editor~Editor#execute `editor.execute()`}
 	 * to the command.
 	 *
 	 * The `execute()` method will automatically abort when the command is disabled ({@link #isEnabled} is `false`).
 	 * This behavior is implemented by a high priority listener to the {@link #event:execute} event.
+	 *
+	 * In order to see how to disable a command from "outside" see the {@link #isEnbled} documentation.
 	 *
 	 * @fires execute
 	 */
