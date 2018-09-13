@@ -13,6 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -41,6 +42,10 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 	it( 'should load Clipboard plugin', () => {
 		expect( editor.plugins.get( Clipboard ) ).to.instanceOf( Clipboard );
+	} );
+
+	it( 'should load Undo plugin', () => {
+		expect( editor.plugins.get( Undo ) ).to.instanceOf( Undo );
 	} );
 
 	it( 'has proper name', () => {
