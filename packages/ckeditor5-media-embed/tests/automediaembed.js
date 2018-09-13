@@ -13,6 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -25,7 +26,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold ]
+				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -340,7 +341,41 @@ describe( 'AutoMediaEmbed - integration', () => {
 				done();
 			} );
 		} );
+
+		// Checking whether paste+typing calls the auto-media handler once.
+		it( 'pasting handler should be executed once', done => {
+			const autoMediaEmbedPlugin = editor.plugins.get( AutoMediaEmbed );
+			const autoMediaHandler = autoMediaEmbedPlugin._autoEmbedingEventHandler;
+			let counter = 0;
+
+			autoMediaEmbedPlugin._autoEmbedingEventHandler = function( ...args ) {
+				counter += 1;
+
+				return autoMediaHandler.apply( this, args );
+			};
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+			simulateTyping( 'Foo. Bar.' );
+
+			setTimeout( () => {
+				autoMediaEmbedPlugin._autoEmbedingEventHandler = autoMediaHandler;
+
+				expect( counter ).to.equal( 1 );
+
+				done();
+			}, 100 );
+		} );
 	} );
+
+	function simulateTyping( text ) {
+		// While typing, every character is an atomic change.
+		text.split( '' ).forEach( character => {
+			editor.execute( 'input', {
+				text: character
+			} );
+		} );
+	}
 
 	function pasteHtml( editor, html ) {
 		editor.editing.view.document.fire( 'paste', {
