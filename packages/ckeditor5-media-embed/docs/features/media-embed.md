@@ -10,7 +10,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for 
 
 ## Demo
 
-Example URLs:
+You can use the "Insert media" button in the toolbar to embed media like the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -295,6 +295,18 @@ In this case, the code is almost the same as with the semantic data but you shou
 	} );
 </script>
 ```
+
+## Automatic media embed on paste
+
+By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/mediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
+
+The `AutoMediaEmbed` plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
+
+<info-box>
+	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of the content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
+</info-box>
+
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action. To do that, use the toolbar button or the {@link features/keyboard-support keystroke}.
 
 ## Styling media in editor content
 
