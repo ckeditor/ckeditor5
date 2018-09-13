@@ -1,5 +1,5 @@
 ---
-category: framework-ui
+category: framework-deep-dive-ui
 order: 20
 ---
 
@@ -14,7 +14,6 @@ In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckedit
 ## Readying the editor side
 
 The ready–to–use builds of CKEditor like {@link examples/builds/classic-editor Classic} or {@link examples/builds/inline-editor Inline} come with a dedicated default user interface and a theme. However, to create an editor instance bound to a Bootstrap UI, only a limited subset of features is required. You need to import them first:
-
 
 ```js
 // Basic classes to create an editor.
