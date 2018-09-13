@@ -1,5 +1,5 @@
 ---
-category: framework-ui
+category: framework-deep-dive-ui
 order: 10
 ---
 
