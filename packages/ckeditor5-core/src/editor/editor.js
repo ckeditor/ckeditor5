@@ -201,6 +201,11 @@ export default class Editor {
 		 *			cancel();
 		 *		} );
 		 *
+		 * Note: Certain, typing oriented keystrokes (like <kbd>Backspace</kbd> or <kbd>Enter</kbd>) are handled
+		 * by low level mechanism and trying to listen to them via the keystroke handler will not work reliably.
+		 * To handle those specific keystrokes see the events fired by the
+		 * {@link module:engine/view/document~Document editing view document} (`editor.editing.view.document`).
+		 *
 		 * @readonly
 		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
 		 */

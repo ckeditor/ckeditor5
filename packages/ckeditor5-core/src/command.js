@@ -141,7 +141,7 @@ export default class Command {
 	 * The `execute()` method will automatically abort when the command is disabled ({@link #isEnabled} is `false`).
 	 * This behavior is implemented by a high priority listener to the {@link #event:execute} event.
 	 *
-	 * In order to see how to disable a command from "outside" see the {@link #isEnbled} documentation.
+	 * In order to see how to disable a command from "outside" see the {@link #isEnabled} documentation.
 	 *
 	 * @fires execute
 	 */
