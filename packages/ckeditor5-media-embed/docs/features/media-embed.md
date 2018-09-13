@@ -65,7 +65,7 @@ By default the media embed feature outputs media in the same way it works in the
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retriving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
+Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
 
 ```html
 <figure class="media">

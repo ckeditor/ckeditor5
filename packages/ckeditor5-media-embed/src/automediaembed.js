@@ -20,7 +20,8 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
 /**
- * The auto-media embed plugin.
+ * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
+ * them shortly after they are injected into the document.
  *
  * @extends module:core/plugin~Plugin
  */

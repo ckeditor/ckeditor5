@@ -16,8 +16,9 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 /**
  * The media embed plugin.
  *
- * It loads the {@link module:media-embed/mediaembedediting~MediaEmbedEditing media embed editing feature}
- * and {@link module:media-embed/mediaembedui~MediaEmbedUI media embed UI feature}.
+ * It loads the {@link module:media-embed/mediaembedediting~MediaEmbedEditing media embed editing feature},
+ * {@link module:media-embed/mediaembedui~MediaEmbedUI media embed UI feature} and
+ * {@link module:media-embed/automediaembed~AutoMediaEmbed auto-media embed feature}.
  *
  * For a detailed overview, check the {@glink features/media-embed Media Embed feature documentation}.
  *
