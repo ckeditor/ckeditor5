@@ -69,25 +69,28 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Creates an empty table at a given position.
+	 * Creates an empty table with proper structure. The table needs to be inserted into the model,
+	 * ie. using {@link module:engine/model/model~Model#insertContent} function.
 	 *
-	 * @param {module:engine/model/position~Position} position The position where the table will be inserted.
+	 *		model.change( ( writer ) => {
+	 *			// Create a table of 2 rows and 7 columns:
+	 *			const table = tableUtils.createTable( writer, 2, 7);
+	 *
+	 *			// Insert table to the model at the best position taking current selection:
+	 *			model.insertContent( table );
+	 *		}
+	 *
+	 * @param {module:engine/model/writer~Writer} writer The model writer.
 	 * @param {Number} rows The number of rows to create.
 	 * @param {Number} columns The number of columns to create.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
-	createTable( position, rows, columns ) {
-		const model = this.editor.model;
+	createTable( writer, rows, columns ) {
+		const table = writer.createElement( 'table' );
 
-		return model.change( writer => {
-			const table = writer.createElement( 'table' );
+		createEmptyRows( writer, table, 0, rows, columns );
 
-			writer.insert( table, position );
-
-			createEmptyRows( writer, table, 0, rows, columns );
-
-			return table;
-		} );
+		return table;
 	}
 
 	/**
