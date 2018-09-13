@@ -10,11 +10,12 @@
 import MediaEmbedEditing from './mediaembedediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
@@ -28,7 +29,7 @@ export default class AutoMediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard ];
+		return [ Clipboard, Undo ];
 	}
 
 	/**
@@ -46,7 +47,7 @@ export default class AutoMediaEmbed extends Plugin {
 		const modelDocument = editor.model.document;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 
-		let leftLivePosition, rightLivePosition;
+		let leftLivePosition, rightLivePosition, timeoutId;
 
 		// We need to listen on `Clipboard#inputTransformation` because we need to save positions of selection.
 		// After pasting a content, between those position can be located a URL that should be transformed to media.
@@ -60,12 +61,19 @@ export default class AutoMediaEmbed extends Plugin {
 			rightLivePosition.stickiness = 'toNext';
 		} );
 
+		editor.commands.get( 'undo' ).on( 'execute', () => {
+			if ( timeoutId ) {
+				global.window.clearTimeout( timeoutId );
+				timeoutId = null;
+			}
+		}, { priority: 'high' } );
+
 		modelDocument.on( 'change:data', () => {
 			if ( !leftLivePosition ) {
 				return;
 			}
 
-			const urlRange = new Range( leftLivePosition, rightLivePosition );
+			const urlRange = new LiveRange( leftLivePosition, rightLivePosition );
 			const walker = new TreeWalker( { boundaries: urlRange, ignoreElementEnd: true } );
 
 			let url = '';
@@ -93,7 +101,7 @@ export default class AutoMediaEmbed extends Plugin {
 			// `leftLivePosition` won't be available in `setTimeout` function so let's clone it.
 			const positionToInsert = Position.createFromPosition( leftLivePosition );
 
-			global.window.setTimeout( () => {
+			timeoutId = global.window.setTimeout( () => {
 				editor.model.change( writer => {
 					writer.remove( urlRange );
 					writer.setSelection( positionToInsert );
