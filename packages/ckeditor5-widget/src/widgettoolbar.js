@@ -4,6 +4,34 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isWidget } from './utils';
 
+const defaultBalloonClassName = 'ck-toolbar-container';
+
+/**
+ * Widget toolbar plugin. It ease the process of creating widget toolbars by handling the whole rendering process and providing concise API.
+ *
+ * Creating toolbar for the widget bases on the {@link ~add()} method. TODO.
+ *
+ * This plugin added to the plugin list directly or indirectly prevents showing up
+ * the {@link module:ui/toolbar/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
+ *
+ * Usage example comes from {@link module:image/imagetoolbar~ImageToolbar}:
+ *
+ * 		class ImageToolbar extends Plugin {
+ *			static get requires() {
+ *				return [ WidgetToolbar ];
+ *			}
+ *
+ *			afterInit() {
+ *				const editor = this.editor;
+ *				const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+ *
+ *				widgetToolbar.add( {
+ *					toolbarItems: editor.config.get( 'image.toolbar' )
+ *					isSelected: isImageWidgetSelected
+ *				} );
+ *			}
+ *		}
+ */
 export default class WidgetToolbar extends Plugin {
 	/**
 	 * @inheritDoc
@@ -38,16 +66,29 @@ export default class WidgetToolbar extends Plugin {
 		this._toolbars = [];
 
 		this.listenTo( editor.ui, 'update', () => {
-			this._updateToolbars();
+			this._updateToolbarsVisibility();
 		} );
 
 		// UI#update is not fired after focus is back in editor, we need to check if balloon panel should be visible.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
-			this._updateToolbars();
+			this._updateToolbarsVisibility();
 		}, { priority: 'low' } );
 	}
 
-	add( { toolbarItems, isSelected, balloonClassName = 'ck-toolbar-container' } ) {
+	/**
+	 * Adds toolbar to the WidgetToolbar's collection. It renders it in the `ContextualBalloon` based on the value of the invoked
+	 * `isSelected` function. Toolbar items are gathered from `toolbarItems` array.
+	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
+	 *
+	 * Note: This method should be called in the `module:core/plugin/Plugin~afterInit` to make sure that plugins for toolbar items
+	 * will be already loaded and available in the UI component factory.
+	 *
+	 * @param {Object} options
+	 * @param {Array.<String>} options.toolbarItems Array of toolbar items.
+	 * @param {Function} options.isSelected Callback which specifies when the toolbar should be visible for the widget.
+	 * @param {String} [options.balloonClassName] CSS class for the widget balloon.
+	 */
+	add( { toolbarItems, isSelected, balloonClassName = defaultBalloonClassName } ) {
 		const editor = this.editor;
 
 		if ( !toolbarItems ) {
@@ -65,7 +106,12 @@ export default class WidgetToolbar extends Plugin {
 		} );
 	}
 
-	_updateToolbars() {
+	/**
+	 * Iterates over stored toolbars and makes them visible or hidden.
+	 *
+	 * @private
+	 */
+	_updateToolbarsVisibility() {
 		for ( const toolbar of this._toolbars ) {
 			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.isSelected( this.editor.editing.view.document.selection ) ) {
 				this._hideToolbar( toolbar );
@@ -75,6 +121,12 @@ export default class WidgetToolbar extends Plugin {
 		}
 	}
 
+	/**
+	 * Hides given toolbar.
+	 *
+	 * @private
+	 * @param {Object} toolbar
+	 */
 	_hideToolbar( toolbar ) {
 		if ( !this._isVisible( toolbar ) ) {
 			return;
@@ -83,6 +135,12 @@ export default class WidgetToolbar extends Plugin {
 		this._balloon.remove( toolbar.view );
 	}
 
+	/**
+	 * Shows up or repositions given toolbar.
+	 *
+	 * @private
+	 * @param {Object} toolbar
+	 */
 	_showToolbar( toolbar ) {
 		if ( this._isVisible( toolbar ) ) {
 			repositionContextualBalloon( this.editor );
@@ -95,6 +153,10 @@ export default class WidgetToolbar extends Plugin {
 		}
 	}
 
+	/**
+	 * @private
+	 * @param {Object} toolbar
+	 */
 	_isVisible( toolbar ) {
 		return this._balloon.visibleView == toolbar.view;
 	}
