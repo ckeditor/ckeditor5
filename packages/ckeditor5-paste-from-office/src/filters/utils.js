@@ -9,17 +9,11 @@
 
 /* globals DOMParser */
 
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
-import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 const domParser = new DOMParser();
 const domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
-const upcastWriter = new UpcastWriter();
 
 /**
  * Parses provided HTML extracting contents of `body` and `style` tags.
@@ -35,7 +29,9 @@ const upcastWriter = new UpcastWriter();
  */
 export function parseHtml( htmlString ) {
 	// Parse htmlString as native Document object.
-	const htmlDocument = domParser.parseFromString( htmlString, 'text/html' );
+	const htmlDocument = domParser.parseFromString( normalizeEndTagsPrecedingSpace( htmlString ), 'text/html' );
+
+	normalizeSpacerunSpans( htmlDocument );
 
 	// Get `innerHTML` first as transforming to View modifies the source document.
 	const bodyString = htmlDocument.body.innerHTML;
@@ -66,7 +62,7 @@ function documentToView( htmlDocument ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domToView( fragment );
+	return domConverter.domToView( fragment );
 }
 
 // Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.
@@ -93,60 +89,27 @@ function extractStyles( htmlDocument ) {
 	};
 }
 
-// Converts given DOM structure to a View structure.
+// Replaces last space preceding elements closing tag with `&nbsp;`. Such operation prevents spaces from being removed
+// during further DOM/View processing (see especially {@link module:engine/view/domconverter~DomConverter#_processDataFromDomText}).
+// This method also takes into account Word specific `<o:p></o:p>` empty tags.
 //
-// @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
-// @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
-// or `null` if DOM node is an empty text node or not a `DocumentFragment` or `Element` node type.
-function domToView( domNode ) {
-	if ( isText( domNode ) ) {
-		const textData = normalizeTextNodes( domNode.data );
-
-		return textData === '' ? null : new ViewText( textData );
-	} else if ( domConverter.isDocumentFragment( domNode ) || domConverter.isElement( domNode ) ) {
-		let viewElement;
-
-		if ( domConverter.isDocumentFragment( domNode ) ) {
-			// Create view document fragment.
-			viewElement = new ViewDocumentFragment();
-		} else {
-			// Create view element.
-			const viewName = domNode.tagName.toLowerCase();
-			viewElement = new ViewElement( viewName );
-
-			// Copy element's attributes.
-			const attrs = domNode.attributes;
-
-			for ( let i = attrs.length - 1; i >= 0; i-- ) {
-				upcastWriter.setAttribute( attrs[ i ].name, attrs[ i ].value, viewElement );
-			}
-		}
-
-		const children = [];
-
-		for ( let i = 0; i < domNode.childNodes.length; i++ ) {
-			const viewChild = domToView( domNode.childNodes[ i ] );
-
-			if ( viewChild ) {
-				children.push( viewChild );
-			}
-		}
-		upcastWriter.appendChild( children, viewElement );
-
-		return viewElement;
-	}
-
-	return null;
+// @param {String} htmlString HTML string in which spacing should be normalized.
+// @returns {String} Input HTML with spaces normalized.
+function normalizeEndTagsPrecedingSpace( htmlString ) {
+	return htmlString
+		.replace( / <\//g, '\u00A0</' )
+		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' );
 }
 
-// Normalizes given text nodes by replacing new line characters and non-breaking spaces with regular spaces.
+// Normalizes spacing in special Word `spacerun spans` (`<span style='mso-spacerun:yes'>\s+</span>`) by replacing
+// all spaces with `&nbsp; ` pairs. This prevents spaces from being removed during further DOM/View processing
+// (see especially {@link module:engine/view/domconverter~DomConverter#_processDataFromDomText}).
 //
-// @param {String} text Text to be normalized.
-// @returns {String} Normalized text.
-function normalizeTextNodes( text ) {
-	const normalizedText = text
-		.replace( /[\n\t\r]{1,}/g, ' ' )
-		.replace( /\u00A0/g, ' ' );
+// @param {Document} htmlDocument Native `Document` object in which spacing should be normalized.
+function normalizeSpacerunSpans( htmlDocument ) {
+	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
+		const spacesReplacemanet = Array( el.innerText.length + 1 ).join( '\u00A0 ' ).substr( 0, el.innerText.length );
 
-	return normalizedText === ' ' ? '' : normalizedText;
+		el.innerHTML = spacesReplacemanet;
+	} );
 }

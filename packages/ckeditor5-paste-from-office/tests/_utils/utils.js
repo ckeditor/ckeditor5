@@ -85,5 +85,9 @@ export function expectNormalized( actual, expected ) {
 		// Replace line breaks (after closing tags) too.
 		.replace( /[\r\n]/gm, '' );
 
-	expect( stringify( actual ) ).to.equal( normalizeHtml( expectedInlined ) );
+	// We are ok with both spaces and non-breaking spaces in the actual content.
+	// Replace `&nbsp;` with regular spaces to align with expected content (where regular spaces are only used).
+	const actualNormalized = stringify( actual ).replace( /\u00A0/g, ' ' );
+
+	expect( actualNormalized ).to.equal( normalizeHtml( expectedInlined ) );
 }
