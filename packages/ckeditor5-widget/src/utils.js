@@ -8,7 +8,8 @@
  */
 
 import HighlightStack from './highlightstack';
-import Position from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -240,6 +241,51 @@ export function toWidgetEditable( editable, writer ) {
 	return editable;
 }
 
+/**
+ * Returns a model position which is optimal (in terms of UX) for inserting a widget block.
+ *
+ * For instance, if a selection is in the middle of a paragraph, the position before this paragraph
+ * will be returned so that it is not split. If the selection is at the end of a paragraph,
+ * the position after this paragraph will be returned.
+ *
+ * Note: If the selection is placed in an empty block, that block will be returned. If that position
+ * is then passed to {@link module:engine/model/model~Model#insertContent},
+ * the block will be fully replaced by the image.
+ *
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * The selection based on which the insertion position should be calculated.
+ * @returns {module:engine/model/position~Position} The optimal position.
+ */
+export function findOptimalInsertionPosition( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	if ( selectedElement ) {
+		return ModelPosition.createAfter( selectedElement );
+	}
+
+	const firstBlock = selection.getSelectedBlocks().next().value;
+
+	if ( firstBlock ) {
+		// If inserting into an empty block – return position in that block. It will get
+		// replaced with the image by insertContent(). #42.
+		if ( firstBlock.isEmpty ) {
+			return ModelPosition.createAt( firstBlock );
+		}
+
+		const positionAfter = ModelPosition.createAfter( firstBlock );
+
+		// If selection is at the end of the block - return position after the block.
+		if ( selection.focus.isTouching( positionAfter ) ) {
+			return positionAfter;
+		}
+
+		// Otherwise return position before the block.
+		return ModelPosition.createBefore( firstBlock );
+	}
+
+	return selection.focus;
+}
+
 // Default filler offset function applied to all widget elements.
 //
 // @returns {null}
@@ -268,6 +314,6 @@ function addSelectionHandler( editable, writer ) {
 	} );
 
 	// Append the selection handler into the widget wrapper.
-	writer.insert( Position.createAt( editable ), selectionHandler );
+	writer.insert( ViewPosition.createAt( editable ), selectionHandler );
 	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }
