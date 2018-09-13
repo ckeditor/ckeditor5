@@ -50,7 +50,7 @@ export default class AutoMediaEmbed extends Plugin {
 		 * A timer id returned by `setTimeout` function.
 		 *
 		 * @private
-		 * @member {Number} media-embed/automediaembed~AutoMediaEmbed#_timeoudId
+		 * @member {Number} #_timeoutId
 		 */
 		this._timeoutId = null;
 	}
