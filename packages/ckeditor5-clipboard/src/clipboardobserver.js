@@ -89,7 +89,8 @@ function getDropViewRange( view, domEvent ) {
 
 /**
  * Fired as a continuation of {@link #event:paste} and {@link #event:drop} events.
- * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
+ *
+ * It is a part of the {@glink framework/guides/deep-dive/clipboard#input-pipeline "clipboard input pipeline"}.
  *
  * Fired with a `dataTransfer` which comes from the clipboard and which content should be processed
  * and inserted into the editor.
