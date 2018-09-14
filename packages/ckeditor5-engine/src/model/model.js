@@ -298,6 +298,19 @@ export default class Model {
 	 *
 	 *		editor.model.insertContent( modelFragment, editor.model.document.selection );
 	 *
+	 * If an instance of {module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+	 * to the insertion selection (equal to a range to be selected after insertion).
+	 *
+	 *		// Insert text replacing given selection instance.
+	 *		const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 5 ] ) );
+	 *
+	 *		editor.model.change( ( writer ) => {
+	 *			editor.model.insertContent( model, writer.createText( 'x' ), selection );
+	 *
+	 *			// The selection contains a range to be selected - ie can be used to set selection.
+	 *			writer.setSelection( selection );
+	 *		} );
+	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|

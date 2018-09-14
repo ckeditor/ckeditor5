@@ -19,30 +19,8 @@ import Selection from '../selection';
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- *		// Insert text at current document selection position.
- *		model.change( () => {
- *			insertContent( model, new Text( 'x' ) ); // equal to insertContent( model, new Text( 'x' ), editor.model.document.selection );
- *		} );
- *
- *		// Insert text at some position - model's selection will not be modified.
- *		model.change( () => {
- *			insertContent( model, new Text( 'x' ), new Position( doc.getRoot(), [ 2 ] ) );
- *		} );
- *
  * If an instance of {module:engine/model/selection~Selection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
- *
- *		// Insert text replacing given selection instance.
- *		const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 5 ] ) );
- *
- *		model.change( () => {
- *			insertContent( model, new Text( 'x' ), selection );
- *		} );
- *
- *		// The selection contains a range to be selected - ie can be used to set selection.
- *		model.change( ( writer ) => {
- *			writer.setSelection( selection );
- *		} );
  *
  * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
  * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertContent}
