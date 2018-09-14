@@ -9,7 +9,7 @@ const defaultBalloonClassName = 'ck-toolbar-container';
 /**
  * Widget toolbar plugin. It ease the process of creating widget toolbars by handling the whole rendering process and providing concise API.
  *
- * Creating toolbar for the widget bases on the {@link ~add()} method. TODO.
+ * Creating toolbar for the widget bases on the {@link ~add()} method. TODO
  *
  * This plugin added to the plugin list directly or indirectly prevents showing up
  * the {@link module:ui/toolbar/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
@@ -27,7 +27,7 @@ const defaultBalloonClassName = 'ck-toolbar-container';
  *
  *				widgetToolbar.add( {
  *					toolbarItems: editor.config.get( 'image.toolbar' )
- *					isSelected: isImageWidgetSelected
+ *					isVisible: isImageWidgetSelected
  *				} );
  *			}
  *		}
@@ -54,16 +54,27 @@ export default class WidgetToolbar extends Plugin {
 		const editor = this.editor;
 		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-		// Disable the default balloon toolbar for all widgets.
-		this.listenTo( balloonToolbar, 'show', evt => {
-			if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
-				evt.stop();
-			}
-		}, { priority: 'high' } );
+		// Disables the default balloon toolbar for all widgets.
+		if ( balloonToolbar ) {
+			this.listenTo( balloonToolbar, 'show', evt => {
+				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+		}
 
+		/**
+		 * A map of toolbars.
+		 *
+		 * @protected
+		 * @member {Map.<string,Object>} #_toolbars
+		 */
+		this._toolbars = new Map();
+
+		/**
+		 * @private
+		 */
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
-
-		this._toolbars = [];
 
 		this.listenTo( editor.ui, 'update', () => {
 			this._updateToolbarsVisibility();
@@ -77,33 +88,50 @@ export default class WidgetToolbar extends Plugin {
 
 	/**
 	 * Adds toolbar to the WidgetToolbar's collection. It renders it in the `ContextualBalloon` based on the value of the invoked
-	 * `isSelected` function. Toolbar items are gathered from `toolbarItems` array.
+	 * `isVisible` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
 	 * Note: This method should be called in the `module:core/plugin/Plugin~afterInit` to make sure that plugins for toolbar items
 	 * will be already loaded and available in the UI component factory.
 	 *
+	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
 	 * @param {Array.<String>} options.toolbarItems Array of toolbar items.
-	 * @param {Function} options.isSelected Callback which specifies when the toolbar should be visible for the widget.
+	 * @param {Function} options.isVisible Callback which specifies when the toolbar should be visible for the widget.
 	 * @param {String} [options.balloonClassName] CSS class for the widget balloon.
 	 */
-	add( { toolbarItems, isSelected, balloonClassName = defaultBalloonClassName } ) {
+	add( toolbarId, { toolbarItems, isVisible, balloonClassName = defaultBalloonClassName } ) {
 		const editor = this.editor;
-
-		if ( !toolbarItems ) {
-			return;
-		}
-
 		const toolbarView = new ToolbarView();
 
 		toolbarView.fillFromConfig( toolbarItems, editor.ui.componentFactory );
 
-		this._toolbars.push( {
+		if ( this._toolbars.has( toolbarId ) ) {
+			/**
+			 * Toolbar with the given id was already added.
+			 *
+			 * @error
+			 */
+			throw new Error( 'duplicated-toolbar: Toolbar with the given id was already added.', { toolbarId } )
+		}
+
+		this._toolbars.set( toolbarId, {
 			view: toolbarView,
-			isSelected,
+			isVisible,
 			balloonClassName,
 		} );
+	}
+
+	/**
+	 * Removes toolbar of the given toolbarId.
+	 *
+	 * @param {String} toolbarId Toolbar identificator.
+	 */
+	remove( toolbarId ) {
+		const toolbar = this._toolbars.get( toolbarId );
+
+		this._hideToolbar( toolbar );
+		this._toolbars.delete( toolbarId );
 	}
 
 	/**
@@ -112,8 +140,8 @@ export default class WidgetToolbar extends Plugin {
 	 * @private
 	 */
 	_updateToolbarsVisibility() {
-		for ( const toolbar of this._toolbars ) {
-			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.isSelected( this.editor.editing.view.document.selection ) ) {
+		for ( const toolbar of this._toolbars.values() ) {
+			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.isVisible( this.editor.editing.view.document.selection ) ) {
 				this._hideToolbar( toolbar );
 			} else {
 				this._showToolbar( toolbar );
@@ -122,7 +150,7 @@ export default class WidgetToolbar extends Plugin {
 	}
 
 	/**
-	 * Hides given toolbar.
+	 * Hides the given toolbar.
 	 *
 	 * @private
 	 * @param {Object} toolbar
@@ -136,7 +164,7 @@ export default class WidgetToolbar extends Plugin {
 	}
 
 	/**
-	 * Shows up or repositions given toolbar.
+	 * Shows up or repositions the given toolbar.
 	 *
 	 * @private
 	 * @param {Object} toolbar
@@ -198,7 +226,7 @@ function getParentWidget( selection ) {
 	let parent = position.parent;
 
 	while ( parent ) {
-		if ( isWidget( parent ) ) {
+		if ( parent.is( 'element' ) && isWidget( parent ) ) {
 			return parent;
 		}
 
