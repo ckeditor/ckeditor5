@@ -15,6 +15,8 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -327,8 +329,10 @@ describe( 'AutoMediaEmbed - integration', () => {
 		} );
 	} );
 
-	describe( 'real timers', () => {
-		it( 'undo breaks the auto-media embed feature', done => {
+	describe( 'use real timers', () => {
+		const characters = Array( 10 ).fill( 1 ).map( ( x, i ) => String.fromCharCode( 65 + i ) );
+
+		it( 'undo breaks the auto-media embed feature (undo was done before auto-media embed)', done => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
@@ -367,6 +371,136 @@ describe( 'AutoMediaEmbed - integration', () => {
 				autoMediaEmbedPlugin._autoEmbedingEventHandler = autoMediaHandler;
 
 				expect( counter ).to.equal( 1 );
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'typing before pasted link during collaboration should not blow up', done => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			for ( let i = 0; i < 10; ++i ) {
+				const rootEl = editor.model.document.getRoot();
+
+				setTimeout( () => {
+					editor.model.enqueueChange( 'transparent', writer => {
+						writer.insertText( characters[ i ], new ModelPosition( rootEl, [ 0, i ] ) );
+					} );
+				}, i * 9 );
+			}
+
+			setTimeout( () => {
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>ABCDEFGHIJ</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'typing after pasted link during collaboration should not blow up', done => {
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			for ( let i = 0; i < 10; ++i ) {
+				setTimeout( () => {
+					editor.model.enqueueChange( 'transparent', writer => {
+						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
+					} );
+				}, i * 9 );
+			}
+
+			setTimeout( () => {
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>ABCDEFGHIJ</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should insert the media element even if parent element where the URL was pasted has been deleted', done => {
+			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			editor.model.enqueueChange( 'transparent', writer => {
+				writer.remove( ModelRange.createOn( editor.model.document.getRoot().getChild( 1 ) ) );
+			} );
+
+			setTimeout( () => {
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>Foo.</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should insert the media element even if new element appeared above the pasted URL', done => {
+			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			editor.model.enqueueChange( 'transparent', writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+				writer.insert( paragraph, ModelPosition.createAfter( editor.model.document.getRoot().getChild( 0 ) ) );
+				writer.setSelection( paragraph, 'in' );
+			} );
+
+			setTimeout( () => {
+				for ( let i = 0; i < 10; ++i ) {
+					setTimeout( () => {
+						editor.model.enqueueChange( 'transparent', writer => {
+							writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
+						} );
+					}, i * 9 );
+				}
+			} );
+
+			setTimeout( () => {
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>Foo.</paragraph>' +
+					'<paragraph>ABCDEFGHIJ</paragraph>' +
+					'<paragraph>Bar.</paragraph>' +
+					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				);
+
+				done();
+			}, 100 );
+		} );
+
+		it( 'should insert the media element even if new element appeared below the pasted URL', done => {
+			setData( editor.model, '<paragraph>Foo.</paragraph><paragraph>Bar.[]</paragraph>' );
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			editor.model.enqueueChange( 'transparent', writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+				writer.insert( paragraph, ModelPosition.createAfter( editor.model.document.getRoot().getChild( 1 ) ) );
+				writer.setSelection( paragraph, 'in' );
+			} );
+
+			setTimeout( () => {
+				for ( let i = 0; i < 10; ++i ) {
+					setTimeout( () => {
+						editor.model.enqueueChange( 'transparent', writer => {
+							writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
+						} );
+					}, i * 9 );
+				}
+			} );
+
+			setTimeout( () => {
+				expect( getData( editor.model ) ).to.equal(
+					'<paragraph>Foo.</paragraph>' +
+					'<paragraph>Bar.</paragraph>' +
+					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+					'<paragraph>ABCDEFGHIJ</paragraph>'
+				);
 
 				done();
 			}, 100 );

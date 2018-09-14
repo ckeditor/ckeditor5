@@ -11,7 +11,6 @@ import MediaEmbedEditing from './mediaembedediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
 import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
@@ -121,7 +120,7 @@ export default class AutoMediaEmbed extends Plugin {
 		}
 
 		// Positions won't be available in `setTimeout` function so let's clone it.
-		const positionToInsert = Position.createFromPosition( leftPosition );
+		const positionToInsert = LivePosition.createFromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
@@ -129,8 +128,15 @@ export default class AutoMediaEmbed extends Plugin {
 				this._timeoutId = null;
 
 				writer.remove( urlRange );
-				writer.setSelection( positionToInsert );
+
+				// Check if position where the media element should be inserted is still valid.
+				if ( positionToInsert.root.rootName !== '$graveyard' ) {
+					writer.setSelection( positionToInsert );
+				}
+
 				editor.commands.execute( 'mediaEmbed', url );
+
+				positionToInsert.detach();
 			} );
 		}, 100 );
 	}
