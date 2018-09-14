@@ -451,15 +451,13 @@ describe( 'AutoMediaEmbed - integration', () => {
 				writer.setSelection( paragraph, 'in' );
 			} );
 
-			setTimeout( () => {
-				for ( let i = 0; i < 10; ++i ) {
-					setTimeout( () => {
-						editor.model.enqueueChange( 'transparent', writer => {
-							writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
-						} );
-					}, i * 9 );
-				}
-			} );
+			for ( let i = 0; i < 10; ++i ) {
+				setTimeout( () => {
+					editor.model.enqueueChange( 'transparent', writer => {
+						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
+					} );
+				}, i * 9 );
+			}
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
@@ -484,15 +482,13 @@ describe( 'AutoMediaEmbed - integration', () => {
 				writer.setSelection( paragraph, 'in' );
 			} );
 
-			setTimeout( () => {
-				for ( let i = 0; i < 10; ++i ) {
-					setTimeout( () => {
-						editor.model.enqueueChange( 'transparent', writer => {
-							writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
-						} );
-					}, i * 9 );
-				}
-			} );
+			for ( let i = 0; i < 10; ++i ) {
+				setTimeout( () => {
+					editor.model.enqueueChange( 'transparent', writer => {
+						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
+					} );
+				}, i * 9 );
+			}
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
