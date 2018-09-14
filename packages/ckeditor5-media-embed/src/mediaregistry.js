@@ -113,7 +113,7 @@ export default class MediaRegistry {
 		url = url.trim();
 
 		for ( const definition of this.providerDefinitions ) {
-			const contentRenderer = definition.html;
+			const previewRenderer = definition.html;
 			let pattern = definition.url;
 
 			if ( !Array.isArray( pattern ) ) {
@@ -124,7 +124,7 @@ export default class MediaRegistry {
 				const match = this._getUrlMatches( url, subPattern );
 
 				if ( match ) {
-					return new Media( this.locale, url, match, contentRenderer );
+					return new Media( this.locale, url, match, previewRenderer );
 				}
 			}
 		}
@@ -176,7 +176,7 @@ export default class MediaRegistry {
  * @private
  */
 class Media {
-	constructor( locale, url, match, contentRenderer ) {
+	constructor( locale, url, match, previewRenderer ) {
 		/**
 		 * The URL this Media instance represents.
 		 *
@@ -204,7 +204,7 @@ class Media {
 		 *
 		 * @member {Function}
 		 */
-		this._contentRenderer = contentRenderer;
+		this._previewRenderer = previewRenderer;
 	}
 
 	/**
@@ -219,7 +219,7 @@ class Media {
 	getViewElement( writer, options ) {
 		const attributes = {};
 
-		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._contentRenderer ) ) {
+		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._previewRenderer ) ) {
 			if ( this.url ) {
 				attributes[ 'data-oembed-url' ] = this.url;
 			}
@@ -228,7 +228,7 @@ class Media {
 				attributes.class = 'ck-media__wrapper';
 			}
 
-			const mediaHtml = this._getContentHtml( options );
+			const mediaHtml = this._getPreviewHtml( options );
 
 			return writer.createUIElement( 'div', attributes, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
@@ -254,9 +254,9 @@ class Media {
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {String}
 	 */
-	_getContentHtml( options ) {
-		if ( this._contentRenderer ) {
-			return this._contentRenderer( this._match );
+	_getPreviewHtml( options ) {
+		if ( this._previewRenderer ) {
+			return this._previewRenderer( this._match );
 		} else {
 			// The placeholder only makes sense for editing view and media which have URLs.
 			// Placeholder is never displayed in data and URL-less media have no content.
