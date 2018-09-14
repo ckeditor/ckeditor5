@@ -239,7 +239,8 @@ export default class MediaFormView extends View {
 	 * Cleans up the errors in all form fields. See {@link #isValid}.
 	 */
 	resetErrors() {
-		this.urlInputView.errorText = false;
+		this.urlInputView.errorText = null;
+		this.urlInputView.tipText = null;
 	}
 
 	/**
@@ -255,6 +256,14 @@ export default class MediaFormView extends View {
 
 		labeledInput.label = t( 'Media URL' );
 		labeledInput.inputView.placeholder = 'https://example.com';
+
+		labeledInput.inputView.on( 'input', () => {
+			if ( labeledInput.inputView.element.value ) {
+				labeledInput.tipText = t( 'Paste the URL into the content to embed faster.' );
+			} else {
+				labeledInput.tipText = null;
+			}
+		} );
 
 		return labeledInput;
 	}
