@@ -19,7 +19,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageToolbar', () => {
-	let editor, model, doc, plugin, toolbar, balloon, editorElement;
+	let editor, model, doc, toolbar, balloon, widgetToolbar, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -41,8 +41,8 @@ describe( 'ImageToolbar', () => {
 				editor = newEditor;
 				model = newEditor.model;
 				doc = model.document;
-				plugin = editor.plugins.get( ImageToolbar );
-				toolbar = plugin._toolbar;
+				widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+				toolbar = widgetToolbar._toolbars.get( 'image' ).view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
 	} );
