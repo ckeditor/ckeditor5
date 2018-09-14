@@ -114,7 +114,8 @@ export default class MediaEmbed extends Plugin {
 
 /**
  * The configuration of the media embed features.
- * Used by the media embed features in the `@ckeditor/ckeditor5-media-embed` package.
+ *
+ * Read more about {@glink features/media-embed#configuration configuring the media embed feature}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -179,6 +180,9 @@ export default class MediaEmbed extends Plugin {
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ *
+ * You can take inspirtation from the default configuration of this feature which you can find in:
+ * https://github.com/ckeditor/ckeditor5-media-embed/blob/master/src/mediaembedediting.js
  *
  * To **extend** the list of default providers, use
  * {@link module:media-embed/mediaembed~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}.

@@ -20,13 +20,17 @@ You can use the "Insert media" button in the toolbar to embed media like the fol
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-media-embed
 ```
 
-Then add `'MediaEmbed'` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature:
+Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature (if needed):
 
 ```js
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -98,7 +102,7 @@ Names of providers **with previews**:
 * `'dailymotion'`,
 * `'spotify'`,
 * `'youtube'`,
-* `'vimeo'`
+* `'vimeo'`.
 
 Names of providers **without previews**:
 
@@ -106,7 +110,7 @@ Names of providers **without previews**:
 * `'twitter'`,
 * `'googleMaps'`,
 * `'flickr'`,
-* `'facebook'`
+* `'facebook'`.
 
 <info-box notice>
 	The default media provider configuration does not support all possible media URLs, only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
@@ -120,7 +124,7 @@ To extend the default list of default providers, use {@link module:media-embed/m
 
 To remove certain providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
 
-For instance, to leave only the previewable providers use this
+For instance, to leave only the previewable providers configure this feature as follows:
 
 ```js
 ClassicEditor
@@ -151,7 +155,7 @@ ClassicEditor
 					url: /^example\.com\/media\/(\w+)/,
 
 					// To be defined only if the media is previewable:
-					html: mediaId => '...'
+					html: match => '...'
 				},
 				...
 			]
@@ -160,6 +164,8 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+You can take inspirtation from the default configuration of this feature which you can find in: https://github.com/ckeditor/ckeditor5-media-embed/blob/master/src/mediaembedediting.js
 
 ## Displaying embedded media on your website
 
@@ -298,15 +304,15 @@ In this case, the code is almost the same as with the semantic data but you shou
 
 ## Automatic media embed on paste
 
-By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
+By default, the {@link module:media-embed/mediaembed~MediaEmbed} plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed} as a dependency.
 
-The `AutoMediaEmbed` plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
+The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. by using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
 
 <info-box>
 	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of the content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action. To do that, use the toolbar button or the {@link features/keyboard-support keystroke}.
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> keystrokes).
 
 ## Styling media in editor content
 
