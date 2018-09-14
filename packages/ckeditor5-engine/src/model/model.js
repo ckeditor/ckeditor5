@@ -275,7 +275,7 @@ export default class Model {
 	 *
 	 *		// insertContent() doesn't have to be used in a change() block. It can, though,
 	 *		// so this code could be moved to the callback defined above.
-	 *		editor.model.insertContent( docFrag, editor.model.document.selection );
+	 *		editor.model.insertContent( docFrag );
 	 *
 	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
 	 *
@@ -296,16 +296,29 @@ export default class Model {
 	 *		// which has a loosened schema.
 	 *		const modelFragment = editor.data.toModel( viewFragment );
 	 *
-	 *		editor.model.insertContent( modelFragment, editor.model.document.selection );
+	 *		editor.model.insertContent( modelFragment );
 	 *
-	 * If an instance of {module:engine/model/selection~Selection} is passed as `selectable` it will be modified
-	 * to the insertion selection (equal to a range to be selected after insertion).
+	 * By default the method will use document selection but it can be also used with position or range instances.
+	 *
+	 *		// Insert text at current document selection position.
+	 *		editor.model.change( writer => {
+	 *			editor.model.insertContent( writer.createText( 'x' ) );
+	 *			// equal to editor.model.insertContent( model, writer.createText( 'x' ), editor.model.document.selection );
+	 *		} );
+	 *
+	 *		// Insert text at some position - model's selection will not be modified.
+	 *		editor.model.change( writer => {
+	 *			editor.model.insertContent( writer.createText( 'x' ), new Position( doc.getRoot(), [ 2 ] ) );
+	 *		} );
+	 *
+	 * If an instance of {module:engine/model/selection~Selection} is passed as `selectable`
+	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
 	 *		// Insert text replacing given selection instance.
 	 *		const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 5 ] ) );
 	 *
-	 *		editor.model.change( ( writer ) => {
-	 *			editor.model.insertContent( model, writer.createText( 'x' ), selection );
+	 *		editor.model.change( writer => {
+	 *			editor.model.insertContent( writer.createText( 'x' ), selection );
 	 *
 	 *			// insertContent() modifies the passed selection instance so it can be used to set the document selection.
 	 *			// Note: This is not necessary when you passed document selection to insertContent().
