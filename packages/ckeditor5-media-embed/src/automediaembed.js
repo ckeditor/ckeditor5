@@ -145,7 +145,7 @@ export default class AutoMediaEmbed extends Plugin {
 				writer.remove( urlRange );
 
 				// Check if position where the media element should be inserted is still valid.
-				if ( !this._positionToInsert.root.is( '$graveyard' ) ) {
+				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
 					writer.setSelection( this._positionToInsert );
 				}
 
