@@ -3309,8 +3309,7 @@ describe( 'ListEditing', () => {
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
-				),
-				modelDoc.selection
+				)
 			);
 
 			expect( getModelData( model ) ).to.equal(
@@ -3329,10 +3328,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent(
-				new ModelElement( 'listItem', { listType: 'bulleted', listIndent: '0' }, 'X' ),
-				modelDoc.selection
-			);
+			editor.model.insertContent( new ModelElement( 'listItem', { listType: 'bulleted', listIndent: '0' }, 'X' ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3349,10 +3345,7 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent(
-				new ModelText( 'X' ),
-				modelDoc.selection
-			);
+			editor.model.insertContent( new ModelText( 'X' ) );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3494,7 +3487,7 @@ describe( 'ListEditing', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
-				editor.model.insertContent( new ModelDocumentFragment(), modelDoc.selection );
+				editor.model.insertContent( new ModelDocumentFragment() );
 			} ).not.to.throw();
 		} );
 
