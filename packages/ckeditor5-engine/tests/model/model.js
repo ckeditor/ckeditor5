@@ -347,7 +347,7 @@ describe( 'Model', () => {
 
 			model.on( 'insertContent', spy );
 
-			model.insertContent( new ModelText( 'a' ), model.document.selection );
+			model.insertContent( new ModelText( 'a' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -357,7 +357,7 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			model.insertContent( new ModelText( 'ob' ), model.document.selection );
+			model.insertContent( new ModelText( 'ob' ) );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
@@ -367,7 +367,7 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			model.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ), model.document.selection );
+			model.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ) );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
@@ -387,7 +387,7 @@ describe( 'Model', () => {
 			setData( model, '<paragraph>[]</paragraph>' );
 
 			model.change( writer => {
-				model.insertContent( new ModelText( 'abc' ), model.document.selection );
+				model.insertContent( new ModelText( 'abc' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );

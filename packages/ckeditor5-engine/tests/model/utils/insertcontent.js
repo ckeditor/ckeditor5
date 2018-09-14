@@ -27,7 +27,7 @@ describe( 'DataController utils', () => {
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
-				insertContent( model, new Text( 'a' ), doc.selection );
+				insertContent( model, new Text( 'a' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
@@ -103,7 +103,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection );
+			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -117,7 +117,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new Text( 'a' ), doc.selection );
+			insertContent( model, new Text( 'a' ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -137,7 +137,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			insertContent( model, content, doc.selection );
+			insertContent( model, content );
 
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
@@ -350,7 +350,7 @@ describe( 'DataController utils', () => {
 				] );
 
 				setData( model, '[<heading2>foo</heading2>]' );
-				insertContent( model, content, doc.selection );
+				insertContent( model, content );
 				expect( getData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
 			} );
 
@@ -901,6 +901,6 @@ describe( 'DataController utils', () => {
 			} );
 		}
 
-		insertContent( model, content, doc.selection );
+		insertContent( model, content );
 	}
 } );
