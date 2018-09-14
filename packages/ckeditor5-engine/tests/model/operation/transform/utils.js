@@ -5,6 +5,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
 import { transformSets } from '../../../../src/model/operation/transform';
@@ -29,7 +30,7 @@ export class Client {
 			// Typing is needed for delete command.
 			// UndoEditing is needed for undo command.
 			// Block plugins are needed for proper data serializing.
-			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing ]
+			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing ]
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;

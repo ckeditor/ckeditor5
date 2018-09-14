@@ -2031,7 +2031,74 @@ setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	return [ a ];
 } );
 
-setTransformation( SplitOperation, MergeOperation, ( a, b ) => {
+setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
+	// Case 1:
+	//
+	// Split element got merged. If two different elements were merged, clients will have different content.
+	//
+	// Example. Merge at `{}`, split at `[]`:
+	// <heading>Foo</heading>{}<paragraph>B[]ar</paragraph>
+	//
+	// On merge side it will look like this:
+	// <heading>FooB[]ar</heading>
+	// <heading>FooB</heading><heading>ar</heading>
+	//
+	// On split side it will look like this:
+	// <heading>Foo</heading>{}<paragraph>B</paragraph><paragraph>ar</paragraph>
+	// <heading>FooB</heading><paragraph>ar</paragraph>
+	//
+	// Clearly, the second element is different for both clients.
+	//
+	// We could use the removed merge element from graveyard as a split element but then clients would have a different
+	// model state (in graveyard), because the split side client would still have an element in graveyard (removed by merge).
+	//
+	// To overcome this, in `SplitOperation` x `MergeOperation` transformation we will add additional `SplitOperation`
+	// in the graveyard, which will actually clone the merged-and-deleted element. Then, that cloned element will be
+	// used for splitting. Example below.
+	//
+	// Original state:
+	// <heading>Foo</heading>{}<paragraph>B[]ar</paragraph>
+	//
+	// Merge side client:
+	//
+	// After merge:
+	// <heading>FooB[]ar</heading>                                 graveyard: <paragraph></paragraph>
+	//
+	// Extra split:
+	// <heading>FooB[]ar</heading>                                 graveyard: <paragraph></paragraph><paragraph></paragraph>
+	//
+	// Use the "cloned" element from graveyard:
+	// <heading>FooB</heading><paragraph>ar</paragraph>            graveyard: <paragraph></paragraph>
+	//
+	// Split side client:
+	//
+	// After split:
+	// <heading>Foo</heading>{}<paragraph>B</paragraph><paragraph>ar</paragraph>
+	//
+	// After merge:
+	// <heading>FooB</heading><paragraph>ar</paragraph>            graveyard: <paragraph></paragraph>
+	//
+	// This special case scenario only applies if the original split operation clones the split element.
+	// If the original split operation has `graveyardPosition` set, it all doesn't have sense because split operation
+	// knows exactly which element it should use. So there would be no original problem with different contents.
+	//
+	// Additionally, the special case applies only if the merge wasn't already undone.
+	//
+	if ( !a.graveyardPosition && !context.bWasUndone && a.position.hasSameParentAs( b.sourcePosition ) ) {
+		const splitPath = b.graveyardPosition.path.slice();
+		splitPath.push( 0 );
+
+		const additionalSplit = new SplitOperation( new Position( b.graveyardPosition.root, splitPath ), 0, null, 0 );
+
+		a.position = a.position._getTransformedByMergeOperation( b );
+		a.graveyardPosition = Position.createFromPosition( additionalSplit.insertionPosition );
+		a.graveyardPosition.stickiness = 'toNext';
+
+		return [ additionalSplit, a ];
+	}
+
+	// The default case.
+	//
 	if ( a.position.hasSameParentAs( b.deletionPosition ) && !a.position.isAfter( b.deletionPosition ) ) {
 		a.howMany--;
 	}
