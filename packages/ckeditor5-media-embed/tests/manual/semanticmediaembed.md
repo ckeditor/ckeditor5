@@ -3,7 +3,7 @@
 ### Embed the media
 
 1. Put an URL in the clipboard,
-1. Use the button in the dropdown,
+1. Use the button in the dropdown or paste the URL directly in the editor,
 1. Insert the media,
 1. Check if media was inserted and is selected.
 

@@ -7,17 +7,18 @@
  * @module media-embed/mediaembed
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import MediaEmbedEditing from './mediaembedediting';
+import AutoMediaEmbed from './automediaembed';
 import MediaEmbedUI from './mediaembedui';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 /**
  * The media embed plugin.
  *
- * It loads the {@link module:media-embed/mediaembedediting~MediaEmbedEditing media embed editing feature}
- * and {@link module:media-embed/mediaembedui~MediaEmbedUI media embed UI feature}.
+ * It loads the {@link module:media-embed/mediaembedediting~MediaEmbedEditing media embed editing feature},
+ * {@link module:media-embed/mediaembedui~MediaEmbedUI media embed UI feature} and
+ * {@link module:media-embed/automediaembed~AutoMediaEmbed auto-media embed feature}.
  *
  * For a detailed overview, check the {@glink features/media-embed Media Embed feature documentation}.
  *
@@ -28,7 +29,7 @@ export default class MediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ MediaEmbedEditing, MediaEmbedUI, Widget ];
+		return [ MediaEmbedEditing, MediaEmbedUI, AutoMediaEmbed, Widget ];
 	}
 
 	/**

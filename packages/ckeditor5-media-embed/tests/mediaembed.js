@@ -7,6 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import MediaEmbed from '../src/mediaembed';
 import MediaEmbedEditing from '../src/mediaembedediting';
 import MediaEmbedUI from '../src/mediaembedui';
+import AutoMediaEmbed from '../src/automediaembed';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -46,6 +47,10 @@ describe( 'MediaEmbed', () => {
 
 	it( 'should load MediaEmbedUI plugin', () => {
 		expect( editor.plugins.get( MediaEmbedUI ) ).to.instanceOf( MediaEmbedUI );
+	} );
+
+	it( 'should load AutoMediaEmbed plugin', () => {
+		expect( editor.plugins.get( AutoMediaEmbed ) ).to.instanceOf( AutoMediaEmbed );
 	} );
 
 	it( 'has proper name', () => {

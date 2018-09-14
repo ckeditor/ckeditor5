@@ -10,7 +10,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for 
 
 ## Demo
 
-Example URLs:
+You can use the "Insert media" button in the toolbar to embed media like the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -65,7 +65,7 @@ By default the media embed feature outputs media in the same way it works in the
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retriving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
+Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
 
 ```html
 <figure class="media">
@@ -295,6 +295,18 @@ In this case, the code is almost the same as with the semantic data but you shou
 	} );
 </script>
 ```
+
+## Automatic media embed on paste
+
+By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
+
+The `AutoMediaEmbed` plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
+
+<info-box>
+	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of the content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
+</info-box>
+
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action. To do that, use the toolbar button or the {@link features/keyboard-support keystroke}.
 
 ## Styling media in editor content
 
