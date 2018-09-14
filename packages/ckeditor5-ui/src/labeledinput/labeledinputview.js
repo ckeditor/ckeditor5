@@ -73,6 +73,22 @@ export default class LabeledInputView extends View {
 		this.set( 'errorText', null );
 
 		/**
+		 * TODO
+		 *
+		 * @observable
+		 * @member {String|null} #tipText
+		 */
+		this.set( 'tipText', null );
+
+		/**
+		 * TODO
+		 *
+		 * @observable
+		 * @member {String|null} #infoText
+		 */
+		this.bind( 'infoText' ).to( this, 'errorText', this, 'tipText', ( errorText, tipText ) => errorText || tipText );
+
+		/**
 		 * The label view.
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
@@ -87,11 +103,11 @@ export default class LabeledInputView extends View {
 		this.inputView = this._createInputView( InputView, inputUid, errorUid );
 
 		/**
-		 * The error view for the {@link #inputView}.
+		 * The info view for the {@link #inputView}.
 		 *
-		 * @member {module:ui/view~View} #errorView
+		 * @member {module:ui/view~View} #infoView
 		 */
-		this.errorView = this._createErrorView( errorUid );
+		this.infoView = this._createInfoView( errorUid );
 
 		const bind = this.bindTemplate;
 
@@ -107,7 +123,7 @@ export default class LabeledInputView extends View {
 			children: [
 				this.labelView,
 				this.inputView,
-				this.errorView
+				this.infoView
 			]
 		} );
 	}
@@ -162,28 +178,30 @@ export default class LabeledInputView extends View {
 	 * @param {String} errorUid Unique id of the error, shared with the input's `aria-describedby` attribute.
 	 * @returns {module:ui/view~View}
 	 */
-	_createErrorView( errorUid ) {
-		const errorView = new View( this.locale );
+	_createInfoView( errorUid ) {
+		const infoView = new View( this.locale );
 		const bind = this.bindTemplate;
 
-		errorView.setTemplate( 				{
+		infoView.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [
 					'ck',
-					'ck-labeled-input__error',
-					bind.if( 'errorText', 'ck-hidden', value => !value )
+					'ck-labeled-input__info',
+					bind.if( 'errorText', 'ck-labeled-input__info_error' ),
+					bind.if( 'tipText', 'ck-labeled-input__info_tip' ),
+					bind.if( 'infoText', 'ck-hidden', value => !value )
 				],
 				id: errorUid
 			},
 			children: [
 				{
-					text: bind.to( 'errorText' )
+					text: bind.to( 'infoText' )
 				}
 			]
 		} );
 
-		return errorView;
+		return infoView;
 	}
 
 	/**
