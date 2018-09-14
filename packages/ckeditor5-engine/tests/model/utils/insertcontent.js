@@ -17,7 +17,7 @@ import Range from '../../../src/model/range';
 describe( 'DataController utils', () => {
 	let model, doc;
 
-	describe( 'insertContent', () => {
+	describe.only( 'insertContent', () => {
 		it( 'should use parent batch', () => {
 			model = new Model();
 			doc = model.document;
@@ -46,6 +46,26 @@ describe( 'DataController utils', () => {
 				insertContent( model, new Text( 'x' ), selection );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
+		} );
+
+		it( 'should modify passed selection instance', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selectionCopy = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.true;
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), selection );
+			} );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.false;
 		} );
 
 		it( 'should be able to insert content at custom position', () => {
@@ -77,6 +97,20 @@ describe( 'DataController utils', () => {
 			model.change( () => {
 				insertContent( model, new Text( 'x' ), range );
 				expect( getData( model ) ).to.equal( 'a[]bx' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if document selection is passed', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), model.document.selection );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
 			} );
 		} );
 

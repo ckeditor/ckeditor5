@@ -38,7 +38,7 @@ export default function insertContent( model, content, selectable ) {
 
 		if ( !selectable ) {
 			selection = model.document.selection;
-		} else if ( selectable instanceof Selection ) {
+		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
 			selection = selectable;
 		} else {
 			selection = new Selection( selectable );
