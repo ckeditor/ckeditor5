@@ -146,7 +146,7 @@ export default class BaseCommand extends Command {
 				[ operationToUndo.getReversed() ],
 				historyOperations,
 				{
-					useContext: true,
+					useRelations: true,
 					document: this.editor.model.document,
 					padWithNoOps: false
 				}
