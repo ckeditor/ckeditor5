@@ -298,7 +298,7 @@ export default class Model {
 	 *
 	 *		editor.model.insertContent( modelFragment );
 	 *
-	 * By default the method will use document selection but it can be also used with position or range instances.
+	 * By default the method will use document selection but it can be also used with position, range or selection instances.
 	 *
 	 *		// Insert text at current document selection position.
 	 *		editor.model.change( writer => {
