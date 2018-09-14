@@ -100,8 +100,8 @@ export default class MediaEmbed extends Plugin {
  * preview of a media identified by a certain id or a hash. When not defined, the media embed feature
  * will use a generic media representation in the view and output data.
  * Note that when
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`}
- * is `true`, the rendering function **will not** be used for the media in the editor data output.
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`}
+ * is `true`, the rendering function **will always** be used for the media in the editor data output.
  */
 
 /**
@@ -153,7 +153,7 @@ export default class MediaEmbed extends Plugin {
  * only the most common are included.
  *
  * **Note**: Media without are always represented in the data using the "semantic" markup. See
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`} to
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} to
  * learn more about possible data outputs.
  *
  * **Note:**: The priority of media providers corresponds to the order of configuration. The first provider
@@ -230,14 +230,14 @@ export default class MediaEmbed extends Plugin {
 /**
  * Controls the data format produced by the feature.
  *
- * When `true`, the feature produces "semantic" data, i.e. it does not include the preview of
+ * When `false` (default), the feature produces "semantic" data, i.e. it does not include the preview of
  * the media, just the `<oembed>` tag with the `url` attribute:
  *
  *		<figure class="media">
  *			<oembed url="https://url"></oembed>
  *		</figure>
  *
- * when `false` (default), the media is represented in the output in the same way it looks in the editor,
+ * When `true`, the media is represented in the output in the same way it looks in the editor,
  * i.e. the media preview is saved to the database:
  *
  *		<figure class="media">
@@ -247,9 +247,9 @@ export default class MediaEmbed extends Plugin {
  *		</figure>
  *
  * **Note:** Preview–less media are always represented in the data using the "semantic" markup
- * regardless of the value of the `semanticDataOutput`. Learn more about different kinds of media
+ * regardless of the value of the `mediaPreviewsInData`. Learn more about different kinds of media
  * in the {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
  * configuration description.
  *
- * @member {Boolean} [module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput=false]
+ * @member {Boolean} [module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData=false]
  */

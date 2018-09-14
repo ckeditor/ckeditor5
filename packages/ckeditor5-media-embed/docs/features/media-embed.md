@@ -49,13 +49,27 @@ ClassicEditor
 
 ## Configuration
 
-### Output type
+### Data output format
 
-The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`} option.
+The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} option (see below).
 
-#### Non–semantic output
+<info-box info>
+	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews.
+</info-box>
 
-By default the media embed feature outputs media in the same way it works in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
+#### Semantic data output (default)
+
+By default, the media embed feature outputs semantic `<oembed>` tags for previewable and non-previewable media. That being so, it works best when the application processes (expands) the media on the server–side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
+
+```html
+<figure class="media">
+	<oembed url="https://media-url"></oembed>
+</figure>
+```
+
+#### Including previews in data
+
+Optionally, by setting `mediaEmbed.mediaPreviewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
 
 ```html
 <figure class="media">
@@ -65,7 +79,7 @@ By default the media embed feature outputs media in the same way it works in the
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
+Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the default semantic output:
 
 ```html
 <figure class="media">
@@ -74,20 +88,6 @@ Currently, the preview is only available for content providers for which CKEdito
 ```
 
 This means that, unless you [limited the list of providers](#media-providers) to only those which are previewable, you need to [make sure that media are displayed on your website](#displaying-embedded-media-on-your-website).
-
-#### Semantic output
-
-Optionally, by setting `mediaEmbed.semanticDataOutput` to `true` you can configure the media embed feature to output semantic `<oembed>` tags for previewable and non-previewable media. This option works best when the application processes (expands) the media on the server–side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
-
-```html
-<figure class="media">
-	<oembed url="https://media-url"></oembed>
-</figure>
-```
-
-<info-box info>
-	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews.
-</info-box>
 
 ### Media providers
 

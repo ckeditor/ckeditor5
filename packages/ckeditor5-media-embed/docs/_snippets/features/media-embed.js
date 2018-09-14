@@ -15,9 +15,6 @@ ClassicEditor
 				'mediaEmbed', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
-		},
-		mediaEmbed: {
-			semanticDataOutput: true
 		}
 	} )
 	.then( editor => {
