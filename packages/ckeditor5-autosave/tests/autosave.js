@@ -59,7 +59,7 @@ describe( 'Autosave', () => {
 			expect( () => {
 				editor.model.change( writer => {
 					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+					editor.model.insertContent( new ModelText( 'foo' ) );
 				} );
 
 				sinon.clock.tick( 1000 );
@@ -104,7 +104,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
@@ -123,7 +123,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
@@ -143,7 +143,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
@@ -182,7 +182,7 @@ describe( 'Autosave', () => {
 
 					editor.model.change( writer => {
 						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+						editor.model.insertContent( new ModelText( 'foo' ) );
 					} );
 
 					sinon.clock.tick( 499 );
@@ -219,7 +219,7 @@ describe( 'Autosave', () => {
 
 					editor.model.change( writer => {
 						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-						editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+						editor.model.insertContent( new ModelText( 'foo' ) );
 					} );
 
 					sinon.clock.tick( 999 );
@@ -269,7 +269,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
@@ -293,21 +293,21 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'bar' ) );
 			} );
 
 			sinon.clock.tick( 1000 );
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'biz' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'biz' ) );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -334,7 +334,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.assert.notCalled( serverActionSpy );
@@ -369,7 +369,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			expect( pendingActions.hasAny ).to.be.true;
@@ -394,7 +394,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			sinon.assert.notCalled( serverActionSpy );
@@ -409,7 +409,7 @@ describe( 'Autosave', () => {
 
 				editor.model.change( writer => {
 					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+					editor.model.insertContent( new ModelText( 'foo' ) );
 				} );
 
 				sinon.clock.tick( 1000 );
@@ -586,12 +586,12 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'bar' ) );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -616,7 +616,7 @@ describe( 'Autosave', () => {
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+				editor.model.insertContent( new ModelText( 'foo' ) );
 			} );
 
 			return editor.destroy()
@@ -649,7 +649,7 @@ describe( 'Autosave', () => {
 
 					editor.model.change( writer => {
 						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+						editor.model.insertContent( new ModelText( 'bar' ) );
 					} );
 
 					sinon.clock.tick( 10 );
