@@ -27,7 +27,7 @@ describe( 'DataController utils', () => {
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
-				insertContent( model, new Text( 'a' ) );
+				insertContent( model, writer.createText( 'a' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
@@ -42,8 +42,8 @@ describe( 'DataController utils', () => {
 
 			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), selection );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
 		} );
@@ -61,8 +61,8 @@ describe( 'DataController utils', () => {
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.true;
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), selection );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
 			} );
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.false;
@@ -81,8 +81,8 @@ describe( 'DataController utils', () => {
 
 			const position = new Position( doc.getRoot(), [ 2 ] );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), position );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), position );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
 		} );
@@ -97,8 +97,8 @@ describe( 'DataController utils', () => {
 
 			const range = new Range( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 3 ] ) );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), range );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), range );
 				expect( getData( model ) ).to.equal( 'a[]bx' );
 			} );
 		} );
@@ -111,8 +111,8 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), model.document.selection );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), model.document.selection );
 				expect( getData( model ) ).to.equal( 'ax[]bc' );
 			} );
 		} );
@@ -125,8 +125,8 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ) );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ) );
 				expect( getData( model ) ).to.equal( 'ax[]bc' );
 			} );
 		} );
