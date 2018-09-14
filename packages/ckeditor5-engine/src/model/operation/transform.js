@@ -1216,17 +1216,29 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	// Both operations have same source and target positions. So the element already got merged and there is
 	// theoretically nothing to do.
 	//
-	// In this case, keep the source operation in the merged element - in the graveyard - and don't change target position.
-	// Doing this instead of returning `NoOperation` allows for a correct undo later.
-	//
 	if ( a.sourcePosition.isEqual( b.sourcePosition ) && a.targetPosition.isEqual( b.targetPosition ) ) {
-		const path = b.graveyardPosition.path.slice();
-		path.push( 0 );
+		// There are two ways that we can provide a do-nothing operation.
+		//
+		// First is simply a NoOperation instance. We will use it if `b` operation was not undone.
+		//
+		// Second is a merge operation that has the source operation in the merged element - in the graveyard -
+		// same target position and `howMany` equal to `0`. So it is basically merging an empty element from graveyard
+		// which is almost the same as NoOperation.
+		//
+		// This way the merge operation can be later transformed by split operation
+		// to provide correct undo. This will be used if `b` operation was undone (only then it is correct).
+		//
+		if ( !context.bWasUndone ) {
+			return [ new NoOperation( 0 ) ];
+		} else {
+			const path = b.graveyardPosition.path.slice();
+			path.push( 0 );
 
-		a.sourcePosition = new Position( b.graveyardPosition.root, path );
-		a.howMany = 0;
+			a.sourcePosition = new Position( b.graveyardPosition.root, path );
+			a.howMany = 0;
 
-		return [ a ];
+			return [ a ];
+		}
 	}
 
 	// The default case.
