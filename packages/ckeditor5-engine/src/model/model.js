@@ -307,7 +307,8 @@ export default class Model {
 	 *		editor.model.change( ( writer ) => {
 	 *			editor.model.insertContent( model, writer.createText( 'x' ), selection );
 	 *
-	 *			// The selection contains a range to be selected - ie can be used to set selection.
+	 *			// insertContent() modifies the passed selection instance so it can be used to set the document selection.
+	 *			// Note: This is not necessary when you passed document selection to insertContent().
 	 *			writer.setSelection( selection );
 	 *		} );
 	 *
