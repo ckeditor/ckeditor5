@@ -35,9 +35,9 @@ export default class MediaEmbedToolbar extends Plugin {
 		const editor = this.editor;
 		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
 
-		widgetToolbar.add( {
+		widgetToolbar.add( 'mediaEmbed', {
 			toolbarItems: editor.config.get( 'media.toolbar' ) || [],
-			isSelected: isMediaWidgetSelected,
+			isVisible: isMediaWidgetSelected,
 		} );
 	}
 }
