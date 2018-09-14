@@ -51,10 +51,10 @@ ClassicEditor
 
 ### Data output format
 
-The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} option (see below).
+The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} option.
 
 <info-box info>
-	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews.
+	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews. It only affects the output data (see below).
 </info-box>
 
 #### Semantic data output (default)
@@ -163,7 +163,7 @@ ClassicEditor
 
 ## Displaying embedded media on your website
 
-The media embed feature produces output that may not contain previews of some embedded media. That happens for all media types when the feature is configured to produce a [semantic output](#semantic-output) and for non-previewable media in the default configuration. That means that you need to transform the output `<oembed>` elements into real media on your target website.
+By default, the media embed feature produces output that does not contain previews of embedded media, called the [semantic output](#semantic-data-output-default). That means that you need to transform the output `<oembed>` elements into real media on your target website.
 
 There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your backend service and you can use different services than described in this section.
 
@@ -203,7 +203,7 @@ using this short code snippet:
 
 #### Non-semantic data
 
-Additionally, despite the fact that the media preview is included for some media types (unless you [configured the media embed feature otherwise](#semantic-output)), you can still use Iframely for media embeds like the following one:
+When the feature is configured to [include media previews](#including-previews-in-data) in output, you can still use Iframely for media embeds like the following one:
 
 ```html
 <figure class="media">
