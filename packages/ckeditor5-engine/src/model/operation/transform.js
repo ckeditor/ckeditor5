@@ -508,22 +508,12 @@ class ContextFactory {
 	// @param {module:engine/model/operation/operation~Operation} opB
 	// @returns {module:engine/model/operation/transform~TransformationContext}
 	getContext( opA, opB, aIsStrong ) {
-		if ( !this._useContext ) {
-			return {
-				aIsStrong,
-				aWasUndone: false,
-				bWasUndone: false,
-				abRelation: null,
-				baRelation: null
-			};
-		}
-
 		return {
 			aIsStrong,
 			aWasUndone: this._wasUndone( opA ),
 			bWasUndone: this._wasUndone( opB ),
-			abRelation: this._getRelation( opA, opB ),
-			baRelation: this._getRelation( opB, opA )
+			abRelation: this._useContext ? this._getRelation( opA, opB ) : null,
+			baRelation: this._useContext ? this._getRelation( opB, opA ) : null
 		};
 	}
 
@@ -542,7 +532,7 @@ class ContextFactory {
 		const originalOp = this._originalOperations.get( op );
 
 		// And check with the document if the original operation was undone.
-		return this._history.isUndoneOperation( originalOp );
+		return originalOp.wasUndone || this._history.isUndoneOperation( originalOp );
 	}
 
 	// Returns a relation between `opA` and an operation which is undone by `opB`. This can be `String` value if a relation

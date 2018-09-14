@@ -255,7 +255,7 @@ export class Client {
 }
 
 function bufferOperations( operations, client ) {
-	bufferedOperations.add( { operations: operations.map( operation => JSON.stringify( operation ) ), client } );
+	bufferedOperations.add( { operations, client } );
 }
 
 export function syncClients() {
@@ -278,13 +278,31 @@ export function syncClients() {
 				continue;
 			}
 
-			const remoteOperationsJson = clientsOperations[ remoteClient.name ];
-
-			if ( !remoteOperationsJson ) {
+			if ( !clientsOperations[ remoteClient.name ] ) {
 				continue;
 			}
 
-			const remoteOperations = remoteOperationsJson.map( op => OperationFactory.fromJSON( JSON.parse( op ), localClient.document ) );
+			// Stringify and rebuild operations to simulate sending operations. Set `wasUndone`.
+			const remoteOperationsJson = clientsOperations[ remoteClient.name ].map( operation => {
+				operation.wasUndone = remoteClient.document.history.isUndoneOperation( operation );
+
+				const json = JSON.stringify( operation );
+
+				delete operation.wasUndone;
+
+				return json;
+			} );
+
+			const remoteOperations = remoteOperationsJson.map( json => {
+				const parsedJson = JSON.parse( json );
+				const operation = OperationFactory.fromJSON( parsedJson, localClient.document );
+
+				if ( parsedJson.wasUndone ) {
+					operation.wasUndone = true;
+				}
+
+				return operation;
+			} );
 
 			const localOperations = Array.from( localClient.document.history.getOperations( localClient.syncedVersion ) );
 
