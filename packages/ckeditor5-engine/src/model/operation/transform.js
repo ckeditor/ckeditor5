@@ -138,7 +138,8 @@ export function transform( a, b, context = {} ) {
  * @param {Array.<module:engine/model/operation/operation~Operation>} operationsB
  * @param {Object} options Additional transformation options.
  * @param {module:engine/model/document~Document|null} options.document Document which the operations change.
- * @param {Boolean} [options.useContext=false] Whether during transformation additional context information should be gathered and used.
+ * @param {Boolean} [options.useRelations=false] Whether during transformation relations should be used (used during undo for
+ * better conflict resolution).
  * @param {Boolean} [options.padWithNoOps=false] Whether additional {@link module:engine/model/operation/nooperation~NoOperation}s
  * should be added to the transformation results to force the same last base version for both transformed sets (in case
  * if some operations got broken into multiple operations during transformation).
@@ -302,7 +303,7 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const contextFactory = new ContextFactory( options.document, options.useContext );
+	const contextFactory = new ContextFactory( options.document, options.useRelations );
 	contextFactory.setOriginalOperations( operationsA );
 	contextFactory.setOriginalOperations( operationsB );
 
@@ -380,13 +381,14 @@ class ContextFactory {
 	// Creates `ContextFactory` instance.
 	//
 	// @param {module:engine/model/document~Document} document Document which the operations change.
-	// @param {Boolean} useContext Whether during transformation additional context information should be gathered and used.
-	constructor( document, useContext ) {
+	// @param {Boolean} useRelations Whether during transformation relations should be used (used during undo for
+	// better conflict resolution).
+	constructor( document, useRelations ) {
 		// `model.History` instance which information about undone operations will be taken from.
 		this._history = document.history;
 
 		// Whether additional context should be used.
-		this._useContext = useContext;
+		this._useRelations = useRelations;
 
 		// For each operation that is created during transformation process, we keep a reference to the original operation
 		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
@@ -512,14 +514,12 @@ class ContextFactory {
 			aIsStrong,
 			aWasUndone: this._wasUndone( opA ),
 			bWasUndone: this._wasUndone( opB ),
-			abRelation: this._useContext ? this._getRelation( opA, opB ) : null,
-			baRelation: this._useContext ? this._getRelation( opB, opA ) : null
+			abRelation: this._useRelations ? this._getRelation( opA, opB ) : null,
+			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null
 		};
 	}
 
 	// Returns whether given operation `op` has already been undone.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
 	//
 	// Information whether an operation was undone gives more context when making a decision when two operations are in conflict.
 	//
@@ -537,8 +537,6 @@ class ContextFactory {
 
 	// Returns a relation between `opA` and an operation which is undone by `opB`. This can be `String` value if a relation
 	// was set earlier or `null` if there was no relation between those operations.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
 	//
 	// This is a little tricky to understand, so let's compare it to `ContextFactory#_wasUndone`.
 	//

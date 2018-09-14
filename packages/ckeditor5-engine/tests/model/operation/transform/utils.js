@@ -310,7 +310,7 @@ export function syncClients() {
 
 			const options = {
 				document: localClient.document,
-				useContext: false,
+				useRelations: false,
 				padWithNoOps: true
 			};
 
