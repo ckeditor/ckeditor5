@@ -298,7 +298,7 @@ In this case, the code is almost the same as with the semantic data but you shou
 
 ## Automatic media embed on paste
 
-By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/mediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
+By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
 
 The `AutoMediaEmbed` plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
 
