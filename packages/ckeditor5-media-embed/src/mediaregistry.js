@@ -90,8 +90,7 @@ export default class MediaRegistry {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {String} url The url to be translated into a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderContent]
-	 * @param {String} [options.useSemanticWrapper]
+	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
@@ -213,21 +212,14 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderContent]
-	 * @param {String} [options.useSemanticWrapper]
+	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getViewElement( writer, options ) {
 		const attributes = {};
 
-		if ( options.useSemanticWrapper || ( this.url && !this._contentRenderer && !options.renderForEditingView ) ) {
-			if ( this.url ) {
-				attributes.url = this.url;
-			}
-
-			return writer.createEmptyElement( 'oembed', attributes );
-		} else {
+		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._contentRenderer ) ) {
 			if ( this.url ) {
 				attributes[ 'data-oembed-url' ] = this.url;
 			}
@@ -245,6 +237,12 @@ class Media {
 
 				return domElement;
 			} );
+		} else {
+			if ( this.url ) {
+				attributes.url = this.url;
+			}
+
+			return writer.createEmptyElement( 'oembed', attributes );
 		}
 	}
 

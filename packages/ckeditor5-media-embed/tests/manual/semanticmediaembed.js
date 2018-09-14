@@ -14,10 +14,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, MediaEmbed ],
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
-		],
-		mediaEmbed: {
-			semanticDataOutput: true
-		}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

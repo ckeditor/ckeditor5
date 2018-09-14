@@ -31,18 +31,12 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry The registry providing
  * the media and their content.
  * @param {Object} options
- * @param {String} [options.semanticDataOutput] When `true`, the converter will create view in the semantic form.
+ * @param {String} [options.renderMediaPreview] When `true`, the converter will create view in the non-semantic form.
  * @param {String} [options.renderForEditingView] When `true`, the converter will create a view specific for the
  * editing pipeline (e.g. including CSS classes, content placeholders).
  * @returns {Function}
  */
 export function modelToViewUrlAttributeConverter( registry, options ) {
-	const mediaViewElementOptions = {
-		useSemanticWrapper: options.semanticDataOutput,
-		renderContent: !options.semanticDataOutput,
-		renderForEditingView: options.renderForEditingView
-	};
-
 	return dispatcher => {
 		dispatcher.on( 'attribute:url:media', converter );
 	};
@@ -59,7 +53,7 @@ export function modelToViewUrlAttributeConverter( registry, options ) {
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
 		viewWriter.remove( ViewRange.createIn( figure ) );
 
-		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, mediaViewElementOptions );
+		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, options );
 
 		viewWriter.insert( ViewPosition.createAt( figure ), mediaViewElement );
 	}
