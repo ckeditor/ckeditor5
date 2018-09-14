@@ -90,8 +90,7 @@ export default class MediaRegistry {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {String} url The url to be translated into a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderContent]
-	 * @param {String} [options.useSemanticWrapper]
+	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
@@ -114,7 +113,7 @@ export default class MediaRegistry {
 		url = url.trim();
 
 		for ( const definition of this.providerDefinitions ) {
-			const contentRenderer = definition.html;
+			const previewRenderer = definition.html;
 			let pattern = definition.url;
 
 			if ( !Array.isArray( pattern ) ) {
@@ -125,7 +124,7 @@ export default class MediaRegistry {
 				const match = this._getUrlMatches( url, subPattern );
 
 				if ( match ) {
-					return new Media( this.locale, url, match, contentRenderer );
+					return new Media( this.locale, url, match, previewRenderer );
 				}
 			}
 		}
@@ -177,7 +176,7 @@ export default class MediaRegistry {
  * @private
  */
 class Media {
-	constructor( locale, url, match, contentRenderer ) {
+	constructor( locale, url, match, previewRenderer ) {
 		/**
 		 * The URL this Media instance represents.
 		 *
@@ -205,7 +204,7 @@ class Media {
 		 *
 		 * @member {Function}
 		 */
-		this._contentRenderer = contentRenderer;
+		this._previewRenderer = previewRenderer;
 	}
 
 	/**
@@ -213,21 +212,14 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderContent]
-	 * @param {String} [options.useSemanticWrapper]
+	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getViewElement( writer, options ) {
 		const attributes = {};
 
-		if ( options.useSemanticWrapper || ( this.url && !this._contentRenderer && !options.renderForEditingView ) ) {
-			if ( this.url ) {
-				attributes.url = this.url;
-			}
-
-			return writer.createEmptyElement( 'oembed', attributes );
-		} else {
+		if ( options.renderForEditingView || ( options.renderMediaPreview && this.url && this._previewRenderer ) ) {
 			if ( this.url ) {
 				attributes[ 'data-oembed-url' ] = this.url;
 			}
@@ -236,7 +228,7 @@ class Media {
 				attributes.class = 'ck-media__wrapper';
 			}
 
-			const mediaHtml = this._getContentHtml( options );
+			const mediaHtml = this._getPreviewHtml( options );
 
 			return writer.createUIElement( 'div', attributes, function( domDocument ) {
 				const domElement = this.toDomElement( domDocument );
@@ -245,6 +237,12 @@ class Media {
 
 				return domElement;
 			} );
+		} else {
+			if ( this.url ) {
+				attributes.url = this.url;
+			}
+
+			return writer.createEmptyElement( 'oembed', attributes );
 		}
 	}
 
@@ -256,9 +254,9 @@ class Media {
 	 * @param {String} [options.renderForEditingView]
 	 * @returns {String}
 	 */
-	_getContentHtml( options ) {
-		if ( this._contentRenderer ) {
-			return this._contentRenderer( this._match );
+	_getPreviewHtml( options ) {
+		if ( this._previewRenderer ) {
+			return this._previewRenderer( this._match );
 		} else {
 			// The placeholder only makes sense for editing view and media which have URLs.
 			// Placeholder is never displayed in data and URL-less media have no content.

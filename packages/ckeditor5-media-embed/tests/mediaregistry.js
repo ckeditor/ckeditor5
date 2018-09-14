@@ -114,7 +114,7 @@ describe( 'MediaRegistry', () => {
 		it( 'passes the entire match array to render function', () => {
 			const media = mediaRegistry._getMedia( 'https://www.youtube.com/watch?v=euqbMkM-QQk' );
 
-			media._getContentHtml();
+			media._getPreviewHtml();
 
 			expect( htmlSpy.calledOnce ).to.equal( true );
 			expect( htmlSpy.firstCall.args[ 0 ] ).to.deep.equal( [

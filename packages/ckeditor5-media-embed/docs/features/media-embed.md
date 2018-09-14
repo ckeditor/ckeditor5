@@ -20,13 +20,17 @@ You can use the "Insert media" button in the toolbar to embed media like the fol
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-media-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-media-embed
 ```
 
-Then add `'MediaEmbed'` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature:
+Then add `MediaEmbed` to your plugin list and {@link module:media-embed/mediaembed~MediaEmbedConfig configure} the feature (if needed):
 
 ```js
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -49,13 +53,27 @@ ClassicEditor
 
 ## Configuration
 
-### Output type
+### Data output format
 
-The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#semanticDataOutput `config.mediaEmbed.semanticDataOutput`} option.
+The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} option.
 
-#### Non–semantic output
+<info-box info>
+	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews. It only affects the output data (see below).
+</info-box>
 
-By default the media embed feature outputs media in the same way it works in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
+#### Semantic data output (default)
+
+By default, the media embed feature outputs semantic `<oembed>` tags for previewable and non-previewable media. That being so, it works best when the application processes (expands) the media on the server–side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
+
+```html
+<figure class="media">
+	<oembed url="https://media-url"></oembed>
+</figure>
+```
+
+#### Including previews in data
+
+Optionally, by setting `mediaEmbed.mediaPreviewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
 
 ```html
 <figure class="media">
@@ -65,7 +83,7 @@ By default the media embed feature outputs media in the same way it works in the
 </figure>
 ```
 
-Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the semantic output:
+Currently, the preview is only available for content providers for which CKEditor 5 can predict an `<iframe>` code – this is YouTube, Vimeo, Dailymotion, Spotify, etc. For other providers like Twitter or Instagram the editor cannot produce an `<iframe>` code and it does not, so far, allows retrieving this code from an external oEmbed service. Therefore, for non previewable media it produces the default semantic output:
 
 ```html
 <figure class="media">
@@ -74,20 +92,6 @@ Currently, the preview is only available for content providers for which CKEdito
 ```
 
 This means that, unless you [limited the list of providers](#media-providers) to only those which are previewable, you need to [make sure that media are displayed on your website](#displaying-embedded-media-on-your-website).
-
-#### Semantic output
-
-Optionally, by setting `mediaEmbed.semanticDataOutput` to `true` you can configure the media embed feature to output semantic `<oembed>` tags for previewable and non-previewable media. This option works best when the application processes (expands) the media on the server–side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
-
-```html
-<figure class="media">
-	<oembed url="https://media-url"></oembed>
-</figure>
-```
-
-<info-box info>
-	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews.
-</info-box>
 
 ### Media providers
 
@@ -98,7 +102,7 @@ Names of providers **with previews**:
 * `'dailymotion'`,
 * `'spotify'`,
 * `'youtube'`,
-* `'vimeo'`
+* `'vimeo'`.
 
 Names of providers **without previews**:
 
@@ -106,7 +110,7 @@ Names of providers **without previews**:
 * `'twitter'`,
 * `'googleMaps'`,
 * `'flickr'`,
-* `'facebook'`
+* `'facebook'`.
 
 <info-box notice>
 	The default media provider configuration does not support all possible media URLs, only the most common are included. Services like Iframely or Embedly support thousands of media providers and it is up to you to define which you want to allow.
@@ -120,7 +124,7 @@ To extend the default list of default providers, use {@link module:media-embed/m
 
 To remove certain providers, use {@link module:media-embed/mediaembed~MediaEmbedConfig#removeProviders `config.mediaEmbed.removeProviders`}.
 
-For instance, to leave only the previewable providers use this
+For instance, to leave only the previewable providers configure this feature as follows:
 
 ```js
 ClassicEditor
@@ -151,7 +155,7 @@ ClassicEditor
 					url: /^example\.com\/media\/(\w+)/,
 
 					// To be defined only if the media is previewable:
-					html: mediaId => '...'
+					html: match => '...'
 				},
 				...
 			]
@@ -161,9 +165,11 @@ ClassicEditor
 	.catch( ... );
 ```
 
+You can take inspirtation from the default configuration of this feature which you can find in: https://github.com/ckeditor/ckeditor5-media-embed/blob/master/src/mediaembedediting.js
+
 ## Displaying embedded media on your website
 
-The media embed feature produces output that may not contain previews of some embedded media. That happens for all media types when the feature is configured to produce a [semantic output](#semantic-output) and for non-previewable media in the default configuration. That means that you need to transform the output `<oembed>` elements into real media on your target website.
+By default, the media embed feature produces output that does not contain previews of embedded media, called the [semantic output](#semantic-data-output-default). That means that you need to transform the output `<oembed>` elements into real media on your target website.
 
 There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your backend service and you can use different services than described in this section.
 
@@ -203,7 +209,7 @@ using this short code snippet:
 
 #### Non-semantic data
 
-Additionally, despite the fact that the media preview is included for some media types (unless you [configured the media embed feature otherwise](#semantic-output)), you can still use Iframely for media embeds like the following one:
+When the feature is configured to [include media previews](#including-previews-in-data) in output, you can still use Iframely for media embeds like the following one:
 
 ```html
 <figure class="media">
@@ -298,15 +304,15 @@ In this case, the code is almost the same as with the semantic data but you shou
 
 ## Automatic media embed on paste
 
-By default, the `'MediaEmbed'` plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed `'AutoMediaEmbed'`} as a dependency.
+By default, the {@link module:media-embed/mediaembed~MediaEmbed} plugin loads the {@link module:media-embed/automediaembed~AutoMediaEmbed} as a dependency.
 
-The `AutoMediaEmbed` plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
+The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. by using the button in the toolbar), the automatic embedding works for all media providers specified in the [configuration](#media-providers).
 
 <info-box>
 	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of the content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action. To do that, use the toolbar button or the {@link features/keyboard-support keystroke}.
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> keystrokes).
 
 ## Styling media in editor content
 

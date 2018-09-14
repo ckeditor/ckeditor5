@@ -131,9 +131,7 @@ describe( 'MediaEmbedEditing', () => {
 
 				describe( 'default value', () => {
 					beforeEach( () => {
-						return createTestEditor( {
-							semanticDataOutput: true
-						} )
+						return createTestEditor()
 							.then( newEditor => {
 								editor = newEditor;
 								view = editor.editing.view;
@@ -475,10 +473,9 @@ describe( 'MediaEmbedEditing', () => {
 		} );
 
 		describe( 'conversion in the data pipeline', () => {
-			describe( 'semanticDataOutput=true', () => {
+			describe( 'mediaPreviewsInData=false', () => {
 				beforeEach( () => {
 					return createTestEditor( {
-						semanticDataOutput: true,
 						providers: providerDefinitions
 					} )
 						.then( newEditor => {
@@ -603,7 +600,6 @@ describe( 'MediaEmbedEditing', () => {
 
 					it( 'should not convert unknown media', () => {
 						return createTestEditor( {
-							semanticDataOutput: true,
 							providers: [
 								testProviders.A
 							]
@@ -622,10 +618,11 @@ describe( 'MediaEmbedEditing', () => {
 				} );
 			} );
 
-			describe( 'semanticDataOutput=false', () => {
+			describe( 'mediaPreviewsInData=true', () => {
 				beforeEach( () => {
 					return createTestEditor( {
-						providers: providerDefinitions
+						providers: providerDefinitions,
+						mediaPreviewsInData: true
 					} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -794,11 +791,10 @@ describe( 'MediaEmbedEditing', () => {
 		} );
 
 		describe( 'conversion in the editing pipeline', () => {
-			describe( 'semanticDataOutput=true', () => {
+			describe( 'mediaPreviewsInData=false', () => {
 				beforeEach( () => {
 					return createTestEditor( {
-						providers: providerDefinitions,
-						semanticDataOutput: true
+						providers: providerDefinitions
 					} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -811,10 +807,11 @@ describe( 'MediaEmbedEditing', () => {
 				test();
 			} );
 
-			describe( 'semanticDataOutput=false', () => {
+			describe( 'mediaPreviewsInData=true', () => {
 				beforeEach( () => {
 					return createTestEditor( {
-						providers: providerDefinitions
+						providers: providerDefinitions,
+						mediaPreviewsInData: true
 					} )
 						.then( newEditor => {
 							editor = newEditor;
