@@ -15,6 +15,7 @@
     "@ckeditor/ckeditor5-enter": "^10.1.1",
     "@ckeditor/ckeditor5-ui": "^11.0.0",
     "@ckeditor/ckeditor5-utils": "^10.2.0",
+    "@ckeditor/ckeditor5-undo": "^10.0.2",
     "@ckeditor/ckeditor5-widget": "^10.2.0"
   },
   "devDependencies": {
@@ -24,7 +25,6 @@
     "@ckeditor/ckeditor5-list": "^11.0.1",
     "@ckeditor/ckeditor5-paragraph": "^10.0.2",
     "@ckeditor/ckeditor5-typing": "^11.0.0",
-    "@ckeditor/ckeditor5-undo": "^10.0.2",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
