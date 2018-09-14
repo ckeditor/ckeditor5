@@ -27,7 +27,7 @@ describe( 'ImageCaption integration', () => {
 		editorElement.remove();
 	} );
 
-	describe( 'Enter plugin', () => {
+	describe( 'with Enter plugin only', () => {
 		beforeEach( () => {
 			return ClassicEditor
 				.create( editorElement, {
@@ -71,7 +71,7 @@ describe( 'ImageCaption integration', () => {
 		} );
 	} );
 
-	describe( 'ShiftEnter plugin', () => {
+	describe( 'with Enter and ShiftEnter plugins', () => {
 		beforeEach( () => {
 			return ClassicEditor
 				.create( editorElement, {
