@@ -354,10 +354,10 @@ describe( 'AutoMediaEmbed - integration', () => {
 		// Checking whether paste+typing calls the auto-media handler once.
 		it( 'pasting handler should be executed once', done => {
 			const autoMediaEmbedPlugin = editor.plugins.get( AutoMediaEmbed );
-			const autoMediaHandler = autoMediaEmbedPlugin._autoEmbedingEventHandler;
+			const autoMediaHandler = autoMediaEmbedPlugin._embedMediaBetweenPositions;
 			let counter = 0;
 
-			autoMediaEmbedPlugin._autoEmbedingEventHandler = function( ...args ) {
+			autoMediaEmbedPlugin._embedMediaBetweenPositions = function( ...args ) {
 				counter += 1;
 
 				return autoMediaHandler.apply( this, args );
@@ -368,7 +368,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			simulateTyping( 'Foo. Bar.' );
 
 			setTimeout( () => {
-				autoMediaEmbedPlugin._autoEmbedingEventHandler = autoMediaHandler;
+				autoMediaEmbedPlugin._embedMediaBetweenPositions = autoMediaHandler;
 
 				expect( counter ).to.equal( 1 );
 
