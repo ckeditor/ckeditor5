@@ -52,6 +52,14 @@ export default class AutoMediaEmbed extends Plugin {
 		 * @member {Number} #_timeoutId
 		 */
 		this._timeoutId = null;
+
+		/**
+		 * A position where the `<media>` element will be inserted.
+		 *
+		 * @private
+		 * @member {module:engine/model/liveposition~LivePosition} #_positionToInsert
+		 */
+		this._positionToInsert = null;
 	}
 
 	/**
@@ -83,7 +91,10 @@ export default class AutoMediaEmbed extends Plugin {
 		editor.commands.get( 'undo' ).on( 'execute', () => {
 			if ( this._timeoutId ) {
 				global.window.clearTimeout( this._timeoutId );
+				this._positionToInsert.detach();
+
 				this._timeoutId = null;
+				this._positionToInsert = null;
 			}
 		}, { priority: 'high' } );
 	}
@@ -120,7 +131,7 @@ export default class AutoMediaEmbed extends Plugin {
 		}
 
 		// Positions won't be available in `setTimeout` function so let's clone it.
-		const positionToInsert = LivePosition.createFromPosition( leftPosition );
+		this._positionToInsert = LivePosition.createFromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {
@@ -130,13 +141,14 @@ export default class AutoMediaEmbed extends Plugin {
 				writer.remove( urlRange );
 
 				// Check if position where the media element should be inserted is still valid.
-				if ( positionToInsert.root.rootName !== '$graveyard' ) {
-					writer.setSelection( positionToInsert );
+				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
+					writer.setSelection( this._positionToInsert );
 				}
 
 				editor.commands.execute( 'mediaEmbed', url );
 
-				positionToInsert.detach();
+				this._positionToInsert.detach();
+				this._positionToInsert = null;
 			} );
 		}, 100 );
 	}
