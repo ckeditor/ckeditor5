@@ -45,7 +45,7 @@
 
 	&.ck-error {
 		border-color: var(--ck-color-input-error-border);
-		animation: ck-text-input-shake .5s ease both;
+		animation: ck-text-input-shake .3s ease both;
 		transform: translateX(0);
 
 		&:focus {
