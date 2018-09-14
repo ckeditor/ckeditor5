@@ -388,7 +388,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 					editor.model.enqueueChange( 'transparent', writer => {
 						writer.insertText( characters[ i ], new ModelPosition( rootEl, [ 0, i ] ) );
 					} );
-				}, i * 9 );
+				}, i * 5 );
 			}
 
 			setTimeout( () => {
@@ -410,7 +410,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 					editor.model.enqueueChange( 'transparent', writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
-				}, i * 9 );
+				}, i * 5 );
 			}
 
 			setTimeout( () => {
@@ -456,7 +456,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 					editor.model.enqueueChange( 'transparent', writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
-				}, i * 9 );
+				}, i * 5 );
 			}
 
 			setTimeout( () => {
@@ -487,7 +487,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 					editor.model.enqueueChange( 'transparent', writer => {
 						writer.insertText( characters[ i ], editor.model.document.selection.getFirstPosition() );
 					} );
-				}, i * 9 );
+				}, i * 5 );
 			}
 
 			setTimeout( () => {
