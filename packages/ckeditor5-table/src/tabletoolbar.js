@@ -8,10 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import { isTableWidgetSelected, isTableContentSelected } from './utils';
-import { repositionContextualBalloon, getBalloonPositionData } from './ui/utils';
+import { isTableContentSelected } from './utils';
 import WidgetToolbar from '@ckeditor/ckeditor5-widget/src/widgettoolbar';
 
 /**
@@ -47,9 +44,9 @@ export default class TableToolbar extends Plugin {
 		const editor = this.editor;
 		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
 
-		widgetToolbar.add( {
+		widgetToolbar.add( 'table', {
 			toolbarItems: editor.config.get( 'table.toolbar' ) || [],
-			isSelected: isTableContentSelected,
+			isVisible: isTableContentSelected,
 		} );
 	}
 }

@@ -6,16 +6,17 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TableWidgetToolbar from '../src/tablewidgettoolbar';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'TableWidgetToolbar', () => {
-	let editor, element, tableWidgetToolbar, balloon, toolbar, model;
+	let editor, element, widgetToolbar, balloon, toolbar, model;
 
 	testUtils.createSinonSandbox();
 
@@ -24,14 +25,14 @@ describe( 'TableWidgetToolbar', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, Table, TableToolbar, TableWidgetToolbar ],
+			plugins: [ Paragraph, Table, TableWidgetToolbar, FakeButton ],
 			table: {
-				widgetToolbar: []
+				widgetToolbar: [ 'fake_button' ]
 			}
 		} ).then( _editor => {
 			editor = _editor;
-			tableWidgetToolbar = editor.plugins.get( TableWidgetToolbar );
-			toolbar = tableWidgetToolbar._toolbar;
+			widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+			toolbar = widgetToolbar._toolbars.get( 'tableWidget' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 			model = editor.model;
 		} );
@@ -46,21 +47,23 @@ describe( 'TableWidgetToolbar', () => {
 		expect( editor.plugins.get( TableWidgetToolbar ) ).to.be.instanceOf( TableWidgetToolbar );
 	} );
 
-	// it( 'should have only one item - comment', () => {
-	// 	expect( toolbar.items ).to.have.length( 1 );
-	// 	expect( toolbar.items.get( 0 ).label ).to.equal( 'Inline comment' );
-	// } );
+	describe( 'toolbar', () => {
+		it( 'should use the config.table.tableWidget to create items', () => {
+			expect( toolbar.items ).to.have.length( 1 );
+			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
+		} );
 
-	it( 'should set proper CSS classes', () => {
-		const spy = sinon.spy( balloon, 'add' );
+		it( 'should set proper CSS classes', () => {
+			const spy = sinon.spy( balloon, 'add' );
 
-		editor.ui.focusTracker.isFocused = true;
+			editor.ui.focusTracker.isFocused = true;
 
-		setData( model, '[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
+			setData( model, '[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
-		sinon.assert.calledWithMatch( spy, {
-			view: toolbar,
-			balloonClassName: 'ck-toolbar-container'
+			sinon.assert.calledWithMatch( spy, {
+				view: toolbar,
+				balloonClassName: 'ck-toolbar-container'
+			} );
 		} );
 	} );
 
@@ -166,4 +169,23 @@ describe( 'TableWidgetToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 		} );
 	} );
+
+	// Plugin that adds fake_button to editor's component factory.
+	class FakeButton extends Plugin {
+		init() {
+			try {
+				this.editor.ui.componentFactory.add( 'fake_button', locale => {
+					const view = new ButtonView( locale );
+
+					view.set( {
+						label: 'fake button'
+					} );
+
+					return view;
+				} );
+			} catch ( err ) {
+				console.log( err );
+			}
+		}
+	}
 } );

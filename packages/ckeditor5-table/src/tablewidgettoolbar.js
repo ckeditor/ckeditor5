@@ -35,9 +35,9 @@ export default class TableWidgetToolbar extends Plugin {
 		const editor = this.editor;
 		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
 
-		widgetToolbar.add( {
+		widgetToolbar.add( 'tableWidget', {
 			toolbarItems: editor.config.get( 'table.widgetToolbar' ) || [],
-			isSelected: isTableWidgetSelected,
+			isVisible: isTableWidgetSelected,
 		} );
 	}
 }
