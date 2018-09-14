@@ -17,7 +17,7 @@ import Range from '../../../src/model/range';
 describe( 'DataController utils', () => {
 	let model, doc;
 
-	describe.only( 'insertContent', () => {
+	describe( 'insertContent', () => {
 		it( 'should use parent batch', () => {
 			model = new Model();
 			doc = model.document;
@@ -66,6 +66,9 @@ describe( 'DataController utils', () => {
 			} );
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.false;
+
+			const insertionSelection = new Selection( new Position( doc.getRoot(), [ 3 ] ) );
+			expect( selection.isEqual( insertionSelection ) ).to.be.true;
 		} );
 
 		it( 'should be able to insert content at custom position', () => {
