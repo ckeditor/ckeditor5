@@ -13,7 +13,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * FileReader class - wrapper over native FileReader.
+ * Wrapper over the native `FileReader`.
  */
 export default class FileReader {
 	/**
@@ -54,11 +54,11 @@ export default class FileReader {
 	}
 
 	/**
-	 * Reads provided file.
+	 * Reads the provided file.
 	 *
 	 * @param {File} file Native File object.
-	 * @returns {Promise} Returns a promise that will resolve with file's contents. Promise can be rejected in case of
-	 * error or when reading process is aborted.
+	 * @returns {Promise} Returns a promise that will be resolved with file's content.
+	 * The promise will be rejected in case of an error or when the reading process is aborted.
 	 */
 	read( file ) {
 		const reader = this._reader;
