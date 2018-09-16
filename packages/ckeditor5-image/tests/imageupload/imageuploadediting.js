@@ -380,7 +380,7 @@ describe( 'ImageUploadEditing', () => {
 		const file = createNativeFileMock();
 		const error = new Error( 'Foo bar baz' );
 		const uploadEditing = editor.plugins.get( ImageUploadEditing );
-		const loadSpy = sinon.spy( uploadEditing, '_load' );
+		const loadSpy = sinon.spy( uploadEditing, '_readAndUpload' );
 		const catchSpy = sinon.spy();
 
 		// Throw an error when async attribute change occur.
