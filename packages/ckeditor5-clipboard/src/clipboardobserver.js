@@ -22,8 +22,10 @@ import DataTransfer from './datatransfer';
  * * {@link module:engine/view/document~Document#event:copy}
  * * {@link module:engine/view/document~Document#event:cut}
  *
- * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
+ * Note that this observer is not available by default (it is not added by the engine).
+ * To make it available it needs to be added to {@link module:engine/view/document~Document} by
+ * the {@link module:engine/view/view~View#addObserver `View#addObserver()`} method. You can also load the
+ * {@link module:clipboard/clipboard~Clipboard} plugin which adds this observer automatically (because it uses it).
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
