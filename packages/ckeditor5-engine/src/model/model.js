@@ -280,7 +280,7 @@ export default class Model {
 	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
 	 *
 	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
-	 *		// if you haven't overriden the default one (which is HtmlDataProcessor instance).
+	 *		// if you haven't overridden the default one (which is HtmlDataProcessor instance).
 	 *		const htmlDP = new HtmlDataProcessor();
 	 *
 	 *		// Convert an HTML string to a view document fragment.
@@ -307,14 +307,14 @@ export default class Model {
 	 *
 	 *		// Insert text at given position - document selection will not be modified.
 	 *		editor.model.change( writer => {
-	 *			editor.model.insertContent( writer.createText( 'x' ), new Position( doc.getRoot(), [ 2 ] ) );
+	 *			editor.model.insertContent( writer.createText( 'x' ), Position.createAt( doc.getRoot(), 2 ) );
 	 *		} );
 	 *
 	 * If an instance of {module:engine/model/selection~Selection} is passed as `selectable`
 	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
 	 *		// Insert text replacing given selection instance.
-	 *		const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 5 ] ) );
+	 *		const selection = new Selection( paragraph, 'in' );
 	 *
 	 *		editor.model.change( writer => {
 	 *			editor.model.insertContent( writer.createText( 'x' ), selection );
