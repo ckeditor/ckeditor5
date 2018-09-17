@@ -31,7 +31,7 @@ import Selection from '../selection';
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
  * module:engine/model/position~Position|module:engine/model/element~Element|
- * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable]
+ * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
  */
 export default function insertContent( model, content, selectable ) {
