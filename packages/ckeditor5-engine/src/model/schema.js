@@ -491,8 +491,8 @@ export default class Schema {
 			const firstPosition = selection.getFirstPosition();
 			const context = [
 				...firstPosition.getAncestors(),
-				firstPosition.root.getNodeByPath( firstPosition.path )
-			].filter( Boolean );
+				firstPosition.root.getNodeByPath( firstPosition.path ) || '$text'
+			];
 
 			// Check whether schema allows for a text with the attribute in the selection.
 			return this.checkAttribute( context, attribute );
