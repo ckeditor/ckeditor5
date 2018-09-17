@@ -488,8 +488,14 @@ export default class Schema {
 	 */
 	checkAttributeInSelection( selection, attribute ) {
 		if ( selection.isCollapsed ) {
+			const firstPosition = selection.getFirstPosition();
+			const context = [
+				...firstPosition.getAncestors(),
+				firstPosition.root.getNodeByPath( firstPosition.path )
+			].filter( Boolean );
+
 			// Check whether schema allows for a text with the attribute in the selection.
-			return this.checkAttribute( [ ...selection.getFirstPosition().getAncestors(), '$text' ], attribute );
+			return this.checkAttribute( context, attribute );
 		} else {
 			const ranges = selection.getRanges();
 

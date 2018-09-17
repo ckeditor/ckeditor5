@@ -1047,6 +1047,26 @@ describe( 'Schema', () => {
 					return true;
 				}
 			} );
+
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
+				// Disallow 'italic' on $text that has attribute 'bold'.
+				if ( inTextWithBold( ctx ) && attributeName == 'italic' ) {
+					return false;
+				}
+				// Allow 'italic' on p>$text.
+				if ( ctx.endsWith( 'p $text' ) && attributeName == 'italic' ) {
+					return true;
+				}
+
+				// Allow 'italic' on $root>p.
+				if ( ctx.endsWith( '$root p' ) && attributeName == 'italic' ) {
+					return true;
+				}
+
+				function inTextWithBold( context ) {
+					return context.endsWith( '$text' ) && context.last.getAttribute( 'bold' );
+				}
+			} );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -1061,6 +1081,11 @@ describe( 'Schema', () => {
 
 				setData( model, '[]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+
+			it( 'should check attributes of text', () => {
+				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
 
@@ -1101,6 +1126,11 @@ describe( 'Schema', () => {
 			it( 'should return true when checking element when attribute is already present', () => {
 				setData( model, '[<figure name="figure" title="title"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
+			} );
+
+			it( 'should check attributes of text', () => {
+				setData( model, '<p><$text bold="true">f[o]o</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
 	} );
