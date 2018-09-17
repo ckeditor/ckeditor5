@@ -4,7 +4,7 @@ category: framework-deep-dive
 
 # Clipboard
 
-The clipboard feature (implemented by the {@link module:clipboard/clipboard~Clipboard} plugin) is responsible for integrating with the native clipboard – a feature of the operating system and the browser used when the user copies/cut/pastes or drag&drop a content within the editor or from/to it to the "outside".
+The clipboard feature (implemented by the {@link module:clipboard/clipboard~Clipboard} plugin) is responsible for integrating with the native clipboard – a feature of the operating system and the browser used when the user copies/cuts/pastes or drag&drop a content within the editor or from/to the "outside".
 
 CKEditor 5 intercepts all the native events like `copy`, `cut` or `drop` and handles them on its side. The goal is to not allow the browser to touch the content in the editor which would lead to the browser messing it up.
 
@@ -20,7 +20,7 @@ Both pipelines allow the features to process the content to be inserted or set t
 When the user pastes or drops a content into the editor the browser fires an event which is intercepted by the clipboard feature and which originates this mechanism:
 
 1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns that event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
-2. Since the content to be inserted by both actions (paste and drop) should usually processed in the same way and both actions have very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
+2. Since the content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have very simillar effect, both events are turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
 3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event, retrieves and pre-process the `text/html` or `text/plain` content which it finds in the {@link module:clipboard/datatransfer~DataTransfer event's `dataTransfer`} and fires the {@link module:clipboard/clipboard~Clipboard#event:inputTransformation `Clipboard#inputTransformation`} event with the retrieved content.
 4. Finally, the clipboard feature listens to the `Clipboard#inputTransformation` event, takes the processed content and {@link module:engine/model/model~Model#insertContent inserts} it into the editor.
 
@@ -54,7 +54,7 @@ The {@link module:engine/view/document~Document#event:clipboardInput `view.Docum
 		// to allow further processing of the content.
 		this.fire( 'inputTransformation', { content: viewContent, dataTransfer } );
 
-		editor.editing.viewview.scrollToTheSelection();
+		editor.editing.view.scrollToTheSelection();
 		evt.stop();
 	} );
 	```
@@ -102,7 +102,7 @@ The default action is to:
 
 1. {@link module:engine/model/model~Model#getSelectedContent get selected content} from the editor,
 2. prevent the default action of the native `copy` or `cut` event,
-3. fire {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardInput`} with a clone of the selected content converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
+3. fire {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} with a clone of the selected content converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 
 ### 2. On {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`}
 
@@ -110,4 +110,4 @@ The default action is to put the content (`data.content`, represented by a {@lin
 
 This action is performed by a low priority listener, so it can be overridden by a normal one.
 
-At this stage the copied/cut content can be processed by the features.
+At this stage the copied/cut content can be processed by other features.
