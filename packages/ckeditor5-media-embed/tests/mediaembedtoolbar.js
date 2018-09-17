@@ -7,31 +7,34 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import MediaEmbedCommentToolbar from '../src/mediaembedcommenttoolbar';
+import MediaEmbedToolbar from '../src/mediaembedtoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import mockCloudServices from '../_utils/mockcloudservices';
 
 describe( 'MediaEmbedToolbar', () => {
-	let editor, element, mediaEmbedCommentToolbar, balloon, toolbar, model;
+	let editor, element, widgetToolbar, balloon, toolbar, model;
 
 	testUtils.createSinonSandbox();
-	mockCloudServices();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, MediaEmbed, MediaEmbedCommentToolbar ],
+			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
+			media: {
+				toolbar: [ 'fake_button' ]
+			}
 		} ).then( _editor => {
 			editor = _editor;
-			mediaEmbedCommentToolbar = editor.plugins.get( MediaEmbedCommentToolbar );
-			toolbar = mediaEmbedCommentToolbar._toolbar;
+			widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+			toolbar = widgetToolbar._toolbars.get( 'mediaEmbed' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 			model = editor.model;
 		} );
@@ -43,24 +46,26 @@ describe( 'MediaEmbedToolbar', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( MediaEmbedCommentToolbar ) ).to.be.instanceOf( MediaEmbedCommentToolbar );
+		expect( editor.plugins.get( MediaEmbedToolbar ) ).to.be.instanceOf( MediaEmbedToolbar );
 	} );
 
-	it( 'should have only one item - comment', () => {
-		expect( toolbar.items ).to.have.length( 1 );
-		expect( toolbar.items.get( 0 ).label ).to.equal( 'Inline comment' );
-	} );
+	describe( 'toolbar', () => {
+		it( 'should use the config.table.tableWidget to create items', () => {
+			expect( toolbar.items ).to.have.length( 1 );
+			expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
+		} );
 
-	it( 'should set proper CSS classes', () => {
-		const spy = sinon.spy( balloon, 'add' );
+		it( 'should set proper CSS classes', () => {
+			const spy = sinon.spy( balloon, 'add' );
 
-		editor.ui.focusTracker.isFocused = true;
+			editor.ui.focusTracker.isFocused = true;
 
-		setData( editor.model, '[<media url=""></media>]' );
+			setData( model, '[<media url=""></media>]' );
 
-		sinon.assert.calledWithMatch( spy, {
-			view: toolbar,
-			balloonClassName: 'ck-toolbar-container'
+			sinon.assert.calledWithMatch( spy, {
+				view: toolbar,
+				balloonClassName: 'ck-toolbar-container'
+			} );
 		} );
 	} );
 
@@ -159,11 +164,10 @@ describe( 'MediaEmbedToolbar', () => {
 	} );
 } );
 
-describe( 'MediaEmbedCommentToolbar - integration with BalloonEditor', () => {
-	let clock, editor, balloonToolbar, element, mediaEmbedCommentToolbar, balloon, toolbar, model;
+describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
+	let clock, editor, balloonToolbar, element, widgetToolbar, balloon, toolbar, model;
 
 	testUtils.createSinonSandbox();
-	mockCloudServices();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -171,19 +175,15 @@ describe( 'MediaEmbedCommentToolbar - integration with BalloonEditor', () => {
 		clock = testUtils.sinon.useFakeTimers();
 
 		return BalloonEditor.create( element, {
-			plugins: [ Paragraph, MediaEmbed, MediaEmbedCommentToolbar, CommentsUI, Bold ],
-			cloudServices: {
-				documentId: 'test',
-				tokenUrl: 'abc'
-			},
-			balloonToolbar: [ 'bold', 'comment' ],
-			sidebar: {
-				container: document.body
+			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton, Bold ],
+			balloonToolbar: [ 'bold' ],
+			media: {
+				toolbar: [ 'fake_button' ]
 			}
 		} ).then( _editor => {
 			editor = _editor;
-			mediaEmbedCommentToolbar = editor.plugins.get( MediaEmbedCommentToolbar );
-			toolbar = mediaEmbedCommentToolbar._toolbar;
+			widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+			toolbar = widgetToolbar._toolbars.get( 'mediaEmbed' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 			model = editor.model;
 			balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
@@ -233,3 +233,18 @@ describe( 'MediaEmbedCommentToolbar - integration with BalloonEditor', () => {
 		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
 	} );
 } );
+
+// Plugin that adds fake_button to editor's component factory.
+class FakeButton extends Plugin {
+	init() {
+		this.editor.ui.componentFactory.add( 'fake_button', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'fake button'
+			} );
+
+			return view;
+		} );
+	}
+}
