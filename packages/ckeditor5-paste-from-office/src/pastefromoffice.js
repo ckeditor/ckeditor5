@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/utils';
 import { paragraphsToLists } from './filters/list';
@@ -31,19 +32,14 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const document = editor.editing.view.document;
 
-		this.listenTo( document, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
 			const html = data.dataTransfer.getData( 'text/html' );
 
 			if ( isWordInput( html ) ) {
-				evt.stop();
-
-				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', {
-					content: this._normalizeWordInput( html )
-				} );
+				data.content = this._normalizeWordInput( html );
 			}
-		} );
+		}, { priority: 'high' } );
 	}
 
 	/**
