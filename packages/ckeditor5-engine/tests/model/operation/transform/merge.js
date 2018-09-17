@@ -60,6 +60,50 @@ describe( 'transform', () => {
 			} );
 		} );
 
+		describe( 'by remove', () => {
+			it( 'remove merged element', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+
+				john.merge();
+				kate.remove();
+
+				syncClients();
+
+				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
+			it( 'remove merged element then undo #1', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+
+				john.merge();
+				kate.remove();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph>' );
+
+				kate.undo();
+
+				syncClients();
+
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			} );
+
+			it( 'remove merged element then undo #2', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[<paragraph>Bar</paragraph>]' );
+
+				john.merge();
+				kate.remove();
+				kate.undo();
+
+				syncClients();
+
+				expectClients( '<paragraph>FooBar</paragraph>' );
+			} );
+		} );
+
 		describe( 'by delete', () => {
 			it( 'text from two elements', () => {
 				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );

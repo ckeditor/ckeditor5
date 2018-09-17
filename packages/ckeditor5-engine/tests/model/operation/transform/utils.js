@@ -5,6 +5,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 import { getData, parse } from '../../../../src/dev-utils/model';
 import { transformSets } from '../../../../src/model/operation/transform';
@@ -29,7 +30,7 @@ export class Client {
 			// Typing is needed for delete command.
 			// UndoEditing is needed for undo command.
 			// Block plugins are needed for proper data serializing.
-			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing ]
+			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing ]
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;
@@ -189,6 +190,10 @@ export class Client {
 		this._processExecute( 'undo' );
 	}
 
+	redo() {
+		this._processExecute( 'redo' );
+	}
+
 	_processExecute( commandName, commandArgs ) {
 		const oldVersion = this.document.version;
 
@@ -254,7 +259,7 @@ export class Client {
 }
 
 function bufferOperations( operations, client ) {
-	bufferedOperations.add( { operations: operations.map( operation => JSON.stringify( operation ) ), client } );
+	bufferedOperations.add( { operations, client } );
 }
 
 export function syncClients() {
@@ -277,13 +282,31 @@ export function syncClients() {
 				continue;
 			}
 
-			const remoteOperationsJson = clientsOperations[ remoteClient.name ];
-
-			if ( !remoteOperationsJson ) {
+			if ( !clientsOperations[ remoteClient.name ] ) {
 				continue;
 			}
 
-			const remoteOperations = remoteOperationsJson.map( op => OperationFactory.fromJSON( JSON.parse( op ), localClient.document ) );
+			// Stringify and rebuild operations to simulate sending operations. Set `wasUndone`.
+			const remoteOperationsJson = clientsOperations[ remoteClient.name ].map( operation => {
+				operation.wasUndone = remoteClient.document.history.isUndoneOperation( operation );
+
+				const json = JSON.stringify( operation );
+
+				delete operation.wasUndone;
+
+				return json;
+			} );
+
+			const remoteOperations = remoteOperationsJson.map( json => {
+				const parsedJson = JSON.parse( json );
+				const operation = OperationFactory.fromJSON( parsedJson, localClient.document );
+
+				if ( parsedJson.wasUndone ) {
+					operation.wasUndone = true;
+				}
+
+				return operation;
+			} );
 
 			const localOperations = Array.from( localClient.document.history.getOperations( localClient.syncedVersion ) );
 
@@ -291,7 +314,7 @@ export function syncClients() {
 
 			const options = {
 				document: localClient.document,
-				useContext: false,
+				useRelations: false,
 				padWithNoOps: true
 			};
 

@@ -317,6 +317,25 @@ describe( 'transform', () => {
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
+			it( 'text in same position, then undo and redo', () => {
+				john.setData( '<paragraph>F[]oo</paragraph>' );
+				kate.setData( '<paragraph>F[]oo</paragraph>' );
+
+				john.split();
+				kate.split();
+
+				syncClients();
+
+				john.undo();
+
+				syncClients();
+
+				kate.undo();
+				kate.redo();
+
+				expectClients( '<paragraph>Foo</paragraph>' );
+			} );
+
 			it( 'text in different path', () => {
 				john.setData( '<paragraph>F[]oo</paragraph><paragraph>Bar</paragraph>' );
 				kate.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );
@@ -402,6 +421,56 @@ describe( 'transform', () => {
 
 				syncClients();
 				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			} );
+
+			it( 'element into heading', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+
+				syncClients();
+				expectClients(
+					'<heading1>FooB</heading1>' +
+					'<paragraph>ar</paragraph>'
+				);
+			} );
+
+			it( 'element into heading with undo #1', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+
+				syncClients();
+				expectClients(
+					'<heading1>FooB</heading1>' +
+					'<paragraph>ar</paragraph>'
+				);
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+			} );
+
+			it( 'element into heading with undo #2', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+				kate.undo();
+
+				syncClients();
+				expectClients(
+					'<heading1>Foo</heading1>' +
+					'<paragraph>B</paragraph>' +
+					'<paragraph>ar</paragraph>'
+				);
 			} );
 		} );
 
