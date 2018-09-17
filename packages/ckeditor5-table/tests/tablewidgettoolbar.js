@@ -173,19 +173,15 @@ describe( 'TableWidgetToolbar', () => {
 	// Plugin that adds fake_button to editor's component factory.
 	class FakeButton extends Plugin {
 		init() {
-			try {
-				this.editor.ui.componentFactory.add( 'fake_button', locale => {
-					const view = new ButtonView( locale );
+			this.editor.ui.componentFactory.add( 'fake_button', locale => {
+				const view = new ButtonView( locale );
 
-					view.set( {
-						label: 'fake button'
-					} );
-
-					return view;
+				view.set( {
+					label: 'fake button'
 				} );
-			} catch ( err ) {
-				console.log( err );
-			}
+
+				return view;
+			} );
 		}
 	}
 } );
