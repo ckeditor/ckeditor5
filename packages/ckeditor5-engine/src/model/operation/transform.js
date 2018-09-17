@@ -138,7 +138,8 @@ export function transform( a, b, context = {} ) {
  * @param {Array.<module:engine/model/operation/operation~Operation>} operationsB
  * @param {Object} options Additional transformation options.
  * @param {module:engine/model/document~Document|null} options.document Document which the operations change.
- * @param {Boolean} [options.useContext=false] Whether during transformation additional context information should be gathered and used.
+ * @param {Boolean} [options.useRelations=false] Whether during transformation relations should be used (used during undo for
+ * better conflict resolution).
  * @param {Boolean} [options.padWithNoOps=false] Whether additional {@link module:engine/model/operation/nooperation~NoOperation}s
  * should be added to the transformation results to force the same last base version for both transformed sets (in case
  * if some operations got broken into multiple operations during transformation).
@@ -302,7 +303,7 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const contextFactory = new ContextFactory( options.document, options.useContext );
+	const contextFactory = new ContextFactory( options.document, options.useRelations );
 	contextFactory.setOriginalOperations( operationsA );
 	contextFactory.setOriginalOperations( operationsB );
 
@@ -380,13 +381,14 @@ class ContextFactory {
 	// Creates `ContextFactory` instance.
 	//
 	// @param {module:engine/model/document~Document} document Document which the operations change.
-	// @param {Boolean} useContext Whether during transformation additional context information should be gathered and used.
-	constructor( document, useContext ) {
+	// @param {Boolean} useRelations Whether during transformation relations should be used (used during undo for
+	// better conflict resolution).
+	constructor( document, useRelations ) {
 		// `model.History` instance which information about undone operations will be taken from.
 		this._history = document.history;
 
 		// Whether additional context should be used.
-		this._useContext = useContext;
+		this._useRelations = useRelations;
 
 		// For each operation that is created during transformation process, we keep a reference to the original operation
 		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
@@ -508,28 +510,16 @@ class ContextFactory {
 	// @param {module:engine/model/operation/operation~Operation} opB
 	// @returns {module:engine/model/operation/transform~TransformationContext}
 	getContext( opA, opB, aIsStrong ) {
-		if ( !this._useContext ) {
-			return {
-				aIsStrong,
-				aWasUndone: false,
-				bWasUndone: false,
-				abRelation: null,
-				baRelation: null
-			};
-		}
-
 		return {
 			aIsStrong,
 			aWasUndone: this._wasUndone( opA ),
 			bWasUndone: this._wasUndone( opB ),
-			abRelation: this._getRelation( opA, opB ),
-			baRelation: this._getRelation( opB, opA )
+			abRelation: this._useRelations ? this._getRelation( opA, opB ) : null,
+			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null
 		};
 	}
 
 	// Returns whether given operation `op` has already been undone.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
 	//
 	// Information whether an operation was undone gives more context when making a decision when two operations are in conflict.
 	//
@@ -542,13 +532,11 @@ class ContextFactory {
 		const originalOp = this._originalOperations.get( op );
 
 		// And check with the document if the original operation was undone.
-		return this._history.isUndoneOperation( originalOp );
+		return originalOp.wasUndone || this._history.isUndoneOperation( originalOp );
 	}
 
 	// Returns a relation between `opA` and an operation which is undone by `opB`. This can be `String` value if a relation
 	// was set earlier or `null` if there was no relation between those operations.
-	//
-	// This is only used when additional context mode is on (options.useContext == true).
 	//
 	// This is a little tricky to understand, so let's compare it to `ContextFactory#_wasUndone`.
 	//
@@ -2043,7 +2031,74 @@ setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	return [ a ];
 } );
 
-setTransformation( SplitOperation, MergeOperation, ( a, b ) => {
+setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
+	// Case 1:
+	//
+	// Split element got merged. If two different elements were merged, clients will have different content.
+	//
+	// Example. Merge at `{}`, split at `[]`:
+	// <heading>Foo</heading>{}<paragraph>B[]ar</paragraph>
+	//
+	// On merge side it will look like this:
+	// <heading>FooB[]ar</heading>
+	// <heading>FooB</heading><heading>ar</heading>
+	//
+	// On split side it will look like this:
+	// <heading>Foo</heading>{}<paragraph>B</paragraph><paragraph>ar</paragraph>
+	// <heading>FooB</heading><paragraph>ar</paragraph>
+	//
+	// Clearly, the second element is different for both clients.
+	//
+	// We could use the removed merge element from graveyard as a split element but then clients would have a different
+	// model state (in graveyard), because the split side client would still have an element in graveyard (removed by merge).
+	//
+	// To overcome this, in `SplitOperation` x `MergeOperation` transformation we will add additional `SplitOperation`
+	// in the graveyard, which will actually clone the merged-and-deleted element. Then, that cloned element will be
+	// used for splitting. Example below.
+	//
+	// Original state:
+	// <heading>Foo</heading>{}<paragraph>B[]ar</paragraph>
+	//
+	// Merge side client:
+	//
+	// After merge:
+	// <heading>FooB[]ar</heading>                                 graveyard: <paragraph></paragraph>
+	//
+	// Extra split:
+	// <heading>FooB[]ar</heading>                                 graveyard: <paragraph></paragraph><paragraph></paragraph>
+	//
+	// Use the "cloned" element from graveyard:
+	// <heading>FooB</heading><paragraph>ar</paragraph>            graveyard: <paragraph></paragraph>
+	//
+	// Split side client:
+	//
+	// After split:
+	// <heading>Foo</heading>{}<paragraph>B</paragraph><paragraph>ar</paragraph>
+	//
+	// After merge:
+	// <heading>FooB</heading><paragraph>ar</paragraph>            graveyard: <paragraph></paragraph>
+	//
+	// This special case scenario only applies if the original split operation clones the split element.
+	// If the original split operation has `graveyardPosition` set, it all doesn't have sense because split operation
+	// knows exactly which element it should use. So there would be no original problem with different contents.
+	//
+	// Additionally, the special case applies only if the merge wasn't already undone.
+	//
+	if ( !a.graveyardPosition && !context.bWasUndone && a.position.hasSameParentAs( b.sourcePosition ) ) {
+		const splitPath = b.graveyardPosition.path.slice();
+		splitPath.push( 0 );
+
+		const additionalSplit = new SplitOperation( new Position( b.graveyardPosition.root, splitPath ), 0, null, 0 );
+
+		a.position = a.position._getTransformedByMergeOperation( b );
+		a.graveyardPosition = Position.createFromPosition( additionalSplit.insertionPosition );
+		a.graveyardPosition.stickiness = 'toNext';
+
+		return [ additionalSplit, a ];
+	}
+
+	// The default case.
+	//
 	if ( a.position.hasSameParentAs( b.deletionPosition ) && !a.position.isAfter( b.deletionPosition ) ) {
 		a.howMany--;
 	}
