@@ -17,18 +17,21 @@ import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { expectPaste } from '../../_utils/utils';
+import { getFixtures } from '../../_utils/fixtures';
 
-import boldWithinText from '../../_data/basic-styles/bold-within-text/input.word2016.html';
-import italicStartingText from '../../_data/basic-styles/italic-starting-text/input.word2016.html';
-import underlinedText from '../../_data/basic-styles/underlined-text/input.word2016.html';
-import strikethroughEndingText from '../../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
-import multipleStylesSingleLine from '../../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
-import multipleStylesMultiline from '../../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
+// import boldWithinText from '../../_data/basic-styles/bold-within-text/input.word2016.html';
+// import italicStartingText from '../../_data/basic-styles/italic-starting-text/input.word2016.html';
+// import underlinedText from '../../_data/basic-styles/underlined-text/input.word2016.html';
+// import strikethroughEndingText from '../../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
+// import multipleStylesSingleLine from '../../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
+// import multipleStylesMultiline from '../../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
 
 describe( 'Basic Styles – integration', () => {
-	let element, editor;
+	let element, editor, fixtures;
 
 	before( () => {
+		fixtures = getFixtures( 'basic-styles' ).input;
+
 		element = document.createElement( 'div' );
 
 		document.body.appendChild( element );
@@ -54,32 +57,34 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'bold within text', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, boldWithinText, '<paragraph>Some text <$text bold="true">with bold</$text>.[]</paragraph>' );
+			expectPaste( editor, fixtures.boldWithinText, '<paragraph>Some text <$text bold="true">with bold</$text>.[]</paragraph>' );
 		} );
 
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, boldWithinText, '<paragraph>More Some text <$text bold="true">with bold</$text>.[] text</paragraph>' );
+			expectPaste( editor, fixtures.boldWithinText,
+				'<paragraph>More Some text <$text bold="true">with bold</$text>.[] text</paragraph>' );
 		} );
 
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, boldWithinText, '<heading1>More Some text <$text bold="true">with bold</$text>.[] text</heading1>' );
+			expectPaste( editor, fixtures.boldWithinText,
+				'<heading1>More Some text <$text bold="true">with bold</$text>.[] text</heading1>' );
 		} );
 
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text italic="true">Ita[]lic</$text></paragraph>' );
 
-			expectPaste( editor, boldWithinText, '<paragraph><$text italic="true">Ita</$text>Some text ' +
+			expectPaste( editor, fixtures.boldWithinText, '<paragraph><$text italic="true">Ita</$text>Some text ' +
 				'<$text bold="true">with bold</$text>.[]<$text italic="true">lic</$text></paragraph>' );
 		} );
 
 		it( 'pastes inside another bold element', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Ita[]lic</$text></paragraph>' );
 
-			expectPaste( editor, boldWithinText, '<paragraph><$text bold="true">Ita</$text>Some text ' +
+			expectPaste( editor, fixtures.boldWithinText, '<paragraph><$text bold="true">Ita</$text>Some text ' +
 				'<$text bold="true">with bold</$text>.[]<$text bold="true">lic</$text></paragraph>' );
 		} );
 	} );
@@ -88,32 +93,34 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'italic starting text', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, italicStartingText, '<paragraph><$text italic="true">Italic</$text> text.[]</paragraph>' );
+			expectPaste( editor, fixtures.italicStartingText, '<paragraph><$text italic="true">Italic</$text> text.[]</paragraph>' );
 		} );
 
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, italicStartingText, '<paragraph>More <$text italic="true">Italic</$text> text.[] text</paragraph>' );
+			expectPaste( editor, fixtures.italicStartingText,
+				'<paragraph>More <$text italic="true">Italic</$text> text.[] text</paragraph>' );
 		} );
 
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, italicStartingText, '<heading1>More <$text italic="true">Italic</$text> text.[] text</heading1>' );
+			expectPaste( editor, fixtures.italicStartingText,
+				'<heading1>More <$text italic="true">Italic</$text> text.[] text</heading1>' );
 		} );
 
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
-			expectPaste( editor, italicStartingText, '<paragraph><$text bold="true">Bol</$text><$text italic="true">' +
+			expectPaste( editor, fixtures.italicStartingText, '<paragraph><$text bold="true">Bol</$text><$text italic="true">' +
 				'Italic</$text> text.[]<$text bold="true">d</$text></paragraph>' );
 		} );
 
 		it( 'pastes inside another italic element', () => {
 			setData( editor.model, '<paragraph><$text italic="true">Italic[]</$text></paragraph>' );
 
-			expectPaste( editor, italicStartingText, '<paragraph><$text italic="true">ItalicItalic</$text> text.[]</paragraph>' );
+			expectPaste( editor, fixtures.italicStartingText, '<paragraph><$text italic="true">ItalicItalic</$text> text.[]</paragraph>' );
 		} );
 	} );
 
@@ -121,33 +128,35 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'underlined text', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, underlinedText, '<paragraph><$text underline="true">Whole text underlined[]</$text></paragraph>' );
+			expectPaste( editor, fixtures.underlinedText,
+				'<paragraph><$text underline="true">Whole text underlined[]</$text></paragraph>' );
 		} );
 
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, underlinedText, '<paragraph>More <$text underline="true">Whole text underlined[]' +
+			expectPaste( editor, fixtures.underlinedText, '<paragraph>More <$text underline="true">Whole text underlined[]' +
 				'</$text> text</paragraph>' );
 		} );
 
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, underlinedText, '<heading1>More <$text underline="true">Whole text underlined[]</$text> text</heading1>' );
+			expectPaste( editor, fixtures.underlinedText,
+				'<heading1>More <$text underline="true">Whole text underlined[]</$text> text</heading1>' );
 		} );
 
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
-			expectPaste( editor, underlinedText, '<paragraph><$text bold="true">Bol</$text><$text underline="true">' +
+			expectPaste( editor, fixtures.underlinedText, '<paragraph><$text bold="true">Bol</$text><$text underline="true">' +
 				'Whole text underlined[]</$text><$text bold="true">d</$text></paragraph>' );
 		} );
 
 		it( 'pastes inside another underlined element', () => {
 			setData( editor.model, '<paragraph><$text underline="true">Under []line</$text></paragraph>' );
 
-			expectPaste( editor, underlinedText, '<paragraph><$text underline="true">Under Whole text underlined[]' +
+			expectPaste( editor, fixtures.underlinedText, '<paragraph><$text underline="true">Under Whole text underlined[]' +
 				'line</$text></paragraph>' );
 		} );
 	} );
@@ -156,34 +165,35 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'strikethrough ending text', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, strikethroughEndingText, '<paragraph>Text <$text strikethrough="true">incorrect[]</$text></paragraph>' );
+			expectPaste( editor, fixtures.strikethroughEndingText,
+				'<paragraph>Text <$text strikethrough="true">incorrect[]</$text></paragraph>' );
 		} );
 
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, strikethroughEndingText, '<paragraph>More Text <$text strikethrough="true">incorrect[]' +
+			expectPaste( editor, fixtures.strikethroughEndingText, '<paragraph>More Text <$text strikethrough="true">incorrect[]' +
 				'</$text> text</paragraph>' );
 		} );
 
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, strikethroughEndingText, '<heading1>More Text <$text strikethrough="true">incorrect[]' +
+			expectPaste( editor, fixtures.strikethroughEndingText, '<heading1>More Text <$text strikethrough="true">incorrect[]' +
 				'</$text> text</heading1>' );
 		} );
 
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
-			expectPaste( editor, strikethroughEndingText, '<paragraph><$text bold="true">Bol</$text>' +
+			expectPaste( editor, fixtures.strikethroughEndingText, '<paragraph><$text bold="true">Bol</$text>' +
 				'Text <$text strikethrough="true">incorrect[]</$text><$text bold="true">d</$text></paragraph>' );
 		} );
 
 		it( 'pastes inside another strikethrough element', () => {
 			setData( editor.model, '<paragraph><$text strikethrough="true">[]Foo</$text></paragraph>' );
 
-			expectPaste( editor, strikethroughEndingText, '<paragraph>Text <$text strikethrough="true">incorrect[]Foo' +
+			expectPaste( editor, fixtures.strikethroughEndingText, '<paragraph>Text <$text strikethrough="true">incorrect[]Foo' +
 				'</$text></paragraph>' );
 		} );
 	} );
@@ -192,7 +202,7 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles single line', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, multipleStylesSingleLine, '<paragraph>Text ' +
+			expectPaste( editor, fixtures.multipleStylesSingleLine, '<paragraph>Text ' +
 				'<$text bold="true" underline="true">containi</$text>' +
 				'<$text bold="true" strikethrough="true" underline="true">ng</$text>' +
 				'<$text strikethrough="true" underline="true"> multi</$text>' +
@@ -203,7 +213,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, multipleStylesSingleLine, '<paragraph>More Text ' +
+			expectPaste( editor, fixtures.multipleStylesSingleLine, '<paragraph>More Text ' +
 				'<$text bold="true" underline="true">containi</$text>' +
 				'<$text bold="true" strikethrough="true" underline="true">ng</$text>' +
 				'<$text strikethrough="true" underline="true"> multi</$text>' +
@@ -214,7 +224,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, multipleStylesSingleLine, '<heading1>More Text ' +
+			expectPaste( editor, fixtures.multipleStylesSingleLine, '<heading1>More Text ' +
 				'<$text bold="true" underline="true">containi</$text>' +
 				'<$text bold="true" strikethrough="true" underline="true">ng</$text>' +
 				'<$text strikethrough="true" underline="true"> multi</$text>' +
@@ -225,7 +235,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
-			expectPaste( editor, multipleStylesSingleLine, '<paragraph><$text bold="true">Bol</$text>Text ' +
+			expectPaste( editor, fixtures.multipleStylesSingleLine, '<paragraph><$text bold="true">Bol</$text>Text ' +
 				'<$text bold="true" underline="true">containi</$text>' +
 				'<$text bold="true" strikethrough="true" underline="true">ng</$text>' +
 				'<$text strikethrough="true" underline="true"> multi</$text>' +
@@ -242,7 +252,7 @@ describe( 'Basic Styles – integration', () => {
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles multiline', () => {
 		it( 'pastes in the empty editor', () => {
-			expectPaste( editor, multipleStylesMultiline, '<paragraph>Line ' +
+			expectPaste( editor, fixtures.multipleStylesMultiline, '<paragraph>Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></paragraph>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
 				'<paragraph><$text strikethrough="true">Third</$text> line <$text bold="true">styling, </$text>' +
@@ -253,7 +263,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
-			expectPaste( editor, multipleStylesMultiline, '<paragraph>More Line ' +
+			expectPaste( editor, fixtures.multipleStylesMultiline, '<paragraph>More Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></paragraph>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
 				'<paragraph><$text strikethrough="true">Third</$text> line <$text bold="true">styling, </$text>' +
@@ -264,7 +274,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
-			expectPaste( editor, multipleStylesMultiline, '<heading1>More Line ' +
+			expectPaste( editor, fixtures.multipleStylesMultiline, '<heading1>More Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></heading1>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
 				'<paragraph><$text strikethrough="true">Third</$text> line <$text bold="true">styling, </$text>' +
@@ -275,7 +285,7 @@ describe( 'Basic Styles – integration', () => {
 		it( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
-			expectPaste( editor, multipleStylesMultiline, '<paragraph><$text bold="true">Bol</$text>Line ' +
+			expectPaste( editor, fixtures.multipleStylesMultiline, '<paragraph><$text bold="true">Bol</$text>Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></paragraph>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
 				'<paragraph><$text strikethrough="true">Third</$text> line <$text bold="true">styling, </$text>' +
