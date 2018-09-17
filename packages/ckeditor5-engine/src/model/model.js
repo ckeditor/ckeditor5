@@ -562,6 +562,9 @@ export default class Model {
 	 * The {@link #insertContent default action of that method} is implemented as a
 	 * listener to this event so it can be fully customized by the features.
 	 *
+	 * **Note** The `selectable` parameter for the {@link #insertContent} is optional. When `undefined` value is passed the method uses
+	 * `model.document.selection`.
+	 *
 	 * @event insertContent
 	 * @param {Array} args The arguments passed to the original method.
 	 */
