@@ -12,8 +12,10 @@ import InlineAutoformatEditing from './inlineautoformatediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
- * Includes a set of predefined autoformatting actions. For a detailed overview, check
- * the {@glink features/autoformat Autoformatting feature documentation}.
+ * Enables a set of predefined autoformatting actions.
+ *
+ * For a detailed overview, check the {@glink features/autoformat Autoformatting feature documentation}
+ * and the {@glink api/autoformat package page}.
  *
  * @extends module:core/plugin~Plugin
  */
