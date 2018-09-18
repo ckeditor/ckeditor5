@@ -17,7 +17,7 @@ import { debounce } from 'lodash-es';
 /* globals window */
 
 /**
- * The {@link module:autosave/autosave~Autosave} allows you to automatically save the data (e.g. send it to the server)
+ * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
  * when needed (when the user changed the content).
  *
  * It listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`}
@@ -42,6 +42,8 @@ import { debounce } from 'lodash-es';
  *
  * Read more about this feature in the {@glink builds/guides/integration/saving-data#the-autosave-feature Autosave feature}
  * section of the {@glink builds/guides/integration/saving-data Saving and getting data}.
+ *
+ * @extends module:core/plugin~Plugin
  */
 export default class Autosave extends Plugin {
 	/**
