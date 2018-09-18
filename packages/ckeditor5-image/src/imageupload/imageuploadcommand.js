@@ -26,8 +26,8 @@ export default class ImageUploadCommand extends Command {
 	 * @param {File} options.file The image file to upload.
 	 * @param {module:engine/model/position~Position} [options.insertAt] The position at which the image should be inserted.
 	 * If the position is not specified, the image will be inserted into the current selection.
-	 * Note: You can use the {@link module:upload/utils~findOptimalInsertionPosition} function to calculate
-	 * (e.g. based on the current selection) a position which is more optimal from the UX perspective.
+	 * Note: You can use the {@link module:widget/utils~findOptimalInsertionPosition} function
+	 * to calculate (e.g. based on the current selection) a position which is more optimal from the UX perspective.
 	 */
 	execute( options ) {
 		const editor = this.editor;

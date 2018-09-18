@@ -10,7 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import { isImageType, findOptimalInsertionPosition } from './utils';
+import { isImageType } from './utils';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * The image upload button plugin.

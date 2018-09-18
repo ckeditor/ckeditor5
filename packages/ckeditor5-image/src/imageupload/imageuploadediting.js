@@ -12,8 +12,8 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import { isImageType, findOptimalInsertionPosition } from '../../src/imageupload/utils';
+import { isImageType } from '../../src/imageupload/utils';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * The editing part of the image upload feature.
@@ -73,9 +73,8 @@ export default class ImageUploadEditing extends Plugin {
 						}
 
 						const imageElement = writer.createElement( 'image', { uploadId: loader.id } );
-						const targetSelection = new ModelSelection( [ new ModelRange( insertAt ) ] );
 
-						editor.model.insertContent( imageElement, targetSelection );
+						editor.model.insertContent( imageElement, insertAt );
 
 						// Inserting an image might've failed due to schema regulations.
 						if ( imageElement.parent ) {
