@@ -110,9 +110,9 @@ export default class WidgetToolbar extends Plugin {
 			/**
 			 * Toolbar with the given id was already added.
 			 *
-			 * @error duplicated-widget-toolbar
+			 * @error widget-toolbar-duplicated
 			 */
-			throw new Error( 'duplicated-widget-toolbar: Toolbar with the given id was already added.', { toolbarId } )
+			throw new Error( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } )
 		}
 
 		this._toolbars.set( toolbarId, {
@@ -130,8 +130,26 @@ export default class WidgetToolbar extends Plugin {
 	remove( toolbarId ) {
 		const toolbar = this._toolbars.get( toolbarId );
 
+		if ( !toolbar ) {
+			/**
+			 * Toolbar with the given id was already added.
+			 *
+			 * @error widget-toolbar-does-not-exist
+			 */
+			throw new Error( 'widget-toolbar-does-not-exist' );
+		}
+
 		this._hideToolbar( toolbar );
 		this._toolbars.delete( toolbarId );
+	}
+
+	/**
+	 * Returns `true` when a toolbar with the given id is present in the toolbar collection.
+	 *
+	 * @param {String} toolbarId Toolbar identificator.
+	 */
+	has( toolbarId ) {
+		return this._toolbars.has( toolbarId );
 	}
 
 	/**
@@ -156,7 +174,7 @@ export default class WidgetToolbar extends Plugin {
 	 * @param {Object} toolbar
 	 */
 	_hideToolbar( toolbar ) {
-		if ( !this._isVisible( toolbar ) ) {
+		if ( !this._isToolbarVisible( toolbar ) ) {
 			return;
 		}
 
@@ -170,7 +188,7 @@ export default class WidgetToolbar extends Plugin {
 	 * @param {Object} toolbar
 	 */
 	_showToolbar( toolbar ) {
-		if ( this._isVisible( toolbar ) ) {
+		if ( this._isToolbarVisible( toolbar ) ) {
 			repositionContextualBalloon( this.editor );
 		} else if ( !this._balloon.hasView( toolbar.view ) ) {
 			this._balloon.add( {
@@ -185,7 +203,7 @@ export default class WidgetToolbar extends Plugin {
 	 * @private
 	 * @param {Object} toolbar
 	 */
-	_isVisible( toolbar ) {
+	_isToolbarVisible( toolbar ) {
 		return this._balloon.visibleView == toolbar.view;
 	}
 }

@@ -78,7 +78,57 @@ describe( 'WidgetToolbar', () => {
 					toolbarItems: editor.config.get( 'fake.toolbar' ),
 					isVisible: () => false
 				} );
-			} ).to.throw( /duplicated-widget-toolbar/ );
+			} ).to.throw( /widget-toolbar-duplicated/ );
+		} );
+	} );
+
+	describe( 'remove', () => {
+		it( 'should remove given widget toolbar', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: () => false
+			} );
+
+			widgetToolbar.remove( 'fake' );
+
+			expect( widgetToolbar._toolbars.size ).to.equal( 0 );
+		} );
+
+		it( 'should throw an error if a toolbar does not exist', () => {
+			widgetToolbar.add( 'foo', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: () => false
+			} );
+
+			expect( () => {
+				widgetToolbar.remove( 'bar' );
+			} ).to.throw( /widget-toolbar-does-not-exist/ );
+		} );
+	} );
+
+	describe( 'has', () => {
+		it( 'should return `true` when a toolbar with given id was added', () => {
+			widgetToolbar.add( 'foo', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: () => false
+			} );
+
+			expect( widgetToolbar.has( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should return `false` when a toolbar with given id was not added', () => {
+			widgetToolbar.add( 'foo', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: () => false
+			} );
+
+			expect( widgetToolbar.has( 'bar' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'integration tests', () => {
+		beforeEach( () => {
+			editor.ui.focusTracker.isFocused = true;
 		} );
 
 		it( 'should show widget toolbar when the `isVisible` callback returns true', () => {
@@ -90,8 +140,6 @@ describe( 'WidgetToolbar', () => {
 					return el && isWidget( el );
 				}
 			} );
-
-			editor.ui.focusTracker.isFocused = true;
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
@@ -110,8 +158,6 @@ describe( 'WidgetToolbar', () => {
 				}
 			} );
 
-			editor.ui.focusTracker.isFocused = true;
-
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
 
 			expect( balloon.visibleView ).to.equal( null );
@@ -127,24 +173,62 @@ describe( 'WidgetToolbar', () => {
 				}
 			} );
 
-			editor.ui.focusTracker.isFocused = true;
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
-			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
+			model.change( writer => {
+				// Select the paragraph content.
+				writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+			} );
 
 			expect( balloon.visibleView ).to.equal( null );
 		} );
-	} );
 
-	describe( 'remove', () => {
-		it( 'should remove given widget toolbar', () => {
+		it( 'should update toolbar position when other widget is being selected', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: () => false
+				isVisible: selection => {
+					const el = selection.getSelectedElement();
+
+					return el && isWidget( el );
+				}
 			} );
 
-			widgetToolbar.remove( 'fake' );
+			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
 
-			expect( widgetToolbar._toolbars.size ).to.equal( 0 );
+			model.change( writer => {
+				// Select the second widget.
+				writer.setSelection( model.document.getRoot().getChild( 1 ), 'on' );
+			} );
+
+			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+		} );
+
+		it( 'should be able to show toolbar for elements inside the widget', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: selection => {
+					const pos = selection.getFirstPosition();
+					let node = pos.parent;
+
+					while( node ) {
+						if ( node.is( 'element' ) && isWidget( node ) ) {
+							return true;
+						}
+
+						node = node.parent;
+					}
+
+					return false;
+				}
+			} );
+
+			setData( model, '<fake-widget>[foo]</fake-widget>' );
+
+			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 	} );
 
@@ -178,6 +262,8 @@ describe( 'WidgetToolbar', () => {
 				isBlock: true,
 				allowWhere: '$block',
 			} );
+
+			schema.extend( '$text', { allowIn: 'fake-widget' } );
 
 			const conversion = editor.conversion;
 
