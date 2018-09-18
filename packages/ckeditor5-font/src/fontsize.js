@@ -14,10 +14,11 @@ import FontSizeUI from './fontsize/fontsizeui';
 /**
  * The font size plugin.
  *
- * It enables {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
- * {@link module:font/fontsize/fontsizeui~FontSizeUI} features in the editor.
+ * For a detailed overview, check the {@glink features/font font feature} documentation
+ * and the {@glink api/font package page}.
  *
- * For a detailed overview, check the {@glink features/font font feature} documentation.
+ * This is a "glue" plugin which loads the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
+ * {@link module:font/fontsize/fontsizeui~FontSizeUI} features in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -104,7 +105,7 @@ export default class FontSize extends Plugin {
  * 			options: [ 9, 10, 11, 12, 13, 14, 15 ]
  * 		};
  *
- * Font size can be applied using the command API. To do that, use the `fontSize` command and pass the desired font size as a `value`.
+ * Font size can be applied using the command API. To do that, use the `'fontSize'` command and pass the desired font size as a `value`.
  * For example, the following code will apply the `fontSize` attribute with the **tiny** value to the current selection:
  *
  *		editor.execute( 'fontSize', { value: 'tiny' } );

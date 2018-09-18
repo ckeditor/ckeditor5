@@ -14,10 +14,11 @@ import FontFamilyUI from './fontfamily/fontfamilyui';
 /**
  * The font family plugin.
  *
- * It enables {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
- * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
+ * For a detailed overview, check the {@glink features/font font feature} documentatiom
+ * and the {@glink api/font package page}.
  *
- * For a detailed overview, check the {@glink features/font font feature} documentation.
+ * This is a "glue" plugin which loads the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
+ * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -107,7 +108,7 @@ export default class FontFamily extends Plugin {
  *
  *		editor.execute( 'fontFamily', { value: 'Arial' } );
  *
- * Executing the `fontFamily` command without any value will remove the `fontFamily` attribute from the current selection.
+ * Executing the `'fontFamily'` command without any value will remove the `fontFamily` attribute from the current selection.
  *
  * @member {Array.<String|module:font/fontfamily~FontFamilyOption>} module:font/fontfamily~FontFamilyConfig#options
  */

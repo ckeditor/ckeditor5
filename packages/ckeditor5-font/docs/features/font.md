@@ -216,7 +216,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	]
 	```
 
-	the `fontFamily` command will accept the corresponding strings as values:
+	the `'fontFamily'` command will accept the corresponding strings as values:
 
 	* `'Arial'`
 	* `'Courier New'`
@@ -227,7 +227,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	* `'Trebuchet MS'`
 	* `'Verdana'`
 
-	Note that passing an empty value will remove the `fontFamily` from the selection (`default`):
+	Note that passing an empty value will remove the `fontFamily` attribute from the selection (`default`):
 
 	```js
 	editor.execute( 'fontFamily' );

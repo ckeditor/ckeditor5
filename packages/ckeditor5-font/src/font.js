@@ -13,11 +13,13 @@ import FontFamily from './fontfamily';
 import FontSize from './fontsize';
 
 /**
- * A plugin that enables (aggregates) a set of text styling features:
+ * A plugin that enables a set of text styling features:
+ *
  * * {@link module:font/fontsize~FontSize},
  * * {@link module:font/fontfamily~FontFamily}.
  *
- * For a detailed overview, check the {@glink features/font font feature} documentation.
+ * For a detailed overview, check the {@glink features/font Font feature} documentation
+ * and the {@glink api/font package page}.
  *
  * @extends module:core/plugin~Plugin
  */
