@@ -34,7 +34,7 @@ In order to start developing CKEditor 5 you will require:
 Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the official builds (it will serve as the starting point for your custom one) and then clone your fork:
 
 ```bash
-git clone -b stable https://github.com/<your-username>/ckeditor5-build-classic.git
+git clone -b stable git@github.com:<your-username>/ckeditor5-build-classic.git
 ```
 
 To make updating easier you may optionally add the original build repository to your Git remotes:
