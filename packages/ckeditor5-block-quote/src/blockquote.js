@@ -14,7 +14,9 @@ import BlockQuoteUI from './blockquoteui';
 /**
  * The block quote plugin.
  *
- * It loads the {@link module:block-quote/blockquoteediting~BlockQuoteEditing block quote editing feature}
+ * For more information about this feature check the {@glink api/block-quote package page}.
+ *
+ * This is a "glue" plugin which loads the {@link module:block-quote/blockquoteediting~BlockQuoteEditing block quote editing feature}
  * and {@link module:block-quote/blockquoteui~BlockQuoteUI block quote UI feature}.
  *
  * @extends module:core/plugin~Plugin
