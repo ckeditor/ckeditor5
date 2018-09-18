@@ -3,16 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getBrowserName } from './browser';
+import { getBrowserName } from './utils';
 
 import { fixtures as basicStyles, browserFixtures as basicStylesBrowser } from '../_data/basic-styles/index.js';
+import { fixtures as link, browserFixtures as linkBrowser } from '../_data/link/index.js';
 
 const fixtures = {
-	'basic-styles': basicStyles
+	'basic-styles': basicStyles,
+	link
 };
 
 const browserFixtures = {
-	'basic-styles': basicStylesBrowser
+	'basic-styles': basicStylesBrowser,
+	link: linkBrowser
 };
 
 export function getFixtures( group ) {

@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global navigator */
+
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
@@ -90,4 +92,68 @@ export function expectNormalized( actual, expected ) {
 	const actualNormalized = stringify( actual ).replace( /\u00A0/g, ' ' );
 
 	expect( actualNormalized ).to.equal( normalizeHtml( expectedInlined ) );
+}
+
+/**
+ * Compares two models string representations. This function hooks into {@link module:engine/model/model~Model#insertContent}
+ * to get the model representarion before it is inserted.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {String} input
+ * @param {String} expected
+ */
+export function expectModel( editor, input, expected ) {
+	const editorModel = editor.model;
+	const insertContent = editorModel.insertContent;
+
+	let actual = '';
+
+	sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
+		// Save model string representation now as it may change after `insertContent()` function call
+		// so accessing it later may not work as it may have empty/changed structure.
+		actual = stringifyModel( content );
+		insertContent.call( editorModel, content, selection );
+	} );
+
+	pasteHtml( editor, input );
+
+	sinon.restore();
+
+	expect( actual.replace( /\u00A0/g, '#' ).replace( /&nbsp;/g, '#' ) )
+		.to.equal( expected.replace( /\u00A0/g, '#' ).replace( /&nbsp;/g, '#' ) );
+}
+
+/**
+ * Returns the name of the browser in which code is executed based on `window.navigator` object.
+ *
+ * @returns {String|null} Lowercase browser name or null if non-standard browser is used.
+ */
+export function getBrowserName() {
+	const browsers = detectBrowsers( navigator );
+
+	const browser = Object.keys( browsers ).filter( browserName => !!browsers[ browserName ] );
+
+	return browser.length ? browser[ 0 ] : null;
+}
+
+// Checks if current browser is one of the predefined ones (Chrome, Edge, Firefox, IE, Safari).
+//
+// @param {Navigator} navigator Browser `window.navigator` object on which detection is based.
+// @returns {{chrome: Boolean, edge: Boolean, firefox: Boolean, ie: Boolean, safari: Boolean}}
+function detectBrowsers( navigator ) {
+	const agent = navigator.userAgent.toLowerCase();
+	const edge = agent.match( /edge[ /](\d+.?\d*)/ );
+	const trident = agent.indexOf( 'trident/' ) > -1;
+	const ie = !!( edge || trident );
+	const webkit = !ie && ( agent.indexOf( ' applewebkit/' ) > -1 );
+	const gecko = navigator.product === 'Gecko' && !webkit && !ie;
+	const chrome = webkit && agent.indexOf( 'chrome' ) > -1;
+
+	return {
+		chrome,
+		edge: !!edge,
+		firefox: gecko,
+		ie,
+		safari: webkit && !chrome,
+	};
 }

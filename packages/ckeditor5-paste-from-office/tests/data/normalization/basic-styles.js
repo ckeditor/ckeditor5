@@ -8,23 +8,14 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { expectNormalized } from '../../_utils/utils';
-
-import boldWithinText from '../../_data/basic-styles/bold-within-text/input.word2016.html';
-import italicStartingText from '../../_data/basic-styles/italic-starting-text/input.word2016.html';
-import underlinedText from '../../_data/basic-styles/underlined-text/input.word2016.html';
-import strikethroughEndingText from '../../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
-import multipleStylesSingleLine from '../../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
-import multipleStylesMultiline from '../../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
-
-import boldWithinTextNormalized from '../../_data/basic-styles/bold-within-text/normalized.word2016.html';
-import italicStartingTextNormalized from '../../_data/basic-styles/italic-starting-text/normalized.word2016.html';
-import underlinedTextNormalized from '../../_data/basic-styles/underlined-text/normalized.word2016.html';
-import strikethroughEndingTextNormalized from '../../_data/basic-styles/strikethrough-ending-text/normalized.word2016.html';
-import multipleStylesSingleLineNormalized from '../../_data/basic-styles/multiple-styles-single-line/normalized.word2016.html';
-import multipleStylesMultilineNormalized from '../../_data/basic-styles/multiple-styles-multiline/normalized.word2016.html';
+import { getFixtures } from '../../_utils/fixtures';
 
 describe( 'Basic Styles – normalization', () => {
-	let editor, pasteFromOfficePlugin;
+	let editor, input, normalized, pasteFromOfficePlugin;
+
+	before( () => {
+		( { input, normalized } = getFixtures( 'basic-styles' ) );
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -40,31 +31,31 @@ describe( 'Basic Styles – normalization', () => {
 
 	it( 'normalizes bold within text', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( boldWithinText, editor ), boldWithinTextNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.boldWithinText, editor ), normalized.boldWithinText );
 	} );
 
 	it( 'normalizes italic starting text', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( italicStartingText, editor ), italicStartingTextNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.italicStartingText, editor ), normalized.italicStartingText );
 	} );
 
 	it( 'normalizes underlined text', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( underlinedText, editor ), underlinedTextNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.underlinedText, editor ), normalized.underlinedText );
 	} );
 
 	it( 'normalizes strikethrough ending text', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( strikethroughEndingText, editor ), strikethroughEndingTextNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.strikethroughEndingText, editor ), normalized.strikethroughEndingText );
 	} );
 
 	it( 'normalizes mulitple styles single line', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( multipleStylesSingleLine, editor ), multipleStylesSingleLineNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.multipleStylesSingleLine, editor ), normalized.multipleStylesSingleLine );
 	} );
 
 	it( 'normalizes mulitple styles multiline', () => {
 		expectNormalized(
-			pasteFromOfficePlugin._normalizeWordInput( multipleStylesMultiline, editor ), multipleStylesMultilineNormalized );
+			pasteFromOfficePlugin._normalizeWordInput( input.multipleStylesMultiline, editor ), normalized.multipleStylesMultiline );
 	} );
 } );

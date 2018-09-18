@@ -28,12 +28,12 @@ export const fixtures = {
 		multipleStylesMultiline
 	},
 	normalized: {
-		boldWithinTextNormalized,
-		italicStartingTextNormalized,
-		underlinedTextNormalized,
-		strikethroughEndingTextNormalized,
-		multipleStylesSingleLineNormalized,
-		multipleStylesMultilineNormalized
+		boldWithinText: boldWithinTextNormalized,
+		italicStartingText: italicStartingTextNormalized,
+		underlinedText: underlinedTextNormalized,
+		strikethroughEndingText: strikethroughEndingTextNormalized,
+		multipleStylesSingleLine: multipleStylesSingleLineNormalized,
+		multipleStylesMultiline: multipleStylesMultilineNormalized
 	}
 };
 
@@ -45,6 +45,13 @@ import strikethroughEndingTextSafari from './strikethrough-ending-text/input.saf
 import multipleStylesSingleLineSafari from './multiple-styles-single-line/input.safari.word2016.html';
 import multipleStylesMultilineSafari from './multiple-styles-multiline/input.safari.word2016.html';
 
+import boldWithinTextNormalizedSafari from './bold-within-text/normalized.safari.word2016.html';
+import italicStartingTextNormalizedSafari from './italic-starting-text/normalized.safari.word2016.html';
+import underlinedTextNormalizedSafari from './underlined-text/normalized.safari.word2016.html';
+import strikethroughEndingTextNormalizedSafari from './strikethrough-ending-text/normalized.safari.word2016.html';
+import multipleStylesSingleLineNormalizedSafari from './multiple-styles-single-line/normalized.safari.word2016.html';
+import multipleStylesMultilineNormalizedSafari from './multiple-styles-multiline/normalized.safari.word2016.html';
+
 export const browserFixtures = {
 	safari: {
 		input: {
@@ -54,6 +61,14 @@ export const browserFixtures = {
 			strikethroughEndingText: strikethroughEndingTextSafari,
 			multipleStylesSingleLine: multipleStylesSingleLineSafari,
 			multipleStylesMultiline: multipleStylesMultilineSafari
+		},
+		normalized: {
+			boldWithinText: boldWithinTextNormalizedSafari,
+			italicStartingText: italicStartingTextNormalizedSafari,
+			underlinedText: underlinedTextNormalizedSafari,
+			strikethroughEndingText: strikethroughEndingTextNormalizedSafari,
+			multipleStylesSingleLine: multipleStylesSingleLineNormalizedSafari,
+			multipleStylesMultiline: multipleStylesMultilineNormalizedSafari
 		}
 	}
 };
