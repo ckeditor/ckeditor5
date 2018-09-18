@@ -12,9 +12,9 @@ import LinkEditing from './linkediting';
 import LinkUI from './linkui';
 
 /**
- * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
+ * The link plugin.
  *
- * It loads the {@link module:link/linkediting~LinkEditing link editing feature}
+ * This is a "glue" plugin which loads the {@link module:link/linkediting~LinkEditing link editing feature}
  * and {@link module:link/linkui~LinkUI link UI feature}.
  *
  * @extends module:core/plugin~Plugin

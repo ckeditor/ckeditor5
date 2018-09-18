@@ -24,7 +24,8 @@ const HIGHLIGHT_CLASS = 'ck-link_selected';
 /**
  * The link engine feature.
  *
- * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element.
+ * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element
+ * as well as `'link'` and `'unlink'` commands.
  *
  * @extends module:core/plugin~Plugin
  */

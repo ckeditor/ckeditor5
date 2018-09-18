@@ -24,7 +24,7 @@ import linkIcon from '../theme/icons/link.svg';
 const linkKeystroke = 'Ctrl+K';
 
 /**
- * The link UI plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
+ * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
  *
  * It uses the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
