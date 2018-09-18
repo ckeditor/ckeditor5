@@ -21,7 +21,6 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
-import TableSelection from '../src/tableselection';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'TableEditing', () => {
@@ -30,7 +29,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, TableSelection, Paragraph, ImageEditing ]
+				plugins: [ TableEditing, Paragraph, ImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -453,7 +452,7 @@ describe( 'TableEditing', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ TableEditing, TableSelection, Paragraph ]
+					plugins: [ TableEditing, Paragraph ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -515,7 +514,7 @@ describe( 'TableEditing', () => {
 		} );
 	} );
 
-	describe.only( 'table selection', () => {
+	describe( 'table selection', () => {
 		let view, domEvtDataStub;
 
 		beforeEach( () => {

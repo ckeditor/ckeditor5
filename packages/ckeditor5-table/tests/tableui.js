@@ -14,7 +14,6 @@ import TableUI from '../src/tableui';
 import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
-import TableSelection from '../src/tableselection';
 
 describe( 'TableUI', () => {
 	let editor, element;
@@ -36,7 +35,7 @@ describe( 'TableUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TableEditing, TableSelection, TableUI ]
+				plugins: [ TableEditing, TableUI ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -11,7 +11,6 @@ import { getData as getModelData, parse, setData as setModelData } from '@ckedit
 import TableEditing from '../../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import TableSelection from '../../src/tableselection';
 
 describe( 'Table post-fixer', () => {
 	let editor, model, root;
@@ -19,7 +18,7 @@ describe( 'Table post-fixer', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, TableSelection, Paragraph, UndoEditing ]
+				plugins: [ TableEditing, Paragraph, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -9,7 +9,6 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import MergeCellsCommand from '../../src/commands/mergecellscommand';
 import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
-import TableSelection from '../../src/tableselection';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'MergeCellsCommand', () => {
@@ -18,7 +17,7 @@ describe( 'MergeCellsCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ TableUtils, TableSelection ]
+				plugins: [ TableUtils ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

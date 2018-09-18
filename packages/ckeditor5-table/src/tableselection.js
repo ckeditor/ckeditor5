@@ -4,48 +4,34 @@
  */
 
 /**
- * @module table/tableediting
+ * @module table/tableselection
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
-import TableUtils from './tableutils';
 import { findAncestor } from './commands/utils';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import ObservableMixin from '../../ckeditor5-utils/src/observablemixin';
 
-export default class TableSelection extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get pluginName() {
-		return 'TableSelection';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ TableUtils ];
-	}
-
-	constructor( editor ) {
-		super( editor );
-
+// TODO: refactor to an Observer
+export default class TableSelection {
+	constructor() {
 		this._isSelecting = false;
 		this._highlighted = new Set();
-
-		this.editor = editor;
-		this.tableUtils = editor.plugins.get( TableUtils );
 	}
 
-	init() {
-		const editor = this.editor;
+	// OWN mouse events?
+	attach( editor, tableUtils ) {
+		// table selection observer...?
+		this.tableUtils = tableUtils;
+		this.editor = editor;
+
 		const viewDocument = editor.editing.view.document;
 
 		this.listenTo( viewDocument, 'keydown', () => {
-			if ( this.size > 1 ) {
+			if ( this.isSelectingBlaBla() ) {
 				this.stopSelection();
 				const tableCell = this._startElement;
 				this.clearSelection();
@@ -67,11 +53,11 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			this.startSelection( tableCell );
+			this._startSelection( tableCell );
 		} );
 
 		this.listenTo( viewDocument, 'mousemove', ( eventInfo, domEventData ) => {
-			if ( !this.isSelecting ) {
+			if ( !this._isSelecting ) {
 				return;
 			}
 
@@ -81,9 +67,9 @@ export default class TableSelection extends Plugin {
 				return;
 			}
 
-			this.updateSelection( tableCell );
+			this._updateModelSelection( tableCell );
 
-			if ( this.size > 1 ) {
+			if ( this.isSelectingBlaBla() ) {
 				domEventData.preventDefault();
 
 				this.redrawSelection();
@@ -91,7 +77,7 @@ export default class TableSelection extends Plugin {
 		} );
 
 		this.listenTo( viewDocument, 'mouseup', ( eventInfo, domEventData ) => {
-			if ( !this.isSelecting ) {
+			if ( !this._isSelecting ) {
 				return;
 			}
 
@@ -101,7 +87,7 @@ export default class TableSelection extends Plugin {
 		} );
 
 		this.listenTo( viewDocument, 'mouseleave', () => {
-			if ( !this.isSelecting ) {
+			if ( !this._isSelecting ) {
 				return;
 			}
 
@@ -109,24 +95,20 @@ export default class TableSelection extends Plugin {
 		} );
 	}
 
-	get isSelecting() {
-		return this._isSelecting;
+	isSelectingBlaBla() {
+		return this._isSelecting && this._startElement && this._endElement && this._startElement != this._endElement;
 	}
 
-	get size() {
-		return [ ...this.getSelection() ].length;
-	}
-
-	startSelection( tableCell ) {
+	_startSelection( tableCell ) {
 		this.clearSelection();
 		this._isSelecting = true;
 		this._startElement = tableCell;
 		this._endElement = tableCell;
 	}
 
-	updateSelection( tableCell ) {
+	_updateModelSelection( tableCell ) {
 		// Do not update if not in selection mode or no table cell passed.
-		if ( !this.isSelecting || !tableCell ) {
+		if ( !this._isSelecting || !tableCell ) {
 			return;
 		}
 
@@ -149,7 +131,7 @@ export default class TableSelection extends Plugin {
 	}
 
 	stopSelection( tableCell ) {
-		if ( this.isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
+		if ( this._isSelecting && tableCell && tableCell.parent.parent === this._startElement.parent.parent ) {
 			this._endElement = tableCell;
 		}
 
@@ -248,3 +230,5 @@ function getTableCell( domEventData, editor ) {
 
 	return findAncestor( 'tableCell', Position.createAt( modelElement ) );
 }
+
+mix( TableSelection, ObservableMixin );

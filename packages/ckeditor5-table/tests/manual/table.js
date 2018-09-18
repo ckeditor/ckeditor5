@@ -9,11 +9,10 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '../../src/table';
 import TableToolbar from '../../src/tabletoolbar';
-import TableSelection from '../../src/tableselection';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table, TableSelection, TableToolbar ],
+		plugins: [ ArticlePluginSet, Table, TableToolbar ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
