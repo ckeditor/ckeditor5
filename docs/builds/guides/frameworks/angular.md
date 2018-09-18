@@ -5,88 +5,82 @@ order: 20
 
 # Angular 2+ component
 
-TODO link to npm
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
 
-## Usage
+CKEditor 5 consists of a {@link builds/guides/overview ready to use builds} and a {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-CKEditor 5 consists of a [ready to use builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html) and a [CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html) upon which the builds are based.
+Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source CKEditor 5 from source} is not yet possible due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating [CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source) is not yet possible due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+<info-box>
+	While there is no support to integrate CKEditor 5 from source yet, you can still {@link builds/guides/development/custom-builds create a custom build of CKEditor 5} and include it in your Angular application.
+</info-box>
 
-### Quick start
+## Quick start
 
-1. In your existing Angular project, install the CKEditor component:
+In your existing Angular project, install the [CKEditor component](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
-	```bash
-	npm install --save-dev @ckeditor/ckeditor5-angular
-	```
+```bash
+npm install --save-dev @ckeditor/ckeditor5-angular
+```
 
-2. Install one of the official editor builds:
+Install one of the {@link builds/guides/overview#available-builds official editor builds} or {@link builds/guides/development/custom-builds create a custom one} (e.g. if you want to install more plugins or customize any other thing which cannot be controlled via {@link builds/guides/integration/configuration editor configuration}.
 
-	* [Classic editor build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic)
-	* [Inline editor build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline)
-	* [Balloon editor build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon)
-	* [Document editor build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document)
+Let's say you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
-	or [create a custom one](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) (e.g. if you want to install more plugins or customize any other thing which cannot be controlled via [editor configuration](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html)).
+```bash
+npm install --save-dev @ckeditor/ckeditor5-build-classic
+```
 
-	Let's pick the `@ckeditor/ckeditor5-build-classic`:
+**Note:** You may need to allow external JS in your project's `tsconfig.json` for the builds to work properly:
 
-	```bash
-	npm install --save-dev @ckeditor/ckeditor5-build-classic
-	```
+```json
+"compilerOptions": {
+	"allowJs": true
+}
+```
 
-	**Note:** You may need to allow external JS in your project's `tsconfig.json` for the builds to work properly:
+Now, include the CKEditor module (**TODO WHERE?**):
 
-	```json
-	"compilerOptions": {
-		"allowJs": true
-	}
-	```
+```ts
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
-3. Include the CKEditor module:
-
-	```ts
-	import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
-
-	@NgModule( {
-		imports: [
-			...
-			CKEditorModule,
-			...
-		],
+@NgModule( {
+	imports: [
 		...
-	} )
-	```
-
-4. Import the editor build in your Angular component and assign it to a `public` property so it becomes accessible in the template:
-
-	```ts
-	import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
-	@Component( {
+		CKEditorModule,
 		...
-	} )
-	export class MyComponent {
-		public Editor = ClassicEditor;
-		...
-	}
+	],
+	...
+} )
+```
 
-	```
+Import the editor build in your Angular component and assign it to a `public` property so it becomes accessible in the template:
 
-	You can import as many editor builds as you want.
+```ts
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-5. Use the `<ckeditor>` tag in the template to run the editor
+@Component( {
+	...
+} )
+export class MyComponent {
+	public Editor = ClassicEditor;
+	...
+}
+```
 
-	```html
-	<ckeditor [editor]="Editor" data="<p>Hello world!</p>"></ckeditor>
-	```
+Finally, use the `<ckeditor>` tag in the template to run the editor:
+
+```html
+<ckeditor [editor]="Editor" data="<p>Hello world!</p>"></ckeditor>
+```
+
+Rebuild your application and CKEditor 5 should greet you with "Hello world!".
 
 ### Note: Using the Document editor build
 
-If you use the [Document editor](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/ui/document-editor.html), you need to [add the toolbar to the DOM manually](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-decoupled_decouplededitor-DecoupledEditor.html#static-function-create).
+If you want to use the {@link framework/guides/document-editor Document editor}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
 
- ```ts
+```ts
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
@@ -97,8 +91,8 @@ export class MyComponent {
 
 	public onReady( editor ) {
 		editor.ui.view.editable.element.parentElement.insertBefore(
-		editor.ui.view.toolbar.element,
-		editor.ui.view.editable.element
+			editor.ui.view.toolbar.element,
+			editor.ui.view.editable.element
 		);
 	}
 }
@@ -136,7 +130,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 ### `editor` (required)
 
-The [Editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/basic-api.html) which provides the static [`create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#static-function-create) method to create an instance of the editor:
+The {@link builds/guides/integration/basic-api `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```html
 <ckeditor [editor]="Editor"></ckeditor>
@@ -144,7 +138,7 @@ The [Editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integratio
 
 ### `config`
 
-The [configuration](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html) of the editor:
+The {@link module:core/editor/editorconfig~EditorConfig configuration} of the editor:
 
 ```html
 <ckeditor [config]="{ toolbar: [ 'heading', '|', 'bold', 'italic' ] }" ...></ckeditor>
@@ -186,7 +180,7 @@ The default tag is `div`.
 
 ### `disabled`
 
-Controls the editor's [read–only](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#member-isReadOnly) state:
+Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–only} state:
 
 ```ts
 @Component( {
@@ -213,12 +207,12 @@ export class MyComponent {
 
 ### `ready`
 
-Fires when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event. Fires with the editor instance.
+Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event. Fired with the editor instance.
 
 ### `change`
 
-Fires when the content of the editor has changed. It corresponds with the [`editor.model.document#change:data`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_model_document-Document.html#event-:data) event.
-Fires with an object containing the editor and the CKEditor5 change:data event.
+Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
+Fired with an object containing the editor and the CKEditor 5's `change:data` event object.
 
 ```html
 <ckeditor [editor]="Editor" (change)="onChange($event)"></ckeditor>
@@ -245,13 +239,59 @@ export class MyComponent {
 
 ### `blur`
 
-Fires when the editing view of the editor is blurred. It corresponds with the [`editor.editing.view.document#blur`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_document-Document.html#event-event:blur) event.
-Fires with an object containing the editor and the CKEditor5 blur event.
+Fired when the editing view of the editor is blurred. It corresponds with the {@link module:engine/view/document~Document#event:blur `editor.editing.view.document#blur`} event.
+Fired with an object containing the editor and the CKEditor 5's `blur` event data.
 
 ### `focus`
 
-Fires when the editing view of the editor is focused. It corresponds with the [`editor.editing.view.document#focus`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_document-Document.html#event-event:focus) event.
-Fires with an object containing the editor and the CKEditor5 focus event.
+Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
+Fired with an object containing the editor and the CKEditor 5's `focus` event data.
+
+## Localization
+
+CKEditor 5 can be localized in two steps.
+
+### 1. Load translation files
+
+First, you need to add translation files to the bundle. This step can be achieved in two ways:
+
+* By importing translations for given languages directly in your component file:
+
+	```ts
+	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+	import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+	...
+	```
+
+* By adding paths to translation files to the `"scripts"` array in `angular.json`:
+
+	```json
+	"architect": {
+		"build": {
+			"options": {
+				"scripts": [ "node_modules/@ckeditor/ckeditor5-build-classic/build/translations/de.js" ]
+			}
+		}
+	}
+	```
+
+### 2. Configure the language
+
+Then, you need to configure the editor to use the given language:
+
+```ts
+@Component( {
+	...
+} )
+export class MyComponent {
+	public Editor = ClassicEditor;
+	public config = {
+		language: 'de'
+	};
+}
+```
+
+For advanced usage see the {@link features/ui-language Setting UI language} guide.
 
 ## Contributing and reporting issues
 
