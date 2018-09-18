@@ -12,8 +12,9 @@ import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 
 /**
  * Plugin introducing CKEditor 5's Cloud Services integration.
- * It takes care of the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}
- * configuration options and initializes the token provider.
+ *
+ * It initializes the token provider based on
+ * the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}.
  *
  * @extends module:core/plugin~Plugin
  */
