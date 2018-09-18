@@ -15,7 +15,7 @@ const BOLD = 'bold';
 /**
  * The bold editing feature.
  *
- * It registers the `bold` command and introduces the `bold` attribute in the model which renders to the view
+ * It registers the `'bold'` command and introduces the `bold` attribute in the model which renders to the view
  * as a `<strong>` element.
  *
  * @extends module:core/plugin~Plugin

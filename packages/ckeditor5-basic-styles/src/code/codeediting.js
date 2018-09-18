@@ -15,7 +15,7 @@ const CODE = 'code';
 /**
  * The code editing feature.
  *
- * It registers the `code` command and introduces the `code` attribute in the model which renders to the view
+ * It registers the `'code'` command and introduces the `code` attribute in the model which renders to the view
  * as a `<code>` element.
  *
  * @extends module:core/plugin~Plugin

@@ -10,7 +10,9 @@ This package contains features allowing to apply basic text formatting such as b
 
 ## Documentation
 
-Check out the following plugins:
+See the {@link features/basic-styles Basic styles feature} guide.
+
+You can also check out the following plugins:
 
 * {@link module:basic-styles/bold~Bold}
 * {@link module:basic-styles/italic~Italic}

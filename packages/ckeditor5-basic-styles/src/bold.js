@@ -14,7 +14,10 @@ import BoldUI from './bold/boldui';
 /**
  * The bold feature.
  *
- * It loads the {@link module:basic-styles/bold/boldediting~BoldEditing bold editing feature}
+ * For a detailed overview check the {@glink features/basic-styles Basic styles feature documentation}
+ * and the {@glink api/basic-styles package page}.
+ *
+ * This is a "glue" plugin which loads the {@link module:basic-styles/bold/boldediting~BoldEditing bold editing feature}
  * and {@link module:basic-styles/bold/boldui~BoldUI bold UI feature}.
  *
  * @extends module:core/plugin~Plugin

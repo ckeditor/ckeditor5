@@ -15,7 +15,7 @@ const STRIKETHROUGH = 'strikethrough';
 /**
  * The strikethrough editing feature.
  *
- * It registers the `strikethrough` command, the <kbd>Ctrl+Shift+X</kbd> keystroke and introduces the
+ * It registers the `'strikethrough'` command, the <kbd>Ctrl+Shift+X</kbd> keystroke and introduces the
  * `strikethroughsthrough` attribute in the model which renders to the view
  * as a `<s>` element.
  *

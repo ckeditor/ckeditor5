@@ -15,7 +15,7 @@ const ITALIC = 'italic';
 /**
  * The italic editing feature.
  *
- * It registers the `italic` command, the <kbd>Ctrl+I</kbd> keystroke and introduces the `italic` attribute in the model
+ * It registers the `'italic'` command, the <kbd>Ctrl+I</kbd> keystroke and introduces the `italic` attribute in the model
  * which renders to the view as an `<em>` element.
  *
  * @extends module:core/plugin~Plugin
