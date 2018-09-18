@@ -15,10 +15,11 @@ import AlignmentUI from './alignmentui';
 /**
  * The text alignment plugin.
  *
- * It loads the {@link module:alignment/alignmentediting~AlignmentEditing} and
- * {@link module:alignment/alignmentui~AlignmentUI} plugins.
+ * For a detailed overview, check the {@glink features/text-alignment Text alignment feature documentation}
+ * and the {@glink api/alignment package page}.
  *
- * Read more about the feature on the {@glink api/alignment text alignment package} page.
+ * This is a "glue" plugin which loads the {@link module:alignment/alignmentediting~AlignmentEditing} and
+ * {@link module:alignment/alignmentui~AlignmentUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
