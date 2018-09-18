@@ -10,19 +10,19 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import WidgetToolbar from '../src/widgettoolbar';
 import Widget from '../src/widget';
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 describe( 'WidgetToolbar', () => {
-	let editor, model, doc, toolbar, balloon, widgetToolbar, editorElement;
+	let editor, model, balloon, widgetToolbar, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -40,7 +40,6 @@ describe( 'WidgetToolbar', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = newEditor.model;
-				doc = model.document;
 				widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
@@ -131,14 +130,10 @@ describe( 'WidgetToolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'should show widget toolbar when the `isVisible` callback returns true', () => {
+		it( 'toolbar should be visible when the `isVisible` callback returns true', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: selection => {
-					const el = selection.getSelectedElement();
-
-					return el && isWidget( el );
-				}
+				isVisible: isWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -148,14 +143,10 @@ describe( 'WidgetToolbar', () => {
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
-		it( 'should hide widget toolbar when the `isVisible` callback returns false', () => {
+		it( 'toolbar should be hidden when the `isVisible` callback returns false', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: selection => {
-					const el = selection.getSelectedElement();
-
-					return el && isWidget( el );
-				}
+				isVisible: isWidgetSelected
 			} );
 
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
@@ -163,34 +154,26 @@ describe( 'WidgetToolbar', () => {
 			expect( balloon.visibleView ).to.equal( null );
 		} );
 
-		it( 'should hide widget toolbar when the `isVisible` callback returns false', () => {
+		it( 'toolbar should be hidden when the `isVisible` callback returns false #2', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: selection => {
-					const el = selection.getSelectedElement();
-
-					return el && isWidget( el );
-				}
+				isVisible: isWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
 			model.change( writer => {
-				// Select the paragraph content.
+				// Select the <paragraph>foo</paragraph>.
 				writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 			} );
 
 			expect( balloon.visibleView ).to.equal( null );
 		} );
 
-		it( 'should update toolbar position when other widget is being selected', () => {
+		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: selection => {
-					const el = selection.getSelectedElement();
-
-					return el && isWidget( el );
-				}
+				isVisible: isWidgetSelected
 			} );
 
 			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
@@ -205,23 +188,10 @@ describe( 'WidgetToolbar', () => {
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
-		it( 'should be able to show toolbar for elements inside the widget', () => {
+		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: selection => {
-					const pos = selection.getFirstPosition();
-					let node = pos.parent;
-
-					while( node ) {
-						if ( node.is( 'element' ) && isWidget( node ) ) {
-							return true;
-						}
-
-						node = node.parent;
-					}
-
-					return false;
-				}
+				isVisible: doesWidgetContainSelection
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
@@ -230,70 +200,184 @@ describe( 'WidgetToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
+
+		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: isWidgetSelected
+			} );
+
+			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+
+			setData( model, '[<fake-widget></fake-widget>]' );
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+
+			const lastView = new View();
+			lastView.element = document.createElement( 'div' );
+
+			balloon.add( {
+				view: lastView,
+				position: {
+					target: document.body
+				}
+			} );
+
+			expect( balloon.visibleView ).to.equal( lastView );
+
+			editor.ui.fire( 'update' );
+
+			expect( balloon.visibleView ).to.equal( lastView );
+		} );
+	} );
+} );
+
+describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
+	let clock, editor, model, balloon, balloonToolbar, widgetToolbar, editorElement;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
+		clock = testUtils.sinon.useFakeTimers();
+
+		return BalloonEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Image, FakeButton, WidgetToolbar, FakeWidget, Bold ],
+				balloonToolbar: [ 'bold' ],
+				fake: {
+					toolbar: [ 'fake_button' ]
+				}
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = newEditor.model;
+				widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+				balloon = editor.plugins.get( 'ContextualBalloon' );
+				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+
+				editor.editing.view.document.isFocused = true;
+			} );
 	} );
 
-	// Plugin that adds fake_button to editor's component factory.
-	class FakeButton extends Plugin {
-		init() {
-			this.editor.ui.componentFactory.add( 'fake_button', locale => {
-				const view = new ButtonView( locale );
+	afterEach( () => {
+		editorElement.remove();
 
-				view.set( {
-					label: 'fake button'
-				} );
+		return editor.destroy();
+	} );
 
-				return view;
-			} );
-		}
-	}
+	it( 'balloon toolbar should be hidden when the widget is selected', () => {
+		widgetToolbar.add( 'fake', {
+			toolbarItems: editor.config.get( 'fake.toolbar' ),
+			isVisible: isWidgetSelected,
+		} );
 
-	// Simple widget plugin
-	class FakeWidget extends Plugin {
-		static get requires() {
-			return [ Widget ];
-		}
+		const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
 
-		init() {
-			const editor = this.editor;
-			const schema = editor.model.schema;
+		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 
-			schema.register( 'fake-widget', {
-				isObject: true,
-				isBlock: true,
-				allowWhere: '$block',
-			} );
+		clock.tick( 200 );
 
-			schema.extend( '$text', { allowIn: 'fake-widget' } );
+		expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+	} );
 
-			const conversion = editor.conversion;
+	it( 'balloon toolbar should be visible when the widget is not selected', () => {
+		widgetToolbar.add( 'fake', {
+			toolbarItems: editor.config.get( 'fake.toolbar' ),
+			isVisible: isWidgetSelected
+		} );
 
-			conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
-				model: 'fake-widget',
-				view: ( modelElement, viewWriter ) => {
-					const fakeWidget = viewWriter.createContainerElement( 'div' );
+		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 
-					return fakeWidget;
-				}
-			} ) );
+		clock.tick( 200 );
 
-			conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
-				model: 'fake-widget',
-				view: ( modelElement, viewWriter ) => {
-					const fakeWidget = viewWriter.createContainerElement( 'div' );
-
-					return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
-				}
-			} ) );
-
-			conversion.for( 'upcast' )
-				.add( upcastElementToElement( {
-					view: {
-						name: 'div'
-					},
-					model: ( viewMedia, modelWriter ) => {
-						return modelWriter.createElement( 'fake-widget' );
-					}
-				} ) )
-		}
-	}
+		expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+	} );
 } );
+
+function isWidgetSelected( selection ) {
+	const viewElement = selection.getSelectedElement();
+
+	return !!( viewElement && isWidget( viewElement ) );
+}
+
+function doesWidgetContainSelection( selection ) {
+	const pos = selection.getFirstPosition();
+	let node = pos.parent;
+
+	while ( node ) {
+		if ( node.is( 'element' ) && isWidget( node ) ) {
+			return true;
+		}
+
+		node = node.parent;
+	}
+
+	return false;
+}
+
+// Plugin that adds fake_button to editor's component factory.
+class FakeButton extends Plugin {
+	init() {
+		this.editor.ui.componentFactory.add( 'fake_button', locale => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label: 'fake button'
+			} );
+
+			return view;
+		} );
+	}
+}
+
+// Simple widget plugin
+// It registers `<fake-widget>` block in model and represents `div` in the view.
+// It allows having text inside self.
+class FakeWidget extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
+	init() {
+		const editor = this.editor;
+		const schema = editor.model.schema;
+
+		schema.register( 'fake-widget', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block',
+		} );
+
+		schema.extend( '$text', { allowIn: 'fake-widget' } );
+
+		const conversion = editor.conversion;
+
+		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+			model: 'fake-widget',
+			view: ( modelElement, viewWriter ) => {
+				return viewWriter.createContainerElement( 'div' );
+			}
+		} ) );
+
+		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+			model: 'fake-widget',
+			view: ( modelElement, viewWriter ) => {
+				const fakeWidget = viewWriter.createContainerElement( 'div' );
+
+				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
+			}
+		} ) );
+
+		conversion.for( 'upcast' )
+			.add( upcastElementToElement( {
+				view: {
+					name: 'div'
+				},
+				model: ( viewMedia, modelWriter ) => {
+					return modelWriter.createElement( 'fake-widget' );
+				}
+			} ) )
+	}
+}
