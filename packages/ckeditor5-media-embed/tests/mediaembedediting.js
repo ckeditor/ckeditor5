@@ -473,7 +473,7 @@ describe( 'MediaEmbedEditing', () => {
 		} );
 
 		describe( 'conversion in the data pipeline', () => {
-			describe( 'mediaPreviewsInData=false', () => {
+			describe( 'previewsInData=false', () => {
 				beforeEach( () => {
 					return createTestEditor( {
 						providers: providerDefinitions
@@ -618,11 +618,11 @@ describe( 'MediaEmbedEditing', () => {
 				} );
 			} );
 
-			describe( 'mediaPreviewsInData=true', () => {
+			describe( 'previewsInData=true', () => {
 				beforeEach( () => {
 					return createTestEditor( {
 						providers: providerDefinitions,
-						mediaPreviewsInData: true
+						previewsInData: true
 					} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -791,7 +791,7 @@ describe( 'MediaEmbedEditing', () => {
 		} );
 
 		describe( 'conversion in the editing pipeline', () => {
-			describe( 'mediaPreviewsInData=false', () => {
+			describe( 'previewsInData=false', () => {
 				beforeEach( () => {
 					return createTestEditor( {
 						providers: providerDefinitions
@@ -807,11 +807,11 @@ describe( 'MediaEmbedEditing', () => {
 				test();
 			} );
 
-			describe( 'mediaPreviewsInData=true', () => {
+			describe( 'previewsInData=true', () => {
 				beforeEach( () => {
 					return createTestEditor( {
 						providers: providerDefinitions,
-						mediaPreviewsInData: true
+						previewsInData: true
 					} )
 						.then( newEditor => {
 							editor = newEditor;

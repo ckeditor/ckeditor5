@@ -16,7 +16,7 @@ ClassicEditor
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		],
 		mediaEmbed: {
-			mediaPreviewsInData: true
+			previewsInData: true
 		}
 	} )
 	.then( editor => {
