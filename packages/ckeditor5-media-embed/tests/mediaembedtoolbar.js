@@ -199,7 +199,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 			.then( () => element.remove() );
 	} );
 
-	it( 'balloon editor should be hidden when media widget is selected', () => {
+	it( 'balloon toolbar should be hidden when media widget is selected', () => {
 		setData( model, '<paragraph>[abc]</paragraph><media url=""></media>' );
 		editor.editing.view.document.isFocused = true;
 
@@ -217,7 +217,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 		expect( balloon.visibleView ).to.equal( toolbar );
 	} );
 
-	it( 'balloon editor should be visible when media widget is not selected', () => {
+	it( 'balloon toolbar should be visible when media widget is not selected', () => {
 		setData( model, '<paragraph>abc</paragraph>[<media url=""></media>]' );
 		editor.editing.view.document.isFocused = true;
 
