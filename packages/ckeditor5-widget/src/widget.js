@@ -22,11 +22,17 @@ import '../theme/widget.css';
 const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
 
 /**
- * The widget plugin.
- * Registers model to view selection converter for editing pipeline. It is hooked after default selection conversion.
- * If converted selection is placed around widget element, selection is marked as fake. Additionally, proper CSS class
+ * The widget plugin. It enables base support for widgets.
+ *
+ * See {@glink api/widget package page} for more details and documentation.
+ *
+ * This plugin enables multiple behaiors required by the widgets:
+ *
+ * * The model to view selection converter for the editing pipeline (it handles widget custom selection rendering).
+ * If a converted selection is wraps around a widget element, that selection is marked as
+ * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, proper the `ck-widget_selected` CSS class
  * is added to indicate that widget has been selected.
- * Adds default {@link module:engine/view/document~Document#event:mousedown mousedown} handling on widget elements.
+ * * The mouse and keyboard events handling on and around widget elements.
  *
  * @extends module:core/plugin~Plugin.
  */

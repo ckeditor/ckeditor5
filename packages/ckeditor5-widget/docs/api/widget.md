@@ -14,10 +14,13 @@ The API consists of a few primitives and helpers that make it easy to implement 
 
 Browse the API documentation of this package by using the module tree on the left.
 
+The widget API consists of two layers:
+
+* The {@link module:widget/widget~Widget} plugin which enables base support for this feature. Usually, your plugin which implements a specific widget will define its reliance on the `Widget` plugin via its {@link module:core/plugin~Plugin.requires `Plugin.requires`} property.
+* The {@link module:widget/utils~toWidget `toWidget()`} {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} functions which need to be used during the conversion in order to make a specific element either a widget or a widget's nested editable. See their documentation for more details.
+
 <info-box>
 	The widget API is proposed in a very different way than it was in CKEditor 4. It is just a set of utilities that allow you to implement typical object-like entities. Most of the work actually happens in the {@link api/engine engine} and this API's role is only to properly conduct the engine.
-
-	Therefore, this is just one of the ways how widgets can be proposed. This API can be expected to change (grow) and for now, the only available documentation is in the {@link module:image/image/imageediting~ImageEditing}'s code (which is the only widget API consumer at this stage).
 </info-box>
 
 ## Installation
