@@ -13,7 +13,7 @@ describe( 'transform', () => {
 		return john.destroy();
 	} );
 
-	it( 'split, remove, undo, undo', () => {
+	it( 'split, remove', () => {
 		john.setData( '<paragraph>Foo[]Bar</paragraph>' );
 
 		john.split();
@@ -25,7 +25,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>FooBar</paragraph>' );
 	} );
 
-	it( 'move, merge, undo, undo', () => {
+	it( 'move, merge', () => {
 		john.setData( '[<paragraph>Foo</paragraph>]<paragraph>Bar</paragraph>' );
 
 		john.move( [ 2 ] );
@@ -37,7 +37,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 
-	it.skip( 'move multiple, merge, undo, undo', () => {
+	it.skip( 'move multiple, merge', () => {
 		john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph>]<paragraph>Xyz</paragraph>' );
 
 		john.move( [ 3 ] );
@@ -59,7 +59,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Xyz</paragraph>' );
 	} );
 
-	it( 'move inside unwrapped content then undo', () => {
+	it( 'move inside unwrapped content', () => {
 		john.setData( '<blockQuote>[<paragraph>Foo</paragraph>]<paragraph>Bar</paragraph></blockQuote>' );
 
 		john.move( [ 0, 2 ] );
@@ -76,7 +76,7 @@ describe( 'transform', () => {
 		);
 	} );
 
-	it( 'remove node, merge then undo', () => {
+	it( 'remove node, merge', () => {
 		john.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
 
 		john.remove();
@@ -88,7 +88,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 
-	it( 'merge, merge then undo #1', () => {
+	it( 'merge, merge #1', () => {
 		john.setData(
 			'<blockQuote>' +
 				'<paragraph>Foo</paragraph>' +
@@ -125,7 +125,7 @@ describe( 'transform', () => {
 		);
 	} );
 
-	it( 'merge, merge then undo #2', () => {
+	it( 'merge, merge #2', () => {
 		john.setData(
 			'<blockQuote>' +
 				'<paragraph>Foo</paragraph>' +
@@ -162,7 +162,7 @@ describe( 'transform', () => {
 		);
 	} );
 
-	it( 'merge, unwrap then undo', () => {
+	it( 'merge, unwrap', () => {
 		john.setData( '<paragraph></paragraph>[]<paragraph>Foo</paragraph>' );
 
 		john.merge();
@@ -175,7 +175,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph></paragraph><paragraph>Foo</paragraph>' );
 	} );
 
-	it( 'remove node at the split position then undo #1', () => {
+	it( 'remove node at the split position #1', () => {
 		john.setData( '<paragraph>Ab</paragraph>[]<paragraph>Xy</paragraph>' );
 
 		john.merge();
@@ -188,7 +188,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Ab</paragraph><paragraph>Xy</paragraph>' );
 	} );
 
-	it( 'remove node at the split position then undo #2', () => {
+	it( 'remove node at the split position #2', () => {
 		john.setData( '<paragraph>Ab</paragraph>[]<paragraph>Xy</paragraph>' );
 
 		john.merge();
@@ -218,5 +218,61 @@ describe( 'transform', () => {
 		john.undo();
 
 		expectClients( '<paragraph>Foobar</paragraph>' );
+	} );
+
+	it( 'remove text from paragraph and merge it', () => {
+		john.setData( '<paragraph>Foo</paragraph><paragraph>[Bar]</paragraph>' );
+
+		john.remove();
+		john.setSelection( [ 1 ] );
+		john.merge();
+
+		expectClients( '<paragraph>Foo</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+	} );
+
+	it( 'delete split paragraphs', () => {
+		john.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );
+
+		john.split();
+		john.setSelection( [ 2, 1 ] );
+		john.split();
+		john.setSelection( [ 1, 0 ], [ 3, 1 ] );
+		john.delete();
+		john.setSelection( [ 1 ] );
+		john.merge();
+
+		expectClients( '<paragraph>Foo</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>B</paragraph><paragraph>a</paragraph><paragraph>r</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>B</paragraph><paragraph>ar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>B</paragraph><paragraph>ar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>B</paragraph><paragraph>a</paragraph><paragraph>r</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo</paragraph>' );
 	} );
 } );
