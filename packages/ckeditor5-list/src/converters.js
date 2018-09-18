@@ -10,6 +10,7 @@
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
@@ -749,13 +750,21 @@ export function modelChangePostFixer( model, writer ) {
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Array} args Arguments of {@link module:engine/model/model~Model#insertContent}.
  */
-export function modelIndentPasteFixer( evt, [ content, selection ] ) {
+export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
 	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
 	// that list will be broken.
 	// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
 	// would create incorrect model.
 	let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
+
+	let selection;
+
+	if ( !selectable ) {
+		selection = this.document.selection;
+	} else {
+		selection = new ModelSelection( selectable );
+	}
 
 	if ( item && item.is( 'listItem' ) ) {
 		// Get a reference list item. Inserted list items will be fixed according to that item.
