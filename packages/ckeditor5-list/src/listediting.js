@@ -31,7 +31,8 @@ import {
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
- * It registers the `numberedList`, `bulletedList`, `indentList` and `outdentList` commands.
+ *
+ * It registers the `'numberedList'`, `'bulletedList'`, `'indentList'` and `'outdentList'` commands.
  *
  * @extends module:core/plugin~Plugin
  */

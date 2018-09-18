@@ -14,7 +14,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
- * The list UI feature. It introduces the `numberedList` and `bulletedList` buttons that
+ * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
  * allow to convert paragraphs to and from list items and indent or outdent them.
  *
  * @extends module:core/plugin~Plugin
