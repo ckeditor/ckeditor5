@@ -14,8 +14,7 @@ import RedoCommand from './redocommand';
 /**
  * The undo engine feature.
  *
- * Undo brings in possibility to undo and redo changes done in the model by operations through
- * the {@link module:engine/model/writer~Writer Writer API}.
+ * It introduces the `'undo'` and `'redo'` commands to the editor.
  *
  * @extends module:core/plugin~Plugin
  */

@@ -14,7 +14,7 @@ import undoIcon from '../theme/icons/undo.svg';
 import redoIcon from '../theme/icons/redo.svg';
 
 /**
- * The undo UI feature. It introduces the Undo and Redo buttons to the editor.
+ * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
  *
  * @extends module:core/plugin~Plugin
  */

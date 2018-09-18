@@ -14,7 +14,7 @@ import UndoUI from './undoui';
 /**
  * The undo feature.
  *
- * It loads the {@link module:undo/undoediting~UndoEditing undo editing feature}
+ * This is a "glue" plugin which loads the {@link module:undo/undoediting~UndoEditing undo editing feature}
  * and {@link module:undo/undoui~UndoUI undo UI feature}.
  *
  * Below is the explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
