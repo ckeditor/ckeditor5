@@ -15,7 +15,10 @@ import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/uti
 
 /**
  * The image upload button plugin.
- * Adds the `imageUpload` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ *
+ * For a detailed overview, check the {@glink features/image-upload Image upload feature} documentation.
+ *
+ * Adds the `'imageUpload'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
  * @extends module:core/plugin~Plugin
  */

@@ -16,14 +16,15 @@ import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/
 const balloonClassName = 'ck-toolbar-container';
 
 /**
- * The image toolbar class. Creates an image toolbar that shows up when the image widget is selected.
- *
- * Toolbar components are created using the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
- * based on the {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
- *
- * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
+ * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
  *
  * For a detailed overview, check the {@glink features/image#image-contextual-toolbar image contextual toolbar} documentation.
+ *
+ * Instanecs of toolbar components (e.g. buttons) are created using the editor's
+ * {@link module:ui/componentfactory~ComponentFactory component factory}
+ * based on the {@link module:image/image~ImageConfig#toolbar `image.toolbar` configuration option}.
+ *
+ * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
  * @extends module:core/plugin~Plugin
  */

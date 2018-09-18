@@ -14,10 +14,10 @@ import ImageStyleUI from './imagestyle/imagestyleui';
 /**
  * The image style plugin.
  *
- * It loads the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing}
- * and {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugins.
- *
  * For a detailed overview, check the {@glink features/image#image-styles image styles} documentation.
+ *
+ * This is a "glue" plugin which loads the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing}
+ * and {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
