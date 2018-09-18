@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 import TableUtils from '../tableutils';
 
 /**
@@ -54,13 +55,12 @@ export default class InsertTableCommand extends Command {
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
 
-		const firstPosition = selection.getFirstPosition();
-
-		const isRoot = firstPosition.parent === firstPosition.root;
-		const insertPosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
+		const insertPosition = findOptimalInsertionPosition( selection );
 
 		model.change( writer => {
-			const table = tableUtils.createTable( insertPosition, rows, columns );
+			const table = tableUtils.createTable( writer, rows, columns );
+
+			model.insertContent( table, insertPosition );
 
 			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
 		} );

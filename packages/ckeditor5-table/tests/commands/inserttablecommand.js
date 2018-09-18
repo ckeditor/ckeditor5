@@ -72,7 +72,7 @@ describe( 'InsertTableCommand', () => {
 				] ) );
 			} );
 
-			it( 'should insert table with two rows and two columns after non-empty paragraph', () => {
+			it( 'should insert table with two rows and two columns after non-empty paragraph if selection is at the end', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 
 				command.execute();
@@ -93,6 +93,34 @@ describe( 'InsertTableCommand', () => {
 
 				expect( formatTable( getData( model ) ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
+					formattedModelTable( [
+						[ '[]', '', '', '' ],
+						[ '', '', '', '' ],
+						[ '', '', '', '' ]
+					] )
+				);
+			} );
+
+			it( 'should insert table before after non-empty paragraph if selection is inside', () => {
+				setData( model, '<paragraph>f[]oo</paragraph>' );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal(
+					formattedModelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					] ) +
+					'<paragraph>foo</paragraph>'
+				);
+			} );
+
+			it( 'should replace empty paragraph with table', () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				command.execute( { rows: 3, columns: 4 } );
+
+				expect( formatTable( getData( model ) ) ).to.equal(
 					formattedModelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
