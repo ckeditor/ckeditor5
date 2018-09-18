@@ -13,24 +13,39 @@ import Element from '../element';
 import Range from '../range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import DocumentSelection from '../documentselection';
+import Selection from '../selection';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
+ * If an instance of {module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+ * to the insertion selection (equal to a range to be selected after insertion).
+ *
  * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
- * This function is only exposed to be reusable in algorithms
- * which change the {@link module:engine/model/model~Model#insertContent}
+ * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
  *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+ * module:engine/model/position~Position|module:engine/model/element~Element|
+ * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
  */
-export default function insertContent( model, content, selection ) {
+export default function insertContent( model, content, selectable ) {
 	model.change( writer => {
+		let selection;
+
+		if ( !selectable ) {
+			selection = model.document.selection;
+		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
+			selection = selectable;
+		} else {
+			selection = new Selection( selectable );
+		}
+
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection );
 		}

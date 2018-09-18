@@ -35,7 +35,7 @@ export default class Selection {
 	 * or on the given {@link module:engine/model/element~Element element},
 	 * or creates an empty selection if no arguments were passed.
 	 *
-	 * 		// Creates empty selection without ranges.
+	 *		// Creates empty selection without ranges.
 	 *		const selection = new Selection();
 	 *
 	 *		// Creates selection at the given range.
@@ -43,7 +43,7 @@ export default class Selection {
 	 *		const selection = new Selection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		const selection = new Selection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
@@ -51,30 +51,30 @@ export default class Selection {
 	 *		const otherSelection = new Selection();
 	 *		const selection = new Selection( otherSelection );
 	 *
-	 * 		// Creates selection from the given document selection.
+	 *		// Creates selection from the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		const selection = new Selection( documentSelection );
 	 *
-	 * 		// Creates selection at the given position.
+	 *		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates selection at the start position of the given element.
+	 *		// Creates selection at the start position of the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
 	 *
-	 * 		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
-	 * 		// first child of that element and ends after the last child of that element.
+	 *		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
 	 *		const selection = new Selection( paragraph, 'in' );
 	 *
-	 * 		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
-	 * 		// just after the item.
+	 *		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 *		// just after the item.
 	 *		const selection = new Selection( paragraph, 'on' );
 	 *
 	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
 	 *
-	 * 		// Creates backward selection.
+	 *		// Creates backward selection.
 	 *		const selection = new Selection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
@@ -326,7 +326,7 @@ export default class Selection {
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 * 		// Removes all selection's ranges.
+	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );
 	 *
 	 *		// Sets selection to the given range.
@@ -334,7 +334,7 @@ export default class Selection {
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		selection.setTo( ranges );
 	 *
 	 *		// Sets selection to other selection.
@@ -342,16 +342,16 @@ export default class Selection {
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets selection to the given document selection.
+	 *		// Sets selection to the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
 	 *
-	 * 		// Sets collapsed selection at the given position.
+	 *		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets collapsed selection at the position of the given node and an offset.
+	 *		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
@@ -365,7 +365,7 @@ export default class Selection {
 	 *
 	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
 	 *
-	 * 		// Sets backward selection.
+	 *		// Sets backward selection.
 	 *		const selection = new Selection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
