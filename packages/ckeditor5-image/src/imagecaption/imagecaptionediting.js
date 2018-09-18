@@ -88,7 +88,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 * and then visible when the image is selected.
 	 *
 	 * @private
-	 * @param {module:engine/view/writer~Writer} viewWriter
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 	 * @returns {Boolean} Returns `true` when the view is updated.
 	 */
 	_updateCaptionVisibility( viewWriter ) {
@@ -266,7 +266,7 @@ function getParentCaption( node ) {
 //
 // @private
 // @param {module:engine/view/containerelement~ContainerElement} caption
-// @param {module:engine/view/writer~Writer} viewWriter
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @returns {Boolean} Returns `true` if the view was modified.
 function hideCaptionIfEmpty( caption, viewWriter ) {
 	if ( !caption.childCount && !caption.hasClass( 'ck-hidden' ) ) {
@@ -281,7 +281,7 @@ function hideCaptionIfEmpty( caption, viewWriter ) {
 //
 // @private
 // @param {module:engine/view/containerelement~ContainerElement} caption
-// @param {module:engine/view/writer~Writer} viewWriter
+// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @returns {Boolean} Returns `true` if the view was modified.
 function showCaption( caption, viewWriter ) {
 	if ( caption.hasClass( 'ck-hidden' ) ) {

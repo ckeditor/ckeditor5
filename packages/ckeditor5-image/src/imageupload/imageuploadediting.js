@@ -16,7 +16,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { isImageType, findOptimalInsertionPosition } from '../../src/imageupload/utils';
 
 /**
- * Image upload editing plugin.
+ * The editing part of the image upload feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -45,7 +45,10 @@ export default class ImageUploadEditing extends Plugin {
 		// Register imageUpload command.
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
 
-		// Execute imageUpload command when image is dropped or pasted.
+		// Handle pasted images.
+		// For every image file, a new file loader is created and a placeholder image is
+		// inserted into the content. Then, those images are uploaded once they appear in the model
+		// (see Document#change listener below).
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			// Skip if non empty HTML data is included.
 			// https://github.com/ckeditor/ckeditor5-upload/issues/68
@@ -89,11 +92,12 @@ export default class ImageUploadEditing extends Plugin {
 			}
 		} );
 
-		// Prevents from browser redirecting to the dropped image.
+		// Prevents from the browser redirecting to the dropped image.
 		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
 			data.preventDefault();
 		} );
 
+		// Upload placeholder images that appeared in the model.
 		doc.on( 'change', () => {
 			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } );
 
@@ -120,8 +124,8 @@ export default class ImageUploadEditing extends Plugin {
 						// If the image was inserted to the graveyard - abort the loading process.
 						loader.abort();
 					} else if ( loader.status == 'idle' ) {
-						// If the image was inserted into content and has not been loaded, start loading it.
-						this._load( loader, item );
+						// If the image was inserted into content and has not been loaded yet, start loading it.
+						this._readAndUpload( loader, item );
 					}
 				}
 			}
@@ -129,15 +133,18 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
-	 * Performs image loading. The image is read from the disk and temporary data is displayed. When the upload process
-	 * is complete the temporary data is replaced with the target image from the server.
+	 * Read and upload an image.
 	 *
-	 * @private
+	 * The image is read from the disk and as a base64 encoded string it is set temporarily to
+	 * `image[src]`. When the image is successfully uploaded the temporary data is replaced with the target
+	 * image's URL (the URL to the uploaded image on the server).
+	 *
+	 * @protected
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:engine/model/element~Element} imageElement
 	 * @returns {Promise}
 	 */
-	_load( loader, imageElement ) {
+	_readAndUpload( loader, imageElement ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const t = editor.locale.t;

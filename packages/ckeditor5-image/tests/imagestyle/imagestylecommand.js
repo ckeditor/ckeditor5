@@ -74,11 +74,11 @@ describe( 'ImageStyleCommand', () => {
 		setData( model, '[<image></image>]' );
 
 		model.change( writer => {
-			expect( writer.batch.deltas ).to.length( 0 );
+			expect( writer.batch.operations ).to.length( 0 );
 
 			command.execute( { value: 'otherStyle' } );
 
-			expect( writer.batch.deltas ).to.length.above( 0 );
+			expect( writer.batch.operations ).to.length.above( 0 );
 		} );
 	} );
 
