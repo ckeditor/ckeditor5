@@ -22,9 +22,11 @@ const defaultIcons = {
 };
 
 /**
- * HeadingButtonsUI class creates a set of UI buttons that can be used instead of drop down component.
- * It is not enabled by default when using {@link module:heading/heading~Heading heading plugin}, and needs to be
- * added manually to the editor configuration.
+ * The `HeadingButtonsUI` plugin defines a set of UI buttons that can be used instead of the
+ * standard drop down component.
+ *
+ * This feature is not enabled by default by the {@link module:heading/heading~Heading} plugin and needs to be
+ * installed manually to the editor configuration.
  *
  * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/heading~HeadingOption}.
  *
@@ -44,10 +46,10 @@ const defaultIcons = {
  *			.then( ... )
  *			.catch( ... );
  *
- * NOTE: Paragraph button is defined in {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin that needs
- * to be loaded manually as well.
+ * NOTE: The `'paragraph'` button is defined in by the {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin
+ * which needs to be loaded manually as well.
  *
- * It is possible to use custom icons by providing `icon` config option provided in {@link module:heading/heading~HeadingOption}.
+ * It is possible to use custom icons by providing `icon` config option in {@link module:heading/heading~HeadingOption}.
  * For the default configuration standard icons are used.
  *
  * @extends module:core/plugin~Plugin

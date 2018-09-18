@@ -10,7 +10,10 @@ This package implements the headings feature for CKEditor 5.
 
 ## Documentation
 
-See the {@link features/headings Headings feature} guide and the {@link module:heading/heading~Heading} plugin documentation.
+See the {@link features/headings Headings feature} guide and the documentation of the following plugins:
+
+* {@link module:heading/heading~Heading},
+* {@link module:heading/headingbuttonsui~HeadingButtonsUI}
 
 ## Installation
 

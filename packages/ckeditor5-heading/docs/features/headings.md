@@ -1,7 +1,8 @@
 ---
-title: Headings
 category: features
 ---
+
+# Headings
 
 {@snippet build-classic-source}
 

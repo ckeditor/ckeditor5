@@ -16,10 +16,11 @@ import '../theme/heading.css';
 /**
  * The headings feature.
  *
- * It loads the {@link module:heading/headingediting~HeadingEditing heading editing feature}
- * and {@link module:heading/headingui~HeadingUI heading UI feature}.
+ * For a detailed overview, check the {@glink features/headings Headings feature documentation}
+ * and the {@glink api/heading package page}.
  *
- * For a detailed overview, check the {@glink features/headings Headings feature documentation}.
+ * This is a "glue" plugin which loads the {@link module:heading/headingediting~HeadingEditing heading editing feature}
+ * and {@link module:heading/headingui~HeadingUI heading UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -95,7 +96,7 @@ export default class Heading extends Plugin {
  * That's assumption is used by features like {@link module:autoformat/autoformat~Autoformat} to know which element
  * they should use when applying the first level heading.
  *
- * The defined headings are also available as values passed to `heading` command under their model names.
+ * The defined headings are also available as values passed to the `'heading'` command under their model names.
  * For example, the below code will apply `<heading1>` to the current selection:
  *
  *		editor.execute( 'heading', { value: 'heading1' } );
