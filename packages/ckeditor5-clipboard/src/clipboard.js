@@ -94,7 +94,7 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				model.insertContent( modelFragment, modelDocument.selection );
+				model.insertContent( modelFragment );
 			}
 		}, { priority: 'low' } );
 
