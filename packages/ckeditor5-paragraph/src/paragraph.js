@@ -16,6 +16,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The paragraph feature for the editor.
+ *
  * It introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
  * @extends module:core/plugin~Plugin

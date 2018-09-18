@@ -10,7 +10,7 @@ This package implements paragraph support for CKEditor 5.
 
 ## Documentation
 
-See the {@link module:paragraph/paragraph~Paragraph} plugin documentation.
+See the {@link module:paragraph/paragraph~Paragraph} and {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugins documentation.
 
 ## Installation
 
