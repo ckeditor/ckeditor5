@@ -42,10 +42,10 @@ export default class Command {
 		/**
 		 * The value of the command. A concrete command class should define what it represents for it.
 		 *
-		 * For example, the `bold` command's value indicates whether the selection starts in a bolded text.
-		 * And the value of the `link` command may be an object with links details.
+		 * For example, the `'bold'` command's value indicates whether the selection starts in a bolded text.
+		 * And the value of the `'link'` command may be an object with links details.
 		 *
-		 * It is possible for a command to have no value (e.g. for stateless actions such as `imageUpload`).
+		 * It is possible for a command to have no value (e.g. for stateless actions such as `'imageUpload'`).
 		 *
 		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *
