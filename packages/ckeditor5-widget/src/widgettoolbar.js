@@ -218,7 +218,7 @@ function repositionContextualBalloon( editor ) {
 function getBalloonPositionData( editor ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
-	let widget = getParentWidget( editingView.document.selection );
+	const widget = getParentWidget( editingView.document.selection );
 
 	return {
 		target: editingView.domConverter.viewToDom( widget ),

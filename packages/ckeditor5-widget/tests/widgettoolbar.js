@@ -32,7 +32,7 @@ describe( 'WidgetToolbar', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, FakeButton, WidgetToolbar, FakeWidget ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbar, FakeWidget ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -244,7 +244,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 
 		return BalloonEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, FakeButton, WidgetToolbar, FakeWidget, Bold ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbar, FakeWidget, Bold ],
 				balloonToolbar: [ 'bold' ],
 				fake: {
 					toolbar: [ 'fake_button' ]
@@ -370,14 +370,13 @@ class FakeWidget extends Plugin {
 			}
 		} ) );
 
-		conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
-				view: {
-					name: 'div'
-				},
-				model: ( viewMedia, modelWriter ) => {
-					return modelWriter.createElement( 'fake-widget' );
-				}
-			} ) )
+		conversion.for( 'upcast' ).add( upcastElementToElement( {
+			view: {
+				name: 'div'
+			},
+			model: ( view, modelWriter ) => {
+				return modelWriter.createElement( 'fake-widget' );
+			}
+		} ) );
 	}
 }
