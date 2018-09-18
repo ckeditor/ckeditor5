@@ -418,6 +418,25 @@ describe( 'upcastTable()', () => {
 			] ) );
 		} );
 
+		it( 'should upcast table inline content to single <paragraph>', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>foo <strong>bar</strong></td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ 'foo <$text bold="true">bar</$text>' ]
+			] ) );
+		} );
+
 		it( 'should upcast table with multiple <p> in table cell', () => {
 			editor.setData(
 				'<table>' +

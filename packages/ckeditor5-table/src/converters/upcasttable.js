@@ -115,13 +115,12 @@ export function upcastTableCell( elementName ) {
 			conversionApi.writer.insert( tableCell, splitResult.position );
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 
-			for ( const child of viewTableCell.getChildren() ) {
-				const { modelCursor } = conversionApi.convertItem( child, ModelPosition.createAt( tableCell, 'end' ) );
+			const modelCursor = ModelPosition.createAt( tableCell );
+			conversionApi.convertChildren( viewTableCell, modelCursor );
 
-				// Ensure empty paragraph in table cell.
-				if ( modelCursor.parent.name == 'tableCell' && !modelCursor.parent.childCount ) {
-					conversionApi.writer.insertElement( 'paragraph', modelCursor );
-				}
+			// Ensure a paragraph in the model for empty table cells.
+			if ( !tableCell.childCount ) {
+				conversionApi.writer.insertElement( 'paragraph', modelCursor );
 			}
 
 			// Set conversion result range.
