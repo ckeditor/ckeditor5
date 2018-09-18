@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import { getBrowserName } from './browser';
+
 import { fixtures as basicStyles, browserFixtures as basicStylesBrowser } from '../_data/basic-styles/index.js';
 
 const fixtures = {
@@ -31,8 +33,4 @@ export function getFixtures( group ) {
 	}
 
 	return fixtures[ group ];
-}
-
-function getBrowserName() {
-	return null;
 }
