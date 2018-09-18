@@ -5,21 +5,21 @@
 
 /* global document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import WidgetToolbar from '../src/widgettoolbar';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Widget from '../src/widget';
-import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import WidgetToolbar from '../src/widgettoolbar';
+import { isWidget, toWidget } from '../src/utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'WidgetToolbar', () => {
 	let editor, model, balloon, widgetToolbar, editorElement;
@@ -27,10 +27,10 @@ describe( 'WidgetToolbar', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
-		return ClassicEditor
+		return ClassicTestEditor
 			.create( editorElement, {
 				plugins: [ Paragraph, FakeButton, WidgetToolbar, FakeWidget ],
 				fake: {
@@ -238,8 +238,8 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 		clock = testUtils.sinon.useFakeTimers();
 
 		return BalloonEditor
