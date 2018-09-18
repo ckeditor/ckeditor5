@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 import { getSelectedMediaElement } from './utils';
 
 /**
@@ -62,14 +62,13 @@ export default class MediaEmbedCommand extends Command {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			const firstPosition = selection.getFirstPosition();
-			const isRoot = firstPosition.parent === firstPosition.root;
-			const insertPosition = isRoot ? ModelPosition.createAt( firstPosition ) : ModelPosition.createAfter( firstPosition.parent );
+			const insertPosition = findOptimalInsertionPosition( selection );
 
 			model.change( writer => {
 				const mediaElement = writer.createElement( 'media', { url } );
 
-				writer.insert( mediaElement, insertPosition );
+				model.insertContent( mediaElement, insertPosition );
+
 				writer.setSelection( mediaElement, 'on' );
 			} );
 		}
