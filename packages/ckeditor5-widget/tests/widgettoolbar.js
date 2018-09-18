@@ -133,7 +133,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should be visible when the `isVisible` callback returns true', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: isWidgetSelected
+				isVisible: isFakeWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -146,7 +146,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should be hidden when the `isVisible` callback returns false', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: isWidgetSelected
+				isVisible: isFakeWidgetSelected
 			} );
 
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
@@ -157,7 +157,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should be hidden when the `isVisible` callback returns false #2', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: isWidgetSelected
+				isVisible: isFakeWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -173,7 +173,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: isWidgetSelected
+				isVisible: isFakeWidgetSelected
 			} );
 
 			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
@@ -191,7 +191,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: doesWidgetContainSelection
+				isVisible: isFakeWidgetContentSelected
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
@@ -204,7 +204,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
 			widgetToolbar.add( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				isVisible: isWidgetSelected
+				isVisible: isFakeWidgetSelected
 			} );
 
 			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
@@ -270,7 +270,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbar.add( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
-			isVisible: isWidgetSelected,
+			isVisible: isFakeWidgetSelected,
 		} );
 
 		const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
@@ -285,7 +285,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
 		widgetToolbar.add( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
-			isVisible: isWidgetSelected
+			isVisible: isFakeWidgetSelected
 		} );
 
 		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
@@ -296,18 +296,20 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	} );
 } );
 
-function isWidgetSelected( selection ) {
+const fakeWidgetSymbol = Symbol( 'fakeWidget' );
+
+function isFakeWidgetSelected( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isWidget( viewElement ) );
+	return !!viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeWidgetSymbol );
 }
 
-function doesWidgetContainSelection( selection ) {
+function isFakeWidgetContentSelected( selection ) {
 	const pos = selection.getFirstPosition();
 	let node = pos.parent;
 
 	while ( node ) {
-		if ( node.is( 'element' ) && isWidget( node ) ) {
+		if ( node.is( 'element' ) && isWidget( node ) && node.getCustomProperty( fakeWidgetSymbol ) ) {
 			return true;
 		}
 
@@ -365,6 +367,7 @@ class FakeWidget extends Plugin {
 			model: 'fake-widget',
 			view: ( modelElement, viewWriter ) => {
 				const fakeWidget = viewWriter.createContainerElement( 'div' );
+				viewWriter.setCustomProperty( fakeWidgetSymbol, true, fakeWidget );
 
 				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
 			}
