@@ -18,6 +18,8 @@ import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/convers
  *
  * See also the {@link module:enter/enter~Enter} plugin.
  *
+ * For more information about this feature see the {@glink api/enter package page}.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ShiftEnter extends Plugin {
