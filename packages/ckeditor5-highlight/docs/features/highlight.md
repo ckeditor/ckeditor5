@@ -1,7 +1,8 @@
 ---
-title: Highlight
 category: features
 ---
+
+# Highlight
 
 {@snippet features/build-highlight-source}
 
@@ -53,7 +54,7 @@ ClassicEditor
 
 ### Inline buttons
 
-Instead of using the (default) `highlight` button, the feature also supports a configuration with separate buttons available directly in the toolbar:
+Instead of using the (default) `'highlight'` button, the feature also supports a configuration with separate buttons available directly in the toolbar:
 
 ```js
 ClassicEditor
@@ -210,7 +211,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	]
 	```
 
-	the `highlight` command will accept the corresponding strings as values:
+	the `'highlight'` command will accept the corresponding strings as values:
 
 	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'` button,
 	* `'greenMarker'` &ndash; available as the `'highlight:greenMarker'` button,
@@ -219,7 +220,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	* `'redPen'` &ndash; available as the `'highlight:redPen'` button,
 	* `'greenPen'` &ndash; available as the `'highlight:greenPen'` button.
 
-	Passing an empty `value` will remove any `highlight` from the selection:
+	Passing an empty `value` will remove any `highlight` attribute from the selection:
 
 	```js
 	editor.execute( 'highlight' );

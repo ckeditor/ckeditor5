@@ -15,10 +15,10 @@ import HighlightUI from './highlightui';
 /**
  * The highlight plugin.
  *
- * It loads the {@link module:highlight/highlightediting~HighlightEditing} and
- * {@link module:highlight/highlightui~HighlightUI} plugins.
+ * For a detailed overview, check the {@glink features/highlight Highlight feature} documentation.
  *
- * For a detailed overview, check the {@glink features/highlight highlight feature} documentation.
+ * This is a "glue" plugin which loads the {@link module:highlight/highlightediting~HighlightEditing} and
+ * {@link module:highlight/highlightui~HighlightUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
