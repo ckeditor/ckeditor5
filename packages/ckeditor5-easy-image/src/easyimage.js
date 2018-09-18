@@ -15,14 +15,17 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 /**
  * The Easy Image feature.
  *
- * This plugin enables:
+ * For a detailed overview, check the {@glink features/image-upload Image upload feature documentation}
+ * and the {@glink api/easy-image package page}.
+ *
+ * After enabling the Easy Image plugin you need to configure the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/)
+ * integration through {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
+ *
+ * This is a "glue" plugin which enables:
  *
  * * {@link module:image/image~Image},
  * * {@link module:image/imageupload~ImageUpload},
  * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}.
- *
- * After enabling the Easy Image plugin you need to configure the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/)
- * integration through {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
  */
