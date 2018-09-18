@@ -19,7 +19,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-table`](ht
 npm install --save @ckeditor/ckeditor5-table
 ```
 
-Then add `'Table'` and `'TableToolbar'` to your plugin list and configure the table toolbar:
+Then add `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
 
 ```js
 import Table from '@ckeditor/ckeditor5-table/src/table';

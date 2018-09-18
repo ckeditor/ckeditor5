@@ -18,10 +18,11 @@ const balloonClassName = 'ck-toolbar-container';
 /**
  * The table toolbar class. It creates a table toolbar that shows up when the table widget is selected.
  *
- * Toolbar components are created using the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
- * based on the {@link module:core/editor/editor~Editor#config configuration} stored under `table.toolbar`.
+ * Instanecs of toolbar components (e.g. buttons) are created using the editor's
+ * {@link module:ui/componentfactory~ComponentFactory component factory}
+ * based on the {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option}.
  *
- * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
+ * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
