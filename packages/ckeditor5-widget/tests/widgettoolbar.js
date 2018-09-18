@@ -95,9 +95,56 @@ describe( 'WidgetToolbar', () => {
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
-			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view
+			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
 
-			expect( fakeWidgetToolbarView ).to.equal( balloon.visibleView )
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+		} );
+
+		it( 'should hide widget toolbar when the `isVisible` callback returns false', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: selection => {
+					const el = selection.getSelectedElement();
+
+					return el && isWidget( el );
+				}
+			} );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
+
+			expect( balloon.visibleView ).to.equal( null );
+		} );
+
+		it( 'should hide widget toolbar when the `isVisible` callback returns false', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: selection => {
+					const el = selection.getSelectedElement();
+
+					return el && isWidget( el );
+				}
+			} );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
+
+			expect( balloon.visibleView ).to.equal( null );
+		} );
+	} );
+
+	describe( 'remove', () => {
+		it( 'should remove given widget toolbar', () => {
+			widgetToolbar.add( 'fake', {
+				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				isVisible: () => false
+			} );
+
+			widgetToolbar.remove( 'fake' );
+
+			expect( widgetToolbar._toolbars.size ).to.equal( 0 );
 		} );
 	} );
 
@@ -138,7 +185,6 @@ describe( 'WidgetToolbar', () => {
 				model: 'fake-widget',
 				view: ( modelElement, viewWriter ) => {
 					const fakeWidget = viewWriter.createContainerElement( 'div' );
-					// fakeWidget.getFillerOffset = () => null;
 
 					return fakeWidget;
 				}
@@ -148,7 +194,6 @@ describe( 'WidgetToolbar', () => {
 				model: 'fake-widget',
 				view: ( modelElement, viewWriter ) => {
 					const fakeWidget = viewWriter.createContainerElement( 'div' );
-					// fakeWidget.getFillerOffset = () => null;
 
 					return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
 				}
