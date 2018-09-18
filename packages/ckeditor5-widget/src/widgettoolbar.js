@@ -112,7 +112,7 @@ export default class WidgetToolbar extends Plugin {
 			 *
 			 * @error widget-toolbar-duplicated
 			 */
-			throw new Error( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } )
+			throw new Error( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
 		}
 
 		this._toolbars.set( toolbarId, {
@@ -136,7 +136,7 @@ export default class WidgetToolbar extends Plugin {
 			 *
 			 * @error widget-toolbar-does-not-exist
 			 */
-			throw new Error( 'widget-toolbar-does-not-exist' );
+			throw new Error( 'widget-toolbar-does-not-exist', { toolbarId } );
 		}
 
 		this._hideToolbar( toolbar );
