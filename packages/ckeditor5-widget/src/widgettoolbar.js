@@ -110,9 +110,9 @@ export default class WidgetToolbar extends Plugin {
 			/**
 			 * Toolbar with the given id was already added.
 			 *
-			 * @error
+			 * @error duplicated-widget-toolbar
 			 */
-			throw new Error( 'duplicated-toolbar: Toolbar with the given id was already added.', { toolbarId } )
+			throw new Error( 'duplicated-widget-toolbar: Toolbar with the given id was already added.', { toolbarId } )
 		}
 
 		this._toolbars.set( toolbarId, {
