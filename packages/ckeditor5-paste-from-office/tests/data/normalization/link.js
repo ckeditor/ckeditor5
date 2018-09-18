@@ -8,17 +8,14 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { expectNormalized } from '../../_utils/utils';
-
-import withinText from '../../_data/link/within-text/input.word2016.html';
-import combined from '../../_data/link/combined/input.word2016.html';
-import twoLine from '../../_data/link/two-line/input.word2016.html';
-
-import withinTextNormalized from '../../_data/link/within-text/normalized.word2016.html';
-import combinedNormalized from '../../_data/link/combined/normalized.word2016.html';
-import twoLineNormalized from '../../_data/link/two-line/normalized.word2016.html';
+import { getFixtures } from '../../_utils/fixtures';
 
 describe( 'Link – normalization', () => {
-	let editor, pasteFromOfficePlugin;
+	let editor, input, normalized, pasteFromOfficePlugin;
+
+	before( () => {
+		( { input, normalized } = getFixtures( 'link' ) );
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -33,14 +30,14 @@ describe( 'Link – normalization', () => {
 	} );
 
 	it( 'normalizes link within text', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( withinText, editor ), withinTextNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.withinText, editor ), normalized.withinText );
 	} );
 
 	it( 'normalizes combined links', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( combined, editor ), combinedNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.combined, editor ), normalized.combined );
 	} );
 
 	it( 'normalizes two line links', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( twoLine, editor ), twoLineNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.twoLine, editor ), normalized.twoLine );
 	} );
 } );
