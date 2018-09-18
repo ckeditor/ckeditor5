@@ -156,7 +156,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
-		const semanticDataOutput = editor.config.get( 'mediaEmbed.semanticDataOutput' );
+		const renderMediaPreview = editor.config.get( 'mediaEmbed.mediaPreviewsInData' );
 		const registry = this.registry;
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );
@@ -176,8 +176,7 @@ export default class MediaEmbedEditing extends Plugin {
 				const url = modelElement.getAttribute( 'url' );
 
 				return createMediaFigureElement( viewWriter, registry, url, {
-					useSemanticWrapper: semanticDataOutput || !url,
-					renderContent: !semanticDataOutput
+					renderMediaPreview: url && renderMediaPreview
 				} );
 			}
 		} ) );
@@ -185,7 +184,7 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add(
 			modelToViewUrlAttributeConverter( registry, {
-				semanticDataOutput
+				renderMediaPreview
 			} ) );
 
 		// Model -> View (element)
@@ -194,8 +193,7 @@ export default class MediaEmbedEditing extends Plugin {
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
 				const figure = createMediaFigureElement( viewWriter, registry, url, {
-					renderForEditingView: true,
-					renderContent: true
+					renderForEditingView: true
 				} );
 
 				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );

@@ -45,7 +45,6 @@ export function toMediaWidget( viewElement, writer, label ) {
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
- * @param {String} [options.renderContent]
  * @param {String} [options.useSemanticWrapper]
  * @param {String} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
