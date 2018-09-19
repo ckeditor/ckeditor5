@@ -1,3 +1,12 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module widget/widgettoolbarrepository
+ */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -9,10 +18,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * Widget toolbar repository plugin. A central point for creating widget toolbars. This plugin handles the whole
  * toolbar rendering process and exposes concise API.
  *
- * Creating toolbar for the widget bases on the {@link ~register()} method.
+ * Creating toolbar for the widget bases on the {@link ~WidgetToolbarRepository#register} method.
  *
  * This plugin adds to the plugin list directly or indirectly prevents showing up
- * the {@link module:ui/toolbar/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
+ * the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
  *
  * Usage example comes from {@link module:image/imagetoolbar~ImageToolbar}:
  *
@@ -91,7 +100,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * `visibleWhen` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
-	 * Note: This method should be called in the {@link module:core/plugin/Plugin#afterInit `Plugin#afterInit()`} callback (or later)
+	 * Note: This method should be called in the {@link module:core/plugin/plugin~Plugin#afterInit `Plugin#afterInit()`} callback (or later)
 	 * to make sure that the given toolbar items were already registered by other plugins.
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
