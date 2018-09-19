@@ -13,17 +13,16 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
-import { setData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { pasteHtml } from '../../_utils/utils';
-
-import simple from '../../_data/spacing/simple/input.word2016.html';
-import singleLine from '../../_data/spacing/single-line/input.word2016.html';
-import multiLine from '../../_data/spacing/multi-line/input.word2016.html';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getFixtures } from '../../_utils/fixtures';
+import { expectModel } from '../../_utils/utils';
 
 describe( 'Spacing – integration', () => {
-	let element, editor, insertedModel;
+	let element, editor, input;
 
 	before( () => {
+		input = getFixtures( 'spacing' ).input;
+
 		element = document.createElement( 'div' );
 
 		document.body.appendChild( element );
@@ -32,16 +31,6 @@ describe( 'Spacing – integration', () => {
 			.create( element, { plugins: [ Clipboard, Paragraph, Bold, Italic, Underline, PasteFromOffice ] } )
 			.then( editorInstance => {
 				editor = editorInstance;
-
-				const model = editor.model;
-				const insertContent = model.insertContent;
-
-				sinon.stub( editor.model, 'insertContent' ).callsFake( ( content, selection ) => {
-					// Save model string representation now as it may change after `insertContent()` function call
-					// so accessing it later may not work as it may have empty/changed structure.
-					insertedModel = stringify( content );
-					insertContent.call( model, content, selection );
-				} );
 			} );
 	} );
 
@@ -49,13 +38,7 @@ describe( 'Spacing – integration', () => {
 		setData( editor.model, '<paragraph>[]</paragraph>' );
 	} );
 
-	afterEach( () => {
-		insertedModel = null;
-	} );
-
 	after( () => {
-		sinon.restore();
-
 		editor.destroy();
 
 		element.remove();
@@ -69,9 +52,9 @@ describe( 'Spacing – integration', () => {
 	//
 	//		<p>Foo Bar </p>
 	it( 'pastes line with single space', () => {
-		const expectedModel = '<paragraph>Foo Bar </paragraph>';
+		const expected = '<paragraph>Foo Bar </paragraph>';
 
-		expectContent( simple, expectedModel );
+		expectModel( editor, input.simple, expected );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -86,9 +69,9 @@ describe( 'Spacing – integration', () => {
 	//
 	// 		<p>  2Foo   3Bar4    </p>
 	it( 'pastes single line with multiple spaces', () => {
-		const expectedModel = '<paragraph>  2Foo   3Bar4    </paragraph>';
+		const expected = '<paragraph>  2Foo   3Bar4    </paragraph>';
 
-		expectContent( singleLine, expectedModel );
+		expectModel( editor, input.singleLine, expected );
 	} );
 
 	// Pastes (after cleaning up garbage markup):
@@ -103,17 +86,10 @@ describe( 'Spacing – integration', () => {
 	//		<p>03   </p>
 	//		<p>  21 </p>
 	it( 'pastes multiple lines with multiple spaces', () => {
-		const expectedModel = '<paragraph>2Foo   3Bar4    </paragraph>' +
+		const expected = '<paragraph>2Foo   3Bar4    </paragraph>' +
 			'<paragraph>03   </paragraph>' +
 			'<paragraph>  21 </paragraph>';
 
-		expectContent( multiLine, expectedModel );
+		expectModel( editor, input.multiLine, expected );
 	} );
-
-	function expectContent( input, expectedModel ) {
-		pasteHtml( editor, input );
-
-		expect( insertedModel.replace( /\u00A0/g, '#' ).replace( /&nbsp;/g, '#' ) )
-			.to.equal( expectedModel.replace( /\u00A0/g, '#' ).replace( /&nbsp;/g, '#' ) );
-	}
 } );

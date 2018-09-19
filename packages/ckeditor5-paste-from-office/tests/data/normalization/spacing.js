@@ -8,17 +8,14 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
 import { expectNormalized } from '../../_utils/utils';
-
-import simple from '../../_data/spacing/simple/input.word2016.html';
-import singleLine from '../../_data/spacing/single-line/input.word2016.html';
-import multiLine from '../../_data/spacing/multi-line/input.word2016.html';
-
-import simpleNormalized from '../../_data/spacing/simple/normalized.word2016.html';
-import singleLineNormalized from '../../_data/spacing/single-line/normalized.word2016.html';
-import multiLineNormalized from '../../_data/spacing/multi-line/normalized.word2016.html';
+import { getFixtures } from '../../_utils/fixtures';
 
 describe( 'Spacing – normalization', () => {
-	let editor, pasteFromOfficePlugin;
+	let editor, input, normalized, pasteFromOfficePlugin;
+
+	before( () => {
+		( { input, normalized } = getFixtures( 'spacing' ) );
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -33,14 +30,14 @@ describe( 'Spacing – normalization', () => {
 	} );
 
 	it( 'normalizes simple single spacing', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( simple, editor ), simpleNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.simple, editor ), normalized.simple );
 	} );
 
 	it( 'normalizes multiple spacing in a single line', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( singleLine, editor ), singleLineNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.singleLine, editor ), normalized.singleLine );
 	} );
 
 	it( 'normalizes multiple spacing in multiple lines', () => {
-		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( multiLine, editor ), multiLineNormalized );
+		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( input.multiLine, editor ), normalized.multiLine );
 	} );
 } );

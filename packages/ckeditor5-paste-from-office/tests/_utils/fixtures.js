@@ -7,15 +7,18 @@ import { getBrowserName } from './utils';
 
 import { fixtures as basicStyles, browserFixtures as basicStylesBrowser } from '../_data/basic-styles/index.js';
 import { fixtures as link, browserFixtures as linkBrowser } from '../_data/link/index.js';
+import { fixtures as spacing, browserFixtures as spacingBrowser } from '../_data/spacing/index.js';
 
 const fixtures = {
 	'basic-styles': basicStyles,
-	link
+	link,
+	spacing
 };
 
 const browserFixtures = {
 	'basic-styles': basicStylesBrowser,
-	link: linkBrowser
+	link: linkBrowser,
+	spacing: spacingBrowser
 };
 
 export function getFixtures( group ) {
