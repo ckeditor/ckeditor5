@@ -10,6 +10,7 @@
 /* globals DOMParser */
 
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
+import normalizeClipboardHtml from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata';
 import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
 
 const domParser = new DOMParser();
@@ -96,7 +97,7 @@ function extractStyles( htmlDocument ) {
 // @param {String} htmlString HTML string in which spacing should be normalized.
 // @returns {String} Input HTML with spaces normalized.
 function normalizeEndTagsPrecedingSpace( htmlString ) {
-	return htmlString
+	return normalizeClipboardHtml( htmlString )
 		.replace( / <\//g, '\u00A0</' )
 		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' );
 }
