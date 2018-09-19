@@ -25,9 +25,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *				const editor = this.editor;
  *				const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
  *
- *				widgetToolbarRepository.add( {
- *					toolbarItems: editor.config.get( 'image.toolbar' )
- *					visibleWhen: isImageWidgetSelected
+ *				widgetToolbarRepository.register( {
+ *					toolbarItems: editor.config.get( 'image.toolbar' ),
+ *					visibleWhen: viewSelection => isImageWidgetSelected( viewSelection )
  *				} );
  *			}
  *		}
