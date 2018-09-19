@@ -1053,6 +1053,7 @@ describe( 'Schema', () => {
 				if ( inTextWithBold( ctx ) && attributeName == 'italic' ) {
 					return false;
 				}
+
 				// Allow 'italic' on p>$text.
 				if ( ctx.endsWith( 'p $text' ) && attributeName == 'italic' ) {
 					return true;
@@ -1083,18 +1084,30 @@ describe( 'Schema', () => {
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
-			it( 'should check attributes of text (selection at the beginning of the text)', () => {
+			it( 'should check attributes of the selection (selection at the beginning of the text)', () => {
 				setData( model, '<p><$text bold="true">[]foo</$text></p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 
-			it( 'should check attributes of text (selection inside the text)', () => {
+			it( 'should check attributes of the selection (selection inside the text)', () => {
 				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 
-			it( 'should check attributes of text (selection at the end of the text)', () => {
+			it( 'should check attributes of the selection (selection at the end of the text)', () => {
 				setData( model, '<p><$text bold="true">foo[]</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+			} );
+
+			it( 'should check attributes of the selection (an attribute sets manually)', () => {
+				setData( model, '<p>foo[]bar</p>' );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
