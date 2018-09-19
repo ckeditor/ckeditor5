@@ -124,37 +124,6 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 
 	/**
-	 * Removes toolbar with the given toolbarId.
-	 *
-	 * @param {String} toolbarId Toolbar identificator.
-	 */
-	deregister( toolbarId ) {
-		const toolbar = this._toolbars.get( toolbarId );
-
-		if ( !toolbar ) {
-			/**
-			 * Toolbar with the given id was already added.
-			 *
-			 * @error widget-toolbar-does-not-exist
-			 * @param toolbarId Toolbar id.
-			 */
-			throw new CKEditorError( 'widget-toolbar-does-not-exist', { toolbarId } );
-		}
-
-		this._hideToolbar( toolbar );
-		this._toolbars.delete( toolbarId );
-	}
-
-	/**
-	 * Returns `true` when a toolbar with the given id is present in the widget toolbar repository.
-	 *
-	 * @param {String} toolbarId Toolbar identificator.
-	 */
-	isRegistered( toolbarId ) {
-		return this._toolbars.has( toolbarId );
-	}
-
-	/**
 	 * Iterates over stored toolbars and makes them visible or hidden.
 	 *
 	 * @private

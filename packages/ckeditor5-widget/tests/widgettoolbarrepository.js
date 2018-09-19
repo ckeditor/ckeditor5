@@ -82,50 +82,6 @@ describe( 'WidgetToolbar', () => {
 		} );
 	} );
 
-	describe( 'deregister', () => {
-		it( 'should remove given widget toolbar', () => {
-			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false
-			} );
-
-			widgetToolbarRepository.deregister( 'fake' );
-
-			expect( widgetToolbarRepository._toolbars.size ).to.equal( 0 );
-		} );
-
-		it( 'should throw an error if a toolbar does not exist', () => {
-			widgetToolbarRepository.register( 'foo', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false
-			} );
-
-			expect( () => {
-				widgetToolbarRepository.deregister( 'bar' );
-			} ).to.throw( CKEditorError, /^widget-toolbar-does-not-exist/ );
-		} );
-	} );
-
-	describe( 'isRegistered', () => {
-		it( 'should return `true` when a toolbar with given id was added', () => {
-			widgetToolbarRepository.register( 'foo', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false
-			} );
-
-			expect( widgetToolbarRepository.isRegistered( 'foo' ) ).to.be.true;
-		} );
-
-		it( 'should return `false` when a toolbar with given id was not added', () => {
-			widgetToolbarRepository.register( 'foo', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false
-			} );
-
-			expect( widgetToolbarRepository.isRegistered( 'bar' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'integration tests', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
