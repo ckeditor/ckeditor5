@@ -4,8 +4,6 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isWidget } from './utils';
 
-const defaultBalloonClassName = 'ck-toolbar-container';
-
 /**
  * Widget toolbar repository plugin. A central point for creating widget toolbars. This plugin handles the whole
  * toolbar rendering process and exposes concise API.
@@ -99,9 +97,9 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @param {Object} options
 	 * @param {Array.<String>} options.toolbarItems Array of toolbar items.
 	 * @param {Function} options.isVisible Callback which specifies when the toolbar should be visible for the widget.
-	 * @param {String} [options.balloonClassName] CSS class for the widget balloon.
+	 * @param {String} [options.balloonClassName='ck-toolbar-container'] CSS class for the widget balloon.
 	 */
-	register( toolbarId, { toolbarItems, isVisible, balloonClassName = defaultBalloonClassName } ) {
+	register( toolbarId, { toolbarItems, isVisible, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
