@@ -18,7 +18,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'MediaEmbedToolbar', () => {
-	let editor, element, widgetToolbar, balloon, toolbar, model;
+	let editor, element, widgetToolbarRepository, balloon, toolbar, model;
 
 	testUtils.createSinonSandbox();
 
@@ -33,10 +33,10 @@ describe( 'MediaEmbedToolbar', () => {
 			}
 		} ).then( _editor => {
 			editor = _editor;
-			widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
-			toolbar = widgetToolbar._toolbars.get( 'mediaEmbed' ).view;
-			balloon = editor.plugins.get( 'ContextualBalloon' );
 			model = editor.model;
+			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			toolbar = widgetToolbarRepository._toolbars.get( 'mediaEmbed' ).view;
+			balloon = editor.plugins.get( 'ContextualBalloon' );
 		} );
 	} );
 
@@ -165,7 +165,7 @@ describe( 'MediaEmbedToolbar', () => {
 } );
 
 describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
-	let clock, editor, balloonToolbar, element, widgetToolbar, balloon, toolbar, model;
+	let clock, editor, balloonToolbar, element, widgetToolbarRepository, balloon, toolbar, model;
 
 	testUtils.createSinonSandbox();
 
@@ -182,10 +182,10 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 			}
 		} ).then( _editor => {
 			editor = _editor;
-			widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
-			toolbar = widgetToolbar._toolbars.get( 'mediaEmbed' ).view;
-			balloon = editor.plugins.get( 'ContextualBalloon' );
 			model = editor.model;
+			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+			toolbar = widgetToolbarRepository._toolbars.get( 'mediaEmbed' ).view;
+			balloon = editor.plugins.get( 'ContextualBalloon' );
 			balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 		} );
 	} );

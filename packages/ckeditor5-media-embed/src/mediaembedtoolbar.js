@@ -3,7 +3,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetToolbar from '@ckeditor/ckeditor5-widget/src/widgettoolbar';;
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';;
 import { isMediaWidgetSelected } from './utils';
 
 /**
@@ -18,7 +18,7 @@ export default class MediaEmbedToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetToolbar ];
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**
@@ -33,11 +33,11 @@ export default class MediaEmbedToolbar extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		widgetToolbar.add( 'mediaEmbed', {
+		widgetToolbarRepository.register( 'mediaEmbed', {
 			toolbarItems: editor.config.get( 'media.toolbar' ) || [],
-			isVisible: isMediaWidgetSelected,
+			visibleWhen: isMediaWidgetSelected,
 		} );
 	}
 }
