@@ -1,0 +1,90 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+// Default.
+import simple from './simple/input.word2016.html';
+import styled from './styled/input.word2016.html';
+import multiple from './multiple/input.word2016.html';
+import multipleCombined from './multiple-combined/input.word2016.html';
+import manyOneItem from './many-one-item/input.word2016.html';
+import heading1 from './heading1/input.word2016.html';
+import heading3Styled from './heading3-styled/input.word2016.html';
+import heading7 from './heading7/input.word2016.html';
+
+import simpleNormalized from './simple/normalized.word2016.html';
+import styledNormalized from './styled/normalized.word2016.html';
+import multipleNormalized from './multiple/normalized.word2016.html';
+import multipleCombinedNormalized from './multiple-combined/normalized.word2016.html';
+import manyOneItemNormalized from './many-one-item/normalized.word2016.html';
+import heading1Normalized from './heading1/normalized.word2016.html';
+import heading3StyledNormalized from './heading3-styled/normalized.word2016.html';
+import heading7Normalized from './heading7/normalized.word2016.html';
+
+export const fixtures = {
+	input: {
+		simple,
+		styled,
+		multiple,
+		multipleCombined,
+		manyOneItem,
+		heading1,
+		heading3Styled,
+		heading7
+	},
+	normalized: {
+		simple: simpleNormalized,
+		styled: styledNormalized,
+		multiple: multipleNormalized,
+		multipleCombined: multipleCombinedNormalized,
+		manyOneItem: manyOneItemNormalized,
+		heading1: heading1Normalized,
+		heading3Styled: heading3StyledNormalized,
+		heading7: heading7Normalized
+	}
+};
+
+// Safari.
+import simpleSafari from './simple/input.safari.word2016.html';
+import styledSafari from './styled/input.safari.word2016.html';
+import multipleSafari from './multiple/input.safari.word2016.html';
+import multipleCombinedSafari from './multiple-combined/input.safari.word2016.html';
+import manyOneItemSafari from './many-one-item/input.safari.word2016.html';
+import heading1Safari from './heading1/input.safari.word2016.html';
+import heading3StyledSafari from './heading3-styled/input.safari.word2016.html';
+import heading7Safari from './heading7/input.safari.word2016.html';
+
+import simpleNormalizedSafari from './simple/normalized.safari.word2016.html';
+import styledNormalizedSafari from './styled/normalized.safari.word2016.html';
+import multipleNormalizedSafari from './multiple/normalized.safari.word2016.html';
+import multipleCombinedNormalizedSafari from './multiple-combined/normalized.safari.word2016.html';
+import manyOneItemNormalizedSafari from './many-one-item/normalized.safari.word2016.html';
+import heading1NormalizedSafari from './heading1/normalized.safari.word2016.html';
+import heading3StyledNormalizedSafari from './heading3-styled/normalized.safari.word2016.html';
+import heading7NormalizedSafari from './heading7/normalized.safari.word2016.html';
+
+export const browserFixtures = {
+	safari: {
+		input: {
+			simple: simpleSafari,
+			styled: styledSafari,
+			multiple: multipleSafari,
+			multipleCombined: multipleCombinedSafari,
+			manyOneItem: manyOneItemSafari,
+			heading1: heading1Safari,
+			heading3Styled: heading3StyledSafari,
+			heading7: heading7Safari
+		},
+		normalized: {
+			simple: simpleNormalizedSafari,
+			styled: styledNormalizedSafari,
+			multiple: multipleNormalizedSafari,
+			multipleCombined: multipleCombinedNormalizedSafari,
+			manyOneItem: manyOneItemNormalizedSafari,
+			heading1: heading1NormalizedSafari,
+			heading3Styled: heading3StyledNormalizedSafari,
+			heading7: heading7NormalizedSafari
+		}
+	}
+};
