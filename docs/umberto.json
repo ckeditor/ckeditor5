@@ -70,7 +70,15 @@
 							"name": "Integration",
 							"id": "builds-integration",
 							"slug": "integration",
-							"order": 100
+							"order": 100,
+							"categories": [
+								{
+									"name": "Frameworks",
+									"id": "builds-integration-frameworks",
+									"slug": "frameworks",
+									"order": 100
+								}
+							]
 						},
 						{
 							"name": "Development",
