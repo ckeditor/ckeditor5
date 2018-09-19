@@ -110,8 +110,6 @@ export default class WidgetToolbarRepository extends Plugin {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
-		toolbarView.fillFromConfig( toolbarItems, editor.ui.componentFactory );
-
 		if ( this._toolbars.has( toolbarId ) ) {
 			/**
 			 * Toolbar with the given id was already added.
@@ -121,6 +119,8 @@ export default class WidgetToolbarRepository extends Plugin {
 			 */
 			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
 		}
+
+		toolbarView.fillFromConfig( toolbarItems, editor.ui.componentFactory );
 
 		this._toolbars.set( toolbarId, {
 			view: toolbarView,
