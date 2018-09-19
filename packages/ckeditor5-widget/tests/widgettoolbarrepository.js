@@ -233,7 +233,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
-		editor.ui.fire( 'update' );
+		editor.ui.focusTracker.isFocused = true;
 
 		clock.tick( 200 );
 
@@ -247,7 +247,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		} );
 
 		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
-		editor.ui.fire( 'update' );
+		editor.ui.focusTracker.isFocused = true;
 
 		clock.tick( 200 );
 

@@ -97,8 +97,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * `visibleWhen` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
-	 * Note: This method should be called in the {@link module:core/plugin/plugin~Plugin#afterInit `Plugin#afterInit()`} callback (or later)
-	 * to make sure that the given toolbar items were already registered by other plugins.
+	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
+	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
