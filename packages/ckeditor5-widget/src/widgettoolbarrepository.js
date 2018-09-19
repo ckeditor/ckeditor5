@@ -25,7 +25,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *				const editor = this.editor;
  *				const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
  *
- *				widgetToolbarRepository.register( {
+ *				widgetToolbarRepository.register( 'image', {
  *					toolbarItems: editor.config.get( 'image.toolbar' ),
  *					visibleWhen: viewSelection => isImageWidgetSelected( viewSelection )
  *				} );
@@ -91,8 +91,8 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * `visibleWhen` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
-	 * Note: This method should be called in the {@link module:core/plugin/Plugin~afterInit} to make sure that plugins for toolbar items
-	 * will be already loaded and available in the UI component factory.
+	 * Note: This method should be called in the {@link module:core/plugin/Plugin#afterInit `Plugin#afterInit()`} callback (or later)
+	 * to make sure that the given toolbar items were already registered by other plugins.
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
