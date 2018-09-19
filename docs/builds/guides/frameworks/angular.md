@@ -39,7 +39,7 @@ npm install --save-dev @ckeditor/ckeditor5-build-classic
 }
 ```
 
-Now, include the CKEditor module (**TODO WHERE?**):
+Now, add `CKEditorModule` to your application module imports:
 
 ```ts
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
