@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { isTableContentSelected } from './utils';
-import WidgetToolbar from '@ckeditor/ckeditor5-widget/src/widgettoolbar';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
  * The table toolbar class. It creates a table toolbar that shows up when the table widget is selected.
@@ -27,7 +27,7 @@ export default class TableToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetToolbar ];
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**
@@ -42,11 +42,11 @@ export default class TableToolbar extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		widgetToolbar.add( 'table', {
+		widgetToolbarRepository.register( 'table', {
 			toolbarItems: editor.config.get( 'table.toolbar' ) || [],
-			isVisible: isTableContentSelected,
+			visibleWhen: isTableContentSelected,
 		} );
 	}
 }
