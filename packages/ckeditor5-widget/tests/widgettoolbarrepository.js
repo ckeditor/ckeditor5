@@ -60,7 +60,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false,
+				visibleWhen: () => false,
 			} );
 
 			expect( widgetToolbarRepository._toolbars.size ).to.equal( 1 );
@@ -70,13 +70,13 @@ describe( 'WidgetToolbar', () => {
 		it( 'should throw when adding two times widget with the same id', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false
+				visibleWhen: () => false
 			} );
 
 			expect( () => {
 				widgetToolbarRepository.register( 'fake', {
 					toolbarItems: editor.config.get( 'fake.toolbar' ),
-					whenVisible: () => false
+					visibleWhen: () => false
 				} );
 			} ).to.throw( CKEditorError, /^widget-toolbar-duplicated/ );
 		} );
@@ -86,7 +86,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'should remove given widget toolbar', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false
+				visibleWhen: () => false
 			} );
 
 			widgetToolbarRepository.deregister( 'fake' );
@@ -97,7 +97,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'should throw an error if a toolbar does not exist', () => {
 			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false
+				visibleWhen: () => false
 			} );
 
 			expect( () => {
@@ -110,7 +110,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'should return `true` when a toolbar with given id was added', () => {
 			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false
+				visibleWhen: () => false
 			} );
 
 			expect( widgetToolbarRepository.isRegistered( 'foo' ) ).to.be.true;
@@ -119,7 +119,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'should return `false` when a toolbar with given id was not added', () => {
 			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: () => false
+				visibleWhen: () => false
 			} );
 
 			expect( widgetToolbarRepository.isRegistered( 'bar' ) ).to.be.false;
@@ -131,10 +131,10 @@ describe( 'WidgetToolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'toolbar should be visible when the `whenVisible` callback returns true', () => {
+		it( 'toolbar should be visible when the `visibleWhen` callback returns true', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetSelected
+				visibleWhen: isFakeWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -144,10 +144,10 @@ describe( 'WidgetToolbar', () => {
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
-		it( 'toolbar should be hidden when the `whenVisible` callback returns false', () => {
+		it( 'toolbar should be hidden when the `visibleWhen` callback returns false', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetSelected
+				visibleWhen: isFakeWidgetSelected
 			} );
 
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
@@ -155,10 +155,10 @@ describe( 'WidgetToolbar', () => {
 			expect( balloon.visibleView ).to.equal( null );
 		} );
 
-		it( 'toolbar should be hidden when the `whenVisible` callback returns false #2', () => {
+		it( 'toolbar should be hidden when the `visibleWhen` callback returns false #2', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetSelected
+				visibleWhen: isFakeWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -174,7 +174,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetSelected
+				visibleWhen: isFakeWidgetSelected
 			} );
 
 			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
@@ -192,7 +192,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetContentSelected
+				visibleWhen: isFakeWidgetContentSelected
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
@@ -205,7 +205,7 @@ describe( 'WidgetToolbar', () => {
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
 			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
-				whenVisible: isFakeWidgetSelected
+				visibleWhen: isFakeWidgetSelected
 			} );
 
 			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
@@ -271,7 +271,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
-			whenVisible: isFakeWidgetSelected,
+			visibleWhen: isFakeWidgetSelected,
 		} );
 
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
@@ -286,7 +286,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
-			whenVisible: isFakeWidgetSelected
+			visibleWhen: isFakeWidgetSelected
 		} );
 
 		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );

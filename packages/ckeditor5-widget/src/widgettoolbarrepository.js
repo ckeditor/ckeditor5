@@ -27,7 +27,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *				widgetToolbarRepository.add( {
  *					toolbarItems: editor.config.get( 'image.toolbar' )
- *					whenVisible: isImageWidgetSelected
+ *					visibleWhen: isImageWidgetSelected
  *				} );
  *			}
  *		}
@@ -88,7 +88,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
-	 * `whenVisible` function. Toolbar items are gathered from `toolbarItems` array.
+	 * `visibleWhen` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin/Plugin~afterInit} to make sure that plugins for toolbar items
@@ -97,10 +97,10 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
 	 * @param {Array.<String>} options.toolbarItems Array of toolbar items.
-	 * @param {Function} options.whenVisible Callback which specifies when the toolbar should be visible for the widget.
+	 * @param {Function} options.visibleWhen Callback which specifies when the toolbar should be visible for the widget.
 	 * @param {String} [options.balloonClassName='ck-toolbar-container'] CSS class for the widget balloon.
 	 */
-	register( toolbarId, { toolbarItems, whenVisible, balloonClassName = 'ck-toolbar-container' } ) {
+	register( toolbarId, { toolbarItems, visibleWhen, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
@@ -118,7 +118,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		this._toolbars.set( toolbarId, {
 			view: toolbarView,
-			whenVisible,
+			visibleWhen,
 			balloonClassName,
 		} );
 	}
@@ -161,7 +161,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	_updateToolbarsVisibility() {
 		for ( const toolbar of this._toolbars.values() ) {
-			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.whenVisible( this.editor.editing.view.document.selection ) ) {
+			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.visibleWhen( this.editor.editing.view.document.selection ) ) {
 				this._hideToolbar( toolbar );
 			} else {
 				this._showToolbar( toolbar );
