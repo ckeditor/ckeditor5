@@ -9,14 +9,14 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { isImageWidgetSelected } from './image/utils';
-import WidgetToolbar from '@ckeditor/ckeditor5-widget/src/widgettoolbar';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
  *
  * For a detailed overview, check the {@glink features/image#image-contextual-toolbar image contextual toolbar} documentation.
  *
- * Instanecs of toolbar components (e.g. buttons) are created using the editor's
+ * Instances of toolbar components (e.g. buttons) are created using the editor's
  * {@link module:ui/componentfactory~ComponentFactory component factory}
  * based on the {@link module:image/image~ImageConfig#toolbar `image.toolbar` configuration option}.
  *
@@ -29,7 +29,7 @@ export default class ImageToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetToolbar ];
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**
@@ -44,11 +44,11 @@ export default class ImageToolbar extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		widgetToolbar.add( 'image', {
+		widgetToolbarRepository.register( 'image', {
 			toolbarItems: editor.config.get( 'image.toolbar' ) || [],
-			isVisible: isImageWidgetSelected,
+			visibleWhen: isImageWidgetSelected,
 		} );
 	}
 }
