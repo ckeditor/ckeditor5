@@ -10,7 +10,7 @@ This package implements the image feature for CKEditor 5. The feature is introdu
 
 ## Documentation
 
-See the {@link features/image Image feature} guide and the documentation for the following plugins:
+See the {@link features/image Image feature} guide and the documentation of the following plugins:
 
 * {@link module:image/image~Image}
 * {@link module:image/imagecaption~ImageCaption}
