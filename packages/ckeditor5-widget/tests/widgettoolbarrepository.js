@@ -20,6 +20,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'WidgetToolbar', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement;
@@ -77,7 +78,7 @@ describe( 'WidgetToolbar', () => {
 					toolbarItems: editor.config.get( 'fake.toolbar' ),
 					whenVisible: () => false
 				} );
-			} ).to.throw( /widget-toolbar-duplicated/ );
+			} ).to.throw( CKEditorError, /^widget-toolbar-duplicated/ );
 		} );
 	} );
 
@@ -101,7 +102,7 @@ describe( 'WidgetToolbar', () => {
 
 			expect( () => {
 				widgetToolbarRepository.deregister( 'bar' );
-			} ).to.throw( /widget-toolbar-does-not-exist/ );
+			} ).to.throw( CKEditorError, /^widget-toolbar-does-not-exist/ );
 		} );
 	} );
 

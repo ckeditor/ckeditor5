@@ -3,6 +3,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isWidget } from './utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Widget toolbar repository plugin. A central point for creating widget toolbars. This plugin handles the whole
@@ -112,7 +113,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-duplicated
 			 * @param toolbarId Toolbar id.
 			 */
-			throw new Error( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
+			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
 		}
 
 		this._toolbars.set( toolbarId, {
@@ -137,7 +138,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * @error widget-toolbar-does-not-exist
 			 * @param toolbarId Toolbar id.
 			 */
-			throw new Error( 'widget-toolbar-does-not-exist', { toolbarId } );
+			throw new CKEditorError( 'widget-toolbar-does-not-exist', { toolbarId } );
 		}
 
 		this._hideToolbar( toolbar );
