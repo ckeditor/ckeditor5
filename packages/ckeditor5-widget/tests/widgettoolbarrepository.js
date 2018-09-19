@@ -22,7 +22,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'WidgetToolbar', () => {
+describe( 'WidgetToolbarRepository', () => {
 	let editor, model, balloon, widgetToolbarRepository, editorElement;
 
 	testUtils.createSinonSandbox();
