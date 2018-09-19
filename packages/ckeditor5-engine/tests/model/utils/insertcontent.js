@@ -12,6 +12,7 @@ import Selection from '../../../src/model/selection';
 import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
+import Range from '../../../src/model/range';
 
 describe( 'DataController utils', () => {
 	let model, doc;
@@ -26,7 +27,7 @@ describe( 'DataController utils', () => {
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
-				insertContent( model, new Text( 'a' ), doc.selection );
+				insertContent( model, writer.createText( 'a' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
@@ -41,9 +42,92 @@ describe( 'DataController utils', () => {
 
 			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), selection );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
+			} );
+		} );
+
+		it( 'should modify passed selection instance', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selectionCopy = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.true;
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
+			} );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.false;
+
+			const insertionSelection = new Selection( new Position( doc.getRoot(), [ 3 ] ) );
+			expect( selection.isEqual( insertionSelection ) ).to.be.true;
+		} );
+
+		it( 'should be able to insert content at custom position', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const position = new Position( doc.getRoot(), [ 2 ] );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), position );
+				expect( getData( model ) ).to.equal( 'a[]bxc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom range', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const range = new Range( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 3 ] ) );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), range );
+				expect( getData( model ) ).to.equal( 'a[]bx' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if document selection is passed', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), model.document.selection );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if none passed', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ) );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
 			} );
 		} );
 
@@ -56,7 +140,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection );
+			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -70,7 +154,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new Text( 'a' ), doc.selection );
+			insertContent( model, new Text( 'a' ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -90,7 +174,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			insertContent( model, content, doc.selection );
+			insertContent( model, content );
 
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
@@ -303,7 +387,7 @@ describe( 'DataController utils', () => {
 				] );
 
 				setData( model, '[<heading2>foo</heading2>]' );
-				insertContent( model, content, doc.selection );
+				insertContent( model, content );
 				expect( getData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
 			} );
 
@@ -854,6 +938,6 @@ describe( 'DataController utils', () => {
 			} );
 		}
 
-		insertContent( model, content, doc.selection );
+		insertContent( model, content );
 	}
 } );

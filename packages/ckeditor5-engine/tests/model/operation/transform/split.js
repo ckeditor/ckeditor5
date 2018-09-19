@@ -422,6 +422,56 @@ describe( 'transform', () => {
 				syncClients();
 				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 			} );
+
+			it( 'element into heading', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+
+				syncClients();
+				expectClients(
+					'<heading1>FooB</heading1>' +
+					'<paragraph>ar</paragraph>'
+				);
+			} );
+
+			it( 'element into heading with undo #1', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+
+				syncClients();
+				expectClients(
+					'<heading1>FooB</heading1>' +
+					'<paragraph>ar</paragraph>'
+				);
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+			} );
+
+			it( 'element into heading with undo #2', () => {
+				john.setData( '<heading1>Foo</heading1><paragraph>B[]ar</paragraph>' );
+				kate.setData( '<heading1>Foo</heading1>[]<paragraph>Bar</paragraph>' );
+
+				john.split();
+				kate.merge();
+				kate.undo();
+
+				syncClients();
+				expectClients(
+					'<heading1>Foo</heading1>' +
+					'<paragraph>B</paragraph>' +
+					'<paragraph>ar</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'by delete', () => {
