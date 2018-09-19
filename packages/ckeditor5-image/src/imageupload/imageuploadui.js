@@ -46,12 +46,12 @@ export default class ImageUploadUI extends Plugin {
 			view.buttonView.bind( 'isEnabled' ).to( command );
 
 			view.on( 'done', ( evt, files ) => {
-				for ( const file of Array.from( files ) ) {
+				const imagesToUpload = Array.from( files ).filter( isImageType );
+
+				if ( imagesToUpload.length ) {
 					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
 
-					if ( isImageType( file ) ) {
-						editor.execute( 'imageUpload', { file, insertAt } );
-					}
+					editor.execute( 'imageUpload', { file: imagesToUpload, insertAt } );
 				}
 			} );
 

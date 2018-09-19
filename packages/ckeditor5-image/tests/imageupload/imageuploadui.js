@@ -99,7 +99,18 @@ describe( 'ImageUploadUI', () => {
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
+	} );
+
+	it( 'should execute imageUpload command with multiple files', () => {
+		const executeStub = sinon.stub( editor, 'execute' );
+		const button = editor.ui.componentFactory.create( 'imageUpload' );
+		const files = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
+
+		button.fire( 'done', files );
+		sinon.assert.calledOnce( executeStub );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
 	} );
 
 	it( 'should optimize the insertion position', () => {
@@ -131,8 +142,8 @@ describe( 'ImageUploadUI', () => {
 
 		expect( getModelData( model ) ).to.equal(
 			'<paragraph>foo</paragraph>' +
-			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
-			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
+			`[<image uploadId="${ id1 }" uploadStatus="reading"></image>]` +
+			`<image uploadId="${ id2 }" uploadStatus="reading"></image>` +
 			'<paragraph>bar</paragraph>'
 		);
 	} );
@@ -160,6 +171,6 @@ describe( 'ImageUploadUI', () => {
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 	} );
 } );

@@ -40,44 +40,59 @@ export default class ImageUploadCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} options Options for the executed command.
-	 * @param {File} options.file The image file to upload.
-	 * @param {module:engine/model/position~Position} [options.insertAt] The position at which the image should be inserted.
+	 * @param {File|Array.<File>} options.file The image file or an array of image files to upload.
+	 * @param {module:engine/model/position~Position} [options.insertAt] The position at which the images should be inserted.
 	 * If the position is not specified, the image will be inserted into the current selection.
 	 * Note: You can use the {@link module:widget/utils~findOptimalInsertionPosition} function
 	 * to calculate (e.g. based on the current selection) a position which is more optimal from the UX perspective.
 	 */
 	execute( options ) {
 		const editor = this.editor;
-		const doc = editor.model.document;
-		const file = options.file;
-		const fileRepository = editor.plugins.get( FileRepository );
 
 		editor.model.change( writer => {
-			const loader = fileRepository.createLoader( file );
+			const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
 
-			// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
-			if ( !loader ) {
-				return;
-			}
-
-			const imageElement = writer.createElement( 'image', {
-				uploadId: loader.id
-			} );
-
-			let insertAtSelection;
-
-			if ( options.insertAt ) {
-				insertAtSelection = new ModelSelection( [ new ModelRange( options.insertAt ) ] );
-			} else {
-				insertAtSelection = doc.selection;
-			}
-
-			editor.model.insertContent( imageElement, insertAtSelection );
-
-			// Inserting an image might've failed due to schema regulations.
-			if ( imageElement.parent ) {
-				writer.setSelection( imageElement, 'on' );
+			// Reverse the order of items as the editor will place in reverse when using the same position.
+			for ( const file of filesToUpload.reverse() ) {
+				uploadImage( writer, editor, file, options.insertAt );
 			}
 		} );
+	}
+}
+
+// Handles uploading single file.
+//
+// @param {module:engine/model/writer~writer} writer
+// @param {module:core/editor/editor~Editor} editor
+// @param {File} file
+// @param {module:engine/model/position~Position} insertAt
+function uploadImage( writer, editor, file, insertAt ) {
+	const doc = editor.model.document;
+	const fileRepository = editor.plugins.get( FileRepository );
+
+	const loader = fileRepository.createLoader( file );
+
+	// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
+	if ( !loader ) {
+		return;
+	}
+
+	const imageElement = writer.createElement( 'image', {
+		uploadId: loader.id
+	} );
+
+	let insertAtSelection;
+
+	if ( insertAt ) {
+		insertAtSelection = new ModelSelection( [ new ModelRange( insertAt ) ] );
+	} else {
+		insertAtSelection = doc.selection;
+	}
+
+	editor.model.insertContent( imageElement, insertAtSelection );
+
+	// Inserting an image might've failed due to schema regulations.
+	if ( imageElement.parent ) {
+		writer.setSelection( imageElement, 'on' );
 	}
 }
