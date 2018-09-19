@@ -76,4 +76,4 @@ $( '#modal-container' ).modal( {
 } );
 ```
 
-Check out the demo on https://codepen.io/k0n0pka/pen/yqBXOz.
+Check out the demo on https://codepen.io/ckeditor/pen/vzvgOe.
