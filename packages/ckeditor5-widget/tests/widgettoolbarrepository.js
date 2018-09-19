@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Widget from '../src/widget';
-import WidgetToolbar from '../src/widgettoolbar';
+import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
@@ -22,7 +22,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'WidgetToolbar', () => {
-	let editor, model, balloon, widgetToolbar, editorElement;
+	let editor, model, balloon, widgetToolbarRepository, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -32,7 +32,7 @@ describe( 'WidgetToolbar', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FakeButton, WidgetToolbar, FakeWidget ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -40,7 +40,7 @@ describe( 'WidgetToolbar', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = newEditor.model;
-				widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
 	} );
@@ -52,28 +52,28 @@ describe( 'WidgetToolbar', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( WidgetToolbar ) ).to.be.instanceOf( WidgetToolbar );
+		expect( editor.plugins.get( WidgetToolbarRepository ) ).to.be.instanceOf( WidgetToolbarRepository );
 	} );
 
-	describe( 'add()', () => {
+	describe( 'register()', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false,
 			} );
 
-			expect( widgetToolbar._toolbars.size ).to.equal( 1 );
-			expect( widgetToolbar._toolbars.get( 'fake' ) ).to.be.an( 'object' );
+			expect( widgetToolbarRepository._toolbars.size ).to.equal( 1 );
+			expect( widgetToolbarRepository._toolbars.get( 'fake' ) ).to.be.an( 'object' );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false
 			} );
 
 			expect( () => {
-				widgetToolbar.add( 'fake', {
+				widgetToolbarRepository.register( 'fake', {
 					toolbarItems: editor.config.get( 'fake.toolbar' ),
 					isVisible: () => false
 				} );
@@ -81,47 +81,47 @@ describe( 'WidgetToolbar', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'deregister', () => {
 		it( 'should remove given widget toolbar', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false
 			} );
 
-			widgetToolbar.remove( 'fake' );
+			widgetToolbarRepository.deregister( 'fake' );
 
-			expect( widgetToolbar._toolbars.size ).to.equal( 0 );
+			expect( widgetToolbarRepository._toolbars.size ).to.equal( 0 );
 		} );
 
 		it( 'should throw an error if a toolbar does not exist', () => {
-			widgetToolbar.add( 'foo', {
+			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false
 			} );
 
 			expect( () => {
-				widgetToolbar.remove( 'bar' );
+				widgetToolbarRepository.deregister( 'bar' );
 			} ).to.throw( /widget-toolbar-does-not-exist/ );
 		} );
 	} );
 
-	describe( 'has', () => {
+	describe( 'isRegistered', () => {
 		it( 'should return `true` when a toolbar with given id was added', () => {
-			widgetToolbar.add( 'foo', {
+			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false
 			} );
 
-			expect( widgetToolbar.has( 'foo' ) ).to.be.true;
+			expect( widgetToolbarRepository.isRegistered( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'should return `false` when a toolbar with given id was not added', () => {
-			widgetToolbar.add( 'foo', {
+			widgetToolbarRepository.register( 'foo', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: () => false
 			} );
 
-			expect( widgetToolbar.has( 'bar' ) ).to.be.false;
+			expect( widgetToolbarRepository.isRegistered( 'bar' ) ).to.be.false;
 		} );
 	} );
 
@@ -131,20 +131,20 @@ describe( 'WidgetToolbar', () => {
 		} );
 
 		it( 'toolbar should be visible when the `isVisible` callback returns true', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetSelected
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
-			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
 		it( 'toolbar should be hidden when the `isVisible` callback returns false', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetSelected
 			} );
@@ -155,7 +155,7 @@ describe( 'WidgetToolbar', () => {
 		} );
 
 		it( 'toolbar should be hidden when the `isVisible` callback returns false #2', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetSelected
 			} );
@@ -171,7 +171,7 @@ describe( 'WidgetToolbar', () => {
 		} );
 
 		it( 'toolbar should update its position when other widget is selected', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetSelected
 			} );
@@ -183,31 +183,31 @@ describe( 'WidgetToolbar', () => {
 				writer.setSelection( model.document.getRoot().getChild( 1 ), 'on' );
 			} );
 
-			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetContentSelected
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
 
-			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
-			widgetToolbar.add( 'fake', {
+			widgetToolbarRepository.register( 'fake', {
 				toolbarItems: editor.config.get( 'fake.toolbar' ),
 				isVisible: isFakeWidgetSelected
 			} );
 
-			const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 			setData( model, '[<fake-widget></fake-widget>]' );
 
@@ -232,8 +232,8 @@ describe( 'WidgetToolbar', () => {
 	} );
 } );
 
-describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
-	let clock, editor, model, balloon, balloonToolbar, widgetToolbar, editorElement;
+describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () => {
+	let clock, editor, model, balloon, balloonToolbar, widgetToolbarRepository, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -244,7 +244,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 
 		return BalloonEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FakeButton, WidgetToolbar, FakeWidget, Bold ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, Bold ],
 				balloonToolbar: [ 'bold' ],
 				fake: {
 					toolbar: [ 'fake_button' ]
@@ -253,7 +253,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = newEditor.model;
-				widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
@@ -268,12 +268,12 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	} );
 
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
-		widgetToolbar.add( 'fake', {
+		widgetToolbarRepository.register( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
 			isVisible: isFakeWidgetSelected,
 		} );
 
-		const fakeWidgetToolbarView = widgetToolbar._toolbars.get( 'fake' ).view;
+		const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
 
 		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 
@@ -283,7 +283,7 @@ describe( 'WidgetToolbar - integration with the BalloonToolbar', () => {
 	} );
 
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
-		widgetToolbar.add( 'fake', {
+		widgetToolbarRepository.register( 'fake', {
 			toolbarItems: editor.config.get( 'fake.toolbar' ),
 			isVisible: isFakeWidgetSelected
 		} );

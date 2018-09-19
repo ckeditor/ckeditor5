@@ -7,32 +7,33 @@ import { isWidget } from './utils';
 const defaultBalloonClassName = 'ck-toolbar-container';
 
 /**
- * Widget toolbar plugin. It ease the process of creating widget toolbars by handling the whole rendering process and providing concise API.
+ * Widget toolbar repository plugin. A central point for creating widget toolbars. This plugin handles the whole
+ * toolbar rendering process and exposes concise API.
  *
- * Creating toolbar for the widget bases on the {@link ~add()} method. TODO
+ * Creating toolbar for the widget bases on the {@link ~register()} method.
  *
- * This plugin added to the plugin list directly or indirectly prevents showing up
+ * This plugin adds to the plugin list directly or indirectly prevents showing up
  * the {@link module:ui/toolbar/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
  *
  * Usage example comes from {@link module:image/imagetoolbar~ImageToolbar}:
  *
  * 		class ImageToolbar extends Plugin {
  *			static get requires() {
- *				return [ WidgetToolbar ];
+ *				return [ WidgetToolbarRepository ];
  *			}
  *
  *			afterInit() {
  *				const editor = this.editor;
- *				const widgetToolbar = editor.plugins.get( 'WidgetToolbar' );
+ *				const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
  *
- *				widgetToolbar.add( {
+ *				widgetToolbarRepository.add( {
  *					toolbarItems: editor.config.get( 'image.toolbar' )
  *					isVisible: isImageWidgetSelected
  *				} );
  *			}
  *		}
  */
-export default class WidgetToolbar extends Plugin {
+export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -44,7 +45,7 @@ export default class WidgetToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'WidgetToolbar';
+		return 'WidgetToolbarRepository';
 	}
 
 	/**
@@ -87,11 +88,11 @@ export default class WidgetToolbar extends Plugin {
 	}
 
 	/**
-	 * Adds toolbar to the WidgetToolbar's collection. It renders it in the `ContextualBalloon` based on the value of the invoked
+	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
 	 * `isVisible` function. Toolbar items are gathered from `toolbarItems` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
-	 * Note: This method should be called in the `module:core/plugin/Plugin~afterInit` to make sure that plugins for toolbar items
+	 * Note: This method should be called in the {@link module:core/plugin/Plugin~afterInit} to make sure that plugins for toolbar items
 	 * will be already loaded and available in the UI component factory.
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
@@ -100,7 +101,7 @@ export default class WidgetToolbar extends Plugin {
 	 * @param {Function} options.isVisible Callback which specifies when the toolbar should be visible for the widget.
 	 * @param {String} [options.balloonClassName] CSS class for the widget balloon.
 	 */
-	add( toolbarId, { toolbarItems, isVisible, balloonClassName = defaultBalloonClassName } ) {
+	register( toolbarId, { toolbarItems, isVisible, balloonClassName = defaultBalloonClassName } ) {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
@@ -111,6 +112,7 @@ export default class WidgetToolbar extends Plugin {
 			 * Toolbar with the given id was already added.
 			 *
 			 * @error widget-toolbar-duplicated
+			 * @param toolbarId Toolbar id.
 			 */
 			throw new Error( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
 		}
@@ -123,11 +125,11 @@ export default class WidgetToolbar extends Plugin {
 	}
 
 	/**
-	 * Removes toolbar of the given toolbarId.
+	 * Removes toolbar with the given toolbarId.
 	 *
 	 * @param {String} toolbarId Toolbar identificator.
 	 */
-	remove( toolbarId ) {
+	deregister( toolbarId ) {
 		const toolbar = this._toolbars.get( toolbarId );
 
 		if ( !toolbar ) {
@@ -135,6 +137,7 @@ export default class WidgetToolbar extends Plugin {
 			 * Toolbar with the given id was already added.
 			 *
 			 * @error widget-toolbar-does-not-exist
+			 * @param toolbarId Toolbar id.
 			 */
 			throw new Error( 'widget-toolbar-does-not-exist', { toolbarId } );
 		}
@@ -144,11 +147,11 @@ export default class WidgetToolbar extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when a toolbar with the given id is present in the toolbar collection.
+	 * Returns `true` when a toolbar with the given id is present in the widget toolbar repository.
 	 *
 	 * @param {String} toolbarId Toolbar identificator.
 	 */
-	has( toolbarId ) {
+	isRegistered( toolbarId ) {
 		return this._toolbars.has( toolbarId );
 	}
 
