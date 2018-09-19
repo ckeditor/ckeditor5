@@ -14,6 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import Range from './range';
 import Position from './position';
 import Element from './element';
+import Text from './text';
 import TreeWalker from './treewalker';
 
 /**
@@ -491,7 +492,7 @@ export default class Schema {
 			const firstPosition = selection.getFirstPosition();
 			const context = [
 				...firstPosition.getAncestors(),
-				firstPosition.root.getNodeByPath( firstPosition.path ) || '$text'
+				new Text( '', selection.getAttributes() )
 			];
 
 			// Check whether schema allows for a text with the attribute in the selection.

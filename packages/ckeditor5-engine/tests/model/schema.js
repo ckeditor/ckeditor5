@@ -1083,8 +1083,18 @@ describe( 'Schema', () => {
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
-			it( 'should check attributes of text', () => {
+			it( 'should check attributes of text (selection at the beginning of the text)', () => {
+				setData( model, '<p><$text bold="true">[]foo</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+			} );
+
+			it( 'should check attributes of text (selection inside the text)', () => {
 				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+			} );
+
+			it( 'should check attributes of text (selection at the end of the text)', () => {
+				setData( model, '<p><$text bold="true">foo[]</$text></p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
