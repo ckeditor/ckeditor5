@@ -15,15 +15,12 @@ import { isWidget } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Widget toolbar repository plugin. A central point for creating widget toolbars. This plugin handles the whole
- * toolbar rendering process and exposes concise API.
+ * Widget toolbar repository plugin. A central point for registering widget toolbars. This plugin handles the whole
+ * toolbar rendering process and exposes a concise API.
  *
- * Creating toolbar for the widget bases on the {@link ~WidgetToolbarRepository#register} method.
+ * To add a toolbar for your widget use the {@link ~WidgetToolbarRepository#register `WidgetToolbarRepository#register()`} method.
  *
- * This plugin adds to the plugin list directly or indirectly prevents showing up
- * the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar} toolbar and the widget toolbar at the same time.
- *
- * Usage example comes from {@link module:image/imagetoolbar~ImageToolbar}:
+ * The following example comes from the {@link module:image/imagetoolbar~ImageToolbar} plugin:
  *
  * 		class ImageToolbar extends Plugin {
  *			static get requires() {
