@@ -8,15 +8,17 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import MediaEmbed from '../../src/mediaembed';
+import MediaEmbedToolbar from '../../src/mediaembedtoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, MediaEmbed ],
+		plugins: [ ArticlePluginSet, MediaEmbed, MediaEmbedToolbar ],
 		toolbar: [
 			'heading', '|', 'mediaEmbed', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
 		],
 		mediaEmbed: {
-			mediaPreviewsInData: true
+			mediaPreviewsInData: true,
+			toolbar: [ 'blockQuote' ]
 		}
 	} )
 	.then( editor => {
