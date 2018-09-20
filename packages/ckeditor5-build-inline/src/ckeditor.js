@@ -21,7 +21,10 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 export default class InlineEditor extends InlineEditorBase {}
 
@@ -42,7 +45,10 @@ InlineEditor.builtinPlugins = [
 	ImageUpload,
 	Link,
 	List,
-	Paragraph
+	MediaEmbed,
+	Paragraph,
+	Table,
+	TableToolbar
 ];
 
 // Editor configuration.
@@ -58,6 +64,8 @@ InlineEditor.defaultConfig = {
 			'numberedList',
 			'imageUpload',
 			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
 			'undo',
 			'redo'
 		]
@@ -68,6 +76,13 @@ InlineEditor.defaultConfig = {
 			'imageStyle:side',
 			'|',
 			'imageTextAlternative'
+		]
+	},
+	table: {
+		toolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
