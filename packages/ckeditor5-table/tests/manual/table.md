@@ -2,16 +2,16 @@
 
 1. The data should be loaded with:
   * a complex table with:
-    - one heading row, 
-    - two heading columns, 
+    - one heading row,
+    - two heading columns,
     - merged cells in heading columns section,
   * a table with 2 tbody sections in the DOM - should be rendered as a table with one tbody.
   * a table with no tbody sections in the DOM - should be rendered as a table with one tbody.
   * a table with a thead section between two tbody sections in dom - should be rendered as a table with one thead and on tbody section in proper order: 1, 2, 3.
 
 2. Main toolbar should have insert table dropdown.
-  
-3. While the table widget is selected there should be a toolbar attached to the table with 3 dropdowns:
+
+3. While the table cell is selected there should be a toolbar attached to the table with 3 dropdowns:
   * column dropdown with items:
     - header column,
     - insert column before,
@@ -29,6 +29,8 @@
     - merge cell left,
     - split cell vertically,
     - split cell horizontally,
+
+4. While the table widget is selected there should be `bold` and `italic` buttons
 
 ### Testing
 
