@@ -37,6 +37,9 @@ import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
 import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
 import heading3 from '@ckeditor/ckeditor5-heading/theme/icons/heading3.svg';
+import heading4 from '@ckeditor/ckeditor5-heading/theme/icons/heading4.svg';
+import heading5 from '@ckeditor/ckeditor5-heading/theme/icons/heading5.svg';
+import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
 
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
@@ -76,7 +79,7 @@ const icons = {
 	fontFamily, fontSize,
 
 	// heading
-	heading1, heading2, heading3,
+	heading1, heading2, heading3, heading4, heading5, heading6,
 
 	// highlight
 	marker, pen, eraser,
