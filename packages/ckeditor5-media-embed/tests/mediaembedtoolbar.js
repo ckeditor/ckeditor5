@@ -6,7 +6,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import MediaEmbed from '../src/mediaembed';
 import MediaEmbedToolbar from '../src/mediaembedtoolbar';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
