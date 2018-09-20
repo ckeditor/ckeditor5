@@ -47,7 +47,7 @@ export default class ImageToolbar extends Plugin {
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		widgetToolbarRepository.register( 'image', {
-			toolbarItems: editor.config.get( 'image.toolbar' ) || [],
+			items: editor.config.get( 'image.toolbar' ) || [],
 			visibleWhen: isImageWidgetSelected,
 		} );
 	}
