@@ -60,7 +60,7 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 *		// Creates selection at the start position of the given element.
+	 *		// Creates selection at the given offset in the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
 	 *
