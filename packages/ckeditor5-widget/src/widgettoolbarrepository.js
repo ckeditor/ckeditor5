@@ -32,7 +32,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *				const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
  *
  *				widgetToolbarRepository.register( 'image', {
- *					toolbarItems: editor.config.get( 'image.toolbar' ),
+ *					items: editor.config.get( 'image.toolbar' ),
  *					visibleWhen: viewSelection => isImageWidgetSelected( viewSelection )
  *				} );
  *			}
@@ -94,7 +94,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
-	 * `visibleWhen` function. Toolbar items are gathered from `toolbarItems` array.
+	 * `visibleWhen` function. Toolbar items are gathered from `items` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
@@ -102,11 +102,11 @@ export default class WidgetToolbarRepository extends Plugin {
 	 *
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
-	 * @param {Array.<String>} options.toolbarItems Array of toolbar items.
+	 * @param {Array.<String>} options.items Array of toolbar items.
 	 * @param {Function} options.visibleWhen Callback which specifies when the toolbar should be visible for the widget.
 	 * @param {String} [options.balloonClassName='ck-toolbar-container'] CSS class for the widget balloon.
 	 */
-	register( toolbarId, { toolbarItems, visibleWhen, balloonClassName = 'ck-toolbar-container' } ) {
+	register( toolbarId, { items, visibleWhen, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
@@ -120,7 +120,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated: Toolbar with the given id was already added.', { toolbarId } );
 		}
 
-		toolbarView.fillFromConfig( toolbarItems, editor.ui.componentFactory );
+		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
 
 		this._toolbars.set( toolbarId, {
 			view: toolbarView,

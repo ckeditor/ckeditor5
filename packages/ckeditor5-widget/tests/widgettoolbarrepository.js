@@ -59,7 +59,7 @@ describe( 'WidgetToolbarRepository', () => {
 	describe( 'register()', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: () => false,
 			} );
 
@@ -69,13 +69,13 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'should throw when adding two times widget with the same id', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: () => false
 			} );
 
 			expect( () => {
 				widgetToolbarRepository.register( 'fake', {
-					toolbarItems: editor.config.get( 'fake.toolbar' ),
+					items: editor.config.get( 'fake.toolbar' ),
 					visibleWhen: () => false
 				} );
 			} ).to.throw( CKEditorError, /^widget-toolbar-duplicated/ );
@@ -89,7 +89,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'toolbar should be visible when the `visibleWhen` callback returns true', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetSelected
 			} );
 
@@ -102,7 +102,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'toolbar should be hidden when the `visibleWhen` callback returns false', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetSelected
 			} );
 
@@ -113,7 +113,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'toolbar should be hidden when the `visibleWhen` callback returns false #2', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetSelected
 			} );
 
@@ -129,7 +129,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetSelected
 			} );
 
@@ -147,7 +147,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetContentSelected
 			} );
 
@@ -160,7 +160,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
 			widgetToolbarRepository.register( 'fake', {
-				toolbarItems: editor.config.get( 'fake.toolbar' ),
+				items: editor.config.get( 'fake.toolbar' ),
 				visibleWhen: isFakeWidgetSelected
 			} );
 
@@ -226,7 +226,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbarRepository.register( 'fake', {
-			toolbarItems: editor.config.get( 'fake.toolbar' ),
+			items: editor.config.get( 'fake.toolbar' ),
 			visibleWhen: isFakeWidgetSelected,
 		} );
 
@@ -242,7 +242,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
 		widgetToolbarRepository.register( 'fake', {
-			toolbarItems: editor.config.get( 'fake.toolbar' ),
+			items: editor.config.get( 'fake.toolbar' ),
 			visibleWhen: isFakeWidgetSelected
 		} );
 
