@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^10.0.2",
+    "@ckeditor/ckeditor5-editor-balloon": "^11.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^11.0.0",
     "@ckeditor/ckeditor5-essentials": "^10.1.1",
     "@ckeditor/ckeditor5-paragraph": "^10.0.2",
