@@ -14,7 +14,7 @@ import { isMediaWidgetSelected } from './utils';
  * The media embed toolbar plugin. It creates a toolbar for media embed that shows up when the media element is selected.
  *
  * Instances of toolbar components (e.g. buttons) are created based on the
- * {@link module:media-embed/mediaembedtoolbar~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#toolbar `media.toolbar` configuration option}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -53,5 +53,5 @@ export default class MediaEmbedToolbar extends Plugin {
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>} module:media-embed/mediaembedtoolbar~MediaEmbedConfig#toolbar
+ * @member {Array.<String>} module:media-embed/mediaembed~MediaEmbedConfig#toolbar
  */
