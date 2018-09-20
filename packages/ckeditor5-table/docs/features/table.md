@@ -80,7 +80,7 @@ The table feature supports block content - like paragraphs, lists, headings, etc
 
 ### Inline content
 
-A table cell with inline content (single `<paragraph>`) will be rendered (ie. when using {@link module:core/editor/editor~Editor#getData()} directly in the `<td>` or `<th>` element without wrapping in `<p>`. A table with only inline content in table cells is considered a data table used to present tabular data. Such tables are ususally used with short content and additional paragraphs are often redundant.
+A table cell with inline content (single `<paragraph>`) will be rendered (ie. when using {@link module:core/editor/utils/dataapimixin~DataApi#getData()} directly in the `<td>` or `<th>` element without wrapping in `<p>`. A table with only inline content in table cells is considered a data table used to present tabular data. Such tables are ususally used with short content and additional paragraphs are often redundant.
 
 Example table with inline content (model representation):
 
