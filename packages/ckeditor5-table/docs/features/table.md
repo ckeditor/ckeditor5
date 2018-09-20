@@ -30,7 +30,8 @@ ClassicEditor
 		plugins: [ Table, TableToolbar, ... ],
 		toolbar: [ 'insertTable', ... ]
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'blockQuote' ]
 		}
 	} )
 	.then( ... )
@@ -68,7 +69,7 @@ And the following commands:
 * The `'splitTableCellVertically'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
 * The `'splitTableCellHorizontally'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbar for tables. The toolbar shows up when a table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#toolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbars for tables. The content toolbar shows up when a table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns. There is also the second toolbar for the whole table selected which you can configure via the {@link module:table/table~TableConfig#tableToolbar configuration}.
 
 ## Contribute
 
