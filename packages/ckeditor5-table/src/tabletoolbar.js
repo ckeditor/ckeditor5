@@ -45,7 +45,7 @@ export default class TableToolbar extends Plugin {
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		widgetToolbarRepository.register( 'table', {
-			toolbarItems: editor.config.get( 'table.toolbar' ) || [],
+			items: editor.config.get( 'table.toolbar' ) || [],
 			visibleWhen: isTableContentSelected,
 		} );
 	}
