@@ -41,7 +41,7 @@ export default class MediaEmbedToolbar extends Plugin {
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		widgetToolbarRepository.register( 'mediaEmbed', {
-			items: editor.config.get( 'media.toolbar' ) || [],
+			items: editor.config.get( 'mediaEmbed.toolbar' ) || [],
 			visibleWhen: isMediaWidgetSelected,
 		} );
 	}

@@ -28,7 +28,7 @@ describe( 'MediaEmbedToolbar', () => {
 
 		return ClassicTestEditor.create( element, {
 			plugins: [ Paragraph, MediaEmbed, MediaEmbedToolbar, FakeButton ],
-			media: {
+			mediaEmbed: {
 				toolbar: [ 'fake_button' ]
 			}
 		} ).then( _editor => {
