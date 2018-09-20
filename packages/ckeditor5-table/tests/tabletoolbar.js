@@ -17,7 +17,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TableToolbar', () => {
-	let editor, model, doc, plugin, toolbar, balloon, editorElement;
+	let editor, model, doc, widgetToolbarRepository, toolbar, balloon, editorElement;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -34,8 +34,8 @@ describe( 'TableToolbar', () => {
 				editor = newEditor;
 				model = newEditor.model;
 				doc = model.document;
-				plugin = editor.plugins.get( TableToolbar );
-				toolbar = plugin._toolbar;
+				widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
+				toolbar = widgetToolbarRepository._toolbars.get( 'table' ).view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
 	} );
