@@ -54,7 +54,7 @@ export default class ImageUploadUI extends Plugin {
 				if ( imagesToUpload.length ) {
 					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
 
-					editor.execute( 'imageUpload', { file: imagesToUpload, insertAt } );
+					editor.execute( 'imageUpload', { files: imagesToUpload, insertAt } );
 				}
 			} );
 

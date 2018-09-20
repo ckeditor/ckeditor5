@@ -94,7 +94,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { file } );
+			command.execute( { files: file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
@@ -107,7 +107,7 @@ describe( 'ImageUploadCommand', () => {
 
 			const insertAt = new ModelPosition( doc.getRoot(), [ 0, 2 ] ); // fo[]o
 
-			command.execute( { file, insertAt } );
+			command.execute( { files: file, insertAt } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
@@ -122,7 +122,7 @@ describe( 'ImageUploadCommand', () => {
 			model.change( writer => {
 				expect( writer.batch.operations ).to.length( 0 );
 
-				command.execute( { file } );
+				command.execute( { files: file } );
 
 				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
@@ -141,7 +141,7 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			command.execute( { file } );
+			command.execute( { files: file } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -156,7 +156,7 @@ describe( 'ImageUploadCommand', () => {
 			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
-				command.execute( { file } );
+				command.execute( { files: file } );
 			} ).to.not.throw();
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );

@@ -40,7 +40,7 @@ export default class ImageUploadCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} options Options for the executed command.
-	 * @param {File|Array.<File>} options.file The image file or an array of image files to upload.
+	 * @param {File|Array.<File>} options.files The image file or an array of image files to upload.
 	 * @param {module:engine/model/position~Position} [options.insertAt] The position at which the images should be inserted.
 	 * If the position is not specified, the image will be inserted into the current selection.
 	 * Note: You can use the {@link module:widget/utils~findOptimalInsertionPosition} function
@@ -50,7 +50,7 @@ export default class ImageUploadCommand extends Command {
 		const editor = this.editor;
 
 		editor.model.change( writer => {
-			const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
+			const filesToUpload = Array.isArray( options.files ) ? options.files : [ options.files ];
 
 			// Reverse the order of items as the editor will place in reverse when using the same position.
 			for ( const file of filesToUpload.reverse() ) {
