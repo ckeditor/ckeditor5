@@ -22,7 +22,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework yourself.**
 
-	CKEditor 5 exposes a {@link builds/guides/integration/basic-api rich JavaScript API} which you can use to {@link builds/guides/integration/basic-api#creating-an-editor create} and {@link builds/guides/integration/basic-api#interacting-with-the-editor control it}.
+	CKEditor 5 offers {@link builds/guides/overview ready to use builds} which expose a {@link builds/guides/integration/basic-api rich JavaScript API} which you can use to {@link builds/guides/integration/basic-api#creating-an-editor create editors} and {@link builds/guides/integration/basic-api#interacting-with-the-editor control them}.
 
 ## Official integrations
 
@@ -32,6 +32,8 @@ There are two official integrations so far:
 * {@link builds/guides/frameworks/angular CKEditor 5 component for Angular 2+}
 
 Refer to their documentation to learn how to use them.
+
+We plan to provide more integrations with time. The next in the queue is [Vue.js](https://vuejs.org/) and we would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) what should we work on next.
 
 ## Compatibility with Electron
 
