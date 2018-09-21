@@ -1035,6 +1035,9 @@ describe( 'Schema', () => {
 				allowIn: '$root',
 				allowAttributes: [ 'name', 'title' ]
 			} );
+			schema.extend( '$text', {
+				allowAttributes: [ 'italic' ]
+			} );
 
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
@@ -1046,22 +1049,10 @@ describe( 'Schema', () => {
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
 					return true;
 				}
-			} );
 
-			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				// Disallow 'italic' on $text that has attribute 'bold'.
+				// Disallow 'italic' on $text that has 'bold' already.
 				if ( inTextWithBold( ctx ) && attributeName == 'italic' ) {
 					return false;
-				}
-
-				// Allow 'italic' on p>$text.
-				if ( ctx.endsWith( 'p $text' ) && attributeName == 'italic' ) {
-					return true;
-				}
-
-				// Allow 'italic' on $root>p.
-				if ( ctx.endsWith( '$root p' ) && attributeName == 'italic' ) {
-					return true;
 				}
 
 				function inTextWithBold( context ) {
@@ -1084,28 +1075,46 @@ describe( 'Schema', () => {
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
-			it( 'should check attributes of the selection (selection at the beginning of the text)', () => {
-				setData( model, '<p><$text bold="true">[]foo</$text></p>' );
-				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
-			} );
-
-			it( 'should check attributes of the selection (selection inside the text)', () => {
+			it( 'should check attributes of the selection (selection inside the $text[bold])', () => {
 				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
+
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+
+				model.change( writer => {
+					writer.removeSelectionAttribute( 'bold' );
+				} );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
 			} );
 
-			it( 'should check attributes of the selection (selection at the end of the text)', () => {
-				setData( model, '<p><$text bold="true">foo[]</$text></p>' );
-				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
-			} );
-
-			it( 'should check attributes of the selection (an attribute sets manually)', () => {
+			it( 'should check attributes of the selection (attribute set manually on selection)', () => {
 				setData( model, '<p>foo[]bar</p>' );
 
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+			} );
+
+			it( 'should pass all selection\'s attributes to checkAttribute()', done => {
+				schema.on( 'checkAttribute', ( evt, args ) => {
+					const context = args[ 0 ];
+					const attributeName = args[ 1 ];
+
+					expect( attributeName ).to.equal( 'italic' );
+					expect( Array.from( context.last.getAttributeKeys() ) ).to.deep.equal( [ 'bold', 'underline' ] );
+
+					done();
+				}, { priority: 'highest' } );
+
+				setData( model, '<p>foo[]bar</p>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+					writer.setSelectionAttribute( 'underline', true );
 				} );
 
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
