@@ -27,11 +27,10 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, ... ],
+		plugins: [ Table, TableToolbar, Bold, ... ],
 		toolbar: [ 'insertTable', ... ]
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
-			tableToolbar: [ 'blockQuote' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( ... )
@@ -69,7 +68,9 @@ And the following commands:
 * The `'splitTableCellVertically'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
 * The `'splitTableCellHorizontally'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbars for tables. The content toolbar shows up when a table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns. There is also the second toolbar for the whole table selected which you can configure via the {@link module:table/table~TableConfig#tableToolbar configuration}.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
+* The content toolbar shows up when table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
+* The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
 
 ## Contribute
 
