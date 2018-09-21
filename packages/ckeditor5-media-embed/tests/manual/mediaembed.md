@@ -45,3 +45,10 @@
 1. Hover the URL in the content (the tooltip should show up),
 1. Click the URL,
 1. A new browser tab should open with the media URL.
+
+### Media embed toolbar
+
+1. Click the media,
+1. The block quote button should be visible,
+1. Click the block quote button,
+1. The block quote should be applied to the media.

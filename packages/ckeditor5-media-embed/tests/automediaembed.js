@@ -76,7 +76,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -104,7 +104,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -115,7 +115,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -126,7 +126,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="http://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="http://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -137,7 +137,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="http://youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="http://youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -148,7 +148,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -159,7 +159,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -170,7 +170,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://twitter.com/ckeditor/status/1035181110140063749"></media>]'
+				'[<media url="https://twitter.com/ckeditor/status/1035181110140063749"></media>]'
 			);
 		} );
 
@@ -181,7 +181,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -192,7 +192,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -203,7 +203,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph></paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
 			);
 		} );
 
@@ -214,7 +214,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'<paragraph>For</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>For</paragraph>'
 			);
 		} );
 
@@ -393,7 +393,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
-					'<paragraph>ABCDEFGHIJ</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
 				);
 
 				done();
@@ -415,7 +415,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			setTimeout( () => {
 				expect( getData( editor.model ) ).to.equal(
-					'<paragraph>ABCDEFGHIJ</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+					'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>ABCDEFGHIJ</paragraph>'
 				);
 
 				done();

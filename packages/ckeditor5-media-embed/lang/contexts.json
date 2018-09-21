@@ -1,0 +1,6 @@
+{
+	"Media URL": "Label for the URL input in the Media Embed URL editing balloon.",
+	"The URL must not be empty.": "An error message that informs about an empty value in the URL input.",
+	"This media URL is not supported.": "An error message that informs about unsupported media URL.",
+	"Insert media": "Toolbar button tooltip for the Media Embed feature."
+}

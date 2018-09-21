@@ -8,7 +8,7 @@
  */
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const mediaSymbol = Symbol( 'isMedia' );
 
@@ -26,6 +26,16 @@ export function toMediaWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( mediaSymbol, true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
+}
+
+export function isMediaWidgetSelected( viewSelection ) {
+	const viewElement = viewSelection.getSelectedElement();
+
+	return !!( viewElement && isMediaWidget( viewElement ) );
+}
+
+export function isMediaWidget( viewElement ) {
+	return !!viewElement.getCustomProperty( mediaSymbol ) && isWidget( viewElement );
 }
 
 /**
