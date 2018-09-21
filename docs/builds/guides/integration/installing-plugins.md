@@ -123,7 +123,7 @@ ClassicEditor.defaultConfig = {
 Finally, bundle the build:
 
 ```bash
-npm run build
+yarn run build
 ```
 
 If everything worked, the editor build (which is available in the `build/` directory) should be updated.

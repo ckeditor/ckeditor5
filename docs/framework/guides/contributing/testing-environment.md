@@ -15,7 +15,7 @@ Each CKEditor package has its own tests suite (see for example the [engine's tes
 
 ## Running automated tests
 
-In order to run the automated tests use the `npm test [-- <args>...]` command.
+In order to run the automated tests use the `yarn run test [<args>...]` command.
 
 It accepts the following arguments (must be passed after the `--` option):
 
@@ -31,24 +31,24 @@ It accepts the following arguments (must be passed after the `--` option):
 Run all tests with the code coverage check of the [`ckeditor5-core`](https://github.com/ckeditor/ckeditor5-core) package:
 
 ```
-npm test -- -c --files=core
+yarn run test -c --files=core
 ```
 
 Run and watch the [engine's `view` namespace tests](https://github.com/ckeditor/ckeditor5-engine/tree/master/tests/view) and all the tests in [`ckeditor5-typing`](https://github.com/ckeditor/ckeditor5-typing):
 
 ```
-npm test -- -cw --files=engine/view,typing
+yarn run test -cw --files=engine/view,typing
 ```
 
 Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ckeditor/ckeditor5-basic-styles) package:
 
 ```
-npm test -- -cw --files=basic-styles/bold*.js
+yarn run test -cw --files=basic-styles/bold*.js
 ```
 
 ## Running manual tests
 
-In order to start the manual tests server use the `npm run manual` task.
+In order to start the manual tests server use the `yarn run manual` task.
 
 The task accepts the `--source-map` (alias `-s`) option.
 

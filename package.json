@@ -73,7 +73,6 @@
     "eslint-config-ckeditor5": "^1.0.7",
     "glob": "^7.1.2",
     "husky": "^0.14.3",
-    "lerna": "^2.2.0",
     "lint-staged": "^7.0.0",
     "mgit2": "^0.8.0",
     "mini-css-extract-plugin": "^0.4.0",
@@ -126,5 +125,8 @@
     "build/**",
     "coverage/**",
     "packages/**"
+  ],
+  "workspaces": [
+    "packages/*"
   ]
 }

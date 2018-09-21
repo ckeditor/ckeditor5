@@ -10,7 +10,7 @@
 'use strict';
 
 // In order to use the same version for all packages (including builds and ckeditor5 itself), you can call:
-// npm run changelog [newVersion]
+// yarn run changelog [newVersion]
 
 const devEnv = require( '@ckeditor/ckeditor5-dev-env' );
 const commonOptions = {

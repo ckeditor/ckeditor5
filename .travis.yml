@@ -7,6 +7,8 @@ addons:
     packages:
       - google-chrome-stable
 language: node_js
+cache:
+  yarn: true
 node_js:
   - "8"
 cache:
@@ -14,18 +16,16 @@ cache:
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-  - npm config set package-lock false
-  - npm i -g npm@^5.7.1
+  - npm i -g yarn
 install:
-  - npm install
-  - npm install mgit2 lerna
+  - yarn add mgit2 --ignore-workspace-root-check
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
-  - lerna bootstrap
+  - yarn
 script:
-  - npm t -- --reporter=dots
-  - npm run docs:api -- --validate-only
+  - yarn run test --reporter=dots
+  - yarn run docs:api --validate-only
   - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-  	  travis_wait npm run docs:build-and-publish-nightly;
+  	  travis_wait yarn run docs:build-and-publish-nightly;
     fi'
 notifications:
   slack:

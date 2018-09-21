@@ -161,7 +161,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 	And use it via:
 
 	```bash
-	npm run build
+	yarn run build
 	```
 
 	npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install `webpack-cli` globally.
