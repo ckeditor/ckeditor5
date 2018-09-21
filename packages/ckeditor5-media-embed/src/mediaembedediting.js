@@ -156,7 +156,7 @@ export default class MediaEmbedEditing extends Plugin {
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;
-		const renderMediaPreview = editor.config.get( 'mediaEmbed.mediaPreviewsInData' );
+		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
 		const registry = this.registry;
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );

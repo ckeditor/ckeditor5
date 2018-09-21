@@ -55,7 +55,7 @@ ClassicEditor
 
 ### Data output format
 
-The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} option.
+The data output format of the feature can be configured using the {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} option.
 
 <info-box info>
 	This option does not change how media are displayed inside the editor – the previewable ones will still be displayed with previews. It only affects the output data (see below).
@@ -73,7 +73,7 @@ By default, the media embed feature outputs semantic `<oembed>` tags for preview
 
 #### Including previews in data
 
-Optionally, by setting `mediaEmbed.mediaPreviewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
+Optionally, by setting `mediaEmbed.previewsInData` to `true` you can configure the media embed feature to output media in the same way they look in the editor, this is, if this media is "previewable", the media preview (HTML) is saved to the database:
 
 ```html
 <figure class="media">

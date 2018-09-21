@@ -102,7 +102,7 @@ export default class MediaEmbed extends Plugin {
  * preview of a media identified by a certain id or a hash. When not defined, the media embed feature
  * will use a generic media representation in the view and output data.
  * Note that when
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`}
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`}
  * is `true`, the rendering function **will always** be used for the media in the editor data output.
  */
 
@@ -156,7 +156,7 @@ export default class MediaEmbed extends Plugin {
  * only the most common are included.
  *
  * **Note**: Media without are always represented in the data using the "semantic" markup. See
- * {@link module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData `config.mediaEmbed.mediaPreviewsInData`} to
+ * {@link module:media-embed/mediaembed~MediaEmbedConfig#previewsInData `config.mediaEmbed.previewsInData`} to
  * learn more about possible data outputs.
  *
  * **Note:**: The priority of media providers corresponds to the order of configuration. The first provider
@@ -253,9 +253,9 @@ export default class MediaEmbed extends Plugin {
  *		</figure>
  *
  * **Note:** Preview–less media are always represented in the data using the "semantic" markup
- * regardless of the value of the `mediaPreviewsInData`. Learn more about different kinds of media
+ * regardless of the value of the `previewsInData`. Learn more about different kinds of media
  * in the {@link module:media-embed/mediaembed~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
  * configuration description.
  *
- * @member {Boolean} [module:media-embed/mediaembed~MediaEmbedConfig#mediaPreviewsInData=false]
+ * @member {Boolean} [module:media-embed/mediaembed~MediaEmbedConfig#previewsInData=false]
  */
