@@ -12,12 +12,12 @@ import { isTableContentSelected, isTableWidgetSelected } from './utils';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
- * The table toolbar class. It creates toolbars for the table feature and its content (for now only for a table cell).
+ * The table toolbar class. It creates toolbars for the table feature and its content (for now only for a table cell content).
  *
- * Table toolbar shows up when the table widget is selected. Its components (e.g. buttons) are created based on the
+ * Table toolbar shows up when a table widget is selected. Its components (e.g. buttons) are created based on the
  * {@link module:table/table~TableConfig#toolbar `table.tableToolbar` configuration option}.
  *
- * Table content toolbar shows up when the table cell is selected. It creates its component based on the
+ * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
  * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
  *
  * Note that the old {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option} is deprecated
