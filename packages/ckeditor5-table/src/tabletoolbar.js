@@ -8,17 +8,20 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { isTableContentSelected } from './utils';
+import { isTableContentSelected, isTableWidgetSelected } from './utils';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
- * The table toolbar class. It creates a table toolbar that shows up when the table content is selected.
+ * The table toolbar class. It creates toolbars for the table feature and its content (for now only for a table cell content).
  *
- * Instances of toolbar components (e.g. buttons) are created using the editor's
- * {@link module:ui/componentfactory~ComponentFactory component factory}
- * based on the {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option}.
+ * Table toolbar shows up when a table widget is selected. Its components (e.g. buttons) are created based on the
+ * {@link module:table/table~TableConfig#toolbar `table.tableToolbar` configuration option}.
  *
- * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} plugin.
+ * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
+ * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
+ *
+ * Note that the old {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option} is deprecated
+ * and will be removed in the next major release.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -44,16 +47,49 @@ export default class TableToolbar extends Plugin {
 		const editor = this.editor;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		widgetToolbarRepository.register( 'table', {
-			items: editor.config.get( 'table.toolbar' ) || [],
-			visibleWhen: isTableContentSelected,
-		} );
+		const tableContentToolbarItems = editor.config.get( 'table.contentToolbar' );
+		const deprecatedTableContentToolbarItems = editor.config.get( 'table.toolbar' );
+
+		const tableToolbarItems = editor.config.get( 'table.tableToolbar' );
+
+		if ( deprecatedTableContentToolbarItems ) {
+			// eslint-disable-next-line
+			console.warn(
+				'`config.table.toolbar` is deprecated and will be removed in the next major release.' +
+				' Use `config.table.contentToolbar` instead.'
+			);
+		}
+
+		if ( tableContentToolbarItems || deprecatedTableContentToolbarItems ) {
+			widgetToolbarRepository.register( 'tableContent', {
+				items: tableContentToolbarItems || deprecatedTableContentToolbarItems,
+				visibleWhen: isTableContentSelected,
+			} );
+		}
+
+		if ( tableToolbarItems ) {
+			widgetToolbarRepository.register( 'table', {
+				items: tableToolbarItems,
+				visibleWhen: isTableWidgetSelected,
+			} );
+		}
 	}
 }
 
 /**
- * Items to be placed in the table toolbar.
- * This option is used by the {@link module:table/tabletoolbar~TableToolbar} feature.
+ * Items to be placed in the table content toolbar.
+ *
+ * **Note:** This is a deprecated configuration option! Use {@link module:table/table~TableConfig#contentToolbar} instead.
+ *
+ * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @deprecated
+ * @member {Array.<String>} module:table/table~TableConfig#toolbar
+ */
+
+/**
+ * Items to be placed in the table content toolbar.
+ * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar working.
  *
  * Assuming that you use the {@link module:table/tableui~TableUI} feature, the following toolbar items will be available
  * in {@link module:ui/componentfactory~ComponentFactory}:
@@ -65,7 +101,7 @@ export default class TableToolbar extends Plugin {
  * You can thus configure the toolbar like this:
  *
  *		const tableConfig = {
- *			toolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
+ *			contentToolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
  *		};
  *
  * Of course, the same buttons can also be used in the
@@ -73,5 +109,23 @@ export default class TableToolbar extends Plugin {
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>} module:table/table~TableConfig#toolbar
+ * @member {Array.<String>} module:table/table~TableConfig#contentToolbar
+ */
+
+/**
+ * Items to be placed in the table toolbar.
+ * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar working.
+ *
+ * You can thus configure the toolbar like this:
+ *
+ *		const tableConfig = {
+ *			tableToolbar: [ 'blockQuote' ]
+ *		};
+ *
+ * Of course, the same buttons can also be used in the
+ * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+ *
+ * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>} module:table/table~TableConfig#tableToolbar
  */
