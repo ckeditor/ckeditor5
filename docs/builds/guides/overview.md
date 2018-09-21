@@ -60,7 +60,7 @@ To try it out online, check the {@link examples/builds/balloon-editor balloon ed
 
 The document editor is focused on rich text editing experience similar to the native word processors. It works best for creating documents which are usually later printed or exported to PDF files.
 
-{@img assets/img/editor-document.png 800 Screenshot of the user interface of the document editor.}
+{@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
 To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link builds/guides/quick-start#document-editor Quick start} to start using it.
 
