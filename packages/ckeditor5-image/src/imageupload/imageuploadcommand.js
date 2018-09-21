@@ -7,6 +7,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * @module image/imageupload/imageuploadcommand
@@ -25,14 +26,8 @@ export default class ImageUploadCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
-		const position = selection.getFirstPosition();
-		let parent = position.parent;
 
-		if ( parent != parent.root ) {
-			parent = parent.parent;
-		}
-
-		this.isEnabled = schema.checkChild( parent, 'image' );
+		this.isEnabled = isImageAllowedInParent( selection, schema ) && checkSelectionWithImage( selection );
 	}
 
 	/**
@@ -52,8 +47,7 @@ export default class ImageUploadCommand extends Command {
 		editor.model.change( writer => {
 			const filesToUpload = Array.isArray( options.files ) ? options.files : [ options.files ];
 
-			// Reverse the order of items as the editor will place in reverse when using the same position.
-			for ( const file of filesToUpload.reverse() ) {
+			for ( const file of filesToUpload ) {
 				uploadImage( writer, editor, file, options.insertAt );
 			}
 		} );
@@ -86,7 +80,7 @@ function uploadImage( writer, editor, file, insertAt ) {
 	if ( insertAt ) {
 		insertAtSelection = new ModelSelection( [ new ModelRange( insertAt ) ] );
 	} else {
-		insertAtSelection = doc.selection;
+		insertAtSelection = findOptimalInsertionPosition( doc.selection );
 	}
 
 	editor.model.insertContent( imageElement, insertAtSelection );
@@ -95,4 +89,36 @@ function uploadImage( writer, editor, file, insertAt ) {
 	if ( imageElement.parent ) {
 		writer.setSelection( imageElement, 'on' );
 	}
+}
+
+// Checks if image is allowed by schema in optimal insertion parent.
+function isImageAllowedInParent( selection, schema ) {
+	const parent = getInsertImageParent( selection );
+
+	return schema.checkChild( parent, 'image' );
+}
+
+// Additional check for when the command should be disabled:
+// - selection is on image
+// - selection is inside image (image caption)
+function checkSelectionWithImage( selection ) {
+	const selectedElement = selection.getSelectedElement();
+
+	const isSelectionOnImage = !!selectedElement && selectedElement.is( 'image' );
+	const isSelectionInImage = !![ ...selection.focus.parent.getAncestors() ].find( ancestor => ancestor.name == 'image' );
+
+	return !isSelectionOnImage && !isSelectionInImage;
+}
+
+// Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
+function getInsertImageParent( selection ) {
+	const insertAt = findOptimalInsertionPosition( selection );
+
+	let parent = insertAt.parent;
+
+	if ( !parent.is( '$root' ) ) {
+		parent = parent.parent;
+	}
+
+	return parent;
 }

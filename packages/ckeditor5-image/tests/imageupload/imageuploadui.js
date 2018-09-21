@@ -142,8 +142,8 @@ describe( 'ImageUploadUI', () => {
 
 		expect( getModelData( model ) ).to.equal(
 			'<paragraph>foo</paragraph>' +
-			`[<image uploadId="${ id1 }" uploadStatus="reading"></image>]` +
-			`<image uploadId="${ id2 }" uploadStatus="reading"></image>` +
+			`<image uploadId="${ id1 }" uploadStatus="reading"></image>` +
+			`[<image uploadId="${ id2 }" uploadStatus="reading"></image>]` +
 			'<paragraph>bar</paragraph>'
 		);
 	} );

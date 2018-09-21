@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import { isImageType } from './utils';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * The image upload button plugin.
@@ -52,9 +51,7 @@ export default class ImageUploadUI extends Plugin {
 				const imagesToUpload = Array.from( files ).filter( isImageType );
 
 				if ( imagesToUpload.length ) {
-					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
-
-					editor.execute( 'imageUpload', { files: imagesToUpload, insertAt } );
+					editor.execute( 'imageUpload', { files: imagesToUpload } );
 				}
 			} );
 

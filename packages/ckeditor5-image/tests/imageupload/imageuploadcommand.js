@@ -58,7 +58,17 @@ describe( 'ImageUploadCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			setModelData( model, '[]' );
+			model.enqueueChange( 'transparent', () => {
+				setModelData( model, '[]' );
+
+				command.refresh();
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		it( 'should be true when the selection is in empty block', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
 			expect( command.isEnabled ).to.be.true;
 		} );
 
@@ -76,21 +86,41 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection in a limit element', () => {
+		it( 'should be false when the selection is on other image', () => {
+			setModelData( model, '[<image></image>]' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when the selection is inside other image', () => {
+			model.schema.register( 'caption', {
+				allowIn: 'image',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'caption', view: 'figcaption' } ) );
+			setModelData( model, '<image><caption>[]</caption></image>' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when schema disallows image', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.register( 'limit', { allowIn: 'block', isLimit: true } );
-			model.schema.extend( '$text', { allowIn: 'limit' } );
-
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			// Block image in block.
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+					return false;
+				}
+			} );
 			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'limit', view: 'limit' } ) );
 
-			setModelData( model, '<block><limit>foo[]</limit></block>' );
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
 			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should insert image at selection position (includes deleting selected content)', () => {
+		it( 'should insert image at selection position as other widgets', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
@@ -98,7 +128,7 @@ describe( 'ImageUploadCommand', () => {
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
-				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
+				.to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert directly at specified position (options.insertAt)', () => {
