@@ -1035,6 +1035,9 @@ describe( 'Schema', () => {
 				allowIn: '$root',
 				allowAttributes: [ 'name', 'title' ]
 			} );
+			schema.extend( '$text', {
+				allowAttributes: [ 'italic' ]
+			} );
 
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
@@ -1045,6 +1048,15 @@ describe( 'Schema', () => {
 				// Allow 'bold' on $root>p.
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
 					return true;
+				}
+
+				// Disallow 'italic' on $text that has 'bold' already.
+				if ( inTextWithBold( ctx ) && attributeName == 'italic' ) {
+					return false;
+				}
+
+				function inTextWithBold( context ) {
+					return context.endsWith( '$text' ) && context.last.getAttribute( 'bold' );
 				}
 			} );
 		} );
@@ -1061,6 +1073,51 @@ describe( 'Schema', () => {
 
 				setData( model, '[]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
+			} );
+
+			it( 'should check attributes of the selection (selection inside the $text[bold])', () => {
+				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+
+				model.change( writer => {
+					writer.removeSelectionAttribute( 'bold' );
+				} );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
+			} );
+
+			it( 'should check attributes of the selection (attribute set manually on selection)', () => {
+				setData( model, '<p>foo[]bar</p>' );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+				} );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
+			} );
+
+			it( 'should pass all selection\'s attributes to checkAttribute()', done => {
+				schema.on( 'checkAttribute', ( evt, args ) => {
+					const context = args[ 0 ];
+					const attributeName = args[ 1 ];
+
+					expect( attributeName ).to.equal( 'italic' );
+					expect( Array.from( context.last.getAttributeKeys() ) ).to.deep.equal( [ 'bold', 'underline' ] );
+
+					done();
+				}, { priority: 'highest' } );
+
+				setData( model, '<p>foo[]bar</p>' );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'bold', true );
+					writer.setSelectionAttribute( 'underline', true );
+				} );
+
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
 
@@ -1101,6 +1158,11 @@ describe( 'Schema', () => {
 			it( 'should return true when checking element when attribute is already present', () => {
 				setData( model, '[<figure name="figure" title="title"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
+			} );
+
+			it( 'should check attributes of text', () => {
+				setData( model, '<p><$text bold="true">f[o]o</$text></p>' );
+				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
 	} );
