@@ -79,7 +79,7 @@ BalloonEditor.defaultConfig = {
 		]
 	},
 	table: {
-		toolbar: [
+		contentToolbar: [
 			'tableColumn',
 			'tableRow',
 			'mergeTableCells'
