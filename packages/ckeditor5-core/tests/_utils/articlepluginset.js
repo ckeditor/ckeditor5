@@ -22,7 +22,10 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 /**
  * Set of plugins which create a simple article editor.
@@ -49,7 +52,10 @@ export default class ArticlePluginSet extends Plugin {
 			Italic,
 			Link,
 			List,
-			Paragraph
+			MediaEmbed,
+			Paragraph,
+			Table,
+			TableToolbar
 		];
 	}
 }

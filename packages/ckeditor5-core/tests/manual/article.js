@@ -12,9 +12,29 @@ import ArticlePluginSet from '../_utils/articlepluginset';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
 		}
 	} )
 	.then( editor => {
