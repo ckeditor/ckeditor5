@@ -46,8 +46,9 @@ To insert a new link at the current position, use the following snippet:
 
 ```js
 editor.model.change( writer => {
-    const insertPosition = editor.model.document.selection.getFirstPosition();
-    writer.insertText( 'CKEditor 5 rocks!', { linkHref: 'https://ckeditor.com/' }, insertPosition );
+	const insertPosition = editor.model.document.selection.getFirstPosition();
+
+	writer.insertText( 'CKEditor 5 rocks!', { linkHref: 'https://ckeditor.com/' }, insertPosition );
 } );
 ```
 
@@ -55,7 +56,7 @@ And to insert some plain text, you can use a slightly shorter one:
 
 ```js
 editor.model.change( writer => {
-    writer.insertText( 'Plain text', editor.model.document.selection.getFirstPosition() );
+	writer.insertText( 'Plain text', editor.model.document.selection.getFirstPosition() );
 } );
 ```
 
@@ -68,7 +69,7 @@ const content = '<p>A paragraph with <a href="https://ckeditor.com">some link</a
 const viewFragment = editor.data.processor.toView( content );
 const modelFragment = editor.data.toModel( viewFragment );
 
-editor.model.insertContent( modelFragment, editor.model.document.selection );
+editor.model.insertContent( modelFragment );
 ```
 
 ## What happened to the global `window.CKEDITOR`? How to list all instances of the editor?
@@ -77,13 +78,17 @@ By default, CKEditor 5 has no global registry of editor instances. But if necess
 
 ## How to enable image drag&drop and upload? Where should I start?
 
-Image features are enabled by default in all editor builds (also the image upload). See the {@link features/image Image} and {@link features/image-upload Image upload} feature guides to learn more.
+The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters ({@link features/image-upload#easy-image Easy Image} or {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig CKFinder adapter}) or {@link module:upload/filerepository~UploadAdapter implement and use your own upload adapter}.
+
+See the {@link features/image Image} and {@link features/image-upload Image upload} feature guides to learn more.
 
 ## How to use CKEditor 5 with frameworks (Angular, React, etc.)?
 
-The beta versions of official [Angular](https://github.com/ckeditor/ckeditor5-angular) and [React](https://github.com/ckeditor/ckeditor5-react) integrations are already available to try out and test. Your feedback will be most welcome!
+For the full list of official integrations see the {@link builds/guides/frameworks/overview#official-integrations "Official integrations"} section.
 
-We will be working on further integrations (and documentation) soon. Meanwhile, please refer to the dedicated [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/599) for more information.
+If an official integration for the framework of your choice does not exist yet, make sure to read the {@link builds/guides/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and ready to use builds which make it possible to use CKEditor 5 with whichever framework you need.
+
+We plan to provide more official integrations with time. [Your feedback on what should we work on next](https://github.com/ckeditor/ckeditor5/issues/1002) will be most welcome!
 
 ## How to get a fully–featured editor build (a.k.a. CKEditor 4 "Full Package")?
 
