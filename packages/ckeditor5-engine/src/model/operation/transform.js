@@ -1247,6 +1247,56 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 		}
 	}
 
+	// Case 2:
+	//
+	// Same merge source position but different target position.
+	//
+	// This can happen during collaboration. For example, if one client merged a paragraph to the previous paragraph
+	// and the other person removed that paragraph and merged the same paragraph to something before:
+	//
+	// Client A:
+	// <p>Foo</p><p>Bar</p><p>[]Xyz</p>
+	// <p>Foo</p><p>BarXyz</p>
+	//
+	// Client B:
+	// <p>Foo</p>[<p>Bar</p>]<p>Xyz</p>
+	// <p>Foo</p><p>[]Xyz</p>
+	// <p>FooXyz</p>
+	//
+	// In this case we need to decide where finally "Xyz" will land:
+	//
+	// <p>FooXyz</p>               graveyard: <p>Bar</p>
+	// <p>Foo</p>                  graveyard: <p>BarXyz</p>
+	//
+	// Let's move it in a way so that a merge operation that does not target to graveyard is more important so that
+	// nodes does not end up in the graveyard. It makes sense. Both for Client A and for Client B "Xyz" finally did not
+	// end up in the graveyard (see above).
+	//
+	// If neither or both operations point to graveyard, then let `aIsStrong` decide.
+	//
+	if ( a.sourcePosition.isEqual( b.sourcePosition ) && !a.targetPosition.isEqual( b.targetPosition ) && !context.bWasUndone ) {
+		const aToGraveyard = a.targetPosition.root.rootName == '$graveyard';
+		const bToGraveyard = b.targetPosition.root.rootName == '$graveyard';
+
+		// If `aIsWeak` it means that `a` points to graveyard while `b` doesn't. Don't move nodes then.
+		const aIsWeak = aToGraveyard && !bToGraveyard;
+
+		// If `bIsWeak` it means that `b` points to graveyard while `a` doesn't. Force moving nodes then.
+		const bIsWeak = bToGraveyard && !aToGraveyard;
+
+		// Force move if `b` is weak or neither operation is weak but `a` is stronger through `context.aIsStrong`.
+		const forceMove = bIsWeak || ( !aIsWeak && context.aIsStrong );
+
+		if ( forceMove ) {
+			const sourcePosition = b.targetPosition._getTransformedByMergeOperation( b );
+			const targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
+
+			return [ new MoveOperation( sourcePosition, a.howMany, targetPosition, 0 ) ];
+		} else {
+			return [ new NoOperation( 0 ) ];
+		}
+	}
+
 	// The default case.
 	//
 	if ( a.sourcePosition.hasSameParentAs( b.targetPosition ) ) {

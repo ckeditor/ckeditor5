@@ -116,6 +116,18 @@ describe( 'transform', () => {
 
 				expectClients( '<paragraph>For</paragraph>' );
 			} );
+
+			it( 'merged elements and some text', () => {
+				john.setData( '<paragraph>Foo</paragraph><paragraph></paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>F[oo</paragraph><paragraph></paragraph><paragraph>Ba]r</paragraph>' );
+
+				john.merge();
+				kate.delete();
+
+				syncClients();
+
+				expectClients( '<paragraph>Fr</paragraph>' );
+			} );
 		} );
 
 		describe( 'by wrap', () => {
