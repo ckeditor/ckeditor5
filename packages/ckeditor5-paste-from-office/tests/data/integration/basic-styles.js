@@ -240,7 +240,7 @@ describe( 'Basic Styles – integration', () => {
 	//		<p><s>Third</s> line <b>styling, <i>space on e</i>nd </b></p>
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles multiline', () => {
-		it( 'pastes in the empty editor', () => {
+		it.skip( 'pastes in the empty editor', () => {
 			expectPaste( editor, multipleStylesMultiline, '<paragraph>Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></paragraph>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
@@ -249,7 +249,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text></paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the paragraph', () => {
+		it.skip( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<paragraph>More Line ' +
@@ -260,7 +260,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text> text</paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the different block context', () => {
+		it.skip( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<heading1>More Line ' +
@@ -271,7 +271,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text> text</paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the inline styling context', () => {
+		it.skip( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<paragraph><$text bold="true">Bol</$text>Line ' +
