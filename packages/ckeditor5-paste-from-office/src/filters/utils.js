@@ -76,7 +76,7 @@ function extractStyles( htmlDocument ) {
 	const styleTags = htmlDocument.getElementsByTagName( 'style' );
 
 	for ( const style of styleTags ) {
-		if ( style.sheet && style.sheet.rules && style.sheet.rules.length ) {
+		if ( style.sheet && style.sheet.cssRules && style.sheet.cssRules.length ) {
 			styles.push( style.sheet );
 			stylesString.push( style.innerHTML );
 		}

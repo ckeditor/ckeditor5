@@ -12,21 +12,21 @@ import { parseHtml } from '../../src/filters/utils';
 describe( 'Filters – utils', () => {
 	describe( 'parseHtml', () => {
 		it( 'correctly parses HTML with body and one style tag', () => {
-			const html = '<head><style>p { color: red; } a { border: none; }</style></head><body><p>Foo Bar</p></body>';
+			const html = '<head><style>p { color: red; } a { font-size: 12px; }</style></head><body><p>Foo Bar</p></body>';
 			const { body, bodyString, styles, stylesString } = parseHtml( html );
 
 			expect( body ).to.instanceof( DocumentFragment );
-			expect( body.childCount ).to.equal( 1 );
+			expect( body.childCount ).to.equal( 1, 'body.childCount' );
 
 			expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
 
-			expect( styles.length ).to.equal( 1 );
+			expect( styles.length ).to.equal( 1, 'styles.length' );
 			expect( styles[ 0 ] ).to.instanceof( CSSStyleSheet );
 			expect( styles[ 0 ].cssRules.length ).to.equal( 2 );
 			expect( styles[ 0 ].cssRules[ 0 ].style.color ).to.equal( 'red' );
-			expect( styles[ 0 ].cssRules[ 1 ].style.border ).to.equal( 'none' );
+			expect( styles[ 0 ].cssRules[ 1 ].style[ 'font-size' ] ).to.equal( '12px' );
 
-			expect( stylesString ).to.equal( 'p { color: red; } a { border: none; }' );
+			expect( stylesString ).to.equal( 'p { color: red; } a { font-size: 12px; }' );
 		} );
 
 		it( 'correctly parses HTML with body contents only', () => {
