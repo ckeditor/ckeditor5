@@ -13,6 +13,10 @@ The {@link module:table/table~Table} feature offers table creation and editing t
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
 
 ```bash
@@ -36,10 +40,6 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
-
-<info-box info>
-	At the moment by default the table feature is available only in the {@link builds/guides/overview#document-editor document editor build}. Read more about {@link builds/guides/integration/installing-plugins installing plugins} if you want to add it to other editor builds.
-</info-box>
 
 ## Common API
 
