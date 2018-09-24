@@ -6,17 +6,17 @@
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { paragraphsToLists } from '../../src/filters/list';
+import { transformParagraphsToLists } from '../../src/filters/list';
 
 describe( 'Filters – list', () => {
 	const htmlDataProcessor = new HtmlDataProcessor();
 
-	describe( 'paragraphsToLists', () => {
+	describe( 'transformParagraphsToLists', () => {
 		it( 'replaces list-like elements with semantic lists', () => {
 			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+			const result = transformParagraphsToLists( view, '' );
 
 			expect( result.childCount ).to.equal( 1 );
 			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
@@ -27,7 +27,7 @@ describe( 'Filters – list', () => {
 			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
+			const result = transformParagraphsToLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
 
 			expect( result.childCount ).to.equal( 1 );
 			expect( result.getChild( 0 ).name ).to.equal( 'ul' );
@@ -38,7 +38,7 @@ describe( 'Filters – list', () => {
 			const html = '<h1>H1</h1><p>Foo Bar</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+			const result = transformParagraphsToLists( view, '' );
 
 			expect( result.childCount ).to.equal( 2 );
 			expect( stringify( result ) ).to.equal( html );
@@ -48,7 +48,7 @@ describe( 'Filters – list', () => {
 			const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 			const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+			const result = transformParagraphsToLists( view, '' );
 
 			expect( result.childCount ).to.equal( 1 );
 			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
@@ -58,7 +58,7 @@ describe( 'Filters – list', () => {
 		it( 'handles empty body correctly', () => {
 			const view = htmlDataProcessor.toView( '' );
 
-			const result = paragraphsToLists( view, '' );
+			const result = transformParagraphsToLists( view, '' );
 
 			expect( result.childCount ).to.equal( 0 );
 			expect( stringify( result ) ).to.equal( '' );

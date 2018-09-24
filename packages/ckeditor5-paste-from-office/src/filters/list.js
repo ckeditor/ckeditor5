@@ -4,7 +4,7 @@
  */
 
 /**
- * @module pastefromoffice/filters/list
+ * @module paste-from-office/filters/list
  */
 
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -26,7 +26,7 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} The view
  * structure instance with list-like elements transformed into semantic lists.
  */
-export function paragraphsToLists( bodyView, stylesString ) {
+export function transformParagraphsToLists( bodyView, stylesString ) {
 	const firstChild = bodyView.getChild( 0 );
 
 	if ( firstChild ) {
@@ -36,25 +36,6 @@ export function paragraphsToLists( bodyView, stylesString ) {
 
 	return bodyView;
 }
-
-// Writer used for View elements manipulation.
-const writer = new UpcastWriter();
-
-// Matcher for finding list-like elements.
-const listMatcher = new Matcher( {
-	name: /^p|h\d+$/,
-	styles: {
-		'mso-list': /.*/
-	}
-} );
-
-// Matcher for finding `span` elements holding lists numbering/bullets.
-const listBulletMatcher = new Matcher( {
-	name: 'span',
-	styles: {
-		'mso-list': 'Ignore'
-	}
-} );
 
 // Finds all list-like nodes starting from a given position.
 //
@@ -68,8 +49,17 @@ const listBulletMatcher = new Matcher( {
 function findAllListNodes( startPosition ) {
 	const treeWalker = new TreeWalker( { startPosition, ignoreElementEnd: true } );
 
+	// Matcher for finding list-like elements.
+	const listMatcher = new Matcher( {
+		name: /^p|h\d+$/,
+		styles: {
+			'mso-list': /.*/
+		}
+	} );
+
 	// Find all list nodes.
 	const listNodes = [];
+
 	for ( const value of treeWalker ) {
 		if ( value.type === 'elementStart' && listMatcher.match( value.item ) ) {
 			const itemData = getListItemData( value.item );
@@ -93,6 +83,8 @@ function findAllListNodes( startPosition ) {
 // @param {String} styles CSS styles which may contain additional data about lists format.
 function createLists( listItems, styles ) {
 	if ( listItems.length ) {
+		const writer = new UpcastWriter();
+
 		let currentList = null;
 		let previousListItem = null;
 
@@ -105,7 +97,7 @@ function createLists( listItems, styles ) {
 				writer.insertChild( listNode.parent.getChildIndex( listNode ), currentList, listNode.parent );
 			}
 
-			removeBulletElement( listNode );
+			removeBulletElement( listNode, writer );
 
 			writer.appendChild( listNode, currentList );
 			writer.rename( 'li', listNode );
@@ -185,11 +177,20 @@ function findListType( listItem, styles ) {
 // Removes span with a numbering/bullet from the given list element.
 //
 // @param {module:engine/view/element~Element} listElement
-function removeBulletElement( listElement ) {
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
+function removeBulletElement( listElement, writer ) {
+	// Matcher for finding `span` elements holding lists numbering/bullets.
+	const bulletMatcher = new Matcher( {
+		name: 'span',
+		styles: {
+			'mso-list': 'Ignore'
+		}
+	} );
+
 	const treeWalker = new TreeWalker( { startPosition: Position.createBefore( listElement.getChild( 0 ) ), ignoreElementEnd: true } );
 
 	for ( const value of treeWalker ) {
-		if ( value.type === 'elementStart' && listBulletMatcher.match( value.item ) ) {
+		if ( value.type === 'elementStart' && bulletMatcher.match( value.item ) ) {
 			writer.remove( value.item );
 		}
 	}
