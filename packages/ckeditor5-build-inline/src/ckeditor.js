@@ -79,7 +79,7 @@ InlineEditor.defaultConfig = {
 		]
 	},
 	table: {
-		toolbar: [
+		contentToolbar: [
 			'tableColumn',
 			'tableRow',
 			'mergeTableCells'
