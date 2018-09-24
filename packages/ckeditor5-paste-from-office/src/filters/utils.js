@@ -73,7 +73,7 @@ function documentToView( htmlDocument ) {
 function extractStyles( htmlDocument ) {
 	const styles = [];
 	const stylesString = [];
-	const styleTags = htmlDocument.getElementsByTagName( 'style' );
+	const styleTags = Array.from( htmlDocument.getElementsByTagName( 'style' ) );
 
 	for ( const style of styleTags ) {
 		if ( style.sheet && style.sheet.cssRules && style.sheet.cssRules.length ) {
