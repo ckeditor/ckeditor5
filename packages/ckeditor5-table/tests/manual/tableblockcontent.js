@@ -19,7 +19,7 @@ ClassicEditor
 			'alignment', '|', 'undo', 'redo'
 		],
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( editor => {
