@@ -88,7 +88,7 @@ function findAllListItemLikeElements( documentFragment ) {
 	return listLikeItems;
 }
 
-// Checks list item style based on a provided CSS.
+// Extracts list item style from the provided CSS.
 //
 // List item style is extracted from CSS stylesheet. Each list with its specific style attribute
 // value (`mso-list:l1 level1 lfo1`) has its dedicated properties in a CSS stylesheet defined with a selector like:
