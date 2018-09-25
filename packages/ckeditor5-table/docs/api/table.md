@@ -8,6 +8,10 @@ category: api-reference
 
 This package implements the table feature for CKEditor 5.
 
+## Demo
+
+Check out the {@link features/table#demo demo in the Table feature} guide.
+
 ## Documentation
 
 See the {@link features/table Table feature} guide and the documentation for the following plugins:
