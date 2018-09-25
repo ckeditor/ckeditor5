@@ -12,6 +12,10 @@ CKEditor 5 highlight feature
 
 This package implements text highlight support for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Highlight feature](https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-highlight` package](https://ckeditor.com/docs/ckeditor5/latest/api/highlight.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
