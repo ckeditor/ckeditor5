@@ -100,6 +100,23 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
+		it( 'should be false when the selection is on other object', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			setModelData( model, '[<object></object>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when the selection is inside other object', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			model.schema.extend( '$text', { allowIn: 'object' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			setModelData( model, '<object>[]</object>' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
 		it( 'should be false when schema disallows image', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			model.schema.extend( 'paragraph', { allowIn: 'block' } );

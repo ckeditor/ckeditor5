@@ -25,7 +25,7 @@ export default class ImageUploadCommand extends Command {
 		const selection = model.document.selection;
 		const schema = model.schema;
 
-		this.isEnabled = isImageAllowedInParent( selection, schema ) && checkSelectionWithImage( selection );
+		this.isEnabled = isImageAllowedInParent( selection, schema ) && checkSelectionWithObject( selection, schema );
 	}
 
 	/**
@@ -86,13 +86,13 @@ function isImageAllowedInParent( selection, schema ) {
 // Additional check for when the command should be disabled:
 // - selection is on image
 // - selection is inside image (image caption)
-function checkSelectionWithImage( selection ) {
+function checkSelectionWithObject( selection, schema ) {
 	const selectedElement = selection.getSelectedElement();
 
-	const isSelectionOnImage = !!selectedElement && selectedElement.is( 'image' );
-	const isSelectionInImage = !![ ...selection.focus.parent.getAncestors() ].find( ancestor => ancestor.name == 'image' );
+	const isSelectionOnObject = !!selectedElement && schema.isObject( selectedElement );
+	const isSelectionInObject = !![ ...selection.focus.getAncestors() ].find( ancestor => schema.isObject( ancestor ) );
 
-	return !isSelectionOnImage && !isSelectionInImage;
+	return !isSelectionOnObject && !isSelectionInObject;
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
