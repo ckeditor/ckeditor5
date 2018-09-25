@@ -32,7 +32,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Table, TableToolbar, Bold, ... ],
-		toolbar: [ 'insertTable', ... ]
+		toolbar: [ 'insertTable', ... ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
