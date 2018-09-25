@@ -12,6 +12,10 @@ CKEditor 5 media embed feature
 
 This package implements the media embed feature for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Media embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-media-embed` package](https://ckeditor.com/docs/ckeditor5/latest/api/media-embed.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

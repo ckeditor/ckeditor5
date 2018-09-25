@@ -8,6 +8,10 @@ category: api-reference
 
 This package implements the media embed feature for CKEditor 5.
 
+## Demo
+
+Check out the {@link features/media-embed#demo demo in the Media embed feature} guide.
+
 ## Documentation
 
 See the {@link features/media-embed Media embed feature} guide and the {@link module:media-embed/mediaembed~MediaEmbed} plugin documentation.
