@@ -8,6 +8,10 @@ category: api-reference
 
 This package implements the image feature for CKEditor 5. The feature is introduced in a granular form implemented by a couple of plugins.
 
+## Demo
+
+Check out the demos in the {@link features/image Image feature} guide.
+
 ## Documentation
 
 See the {@link features/image Image feature} guide and the documentation of the following plugins:
@@ -18,7 +22,6 @@ See the {@link features/image Image feature} guide and the documentation of the 
 * {@link module:image/imagetextalternative~ImageTextAlternative}
 * {@link module:image/imagetoolbar~ImageToolbar}
 * {@link module:image/imageupload~ImageUpload}
-
 
 ## Installation
 
