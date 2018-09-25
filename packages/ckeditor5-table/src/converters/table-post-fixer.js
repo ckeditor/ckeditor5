@@ -21,6 +21,7 @@ import TableWalker from './../tablewalker';
  *
  * * All table rows have the same size.
  * * None of a table cells that extend vertically beyond their section (either header or body).
+ * * A table cell has always at least one element as child.
  *
  * If the table structure is not correct, the post-fixer will automatically correct it in two steps:
  *
@@ -35,12 +36,12 @@ import TableWalker from './../tablewalker';
  *
  *		<table headingRows="1">
  *			<tableRow>
- *				<tableCell rowspan="2">FOO</tableCell>
- *				<tableCell colspan="2">BAR</tableCell>
+ *				<tableCell rowspan="2"><paragraph>FOO</paragraph></tableCell>
+ *				<tableCell colspan="2"><paragraph>BAR</paragraph></tableCell>
  *			</tableRow>
  *			<tableRow>
- *				<tableCell>BAZ</tableCell>
- *				<tableCell>XYZ</tableCell>
+ *				<tableCell><paragraph>BAZ</paragraph></tableCell>
+ *				<tableCell><paragraph>XYZ</paragraph></tableCell>
  *			</tableRow>
  *		</table>
  *
@@ -49,14 +50,14 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<thead>
  *				<tr>
- *					<td rowspan="2">FOO</td>
- *					<td colspan="2">BAR</td>
+ *					<td rowspan="2"><p>FOO</p></td>
+ *					<td colspan="2"><p>BAR</p></td>
  *				</tr>
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td>BAZ<td>
- *					<td>XYZ<td>
+ *					<td><p>BAZ</p></td>
+ *					<td><p>XYZ</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -84,14 +85,14 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<thead>
  *				<tr>
- *					<td rowspan="2">FOO</td>
- *					<td colspan="2">BAR</td>
+ *					<td rowspan="2"><p>FOO</p></td>
+ *					<td colspan="2"><p>BAR</p></td>
  *				</tr>
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td>BAZ<td>
- *					<td>XYZ<td>
+ *					<td><p>BAZ</p></td>
+ *					<td><p>XYZ</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -109,12 +110,12 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td>11</td>
- *					<td>12</td>
+ *					<td><p>11</p></td>
+ *					<td><p>12</p></td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
+ *					<td><p>21</p></td>
+ *					<td><p>22</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -130,18 +131,18 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by A)</td>
+ *					<td><p>11</p></td>
+ *					<td><p>12</p></td>
+ *					<td><p>(empty, inserted by A)</p></td>
  *				</tr>
  *				<tr>
- *					<td>21</td>
- *					<td>22</td>
- *					<td>(empty, inserted by A)</td>
+ *					<td><p>21</p></td>
+ *					<td><p>22</p></td>
+ *					<td><p>(empty, inserted by A)</p></td>
  *				</tr>
  *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by B)</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -151,19 +152,19 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by A)</td>
+ *					<td><p>11</p></td>
+ *					<td><p>12</p></td>
+ *					<td><p>(empty, inserted by A)</p></td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
- *					<td>(empty, inserted by A)</td>
+ *					<td><p>21</p></td>
+ *					<td><p>22</p></td>
+ *					<td><p>(empty, inserted by A)</p></td>
  *				</tr>
  *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by a post-fixer)</td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by a post-fixer)</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -175,17 +176,17 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td>11</td>
- *					<td>12</td>
+ *					<td><p>11</p></td>
+ *					<td><p>12</p></td>
  *				</tr>
  *				<tr>
- *					<td>21</td>
- *					<td>22</td>
+ *					<td><p>21</p></td>
+ *					<td><p>22</p></td>
  *				</tr>
  *				<tr>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by B)</td>
- *					<td>(empty, inserted by a post-fixer)</td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by a post-fixer)</p></td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -195,21 +196,39 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td>11</td>
- *					<td>12</td>
- *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *					<td><p>11</p></td>
+ *					<td><p>12</p></td>
+ *					<td><p>(empty, inserted by a post-fixer after undo)</p></td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
- *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *					<td><p>21</p></td>
+ *					<td><p>22</p></td>
+ *					<td><p>(empty, inserted by a post-fixer after undo)</p></td>
  *				</tr>
  *				<tr>
- *					<td>(empty, inserted by B)<td>
- *					<td>(empty, inserted by B)<td>
- *					<td>(empty, inserted by a post-fixer)<td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by B)</p></td>
+ *					<td><p>(empty, inserted by a post-fixer)</p></td>
  *				</tr>
  *			</tbody>
+ *		</table>
+ *
+ * ## Ensuring proper table structure
+ *
+ * A table cells must contains at least one block as a child. The empty table cell will have empty `<paragraph>` as a child.
+ *
+ *		<table>
+ *			<tableRow>
+ *				<tableCell></tableCell>
+ *			</tableRow>
+ *		</table>
+ *
+ * Will be fixed to:
+ *
+ *		<table>
+ *			<tableRow>
+ *				<tableCell><paragraph></paragraph></tableCell>
+ *			</tableRow>
  *		</table>
  *
  * @param {module:engine/model/model~Model} model
@@ -232,6 +251,12 @@ function tablePostFixer( writer, model ) {
 
 	for ( const entry of changes ) {
 		let table;
+
+		// Enforce paragraph in tableCell even after other feature remove its contents.
+		if ( entry.type == 'remove' && entry.position.parent.is( 'tableCell' ) && entry.position.parent.childCount == 0 ) {
+			writer.insertElement( 'paragraph', entry.position.parent );
+			wasFixed = true;
+		}
 
 		// Fix table on table insert.
 		if ( entry.name == 'table' && entry.type == 'insert' ) {

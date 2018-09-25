@@ -181,6 +181,19 @@ describe( 'Table post-fixer', () => {
 		} );
 	} );
 
+	describe( 'on removing tableCell contents', () => {
+		it( 'should fix empty table cells', () => {
+			setModelData( model, modelTable( [ [ '11[]' ] ] ) );
+
+			model.change( writer => {
+				// Remove paragraph from table cell.
+				writer.remove( Range.createIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [ [ '' ] ] ) );
+		} );
+	} );
+
 	describe( 'on collaboration', () => {
 		it( 'should add missing cells to columns (remove column vs insert row)', () => {
 			_testExternal(
