@@ -74,39 +74,55 @@ The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon
 
 ## Block vs inline content in table cells
 
-The table feature supports block content - like paragraphs, lists, headings, etc - in table cells. The table cells in the model will always have at least one block. For empty table cell it will be empty `<paragraph>`. Such table cells (with single `<pargraph>`) are considered as cells with inline content only.
+The table feature allows creating block content (like paragraphs, lists, headings, etc.) in table cells. However, if a table cell contains just one paragraph and this paragraph has no special attributes (like text alignment), this cell contents is considered "inline" and the paragraph is not rendered.
 
-<info-box info>
-	The table might consist table cells of both types.
+This means that a table cell can be in two states – with an inline content or with a block content. The reason for this differentiation is that most tables contain only inline content (e.g. in the [demo](#demo) above) and it is common for "data tables" to not contain any block content. In such a scenario, printing out `<p>` elements would be semantically incorrect and also unnecessary. There are, however, scenarios where the user wants to create for example a list inside a table and then the support for block content is necessary too.
+
+<info-box>
+	When we talk about "rendering" we mean the view layer. In the model, a cell is always filled with at least a `<paragraph>`. The reasons for that are consistency (a cell always has a block content – text is never directly inside `<tableCell>`) and making features like the <kbd>Enter</kbd> support work out of the box (since a `<paragraph>` exists in the model it can be split, despite the fact that it is not present in the view).
 </info-box>
 
 ### Inline content
 
-A table cell with inline content (single `<paragraph>`) will be rendered (ie. when using {@link module:core/editor/utils/dataapimixin~DataApi#getData()} directly in the `<td>` or `<th>` element without wrapping in `<p>`. A table with only inline content in table cells is considered a data table used to present tabular data. Such tables are ususally used with short content and additional paragraphs are often redundant.
-
-Example table with inline content (model representation):
+The model representation of table cells with an inline content only (a single `<paragraph>` inside):
 
 ```html
 <table>
 	<tableRow>
 		<tableCell>
-			<paragraph>Foo <$text bold="true">Bar</$text></paragraph>
+			<paragraph>Foo</paragraph>
 		</tableCell>
 		<tableCell>
-			<paragraph></paragraph>
+			<paragraph>Bar</paragraph>
 		</tableCell>
 	</tableRow>
 </table>
 ```
-will be rendered as:
+
+The above model structure will be rendered to the {@link module:editor-classic/classiceditor~ClassicEditor#getData data} as:
 
 ```html
 <figure class="table">
 	<table>
 		<tbody>
 			<tr>
-				<td>Foo <strong>Bar</strong></td>
-				<td></td>
+				<td>Foo</td>
+				<td>Bar</td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+```
+
+In the editing view (the editable container in which the user edits the content) additional `<span>` elements are create to compensate for the hidden `<paragraph>` elements:
+
+```html
+<figure class="table">
+	<table>
+		<tbody>
+			<tr>
+				<td><span>Foo</span></td>
+				<td><span>Bar</span></td>
 			</tr>
 		</tbody>
 	</table>
@@ -115,16 +131,16 @@ will be rendered as:
 
 ### Block content
 
-Blocks other then `<paragraph>`, even if being single, will be always rendered in the view. If there are other blocks in table cells the `<paragraph>` will be rendered as `<p>`. A single `<pargraph>` might be also rendered to the View when it has attributes.
+If a table cell contains anything else than a single `<paragraph>` with no attributes, all those block elements will be rendered.
 
-Example table with block content (model representation):
+Example table with a block content (model representation):
 
 ```html
 <table>
 	<tableRow>
 		<tableCell>
 			<paragraph>Foo</paragraph>
-			<paragraph><$text bold="true">Bar</$text></paragraph>
+			<paragraph>Bar</paragraph>
 		</tableCell>
 		<tableCell>
 			<heading1>Some title</heading1>
@@ -135,7 +151,8 @@ Example table with block content (model representation):
 	</tableRow>
 </table>
 ```
-will be rendered as:
+
+The above model structure will be rendered to the data and to the editing view as:
 
 ```html
 <figure class="table">
@@ -144,13 +161,13 @@ will be rendered as:
 			<tr>
 				<td>
 					<p>Foo</p>
-					<p><strong>Bar</strong></p>
+					<p>Bar</p>
 				</td>
 				<td>
 					<h2>Some title</h2>
 				</td>
 				<td>
-					<p style="text-align:right;">Baz</p>
+					<p style="text-align: right;">Baz</p>
 				</td>
 			</tr>
 		</tbody>
@@ -159,7 +176,7 @@ will be rendered as:
 ```
 
 <info-box info>
-	At the moment the block content in table feature is not configurable. It means that you cannot enforce inline content in table cells. Right now we're [discussing it on github](https://github.com/ckeditor/ckeditor5-table/issues/101) as adding such configuration would intoduce complexity into the table editing feature.
+	At the moment it is not possible to completely disallow block content in tables. See the [discussing on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. 👍 if you need this feature.
 </info-box>
 
 
