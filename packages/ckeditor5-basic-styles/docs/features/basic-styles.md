@@ -7,6 +7,10 @@ category: features
 
 The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough and code.
 
+## Demo
+
+{@snippet features/basic-styles}
+
 ## Available text styles
 
 | Style feature | {@link framework/guides/architecture/core-editor-architecture#commands Command} name | {@link builds/guides/integration/configuration#toolbar-setup Toolbar} component name | Output element |
@@ -20,8 +24,6 @@ The {@link api/basic-styles basic styles} package provides text formatting featu
 <info-box info>
 	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link builds/guides/overview editor builds}.
 </info-box>
-
-{@snippet features/basic-styles}
 
 ### Supported input
 

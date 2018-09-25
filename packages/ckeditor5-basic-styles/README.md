@@ -12,6 +12,10 @@ CKEditor 5 basic styles feature
 
 This package contains CKEditor 5 features allowing to apply basic text formatting such as bold, italic, underline and code in CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Basic styles feature](https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-basic-styles` package](https://ckeditor.com/docs/ckeditor5/latest/api/basic-styles.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
