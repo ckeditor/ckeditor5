@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/utils';
-import { transformParagraphsToLists } from './filters/list';
+import { transformListItemLikeElementsIntoLists } from './filters/list';
 
 /**
  * The Paste from Office plugin.
@@ -57,9 +57,9 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	_normalizeWordInput( input ) {
 		const { body, stylesString } = parseHtml( input );
-		const normalizedInput = transformParagraphsToLists( body, stylesString );
+		transformListItemLikeElementsIntoLists( body, stylesString );
 
-		return normalizedInput;
+		return body;
 	}
 }
 
