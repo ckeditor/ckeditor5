@@ -10,7 +10,6 @@
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
@@ -60,7 +59,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 //		* {Number} order List item creation order parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} indent List item indentation level parsed from `mso-list` style (see `getListItemData()` function).
 function findAllListItemLikeElements( documentFragment ) {
-	const treeWalker = new TreeWalker( { boundaries: Range.createIn( documentFragment ), ignoreElementEnd: true } );
+	const range = Range.createIn( documentFragment );
 
 	// Matcher for finding list-like elements.
 	const listItemLikeElementsMatcher = new Matcher( {
@@ -72,7 +71,7 @@ function findAllListItemLikeElements( documentFragment ) {
 
 	const listLikeItems = [];
 
-	for ( const value of treeWalker ) {
+	for ( const value of range ) {
 		if ( value.type === 'elementStart' && listItemLikeElementsMatcher.match( value.item ) ) {
 			const itemData = getListItemData( value.item );
 
@@ -198,12 +197,9 @@ function removeBulletElement( element, writer ) {
 		}
 	} );
 
-	const treeWalker = new TreeWalker( {
-		boundaries: Range.createIn( element ),
-		ignoreElementEnd: true
-	} );
+	const range = Range.createIn( element );
 
-	for ( const value of treeWalker ) {
+	for ( const value of range ) {
 		if ( value.type === 'elementStart' && bulletMatcher.match( value.item ) ) {
 			writer.remove( value.item );
 		}
