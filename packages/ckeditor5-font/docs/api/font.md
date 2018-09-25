@@ -8,6 +8,10 @@ category: api-reference
 
 This package implements the font family and font size features for CKEditor 5.
 
+## Demo
+
+Check out the {@link features/font#demo demo in the Font feature} guide.
+
 ## Documentation
 
 See the {@link features/font Font feature} guide
