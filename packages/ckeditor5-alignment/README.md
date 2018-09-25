@@ -12,6 +12,10 @@ CKEditor 5 text alignment feature
 
 This package implements text alignment support for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Text alignment feature](https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-alignment` package](https://ckeditor.com/docs/ckeditor5/latest/api/alignment.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
