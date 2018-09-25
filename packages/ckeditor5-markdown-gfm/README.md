@@ -12,6 +12,10 @@ GitHub Flavored Markdown support for CKEditor 5
 
 This package implements the GitHub Flavored Markdown data processor for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Markdown output feature](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-markdown-gfm` package](https://ckeditor.com/docs/ckeditor5/latest/api/markdown-gfm.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
