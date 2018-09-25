@@ -8,6 +8,10 @@ category: api-reference
 
 This package implements the autoformatting feature for CKEditor 5. It allows styling text by typing sequences like `**bold this**`.
 
+## Demo
+
+Check out the demo in the {@link features/autoformat Autoformat feature} guide.
+
 ## Documentation
 
 See the {@link features/autoformat Autoformat feature} guide and the {@link module:autoformat/autoformat~Autoformat} plugin documentation.
