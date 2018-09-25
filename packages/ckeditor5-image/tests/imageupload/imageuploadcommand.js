@@ -15,14 +15,13 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Image from '../../src/image/imageediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadCommand', () => {
-	let editor, command, model, doc, fileRepository;
+	let editor, command, model, fileRepository;
 
 	testUtils.createSinonSandbox();
 
@@ -43,7 +42,6 @@ describe( 'ImageUploadCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				doc = model.document;
 
 				command = new ImageUploadCommand( editor );
 
@@ -129,19 +127,6 @@ describe( 'ImageUploadCommand', () => {
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
 				.to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
-		} );
-
-		it( 'should insert directly at specified position (options.insertAt)', () => {
-			const file = createNativeFileMock();
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
-
-			const insertAt = new ModelPosition( doc.getRoot(), [ 0, 2 ] ); // fo[]o
-
-			command.execute( { files: file, insertAt } );
-
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( model ) )
-				.to.equal( `<paragraph>fo</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
 		} );
 
 		it( 'should use parent batch', () => {

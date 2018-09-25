@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -36,10 +34,6 @@ export default class ImageUploadCommand extends Command {
 	 * @fires execute
 	 * @param {Object} options Options for the executed command.
 	 * @param {File|Array.<File>} options.files The image file or an array of image files to upload.
-	 * @param {module:engine/model/position~Position} [options.insertAt] The position at which the images should be inserted.
-	 * If the position is not specified, the image will be inserted into the current selection.
-	 * Note: You can use the {@link module:widget/utils~findOptimalInsertionPosition} function
-	 * to calculate (e.g. based on the current selection) a position which is more optimal from the UX perspective.
 	 */
 	execute( options ) {
 		const editor = this.editor;
@@ -48,7 +42,7 @@ export default class ImageUploadCommand extends Command {
 			const filesToUpload = Array.isArray( options.files ) ? options.files : [ options.files ];
 
 			for ( const file of filesToUpload ) {
-				uploadImage( writer, editor, file, options.insertAt );
+				uploadImage( writer, editor, file );
 			}
 		} );
 	}
@@ -59,8 +53,7 @@ export default class ImageUploadCommand extends Command {
 // @param {module:engine/model/writer~writer} writer
 // @param {module:core/editor/editor~Editor} editor
 // @param {File} file
-// @param {module:engine/model/position~Position} insertAt
-function uploadImage( writer, editor, file, insertAt ) {
+function uploadImage( writer, editor, file ) {
 	const doc = editor.model.document;
 	const fileRepository = editor.plugins.get( FileRepository );
 
@@ -71,17 +64,9 @@ function uploadImage( writer, editor, file, insertAt ) {
 		return;
 	}
 
-	const imageElement = writer.createElement( 'image', {
-		uploadId: loader.id
-	} );
+	const imageElement = writer.createElement( 'image', { uploadId: loader.id } );
 
-	let insertAtSelection;
-
-	if ( insertAt ) {
-		insertAtSelection = new ModelSelection( [ new ModelRange( insertAt ) ] );
-	} else {
-		insertAtSelection = findOptimalInsertionPosition( doc.selection );
-	}
+	const insertAtSelection = findOptimalInsertionPosition( doc.selection );
 
 	editor.model.insertContent( imageElement, insertAtSelection );
 
