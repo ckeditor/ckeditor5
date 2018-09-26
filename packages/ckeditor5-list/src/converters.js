@@ -7,11 +7,6 @@
  * @module list/converters
  */
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
-
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ViewTreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
@@ -24,70 +19,72 @@ import { createViewListItemElement } from './utils';
  * position, and merges the list with surrounding lists (if available).
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
  */
-export function modelViewInsertion( evt, data, conversionApi ) {
-	const consumable = conversionApi.consumable;
+export function modelViewInsertion( model ) {
+	return ( evt, data, conversionApi ) => {
+		const consumable = conversionApi.consumable;
 
-	if ( !consumable.test( data.item, 'insert' ) ||
-		!consumable.test( data.item, 'attribute:listType' ) ||
-		!consumable.test( data.item, 'attribute:listIndent' )
-	) {
-		return;
-	}
+		if ( !consumable.test( data.item, 'insert' ) ||
+			!consumable.test( data.item, 'attribute:listType' ) ||
+			!consumable.test( data.item, 'attribute:listIndent' )
+		) {
+			return;
+		}
 
-	consumable.consume( data.item, 'insert' );
-	consumable.consume( data.item, 'attribute:listType' );
-	consumable.consume( data.item, 'attribute:listIndent' );
+		consumable.consume( data.item, 'insert' );
+		consumable.consume( data.item, 'attribute:listType' );
+		consumable.consume( data.item, 'attribute:listIndent' );
 
-	const modelItem = data.item;
-	const viewItem = generateLiInUl( modelItem, conversionApi );
+		const modelItem = data.item;
+		const viewItem = generateLiInUl( modelItem, conversionApi );
 
-	injectViewList( modelItem, viewItem, conversionApi );
+		injectViewList( modelItem, viewItem, conversionApi, model );
+	};
 }
 
 /**
  * A model-to-view converter for `listItem` model element removal.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
  */
-export function modelViewRemove( evt, data, conversionApi ) {
-	const viewStart = conversionApi.mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'li' ) );
-	const viewItem = viewStart.nodeAfter;
-	const viewWriter = conversionApi.writer;
+export function modelViewRemove( model ) {
+	return ( evt, data, conversionApi ) => {
+		const viewStart = conversionApi.mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'li' ) );
+		const viewItem = viewStart.nodeAfter;
+		const viewWriter = conversionApi.writer;
 
-	// 1. Break the container after and before the list item.
-	// This will create a view list with one view list item - the one to remove.
-	viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
-	viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
+		// 1. Break the container after and before the list item.
+		// This will create a view list with one view list item - the one to remove.
+		viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
+		viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
 
-	// 2. Remove the list with the item to remove.
-	const viewList = viewItem.parent;
-	const viewListPrev = viewList.previousSibling;
-	const removeRange = ViewRange.createOn( viewList );
-	const removed = viewWriter.remove( removeRange );
+		// 2. Remove the list with the item to remove.
+		const viewList = viewItem.parent;
+		const viewListPrev = viewList.previousSibling;
+		const removeRange = ViewRange.createOn( viewList );
+		const removed = viewWriter.remove( removeRange );
 
-	// 3. Merge the whole created by breaking and removing the list.
-	if ( viewListPrev && viewListPrev.nextSibling ) {
-		mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
-	}
+		// 3. Merge the whole created by breaking and removing the list.
+		if ( viewListPrev && viewListPrev.nextSibling ) {
+			mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
+		}
 
-	// 4. Bring back nested list that was in the removed <li>.
-	const modelItem = conversionApi.mapper.toModelElement( viewItem );
+		// 4. Bring back nested list that was in the removed <li>.
+		const modelItem = conversionApi.mapper.toModelElement( viewItem );
 
-	hoistNestedLists( modelItem.getAttribute( 'listIndent' ) + 1, data.position, removeRange.start, viewItem, conversionApi );
+		hoistNestedLists( modelItem.getAttribute( 'listIndent' ) + 1, data.position, removeRange.start, viewItem, conversionApi, model );
 
-	// 5. Unbind removed view item and all children.
-	for ( const child of ViewRange.createIn( removed ).getItems() ) {
-		conversionApi.mapper.unbindViewElement( child );
-	}
+		// 5. Unbind removed view item and all children.
+		for ( const child of ViewRange.createIn( removed ).getItems() ) {
+			conversionApi.mapper.unbindViewElement( child );
+		}
 
-	evt.stop();
+		evt.stop();
+	};
 }
 
 /**
@@ -134,43 +131,44 @@ export function modelViewChangeType( evt, data, conversionApi ) {
  * A model-to-view converter for `listIndent` attribute change on `listItem` model element.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
  */
-export function modelViewChangeIndent( evt, data, conversionApi ) {
-	if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
-		return;
-	}
+export function modelViewChangeIndent( model ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
+			return;
+		}
 
-	const viewItem = conversionApi.mapper.toViewElement( data.item );
-	const viewWriter = conversionApi.writer;
+		const viewItem = conversionApi.mapper.toViewElement( data.item );
+		const viewWriter = conversionApi.writer;
 
-	// 1. Break the container after and before the list item.
-	// This will create a view list with one view list item -- the one that changed type.
-	viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
-	viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
+		// 1. Break the container after and before the list item.
+		// This will create a view list with one view list item -- the one that changed type.
+		viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
+		viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
 
-	// 2. Extract view list with changed view list item and merge "hole" possibly created by breaking and removing elements.
-	const viewList = viewItem.parent;
-	const viewListPrev = viewList.previousSibling;
-	const removeRange = ViewRange.createOn( viewList );
-	viewWriter.remove( removeRange );
+		// 2. Extract view list with changed view list item and merge "hole" possibly created by breaking and removing elements.
+		const viewList = viewItem.parent;
+		const viewListPrev = viewList.previousSibling;
+		const removeRange = ViewRange.createOn( viewList );
+		viewWriter.remove( removeRange );
 
-	if ( viewListPrev && viewListPrev.nextSibling ) {
-		mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
-	}
+		if ( viewListPrev && viewListPrev.nextSibling ) {
+			mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
+		}
 
-	// 3. Bring back nested list that was in the removed <li>.
-	hoistNestedLists( data.attributeOldValue + 1, data.range.start, removeRange.start, viewItem, conversionApi );
+		// 3. Bring back nested list that was in the removed <li>.
+		hoistNestedLists( data.attributeOldValue + 1, data.range.start, removeRange.start, viewItem, conversionApi, model );
 
-	// 4. Inject view list like it is newly inserted.
-	injectViewList( data.item, viewItem, conversionApi );
+		// 4. Inject view list like it is newly inserted.
+		injectViewList( data.item, viewItem, conversionApi, model );
 
-	// 5. Consume insertion of children inside the item. They are already handled by re-building the item in view.
-	for ( const child of data.item.getChildren() ) {
-		conversionApi.consumable.consume( child, 'insert' );
-	}
+		// 5. Consume insertion of children inside the item. They are already handled by re-building the item in view.
+		for ( const child of data.item.getChildren() ) {
+			conversionApi.consumable.consume( child, 'insert' );
+		}
+	};
 }
 
 /**
@@ -372,7 +370,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		writer.insert( listItem, splitResult.position );
 
 		// Remember position after list item, next list items will be inserted at this position.
-		let nextPosition = ModelPosition.createAfter( listItem );
+		let nextPosition = writer.createPositionAfter( listItem );
 
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
@@ -384,19 +382,19 @@ export function viewModelConverter( evt, data, conversionApi ) {
 			}
 			// If it was not a list it was a "regular" list item content. Just convert it to `listItem`.
 			else {
-				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
+				conversionApi.convertItem( child, writer.createPositionAt( listItem, 'end' ) );
 			}
 		}
 
 		conversionStore.indent--;
 
 		// Result range starts before the first item and ends after the last.
-		data.modelRange = new ModelRange( data.modelCursor, nextPosition );
+		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
 
 		// When modelCursor parent had to be split to insert list item.
 		if ( splitResult.cursorParent ) {
 			// Then continue conversion in split element.
-			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
+			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
 		} else {
 			// Otherwise continue conversion after last list item.
 			data.modelCursor = data.modelRange.end;
@@ -514,55 +512,61 @@ export function modelToViewPosition( evt, data ) {
  * and view.
  *
  * @see module:engine/conversion/mapper~Mapper#event:viewToModelPosition
- * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
- * @param {Object} data An object containing additional data and placeholder for mapping result.
+ * @param {module:engine/model/model~Model} model Model instance.
+ * @returns {Function} Returns a conversion callback.
  */
-export function viewToModelPosition( evt, data ) {
-	const viewPos = data.viewPosition;
-	const viewParent = viewPos.parent;
-	const mapper = data.mapper;
+export function viewToModelPosition( model ) {
+	return ( evt, data ) => {
+		const viewPos = data.viewPosition;
+		const viewParent = viewPos.parent;
+		const mapper = data.mapper;
 
-	if ( viewParent.name == 'ul' || viewParent.name == 'ol' ) {
-		// Position is directly in <ul> or <ol>.
-		if ( !viewPos.isAtEnd ) {
-			// If position is not at the end, it must be before <li>.
-			// Get that <li>, map it to `listItem` and set model position before that `listItem`.
-			const modelNode = mapper.toModelElement( viewPos.nodeAfter );
+		if ( viewParent.name == 'ul' || viewParent.name == 'ol' ) {
+			// Position is directly in <ul> or <ol>.
+			if ( !viewPos.isAtEnd ) {
+				// If position is not at the end, it must be before <li>.
+				// Get that <li>, map it to `listItem` and set model position before that `listItem`.
+				const modelNode = mapper.toModelElement( viewPos.nodeAfter );
 
-			data.modelPosition = ModelPosition.createBefore( modelNode );
-		} else {
-			// Position is at the end of <ul> or <ol>, so there is no <li> after it to be mapped.
-			// There is <li> before the position, but we cannot just map it to `listItem` and set model position after it,
-			// because that <li> may contain nested items.
-			// We will check "model length" of that <li>, in other words - how many `listItem`s are in that <li>.
-			const modelNode = mapper.toModelElement( viewPos.nodeBefore );
-			const modelLength = mapper.getModelLength( viewPos.nodeBefore );
+				data.modelPosition = model.createPositionBefore( modelNode );
+			} else {
+				// Position is at the end of <ul> or <ol>, so there is no <li> after it to be mapped.
+				// There is <li> before the position, but we cannot just map it to `listItem` and set model position after it,
+				// because that <li> may contain nested items.
+				// We will check "model length" of that <li>, in other words - how many `listItem`s are in that <li>.
+				const modelNode = mapper.toModelElement( viewPos.nodeBefore );
+				const modelLength = mapper.getModelLength( viewPos.nodeBefore );
 
-			// Then we get model position before mapped `listItem` and shift it accordingly.
-			data.modelPosition = ModelPosition.createBefore( modelNode ).getShiftedBy( modelLength );
+				// Then we get model position before mapped `listItem` and shift it accordingly.
+				data.modelPosition = model.createPositionBefore( modelNode ).getShiftedBy( modelLength );
+			}
+
+			evt.stop();
+		} else if (
+			viewParent.name == 'li' &&
+			viewPos.nodeBefore &&
+			( viewPos.nodeBefore.name == 'ul' || viewPos.nodeBefore.name == 'ol' )
+		) {
+			// In most cases when view position is in <li> it is in text and this is a correct position.
+			// However, if position is after <ul> or <ol> we have to fix it -- because in model <ul>/<ol> are not in the `listItem`.
+			const modelNode = mapper.toModelElement( viewParent );
+
+			// Check all <ul>s and <ol>s that are in the <li> but before mapped position.
+			// Get model length of those elements and then add it to the offset of `listItem` mapped to the original <li>.
+			let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
+			let viewList = viewPos.nodeBefore;
+
+			while ( viewList && ( viewList.is( 'ul' ) || viewList.is( 'ol' ) ) ) {
+				modelLength += mapper.getModelLength( viewList );
+
+				viewList = viewList.previousSibling;
+			}
+
+			data.modelPosition = model.createPositionBefore( modelNode ).getShiftedBy( modelLength );
+
+			evt.stop();
 		}
-
-		evt.stop();
-	} else if ( viewParent.name == 'li' && viewPos.nodeBefore && ( viewPos.nodeBefore.name == 'ul' || viewPos.nodeBefore.name == 'ol' ) ) {
-		// In most cases when view position is in <li> it is in text and this is a correct position.
-		// However, if position is after <ul> or <ol> we have to fix it -- because in model <ul>/<ol> are not in the `listItem`.
-		const modelNode = mapper.toModelElement( viewParent );
-
-		// Check all <ul>s and <ol>s that are in the <li> but before mapped position.
-		// Get model length of those elements and then add it to the offset of `listItem` mapped to the original <li>.
-		let modelLength = 1; // Starts from 1 because the original <li> has to be counted in too.
-		let viewList = viewPos.nodeBefore;
-
-		while ( viewList && ( viewList.is( 'ul' ) || viewList.is( 'ol' ) ) ) {
-			modelLength += mapper.getModelLength( viewList );
-
-			viewList = viewList.previousSibling;
-		}
-
-		data.modelPosition = ModelPosition.createBefore( modelNode ).getShiftedBy( modelLength );
-
-		evt.stop();
-	}
+	};
 }
 
 /**
@@ -763,7 +767,7 @@ export function modelIndentPasteFixer( evt, [ content, selectable ] ) {
 	if ( !selectable ) {
 		selection = this.document.selection;
 	} else {
-		selection = new ModelSelection( selectable );
+		selection = this.createSelection( selectable );
 	}
 
 	if ( item && item.is( 'listItem' ) ) {
@@ -820,12 +824,12 @@ function generateLiInUl( modelItem, conversionApi ) {
 // `options.smallerIndent` - whether sought sibling should have smaller indent (default = no).
 // `options.indent` - used as reference item when first parameter is a position
 // Either `options.sameIndent` or `options.biggerIndent` should be set to `true`.
-function getSiblingListItem( modelItemOrPosition, options ) {
+function getSiblingListItem( modelItem, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
+	const indent = options.listIndent;
 
-	const indent = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.getAttribute( 'listIndent' ) : options.listIndent;
-	let item = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.previousSibling : modelItemOrPosition.nodeBefore;
+	let item = modelItem;
 
 	while ( item && item.name == 'listItem' ) {
 		const itemIndent = item.getAttribute( 'listIndent' );
@@ -854,18 +858,22 @@ function mergeViewLists( viewWriter, firstList, secondList ) {
 // that is not added to the view and is inside a view list element (`ul` or `ol`) and is that's list only child.
 // The list is inserted at correct position (element breaking may be needed) and then merged with it's siblings.
 // See comments below to better understand the algorithm.
-function injectViewList( modelItem, injectedItem, conversionApi ) {
+function injectViewList( modelItem, injectedItem, conversionApi, model ) {
 	const injectedList = injectedItem.parent;
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 
 	// Position where view list will be inserted.
-	let insertPosition = mapper.toViewPosition( ModelPosition.createBefore( modelItem ) );
+	let insertPosition = mapper.toViewPosition( model.createPositionBefore( modelItem ) );
 
 	// 1. Find previous list item that has same or smaller indent. Basically we are looking for a first model item
 	// that is "parent" or "sibling" of injected model item.
 	// If there is no such list item, it means that injected list item is the first item in "its list".
-	const refItem = getSiblingListItem( modelItem, { sameIndent: true, smallerIndent: true } );
+	const refItem = getSiblingListItem( modelItem.previousSibling, {
+		sameIndent: true,
+		smallerIndent: true,
+		listIndent: modelItem.getAttribute( 'listIndent' )
+	} );
 	const prevItem = modelItem.previousSibling;
 
 	if ( refItem && refItem.getAttribute( 'listIndent' ) == modelItem.getAttribute( 'listIndent' ) ) {
@@ -878,11 +886,11 @@ function injectViewList( modelItem, injectedItem, conversionApi ) {
 		if ( prevItem && prevItem.name == 'listItem' ) {
 			// If it is a list item, it has to have lower indent.
 			// It means that inserted item should be added to it as its nested item.
-			insertPosition = mapper.toViewPosition( ModelPosition.createAt( prevItem, 'end' ) );
+			insertPosition = mapper.toViewPosition( model.createPositionAt( prevItem, 'end' ) );
 		} else {
 			// Previous item is not a list item (or does not exist at all).
 			// Just map the position and insert the view item at mapped position.
-			insertPosition = mapper.toViewPosition( ModelPosition.createBefore( modelItem ) );
+			insertPosition = mapper.toViewPosition( model.createPositionBefore( modelItem ) );
 		}
 	}
 
@@ -945,15 +953,16 @@ function injectViewList( modelItem, injectedItem, conversionApi ) {
 
 // Helper function that takes all children of given `viewRemovedItem` and moves them in a correct place, according
 // to other given parameters.
-function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStartPosition, viewRemovedItem, conversionApi ) {
+function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStartPosition, viewRemovedItem, conversionApi, model ) {
 	// Find correct previous model list item element.
 	// The element has to have either same or smaller indent than given reference indent.
 	// This will be the model element which will get nested items (if it has smaller indent) or sibling items (if it has same indent).
 	// Keep in mind that such element might not be found, if removed item was the first item.
-	const prevModelItem = getSiblingListItem( modelRemoveStartPosition, {
+	const prevModelItem = getSiblingListItem( modelRemoveStartPosition.nodeBefore, {
 		sameIndent: true,
 		smallerIndent: true,
-		listIndent: nextIndent
+		listIndent: nextIndent,
+		foo: 'b'
 	} );
 
 	const mapper = conversionApi.mapper;
@@ -1021,7 +1030,7 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 		//
 		// Note: in this case 1.1.1 have indent 2 while 1 have indent 0. In model that should not be possible,
 		// because following item may have indent bigger only by one. But this is fixed by postfixer.
-		const modelPosition = ModelPosition.createAt( prevModelItem, 'end' );
+		const modelPosition = model.createPositionAt( prevModelItem, 'end' );
 		insertPosition = mapper.toViewPosition( modelPosition );
 	}
 

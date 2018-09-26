@@ -6,12 +6,7 @@
 import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
@@ -426,7 +421,7 @@ describe( 'ListEditing', () => {
 			describe( 'model to view', () => {
 				function test( testName, modelPath, viewPath ) {
 					it( testName, () => {
-						const modelPos = new ModelPosition( modelRoot, modelPath );
+						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
 						expect( viewPos.root ).to.equal( viewRoot );
@@ -1417,7 +1412,7 @@ describe( 'ListEditing', () => {
 			describe( 'model to view', () => {
 				function test( testName, modelPath, viewPath ) {
 					it( testName, () => {
-						const modelPos = new ModelPosition( modelRoot, modelPath );
+						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
 						expect( viewPos.root ).to.equal( viewRoot );
@@ -3112,7 +3107,7 @@ describe( 'ListEditing', () => {
 					model.change( writer => {
 						setModelData( model, input );
 
-						const targetPosition = ModelPosition.createAt( modelRoot, offset );
+						const targetPosition = writer.createPositionAt( modelRoot, offset );
 
 						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
@@ -3327,13 +3322,16 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent(
+			model.insertContent(
 				parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
 				),
-				new ModelRange( new ModelPosition( modelRoot, [ 1, 1 ] ), new ModelPosition( modelRoot, [ 1, 1 ] ) )
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 1, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 1, 1 ] )
+				)
 			);
 
 			expect( getModelData( model ) ).to.equal(
@@ -3352,7 +3350,12 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent( new ModelElement( 'listItem', { listType: 'bulleted', listIndent: '0' }, 'X' ) );
+			model.change( writer => {
+				const listItem = writer.createElement( 'listItem', { listType: 'bulleted', listIndent: '0' } );
+				writer.insertText( 'X', listItem );
+
+				model.insertContent( listItem );
+			} );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3369,7 +3372,9 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent( new ModelText( 'X' ) );
+			model.change( writer => {
+				model.insertContent( writer.createText( 'X' ) );
+			} );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3511,7 +3516,9 @@ describe( 'ListEditing', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
-				editor.model.insertContent( new ModelDocumentFragment() );
+				model.change( writer => {
+					editor.model.insertContent( writer.createDocumentFragment() );
+				} );
 			} ).not.to.throw();
 		} );
 
@@ -3955,9 +3962,9 @@ describe( 'ListEditing', () => {
 
 	function testMove( testName, input, rootOffset, output, testUndo = true ) {
 		const actionCallback = selection => {
-			const targetPosition = ModelPosition.createAt( modelRoot, rootOffset );
-
 			model.change( writer => {
+				const targetPosition = writer.createPositionAt( modelRoot, rootOffset );
+
 				writer.move( selection.getFirstRange(), targetPosition );
 			} );
 		};
@@ -4011,7 +4018,7 @@ describe( 'ListEditing', () => {
 			// Ensure no undo step is generated.
 			model.enqueueChange( 'transparent', writer => {
 				// Replace existing model in document by new one.
-				writer.remove( ModelRange.createIn( modelRoot ) );
+				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( modelDocumentFragment, modelRoot );
 
 				// Clean up previous document selection.
@@ -4022,13 +4029,13 @@ describe( 'ListEditing', () => {
 			const ranges = [];
 
 			for ( const range of selection.getRanges() ) {
-				const start = new ModelPosition( modelRoot, range.start.path );
-				const end = new ModelPosition( modelRoot, range.end.path );
+				const start = model.createPositionFromPath( modelRoot, range.start.path );
+				const end = model.createPositionFromPath( modelRoot, range.end.path );
 
-				ranges.push( new ModelRange( start, end ) );
+				ranges.push( model.createRange( start, end ) );
 			}
 
-			return new Selection( ranges );
+			return model.createSelection( ranges );
 		}
 	}
 } );

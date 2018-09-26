@@ -6,8 +6,6 @@
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import IndentCommand from '../src/indentcommand';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'IndentCommand', () => {
@@ -177,9 +175,9 @@ describe( 'IndentCommand', () => {
 
 			it( 'should increment indent of all selected item when multiple items are selected', () => {
 				model.change( writer => {
-					writer.setSelection( new Range(
-						new Position( root.getChild( 1 ), [ 0 ] ),
-						new Position( root.getChild( 3 ), [ 1 ] )
+					writer.setSelection( writer.createRange(
+						writer.createPositionFromPath( root.getChild( 1 ), [ 0 ] ),
+						writer.createPositionFromPath( root.getChild( 3 ), [ 1 ] )
 					) );
 				} );
 
@@ -294,9 +292,9 @@ describe( 'IndentCommand', () => {
 
 			it( 'should outdent all selected item when multiple items are selected', () => {
 				model.change( writer => {
-					writer.setSelection( new Range(
-						new Position( root.getChild( 1 ), [ 0 ] ),
-						new Position( root.getChild( 3 ), [ 1 ] )
+					writer.setSelection( writer.createRange(
+						writer.createPositionFromPath( root.getChild( 1 ), [ 0 ] ),
+						writer.createPositionFromPath( root.getChild( 3 ), [ 1 ] )
 					) );
 				} );
 
