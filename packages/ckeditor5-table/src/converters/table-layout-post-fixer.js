@@ -7,7 +7,6 @@
  * @module table/converters/table-layout-post-fixer
  */
 
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './../commands/utils';
 import TableWalker from './../tablewalker';
 
@@ -303,7 +302,7 @@ function fixTableRowsSizes( table, writer ) {
 
 			if ( columnsToInsert ) {
 				for ( let i = 0; i < columnsToInsert; i++ ) {
-					createEmptyTableCell( writer, Position.createAt( table.getChild( rowIndex ), 'end' ) );
+					createEmptyTableCell( writer, writer.createPositionAt( table.getChild( rowIndex ), 'end' ) );
 				}
 
 				wasFixed = true;

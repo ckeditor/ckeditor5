@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -61,8 +59,8 @@ describe( 'Table cell content post-fixer', () => {
 
 		// Insert table row with one table cell
 		model.change( writer => {
-			writer.insertElement( 'tableRow', Position.createAfter( root.getNodeByPath( [ 0, 0 ] ) ) );
-			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 1 ] ), 0 ) );
+			writer.insertElement( 'tableRow', writer.createPositionAfter( root.getNodeByPath( [ 0, 0 ] ) ) );
+			writer.insertElement( 'tableCell', writer.createPositionAt( root.getNodeByPath( [ 0, 1 ] ), 0 ) );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
@@ -88,7 +86,7 @@ describe( 'Table cell content post-fixer', () => {
 
 		// Insert table row with one table cell
 		model.change( writer => {
-			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
+			writer.insertElement( 'tableCell', writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
@@ -112,7 +110,7 @@ describe( 'Table cell content post-fixer', () => {
 
 		// Remove paragraph from table cell.
 		model.change( writer => {
-			writer.remove( Range.createIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
+			writer.remove( writer.createRangeIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
