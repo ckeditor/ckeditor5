@@ -96,7 +96,7 @@ export default class LinkEditing extends Plugin {
 			const selection = editor.model.document.selection;
 
 			if ( selection.hasAttribute( 'linkHref' ) ) {
-				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
+				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), editor.model );
 				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
 				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
