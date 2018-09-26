@@ -10,9 +10,6 @@
 import ParagraphCommand from './paragraphcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { SchemaContext } from '@ckeditor/ckeditor5-engine/src/model/schema';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The paragraph feature for the editor.
@@ -49,6 +46,8 @@ export default class Paragraph extends Plugin {
 		// Handles elements not converted by plugins and checks if would be converted if
 		// we wraps them by a paragraph or changes them to a paragraph.
 		data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+			const writer = conversionApi.writer;
+
 			// When element is already consumed by higher priority converters then do nothing.
 			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
 				return;
@@ -60,7 +59,7 @@ export default class Paragraph extends Plugin {
 					return;
 				}
 
-				const paragraph = conversionApi.writer.createElement( 'paragraph' );
+				const paragraph = writer.createElement( 'paragraph' );
 
 				// Find allowed parent for paragraph that we are going to insert.
 				// If current parent does not allow to insert paragraph but one of the ancestors does
@@ -73,15 +72,15 @@ export default class Paragraph extends Plugin {
 				}
 
 				// Insert paragraph in allowed position.
-				conversionApi.writer.insert( paragraph, splitResult.position );
+				writer.insert( paragraph, splitResult.position );
 
 				// Convert children to paragraph.
-				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph, 0 ) );
+				const { modelRange } = conversionApi.convertChildren( data.viewItem, writer.createPositionAt( paragraph, 0 ) );
 
 				// Output range starts before paragraph but ends inside it after last child.
 				// This is because we want to keep siblings inside the same paragraph as long as it is possible.
 				// When next node won't be allowed in a paragraph it will split this paragraph anyway.
-				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
+				data.modelRange = writer.createRange( writer.createPositionBefore( paragraph ), modelRange.end );
 				data.modelCursor = data.modelRange.end;
 
 			// When element is not paragraph-like lets try to wrap it by a paragraph.
@@ -189,11 +188,11 @@ function wrapInParagraph( input, position, conversionApi ) {
 	const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 	conversionApi.writer.insert( paragraph, position );
-	return conversionApi.convertItem( input, Position.createAt( paragraph, 0 ) );
+	return conversionApi.convertItem( input, conversionApi.writer.createPositionAt( paragraph, 0 ) );
 }
 
 function isParagraphable( node, position, schema ) {
-	const context = new SchemaContext( position );
+	const context = schema.createContext( position );
 
 	// When paragraph is allowed in this context...
 	if ( !schema.checkChild( context, 'paragraph' ) ) {
