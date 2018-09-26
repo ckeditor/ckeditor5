@@ -191,7 +191,7 @@ export default class LabeledInputView extends View {
 
 	/**
 	 * Creates the status view instance. It displays {@link #errorText} and {@link #infoText}
-	 * next to the {@link #inputView}. See {@link _statusText}.
+	 * next to the {@link #inputView}. See {@link #_statusText}.
 	 *
 	 * @private
 	 * @param {String} statusUid Unique id of the status, shared with the input's `aria-describedby` attribute.
