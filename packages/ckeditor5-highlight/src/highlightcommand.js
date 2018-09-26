@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
@@ -74,7 +73,7 @@ export default class HighlightCommand extends Command {
 					const highlightStart = position.getLastMatchingPosition( isSameHighlight, { direction: 'backward' } );
 					const highlightEnd = position.getLastMatchingPosition( isSameHighlight );
 
-					const highlightRange = new Range( highlightStart, highlightEnd );
+					const highlightRange = writer.createRange( highlightStart, highlightEnd );
 
 					// Then depending on current value...
 					if ( !highlighter || this.value === highlighter ) {

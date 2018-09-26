@@ -8,8 +8,6 @@ import HighlightCommand from './../src/highlightcommand';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'HighlightCommand', () => {
 	let editor, model, doc, root, command;
@@ -132,10 +130,10 @@ describe( 'HighlightCommand', () => {
 
 					model.change( writer => {
 						// Simulate clicking right arrow key by changing selection ranges.
-						writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
 
 						// Get back to previous selection.
-						writer.setSelection( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 1 ) ) ] );
 					} );
 
 					expect( command.value ).to.be.undefined;
@@ -154,14 +152,14 @@ describe( 'HighlightCommand', () => {
 					// Attribute should be stored.
 					// Simulate clicking somewhere else in the editor.
 					model.change( writer => {
-						writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
 					} );
 
 					expect( command.value ).to.be.undefined;
 
 					// Go back to where attribute was stored.
 					model.change( writer => {
-						writer.setSelection( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ) ) ] );
 					} );
 
 					// Attribute should be restored.
