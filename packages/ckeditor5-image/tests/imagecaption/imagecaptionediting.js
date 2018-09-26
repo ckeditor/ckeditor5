@@ -12,8 +12,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -200,7 +198,7 @@ describe( 'ImageCaptionEditing', () => {
 				const caption = image.getChild( 0 );
 
 				model.change( writer => {
-					writer.remove( ModelRange.createIn( caption ) );
+					writer.remove( writer.createRangeIn( caption ) );
 				} );
 
 				expect( getViewData( view ) ).to.equal(
@@ -221,7 +219,7 @@ describe( 'ImageCaptionEditing', () => {
 				const caption = image.getChild( 0 );
 
 				model.change( writer => {
-					writer.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
+					writer.remove( writer.createRange( writer.createPositionAt( caption, 0 ), writer.createPositionAt( caption, 8 ) ) );
 				} );
 
 				expect( getViewData( view ) ).to.equal(
@@ -258,10 +256,12 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not add caption element if image already have it', () => {
-			const caption = new ModelElement( 'caption', null, 'foo bar' );
-			const image = new ModelElement( 'image', { src: '', alt: '' }, caption );
-
 			model.change( writer => {
+				const caption = writer.createElement( 'caption' );
+				const image = writer.createElement( 'image', { src: '', alt: '' } );
+
+				writer.insertText( 'foo bar', caption );
+				writer.insert( caption, image );
 				writer.insert( image, doc.getRoot() );
 			} );
 
@@ -282,10 +282,10 @@ describe( 'ImageCaptionEditing', () => {
 		} );
 
 		it( 'should not add caption element twice', () => {
-			const image = new ModelElement( 'image', { src: '', alt: '' } );
-			const caption = new ModelElement( 'caption' );
-
 			model.change( writer => {
+				const image = writer.createElement( 'image', { src: '', alt: '' } );
+				const caption = writer.createElement( 'caption' );
+
 				// Since we are adding an empty image, this should trigger caption fixer.
 				writer.insert( image, doc.getRoot() );
 
@@ -407,7 +407,7 @@ describe( 'ImageCaptionEditing', () => {
 
 			model.change( writer => {
 				writer.remove( doc.selection.getFirstRange() );
-				writer.setSelection( ModelRange.createOn( image ) );
+				writer.setSelection( writer.createRangeOn( image ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal(
@@ -424,7 +424,7 @@ describe( 'ImageCaptionEditing', () => {
 			const image = doc.getRoot().getChild( 1 );
 
 			model.change( writer => {
-				writer.setSelection( ModelRange.createOn( image ) );
+				writer.setSelection( writer.createRangeOn( image ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal(
@@ -451,7 +451,7 @@ describe( 'ImageCaptionEditing', () => {
 
 				// Remove text and selection from caption.
 				model.change( writer => {
-					writer.remove( ModelRange.createIn( modelCaption ) );
+					writer.remove( writer.createRangeIn( modelCaption ) );
 					writer.setSelection( null );
 				} );
 

@@ -8,7 +8,6 @@
  */
 
 import { toWidget, isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );
 
@@ -58,12 +57,11 @@ export function isImageWidgetSelected( selection ) {
 }
 
 /**
- * Checks if the provided model element is an instance of {@link module:engine/model/element~Element Element} and its name
- * is `image`.
+ * Checks if the provided model element is an `image`.
  *
  * @param {module:engine/model/element~Element} modelElement
  * @returns {Boolean}
  */
 export function isImage( modelElement ) {
-	return modelElement instanceof ModelElement && modelElement.name == 'image';
+	return !!modelElement && modelElement.is( 'image' );
 }

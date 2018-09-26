@@ -14,7 +14,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -178,7 +177,7 @@ describe( 'Image converters', () => {
 					}
 				} );
 				conversionApi.writer.insert( element, data.modelCursor );
-				data.modelRange = ModelRange.createOn( element );
+				data.modelRange = conversionApi.writer.createRangeOn( element );
 				data.modelCursor = data.modelRange.end;
 			}, { priority: 'high' } );
 

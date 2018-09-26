@@ -7,7 +7,6 @@
  * @module image/imagecaption/utils
  */
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { attachPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
@@ -48,7 +47,7 @@ export function isCaption( viewElement ) {
  */
 export function getCaptionFromImage( imageModelElement ) {
 	for ( const node of imageModelElement.getChildren() ) {
-		if ( node instanceof ModelElement && node.name == 'caption' ) {
+		if ( !!node && node.is( 'caption' ) ) {
 			return node;
 		}
 	}

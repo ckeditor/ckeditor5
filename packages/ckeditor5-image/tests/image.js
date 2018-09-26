@@ -10,7 +10,6 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from '../src/imagetextalternative';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -106,7 +105,7 @@ describe( 'Image', () => {
 
 			model.change( writer => {
 				const secondImage = document.getRoot().getChild( 1 );
-				writer.setSelection( ModelRange.createOn( secondImage ) );
+				writer.setSelection( writer.createRangeOn( secondImage ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal(
