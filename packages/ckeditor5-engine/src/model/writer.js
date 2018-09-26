@@ -544,6 +544,38 @@ export default class Writer {
 		}
 	}
 
+	createPositionAt( itemOrPosition, offset ) {
+		return this.model.createPositionAt( itemOrPosition, offset );
+	}
+
+	createPositionAfter( item ) {
+		return this.model.createPositionAfter( item );
+	}
+
+	createPositionBefore( item ) {
+		return this.model.createPositionBefore( item );
+	}
+
+	createPositionFromPath( root, path ) {
+		return this.model.createPositionFromPath( root, path );
+	}
+
+	createRange( start, end ) {
+		return this.model.createRange( start, end );
+	}
+
+	createRangeIn( element ) {
+		return this.model.createRangeIn( element );
+	}
+
+	createRangeOn( element ) {
+		return this.model.createRangeOn( element );
+	}
+
+	createSelection( selectable ) {
+		return this.model.createSelection( selectable );
+	}
+
 	/**
 	 * Performs merge action in a detached tree.
 	 *

@@ -16,6 +16,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ModelElement from './element';
 import ModelRange from './range';
+import ModelPosition from './position';
+import ModelSelection from './selection';
 
 import insertContent from './utils/insertcontent';
 import deleteContent from './utils/deletecontent';
@@ -466,6 +468,58 @@ export default class Model {
 		}
 
 		return false;
+	}
+
+	createPositionAt( itemOrPosition, offset ) {
+		if ( itemOrPosition instanceof ModelPosition ) {
+			return ModelPosition.createFromPosition( itemOrPosition );
+		} else {
+			const node = itemOrPosition;
+
+			if ( offset == 'end' ) {
+				offset = node.maxOffset;
+			} else if ( offset == 'before' ) {
+				return ModelPosition.createBefore( node );
+			} else if ( offset == 'after' ) {
+				return ModelPosition.createAfter( node );
+			} else if ( !offset ) {
+				offset = 0;
+			}
+
+			return ModelPosition.createFromParentAndOffset( node, offset );
+		}
+	}
+
+	createPositionAfter( item ) {
+		return this.createPositionAt( item, 'after' );
+	}
+
+	createPositionBefore( item ) {
+		return this.createPositionAt( item, 'before' );
+	}
+
+	createPositionFromPath( root, path ) {
+		return new ModelPosition( root, path );
+	}
+
+	createRange( start, end ) {
+		return new ModelRange( start, end );
+	}
+
+	createRangeIn( element ) {
+		return ModelRange.createIn( element );
+	}
+
+	createRangeOn( element ) {
+		return ModelRange.createOn( element );
+	}
+
+	createSelection( selectable ) {
+		return new ModelSelection( selectable );
+	}
+
+	createBatch() {
+		return new Batch();
 	}
 
 	/**

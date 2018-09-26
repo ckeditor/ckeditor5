@@ -668,6 +668,16 @@ export default class Schema {
 	}
 
 	/**
+	 * Creates an instance of the schema context.
+	 *
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @returns {module:engine/model/schema~SchemaContext}
+	 */
+	createContext( context ) {
+		return new SchemaContext( context );
+	}
+
+	/**
 	 * @private
 	 */
 	_clearCache() {
