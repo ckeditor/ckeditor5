@@ -7,8 +7,6 @@
  * @module autoformat/inlineautoformatediting
  */
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
  * it can be configured to make "foo" bold when typed `**foo**` (the `**` markers will be removed).
@@ -163,8 +161,8 @@ export default class InlineAutoformatEditing {
 			const block = selection.focus.parent;
 			const text = getText( block ).slice( 0, selection.focus.offset );
 			const testOutput = testCallback( text );
-			const rangesToFormat = testOutputToRanges( block, testOutput.format );
-			const rangesToRemove = testOutputToRanges( block, testOutput.remove );
+			const rangesToFormat = testOutputToRanges( block, testOutput.format, editor.model );
+			const rangesToRemove = testOutputToRanges( block, testOutput.remove, editor.model );
 
 			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
 				return;
@@ -201,8 +199,11 @@ function getText( element ) {
 // @private
 // @param {module:engine/model/element~Element} block
 // @param {Array.<Array>} arrays
-function testOutputToRanges( block, arrays ) {
+// @param {module:engine/model/model~Model} model
+function testOutputToRanges( block, arrays, model ) {
 	return arrays
 		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
-		.map( array => ModelRange.createFromParentsAndOffsets( block, array[ 0 ], block, array[ 1 ] ) );
+		.map( array => {
+			return model.createRange( model.createPositionAt( block, array[ 0 ] ), model.createPositionAt( block, array[ 1 ] ) );
+		} );
 }
