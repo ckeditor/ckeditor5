@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import BlockQuoteCommand from './blockquotecommand';
 
@@ -70,10 +68,10 @@ export default class BlockQuoteEditing extends Plugin {
 						return true;
 					} else if ( element.is( 'element' ) ) {
 						// Just added an element. Check its children to see if there are no nested blockQuotes somewhere inside.
-						const range = Range.createIn( element );
+						const range = writer.createRangeIn( element );
 
 						for ( const child of range.getItems() ) {
-							if ( child.is( 'blockQuote' ) && !schema.checkChild( Position.createBefore( child ), child ) ) {
+							if ( child.is( 'blockQuote' ) && !schema.checkChild( writer.createPositionBefore( child ), child ) ) {
 								writer.unwrap( child );
 
 								return true;
