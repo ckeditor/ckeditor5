@@ -79,8 +79,8 @@ export default class LabeledInputView extends View {
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
-		 * later always takes precedence: if the {@link #hasError} is `true`, the info text
-		 * is replaced by {@link #errorText} for as long as the value of the input is invalid.
+		 * later always takes precedence: if the {@link #errorText} is set, it replaces
+		 * {@link #errorText} for as long as the value of the input is invalid.
 		 *
 		 * @observable
 		 * @member {String|null} #infoText
@@ -119,7 +119,7 @@ export default class LabeledInputView extends View {
 		 * @see #statusView
 		 * @private
 		 * @observable
-		 * @member {String|null} #statusText
+		 * @member {String|null} #_statusText
 		 */
 		this.bind( '_statusText' ).to(
 			this, 'errorText',
