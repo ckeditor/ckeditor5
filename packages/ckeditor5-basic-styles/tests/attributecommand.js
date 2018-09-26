@@ -7,8 +7,6 @@ import AttributeCommand from '../src/attributecommand';
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'AttributeCommand', () => {
@@ -227,10 +225,14 @@ describe( 'AttributeCommand', () => {
 
 			model.change( writer => {
 				// Simulate clicking right arrow key by changing selection ranges.
-				writer.setSelection( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) );
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 )
+				) );
 
 				// Get back to previous selection.
-				writer.setSelection( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 1 )
+				) );
 			} );
 
 			expect( command.value ).to.be.false;
@@ -249,14 +251,14 @@ describe( 'AttributeCommand', () => {
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
 			model.change( writer => {
-				writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+				writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
 			} );
 
 			expect( command.value ).to.be.false;
 
 			// Go back to where attribute was stored.
 			model.change( writer => {
-				writer.setSelection( new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) );
+				writer.setSelection( writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ) ) );
 			} );
 
 			// Attribute should be restored.
