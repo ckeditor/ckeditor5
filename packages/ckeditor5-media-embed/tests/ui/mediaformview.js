@@ -81,6 +81,18 @@ describe( 'MediaFormView', () => {
 			it( 'has placeholder', () => {
 				expect( view.urlInputView.inputView.placeholder ).to.equal( 'https://example.com' );
 			} );
+
+			it( 'displays the info text when upon #input when the field has a value', () => {
+				view.urlInputView.inputView.element.value = 'foo';
+				view.urlInputView.inputView.fire( 'input' );
+
+				expect( view.urlInputView.infoText ).to.match( /^Paste the URL/ );
+
+				view.urlInputView.inputView.element.value = '';
+				view.urlInputView.inputView.fire( 'input' );
+
+				expect( view.urlInputView.infoText ).to.be.null;
+			} );
 		} );
 
 		describe( 'template', () => {
@@ -244,8 +256,8 @@ describe( 'MediaFormView', () => {
 	} );
 
 	describe( 'isValid()', () => {
-		it( 'calls resetErrors()', () => {
-			const spy = sinon.spy( view, 'resetErrors' );
+		it( 'calls resetFormStatus()', () => {
+			const spy = sinon.spy( view, 'resetFormStatus' );
 
 			view.isValid();
 
@@ -277,17 +289,25 @@ describe( 'MediaFormView', () => {
 			sinon.assert.calledOnce( val1 );
 			sinon.assert.calledOnce( val2 );
 
-			expect( view.urlInputView.errorText ).to.be.false;
+			expect( view.urlInputView.errorText ).to.be.null;
 		} );
 	} );
 
-	describe( 'resetErrors()', () => {
+	describe( 'resetFormStatus()', () => {
 		it( 'resets urlInputView#errorText', () => {
 			view.urlInputView.errorText = 'foo';
 
-			view.resetErrors();
+			view.resetFormStatus();
 
-			expect( view.urlInputView.errorText ).to.be.false;
+			expect( view.urlInputView.errorText ).to.be.null;
+		} );
+
+		it( 'resets urlInputView#infoText', () => {
+			view.urlInputView.infoText = 'foo';
+
+			view.resetFormStatus();
+
+			expect( view.urlInputView.infoText ).to.be.null;
 		} );
 	} );
 } );

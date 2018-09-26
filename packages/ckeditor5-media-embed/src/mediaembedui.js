@@ -81,7 +81,7 @@ export default class MediaEmbedUI extends Plugin {
 			}
 		} );
 
-		dropdown.on( 'change:isOpen', () => form.resetErrors() );
+		dropdown.on( 'change:isOpen', () => form.resetFormStatus() );
 		dropdown.on( 'cancel', () => closeUI() );
 
 		function closeUI() {
