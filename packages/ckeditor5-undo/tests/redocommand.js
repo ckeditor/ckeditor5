@@ -4,8 +4,6 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import RedoCommand from '../src/redocommand';
@@ -30,8 +28,8 @@ describe( 'RedoCommand', () => {
 
 	describe( 'RedoCommand', () => {
 		describe( 'execute()', () => {
-			const p = pos => new Position( root, [].concat( pos ) );
-			const r = ( a, b ) => new Range( p( a ), p( b ) );
+			const p = pos => model.createPositionFromPath( root, [].concat( pos ) );
+			const r = ( a, b ) => model.createRange( p( a ), p( b ) );
 
 			let batch0, batch1, batch2;
 			const batches = new Set();
@@ -55,7 +53,7 @@ describe( 'RedoCommand', () => {
 					writer.setSelection( r( 0, 0 ) );
 				} );
 
-				batch0 = new Batch();
+				batch0 = model.createBatch();
 				undo.addBatch( batch0 );
 				model.enqueueChange( batch0, writer => {
 					writer.insertText( 'foobar', p( 0 ) );
@@ -74,7 +72,7 @@ describe( 'RedoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 2, 4 ), { backward: true } );
 				} );
-				batch1 = new Batch();
+				batch1 = model.createBatch();
 				undo.addBatch( batch1 );
 				model.enqueueChange( batch1, writer => {
 					writer.setAttribute( 'key', 'value', r( 2, 4 ) );
@@ -92,7 +90,7 @@ describe( 'RedoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 1, 3 ) );
 				} );
-				batch2 = new Batch();
+				batch2 = model.createBatch();
 				undo.addBatch( batch2 );
 				model.enqueueChange( batch2, writer => {
 					writer.move( r( 1, 3 ), p( 6 ) );

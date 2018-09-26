@@ -7,8 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import UndoEditing from '../src/undoediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -49,7 +47,9 @@ describe( 'UndoEditing integration', () => {
 
 	function setSelection( pathA, pathB ) {
 		model.change( writer => {
-			writer.setSelection( new Range( new Position( root, pathA ), new Position( root, pathB ) ) );
+			writer.setSelection( writer.createRange(
+				writer.createPositionFromPath( root, pathA ), writer.createPositionFromPath( root, pathB )
+			) );
 		} );
 	}
 
@@ -91,7 +91,7 @@ describe( 'UndoEditing integration', () => {
 
 			model.change( writer => {
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
-				writer.insertText( 'xxx', new Position( root, [ 1, 0 ] ) );
+				writer.insertText( 'xxx', writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
 
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>xxxbar</paragraph>' );
@@ -149,13 +149,15 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>[]foo</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
-				writer.remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+				const start = doc.selection.getFirstPosition();
+				writer.remove( writer.createRange( start, start.getShiftedBy( 2 ) ) );
 			} );
 			output( '<paragraph>[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1, 1 ], [ 1, 1 ] );
-				writer.remove( Range.createFromPositionAndShift( doc.selection.getFirstPosition(), 2 ) );
+				const start = doc.selection.getFirstPosition();
+				writer.remove( writer.createRange( start, start.getShiftedBy( 2 ) ) );
 			} );
 			output( '<paragraph>o</paragraph><paragraph>b[]</paragraph>' );
 
@@ -180,7 +182,8 @@ describe( 'UndoEditing integration', () => {
 
 			model.change( writer => {
 				setSelection( [ 1, 2 ], [ 1, 2 ] );
-				writer.remove( Range.createFromPositionAndShift( new Position( root, [ 1, 1 ] ), 1 ) );
+				const start = writer.createPositionFromPath( root, [ 1, 1 ] );
+				writer.remove( writer.createRange( start, start.getShiftedBy( 1 ) ) );
 			} );
 			output( '<paragraph>fozzzo</paragraph><paragraph>b[]r</paragraph>' );
 
@@ -202,7 +205,8 @@ describe( 'UndoEditing integration', () => {
 			output( '<paragraph>fozzz[]o</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
-				writer.remove( Range.createFromPositionAndShift( new Position( root, [ 0, 2 ] ), 3 ) );
+				const start = writer.createPositionFromPath( root, [ 0, 2 ] );
+				writer.remove( writer.createRange( start, start.getShiftedBy( 3 ) ) );
 			} );
 			output( '<paragraph>fo[]o</paragraph><paragraph>bar</paragraph>' );
 
@@ -219,7 +223,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 			} );
 			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
@@ -234,7 +238,7 @@ describe( 'UndoEditing integration', () => {
 			output( '<paragraph>[]</paragraph>' ); // All hail our king and savior, autoparagraphing!
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insertElement( 'heading1', doc.selection.getFirstPosition() );
 			} );
 
@@ -251,7 +255,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph></paragraph>' );
 
 			const p = root.getChild( 0 );
-			const pos = new Position( root, [ 0 ] );
+			const pos = model.createPositionFromPath( root, [ 0 ] );
 
 			model.change( writer => {
 				writer.remove( p );
@@ -274,12 +278,12 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
-				writer.move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
 			model.change( writer => {
-				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0, 2 ] ) );
+				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 0, 2 ] ) );
 			} );
 			output( '<paragraph>fz[o]</paragraph><paragraph>bar</paragraph>' );
 
@@ -296,13 +300,13 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
 
 			model.change( writer => {
-				writer.move( doc.selection.getFirstRange(), new Position( root, [ 1, 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 1, 0 ] ) );
 			} );
 			output( '<paragraph>fz</paragraph><paragraph>[o]bar</paragraph>' );
 
 			model.change( writer => {
 				setSelection( [ 1 ], [ 2 ] );
-				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 0 ] ) );
 			} );
 			output( '<paragraph>[obar]</paragraph><paragraph>fz</paragraph>' );
 
@@ -373,7 +377,7 @@ describe( 'UndoEditing integration', () => {
 
 			model.change( writer => {
 				setSelection( [ 2, 0 ], [ 2, 1 ] );
-				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
+				writer.move( doc.selection.getFirstRange(), writer.createPositionFromPath( root, [ 0 ] ) );
 			} );
 			output( '[z]fo<paragraph>b</paragraph>ar' );
 
@@ -404,7 +408,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
 			model.change( writer => {
-				writer.merge( new Position( root, [ 1 ] ) );
+				writer.merge( writer.createPositionFromPath( root, [ 1 ] ) );
 			} );
 			output( '<paragraph>foo[]bar</paragraph>' );
 
@@ -780,12 +784,12 @@ describe( 'UndoEditing integration', () => {
 			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
-				writer.split( Position.createAt( root.getChild( 0 ), 1 ) );
+				writer.split( writer.createPositionAt( root.getChild( 0 ), 1 ) );
 			} );
 			output( '<paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
-				writer.merge( Position.createAt( root, 2 ) );
+				writer.merge( writer.createPositionAt( root, 2 ) );
 			} );
 			output( '<paragraph>[]F</paragraph><paragraph>ooBar</paragraph>' );
 
@@ -809,7 +813,7 @@ describe( 'UndoEditing integration', () => {
 			output( '<heading2>[]Foo</heading2><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
-				writer.merge( Position.createAt( root, 1 ) );
+				writer.merge( writer.createPositionAt( root, 1 ) );
 			} );
 			output( '<heading2>[]FooBar</heading2>' );
 
@@ -825,7 +829,7 @@ describe( 'UndoEditing integration', () => {
 			input( '<heading1>[]Foo</heading1><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
-				writer.merge( Position.createAt( root, 1 ) );
+				writer.merge( writer.createPositionAt( root, 1 ) );
 			} );
 			output( '<heading1>[]FooBar</heading1>' );
 
@@ -855,12 +859,12 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
-				writer.wrap( Range.createIn( root ), 'div' );
+				writer.wrap( writer.createRangeIn( root ), 'div' );
 			} );
 			output( '<div><paragraph>[]Foo</paragraph><paragraph>Bar</paragraph></div>' );
 
 			model.change( writer => {
-				writer.split( new Position( root, [ 0, 0, 1 ] ) );
+				writer.split( writer.createPositionFromPath( root, [ 0, 0, 1 ] ) );
 			} );
 			output( '<div><paragraph>[]F</paragraph><paragraph>oo</paragraph><paragraph>Bar</paragraph></div>' );
 
@@ -909,7 +913,10 @@ describe( 'UndoEditing integration', () => {
 			editor.execute( 'enter' );
 
 			model.change( writer => {
-				const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 3 ] ) );
+				const range = writer.createRange(
+					writer.createPositionFromPath( root, [ 0, 3 ] ),
+					writer.createPositionFromPath( root, [ 1, 3 ] )
+				);
 
 				writer.setSelection( range );
 
@@ -1025,12 +1032,12 @@ describe( 'UndoEditing integration', () => {
 		// 1. Step - add text and marker to the paragraph.
 		model.change( writer => {
 			writer.appendText( 'foo', paragraph );
-			writer.addMarker( 'marker', { range: Range.createIn( paragraph ), usingOperation: true } );
+			writer.addMarker( 'marker', { range: writer.createRangeIn( paragraph ), usingOperation: true } );
 		} );
 
 		// 2. Step - remove text from paragraph.
 		model.change( writer => {
-			writer.remove( Range.createIn( paragraph ) );
+			writer.remove( writer.createRangeIn( paragraph ) );
 		} );
 
 		// Register post fixer to remove marker from non-empty paragraph.

@@ -4,7 +4,6 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import BaseCommand from '../src/basecommand';
 
 describe( 'BaseCommand', () => {
@@ -31,7 +30,7 @@ describe( 'BaseCommand', () => {
 		} );
 
 		it( 'should be true if there are batches in command stack', () => {
-			base.addBatch( new Batch() );
+			base.addBatch( editor.model.createBatch() );
 
 			expect( base.isEnabled ).to.be.true;
 		} );
@@ -39,7 +38,7 @@ describe( 'BaseCommand', () => {
 
 	describe( 'clearStack', () => {
 		it( 'should remove all batches from the stack', () => {
-			base.addBatch( new Batch() );
+			base.addBatch( editor.model.createBatch() );
 			base.clearStack();
 
 			expect( base.isEnabled ).to.be.false;

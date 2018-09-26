@@ -8,7 +8,6 @@
  */
 
 import BaseCommand from './basecommand';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -31,7 +30,7 @@ export default class RedoCommand extends BaseCommand {
 	 */
 	execute() {
 		const item = this._stack.pop();
-		const redoingBatch = new Batch();
+		const redoingBatch = this.editor.model.createBatch();
 
 		// All changes have to be done in one `enqueueChange` callback so other listeners will not step between consecutive
 		// operations, or won't do changes to the document before selection is properly restored.
