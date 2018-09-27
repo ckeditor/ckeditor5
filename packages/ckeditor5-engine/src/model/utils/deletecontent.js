@@ -149,7 +149,6 @@ function mergeBranches( writer, startPos, endPos ) {
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
 		// becomes:
 		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
-
 		writer.insert( endParent, startPos );
 	}
 
