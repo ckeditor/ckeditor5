@@ -8,60 +8,62 @@ import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { paragraphsToLists } from '../../src/filters/list';
 
-describe( 'Filters – list', () => {
-	const htmlDataProcessor = new HtmlDataProcessor();
+describe( 'Filters', () => {
+	describe( 'List', () => {
+		const htmlDataProcessor = new HtmlDataProcessor();
 
-	describe( 'paragraphsToLists', () => {
-		it( 'replaces list-like elements with semantic lists', () => {
-			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
-			const view = htmlDataProcessor.toView( html );
+		describe( 'paragraphsToLists', () => {
+			it( 'replaces list-like elements with semantic lists', () => {
+				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
+				const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+				const result = paragraphsToLists( view, '' );
 
-			expect( result.childCount ).to.equal( 1 );
-			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
-			expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:l0 level1 lfo0">Item 1</li></ol>' );
-		} );
+				expect( result.childCount ).to.equal( 1 );
+				expect( result.getChild( 0 ).name ).to.equal( 'ol' );
+				expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:l0 level1 lfo0">Item 1</li></ol>' );
+			} );
 
-		it( 'replaces list-like elements with semantic lists with proper bullet type based on styles', () => {
-			const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
-			const view = htmlDataProcessor.toView( html );
+			it( 'replaces list-like elements with semantic lists with proper bullet type based on styles', () => {
+				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
+				const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
+				const result = paragraphsToLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
 
-			expect( result.childCount ).to.equal( 1 );
-			expect( result.getChild( 0 ).name ).to.equal( 'ul' );
-			expect( stringify( result ) ).to.equal( '<ul><li style="mso-list:l0 level1 lfo0">Item 1</li></ul>' );
-		} );
+				expect( result.childCount ).to.equal( 1 );
+				expect( result.getChild( 0 ).name ).to.equal( 'ul' );
+				expect( stringify( result ) ).to.equal( '<ul><li style="mso-list:l0 level1 lfo0">Item 1</li></ul>' );
+			} );
 
-		it( 'does not modify the view if there are no list-like elements', () => {
-			const html = '<h1>H1</h1><p>Foo Bar</p>';
-			const view = htmlDataProcessor.toView( html );
+			it( 'does not modify the view if there are no list-like elements', () => {
+				const html = '<h1>H1</h1><p>Foo Bar</p>';
+				const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+				const result = paragraphsToLists( view, '' );
 
-			expect( result.childCount ).to.equal( 2 );
-			expect( stringify( result ) ).to.equal( html );
-		} );
+				expect( result.childCount ).to.equal( 2 );
+				expect( stringify( result ) ).to.equal( html );
+			} );
 
-		it( 'handles empty `mso-list` style correctly', () => {
-			const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
-			const view = htmlDataProcessor.toView( html );
+			it( 'handles empty `mso-list` style correctly', () => {
+				const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
+				const view = htmlDataProcessor.toView( html );
 
-			const result = paragraphsToLists( view, '' );
+				const result = paragraphsToLists( view, '' );
 
-			expect( result.childCount ).to.equal( 1 );
-			expect( result.getChild( 0 ).name ).to.equal( 'ol' );
-			expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:">Item 1</li></ol>' );
-		} );
+				expect( result.childCount ).to.equal( 1 );
+				expect( result.getChild( 0 ).name ).to.equal( 'ol' );
+				expect( stringify( result ) ).to.equal( '<ol><li style="mso-list:">Item 1</li></ol>' );
+			} );
 
-		it( 'handles empty body correctly', () => {
-			const view = htmlDataProcessor.toView( '' );
+			it( 'handles empty body correctly', () => {
+				const view = htmlDataProcessor.toView( '' );
 
-			const result = paragraphsToLists( view, '' );
+				const result = paragraphsToLists( view, '' );
 
-			expect( result.childCount ).to.equal( 0 );
-			expect( stringify( result ) ).to.equal( '' );
+				expect( result.childCount ).to.equal( 0 );
+				expect( stringify( result ) ).to.equal( '' );
+			} );
 		} );
 	} );
 } );

@@ -12,6 +12,10 @@ import withinTextNormalized from './within-text/normalized.word2016.html';
 import combinedNormalized from './combined/normalized.word2016.html';
 import twoLineNormalized from './two-line/normalized.word2016.html';
 
+import withinTextModel from './within-text/model.word2016.html';
+import combinedModel from './combined/model.word2016.html';
+import twoLineModel from './two-line/model.word2016.html';
+
 export const fixtures = {
 	input: {
 		withinText,
@@ -22,6 +26,11 @@ export const fixtures = {
 		withinText: withinTextNormalized,
 		combined: combinedNormalized,
 		twoLine: twoLineNormalized
+	},
+	model: {
+		withinText: withinTextModel,
+		combined: combinedModel,
+		twoLine: twoLineModel
 	}
 };
 
@@ -45,6 +54,11 @@ export const browserFixtures = {
 			withinText: withinTextNormalizedSafari,
 			combined: combinedNormalizedSafari,
 			twoLine: twoLineNormalizedSafari
+		},
+		model: {
+			withinText: withinTextModel,
+			combined: combinedModel,
+			twoLine: twoLineModel
 		}
 	}
 };

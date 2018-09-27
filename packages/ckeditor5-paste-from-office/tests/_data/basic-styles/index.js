@@ -18,6 +18,13 @@ import strikethroughEndingTextNormalized from './strikethrough-ending-text/norma
 import multipleStylesSingleLineNormalized from './multiple-styles-single-line/normalized.word2016.html';
 import multipleStylesMultilineNormalized from './multiple-styles-multiline/normalized.word2016.html';
 
+import boldWithinTextModel from './bold-within-text/model.word2016.html';
+import italicStartingTextModel from './italic-starting-text/model.word2016.html';
+import underlinedTextModel from './underlined-text/model.word2016.html';
+import strikethroughEndingTextModel from './strikethrough-ending-text/model.word2016.html';
+import multipleStylesSingleLineModel from './multiple-styles-single-line/model.word2016.html';
+import multipleStylesMultilineModel from './multiple-styles-multiline/model.word2016.html';
+
 export const fixtures = {
 	input: {
 		boldWithinText,
@@ -34,6 +41,14 @@ export const fixtures = {
 		strikethroughEndingText: strikethroughEndingTextNormalized,
 		multipleStylesSingleLine: multipleStylesSingleLineNormalized,
 		multipleStylesMultiline: multipleStylesMultilineNormalized
+	},
+	model: {
+		boldWithinText: boldWithinTextModel,
+		italicStartingText: italicStartingTextModel,
+		underlinedText: underlinedTextModel,
+		strikethroughEndingText: strikethroughEndingTextModel,
+		multipleStylesSingleLine: multipleStylesSingleLineModel,
+		multipleStylesMultiline: multipleStylesMultilineModel
 	}
 };
 
@@ -69,6 +84,14 @@ export const browserFixtures = {
 			strikethroughEndingText: strikethroughEndingTextNormalizedSafari,
 			multipleStylesSingleLine: multipleStylesSingleLineNormalizedSafari,
 			multipleStylesMultiline: multipleStylesMultilineNormalizedSafari
+		},
+		model: {
+			boldWithinText: boldWithinTextModel,
+			italicStartingText: italicStartingTextModel,
+			underlinedText: underlinedTextModel,
+			strikethroughEndingText: strikethroughEndingTextModel,
+			multipleStylesSingleLine: multipleStylesSingleLineModel,
+			multipleStylesMultiline: multipleStylesMultilineModel
 		}
 	}
 };

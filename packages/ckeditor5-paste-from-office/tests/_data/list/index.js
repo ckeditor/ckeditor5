@@ -22,6 +22,15 @@ import heading1Normalized from './heading1/normalized.word2016.html';
 import heading3StyledNormalized from './heading3-styled/normalized.word2016.html';
 import heading7Normalized from './heading7/normalized.word2016.html';
 
+import simpleModel from './simple/model.word2016.html';
+import styledModel from './styled/model.word2016.html';
+import multipleModel from './multiple/model.word2016.html';
+import multipleCombinedModel from './multiple-combined/model.word2016.html';
+import manyOneItemModel from './many-one-item/model.word2016.html';
+import heading1Model from './heading1/model.word2016.html';
+import heading3StyledModel from './heading3-styled/model.word2016.html';
+import heading7Model from './heading7/model.word2016.html';
+
 export const fixtures = {
 	input: {
 		simple,
@@ -42,6 +51,16 @@ export const fixtures = {
 		heading1: heading1Normalized,
 		heading3Styled: heading3StyledNormalized,
 		heading7: heading7Normalized
+	},
+	model: {
+		simple: simpleModel,
+		styled: styledModel,
+		multiple: multipleModel,
+		multipleCombined: multipleCombinedModel,
+		manyOneItem: manyOneItemModel,
+		heading1: heading1Model,
+		heading3Styled: heading3StyledModel,
+		heading7: heading7Model
 	}
 };
 
@@ -64,6 +83,8 @@ import heading1NormalizedSafari from './heading1/normalized.safari.word2016.html
 import heading3StyledNormalizedSafari from './heading3-styled/normalized.safari.word2016.html';
 import heading7NormalizedSafari from './heading7/normalized.safari.word2016.html';
 
+import styledSafariModel from './styled/model.safari.word2016.html';
+
 export const browserFixtures = {
 	safari: {
 		input: {
@@ -85,6 +106,16 @@ export const browserFixtures = {
 			heading1: heading1NormalizedSafari,
 			heading3Styled: heading3StyledNormalizedSafari,
 			heading7: heading7NormalizedSafari
+		},
+		model: {
+			simple: simpleModel,
+			styled: styledSafariModel,
+			multiple: multipleModel,
+			multipleCombined: multipleCombinedModel,
+			manyOneItem: manyOneItemModel,
+			heading1: heading1Model,
+			heading3Styled: heading3StyledModel,
+			heading7: heading7Model
 		}
 	}
 };

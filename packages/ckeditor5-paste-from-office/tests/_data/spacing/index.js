@@ -12,6 +12,10 @@ import simpleNormalized from './simple/normalized.word2016.html';
 import singleLineNormalized from './single-line/normalized.word2016.html';
 import multiLineNormalized from './multi-line/normalized.word2016.html';
 
+import simpleModel from './simple/model.word2016.html';
+import singleLineModel from './single-line/model.word2016.html';
+import multiLineModel from './multi-line/model.word2016.html';
+
 export const fixtures = {
 	input: {
 		simple,
@@ -22,6 +26,11 @@ export const fixtures = {
 		simple: simpleNormalized,
 		singleLine: singleLineNormalized,
 		multiLine: multiLineNormalized
+	},
+	model: {
+		simple: simpleModel,
+		singleLine: singleLineModel,
+		multiLine: multiLineModel
 	}
 };
 
@@ -45,6 +54,11 @@ export const browserFixtures = {
 			simple: simpleNormalizedSafari,
 			singleLine: singleLineNormalizedSafari,
 			multiLine: multiLineNormalizedSafari
+		},
+		model: {
+			simple: simpleModel,
+			singleLine: singleLineModel,
+			multiLine: multiLineModel
 		}
 	}
 };
