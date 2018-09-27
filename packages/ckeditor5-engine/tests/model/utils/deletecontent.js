@@ -772,6 +772,10 @@ describe( 'DataController utils', () => {
 				schema.extend( '$block', { allowIn: 'blockLimit' } );
 
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
 			} );
 
 			test(
@@ -804,6 +808,28 @@ describe( 'DataController utils', () => {
 				'<blockLimit><paragraph>foo [bar</paragraph></blockLimit><blockLimit><paragraph>baz] qux</paragraph></blockLimit>',
 				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>'
 			);
+
+			// See: https://github.com/ckeditor/ckeditor5/issues/1265.
+			it( 'should proper merge two elements which are inside limit element', () => {
+				setData( model,
+					'<blockLimit>' +
+						'<blockQuote>' +
+							'<paragraph>Foo</paragraph>' +
+						'</blockQuote>' +
+						'<paragraph>[]Bar</paragraph>' +
+					'</blockLimit>'
+				);
+
+				model.modifySelection( doc.selection, { direction: 'backward' } );
+				deleteContent( model, doc.selection );
+
+				expect( getData( model ) ).to.equal(
+					'<blockLimit>' +
+						'<blockQuote>' +
+							'<paragraph>Foo[]Bar</paragraph>' +
+						'</blockQuote>' +
+					'</blockLimit>' );
+			} );
 		} );
 
 		describe( 'should leave a paragraph if the entire content was selected', () => {
