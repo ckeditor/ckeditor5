@@ -3,15 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+/* globals document */
 
-import { defaultConversion, defaultSchema, formatTable, formattedViewTable, modelTable } from '../_utils/utils';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+import { defaultConversion, defaultSchema, formatTable, formattedViewTable, viewTable } from '../_utils/utils';
 import injectTableCellPostFixer from '../../src/converters/tablecell-post-fixer';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'TableCell post-fixer', () => {
 	let editor, model, doc, root, viewDocument;
@@ -19,10 +22,13 @@ describe( 'TableCell post-fixer', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		const element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-		return VirtualTestEditor.create()
+		return ClassicTestEditor.create( element )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -46,7 +52,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should rename <span> to <p> when adding more <paragraph> elements to the same table cell', () => {
-		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -66,7 +72,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should rename <span> to <p> on adding other block element to the same table cell', () => {
-		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -86,7 +92,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should properly rename the same element on consecutive changes', () => {
-		setModelData( model, modelTable( [ [ '00[]' ] ] ) );
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -112,7 +118,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should rename <span> to <p> when setting attribute on <paragraph>', () => {
-		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph>' ] ] ) );
+		editor.setData( '<table><tr><td><p>00</p></td></tr></table>' );
 
 		const table = root.getChild( 0 );
 
@@ -126,7 +132,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should rename <p> to <span> when removing all but one paragraph inside table cell', () => {
-		setModelData( model, modelTable( [ [ '<paragraph>00[]</paragraph><paragraph>foo</paragraph>' ] ] ) );
+		editor.setData( viewTable( [ [ '<p>00</p><p>foo</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -140,7 +146,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should rename <p> to <span> when removing attribute from <paragraph>', () => {
-		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
+		editor.setData( '<table><tr><td><p foo="bar">00</p></td></tr></table>' );
 
 		const table = root.getChild( 0 );
 
@@ -154,7 +160,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed', () => {
-		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph>' ] ] ) );
+		editor.setData( viewTable( [ [ '<p foo="bar">00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -168,7 +174,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
-		setModelData( model, modelTable( [ [ '<paragraph foo="bar">00[]</paragraph><paragraph>00</paragraph>' ] ] ) );
+		editor.setData( viewTable( [ [ '<p foo="bar">00</p><p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -182,7 +188,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should do nothing on rename <paragraph> to other block', () => {
-		setModelData( model, modelTable( [ [ '00' ] ] ) );
+		editor.setData( viewTable( [ [ '<p>00</p>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -196,7 +202,7 @@ describe( 'TableCell post-fixer', () => {
 	} );
 
 	it( 'should do nothing when setting attribute on block item other then <paragraph>', () => {
-		setModelData( model, modelTable( [ [ '<block>foo</block>' ] ] ) );
+		editor.setData( viewTable( [ [ '<div>foo</div>' ] ] ) );
 
 		const table = root.getChild( 0 );
 
@@ -206,6 +212,33 @@ describe( 'TableCell post-fixer', () => {
 
 		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div foo="bar">foo</div>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should not crash when view.change() block was called in model.change()', () => {
+		editor.setData( viewTable( [ [ '<p>foobar</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) )
+			.to.equal( formattedViewTable( [ [ 'foobar' ] ], { asWidget: true } ) );
+
+		expect( () => {
+			model.change( writer => {
+				const tableCell = table.getNodeByPath( [ 0, 0 ] );
+
+				writer.insertElement( 'paragraph', null, Position.createAt( tableCell, 'end' ) );
+				writer.setSelection( Range.createIn( tableCell ) );
+
+				// Do some change in the view while inside model change.
+				editor.editing.view.change( writer => {
+					writer.addClass( 'foo', editor.editing.mapper.toViewElement( tableCell ) );
+				} );
+			} );
+		} ).to.not.throw();
+
+		expect( formatTable( getViewData( viewDocument ) ) ).to.equal( formattedViewTable( [
+			[ { class: 'foo', contents: '<p>{foobar</p><p>]</p>' } ]
 		], { asWidget: true } ) );
 	} );
 } );
