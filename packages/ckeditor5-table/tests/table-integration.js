@@ -80,7 +80,7 @@ describe( 'Table feature – integration', () => {
 			] ) );
 		} );
 
-		it.only( 'merges elements without throwing errors', () => {
+		it( 'merges elements without throwing errors', () => {
 			setModelData( editor.model, modelTable( [
 				[ '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>[]Bar</paragraph>' ]
 			] ) );
