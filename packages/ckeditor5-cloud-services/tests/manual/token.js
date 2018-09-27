@@ -11,11 +11,12 @@ import CloudServices from '../../src/cloudservices';
 
 import { TOKEN_URL, UPLOAD_URL } from '../_utils/cloud-services-config';
 
-const output = document.querySelector( '#output' );
-const refreshTokenButton = document.querySelector( '#refresh-token' );
+const output = document.getElementById( 'output' );
+const refreshTokenButton = document.getElementById( 'refresh-token' );
+const requestOutput = document.getElementById( 'request' );
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+	.create( document.getElementById( 'editor' ), {
 		cloudServices: {
 			tokenUrl: getToken,
 			uploadUrl: UPLOAD_URL
@@ -25,18 +26,34 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-
-		const cloudServices = editor.plugins.get( CloudServices );
-
-		refreshTokenButton.addEventListener( 'click', () => {
-			cloudServices.token._refreshToken();
-		} );
 	} )
 	.catch( err => {
+		output.innerText = err.stack;
 		console.error( err.stack );
 	} );
 
 window.addEventListener( refreshTokenButton, () => {} );
+
+function handleRequest( xhr, resolve, reject ) {
+	requestOutput.innerHTML = `
+		<div>XHR request: <pre class='xhr-data'></pre></div>
+		<button class="resolve">Resolve with the xhr response</button>
+		<button class="reject">Reject with an error</button>
+	`;
+
+	const xhrSpan = requestOutput.querySelector( '.xhr-data' );
+	const xhrData = {
+		status: xhr.status,
+		response: xhr.response,
+	};
+	xhrSpan.innerText = JSON.stringify( xhrData, null, 2 );
+
+	const resolveButton = requestOutput.querySelector( '.resolve' );
+	resolveButton.addEventListener( 'click', () => resolve( xhr.response ) );
+
+	const rejectButton = requestOutput.querySelector( '.reject' );
+	rejectButton.addEventListener( 'click', () => reject( new Error( 'Cannot download new token!' ) ) );
+}
 
 function getToken() {
 	return new Promise( ( resolve, reject ) => {
@@ -45,14 +62,7 @@ function getToken() {
 		xhr.open( 'GET', TOKEN_URL );
 
 		xhr.addEventListener( 'load', () => {
-			const statusCode = xhr.status;
-			const xhrResponse = xhr.response;
-
-			if ( statusCode < 200 || statusCode > 299 ) {
-				return reject( new Error( 'Cannot download new token!' ) );
-			}
-
-			return resolve( xhrResponse );
+			handleRequest( xhr, resolve, reject );
 		} );
 
 		xhr.addEventListener( 'error', () => reject( new Error( 'Network Error' ) ) );
@@ -60,15 +70,8 @@ function getToken() {
 
 		xhr.send();
 	} ).then( response => {
-		log( 'Token: ' + response );
+		output.innerText = `Response: ${ response }`;
 
 		return response;
 	} );
-}
-
-function log( message ) {
-	const pre = document.createElement( 'pre' );
-	pre.innerText = message;
-
-	output.appendChild( pre );
 }
