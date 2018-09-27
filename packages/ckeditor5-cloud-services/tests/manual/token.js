@@ -12,7 +12,6 @@ import CloudServices from '../../src/cloudservices';
 import { TOKEN_URL, UPLOAD_URL } from '../_utils/cloud-services-config';
 
 const output = document.getElementById( 'output' );
-const refreshTokenButton = document.getElementById( 'refresh-token' );
 const requestOutput = document.getElementById( 'request' );
 
 ClassicEditor
@@ -31,8 +30,6 @@ ClassicEditor
 		output.innerText = err.stack;
 		console.error( err.stack );
 	} );
-
-window.addEventListener( refreshTokenButton, () => {} );
 
 function handleRequest( xhr, resolve, reject ) {
 	requestOutput.innerHTML = `
