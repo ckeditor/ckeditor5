@@ -22,6 +22,7 @@
     "@ckeditor/ckeditor5-image": "^10.2.0",
     "@ckeditor/ckeditor5-list": "^11.0.1",
     "@ckeditor/ckeditor5-paragraph": "^10.0.2",
+    "@ckeditor/ckeditor5-typing": "^11.0.0",
     "@ckeditor/ckeditor5-undo": "^10.0.2",
     "@ckeditor/ckeditor5-utils": "^10.2.0",
     "eslint": "^5.5.0",
