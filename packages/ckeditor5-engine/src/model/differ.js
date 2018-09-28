@@ -181,23 +181,21 @@ export default class Differ {
 				break;
 			}
 			case 'split': {
-				const splitElement = operation.position.parent;
+				const splitElement = operation.splitPosition.parent;
 
 				// Mark that children of the split element were removed.
 				if ( !this._isInInsertedElement( splitElement ) ) {
-					this._markRemove( splitElement, operation.position.offset, operation.howMany );
+					this._markRemove( splitElement, operation.splitPosition.offset, operation.howMany );
 				}
 
 				// Mark that the new element (split copy) was inserted.
-				if ( !this._isInInsertedElement( splitElement.parent ) ) {
-					this._markInsert( splitElement.parent, operation.insertionPosition.offset, 1 );
+				if ( !this._isInInsertedElement( operation.insertionPosition.parent ) ) {
+					this._markInsert( operation.insertionPosition.parent, operation.insertionPosition.offset, 1 );
 				}
 
 				// If the split took the element from the graveyard, mark that the element from the graveyard was removed.
 				if ( operation.graveyardPosition ) {
-					const graveyardParent = operation.graveyardPosition.parent;
-
-					this._markRemove( graveyardParent, operation.graveyardPosition.offset, 1 );
+					this._markRemove( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
 				}
 
 				break;

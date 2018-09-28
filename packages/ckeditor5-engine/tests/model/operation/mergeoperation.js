@@ -74,7 +74,8 @@ describe( 'MergeOperation', () => {
 		expect( reverse ).to.be.an.instanceof( SplitOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 2 );
-		expect( reverse.position.isEqual( targetPosition ) ).to.be.true;
+		expect( reverse.splitPosition.isEqual( targetPosition ) ).to.be.true;
+		expect( reverse.insertionPosition.isEqual( new Position( root, [ 1 ] ) ) ).to.be.true;
 		expect( reverse.graveyardPosition.isEqual( gyPos ) ).to.be.true;
 	} );
 

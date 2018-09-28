@@ -587,7 +587,7 @@ export default class Position {
 			( movedRange.start.isEqual( this ) && this.stickiness == 'toNext' );
 
 		if ( isContained ) {
-			return this._getCombined( operation.position, operation.moveTargetPosition );
+			return this._getCombined( operation.splitPosition, operation.moveTargetPosition );
 		} else {
 			if ( operation.graveyardPosition ) {
 				return this._getTransformedByMove( operation.graveyardPosition, operation.insertionPosition, 1 );

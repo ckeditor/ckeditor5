@@ -16,8 +16,6 @@ import RenameOperation from './operation/renameoperation';
 import RootAttributeOperation from './operation/rootattributeoperation';
 import SplitOperation from './operation/splitoperation';
 import MergeOperation from './operation/mergeoperation';
-import WrapOperation from './operation/wrapoperation';
-import UnwrapOperation from './operation/unwrapoperation';
 
 import DocumentFragment from './documentfragment';
 import Text from './text';
@@ -653,7 +651,8 @@ export default class Writer {
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
 			const howMany = splitElement.maxOffset - position.offset;
-			const split = new SplitOperation( position, howMany, null, version );
+			const insertionPosition = SplitOperation.getInsertionPosition( position );
+			const split = new SplitOperation( position, howMany, insertionPosition, null, version );
 
 			this.batch.addOperation( split );
 			this.model.applyOperation( split );

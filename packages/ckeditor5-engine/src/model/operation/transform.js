@@ -483,7 +483,7 @@ class ContextFactory {
 			case SplitOperation: {
 				switch ( opB.constructor ) {
 					case MergeOperation: {
-						if ( opA.position.isBefore( opB.sourcePosition ) ) {
+						if ( opA.splitPosition.isBefore( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'splitBefore' );
 						}
 
@@ -491,7 +491,7 @@ class ContextFactory {
 					}
 
 					case MoveOperation: {
-						if ( opA.position.isEqual( opB.sourcePosition ) || opA.position.isBefore( opB.sourcePosition ) ) {
+						if ( opA.splitPosition.isEqual( opB.sourcePosition ) || opA.splitPosition.isBefore( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'splitBefore' );
 						}
 
@@ -941,15 +941,15 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 	// Make two separate ranges containing all nodes to change:
 	// <p>Fo[zb]</p><p>[a]r</p>
 	//
-	if ( a.range.start.hasSameParentAs( b.position ) && a.range.containsPosition( b.position ) ) {
+	if ( a.range.start.hasSameParentAs( b.splitPosition ) && a.range.containsPosition( b.splitPosition ) ) {
 		const secondPart = a.clone();
 
 		secondPart.range = new Range(
 			Position.createFromPosition( b.moveTargetPosition ),
-			a.range.end._getCombined( b.position, b.moveTargetPosition )
+			a.range.end._getCombined( b.splitPosition, b.moveTargetPosition )
 		);
 
-		a.range.end = Position.createFromPosition( b.position );
+		a.range.end = Position.createFromPosition( b.splitPosition );
 		a.range.end.stickiness = 'toPrevious';
 
 		return [ a, secondPart ];
@@ -1432,7 +1432,7 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 	// that target position has not been affected by the operation which is undone by this split then this split should
 	// not move the target position either.
 	//
-	if ( a.targetPosition.isEqual( b.position ) ) {
+	if ( a.targetPosition.isEqual( b.splitPosition ) ) {
 		const mergeInside = b.howMany != 0;
 		const mergeSplittingElement = b.graveyardPosition && a.deletionPosition.isEqual( b.graveyardPosition );
 
@@ -1468,8 +1468,8 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	if ( a.sourcePosition.hasSameParentAs( b.position ) ) {
-		a.howMany = b.position.offset;
+	if ( a.sourcePosition.hasSameParentAs( b.splitPosition ) ) {
+		a.howMany = b.splitPosition.offset;
 	}
 
 	a.sourcePosition = a.sourcePosition._getTransformedBySplitOperation( b );
@@ -1658,7 +1658,7 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// Special case #2.
 	//
-	// Check if `b` operation targets inside `rangeA`. Use stickiness if possible.
+	// Check if `b` operation targets inside `rangeA`.
 	const bTargetsToA = rangeA.containsPosition( b.targetPosition );
 
 	// If `b` targets to `rangeA` and `rangeA` contains `rangeB`, `b` operation has no influence on `a` operation.
@@ -1748,7 +1748,7 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	// Then, we have to manage the "common part" of both move ranges.
 	const common = rangeA.getIntersection( rangeB );
 
-	if ( common !== null && aIsStrong && !bTargetsToA ) {
+	if ( common !== null && aIsStrong ) {
 		// Calculate the new position of that part of original range.
 		common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 		common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
@@ -1787,7 +1787,14 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 } );
 
 setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
-	let newTargetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+	let newTargetPosition = Position.createFromPosition( a.targetPosition );
+
+	// Do not transform if target position is same as split insertion position and this split comes from undo.
+	// This should be done on relations but it is too much work for now as it would require relations working in collaboration.
+	// We need to make a decision how we will resolve such conflict and this is less harmful way.
+	if ( !a.targetPosition.isEqual( b.insertionPosition ) || !b.graveyardPosition ) {
+		newTargetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+	}
 
 	// Case 1:
 	//
@@ -1823,12 +1830,12 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// After move:
 	// <p>F</p><p>r</p><p>Xyzozba</p>
 	//
-	if ( moveRange.start.hasSameParentAs( b.position ) && moveRange.containsPosition( b.position ) ) {
-		let rightRange = new Range( b.position, moveRange.end );
+	if ( moveRange.start.hasSameParentAs( b.splitPosition ) && moveRange.containsPosition( b.splitPosition ) ) {
+		let rightRange = new Range( b.splitPosition, moveRange.end );
 		rightRange = rightRange._getTransformedBySplitOperation( b );
 
 		const ranges = [
-			new Range( moveRange.start, b.position ),
+			new Range( moveRange.start, b.splitPosition ),
 			rightRange
 		];
 
@@ -1840,7 +1847,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// Move operation targets at the split position. We need to decide if the nodes should be inserted
 	// at the end of the split element or at the beginning of the new element.
 	//
-	if ( a.targetPosition.isEqual( b.position ) && context.abRelation == 'insertAtSource' ) {
+	if ( a.targetPosition.isEqual( b.splitPosition ) && context.abRelation == 'insertAtSource' ) {
 		newTargetPosition = b.moveTargetPosition;
 	}
 
@@ -2064,7 +2071,7 @@ setTransformation( RenameOperation, SplitOperation, ( a, b ) => {
 	// <listItem>Foo</listItem><listItem>bar</listItem>
 	//
 	const renamePath = a.position.path;
-	const splitPath = b.position.getParentPath();
+	const splitPath = b.splitPosition.getParentPath();
 
 	if ( compareArrays( renamePath, splitPath ) == 'same' && !b.graveyardPosition ) {
 		const extraRename = new RenameOperation( a.position.getShiftedBy( 1 ), a.oldName, a.newName, 0 );
@@ -2120,11 +2127,12 @@ setTransformation( RootAttributeOperation, RootAttributeOperation, ( a, b, conte
 setTransformation( SplitOperation, InsertOperation, ( a, b ) => {
 	// The default case.
 	//
-	if ( a.position.hasSameParentAs( b.position ) && a.position.offset < b.position.offset ) {
+	if ( a.splitPosition.hasSameParentAs( b.position ) && a.splitPosition.offset < b.position.offset ) {
 		a.howMany += b.howMany;
 	}
 
-	a.position = a.position._getTransformedByInsertOperation( b );
+	a.splitPosition = a.splitPosition._getTransformedByInsertOperation( b );
+	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 	return [ a ];
 } );
@@ -2182,13 +2190,17 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 	//
 	// Additionally, the special case applies only if the merge wasn't already undone.
 	//
-	if ( !a.graveyardPosition && !context.bWasUndone && a.position.hasSameParentAs( b.sourcePosition ) ) {
+	if ( !a.graveyardPosition && !context.bWasUndone && a.splitPosition.hasSameParentAs( b.sourcePosition ) ) {
 		const splitPath = b.graveyardPosition.path.slice();
 		splitPath.push( 0 );
 
-		const additionalSplit = new SplitOperation( new Position( b.graveyardPosition.root, splitPath ), 0, null, 0 );
+		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
+		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
 
-		a.position = a.position._getTransformedByMergeOperation( b );
+		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
+
+		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 		a.graveyardPosition = Position.createFromPosition( additionalSplit.insertionPosition );
 		a.graveyardPosition.stickiness = 'toNext';
 
@@ -2197,15 +2209,16 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	if ( a.position.hasSameParentAs( b.deletionPosition ) && !a.position.isAfter( b.deletionPosition ) ) {
+	if ( a.splitPosition.hasSameParentAs( b.deletionPosition ) && !a.splitPosition.isAfter( b.deletionPosition ) ) {
 		a.howMany--;
 	}
 
-	if ( a.position.hasSameParentAs( b.targetPosition ) ) {
+	if ( a.splitPosition.hasSameParentAs( b.targetPosition ) ) {
 		a.howMany += b.howMany;
 	}
 
-	a.position = a.position._getTransformedByMergeOperation( b );
+	a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
+	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 	if ( a.graveyardPosition ) {
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMergeOperation( b );
@@ -2238,15 +2251,16 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const rangeToMove = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( a.position.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.position ) ) {
-		const howManyRemoved = b.howMany - ( a.position.offset - b.sourcePosition.offset );
+	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) ) {
+		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );
 		a.howMany -= howManyRemoved;
 
-		if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.targetPosition.offset ) {
+		if ( a.splitPosition.hasSameParentAs( b.targetPosition ) && a.splitPosition.offset < b.targetPosition.offset ) {
 			a.howMany += b.howMany;
 		}
 
-		a.position = Position.createFromPosition( b.sourcePosition );
+		a.splitPosition = Position.createFromPosition( b.sourcePosition );
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 		return [ a ];
 	}
@@ -2258,27 +2272,34 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
 	// "split operation point of view".
 	//
-	if ( a.position.isEqual( b.targetPosition ) && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
+	if ( a.splitPosition.isEqual( b.targetPosition ) && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
 		a.howMany += b.howMany;
-		a.position = a.position._getTransformedByDeletion( b.sourcePosition, b.howMany );
+		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 		return [ a ];
 	}
 
 	// The default case.
 	//
-	if ( a.position.hasSameParentAs( b.sourcePosition ) && a.position.offset <= b.sourcePosition.offset ) {
+	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && a.splitPosition.offset <= b.sourcePosition.offset ) {
 		a.howMany -= b.howMany;
 	}
 
-	if ( a.position.hasSameParentAs( b.targetPosition ) && a.position.offset < b.targetPosition.offset ) {
+	if ( a.splitPosition.hasSameParentAs( b.targetPosition ) && a.splitPosition.offset < b.targetPosition.offset ) {
 		a.howMany += b.howMany;
 	}
 
 	// Change position stickiness to force a correct transformation.
-	a.position.stickiness = 'toNone';
-	a.position = a.position._getTransformedByMoveOperation( b );
-	a.position.stickiness = 'toNext';
+	a.splitPosition.stickiness = 'toNone';
+	a.splitPosition = a.splitPosition._getTransformedByMoveOperation( b );
+	a.splitPosition.stickiness = 'toNext';
+
+	if ( a.graveyardPosition ) {
+		a.insertionPosition = a.insertionPosition._getTransformedByMoveOperation( b );
+	} else {
+		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
+	}
 
 	return [ a ];
 } );
@@ -2297,7 +2318,7 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// So we cancel split operation only if it was really identical.
 	//
-	if ( a.position.isEqual( b.position ) ) {
+	if ( a.splitPosition.isEqual( b.splitPosition ) ) {
 		if ( !a.graveyardPosition && !b.graveyardPosition ) {
 			return [ new NoOperation( 0 ) ];
 		}
@@ -2316,7 +2337,7 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 	// Position where operation `b` inserted a new node after split is the same as the operation `a` split position.
 	// As in similar cases, there is ambiguity if the split should be before the new node (created by `b`) or after.
 	//
-	if ( a.position.isEqual( b.insertionPosition ) && context.abRelation == 'splitBefore' ) {
+	if ( a.splitPosition.isEqual( b.insertionPosition ) && context.abRelation == 'splitBefore' ) {
 		a.howMany++;
 
 		return [ a ];
@@ -2326,7 +2347,7 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// This is a mirror to the case 2. above.
 	//
-	if ( b.position.isEqual( a.insertionPosition ) && context.baRelation == 'splitBefore' ) {
+	if ( b.splitPosition.isEqual( a.insertionPosition ) && context.baRelation == 'splitBefore' ) {
 		const newPositionPath = b.insertionPosition.path.slice();
 		newPositionPath.push( 0 );
 
@@ -2338,13 +2359,12 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	if ( a.position.hasSameParentAs( b.position ) && a.position.offset < b.position.offset ) {
+	if ( a.splitPosition.hasSameParentAs( b.splitPosition ) && a.splitPosition.offset < b.splitPosition.offset ) {
 		a.howMany -= b.howMany;
 	}
 
-	a.position = a.position._getTransformedBySplitOperation( b );
-
-	return [ a ];
+	a.splitPosition = a.splitPosition._getTransformedBySplitOperation( b );
+	a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 } );
 
 setTransformation( SplitOperation, WrapOperation, ( a, b ) => {

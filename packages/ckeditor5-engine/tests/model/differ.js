@@ -1309,12 +1309,10 @@ describe( 'Differ', () => {
 			} );
 
 			model.change( () => {
-				const operation = new SplitOperation(
-					new Position( root, [ 0, 3 ] ),
-					3,
-					new Position( doc.graveyard, [ 0 ] ),
-					doc.version
-				);
+				const position = new Position( root, [ 0, 3 ] );
+				const insertionPosition = SplitOperation.getInsertionPosition( position );
+
+				const operation = new SplitOperation( position, 3, insertionPosition, new Position( doc.graveyard, [ 0 ] ), doc.version );
 
 				model.applyOperation( operation );
 
@@ -1881,7 +1879,8 @@ describe( 'Differ', () => {
 
 	function split( position ) {
 		const howMany = position.parent.maxOffset - position.offset;
-		const operation = new SplitOperation( position, howMany, null, doc.version );
+		const insertionPosition = SplitOperation.getInsertionPosition( position );
+		const operation = new SplitOperation( position, howMany, insertionPosition, null, doc.version );
 
 		model.applyOperation( operation );
 	}

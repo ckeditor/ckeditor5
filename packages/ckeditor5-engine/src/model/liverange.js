@@ -170,7 +170,6 @@ function transform( operation ) {
 function doesOperationChangeRangeContent( range, operation ) {
 	switch ( operation.type ) {
 		case 'insert':
-		case 'split':
 		case 'wrap':
 		case 'unwrap':
 			return range.containsPosition( operation.position );
@@ -181,6 +180,8 @@ function doesOperationChangeRangeContent( range, operation ) {
 			return range.containsPosition( operation.sourcePosition ) ||
 				range.start.isEqual( operation.sourcePosition ) ||
 				range.containsPosition( operation.targetPosition );
+		case 'split':
+			return range.containsPosition( operation.splitPosition ) || range.containsPosition( operation.insertionPosition );
 	}
 
 	return false;
