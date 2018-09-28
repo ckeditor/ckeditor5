@@ -119,7 +119,7 @@ describe( 'EasyImage', () => {
 							}
 						} );
 
-						editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+						editor.execute( 'imageUpload', { files: createNativeFileMock() } );
 
 						setTimeout( () => {
 							upload._uploadGateway.resolveLastUpload();
