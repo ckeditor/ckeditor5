@@ -84,8 +84,8 @@ function isImageAllowedInParent( selection, schema ) {
 }
 
 // Additional check for when the command should be disabled:
-// - selection is on image
-// - selection is inside image (image caption)
+// - selection is on object
+// - selection is inside object
 function checkSelectionWithObject( selection, schema ) {
 	const selectedElement = selection.getSelectedElement();
 
