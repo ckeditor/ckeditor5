@@ -2272,7 +2272,9 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// This is a scenario described in `MoveOperation` x `SplitOperation` transformation but from the
 	// "split operation point of view".
 	//
-	if ( a.splitPosition.isEqual( b.targetPosition ) && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
+	const splitAtTarget = a.splitPosition.isEqual( b.targetPosition );
+
+	if ( splitAtTarget && ( context.baRelation == 'insertAtSource' || context.abRelation == 'splitBefore' ) ) {
 		a.howMany += b.howMany;
 		a.splitPosition = a.splitPosition._getTransformedByDeletion( b.sourcePosition, b.howMany );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
@@ -2328,11 +2330,57 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 		}
 	}
 
-	if ( a.graveyardPosition && b.graveyardPosition ) {
-		a.graveyardPosition = a.graveyardPosition._getTransformedByDeletion( b.graveyardPosition, 1 );
+	// Case 2:
+	//
+	// Same node is using to split different elements. This happens in undo when previously same element was merged to
+	// two different elements. This is described in `MergeOperation` x `MergeOperation` transformation.
+	//
+	// In this case we will follow the same logic. We will assume that `insertionPosition` is same for both
+	// split operations. This might not always be true but in the real cases that were experienced it was. After all,
+	// if these splits are reverses of merge operations that were merging the same element, then the `insertionPosition`
+	// should be same for both of those splits.
+	//
+	// Again, we will decide which operation is stronger by checking if split happens in graveyard or in non-graveyard root.
+	//
+	if ( a.graveyardPosition && b.graveyardPosition && a.graveyardPosition.isEqual( b.graveyardPosition ) ) {
+		const aInGraveyard = a.splitPosition.root.rootName == '$graveyard';
+		const bInGraveyard = b.splitPosition.root.rootName == '$graveyard';
+
+		// If `aIsWeak` it means that `a` points to graveyard while `b` doesn't. Don't move nodes then.
+		const aIsWeak = aInGraveyard && !bInGraveyard;
+
+		// If `bIsWeak` it means that `b` points to graveyard while `a` doesn't. Force moving nodes then.
+		const bIsWeak = bInGraveyard && !aInGraveyard;
+
+		// Force move if `b` is weak or neither operation is weak but `a` is stronger through `context.aIsStrong`.
+		const forceMove = bIsWeak || ( !aIsWeak && context.aIsStrong );
+
+		if ( forceMove ) {
+			const result = [];
+
+			// First we need to move any nodes split by `b` back to where they were.
+			// Do it only if `b` actually moved something.
+			if ( b.howMany ) {
+				result.push( new MoveOperation( b.moveTargetPosition, b.howMany, b.splitPosition, 0 ) );
+			}
+
+			// Then we need to move nodes from `a` split position to their new element.
+			// Do it only if `a` actually should move something.
+			if ( a.howMany ) {
+				result.push( new MoveOperation( a.splitPosition, a.howMany, a.moveTargetPosition, 0 ) );
+			}
+
+			return result;
+		} else {
+			return [ new NoOperation( 0 ) ];
+		}
 	}
 
-	// Case 2:
+	if ( a.graveyardPosition ) {
+		a.graveyardPosition = a.graveyardPosition._getTransformedBySplitOperation( b );
+	}
+
+	// Case 3:
 	//
 	// Position where operation `b` inserted a new node after split is the same as the operation `a` split position.
 	// As in similar cases, there is ambiguity if the split should be before the new node (created by `b`) or after.
@@ -2343,7 +2391,7 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 		return [ a ];
 	}
 
-	// Case 3:
+	// Case 4:
 	//
 	// This is a mirror to the case 2. above.
 	//
