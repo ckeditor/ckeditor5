@@ -81,9 +81,13 @@ export default class TableEditing extends Plugin {
 			}
 		} );
 
-		// Disallow image in table cell.
+		// Disallow image and media in table cell.
 		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			if ( !Array.from( context.getNames() ).includes( 'table' ) ) {
+				return;
+			}
+
+			if ( childDefinition.name == 'image' || childDefinition.name == 'media' ) {
 				return false;
 			}
 		} );
