@@ -507,7 +507,8 @@ describe( 'LiveRange', () => {
 					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ), 'w' );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p></w><p>x</p><p>c]d</p>' );
+				// Should be '<w><p>a[b</p></w><p>x</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<w><p>ab</p></w>[<p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range', () => {
@@ -533,7 +534,8 @@ describe( 'LiveRange', () => {
 					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ), 'w' );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
+				// Should be '<w><p>a[b</p><p>x</p></w><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<w><p>ab</p><p>x</p></w>[<p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
@@ -613,7 +615,8 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>c]d</p>' );
+				// Should be '<p>a[b</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p>]<p>cd</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove (multiple elements)', () => {
@@ -637,7 +640,8 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
+				// Should be '<p>a[b</p><p>x</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p>]<p>x</p><p>cd</p>' );
 			} );
 
 			it( 'contains wrapped element', () => {

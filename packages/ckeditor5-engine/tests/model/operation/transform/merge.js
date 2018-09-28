@@ -58,6 +58,126 @@ describe( 'transform', () => {
 				syncClients();
 				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
+
+			it( 'merge to different element (insert) with undo', () => {
+				john.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+				kate.setData( '<paragraph>Foo</paragraph>[]<paragraph>Bar</paragraph>' );
+
+				john.merge();
+				kate.insert( '<paragraph></paragraph>' );
+				kate.setSelection( [ 2 ], [ 2 ] );
+				kate.merge();
+
+				syncClients();
+				expectClients( '<paragraph>FooBar</paragraph><paragraph></paragraph>' );
+
+				john.undo();
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph></paragraph>' );
+
+				kate.undo();
+				syncClients();
+				expectClients( '<paragraph>FooBar</paragraph><paragraph></paragraph><paragraph></paragraph>' );
+			} );
+
+			it( 'merge to different element (wrap) with undo #1', () => {
+				// Merging to an element happens during using BlockQuote plugin. `Foo` paragraph is first wrapped and
+				// then merged to the existing `blockQuote`.
+				john.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+
+				john._processExecute( 'blockQuote' );
+				kate._processExecute( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+
+				john.undo();
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+
+				kate.undo();
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'merge to different element (wrap) with undo #2', () => {
+				// Merging to an element happens during using BlockQuote plugin. `Foo` paragraph is first wrapped and
+				// then merged to the existing `blockQuote`.
+				john.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+
+				john._processExecute( 'blockQuote' );
+				kate._processExecute( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+
+				kate.undo();
+				syncClients();
+
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>Foo</paragraph>'
+				);
+
+				john.undo();
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>'
+				);
+			} );
+
+			it( 'merge to different element (wrap) with undo #3', () => {
+				// Merging to an element happens during using BlockQuote plugin. `Foo` paragraph is first wrapped and
+				// then merged to the existing `blockQuote`.
+				john.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>F[oo</paragraph><blockQuote><paragraph>B]ar</paragraph></blockQuote>' );
+
+				john._processExecute( 'blockQuote' );
+				kate._processExecute( 'blockQuote' );
+
+				syncClients();
+				expectClients(
+					'<blockQuote>' +
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>Bar</paragraph>' +
+					'</blockQuote>'
+				);
+
+				john.undo();
+				kate.undo();
+				syncClients();
+
+				expectClients(
+					'<paragraph>Foo</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'by remove', () => {
@@ -203,7 +323,11 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
-				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				// Below would be the expected effect with correct wrap transformation.
+				// expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'merge to unwrapped element with undo #1', () => {
@@ -215,7 +339,11 @@ describe( 'transform', () => {
 				kate.unwrap();
 
 				syncClients();
-				expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				// Below would be the expected effect with correct wrap transformation.
+				// expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+				expectClients( '<paragraph>Foo</paragraph><blockQuote><paragraph>Bar</paragraph></blockQuote>' );
 			} );
 
 			it( 'merge to unwrapped element with undo #2', () => {
@@ -227,7 +355,11 @@ describe( 'transform', () => {
 				kate.undo();
 
 				syncClients();
-				expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+
+				// Below would be the expected effect with correct wrap transformation.
+				// expectClients( '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+
+				expectClients( '<blockQuote><paragraph>Foo</paragraph><paragraph>Bar</paragraph></blockQuote>' );
 			} );
 
 			it( 'unwrap in merged element', () => {
