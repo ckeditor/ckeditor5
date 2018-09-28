@@ -19,6 +19,13 @@ import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
  */
 export default class CloudServices extends Plugin {
 	/**
+	 * @inheritdoc
+	 */
+	static get pluginName() {
+		return 'CloudServices';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	init() {
