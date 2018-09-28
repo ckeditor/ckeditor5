@@ -6,6 +6,9 @@
 import BlockQuoteEditing from '../src/blockquoteediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -18,7 +21,7 @@ describe( 'BlockQuoteEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ BlockQuoteEditing, Paragraph ]
+				plugins: [ BlockQuoteEditing, Paragraph, BoldEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -76,5 +79,66 @@ describe( 'BlockQuoteEditing', () => {
 
 				expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 			} );
+	} );
+
+	it( 'should remove empty blockQuote elements', () => {
+		setModelData( model, '<blockQuote></blockQuote><paragraph>Foo</paragraph>' );
+
+		expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+	} );
+
+	it( 'should remove blockQuotes which became empty', () => {
+		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+
+		model.change( writer => {
+			const root = model.document.getRoot();
+			const bq = root.getChild( 0 );
+
+			writer.remove( Range.createIn( bq ) );
+		} );
+
+		expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' ); // Autoparagraphed.
+	} );
+
+	it( 'should unwrap a blockQuote if it was inserted into another blockQuote', () => {
+		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+
+		model.change( writer => {
+			const root = model.document.getRoot();
+			const bq = writer.createElement( 'blockQuote' );
+			const p = writer.createElement( 'paragraph' );
+
+			writer.insertText( 'Bar', p, 0 ); // <p>Bar</p>.
+			writer.insert( p, bq, 0 ); // <blockquote><p>Bar</p></blockquote>.
+			writer.insert( bq, root.getChild( 0 ), 1 ); // Insert after <p>Foo</p>.
+		} );
+
+		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+	} );
+
+	it( 'should unwrap nested blockQuote if it was wrapped into another blockQuote', () => {
+		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>Bar</paragraph>' );
+
+		model.change( writer => {
+			const root = model.document.getRoot();
+
+			writer.wrap( Range.createIn( root ), 'blockQuote' );
+		} );
+
+		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
+	} );
+
+	it( 'postfixer should do nothing on attribute change', () => {
+		// This is strictly a 100% CC test.
+		setModelData( model, '<blockQuote><paragraph>Foo</paragraph></blockQuote>' );
+
+		model.change( writer => {
+			const root = model.document.getRoot();
+			const p = root.getChild( 0 ).getChild( 0 );
+
+			writer.setAttribute( 'bold', true, Range.createIn( p ) );
+		} );
+
+		expect( editor.getData() ).to.equal( '<blockquote><p><strong>Foo</strong></p></blockquote>' );
 	} );
 } );
