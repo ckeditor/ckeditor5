@@ -6,7 +6,8 @@
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-feature"
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
   ],
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "^1.0.0",
