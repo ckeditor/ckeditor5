@@ -15,14 +15,13 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import Image from '../../src/image/imageediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadCommand', () => {
-	let editor, command, model, doc, fileRepository;
+	let editor, command, model, fileRepository;
 
 	testUtils.createSinonSandbox();
 
@@ -43,7 +42,6 @@ describe( 'ImageUploadCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				doc = model.document;
 
 				command = new ImageUploadCommand( editor );
 
@@ -56,29 +54,96 @@ describe( 'ImageUploadCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'isEnabled', () => {
+		it( 'should be true when the selection directly in the root', () => {
+			model.enqueueChange( 'transparent', () => {
+				setModelData( model, '[]' );
+
+				command.refresh();
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		it( 'should be true when the selection is in empty block', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true when the selection directly in a paragraph', () => {
+			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true when the selection directly in a block', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( '$text', { allowIn: 'block' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block>foo[]</block>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false when the selection is on other image', () => {
+			setModelData( model, '[<image></image>]' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when the selection is inside other image', () => {
+			model.schema.register( 'caption', {
+				allowIn: 'image',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'caption', view: 'figcaption' } ) );
+			setModelData( model, '<image><caption>[]</caption></image>' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when the selection is on other object', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			setModelData( model, '[<object></object>]' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when the selection is inside other object', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			model.schema.extend( '$text', { allowIn: 'object' } );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			setModelData( model, '<object>[]</object>' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false when schema disallows image', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			// Block image in block.
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+					return false;
+				}
+			} );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+	} );
+
 	describe( 'execute()', () => {
-		it( 'should insert image at selection position (includes deleting selected content)', () => {
+		it( 'should insert image at selection position as other widgets', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { file } );
+			command.execute( { files: file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
-				.to.equal( `<paragraph>f</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
-		} );
-
-		it( 'should insert directly at specified position (options.insertAt)', () => {
-			const file = createNativeFileMock();
-			setModelData( model, '<paragraph>f[]oo</paragraph>' );
-
-			const insertAt = new ModelPosition( doc.getRoot(), [ 0, 2 ] ); // fo[]o
-
-			command.execute( { file, insertAt } );
-
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( model ) )
-				.to.equal( `<paragraph>fo</paragraph>[<image uploadId="${ id }"></image>]<paragraph>o</paragraph>` );
+				.to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should use parent batch', () => {
@@ -89,7 +154,7 @@ describe( 'ImageUploadCommand', () => {
 			model.change( writer => {
 				expect( writer.batch.operations ).to.length( 0 );
 
-				command.execute( { file } );
+				command.execute( { files: file } );
 
 				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
@@ -108,7 +173,7 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			command.execute( { file } );
+			command.execute( { files: file } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -123,7 +188,7 @@ describe( 'ImageUploadCommand', () => {
 			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
-				command.execute( { file } );
+				command.execute( { files: file } );
 			} ).to.not.throw();
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );

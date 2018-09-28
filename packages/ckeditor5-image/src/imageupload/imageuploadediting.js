@@ -13,7 +13,6 @@ import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import { isImageType } from '../../src/imageupload/utils';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * The editing part of the image upload feature.
@@ -56,39 +55,25 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			let targetModelSelection = new ModelSelection(
+			const images = Array.from( data.dataTransfer.files ).filter( isImageType );
+
+			const targetModelSelection = new ModelSelection(
 				data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
 			);
 
-			for ( const file of data.dataTransfer.files ) {
-				if ( isImageType( file ) ) {
-					const insertAt = findOptimalInsertionPosition( targetModelSelection );
+			editor.model.change( writer => {
+				// Set selection to paste target.
+				writer.setSelection( targetModelSelection );
 
-					editor.model.change( writer => {
-						const loader = fileRepository.createLoader( file );
-
-						// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
-						if ( !loader ) {
-							return;
-						}
-
-						const imageElement = writer.createElement( 'image', { uploadId: loader.id } );
-
-						editor.model.insertContent( imageElement, insertAt );
-
-						// Inserting an image might've failed due to schema regulations.
-						if ( imageElement.parent ) {
-							writer.setSelection( imageElement, 'on' );
-						}
-					} );
-
+				if ( images.length ) {
 					evt.stop();
-				}
 
-				// Use target ranges only for the first image. Then, use that image position
-				// so we keep adding the next ones after the previous one.
-				targetModelSelection = doc.selection;
-			}
+					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
+					editor.model.enqueueChange( 'default', () => {
+						editor.execute( 'imageUpload', { files: images } );
+					} );
+				}
+			} );
 		} );
 
 		// Prevents from the browser redirecting to the dropped image.
