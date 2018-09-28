@@ -209,13 +209,9 @@ export default class Differ {
 				}
 
 				// Mark that the merged element was inserted into graveyard.
-				// The `isInsertedElement` check might not be needed but there is one case in OT where merged element
-				// is inserted into wrapping element.
 				const graveyardParent = operation.graveyardPosition.parent;
 
-				if ( !this._isInInsertedElement( graveyardParent ) ) {
-					this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
-				}
+				this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
 
 				// Mark that children of merged element were inserted at new parent.
 				const mergedIntoElement = operation.targetPosition.parent;
@@ -236,9 +232,7 @@ export default class Differ {
 
 				// If the wrap took the element from the graveyard, mark that the element from the graveyard was removed.
 				if ( operation.graveyardPosition ) {
-					const graveyardParent = operation.graveyardPosition.parent;
-
-					this._markRemove( graveyardParent, operation.graveyardPosition.offset, 1 );
+					this._markRemove( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
 				}
 
 				break;
@@ -256,9 +250,7 @@ export default class Differ {
 				}
 
 				// Mark that the unwrapped element was moved to the graveyard.
-				const graveyardParent = operation.graveyardPosition.parent;
-
-				this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
+				this._markInsert( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
 
 				break;
 			}
