@@ -361,12 +361,11 @@ export default class View {
 		callback( this._writer );
 		this._ongoingChange = false;
 
-		// Execute all document post-fixers after the change.
-		this._postFixersInProgress = true;
-		this.document._callPostFixers( this._writer );
-		this._postFixersInProgress = false;
-
 		if ( !this._renderingDisabled ) {
+			// Execute all document post-fixers after the change.
+			this._postFixersInProgress = true;
+			this.document._callPostFixers( this._writer );
+			this._postFixersInProgress = false;
 			this.fire( 'render' );
 		}
 	}
