@@ -3,10 +3,6 @@
   "version": "10.2.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
-    "ckeditor5-lib",
-    "ckeditor",
-    "ckeditor5",
-    "ckeditor 5",
     "wysiwyg",
     "rich text",
     "editor",
@@ -18,7 +14,11 @@
     "collaboration",
     "collaborative",
     "real-time",
-    "framework"
+    "framework",
+    "ckeditor5-lib",
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "^10.2.0",
