@@ -715,10 +715,21 @@ export default class Writer {
 		}
 
 		const version = range.root.document ? range.root.document.version : null;
-		const wrap = new WrapOperation( range.start, range.end.offset - range.start.offset, element, version );
 
-		this.batch.addOperation( wrap );
-		this.model.applyOperation( wrap );
+		// Has to be `range.start` not `range.end` for better transformations.
+		const insert = new InsertOperation( range.start, element, version );
+		this.batch.addOperation( insert );
+		this.model.applyOperation( insert );
+
+		const move = new MoveOperation(
+			range.start.getShiftedBy( 1 ),
+			range.end.offset - range.start.offset,
+			Position.createAt( element, 0 ),
+			version === null ? null : version + 1
+		);
+
+		this.batch.addOperation( move );
+		this.model.applyOperation( move );
 	}
 
 	/**
@@ -739,41 +750,8 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 		}
 
-		if ( !element.root.document ) {
-			this._unwrapDetached( element );
-		} else {
-			this._unwrap( element );
-		}
-	}
-
-	/**
-	 * Performs unwrap action in a detached tree.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element Element to unwrap.
-	 */
-	_unwrapDetached( element ) {
 		this.move( Range.createIn( element ), Position.createAfter( element ) );
 		this.remove( element );
-	}
-
-	/**
-	 * Performs unwrap action in a non-detached tree.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element Element to unwrap.
-	 */
-	_unwrap( element ) {
-		const position = Position.createAt( element, 0 );
-		const version = position.root.document.version;
-
-		const graveyard = position.root.document.graveyard;
-		const graveyardPosition = new Position( graveyard, [ 0 ] );
-
-		const unwrap = new UnwrapOperation( position, element.maxOffset, graveyardPosition, version );
-
-		this.batch.addOperation( unwrap );
-		this.model.applyOperation( unwrap );
 	}
 
 	/**
