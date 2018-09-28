@@ -27,7 +27,7 @@ describe( 'Table feature – integration', () => {
 
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard, Typing ] } )
+				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Clipboard ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					clipboard = editor.plugins.get( 'Clipboard' );
@@ -77,18 +77,6 @@ describe( 'Table feature – integration', () => {
 
 			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
 				[ '<blockQuote><paragraph>bar[]</paragraph></blockQuote>' ]
-			] ) );
-		} );
-
-		it( 'merges elements without throwing errors', () => {
-			setModelData( editor.model, modelTable( [
-				[ '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>[]Bar</paragraph>' ]
-			] ) );
-
-			editor.execute( 'delete' );
-
-			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
-				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
 			] ) );
 		} );
 	} );
@@ -159,6 +147,30 @@ describe( 'Table feature – integration', () => {
 
 			expect( editor.data.get( 'main' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+		} );
+	} );
+
+	describe( 'other', () => {
+		let editor;
+
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'merges elements without throwing errors', () => {
+			setModelData( editor.model, modelTable( [
+				[ '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>[]Bar</paragraph>' ]
+			] ) );
+
+			editor.execute( 'delete' );
+
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
+				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
+			] ) );
 		} );
 	} );
 } );
