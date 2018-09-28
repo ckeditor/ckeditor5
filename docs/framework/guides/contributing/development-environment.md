@@ -27,13 +27,13 @@ In order to start developing CKEditor 5 you will require:
 
 First, you need to install a couple of tools which you will be using later:
 
-* [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool),
-* [Lerna.js](https://github.com/lerna/lerna) (a multi-package management tool).
+* [mgit](https://www.npmjs.com/package/mgit2) &ndash; A multi-repo management tool,
+* [Lerna.js](https://github.com/lerna/lerna)@2 &ndash; A multi-package management tool. Note: Lerna@3 is [not supported yet](https://github.com/ckeditor/ckeditor5/issues/1214).
 
 It is best to install them globally in your system for an easier use later on:
 
 ```bash
-npm install -g lerna mgit2
+npm install -g lerna@2 mgit2
 ```
 
 Note: You may need to use `sudo` on Linux and macOS.
