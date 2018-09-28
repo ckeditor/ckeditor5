@@ -243,11 +243,13 @@ describe( 'UndoCommand', () => {
 				// Remove foobar:
 				/*
 				 [root]
+				 - p
 				 */
 
-				expect( root.childCount ).to.equal( 0 );
+				expect( root.childCount ).to.equal( 1 );
+				expect( root.getChild( 0 ).name ).to.equal( 'p' );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				undo.execute( batch1 );
@@ -255,12 +257,13 @@ describe( 'UndoCommand', () => {
 				// This does nothing in the `root` because attributes were set on nodes that already got removed.
 				// But those nodes should change in the graveyard and we can check them there.
 
-				expect( root.childCount ).to.equal( 0 );
+				expect( root.childCount ).to.equal( 1 );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 
-				expect( doc.graveyard.maxOffset ).to.equal( 4 );
+				// Graveyard contains "foobar".
+				expect( doc.graveyard.maxOffset ).to.equal( 6 );
 
 				for ( const item of Range.createIn( doc.graveyard ).getItems() ) {
 					expect( item.hasAttribute( 'key' ) ).to.be.false;
