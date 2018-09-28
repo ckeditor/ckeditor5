@@ -383,13 +383,14 @@ describe( 'BlockQuote integration', () => {
 
 			editor.execute( 'blockQuote' );
 
+			// Selection incorrectly trimmed.
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote>' +
-					'<paragraph>fo[o</paragraph>' +
+					'<paragraph>foo</paragraph>' +
 					'<image src="foo.png">' +
 						'<caption>xxx</caption>' +
 					'</image>' +
-					'<paragraph>b]ar</paragraph>' +
+					'<paragraph>[b]ar</paragraph>' +
 				'</blockQuote>'
 			);
 		} );
