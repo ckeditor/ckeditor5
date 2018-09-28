@@ -12,6 +12,10 @@ CKEditor 5 table feature
 
 This package implements table support for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the Table feature](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#demo) guide.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor5/latest/api/table.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
