@@ -8,6 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+
 import BlockQuoteCommand from './blockquotecommand';
 
 /**
@@ -40,6 +43,57 @@ export default class BlockQuoteEditing extends Plugin {
 		} );
 
 		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
+
+		// Postfixer which cleans incorrect model states connected with block quotes.
+		editor.model.document.registerPostFixer( writer => {
+			const changes = editor.model.document.differ.getChanges();
+
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' ) {
+					const element = entry.position.nodeAfter;
+
+					if ( !element ) {
+						// We are inside a text node.
+						continue;
+					}
+
+					if ( element.is( 'blockQuote' ) && element.isEmpty ) {
+						// Added an empty blockQuote - remove it.
+						writer.remove( element );
+
+						return true;
+					} else if ( element.is( 'blockQuote' ) && !schema.checkChild( entry.position, element ) ) {
+						// Added a blockQuote in incorrect place - most likely inside another blockQuote. Unwrap it
+						// so the content inside is not lost.
+						writer.unwrap( element );
+
+						return true;
+					} else if ( element.is( 'element' ) ) {
+						// Just added an element. Check its children to see if there are no nested blockQuotes somewhere inside.
+						const range = Range.createIn( element );
+
+						for ( const child of range.getItems() ) {
+							if ( child.is( 'blockQuote' ) && !schema.checkChild( Position.createBefore( child ), child ) ) {
+								writer.unwrap( child );
+
+								return true;
+							}
+						}
+					}
+				} else if ( entry.type == 'remove' ) {
+					const parent = entry.position.parent;
+
+					if ( parent.is( 'blockQuote' ) && parent.isEmpty ) {
+						// Something got removed and now blockQuote is empty. Remove the blockQuote as well.
+						writer.remove( parent );
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		} );
 	}
 
 	/**

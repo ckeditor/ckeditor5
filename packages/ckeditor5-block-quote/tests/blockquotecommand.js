@@ -193,17 +193,19 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
-						'<heading>a[bc</heading>' +
-						'<paragraph>x]x</paragraph>' +
+						'<heading>abc</heading>' +
+						'<paragraph>[x]x</paragraph>' +
 						'<paragraph>yy</paragraph>' +
 					'</blockQuote>' +
 					'<paragraph>def</paragraph>'
 				);
 
+				// Selection incorrectly trimmed.
 				expect( getViewData( editor.editing.view ) ).to.equal(
-					'<blockquote><h>a{bc</h><p>x}x</p><p>yy</p></blockquote><p>def</p>'
+					'<blockquote><h>abc</h><p>{x}x</p><p>yy</p></blockquote><p>def</p>'
 				);
 			} );
 
@@ -258,17 +260,19 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
-						'<heading>a[bc</heading>' +
+						'<heading>abc</heading>' +
 						'<paragraph>def</paragraph>' +
-						'<paragraph>x]x</paragraph>' +
+						'<paragraph>[x]x</paragraph>' +
 					'</blockQuote>' +
 					'<paragraph>ghi</paragraph>'
 				);
 
+				// Selection incorrectly trimmed.
 				expect( getViewData( editor.editing.view ) ).to.equal(
-					'<blockquote><h>a{bc</h><p>def</p><p>x}x</p></blockquote><p>ghi</p>'
+					'<blockquote><h>abc</h><p>def</p><p>{x}x</p></blockquote><p>ghi</p>'
 				);
 			} );
 
@@ -282,18 +286,20 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
-						'<paragraph>a[bc</paragraph>' +
+						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
-					'<widget>xx</widget>' +
+					'[<widget>xx</widget>' +
 					'<blockQuote>' +
 						'<paragraph>de]f</paragraph>' +
 					'</blockQuote>'
 				);
 
+				// Selection incorrectly trimmed.
 				expect( getViewData( editor.editing.view ) ).to.equal(
-					'<blockquote><p>a{bc</p></blockquote><widget>xx</widget><blockquote><p>de}f</p></blockquote>'
+					'<blockquote><p>abc</p></blockquote>[<widget>xx</widget><blockquote><p>de}f</p></blockquote>'
 				);
 			} );
 
@@ -310,17 +316,19 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
-					'<blockQuote><paragraph>a[bc</paragraph></blockQuote>' +
-					'<widget>xx</widget>' +
+					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
+					'[<widget>xx</widget>' +
 					'<blockQuote><paragraph>def</paragraph><paragraph>ghi</paragraph></blockQuote>' +
 					'<widget>yy</widget>' +
 					'<blockQuote><paragraph>jk]l</paragraph></blockQuote>'
 				);
 
+				// Selection incorrectly trimmed.
 				expect( getViewData( editor.editing.view ) ).to.equal(
-					'<blockquote><p>a{bc</p></blockquote>' +
-					'<widget>xx</widget>' +
+					'<blockquote><p>abc</p></blockquote>' +
+					'[<widget>xx</widget>' +
 					'<blockquote><p>def</p><p>ghi</p></blockquote>' +
 					'<widget>yy</widget>' +
 					'<blockquote><p>jk}l</p></blockquote>'
@@ -341,26 +349,28 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>x</paragraph>' +
 					'<blockQuote>' +
-						'<paragraph>a[bc</paragraph>' +
+						'<paragraph>abc</paragraph>' +
 						'<paragraph>def</paragraph>' +
 						'<paragraph>ghi</paragraph>' +
 						'<paragraph>jkl</paragraph>' +
-						'<paragraph>mn]o</paragraph>' +
+						'<paragraph>[mn]o</paragraph>' +
 					'</blockQuote>' +
 					'<paragraph>y</paragraph>'
 				);
 
+				// Selection incorrectly trimmed.
 				expect( getViewData( editor.editing.view ) ).to.equal(
 					'<p>x</p>' +
 					'<blockquote>' +
-						'<p>a{bc</p>' +
+						'<p>abc</p>' +
 						'<p>def</p>' +
 						'<p>ghi</p>' +
 						'<p>jkl</p>' +
-						'<p>mn}o</p>' +
+						'<p>{mn}o</p>' +
 					'</blockquote>' +
 					'<p>y</p>'
 				);
@@ -386,11 +396,12 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
-						'<paragraph>a[bc</paragraph>' +
+						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
-					'<fooBlock>xx</fooBlock>' +
+					'<fooBlock>[xx</fooBlock>' +
 					'<blockQuote>' +
 						'<paragraph>de]f</paragraph>' +
 					'</blockQuote>'
@@ -417,11 +428,12 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
+				// Selection incorrectly trimmed.
 				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
-						'<paragraph>a[bc</paragraph>' +
+						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
-					'<fooWrapper><fooBlock>xx</fooBlock></fooWrapper>' +
+					'<fooWrapper><fooBlock>[xx</fooBlock></fooWrapper>' +
 					'<blockQuote>' +
 						'<paragraph>de]f</paragraph>' +
 					'</blockQuote>'
