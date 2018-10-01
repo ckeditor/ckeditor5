@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-post-fixer
+ * @module table/converters/table-layout-post-fixer
  */
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
@@ -12,9 +12,9 @@ import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './..
 import TableWalker from './../tablewalker';
 
 /**
- * Injects a table post-fixer into the model.
+ * Injects a table layout post-fixer into the model.
  *
- * The role of the table post-fixer is to ensure that the table rows have the correct structure
+ * The role of the table layout post-fixer is to ensure that the table rows have the correct structure
  * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
  *
  * The correct structure means that:
@@ -212,36 +212,17 @@ import TableWalker from './../tablewalker';
  *				</tr>
  *			</tbody>
  *		</table>
- *
- * ## Ensuring proper table structure
- *
- * A table cells must contains at least one block as a child. The empty table cell will have empty `<paragraph>` as a child.
- *
- *		<table>
- *			<tableRow>
- *				<tableCell></tableCell>
- *			</tableRow>
- *		</table>
- *
- * Will be fixed to:
- *
- *		<table>
- *			<tableRow>
- *				<tableCell><paragraph></paragraph></tableCell>
- *			</tableRow>
- *		</table>
- *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTablePostFixer( model ) {
-	model.document.registerPostFixer( writer => tablePostFixer( writer, model ) );
+export default function injectTableLayoutPostFixer( model ) {
+	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
 }
 
-// The table post-fixer.
+// The table layout post-fixer.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
-function tablePostFixer( writer, model ) {
+function tableLayoutPostFixer( writer, model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -252,13 +233,6 @@ function tablePostFixer( writer, model ) {
 	for ( const entry of changes ) {
 		let table;
 
-		// Enforce paragraph in tableCell even after other feature remove its contents.
-		if ( entry.type == 'remove' && entry.position.parent.is( 'tableCell' ) && entry.position.parent.childCount == 0 ) {
-			writer.insertElement( 'paragraph', entry.position.parent );
-			wasFixed = true;
-		}
-
-		// Fix table on table insert.
 		if ( entry.name == 'table' && entry.type == 'insert' ) {
 			table = entry.position.nodeAfter;
 		}

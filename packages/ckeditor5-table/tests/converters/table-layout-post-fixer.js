@@ -12,7 +12,7 @@ import TableEditing from '../../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-describe( 'Table post-fixer', () => {
+describe( 'Table layout post-fixer', () => {
 	let editor, model, root;
 
 	beforeEach( () => {
@@ -178,19 +178,6 @@ describe( 'Table post-fixer', () => {
 			} ).to.not.throw();
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
-		} );
-	} );
-
-	describe( 'on removing tableCell contents', () => {
-		it( 'should fix empty table cells', () => {
-			setModelData( model, modelTable( [ [ '11[]' ] ] ) );
-
-			model.change( writer => {
-				// Remove paragraph from table cell.
-				writer.remove( Range.createIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
-			} );
-
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [ [ '' ] ] ) );
 		} );
 	} );
 
