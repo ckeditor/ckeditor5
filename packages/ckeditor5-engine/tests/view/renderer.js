@@ -17,6 +17,7 @@ import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
+import DowncastWriter from '../../src/view/downcastwriter';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
@@ -3036,6 +3037,37 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
+			} );
+		} );
+
+		// #1560
+		describe( 'direct attributes manipulation', () => {
+			it( 'should rerender element if its attribute was removed before rendering', () => {
+				const writer = new DowncastWriter();
+
+				// 1. Setup.
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				const viewP = viewRoot.getChild( 0 );
+
+				writer.setAttribute( 'data-placeholder', 'Body', viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p data-placeholder="Body">1</p>' );
+
+				// 2. Transform.
+				writer.removeAttribute( 'data-placeholder', viewP );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p>' );
 			} );
 		} );
 	} );
