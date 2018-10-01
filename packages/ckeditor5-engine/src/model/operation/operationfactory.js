@@ -17,8 +17,6 @@ import RenameOperation from '../operation/renameoperation';
 import RootAttributeOperation from '../operation/rootattributeoperation';
 import SplitOperation from '../operation/splitoperation';
 import MergeOperation from '../operation/mergeoperation';
-import WrapOperation from '../operation/wrapoperation';
-import UnwrapOperation from '../operation/unwrapoperation';
 
 const operations = {};
 operations[ AttributeOperation.className ] = AttributeOperation;
@@ -31,8 +29,6 @@ operations[ RenameOperation.className ] = RenameOperation;
 operations[ RootAttributeOperation.className ] = RootAttributeOperation;
 operations[ SplitOperation.className ] = SplitOperation;
 operations[ MergeOperation.className ] = MergeOperation;
-operations[ WrapOperation.className ] = WrapOperation;
-operations[ UnwrapOperation.className ] = UnwrapOperation;
 
 /**
  * A factory class for creating operations.

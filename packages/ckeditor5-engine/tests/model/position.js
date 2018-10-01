@@ -17,8 +17,6 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -807,116 +805,6 @@ describe( 'Position', () => {
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 7 ] );
-			} );
-		} );
-
-		describe( 'by WrapOperation', () => {
-			it( 'position is before the wrapped range', () => {
-				const op = new WrapOperation( new Position( root, [ 3, 3 ] ), 3, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
-			} );
-
-			it( 'position is at the beginning of wrapped range and sticks to previous', () => {
-				pos.stickiness = 'toPrevious';
-
-				const op = new WrapOperation( new Position( root, [ 3, 2 ] ), 3, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
-			} );
-
-			it( 'position is at the beginning of wrapped range and sticks to next', () => {
-				pos.stickiness = 'toNext';
-
-				const op = new WrapOperation( new Position( root, [ 3, 2 ] ), 3, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 2, 0 ] );
-			} );
-
-			it( 'position is inside wrapped range', () => {
-				const op = new WrapOperation( new Position( root, [ 3, 1 ] ), 3, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 1, 1 ] );
-			} );
-
-			it( 'position is at the end of wrapped range and sticks to previous', () => {
-				pos.stickiness = 'toPrevious';
-
-				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 2, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 0, 2 ] );
-			} );
-
-			it( 'position is at the end of wrapped range and sticks to next', () => {
-				pos.stickiness = 'toNext';
-
-				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 2, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 1 ] );
-			} );
-
-			it( 'position is after the wrapped range', () => {
-				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 1, new Element( 'paragraph' ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
-			} );
-
-			it( 'position is inside the graveyard and the operation uses element from graveyard', () => {
-				pos = new Position( doc.graveyard, [ 1 ] );
-
-				const op = new WrapOperation( new Position( root, [ 3, 0 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 0 ] );
-			} );
-		} );
-
-		describe( 'by UnwrapOperation', () => {
-			it( 'position is before unwrapped element', () => {
-				const op = new UnwrapOperation( new Position( root, [ 3, 2, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
-			} );
-
-			it( 'position is inside unwrapped element', () => {
-				const op = new UnwrapOperation( new Position( root, [ 3, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 5 ] );
-			} );
-
-			it( 'position is after unwrapped element', () => {
-				const op = new UnwrapOperation( new Position( root, [ 3, 1, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 3, 4 ] );
-			} );
-
-			it( 'position is in graveyard', () => {
-				pos = new Position( doc.graveyard, [ 0 ] );
-
-				const op = new UnwrapOperation( new Position( root, [ 3, 2, 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 1 ] );
-			} );
-
-			it( 'unwrap is in the graveyard and position is before the unwrapped node', () => {
-				// This is an edge case scenario for unwrap operation that is unwrapping an element which is already in graveyard.
-				pos = new Position( doc.graveyard, [ 0 ] );
-
-				const op = new UnwrapOperation( new Position( doc.graveyard, [ 0, 0 ] ), 0, new Position( doc.graveyard, [ 0 ] ), 1 );
-				const transformed = pos.getTransformedByOperation( op );
-
-				expect( transformed.path ).to.deep.equal( [ 0 ] );
 			} );
 		} );
 	} );
