@@ -23,8 +23,6 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -377,54 +375,6 @@ describe( 'debug tools', () => {
 
 				expect( op.toString() ).to.equal(
 					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ) -> main [ 2 ] with $graveyard [ 0 ]'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'WrapOperation with element', () => {
-				const op = new WrapOperation(
-					new ModelPosition( modelRoot, [ 3 ] ),
-					2,
-					new ModelElement( 'blockQuote' ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with <blockQuote>'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'WrapOperation with graveyard position', () => {
-				const op = new WrapOperation(
-					new ModelPosition( modelRoot, [ 3 ] ),
-					2,
-					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with $graveyard [ 0 ]'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'UnwrapOperation', () => {
-				const op = new UnwrapOperation(
-					new ModelPosition( modelRoot, [ 1, 0 ] ),
-					2,
-					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'UnwrapOperation( 0 ): main [ 1, 0 ] ( 2 ), $graveyard [ 0 ]'
 				);
 
 				op.log();

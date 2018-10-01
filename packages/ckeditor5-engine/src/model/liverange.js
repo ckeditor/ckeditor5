@@ -170,8 +170,6 @@ function transform( operation ) {
 function doesOperationChangeRangeContent( range, operation ) {
 	switch ( operation.type ) {
 		case 'insert':
-		case 'wrap':
-		case 'unwrap':
 			return range.containsPosition( operation.position );
 		case 'move':
 		case 'remove':

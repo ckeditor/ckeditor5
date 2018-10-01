@@ -537,12 +537,6 @@ export default class Position {
 			case 'merge':
 				result = this._getTransformedByMergeOperation( operation );
 				break;
-			case 'wrap':
-				result = this._getTransformedByWrapOperation( operation );
-				break;
-			case 'unwrap':
-				result = this._getTransformedByUnwrapOperation( operation );
-				break;
 			default:
 				result = Position.createFromPosition( this );
 				break;
@@ -621,69 +615,6 @@ export default class Position {
 			pos = Position.createFromPosition( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
-		}
-
-		return pos;
-	}
-
-	/**
-	 * Returns a copy of this position transformed by wrap operation.
-	 *
-	 * @protected
-	 * @param {module:engine/model/operation/wrapoperation~WrapOperation} operation
-	 * @returns {module:engine/model/position~Position}
-	 */
-	_getTransformedByWrapOperation( operation ) {
-		const wrappedRange = operation.wrappedRange;
-
-		const isContained = wrappedRange.containsPosition( this ) ||
-			( wrappedRange.start.isEqual( this ) && this.stickiness == 'toNext' ) ||
-			( wrappedRange.end.isEqual( this ) && this.stickiness == 'toPrevious' );
-
-		if ( isContained ) {
-			return this._getCombined( wrappedRange.start, operation.targetPosition );
-		} else if ( this.isEqual( operation.position ) ) {
-			return Position.createFromPosition( this );
-		} else {
-			if ( operation.graveyardPosition ) {
-				const pos = this._getTransformedByMove( operation.graveyardPosition, operation.position, 1 );
-
-				return pos._getTransformedByMove( operation.position.getShiftedBy( 1 ), operation.targetPosition, operation.howMany );
-			} else {
-				return this._getTransformedByDeletion( operation.position, operation.howMany - 1 );
-			}
-		}
-	}
-
-	/**
-	 * Returns a copy of this position transformed by unwrap operation.
-	 *
-	 * @protected
-	 * @param {module:engine/model/operation/unwrapoperation~UnwrapOperation} operation
-	 * @returns {module:engine/model/position~Position}
-	 */
-	_getTransformedByUnwrapOperation( operation ) {
-		const unwrappedRange = operation.unwrappedRange;
-
-		const isContained = unwrappedRange.containsPosition( this ) ||
-			unwrappedRange.start.isEqual( this ) ||
-			unwrappedRange.end.isEqual( this );
-
-		let pos;
-
-		if ( isContained ) {
-			pos = this._getCombined( operation.position, operation.targetPosition );
-		} else if ( this.isEqual( operation.targetPosition ) ) {
-			pos = Position.createFromPosition( this );
-		} else {
-			pos = this._getTransformedByInsertion( operation.targetPosition, operation.howMany );
-		}
-
-		const targetPosition = operation.targetPosition.getShiftedBy( operation.howMany );
-
-		if ( !targetPosition.isEqual( operation.graveyardPosition ) ) {
-			pos = pos._getTransformedByDeletion( targetPosition, 1 );
-			pos = pos._getTransformedByInsertion( operation.graveyardPosition, 1 );
 		}
 
 		return pos;

@@ -25,8 +25,6 @@ import MoveOperation from '../model/operation/moveoperation';
 import NoOperation from '../model/operation/nooperation';
 import RenameOperation from '../model/operation/renameoperation';
 import RootAttributeOperation from '../model/operation/rootattributeoperation';
-import WrapOperation from '../model/operation/wrapoperation';
-import UnwrapOperation from '../model/operation/unwrapoperation';
 import SplitOperation from '../model/operation/splitoperation';
 import MergeOperation from '../model/operation/mergeoperation';
 import Model from '../model/model';
@@ -359,17 +357,6 @@ function enableLoggingTools() {
 	sandbox.mock( SplitOperation.prototype, 'toString', function() {
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ this.splitPosition } ` +
 			`( ${ this.howMany } ) -> ${ this.insertionPosition }${ this.graveyardPosition ? ' with ' + this.graveyardPosition : '' }`;
-	} );
-
-	sandbox.mock( WrapOperation.prototype, 'toString', function() {
-		const range = ModelRange.createFromPositionAndShift( this.position, this.howMany );
-
-		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
-			`${ range } with ${ this.element ? this.element : this.graveyardPosition }`;
-	} );
-
-	sandbox.mock( UnwrapOperation.prototype, 'toString', function() {
-		return getClassName( this ) + `( ${ this.baseVersion } ): ${ this.position } ( ${ this.howMany } ), ${ this.graveyardPosition }`;
 	} );
 
 	sandbox.mock( ViewText.prototype, 'toString', function() {

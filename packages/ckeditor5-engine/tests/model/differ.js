@@ -15,8 +15,6 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 
 describe( 'Differ', () => {
 	let doc, differ, root, model;
@@ -1389,132 +1387,6 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( 'wrap', () => {
-		it( 'wrap elements', () => {
-			model.change( () => {
-				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'wrap old and new elements', () => {
-			model.change( () => {
-				insert( new Element( 'paragraph' ), new Position( root, [ 0 ] ) );
-				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'wrap inside a new element', () => {
-			model.change( () => {
-				insert(
-					new Element( 'div', null, [
-						new Element( 'paragraph' ),
-						new Element( 'paragraph' )
-					] ),
-					new Position( root, [ 0 ] )
-				);
-				wrap( new Position( root, [ 0, 0 ] ), 2, new Element( 'blockQuote' ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'should correctly mark a change in graveyard', () => {
-			model.change( () => {
-				unwrap( new Position( root, [ 0, 0 ] ) );
-			} );
-
-			model.change( () => {
-				const operation = new WrapOperation( new Position( root, [ 0 ] ), 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
-
-				model.applyOperation( operation );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
-					{ type: 'remove', name: '$text', length: 3, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) }
-				], true );
-			} );
-		} );
-	} );
-
-	describe( 'unwrap', () => {
-		it( 'unwrap elements', () => {
-			model.change( () => {
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap a new element', () => {
-			model.change( () => {
-				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 0 ] ) );
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap element with new nodes', () => {
-			model.change( () => {
-				insert( new Text( 'Ab' ), new Position( root, [ 0, 1 ] ) );
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: '$text', length: 5, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap element inside a new element', () => {
-			model.change( () => {
-				insert(
-					new Element( 'blockQuote', null, [
-						new Element( 'paragraph', null, new Text( 'Ab' ) )
-					] ),
-					new Position( root, [ 0 ] )
-				);
-
-				unwrap( new Position( root, [ 0, 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'should correctly mark a change in graveyard', () => {
-			model.change( () => {
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0 ] ) }
-				], true );
-			} );
-		} );
-	} );
-
 	describe( 'markers', () => {
 		let range, rangeB;
 
@@ -1885,19 +1757,6 @@ describe( 'Differ', () => {
 	function merge( source, target ) {
 		const howMany = source.parent.maxOffset;
 		const operation = new MergeOperation( source, howMany, target, new Position( doc.graveyard, [ 0 ] ), doc.version );
-
-		model.applyOperation( operation );
-	}
-
-	function wrap( position, howMany, element ) {
-		const operation = new WrapOperation( position, howMany, element, doc.version );
-
-		model.applyOperation( operation );
-	}
-
-	function unwrap( position ) {
-		const howMany = position.parent.maxOffset;
-		const operation = new UnwrapOperation( position, howMany, new Position( doc.graveyard, [ 0 ] ), doc.version );
 
 		model.applyOperation( operation );
 	}

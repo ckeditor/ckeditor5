@@ -411,10 +411,6 @@ export default class Range {
 				return [ this._getTransformedBySplitOperation( operation ) ];
 			case 'merge':
 				return [ this._getTransformedByMergeOperation( operation ) ];
-			case 'wrap':
-				return [ this._getTransformedByWrapOperation( operation ) ];
-			case 'unwrap':
-				return [ this._getTransformedByUnwrapOperation( operation ) ];
 		}
 
 		return [ Range.createFromRange( this ) ];
@@ -589,38 +585,6 @@ export default class Range {
 
 			return new Range( start, end );
 		}
-
-		return new Range( start, end );
-	}
-
-	/**
-	 * Returns a result of transforming a copy of this range by wrap operation.
-	 *
-	 * Always one range is returned. The transformation is done in a way to not break the range.
-	 *
-	 * @protected
-	 * @param {module:engine/model/operation/wrapoperation~WrapOperation} operation
-	 * @returns {module:engine/model/range~Range}
-	 */
-	_getTransformedByWrapOperation( operation ) {
-		const start = this.start._getTransformedByWrapOperation( operation );
-		const end = this.end._getTransformedByWrapOperation( operation );
-
-		return new Range( start, end );
-	}
-
-	/**
-	 * Returns a result of transforming a copy of this range by unwrap operation.
-	 *
-	 * Always one range is returned. The transformation is done in a way to not break the range.
-	 *
-	 * @protected
-	 * @param {module:engine/model/operation/unwrapoperation~UnwrapOperation} operation
-	 * @returns {module:engine/model/range~Range}
-	 */
-	_getTransformedByUnwrapOperation( operation ) {
-		const start = this.start._getTransformedByUnwrapOperation( operation );
-		const end = this.end._getTransformedByUnwrapOperation( operation );
 
 		return new Range( start, end );
 	}

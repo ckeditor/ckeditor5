@@ -222,38 +222,6 @@ export default class Differ {
 
 				break;
 			}
-			case 'wrap': {
-				// Mark that some elements were removed from their original parent and that a new (wrapper) element
-				// was added in that parent.
-				if ( !this._isInInsertedElement( operation.position.parent ) ) {
-					this._markRemove( operation.position.parent, operation.position.offset, operation.howMany );
-					this._markInsert( operation.position.parent, operation.position.offset, 1 );
-				}
-
-				// If the wrap took the element from the graveyard, mark that the element from the graveyard was removed.
-				if ( operation.graveyardPosition ) {
-					this._markRemove( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
-				}
-
-				break;
-			}
-			case 'unwrap': {
-				// Mark that the unwrapped element was removed from its original parent and that new (unwrapped) nodes
-				// were inserted in that parent.
-				const elementToUnwrap = operation.position.parent;
-				const offset = elementToUnwrap.startOffset;
-				const parent = elementToUnwrap.parent;
-
-				if ( !this._isInInsertedElement( parent ) ) {
-					this._markRemove( parent, offset, 1 );
-					this._markInsert( parent, offset, elementToUnwrap.maxOffset );
-				}
-
-				// Mark that the unwrapped element was moved to the graveyard.
-				this._markInsert( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
-
-				break;
-			}
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.
