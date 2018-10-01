@@ -46,6 +46,17 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
+		it( 'should be able to get by its plugin name', () => {
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ CloudServices ]
+				} )
+				.then( editor => {
+					const cloudServicesPlugin = editor.plugins.get( 'CloudServices' );
+					expect( cloudServicesPlugin ).to.be.instanceOf( CloudServices );
+				} );
+		} );
+
 		it( 'should not throw an error when no config is provided', () => {
 			return ClassicTestEditor
 				.create( element, {

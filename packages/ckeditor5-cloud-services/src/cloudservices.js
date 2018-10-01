@@ -20,6 +20,13 @@ import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
  */
 export default class CloudServices extends Plugin {
 	/**
+	 * @inheritdoc
+	 */
+	static get pluginName() {
+		return 'CloudServices';
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	init() {
@@ -33,10 +40,11 @@ export default class CloudServices extends Plugin {
 		}
 
 		/**
-		 * The authentication token URL for CKEditor Cloud Services.
+		 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
+		 * {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} for more details.
 		 *
 		 * @readonly
-		 * @member {String|undefined} #tokenUrl
+		 * @member {String|Function|undefined} #tokenUrl
 		 */
 
 		/**
@@ -95,9 +103,54 @@ CloudServices.Token = Token;
  */
 
 /**
- * The URL to the security token endpoint in your application. The role of this endpoint is to securely authorize the
+ * A token URL or a token request function.
+ *
+ * As a string it should be a URL to the security token endpoint in your application. The role of this endpoint is to securely authorize the
  * end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), only
  * if they should have access e.g. to upload files with Easy Image or to access the Collaboraation service.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				cloudServices: {
+ *					tokenUrl: 'https://example.com/cs-token-endpoint',
+ *					...
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * As a function it should provide a promise to the token value, so you can highly customize the token and provide your token URL endpoint.
+ * By using that approach you can set your own headers to the request.
+ *
+ * 		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				cloudServices: {
+ *					tokenUrl: () => new Promise( ( resolve, reject ) => {
+ *						const xhr = new XMLHttpRequest();
+ *
+ *						xhr.open( 'GET', 'https://example.com/cs-token-endpoint' );
+ *
+ *						xhr.addEventListener( 'load', () => {
+ *							const statusCode = xhr.status;
+ *							const xhrResponse = xhr.response;
+ *
+ *							if ( statusCode < 200 || statusCode > 299 ) {
+ *								return reject( new Error( 'Cannot download new token!' ) );
+ *							}
+ *
+ *							return resolve( xhrResponse );
+ *						} );
+ *
+ *						xhr.addEventListener( 'error', () => reject( new Error( 'Network Error' ) ) );
+ *						xhr.addEventListener( 'abort', () => reject( new Error( 'Abort' ) ) );
+ *
+ *						xhr.setRequestHeader( customHeader, customValue );
+ *
+ *						xhr.send();
+ *					} ),
+ *					...
+ *				}
+ *			} )
  *
  * You can find more information about token endpoints in the
  * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
@@ -105,7 +158,7 @@ CloudServices.Token = Token;
  *
  * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
  *
- * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl
+ * @member {String|Function} module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl
  */
 
 /**
