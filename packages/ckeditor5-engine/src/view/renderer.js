@@ -306,7 +306,9 @@ export default class Renderer {
 		// It may also happen that 'newViewChild' mapping is not present since its parent mapping
 		// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
 		// mappings) so we also check for '!newViewChild'.
-		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) ) {
+		// Also check if new element ('newViewChild') was marked to have its attributes rerenderd,
+		// if so, marked reused view element too (#1560).
+		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) || this.markedAttributes.has( newViewChild ) ) {
 			this.markedAttributes.add( viewElement );
 		}
 
