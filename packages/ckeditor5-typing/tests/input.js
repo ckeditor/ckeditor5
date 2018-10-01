@@ -7,6 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
@@ -39,7 +40,7 @@ describe( 'Input feature', () => {
 		const domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter ] } )
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter, Link ] } )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
@@ -531,6 +532,51 @@ describe( 'Input feature', () => {
 			] );
 
 			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong><br></br><strong>Bar</strong> {}</p>' );
+		} );
+
+		// ckeditor5-typing#170.
+		it( 'should handle mutations correctly if there was an &nbsp; in model already', () => {
+			editor.setData( '<p><a href="#"><strong>F</strong></a><strong>oo&nbsp;bar</strong></p>' );
+
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
+				);
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const strong = viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 );
+			const domStrong = editor.editing.view.domConverter.mapViewToDom( strong );
+			domStrong.appendChild( document.createTextNode( 'x' ) );
+
+			// The mutation provided here is a bit different than what browser outputs, but browser outputs three mutations
+			// which changes the order of elements in the DOM so to keep it simple, only one, key mutation is used in the test.
+			// Also, the only thing that the typing algorithm takes from the mutations is `node`...
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: Array.from( viewRoot.getChild( 0 ).getChild( 0 ).getChildren() ),
+					newChildren: [
+						new ViewElement( 'strong', null, new ViewText( 'Fx' ) ),
+					],
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text bold="true" linkHref="#">Fx[]</$text>' +
+					'<$text bold="true">oo\u00A0bar</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>' +
+					'<a class="ck-link_selected" href="#"><strong>Fx{}</strong></a>' +
+					'<strong>oo\u00A0bar</strong>' +
+				'</p>'
+			);
 		} );
 	} );
 
