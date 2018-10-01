@@ -50,14 +50,14 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<thead>
  *				<tr>
- *					<td rowspan="2"><p>FOO</p></td>
- *					<td colspan="2"><p>BAR</p></td>
+ *					<td rowspan="2">FOO</td>
+ *					<td colspan="2">BAR</td>
  *				</tr>
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td><p>BAZ</p></td>
- *					<td><p>XYZ</p></td>
+ *					<td>BAZ</td>
+ *					<td>XYZ</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -85,14 +85,14 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<thead>
  *				<tr>
- *					<td rowspan="2"><p>FOO</p></td>
- *					<td colspan="2"><p>BAR</p></td>
+ *					<td rowspan="2">FOO</td>
+ *					<td colspan="2">BAR</td>
  *				</tr>
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td><p>BAZ</p></td>
- *					<td><p>XYZ</p></td>
+ *					<td>BAZ</td>
+ *					<td>XYZ</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -110,12 +110,12 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td><p>11</p></td>
- *					<td><p>12</p></td>
+ *					<td>11</td>
+ *					<td>12</td>
  *				</tr>
  *				<tr>
- *					<td><p>21</p></td>
- *					<td><p>22</p></td>
+ *					<td>21</td>
+ *					<td>22</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -131,18 +131,18 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td><p>11</p></td>
- *					<td><p>12</p></td>
- *					<td><p>(empty, inserted by A)</p></td>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
- *					<td><p>21</p></td>
- *					<td><p>22</p></td>
- *					<td><p>(empty, inserted by A)</p></td>
+ *					<td>21</td>
+ *					<td>22</td>
+ *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by B)</p></td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -152,19 +152,19 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td><p>11</p></td>
- *					<td><p>12</p></td>
- *					<td><p>(empty, inserted by A)</p></td>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
- *					<td><p>21</p></td>
- *					<td><p>22</p></td>
- *					<td><p>(empty, inserted by A)</p></td>
+ *					<td>21</td>
+ *					<td>22</td>
+ *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by a post-fixer)</p></td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -176,17 +176,17 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td><p>11</p></td>
- *					<td><p>12</p></td>
+ *					<td>11</td>
+ *					<td>12</td>
  *				</tr>
  *				<tr>
- *					<td><p>21</p></td>
- *					<td><p>22</p></td>
+ *					<td>21</td>
+ *					<td>22</td>
  *				</tr>
  *				<tr>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by a post-fixer)</p></td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -196,19 +196,19 @@ import TableWalker from './../tablewalker';
  *		<table>
  *			<tbody>
  *				<tr>
- *					<td><p>11</p></td>
- *					<td><p>12</p></td>
- *					<td><p>(empty, inserted by a post-fixer after undo)</p></td>
+ *					<td>11</td>
+ *					<td>12</td>
+ *					<td>(empty, inserted by a post-fixer after undo)</td>
  *				</tr>
  *				<tr>
- *					<td><p>21</p></td>
- *					<td><p>22</p></td>
- *					<td><p>(empty, inserted by a post-fixer after undo)</p></td>
+ *					<td>21</td>
+ *					<td>22</td>
+ *					<td>(empty, inserted by a post-fixer after undo)</td>
  *				</tr>
  *				<tr>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by B)</p></td>
- *					<td><p>(empty, inserted by a post-fixer)</p></td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
  *				</tr>
  *			</tbody>
  *		</table>
