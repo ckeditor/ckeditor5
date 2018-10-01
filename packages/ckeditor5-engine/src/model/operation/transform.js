@@ -1851,7 +1851,8 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
 		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
 
-		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
+		const additionalSplit = new SplitOperation( splitPosition, 0, null, 0 );
+		additionalSplit.insertionPosition = insertionPosition;
 
 		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );

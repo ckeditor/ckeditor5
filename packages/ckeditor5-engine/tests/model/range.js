@@ -989,10 +989,7 @@ describe( 'Range', () => {
 			it( 'split inside range', () => {
 				range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const position = new Position( root, [ 0, 3 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 6, insertionPosition, gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -1003,10 +1000,7 @@ describe( 'Range', () => {
 			it( 'split at the beginning of multi-element range', () => {
 				range = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 1, 2 ] ) );
 
-				const position = new Position( root, [ 0, 4 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 5, insertionPosition, gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), 5, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -1017,10 +1011,7 @@ describe( 'Range', () => {
 			it( 'split inside range which starts at the beginning of split element', () => {
 				range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const position = new Position( root, [ 0, 3 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 6, insertionPosition, gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -1031,10 +1022,7 @@ describe( 'Range', () => {
 			it( 'split inside range which end is at the end of split element', () => {
 				range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const position = new Position( root, [ 0, 4 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 5, insertionPosition, gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), 5, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
@@ -1045,10 +1033,7 @@ describe( 'Range', () => {
 			it( 'split element which has collapsed range at the end', () => {
 				range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const position = new Position( root, [ 0, 3 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 6, insertionPosition, gyPos, 1 );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), 6, gyPos, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );

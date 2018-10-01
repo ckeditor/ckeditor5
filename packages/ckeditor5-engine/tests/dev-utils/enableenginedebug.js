@@ -361,9 +361,7 @@ describe( 'debug tools', () => {
 
 			it( 'SplitOperation without graveyard position', () => {
 				const position = new ModelPosition( modelRoot, [ 1, 4 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 6, insertionPosition, null, 0 );
+				const op = new SplitOperation( position, 6, null, 0 );
 
 				expect( op.toString() ).to.equal(
 					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ) -> main [ 2 ]'
@@ -375,9 +373,7 @@ describe( 'debug tools', () => {
 
 			it( 'SplitOperation with graveyard position', () => {
 				const position = new ModelPosition( modelRoot, [ 1, 4 ] );
-				const insertionPosition = SplitOperation.getInsertionPosition( position );
-
-				const op = new SplitOperation( position, 6, insertionPosition, new ModelPosition( modelDoc.graveyard, [ 0 ] ), 0 );
+				const op = new SplitOperation( position, 6, new ModelPosition( modelDoc.graveyard, [ 0 ] ), 0 );
 
 				expect( op.toString() ).to.equal(
 					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ) -> main [ 2 ] with $graveyard [ 0 ]'
