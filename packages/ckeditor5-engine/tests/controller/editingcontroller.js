@@ -431,6 +431,22 @@ describe( 'EditingController', () => {
 				expect( changeListenerSpy.calledOnce ).to.be.true;
 			} );
 
+			it( 'should call view post-fixers once for model.change() block', () => {
+				const postfixerSpy = sinon.spy();
+
+				editing.view.document.registerPostFixer( postfixerSpy );
+
+				model.change( writer => {
+					executeSomeModelChange( writer );
+
+					editing.view.change( writer => {
+						executeSomeViewChange( writer );
+					} );
+				} );
+
+				sinon.assert.calledOnce( postfixerSpy );
+			} );
+
 			function executeSomeModelChange( writer ) {
 				const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 				writer.addMarker( 'marker1', { range, usingOperation: true } );
