@@ -306,10 +306,10 @@ export default class Renderer {
 		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
 		// to the DOM, so we need to mark it here to make sure its attributes gets updated. See #1427 for more
 		// detailed case study.
-		// Also there are cases where replaced element can be removed from view structure and then has
-		// its attributes changed. In such cases it si not present in `markedAttributes` and may be the same
-		// (`element.isSimilar()`) as the reused element. To prevent such cases we always mark reused element
-		// to have its attrbiutes rerenderd (#1560).
+		// Also there are cases where replaced element is removed from the view structure and then has
+		// its attributes changed or removed. In such cases the element will not be present in `markedAttributes`
+		// and also may be the same (`element.isSimilar()`) as the reused element not having its attributes updated.
+		// To prevent such situations we always mark reused element to have its attributes rerenderd (#1560).
 		this.markedAttributes.add( viewElement );
 	}
 
