@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/table-post-fixer
+ * @module table/converters/table-layout-post-fixer
  */
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
@@ -12,15 +12,16 @@ import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './..
 import TableWalker from './../tablewalker';
 
 /**
- * Injects a table post-fixer into the model.
+ * Injects a table layout post-fixer into the model.
  *
- * The role of the table post-fixer is to ensure that the table rows have the correct structure
+ * The role of the table layout post-fixer is to ensure that the table rows have the correct structure
  * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
  *
  * The correct structure means that:
  *
  * * All table rows have the same size.
  * * None of a table cells that extend vertically beyond their section (either header or body).
+ * * A table cell has always at least one element as child.
  *
  * If the table structure is not correct, the post-fixer will automatically correct it in two steps:
  *
@@ -35,12 +36,12 @@ import TableWalker from './../tablewalker';
  *
  *		<table headingRows="1">
  *			<tableRow>
- *				<tableCell rowspan="2">FOO</tableCell>
- *				<tableCell colspan="2">BAR</tableCell>
+ *				<tableCell rowspan="2"><paragraph>FOO</paragraph></tableCell>
+ *				<tableCell colspan="2"><paragraph>BAR</paragraph></tableCell>
  *			</tableRow>
  *			<tableRow>
- *				<tableCell>BAZ</tableCell>
- *				<tableCell>XYZ</tableCell>
+ *				<tableCell><paragraph>BAZ</paragraph></tableCell>
+ *				<tableCell><paragraph>XYZ</paragraph></tableCell>
  *			</tableRow>
  *		</table>
  *
@@ -55,8 +56,8 @@ import TableWalker from './../tablewalker';
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td>BAZ<td>
- *					<td>XYZ<td>
+ *					<td>BAZ</td>
+ *					<td>XYZ</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -90,8 +91,8 @@ import TableWalker from './../tablewalker';
  *			</thead>
  *			<tbody>
  *				<tr>
- *					<td>BAZ<td>
- *					<td>XYZ<td>
+ *					<td>BAZ</td>
+ *					<td>XYZ</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -113,8 +114,8 @@ import TableWalker from './../tablewalker';
  *					<td>12</td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
+ *					<td>21</td>
+ *					<td>22</td>
  *				</tr>
  *			</tbody>
  *		</table>
@@ -156,8 +157,8 @@ import TableWalker from './../tablewalker';
  *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
+ *					<td>21</td>
+ *					<td>22</td>
  *					<td>(empty, inserted by A)</td>
  *				</tr>
  *				<tr>
@@ -197,32 +198,31 @@ import TableWalker from './../tablewalker';
  *				<tr>
  *					<td>11</td>
  *					<td>12</td>
- *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *					<td>(empty, inserted by a post-fixer after undo)</td>
  *				</tr>
  *				<tr>
- *					<td>21<td>
- *					<td>22<td>
- *					<td>(empty, inserted by a post-fixer after undo)<td>
+ *					<td>21</td>
+ *					<td>22</td>
+ *					<td>(empty, inserted by a post-fixer after undo)</td>
  *				</tr>
  *				<tr>
- *					<td>(empty, inserted by B)<td>
- *					<td>(empty, inserted by B)<td>
- *					<td>(empty, inserted by a post-fixer)<td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by B)</td>
+ *					<td>(empty, inserted by a post-fixer)</td>
  *				</tr>
  *			</tbody>
  *		</table>
- *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTablePostFixer( model ) {
-	model.document.registerPostFixer( writer => tablePostFixer( writer, model ) );
+export default function injectTableLayoutPostFixer( model ) {
+	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
 }
 
-// The table post-fixer.
+// The table layout post-fixer.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
-function tablePostFixer( writer, model ) {
+function tableLayoutPostFixer( writer, model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -233,7 +233,6 @@ function tablePostFixer( writer, model ) {
 	for ( const entry of changes ) {
 		let table;
 
-		// Fix table on table insert.
 		if ( entry.name == 'table' && entry.type == 'insert' ) {
 			table = entry.position.nodeAfter;
 		}
