@@ -1084,7 +1084,8 @@ export class SchemaContext {
 	 * 		// A string (element name).
 	 * 		const newContext = context.push( 'barElement' ); // [ '$root', 'barElement' ]
 	 *
-	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
+	 * **Note** {@link module:engine/model/node~Node} that is already in the model tree will be added as the only item
+	 * (without ancestors).
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item An item that will be added
 	 * to the current context.

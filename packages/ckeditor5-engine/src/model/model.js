@@ -310,7 +310,7 @@ export default class Model {
 	 *			editor.model.insertContent( writer.createText( 'x' ), Position.createAt( doc.getRoot(), 2 ) );
 	 *		} );
 	 *
-	 * If an instance of {module:engine/model/selection~Selection} is passed as `selectable`
+	 * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable`
 	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
 	 *		// Insert text replacing given selection instance.

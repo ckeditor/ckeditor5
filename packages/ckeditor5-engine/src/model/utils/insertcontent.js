@@ -19,7 +19,7 @@ import Selection from '../selection';
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- * If an instance of {module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+ * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
  *
  * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
