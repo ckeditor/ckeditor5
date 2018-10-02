@@ -396,6 +396,35 @@ describe( 'view', () => {
 		} );
 	} );
 
+	describe( 'editing controller integration', () => {
+		it( 'should call post-fixers once if rendering model changes (_disableRendering integration)', () => {
+			const postFixerSpy = sinon.spy( () => false );
+			const changeSpy = sinon.spy();
+			const eventSpy = sinon.spy();
+
+			viewDocument.registerPostFixer( postFixerSpy );
+
+			view.on( 'render', eventSpy );
+
+			// This is set in editing controller on `model#_beforeChanges` event
+			view._renderingDisabled = true;
+
+			view.change( changeSpy );
+			view.change( changeSpy );
+			view.change( changeSpy );
+
+			// This is set in editing controller on `model#_afterChanges` event
+			view._renderingDisabled = false;
+			view.render();
+
+			sinon.assert.calledOnce( postFixerSpy );
+			sinon.assert.calledThrice( changeSpy );
+			sinon.assert.calledOnce( eventSpy );
+
+			sinon.assert.callOrder( changeSpy, postFixerSpy, eventSpy );
+		} );
+	} );
+
 	describe( 'view and DOM integration', () => {
 		it( 'should remove content of the DOM', () => {
 			const domDiv = createElement( document, 'div', { id: 'editor' }, [
