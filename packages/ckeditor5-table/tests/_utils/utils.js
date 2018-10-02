@@ -15,6 +15,8 @@ import {
 } from '../../src/converters/downcast';
 import upcastTable, { upcastTableCell } from '../../src/converters/upcasttable';
 
+const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
+
 /**
  * Returns a model representation of a table shorthand notation:
  *
@@ -264,7 +266,7 @@ function makeRows( tableData, options ) {
 				const attributes = isObject ? tableCellData : {};
 
 				if ( asWidget ) {
-					attributes.class = 'ck-editor__editable ck-editor__nested-editable';
+					attributes.class = WIDGET_TABLE_CELL_CLASS + ( attributes.class ? ` ${ attributes.class }` : '' );
 					attributes.contenteditable = 'true';
 				}
 
