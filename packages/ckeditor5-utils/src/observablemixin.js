@@ -748,7 +748,7 @@ function attachBindToListeners( observable, toBindings ) {
  * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately follow.
  *
  * Note that `command.isEnabled` **must** be defined using the {@link #set `set()`} method for the binding
- * to be dynamic. `button.isEnabled` does not need to exist prior to the `bind()` call and in such case it
+ * to be dynamic. `button.isEnabled` does not need to exist prior to the `bind()` call and in such case, it
  * will be created on demand.
  *
  * The last example corresponds to the following code:
