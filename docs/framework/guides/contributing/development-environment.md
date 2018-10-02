@@ -185,13 +185,20 @@ npm run docs
 
 The documentation will be available in `build/docs/`.
 
-This task accepts two arguments which can speed up the process:
+This task accepts the following arguments:
 
 * `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
 * `--skip-validation` &ndash; Skips the final link validation.
+* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
+* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
+* `--verbose` &ndash; Prints out more information.
 
-Note: These arguments must be passed after additional `--`: `npm run docs -- --skip-api`.
+Note: These arguments must be passed after additional `--`:
+
+```
+npm run docs -- --skip-api
+```
 
 ## Bisecting through a multi-repository
 
