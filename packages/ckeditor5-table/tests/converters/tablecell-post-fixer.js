@@ -17,7 +17,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'TableCell post-fixer', () => {
-	let editor, model, doc, root, viewDocument;
+	let editor, model, doc, root, view;
 
 	testUtils.createSinonSandbox();
 
@@ -34,7 +34,7 @@ describe( 'TableCell post-fixer', () => {
 				model = editor.model;
 				doc = model.document;
 				root = doc.getRoot( 'main' );
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
 
 				defaultSchema( model.schema );
 				defaultConversion( editor.conversion, true );
@@ -66,7 +66,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
 	} );
@@ -86,7 +86,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><div></div>' ]
 		], { asWidget: true } ) );
 	} );
@@ -104,7 +104,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setSelection( nodeByPath.nextSibling, 0 );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p>00</p><p></p>' ]
 		], { asWidget: true } ) );
 
@@ -112,7 +112,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 	} );
@@ -126,7 +126,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
 	} );
@@ -140,7 +140,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.remove( table.getNodeByPath( [ 0, 0, 1 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '00' ]
 		], { asWidget: true } ) );
 	} );
@@ -154,7 +154,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.removeAttribute( 'foo', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<span>00</span>' ]
 		], { asWidget: true } ) );
 	} );
@@ -168,7 +168,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="baz">00</p>' ]
 		], { asWidget: true } ) );
 	} );
@@ -182,7 +182,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setAttribute( 'foo', 'baz', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<p foo="baz">00</p><p>00</p>' ]
 		], { asWidget: true } ) );
 	} );
@@ -196,7 +196,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.rename( table.getNodeByPath( [ 0, 0, 0 ] ), 'block' );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div>00</div>' ]
 		], { asWidget: true } ) );
 	} );
@@ -210,7 +210,7 @@ describe( 'TableCell post-fixer', () => {
 			writer.setAttribute( 'foo', 'bar', table.getNodeByPath( [ 0, 0, 0 ] ) );
 		} );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 			[ '<div foo="bar">foo</div>' ]
 		], { asWidget: true } ) );
 	} );
@@ -220,7 +220,7 @@ describe( 'TableCell post-fixer', () => {
 
 		const table = root.getChild( 0 );
 
-		expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) )
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) )
 			.to.equal( formattedViewTable( [ [ 'foobar' ] ], { asWidget: true } ) );
 
 		expect( () => {
@@ -237,8 +237,45 @@ describe( 'TableCell post-fixer', () => {
 			} );
 		} ).to.not.throw();
 
-		expect( formatTable( getViewData( viewDocument ) ) ).to.equal( formattedViewTable( [
+		expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
 			[ { class: 'foo', contents: '<p>{foobar</p><p>]</p>' } ]
 		], { asWidget: true } ) );
+	} );
+
+	it( 'should keep <p> in the view when <paragraph> attribute value is changed (table cell with multiple blocks)', () => {
+		editor.setData( viewTable( [ [ '<p>00</p><p>00</p>' ] ] ) );
+
+		const table = root.getChild( 0 );
+
+		model.change( writer => {
+			writer.remove( Range.createOn( table.getNodeByPath( [ 0, 0, 1 ] ) ) );
+		} );
+
+		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			[ '<span>00</span>' ]
+		], { asWidget: true } ) );
+	} );
+
+	it( 'should update view selection after deleting content', () => {
+		editor.setData( viewTable( [ [ '<p>foo</p><p>bar</p>' ] ] ) );
+
+		const tableCell = root.getNodeByPath( [ 0, 0, 0 ] );
+
+		// Replace table cell contents with paragraph - as model.deleteContent() does.
+		model.change( writer => {
+			writer.remove( Range.createIn( tableCell ) );
+
+			const paragraph = writer.createElement( 'paragraph' );
+
+			writer.insert( paragraph, Position.createAt( tableCell ) );
+
+			// Set selection to newly created paragraph.
+			writer.setSelection( paragraph, 0 );
+		} );
+
+		const viewRange = view.document.selection.getFirstRange();
+
+		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
+		expect( () => view.domConverter.viewRangeToDom( viewRange ) ).to.not.throw();
 	} );
 } );

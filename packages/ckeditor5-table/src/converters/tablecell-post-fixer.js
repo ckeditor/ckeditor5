@@ -85,19 +85,34 @@ function tableCellPostFixer( writer, model, mapper, view ) {
 	const elementsToCheck = getElementsToCheck( view );
 
 	for ( const element of elementsToCheck ) {
-		wasFixed = renameIfDifferent( element, mapper, writer ) || wasFixed;
+		wasFixed = ensureProperElementName( element, mapper, writer ) || wasFixed;
+	}
+
+	// Selection in the view might not be updated to renamed elements. Happens mostly when other feature inserts paragraph to the table cell
+	// (ie. when deleting table cell contents) and sets selection to it while table-post fixer changes view <p> to <span> element.
+	// The view.selection would have outdated nodes.
+	if ( wasFixed ) {
+		updateRangesInViewSelection( model.document.selection, mapper, writer );
 	}
 
 	return wasFixed;
 }
 
+// Returns view elements changed in current view.change() block.
+//
+// **Note**: Currently it uses private property of the view: _renderer to get changed view elements to check.
+//
+// @param {module:engine/view/view~View} view
 function getElementsToCheck( view ) {
 	const elementsWithChangedAttributes = Array.from( view._renderer.markedAttributes )
+		.filter( el => !!el.parent )
 		.filter( isSpanOrP )
 		.filter( el => isTdOrTh( el.parent ) );
 
 	const changedChildren = Array.from( view._renderer.markedChildren )
-		.filter( isTdOrTh ).reduce( ( prev, element ) => {
+		.filter( el => !!el.parent )
+		.filter( isTdOrTh )
+		.reduce( ( prev, element ) => {
 			const childrenToCheck = Array.from( element.getChildren() ).filter( isSpanOrP );
 
 			return [ ...prev, ...childrenToCheck ];
@@ -106,7 +121,11 @@ function getElementsToCheck( view ) {
 	return [ ...elementsWithChangedAttributes, ...changedChildren ];
 }
 
-function renameIfDifferent( currentViewElement, mapper, writer ) {
+// This method checks if view element for model's <paragraph> was properly converter.
+// Paragraph should be either
+// - span: for single paragraph with no attributes.
+// - p   : in other cases.
+function ensureProperElementName( currentViewElement, mapper, writer ) {
 	const modelParagraph = mapper.toModelElement( currentViewElement );
 	const expectedViewElementName = getExpectedElementName( modelParagraph.parent, modelParagraph );
 
@@ -152,4 +171,12 @@ function isSpanOrP( element ) {
 // @param {module:engine/view/element~Element} element
 function isTdOrTh( element ) {
 	return element.is( 'td' ) || element.is( 'th' );
+}
+
+// Resets view selections based on model selection.
+function updateRangesInViewSelection( selection, mapper, writer ) {
+	const fixedRanges = Array.from( selection.getRanges() )
+		.map( range => mapper.toViewRange( range ) );
+
+	writer.setSelection( fixedRanges, { backward: selection.isBackward } );
 }
