@@ -361,10 +361,9 @@ export default class View {
 		callback( this._writer );
 		this._ongoingChange = false;
 
-		// This lock is used by editing controller to render changes from outer most modelchange() once. As plugins might call
-		// view.change() inside model.change() block - this will ensures that postfixers are called once before rendering.
+		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
+		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
 		if ( !this._renderingDisabled ) {
-			// Execute all document post-fixers after the change.
 			this._postFixersInProgress = true;
 			this.document._callPostFixers( this._writer );
 			this._postFixersInProgress = false;
