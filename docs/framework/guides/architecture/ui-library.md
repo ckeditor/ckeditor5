@@ -347,7 +347,6 @@ import iconFile from 'path/to/icon.svg';
 // ...
 
 dropdownView.buttonView.set( {
-	// ...
 	icon: iconFile
 } );
 ```
@@ -366,7 +365,6 @@ Dropdowns can also display tooltips when hovered. Use the {@link module:ui/butto
 
 ```js
 dropdownView.buttonView.set( {
-	// ...
 	// The tooltip text will repeat the label.
 	tooltip: true
 } );
