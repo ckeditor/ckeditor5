@@ -33,7 +33,8 @@ import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
 
-import injectTablePostFixer from './converters/table-post-fixer';
+import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
+import injectTableCellContentsPostFixer from './converters/table-cell-content-post-fixer';
 import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 import '../theme/tableediting.css';
@@ -145,7 +146,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
-		injectTablePostFixer( model );
+		injectTableLayoutPostFixer( model );
+		injectTableCellContentsPostFixer( model );
 
 		// Handle tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
