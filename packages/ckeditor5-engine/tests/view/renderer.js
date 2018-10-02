@@ -17,6 +17,7 @@ import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import DocumentFragment from '../../src/view/documentfragment';
+import DowncastWriter from '../../src/view/downcastwriter';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
@@ -3036,6 +3037,68 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
+			} );
+		} );
+
+		// #1560
+		describe( 'attributes manipulation on replaced element', () => {
+			it( 'should rerender element if it was removed after having its attributes removed (attribute)', () => {
+				const writer = new DowncastWriter();
+
+				// 1. Setup initial view/DOM.
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				const viewP = viewRoot.getChild( 0 );
+
+				writer.setAttribute( 'data-placeholder', 'Body', viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p data-placeholder="Body">1</p>' );
+
+				// 2. Modify view.
+				writer.removeAttribute( 'data-placeholder', viewP );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'attributes', viewP );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p>' );
+			} );
+
+			it( 'should rerender element if it was removed after having its attributes removed (classes)', () => {
+				const writer = new DowncastWriter();
+
+				// 1. Setup initial view/DOM.
+				viewRoot._appendChild( parse( '<container:h1>h1</container:h1><container:p>p</container:p>' ) );
+
+				const viewP = viewRoot.getChild( 1 );
+
+				writer.addClass( [ 'cke-test1', 'cke-test2' ], viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<h1>h1</h1><p class="cke-test1 cke-test2">p</p>' );
+
+				// 2. Modify view.
+				writer.removeClass( 'cke-test2', viewP );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+
+				viewRoot._appendChild( parse( '<container:h1>h1</container:h1>' +
+					'<container:p class="cke-test1">p</container:p><container:p>p2</container:p>' ) );
+
+				renderer.markToSync( 'attributes', viewP );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<h1>h1</h1><p class="cke-test1">p</p><p>p2</p>' );
 			} );
 		} );
 	} );
