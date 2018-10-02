@@ -147,6 +147,7 @@ export default class Autosave extends Plugin {
 	init() {
 		const editor = this.editor;
 		const doc = editor.model.document;
+		const t = editor.t;
 
 		this._pendingActions = editor.plugins.get( PendingActions );
 
@@ -156,7 +157,7 @@ export default class Autosave extends Plugin {
 			}
 
 			if ( this.state == 'synchronized' ) {
-				this._action = this._pendingActions.add( this.editor.t( 'Saving changes' ) );
+				this._action = this._pendingActions.add( t( 'Saving changes' ) );
 				this.state = 'waiting';
 
 				this._debouncedSave();
