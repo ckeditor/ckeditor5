@@ -3100,6 +3100,34 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<h1>h1</h1><p class="cke-test1">p</p><p>p2</p>' );
 			} );
+
+			it( 'should rerender element if it was removed and have its attributes removed after', () => {
+				const writer = new DowncastWriter();
+
+				// 1. Setup initial view/DOM.
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				const viewP = viewRoot.getChild( 0 );
+
+				writer.setAttribute( 'data-placeholder', 'Body', viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p data-placeholder="Body">1</p>' );
+
+				// 2. Modify view.
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+
+				writer.removeAttribute( 'data-placeholder', viewP );
+
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p>' );
+			} );
 		} );
 	} );
 
