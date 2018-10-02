@@ -294,30 +294,23 @@ export default class Renderer {
 	 * @param {Node} domElement The DOM element representing the given view element.
 	 */
 	_updateElementMappings( viewElement, domElement ) {
-		// Because we replace new view element mapping with the existing one, the corresponding DOM element
-		// will not be rerendered. The new view element may have different attributes than the previous one.
-		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
-		// to the DOM, so we need to mark it here to make sure its attributes gets updated.
-		// Such situations may happen if only new view element was added to `this.markedAttributes`
-		// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
-		// also rerenders its attributes). See #1427 for more detailed case study.
-		const newViewChild = this.domConverter.mapDomToView( domElement );
-
-		// It may also happen that 'newViewChild' mapping is not present since its parent mapping
-		// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
-		// mappings) so we also check for '!newViewChild'.
-		// Also check if new element ('newViewChild') was marked to have its attributes rerenderd,
-		// if so, marked reused view element too (#1560).
-		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) || this.markedAttributes.has( newViewChild ) ) {
-			this.markedAttributes.add( viewElement );
-		}
-
 		// Remap 'DomConverter' bindings.
 		this.domConverter.unbindDomElement( domElement );
 		this.domConverter.bindElements( domElement, viewElement );
 
 		// View element may have children which needs to be updated, but are not marked, mark them to update.
 		this.markedChildren.add( viewElement );
+
+		// Because we replace new view element mapping with the existing one, the corresponding DOM element
+		// will not be rerendered. The new view element may have different attributes than the previous one.
+		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
+		// to the DOM, so we need to mark it here to make sure its attributes gets updated. See #1427 for more
+		// detailed case study.
+		// Also there are cases where replaced element is removed from the view structure and then has
+		// its attributes changed or removed. In such cases the element will not be present in `markedAttributes`
+		// and also may be the same (`element.isSimilar()`) as the reused element not having its attributes updated.
+		// To prevent such situations we always mark reused element to have its attributes rerenderd (#1560).
+		this.markedAttributes.add( viewElement );
 	}
 
 	/**
