@@ -11,4 +11,4 @@ msgstr "تراجع"
 
 msgctxt "Toolbar button tooltip for the Redo feature."
 msgid "Redo"
-msgstr ""
+msgstr "إعادة"
