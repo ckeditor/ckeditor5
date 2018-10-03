@@ -1,0 +1,38 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
+msgid "Yellow marker"
+msgstr "Marqueur jaune"
+
+msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
+msgid "Green marker"
+msgstr "Marqueur vert"
+
+msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
+msgid "Pink marker"
+msgstr "Marqueur rose"
+
+msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
+msgid "Blue marker"
+msgstr "Marqueur bleu"
+
+msgctxt "Toolbar button tooltip for applying red pen (text color)."
+msgid "Red pen"
+msgstr "Marqueur rouge"
+
+msgctxt "Toolbar button tooltip for applying green pen (text color)."
+msgid "Green pen"
+msgstr "Crayon vert"
+
+msgctxt "Toolbar button tooltip for removing text highlight."
+msgid "Remove highlight"
+msgstr "Enlever le surlignage"
+
+msgctxt "Toolbar button tooltip for the text highlight feature."
+msgid "Highlight"
+msgstr "Surlignage"

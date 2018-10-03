@@ -1,0 +1,38 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Albanian (https://www.transifex.com/ckeditor/teams/11143/sq/)\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
+msgid "Yellow marker"
+msgstr "Shënuesi verdh"
+
+msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
+msgid "Green marker"
+msgstr "Shënuesi gjelbër"
+
+msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
+msgid "Pink marker"
+msgstr "Shënuesi rozë"
+
+msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
+msgid "Blue marker"
+msgstr "Shënuesi kaltër"
+
+msgctxt "Toolbar button tooltip for applying red pen (text color)."
+msgid "Red pen"
+msgstr "Lapsi kuq"
+
+msgctxt "Toolbar button tooltip for applying green pen (text color)."
+msgid "Green pen"
+msgstr "Lapsi gjelbër"
+
+msgctxt "Toolbar button tooltip for removing text highlight."
+msgid "Remove highlight"
+msgstr "Largo ngjyrimet"
+
+msgctxt "Toolbar button tooltip for the text highlight feature."
+msgid "Highlight"
+msgstr "Ngjyrimi"
