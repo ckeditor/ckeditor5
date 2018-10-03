@@ -7,7 +7,7 @@ msgstr ""
 
 msgctxt "Label for the Save button."
 msgid "Save"
-msgstr "Ruaje"
+msgstr "Ruaj"
 
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
