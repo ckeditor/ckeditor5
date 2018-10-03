@@ -139,11 +139,6 @@ function mergeBranches( writer, startPos, endPos ) {
 	startPos = Position.createAfter( startParent );
 	endPos = Position.createBefore( endParent );
 
-	// One more check if both positions ended up in the same parent. See: https://github.com/ckeditor/ckeditor5/issues/1265.
-	if ( endParent == startPos.parent ) {
-		return;
-	}
-
 	if ( !endPos.isEqual( startPos ) ) {
 		// In this case, before we merge, we need to move `endParent` to the `startPos`:
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
@@ -184,19 +179,24 @@ function shouldAutoparagraph( schema, position ) {
 // Check if parents of two positions can be merged by checking if there are no limit/object
 // boundaries between those two positions.
 //
+// Merge also will not be allowed if only single element occurs between specified positions (`leftPos` and `rightPos`).
+//
 // E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
 // we'll check <p>, <bQ>, <widget> and <caption>.
 // Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
 function checkCanBeMerged( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
+	let countElement = 0;
 
 	for ( const value of rangeToCheck.getWalker() ) {
+		countElement += 1;
+
 		if ( schema.isLimit( value.item ) ) {
 			return false;
 		}
 	}
 
-	return true;
+	return countElement > 1;
 }
 
 function insertParagraph( writer, position, selection ) {
