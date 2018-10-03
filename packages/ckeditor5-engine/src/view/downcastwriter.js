@@ -40,7 +40,7 @@ export default class DowncastWriter {
 		 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~AttributeElement}s.
 		 *
 		 * @private
-		 * @type {Map}
+		 * @type {Map.<String,Set>}
 		 */
 		this._cloneGroups = new Map();
 	}
@@ -922,6 +922,24 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Cleans up memory by removing obsolete cloned elements group from the writer.
+	 *
+	 * Should be used whenever all {@link module:engine/view/attributeelement~AttributeElement attribute elements}
+	 * with the same {@link module:engine/view/attributeelement~AttributeElement#id id} are going to be removed from the view and
+	 * the group will no longer be needed.
+	 *
+	 * Cloned elements group are not removed automatically in case if the group is still needed after all its elements
+	 * were removed from the view.
+	 *
+	 * Keep in mind that group names are equal to the `id` property of the attribute element.
+	 *
+	 * @param {String} groupName Name of the group to clear.
+	 */
+	clearClonedElementsGroup( groupName ) {
+		this._cloneGroups.delete( groupName );
+	}
+
+	/**
 	 * Wraps children with provided `attribute`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
@@ -1519,11 +1537,6 @@ export default class DowncastWriter {
 		group.delete( element );
 		// Not removing group from element on purpose!
 		// If other parts of code have reference to this element, they will be able to get references to other elements from the group.
-		// If all other elements are removed from the set, everything will be garbage collected.
-
-		if ( group.size === 0 ) {
-			this._cloneGroups.delete( id );
-		}
 	}
 }
 

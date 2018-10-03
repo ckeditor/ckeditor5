@@ -7,12 +7,14 @@ import DowncastWriter from '../../../src/view/downcastwriter';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
+import RootEditableElement from '../../../src/view/rooteditableelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Document from '../../../src/view/document';
+import Mapper from '../../../src/conversion/mapper';
 
 describe( 'DowncastWriter', () => {
 	describe( 'move()', () => {
@@ -179,6 +181,36 @@ describe( 'DowncastWriter', () => {
 			expect( () => {
 				writer.move( srcRange, dstPosition );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+		} );
+
+		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {
+			const mapper = new Mapper();
+
+			const srcContainer = new ContainerElement( 'p' );
+			const dstContainer = new ContainerElement( 'p' );
+
+			const root = new RootEditableElement( 'div' );
+			root._appendChild( [ srcContainer, dstContainer ] );
+
+			const attrElemA = new AttributeElement( 'span' );
+			attrElemA._id = 'foo';
+
+			const attrElemB = new AttributeElement( 'span' );
+			attrElemB._id = 'foo';
+
+			writer.insert( new Position( srcContainer, 0 ), [ attrElemA, attrElemB ] );
+
+			mapper.bindElementToMarker( attrElemA, 'foo' );
+
+			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 2 );
+
+			writer.remove( Range.createOn( attrElemA ) );
+
+			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
+
+			writer.move( Range.createOn( attrElemB ), new Position( dstContainer, 0 ) );
+
+			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 		} );
 	} );
 } );
