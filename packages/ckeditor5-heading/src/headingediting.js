@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+
 const defaultModelElement = 'paragraph';
 
 /**
@@ -67,6 +69,8 @@ export default class HeadingEditing extends Plugin {
 			}
 		}
 
+		this._addDefaultH1Conversion( editor, options );
+
 		// Register the heading command for this option.
 		editor.commands.add( 'heading', new HeadingCommand( editor, modelElements ) );
 	}
@@ -90,6 +94,29 @@ export default class HeadingEditing extends Plugin {
 					data.writer.rename( positionParent, defaultModelElement );
 				}
 			} );
+		}
+	}
+
+	/**
+	 * Adds default converter for `h1` -> `heading1`. It will be added only if configuration with `h2` -> `heading1` mapping is used.
+	 *
+	 * @private
+	 * @param editor
+	 * @param options
+	 */
+	_addDefaultH1Conversion( editor, options ) {
+		// Add `h1` -> `heading1` conversion with a low priority. This means if no other conversion was provided,
+		// `h1` will be handled here. Proceed only if `heading1` -> `h2` mapping was registered.
+		const heading1 = options.find( option => option.model === 'heading1' && option.view === 'h2' );
+		if ( heading1 ) {
+			const optionH1 = Object.assign( {}, heading1 );
+
+			optionH1.view = 'h1';
+			// With a 'low' priority `paragraph` plugin autoparagraphing mechanism is used.
+			// Make sure this listener is called before it. If not, 'h1' will be transformed into paragraph.
+			optionH1.converterPriority = priorities.get( 'low' ) + 1;
+
+			editor.conversion.elementToElement( optionH1 );
 		}
 	}
 }

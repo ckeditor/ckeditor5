@@ -73,6 +73,13 @@ describe( 'HeadingEditing', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
+	it( 'should convert h1 to heading1', () => {
+		editor.setData( '<h1>foobar</h1>' );
+
+		expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+		expect( editor.getData() ).to.equal( '<h2>foobar</h2>' );
+	} );
+
 	describe( 'user defined', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
@@ -113,6 +120,35 @@ describe( 'HeadingEditing', () => {
 				.to.equal( '<heading1>foobar</heading1><paragraph>Normal paragraph</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
+		} );
+
+		it( 'should use user defined h1 conversion instead of the default one (high priority)', () => {
+			editor.setData( '<h2>h2</h2><h1>h1</h1>' );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>h2</paragraph><heading1>h1</heading1>' );
+			expect( editor.getData() ).to.equal( '<p>h2</p><h1>h1</h1>' );
+		} );
+
+		it( 'should use user defined h1 conversion instead of the default one (default priority)', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: {
+						options: [
+							{ model: 'paragraph', title: 'paragraph' },
+							{ model: 'heading1', view: 'h2', title: 'User H1' },
+							{ model: 'heading2', view: 'h1', title: 'User H2' }
+						]
+					}
+				} )
+				.then( editor => {
+					editor.setData( '<h2>h2</h2><h1>h1</h1>' );
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<heading1>h2</heading1><heading2>h1</heading2>' );
+
+					expect( editor.getData() ).to.equal( '<h2>h2</h2><h1>h1</h1>' );
+				} );
 		} );
 	} );
 
