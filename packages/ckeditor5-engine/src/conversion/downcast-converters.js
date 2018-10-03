@@ -625,11 +625,11 @@ export function removeUIElement() {
 
 		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
 
-		const viewWriter = conversionApi.writer;
-
 		for ( const element of elements ) {
-			viewWriter.clear( ViewRange.createOn( element ), element );
+			conversionApi.writer.clear( ViewRange.createOn( element ), element );
 		}
+
+		conversionApi.writer.clearClonedElementsGroup( data.markerName );
 
 		evt.stop();
 	};
@@ -969,6 +969,8 @@ export function removeHighlight( highlightDescriptor ) {
 				element.getCustomProperty( 'removeHighlight' )( element, descriptor.id, conversionApi.writer );
 			}
 		}
+
+		conversionApi.writer.clearClonedElementsGroup( data.markerName );
 
 		evt.stop();
 	};
