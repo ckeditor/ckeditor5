@@ -91,7 +91,7 @@ export default class NodeList {
 
 	/**
 	 * Returns the starting offset of given node. Starting offset is equal to the sum of
-	 * {module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
+	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
 	 *
 	 * @param {module:engine/model/node~Node} node Node to look for.
 	 * @returns {Number|null} Node's starting offset.

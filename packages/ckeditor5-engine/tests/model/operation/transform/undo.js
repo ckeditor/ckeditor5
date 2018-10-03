@@ -238,7 +238,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 
-	it( 'delete split paragraphs', () => {
+	it.skip( 'delete split paragraphs', () => {
 		john.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );
 
 		john.split();

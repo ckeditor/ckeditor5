@@ -16,8 +16,6 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Range', () => {
@@ -1199,107 +1197,6 @@ describe( 'Range', () => {
 				// <p>aa{bb</p><p>cc</p>}
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2 ] );
-			} );
-		} );
-
-		describe( 'by WrapOperation', () => {
-			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				// <p>f[o]o</p><p>bar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 0, 2 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <w><p>f[o]o</p></w><p>bar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 0, 2 ] );
-			} );
-
-			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
-				// <p>f[oo</p><p>b]ar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <w><p>f[oo</p></w><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-			} );
-
-			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
-				// <p>f[oo</p><p>b]ar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 1 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><w><p>b]ar</p></w>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 0, 1 ] );
-			} );
-		} );
-
-		describe( 'by UnwrapOperation', () => {
-			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				// <w><p>f[o]o</p></w><p>bar</p>
-				range.start = new Position( root, [ 0, 0, 1 ] );
-				range.end = new Position( root, [ 0, 0, 2 ] );
-
-				const unwrapPosition = new Position( root, [ 0, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[o]o</p><p>bar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 2 ] );
-			} );
-
-			it( 'maintans start position when unwrapping element in which the range starts but not ends', () => {
-				// <w><p>f[oo</p></w><p>b]ar</p>
-				range.start = new Position( root, [ 0, 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const unwrapPosition = new Position( root, [ 0, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-			} );
-
-			it( 'maintans end position when unwrapping element in which the range ends but not starts', () => {
-				// <p>f[oo</p><w><p>b]ar</p></w>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 0, 1 ] );
-
-				const unwrapPosition = new Position( root, [ 1, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
 			} );
 		} );
 	} );

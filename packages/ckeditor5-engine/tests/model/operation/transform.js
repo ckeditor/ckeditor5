@@ -1751,18 +1751,24 @@ describe( 'transform', () => {
 
 				const transOp = transform( op, transformBy, strongContext );
 
-				expect( transOp.length ).to.equal( 2 );
+				expect( transOp.length ).to.equal( 3 );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
 
 				expectOperation( transOp[ 0 ], expected );
 
-				expected.sourcePosition.path = [ 2, 2, 5 ];
-				expected.howMany = 2;
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.howMany = 1;
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 
 				expectOperation( transOp[ 1 ], expected );
+
+				expected.sourcePosition.path = [ 2, 2, 4 ];
+				expected.howMany = 2;
+				expected.targetPosition = targetPosition.getShiftedBy( 2 );
+
+				expectOperation( transOp[ 2 ], expected );
 			} );
 
 			it( 'range intersects on right side of transforming range and is important: shrink range', () => {

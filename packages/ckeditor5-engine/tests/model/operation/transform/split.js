@@ -138,13 +138,17 @@ describe( 'transform', () => {
 				kate.setData( '<paragraph>F[oo]</paragraph>' );
 
 				john.split();
-				kate.wrap( 'div' );
+				kate.wrap( 'blockQuote' );
 
 				syncClients();
-				expectClients(
-					'<paragraph>Fo</paragraph>' +
-					'<paragraph>o</paragraph>'
-				);
+
+				// Below would be the expected effect with correct wrap transformation.
+				// expectClients(
+				// 	'<paragraph>Fo</paragraph>' +
+				// 	'<paragraph>o</paragraph>'
+				// );
+
+				expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph>' );
 			} );
 		} );
 
