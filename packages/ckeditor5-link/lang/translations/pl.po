@@ -19,12 +19,12 @@ msgstr "Adres URL"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "Edytuj łącze"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "Otwórz łącze w nowym oknie"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "Nie podano adresu URL łącza"

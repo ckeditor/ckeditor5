@@ -7,7 +7,7 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr ""
+msgstr "إلغاء الرابط"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
@@ -15,7 +15,7 @@ msgstr "رابط"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "رابط عنوان"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
@@ -27,4 +27,4 @@ msgstr "فتح الرابط في تبويب جديد"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "لا يحتوي هذا الرابط على عنوان"

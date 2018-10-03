@@ -7,11 +7,11 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "Largo Nyjën"
+msgstr "Largo nyjën"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "Shto Nyjën"
+msgstr "Shto nyjën"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
@@ -19,12 +19,12 @@ msgstr "Nyja e URL-së"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "Redakto nyjën"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "Hap nyjën në faqe të re"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "Kjo nyje nuk ka URL"
