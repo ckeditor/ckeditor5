@@ -40,7 +40,7 @@ import { debounce } from 'lodash-es';
  *				}
  *			} );
  *
- * Read more about this feature in the {@glink builds/guides/integration/saving-data#the-autosave-feature Autosave feature}
+ * Read more about this feature in the {@glink builds/guides/integration/saving-data#autosave-feature Autosave feature}
  * section of the {@glink builds/guides/integration/saving-data Saving and getting data}.
  *
  * @extends module:core/plugin~Plugin
