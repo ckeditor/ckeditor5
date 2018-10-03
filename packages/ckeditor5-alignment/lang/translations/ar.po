@@ -19,7 +19,7 @@ msgstr "محاذاة في المنتصف"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr ""
+msgstr "ضبط"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
