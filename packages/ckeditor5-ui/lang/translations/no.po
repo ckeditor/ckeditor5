@@ -1,0 +1,14 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Norwegian (https://www.transifex.com/ckeditor/teams/11143/no/)\n"
+"Language: no\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "Tekstredigeringsverktøy for rik tekst, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Tekstredigeringsverktøy for rik tekst"
