@@ -31,11 +31,11 @@ msgstr "Foto e vendosur djathtas"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Ndrysho tekstin alternativ të fotos"
+msgstr "Ndrysho tekstin zgjedhor të fotos"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Teksti alternativ"
+msgstr "Teksti zgjedhor"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
@@ -47,4 +47,4 @@ msgstr "Shto Foto"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Ngarkimi dishtoi"
+msgstr "Ngarkimi dështoi"
