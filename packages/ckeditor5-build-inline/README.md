@@ -7,8 +7,11 @@ CKEditor 5 inline editor build
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-inline/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-inline?type=dev)
 
 The inline editor build for CKEditor 5. Read more about the [inline editor build](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/inline-editor.html).
+<<<<<<< HEAD
 
 ![CKEditor 5 inline editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-inline.png)
+=======
+>>>>>>> stable
 
 ## Documentation
 
