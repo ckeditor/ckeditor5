@@ -330,9 +330,10 @@ export default class Model {
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
 	 * Selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 */
-	insertContent( content, selectable ) {
-		insertContent( this, content, selectable );
+	insertContent( content, selectable, placeOrOffset ) {
+		insertContent( this, content, selectable, placeOrOffset );
 	}
 
 	/**
