@@ -98,22 +98,31 @@ export default class HeadingEditing extends Plugin {
 	}
 
 	/**
-	 * Adds default converter for `h1` -> `heading1`. It will be added only if configuration with `h2` -> `heading1` mapping is used.
+	 * Adds default conversion for `h1` -> `heading1` with a low priority.
+	 *
+	 * The default conversion will be added only if `heading.options` configuration with `h2` -> `heading1`
+	 * conversion is defined and there are no other conversion definitions for `h1` provided.
 	 *
 	 * @private
-	 * @param editor
-	 * @param options
+	 * @param {module:core/editor/editor~Editor} editor Editor instance on which to add the `h1` conversion.
+	 * @param {Array.<module:engine/conversion/conversion~ConverterDefinition} definitions List of already used conversion
+	 * definitions. The added default `h1` conversion is based on this list.
 	 */
-	_addDefaultH1Conversion( editor, options ) {
-		// Add `h1` -> `heading1` conversion with a low priority. This means if no other conversion was provided,
-		// `h1` will be handled here. Proceed only if `heading1` -> `h2` mapping was registered.
-		const heading1 = options.find( option => option.model === 'heading1' && option.view === 'h2' );
+	_addDefaultH1Conversion( editor, definitions ) {
+		// Do not add default conversions if conversion for `<h1>` is already defined.
+		if ( definitions.find( option => option.view === 'h1' ) ) {
+			return;
+		}
+
+		// Add `h1` -> `heading1` conversion with a low priority. This means if no other conversions were provided,
+		// `h1` will be handled here. Proceed only if `h2` -> `heading1` conversion was configured.
+		const heading1 = definitions.find( option => option.model === 'heading1' && option.view === 'h2' );
 		if ( heading1 ) {
 			const optionH1 = Object.assign( {}, heading1 );
 
 			optionH1.view = 'h1';
-			// With a 'low' priority `paragraph` plugin autoparagraphing mechanism is used.
-			// Make sure this listener is called before it. If not, 'h1' will be transformed into paragraph.
+			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
+			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
 			optionH1.converterPriority = priorities.get( 'low' ) + 1;
 
 			editor.conversion.elementToElement( optionH1 );
