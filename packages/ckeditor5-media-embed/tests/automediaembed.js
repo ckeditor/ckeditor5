@@ -302,6 +302,40 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
+		it( 'replaces a URL in media if pasted a link when other media element was selected', () => {
+			setData(
+				editor.model,
+				'[<media url="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"></media>]'
+			);
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+			);
+		} );
+
+		it( 'inserts a new media element if pasted a link when other media element was selected in correct place', () => {
+			setData(
+				editor.model,
+				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
+				'[<media url="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"></media>]' +
+				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+			);
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+			);
+		} );
+
 		it( 'does nothing if URL match to media but it was removed', () => {
 			return ClassicTestEditor
 				.create( editorElement, {
