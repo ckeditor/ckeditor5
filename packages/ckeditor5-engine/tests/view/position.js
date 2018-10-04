@@ -572,7 +572,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
-			const startMaecenasPosition = Position.createAt( liOl2 );
+			const startMaecenasPosition = Position.createAt( liOl2, 0 );
 			const beforeTellusPosition = new Position( liOl2, 18 );
 
 			test( startMaecenasPosition, beforeTellusPosition, liOl2 );
