@@ -915,7 +915,7 @@ export default class DowncastWriter {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
 		this.insert( Position.createAfter( viewElement ), newElement );
-		this.move( Range.createIn( viewElement ), Position.createAt( newElement ) );
+		this.move( Range.createIn( viewElement ), Position.createAt( newElement, 0 ) );
 		this.remove( Range.createOn( viewElement ) );
 
 		return newElement;

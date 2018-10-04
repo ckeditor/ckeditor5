@@ -199,8 +199,11 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	if ( isStartInLimit || isEndInLimit ) {
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
-		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
-		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
+		const startPosition = Position.createAt( startLimitElement, 0 );
+		const endPosition = Position.createAt( endLimitElement, 0 );
+
+		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( startPosition, schema, 'start' ) : start;
+		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( endPosition, schema, 'end' ) : end;
 
 		return new Range( fixedStart, fixedEnd );
 	}

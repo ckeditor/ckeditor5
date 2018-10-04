@@ -167,8 +167,8 @@ describe( 'Position', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			expect( Position.createAt( foo ).parent ).to.equal( foo );
-			expect( Position.createAt( foo ).offset ).to.equal( 0 );
+			expect( Position.createAt( foo, 0 ).parent ).to.equal( foo );
+			expect( Position.createAt( foo, 0 ).offset ).to.equal( 0 );
 
 			expect( Position.createAt( foo, 2 ).parent ).to.equal( foo );
 			expect( Position.createAt( foo, 2 ).offset ).to.equal( 2 );

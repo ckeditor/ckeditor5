@@ -158,17 +158,21 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'createAt()', () => {
+		it( 'should throw if uknown offset is passed', () => {
+			expect( () => Position.createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
+		} );
+
 		it( 'should create positions from positions', () => {
 			const spy = testUtils.sinon.spy( Position, 'createFromPosition' );
 
-			expect( Position.createAt( Position.createAt( ul ) ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			expect( Position.createAt( Position.createAt( ul, 0 ) ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should create positions from node and offset', () => {
-			expect( Position.createAt( ul ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-			expect( Position.createAt( li1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
+			expect( Position.createAt( ul, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			expect( Position.createAt( li1, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
 			expect( Position.createAt( ul, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
 		} );
 

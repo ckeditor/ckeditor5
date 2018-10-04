@@ -1473,7 +1473,7 @@ describe( 'Writer', () => {
 			const docFrag = createDocumentFragment();
 
 			expect( () => {
-				move( range, docFrag );
+				move( range, docFrag, 0 );
 			} ).to.throw( CKEditorError, /^writer-move-different-document/ );
 		} );
 
@@ -2382,7 +2382,7 @@ describe( 'Writer', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
 			const setFocusSpy = sinon.spy( DocumentSelection.prototype, '_setFocus' );
-			setSelectionFocus( firstParagraph );
+			setSelectionFocus( firstParagraph, 0 );
 
 			expect( setFocusSpy.calledOnce ).to.be.true;
 			setFocusSpy.restore();

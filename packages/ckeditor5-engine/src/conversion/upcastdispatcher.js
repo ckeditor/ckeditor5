@@ -71,7 +71,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *  	 				conversionApi.writer.insert( paragraph, splitResult.position );
  *
  *  	 				// Convert children to paragraph.
- *  	 				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph ) );
+ *  	 				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph, 0 ) );
  *
  * 						// Set as conversion result, attribute converters may use this property.
  *  	 				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
@@ -419,7 +419,7 @@ function createContextTree( contextDefinition, writer ) {
 			writer.append( current, position );
 		}
 
-		position = ModelPosition.createAt( current );
+		position = ModelPosition.createAt( current, 0 );
 	}
 
 	return position;

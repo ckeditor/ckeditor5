@@ -210,7 +210,7 @@ function replaceEntireContentWithParagraph( writer, selection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( Range.createIn( limitElement ) );
-	insertParagraph( writer, Position.createAt( limitElement ), selection );
+	insertParagraph( writer, Position.createAt( limitElement, 0 ), selection );
 }
 
 // We want to replace the entire content with a paragraph when:
