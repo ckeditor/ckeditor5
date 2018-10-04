@@ -119,6 +119,10 @@ export default class AutoMediaEmbed extends Plugin {
 		let url = '';
 
 		for ( const node of walker ) {
+			if ( !node.item.is( 'textProxy' ) ) {
+				continue;
+			}
+
 			url += node.item.data;
 		}
 
