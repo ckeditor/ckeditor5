@@ -7,7 +7,10 @@ import HeadingEditing from '../src/headingediting';
 import HeadingCommand from '../src/headingcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingEditing', () => {
@@ -121,35 +124,119 @@ describe( 'HeadingEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
 		} );
+	} );
 
-		it( 'should use user defined h1 conversion instead of the default one (high priority)', () => {
-			editor.setData( '<h2>h2</h2><h1>h1</h1>' );
+	describe( 'default h1 conversion', () => {
+		let elementToElementSpy;
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>h2</paragraph><heading1>h1</heading1>' );
-			expect( editor.getData() ).to.equal( '<p>h2</p><h1>h1</h1>' );
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			elementToElementSpy = testUtils.sinon.spy( Conversion.prototype, 'elementToElement' );
 		} );
 
-		it( 'should use user defined h1 conversion instead of the default one (default priority)', () => {
+		it( 'should set default h1 conversion for default `options.heading` config', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ]
+				} )
+				.then( () => {
+					expect( elementToElementSpy.calledWith( getDefaultConversion() ) ).to.true;
+				} );
+		} );
+
+		it( 'should set default h1 conversion based on provided config if `h2` -> `heading1` conversion defined', () => {
+			const options = [
+				{ model: 'heading1', view: 'h2', title: 'User H2' }
+			];
+
 			return VirtualTestEditor
 				.create( {
 					plugins: [ HeadingEditing ],
-					heading: {
-						options: [
-							{ model: 'paragraph', title: 'paragraph' },
-							{ model: 'heading1', view: 'h2', title: 'User H1' },
-							{ model: 'heading2', view: 'h1', title: 'User H2' }
-						]
-					}
+					heading: { options }
+				} )
+				.then( () => {
+					expect( elementToElementSpy.calledWith( getDefaultConversion( options[ 0 ] ) ) ).to.true;
+				} );
+		} );
+
+		it( 'should not set default h1 conversion if no `h2` -> `heading1` conversion defined', () => {
+			const options = [
+				{ model: 'heading1', view: 'h3', title: 'User H3' },
+				{ model: 'heading2', view: 'h4', title: 'User H4' }
+			];
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: { options }
+				} )
+				.then( () => {
+					expect( elementToElementSpy.neverCalledWith( getDefaultConversion( options[ 0 ] ) ) ).to.true;
+				} );
+		} );
+
+		it( 'should use user defined h1 conversion (low + 1 priority)', () => {
+			const options = [
+				{ model: 'paragraph', title: 'paragraph' },
+				{ model: 'heading3', view: 'h1', title: 'User H1', converterPriority: priorities.get( 'low' ) + 1 },
+				{ model: 'heading4', view: 'h2', title: 'User H2' }
+			];
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: { options }
 				} )
 				.then( editor => {
 					editor.setData( '<h2>h2</h2><h1>h1</h1>' );
 
 					expect( getData( editor.model, { withoutSelection: true } ) )
-						.to.equal( '<heading1>h2</heading1><heading2>h1</heading2>' );
+						.to.equal( '<heading4>h2</heading4><heading3>h1</heading3>' );
 
 					expect( editor.getData() ).to.equal( '<h2>h2</h2><h1>h1</h1>' );
 				} );
 		} );
+
+		it( 'should use user defined h1 conversion not adding default one (default priority)', () => {
+			const options = [
+				{ model: 'paragraph', title: 'paragraph' },
+				{ model: 'heading1', view: 'h6', title: 'User H6' },
+				{ model: 'heading2', view: 'h1', title: 'User H1' },
+				{ model: 'heading3', view: 'h2', title: 'User H2' }
+			];
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: { options }
+				} )
+				.then( editor => {
+					editor.setData( '<h2>h2</h2><h1>h1</h1>' );
+
+					expect( elementToElementSpy.neverCalledWith( getDefaultConversion() ) ).to.true;
+					expect( elementToElementSpy.neverCalledWith( getDefaultConversion( options[ 1 ] ) ) ).to.true;
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<heading3>h2</heading3><heading2>h1</heading2>' );
+
+					expect( editor.getData() ).to.equal( '<h2>h2</h2><h1>h1</h1>' );
+				} );
+		} );
+
+		function getDefaultConversion( conversionOptionBase = null ) {
+			if ( conversionOptionBase ) {
+				return Object.assign( {}, conversionOptionBase, { view: 'h1', converterPriority: priorities.get( 'low' ) + 1 } );
+			}
+
+			return {
+				model: 'heading1',
+				view: 'h1',
+				title: 'Heading 1',
+				class: 'ck-heading_heading1',
+				converterPriority: priorities.get( 'low' ) + 1
+			};
+		}
 	} );
 
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
