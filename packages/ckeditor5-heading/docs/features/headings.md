@@ -14,7 +14,9 @@ The {@link module:heading/heading~Heading} feature enables support for headings.
 
 ## Heading levels
 
-By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. The rationale behind starting from `<h2>` is that `<h1>` should be reserved for the page's main title and the page content will usually start from `<h2>`.
+By default this feature is configured to support `<h2>`, `<h3>` and `<h4>` elements which are named: "Heading 1", "Heading 2" and "Heading 3", respectively. Additionally, the `<h1>` element is supported and is converted to `<h2>` ("Heading 1") by default.
+
+The rationale behind such behaviour is that `<h1>` should be reserved for the page's main title and the page content will usually start from `<h2>`. However, when content with `<h1>` elements is used in the editor (set or pasted) it makes more sense from the user perspective and content semantics to convert `<h1>` elements into `<h2>` instead of paragraphs (`<p>`).
 
 <info-box hint>
 	You can read more about why the editor should not create `<h1>` elements in the [Headings section of Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/headings.html).
