@@ -153,7 +153,7 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment} item Item or document
 	 * fragment to insert.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insert( item, itemOrPosition, offset = 0 ) {
@@ -230,7 +230,7 @@ export default class Writer {
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * third parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insertText( text, attributes, itemOrPosition, offset ) {
@@ -262,7 +262,7 @@ export default class Writer {
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * third parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insertElement( name, attributes, itemOrPosition, offset ) {
@@ -440,7 +440,7 @@ export default class Writer {
 	 *
 	 * @param {module:engine/model/range~Range} range Source range.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	move( range, itemOrPosition, offset ) {

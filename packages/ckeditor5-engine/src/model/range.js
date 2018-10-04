@@ -831,7 +831,7 @@ export default class Range {
 	 * or on the given {@link module:engine/model/item~Item item}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	static createCollapsedAt( itemOrPosition, offset ) {

@@ -307,7 +307,7 @@ export default class Position {
 			} else if ( offset !== 0 && !offset ) {
 				throw new CKEditorError(
 					'view-position-createAt-required-second-parameter: ' +
-					'Position.createAt requires the second parameter offset.' );
+					'Position.createAt requires the second parameter offset when first parameter is a view item.' );
 			}
 
 			return new Position( node, offset );

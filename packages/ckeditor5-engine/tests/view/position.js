@@ -152,12 +152,18 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'createAt', () => {
+		it( 'should throw if no offset is passed', () => {
+			const element = new Element( 'p' );
+
+			expect( () => Position.createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-required-second-parameter/ );
+		} );
+
 		it( 'should create positions from positions', () => {
 			const spy = sinon.spy( Position, 'createFromPosition' );
 
 			const p = new Element( 'p' );
 			const position = new Position( p, 0 );
-			const created = Position.createAt( position );
+			const created = Position.createAt( position, 0 );
 
 			expect( created.isEqual( position ) ).to.be.true;
 			expect( spy.calledOnce ).to.be.true;

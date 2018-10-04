@@ -158,7 +158,7 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'createAt()', () => {
-		it( 'should throw if uknown offset is passed', () => {
+		it( 'should throw if no offset is passed', () => {
 			expect( () => Position.createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
 		} );
 
