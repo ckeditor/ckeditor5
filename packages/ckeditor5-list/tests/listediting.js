@@ -3730,7 +3730,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element before <ul>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot ), uiElement );
+					writer.insert( ViewPosition.createAt( viewRoot, 0 ), uiElement );
 				} );
 
 				model.change( writer => {
@@ -3744,7 +3744,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element before first <li>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ) ), uiElement );
+					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ), 0 ), uiElement );
 				} );
 
 				model.change( writer => {

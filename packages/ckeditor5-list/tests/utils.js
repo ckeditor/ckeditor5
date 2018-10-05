@@ -39,23 +39,23 @@ describe( 'utils', () => {
 				const innerListItem1 = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( innerListItem1 ),
+					ViewPosition.createAt( innerListItem1, 0 ),
 					writer.createText( 'foo' )
 				);
 
 				const innerListItem2 = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( innerListItem2 ),
+					ViewPosition.createAt( innerListItem2, 0 ),
 					writer.createText( 'bar' )
 				);
 
 				const innerList = writer.createContainerElement( 'ul' );
-				writer.insert( ViewPosition.createAt( innerList ), innerListItem1 );
-				writer.insert( ViewPosition.createAt( innerList ), innerListItem2 );
+				writer.insert( ViewPosition.createAt( innerList, 0 ), innerListItem1 );
+				writer.insert( ViewPosition.createAt( innerList, 0 ), innerListItem2 );
 
 				const outerListItem = createViewListItemElement( writer );
-				writer.insert( ViewPosition.createAt( outerListItem ), innerList );
+				writer.insert( ViewPosition.createAt( outerListItem, 0 ), innerList );
 
 				expect( outerListItem.getFillerOffset() ).to.equal( 0 );
 			} );
@@ -64,7 +64,7 @@ describe( 'utils', () => {
 				const item = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( item ),
+					ViewPosition.createAt( item, 0 ),
 					writer.createText( 'foo' )
 				);
 
