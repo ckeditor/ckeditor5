@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Norwegian (https://www.transifex.com/ckeditor/teams/11143/no/)\n"
+"Language: no\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the media widget."
+msgid "media widget"
+msgstr "media-widget"
+
+msgctxt "Label for the URL input in the Media Embed URL editing balloon."
+msgid "Media URL"
+msgstr "Media-URL"
+
+msgctxt "An error message that informs about an empty value in the URL input."
+msgid "The URL must not be empty."
+msgstr "URL-en kan ikke være tom."
+
+msgctxt "An error message that informs about unsupported media URL."
+msgid "This media URL is not supported."
+msgstr "Denne media-URL-en er ikke støttet."
+
+msgctxt "Toolbar button tooltip for the Media Embed feature."
+msgid "Insert media"
+msgstr "Sett inn media"
