@@ -208,10 +208,11 @@ export default class BlockToolbar extends Plugin {
 	 */
 	_createButtonView() {
 		const editor = this.editor;
+		const t = editor.t;
 		const buttonView = new BlockButtonView( editor.locale );
 
 		buttonView.set( {
-			label: editor.t( 'Edit block' ),
+			label: t( 'Edit block' ),
 			icon: iconPilcrow,
 			withText: false
 		} );
