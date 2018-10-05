@@ -7,7 +7,6 @@
  * @module typing/utils/injecttypingmutationshandling
  */
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
@@ -167,11 +166,9 @@ class MutationHandler {
 		}
 
 		const insertText = newText.substr( firstChangeAt, insertions );
-		const removeRange = ModelRange.createFromParentsAndOffsets(
-			currentModel,
-			firstChangeAt,
-			currentModel,
-			firstChangeAt + deletions
+		const removeRange = this.editor.model.createRange(
+			this.editor.model.createPositionAt( currentModel, firstChangeAt ),
+			this.editor.model.createPositionAt( currentModel, firstChangeAt + deletions )
 		);
 
 		this.editor.execute( 'input', {
@@ -216,7 +213,7 @@ class MutationHandler {
 		// Get the position in view and model where the changes will happen.
 		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
-		const removeRange = ModelRange.createFromPositionAndShift( modelPos, deletions );
+		const removeRange = this.editor.model.createRange( modelPos, modelPos.getShiftedBy( deletions ) );
 		const insertText = newText.substr( firstChangeAt, insertions );
 
 		this.editor.execute( 'input', {
@@ -245,7 +242,7 @@ class MutationHandler {
 			// In this case we don't need to do this before `diff` because we diff whole nodes.
 			// Just change &nbsp; in case there are some.
 			text: insertedText.replace( /\u00A0/g, ' ' ),
-			range: new ModelRange( modelPos )
+			range: this.editor.model.createRange( modelPos )
 		} );
 	}
 }

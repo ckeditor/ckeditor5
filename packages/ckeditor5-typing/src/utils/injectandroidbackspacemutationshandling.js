@@ -7,7 +7,6 @@
  * @module typing/utils/injectandroidbackspacenutationshandling
  */
 
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 
 import { containerChildrenMutated } from './utils';
@@ -26,7 +25,7 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 	const selectionChangeToleranceMs = 200;
 
 	let previousSelection = null;
-	let currentSelection = new Selection( model.document.selection );
+	let currentSelection = model.createSelection( model.document.selection );
 	let latestSelectionChangeMs = Date.now();
 
 	model.document.selection.on( 'change', handleSelectionChange );
@@ -38,7 +37,7 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 	//
 	// @param {Object} evt
 	function handleSelectionChange( evt ) {
-		const newSelection = new Selection( evt.source );
+		const newSelection = model.createSelection( evt.source );
 		if ( !currentSelection.isEqual( newSelection ) ) {
 			previousSelection = currentSelection;
 			currentSelection = newSelection;

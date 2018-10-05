@@ -14,8 +14,6 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -61,7 +59,7 @@ describe( 'Input feature', () => {
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
+						writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 3 ) )
 					);
 				} );
 			} );
@@ -389,7 +387,7 @@ describe( 'Input feature', () => {
 		it( 'should replace last &nbsp; with space', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+					writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 6 ) )
 				);
 			} );
 
@@ -409,7 +407,10 @@ describe( 'Input feature', () => {
 		it( 'should replace first &nbsp; with space', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 0 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 0 )
+					)
 				);
 			} );
 
@@ -429,7 +430,7 @@ describe( 'Input feature', () => {
 		it( 'should replace all &nbsp; with spaces', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+					writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 6 ) )
 				);
 			} );
 
@@ -539,9 +540,10 @@ describe( 'Input feature', () => {
 			editor.setData( '<p><a href="#"><strong>F</strong></a><strong>oo&nbsp;bar</strong></p>' );
 
 			model.change( writer => {
-				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
-				);
+				writer.setSelection( writer.createRange(
+					writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+					writer.createPositionAt( modelRoot.getChild( 0 ), 1 )
+				) );
 			} );
 
 			// We need to change the DOM content manually because typing algorithm actually does not check
@@ -584,7 +586,11 @@ describe( 'Input feature', () => {
 		it( 'should remove contents', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			listenter.listenTo( viewDocument, 'keydown', () => {
@@ -618,7 +624,11 @@ describe( 'Input feature', () => {
 		it( 'should do nothing on arrow key', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
@@ -629,7 +639,11 @@ describe( 'Input feature', () => {
 		it( 'should do nothing on ctrl combinations', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
@@ -640,7 +654,11 @@ describe( 'Input feature', () => {
 		it( 'should do nothing on non printable keys', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
@@ -654,7 +672,11 @@ describe( 'Input feature', () => {
 		it( 'should do nothing on tab key', () => {
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			viewDocument.fire( 'keydown', { keyCode: 9 } ); // Tab
@@ -675,7 +697,11 @@ describe( 'Input feature', () => {
 
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+					writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+						writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+					)
+				);
 			} );
 
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
@@ -734,7 +760,11 @@ describe( 'Input feature', () => {
 			it( 'should remove contents on composition start key if not during composition', () => {
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'keydown', { keyCode: 229 } );
@@ -745,7 +775,11 @@ describe( 'Input feature', () => {
 			it( 'should not remove contents on composition start key if during composition', () => {
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 0 ), 4 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'compositionstart' );
@@ -759,7 +793,11 @@ describe( 'Input feature', () => {
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 5 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 0 ), 5 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'compositionstart' );
@@ -774,7 +812,7 @@ describe( 'Input feature', () => {
 				const documentSelection = model.document.selection;
 
 				// Create empty selection.
-				model.document.selection = new ModelSelection();
+				model.document.selection = model.createSelection();
 
 				viewDocument.fire( 'compositionstart' );
 
@@ -790,7 +828,11 @@ describe( 'Input feature', () => {
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 1 ), 2 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'compositionstart' );
@@ -804,7 +846,11 @@ describe( 'Input feature', () => {
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 1 ), 2 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'compositionend' );
@@ -819,14 +865,22 @@ describe( 'Input feature', () => {
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 1 ), 2 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'compositionend' );
 
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 1 ) );
+						writer.createRange(
+							writer.createPositionAt( modelRoot.getChild( 0 ), 2 ),
+							writer.createPositionAt( modelRoot.getChild( 1 ), 1 )
+						)
+					);
 				} );
 
 				viewDocument.fire( 'keydown', { keyCode: 229 } );

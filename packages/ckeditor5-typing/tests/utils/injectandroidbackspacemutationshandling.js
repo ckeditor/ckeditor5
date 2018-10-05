@@ -12,7 +12,6 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Input from '../../src/input';
 import Delete from '../../src/delete';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 
@@ -61,9 +60,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should handle block merging', () => {
 		// 1. Set selection to '<h2>Heading 1</h2><p>{}Paragraph</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
-			);
+			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 1 ), 0 ) ) );
 		} );
 
 		const modelContent = '<heading1>Heading 1</heading1><paragraph>[]Paragraph</paragraph><heading2>Heading 2</heading2>';
@@ -109,9 +106,9 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should handle two entire blocks removal', () => {
 		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 1 ), 9 )
-			);
+			writer.setSelection( writer.createRange(
+				writer.createPositionAt( modelRoot.getChild( 0 ), 0 ), writer.createPositionAt( modelRoot.getChild( 1 ), 9 )
+			) );
 		} );
 
 		const modelContent = '<heading1>[Heading 1</heading1><paragraph>Paragraph]</paragraph><heading2>Heading 2</heading2>';
@@ -137,7 +134,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
 		// selection is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
-		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 );
+		const newSelection = model.createRange( model.createPositionAt( modelRoot.getChild( 1 ), 9 ) );
 
 		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
@@ -154,9 +151,9 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should handle two partially selected blocks removal', () => {
 		// 1. Set selection to '<h2>Hea{ding 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 1 ), 9 )
-			);
+			writer.setSelection( writer.createRange(
+				writer.createPositionAt( modelRoot.getChild( 0 ), 3 ), writer.createPositionAt( modelRoot.getChild( 1 ), 9 )
+			) );
 		} );
 
 		const modelContent = '<heading1>Hea[ding 1</heading1><paragraph>Paragraph]</paragraph><heading2>Heading 2</heading2>';
@@ -182,7 +179,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
 		// selection is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
-		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 );
+		const newSelection = model.createRange( model.createPositionAt( modelRoot.getChild( 1 ), 9 ) );
 
 		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
@@ -199,9 +196,9 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph</p><h3>]<i>Heading</i> 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 2 ), 0 )
-			);
+			writer.setSelection( writer.createRange(
+				writer.createPositionAt( modelRoot.getChild( 0 ), 0 ), writer.createPositionAt( modelRoot.getChild( 2 ), 0 )
+			) );
 		} );
 
 		const modelContent = '<heading1>[Heading 1</heading1><paragraph>Paragraph</paragraph>' +
@@ -233,7 +230,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
 		// selection is changed to `<h2>Heading 1</h2><p>Paragraph</p><h3><em>{}Heading</em> 2</h3>`.
-		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 0, modelRoot.getChild( 2 ), 0 );
+		const newSelection = model.createRange( model.createPositionAt( modelRoot.getChild( 2 ), 0 ) );
 
 		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
@@ -261,9 +258,9 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 2. Set selection to '<h2>{Heading 1</h2><p>Paragraph</p><h3>]<i>Heading</i> 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 2 ), 0 )
-			);
+			writer.setSelection( writer.createRange(
+				writer.createPositionAt( modelRoot.getChild( 0 ), 0 ), writer.createPositionAt( modelRoot.getChild( 2 ), 0 )
+			) );
 		} );
 
 		const modelContent = '<heading1>[Heading 1</heading1><paragraph>Paragraph</paragraph>' +
@@ -296,7 +293,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 4. Simulate user selection change which is identical as Android native change on 'Backspace'.
 		model.change( writer => {
-			writer.setSelection( ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 0, modelRoot.getChild( 2 ), 0 ) );
+			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 2 ), 0 ) ) );
 		} );
 
 		// 5. Simulate 'Backspace' flow on Android.
@@ -316,9 +313,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should not be triggered for container insertion mutations', () => {
 		// 1. Set selection to '<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 )
-			);
+			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 1 ), 9 ) ) );
 		} );
 
 		const modelContent = '<heading1>Heading 1</heading1><paragraph>Paragraph[]</paragraph><heading2>Heading 2</heading2>';

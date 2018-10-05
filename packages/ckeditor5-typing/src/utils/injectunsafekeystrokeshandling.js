@@ -7,8 +7,6 @@
  * @module typing/utils/injectunsafekeystrokeshandling
  */
 
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
@@ -29,7 +27,7 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	view.document.on( 'compositionstart', handleCompositionStart, { priority: 'lowest' } );
 
 	view.document.on( 'compositionend', () => {
-		latestCompositionSelection = new Selection( model.document.selection );
+		latestCompositionSelection = model.createSelection( model.document.selection );
 	}, { priority: 'lowest' } );
 
 	// Handles the keydown event. We need to guess whether such keystroke is going to result
