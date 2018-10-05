@@ -68,7 +68,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
-	writer.insert( ViewPosition.createAt( figure ), registry.getMediaViewElement( writer, url, options ) );
+	writer.insert( ViewPosition.createAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
 }
