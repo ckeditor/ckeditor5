@@ -82,7 +82,7 @@ export default function upcastTable() {
 			// before: <allowed><notAllowed>[]</notAllowed></allowed>
 			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 			if ( splitResult.cursorParent ) {
-				data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+				data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
 
 				// Otherwise just continue after inserted element.
 			} else {
@@ -115,7 +115,7 @@ export function upcastTableCell( elementName ) {
 			conversionApi.writer.insert( tableCell, splitResult.position );
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 
-			const modelCursor = ModelPosition.createAt( tableCell );
+			const modelCursor = ModelPosition.createAt( tableCell, 0 );
 			conversionApi.convertChildren( viewTableCell, modelCursor );
 
 			// Ensure a paragraph in the model for empty table cells.

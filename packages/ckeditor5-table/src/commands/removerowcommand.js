@@ -81,7 +81,10 @@ export default class RemoveRowCommand extends Command {
 			for ( const { row, column, cell } of [ ...tableWalker ] ) {
 				if ( cellsToMove.has( column ) ) {
 					const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-					const targetPosition = previousCell ? Position.createAfter( previousCell ) : Position.createAt( table.getChild( row ) );
+
+					const targetPosition = previousCell ?
+						Position.createAfter( previousCell ) :
+						Position.createAt( table.getChild( row ), 0 );
 
 					writer.move( Range.createOn( cellToMove ), targetPosition );
 					updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );

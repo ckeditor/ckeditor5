@@ -267,7 +267,7 @@ describe( 'TableCell post-fixer', () => {
 
 			const paragraph = writer.createElement( 'paragraph' );
 
-			writer.insert( paragraph, Position.createAt( tableCell ) );
+			writer.insert( paragraph, Position.createAt( tableCell, 0 ) );
 
 			// Set selection to newly created paragraph.
 			writer.setSelection( paragraph, 0 );
