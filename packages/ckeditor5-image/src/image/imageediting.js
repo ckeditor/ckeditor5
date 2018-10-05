@@ -120,7 +120,7 @@ export function createImageViewElement( writer ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 	const figure = writer.createContainerElement( 'figure', { class: 'image' } );
 
-	writer.insert( ViewPosition.createAt( figure ), emptyElement );
+	writer.insert( ViewPosition.createAt( figure, 0 ), emptyElement );
 
 	return figure;
 }

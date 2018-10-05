@@ -106,7 +106,7 @@ describe( 'ImageLoadObserver', () => {
 		view.change( writer => {
 			const text = writer.createText( 'foo', { b: true } );
 
-			writer.insert( Position.createAt( viewRoot.getChild( 0 ).getChild( 0 ) ), text );
+			writer.insert( Position.createAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 ), text );
 			writer.wrap( Range.createOn( text ), writer.createAttributeElement( 'b' ) );
 		} );
 
