@@ -118,10 +118,8 @@ function mergeBranches( writer, startPos, endPos ) {
 		return;
 	}
 
-	// If one of the positions is a root, then there's nothing more to merge (at least in the current state of implementation).
-	// Theoretically in this case we could unwrap the <p>: <$root>x[]<p>{}y</p></$root>, but we don't need to support it yet
-	// so let's just abort.
-	if ( !startParent.parent || !endParent.parent ) {
+	// If one of the positions is a limit element, then there's nothing to merge because we don't want to cross the limit boundaries.
+	if ( writer.model.schema.isLimit( startParent ) || writer.model.schema.isLimit( endParent ) ) {
 		return;
 	}
 
@@ -179,24 +177,19 @@ function shouldAutoparagraph( schema, position ) {
 // Check if parents of two positions can be merged by checking if there are no limit/object
 // boundaries between those two positions.
 //
-// Merge also will not be allowed if only single element occurs between specified positions (`leftPos` and `rightPos`).
-//
 // E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
 // we'll check <p>, <bQ>, <widget> and <caption>.
 // Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
 function checkCanBeMerged( leftPos, rightPos, schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
-	let countElement = 0;
 
 	for ( const value of rangeToCheck.getWalker() ) {
-		countElement += 1;
-
 		if ( schema.isLimit( value.item ) ) {
 			return false;
 		}
 	}
 
-	return countElement > 1;
+	return true;
 }
 
 function insertParagraph( writer, position, selection ) {

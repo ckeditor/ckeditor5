@@ -830,6 +830,38 @@ describe( 'DataController utils', () => {
 						'</blockQuote>' +
 					'</blockLimit>' );
 			} );
+
+			it( 'should proper merge elements which are inside limit element (nested elements)', () => {
+				setData( model,
+					'<blockQuote>' +
+						'<blockLimit>' +
+							'<blockQuote>' +
+								'<paragraph>Foo.</paragraph>' +
+								'<blockQuote>' +
+									'<paragraph>Foo</paragraph>' +
+								'</blockQuote>' +
+							'</blockQuote>' +
+							'<paragraph>[]Bar</paragraph>' +
+						'</blockLimit>' +
+					'</blockQuote>'
+				);
+
+				model.modifySelection( doc.selection, { direction: 'backward' } );
+				deleteContent( model, doc.selection );
+
+				expect( getData( model ) ).to.equal(
+					'<blockQuote>' +
+						'<blockLimit>' +
+							'<blockQuote>' +
+								'<paragraph>Foo.</paragraph>' +
+								'<blockQuote>' +
+									'<paragraph>Foo[]Bar</paragraph>' +
+								'</blockQuote>' +
+							'</blockQuote>' +
+						'</blockLimit>' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'should leave a paragraph if the entire content was selected', () => {
