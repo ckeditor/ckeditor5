@@ -497,6 +497,10 @@ class ContextFactory {
 							this._setRelation( opA, opB, 'mergeTargetNotMoved' );
 						}
 
+						if ( opA.sourcePosition.isEqual( opB.sourcePosition ) ) {
+							this._setRelation( opA, opB, 'mergeSameElement' );
+						}
+
 						break;
 					}
 				}
@@ -905,8 +909,10 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 	// After attribute change:
 	// <listItem type="numbered">foo</listItem><listItem type="numbered">foo</listItem>
 	//
-	if ( a.range.end.isEqual( b.insertionPosition ) && !b.graveyardPosition ) {
-		a.range.end.offset++;
+	if ( a.range.end.isEqual( b.insertionPosition ) ) {
+		if ( !b.graveyardPosition ) {
+			a.range.end.offset++;
+		}
 
 		return [ a ];
 	}
@@ -1320,6 +1326,23 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 		}
 	}
 
+	// Case 2:
+	//
+	// Merge source is at the same position as split position. This sometimes happen during undo. This merge operation
+	// might have been earlier transformed by a merge operation which both merged the same element. See case in
+	// `MergeOperation` x `MergeOperation` transformation. In that case, if the merge operation has been undone, the special
+	// case is not applied.
+	//
+	// In this scenario the merge operation is now transformed by the split which has undone the previous merge operation.
+	// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
+	//
+	if ( a.sourcePosition.isEqual( b.splitPosition ) && context.abRelation == 'mergeSameElement' ) {
+		a.sourcePosition = Position.createFromPosition( b.moveTargetPosition );
+		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+
+		return [ a ];
+	}
+
 	// The default case.
 	//
 	if ( a.sourcePosition.hasSameParentAs( b.splitPosition ) ) {
@@ -1555,13 +1578,16 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// In this case the default range transformation will not work correctly as the element created by
 	// split operation would be outside the range. The range to move needs to be fixed manually.
-	// Do it only if this is a "natural" split, not a one that comes from undo.
-	// TODO: this should be done on relations
 	//
 	const moveRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
 
-	if ( moveRange.end.isEqual( b.insertionPosition ) && !b.graveyardPosition ) {
-		a.howMany++;
+	if ( moveRange.end.isEqual( b.insertionPosition ) ) {
+		// Do it only if this is a "natural" split, not a one that comes from undo.
+		// If this is undo split, only `targetPosition` needs to be changed (if the move is a remove).
+		if ( !b.graveyardPosition ) {
+			a.howMany++;
+		}
+
 		a.targetPosition = newTargetPosition;
 
 		return [ a ];

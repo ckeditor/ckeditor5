@@ -517,7 +517,14 @@ export default class Range {
 	 */
 	_getTransformedBySplitOperation( operation ) {
 		const start = this.start._getTransformedBySplitOperation( operation );
-		const end = this.end._getTransformedBySplitOperation( operation );
+
+		let end;
+
+		if ( this.end.isEqual( operation.insertionPosition ) ) {
+			end = this.end.getShiftedBy( 1 );
+		} else {
+			end = this.end._getTransformedBySplitOperation( operation );
+		}
 
 		return new Range( start, end );
 	}
