@@ -1038,6 +1038,17 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 3 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 3 ] );
 			} );
+
+			it( 'split element which is the last element in the range', () => {
+				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+
+				const op = new SplitOperation( new Position( root, [ 2, 0 ] ), 6, gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4 ] );
+			} );
 		} );
 
 		describe( 'by MergeOperation', () => {
