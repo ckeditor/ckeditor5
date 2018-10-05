@@ -87,7 +87,7 @@ describe( 'Widget', () => {
 						view: ( modelItem, viewWriter ) => {
 							const b = viewWriter.createAttributeElement( 'b' );
 							const div = viewWriter.createContainerElement( 'div' );
-							viewWriter.insert( ViewPosition.createAt( div ), b );
+							viewWriter.insert( ViewPosition.createAt( div, 0 ), b );
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
