@@ -11,7 +11,7 @@ You can edit existing links by clicking them and using the balloon. Use the tool
 
 {@snippet features/link}
 
-### Typing around links
+## Typing around links
 
 CKEditor 5 allows typing both at inner and outer boundaries of links to make the editing easier for the users.
 
