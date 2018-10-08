@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.3](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.2...v10.0.3) (2018-10-08)
+
+### Other changes
+
+* Updated translations. ([92d00ee](https://github.com/ckeditor/ckeditor5-font/commit/92d00ee))
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.1...v10.0.2) (2018-07-18)
 
 ### Other changes
