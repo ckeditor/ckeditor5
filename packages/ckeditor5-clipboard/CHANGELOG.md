@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.3](https://github.com/ckeditor/ckeditor5-clipboard/compare/v10.0.2...v10.0.3) (2018-10-08)
+
+### Other changes
+
+* The `inputTransformation` event is now emitted additionally with `dataTransfer` object. Closes [#54](https://github.com/ckeditor/ckeditor5-clipboard/issues/54) . ([f3589b4](https://github.com/ckeditor/ckeditor5-clipboard/commit/f3589b4))
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-clipboard/compare/v10.0.1...v10.0.2) (2018-07-18)
 
 Internal changes only (updated dependencies, documentation, etc.).
