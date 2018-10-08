@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.2.0...v11.0.0) (2018-10-08)
+
+### Other changes
+
+* Aligned `ImageToolbar` to the new widget toolbar repository. ([980681d](https://github.com/ckeditor/ckeditor5-image/commit/980681d))
+* Image feature should insert image the same way as other widgets. ([26638f5](https://github.com/ckeditor/ckeditor5-image/commit/26638f5))
+* The ImageUploadCommand should check whether it can be executed in the selection context. Closes [#225](https://github.com/ckeditor/ckeditor5-image/issues/225). Closes [#227](https://github.com/ckeditor/ckeditor5-image/issues/227). Closes [#235](https://github.com/ckeditor/ckeditor5-image/issues/235). ([4c1f27f](https://github.com/ckeditor/ckeditor5-image/commit/4c1f27f))
+* Updated translations. ([59f3604](https://github.com/ckeditor/ckeditor5-image/commit/59f3604))
+
+### BREAKING CHANGES
+
+* The `options.file` property was renamed to options.files for 'imageUpload' command.
+* The `options.insertAt` property for 'imageUpload' command was removed. The command will now use model's selection.
+* Removed `findOptimalInsertionPosition()` from utils. The method can be found in Widget feature in `widget/utils` module.
+
+
 ## [10.2.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.1.0...v10.2.0) (2018-07-18)
 
 ### Features
