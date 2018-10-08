@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.0.3](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.0.3) (2018-10-08)
+
+### Other changes
+
+* Created heading level 4-6 icons. Closes [#112](https://github.com/ckeditor/ckeditor5-heading/issues/112). ([1116f69](https://github.com/ckeditor/ckeditor5-heading/commit/1116f69))
+* Updated translations. ([e3798e5](https://github.com/ckeditor/ckeditor5-heading/commit/e3798e5))
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.1...v10.0.2) (2018-07-18)
 
 ### Other changes
