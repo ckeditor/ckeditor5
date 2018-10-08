@@ -16,7 +16,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  * Depending on the configuration, the view representation can be "semantic" (for the data pipeline):
  *
  *		<figure class="media">
- *			<oembed url="foo"></div>
+ *			<oembed url="foo"></oembed>
  *		</figure>
  *
  * or "non-semantic" (for the editing view pipeline):

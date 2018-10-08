@@ -42,7 +42,7 @@ export function isMediaWidget( viewElement ) {
  * Creates a view element representing the media. Either "semantic" one for the data pipeline:
  *
  *		<figure class="media">
- *			<oembed url="foo"></div>
+ *			<oembed url="foo"></oembed>
  *		</figure>
  *
  * or "non-semantic" (for the editing view pipeline):
