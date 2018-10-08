@@ -19,6 +19,11 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
  * Mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
  *
+ * Read more about the concept of observables in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
+ * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/observablemixin~Observable
@@ -661,6 +666,11 @@ function attachBindToListeners( observable, toBindings ) {
  *
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
+ * Read more about the usage of this interface in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
+ * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ *
  * @interface Observable
  * @extends module:utils/emittermixin~Emitter
  */
@@ -730,84 +740,53 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Binds properties to other objects implementing {@link module:utils/observablemixin~Observable}
- * interface (e.g. {@link module:ui/model~Model}).
+ * Binds {@link #set obvervable properties} to other objects implementing the
+ * {@link module:utils/observablemixin~Observable} interface.
  *
- * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
+ * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
+ * covering the topic of property bindings with some additional examples.
  *
- * # Simple bindings
+ * Let's consider two objects: a `button` and an associated `command` (both `Observable`).
  *
- * Let's consider two objects: a `button` and an associated `command` (both `Observable`). A simple property
- * binding could look as follows:
- *
- *		button.bind( 'isEnabled' ).to( command );
- *
- * After that:
- *
- * * `button.isEnabled` equals `command.isEnabled`,
- * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately follow.
- *
- * Note that `command.isEnabled` **must** be defined using the {@link #set `set()`} method for the binding
- * to be dynamic. `button.isEnabled` does not need to exist prior to the `bind()` call and in such case, it
- * will be created on demand.
- *
- * The last example corresponds to the following code:
+ * A simple property binding could be as follows:
  *
  *		button.bind( 'isEnabled' ).to( command, 'isEnabled' );
  *
- * You should notice the `to( ... )` interface which helps specify the name of the property ("rename"
- * the property in the binding), for instance:
- *
- *		button.bind( 'isEnabled' ).to( command, 'isCommandEnabled' );
- *
- * In the above binding, whenever `command.isCommandEnabled` changes, the value of `button.isEnabled`
- * will follow.
- *
- * # Binding multiple properties
- *
- * It is possible to bind more that one property at a time to simplify the code:
- *
- *		button.bind( 'isEnabled', 'state' ).to( command );
- *
- * which is the same as:
+ * or even shorter:
  *
  *		button.bind( 'isEnabled' ).to( command );
- *		button.bind( 'state' ).to( command );
  *
- * In the above binding, the value of `button.isEnabled` will follow `command.isEnabled` and the value of
- * `button.state` will follow `command.state`.
+ * which works in the following way:
  *
- * Renaming is also possible when binding multiple properties. Consider the following example
+ * * `button.isEnabled` **instantly equals** `command.isEnabled`,
+ * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
  *
- *		button.bind( 'isEnabled', 'state' ).to( command, 'isCommandEnabled', 'commandState' );
+ * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
  *
- * which binds `button.isEnabled` to `command.isCommandEnabled` and `button.state` to `command.commandState`.
+ * You can also "rename" the property in the binding by specifying in in the `to()` chain:
  *
- * # Binding with multiple observables
+ *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
  *
- * The binding can include more than one observable, combining multiple properties. Let's create a button
- * that is enabled only when the `command` is enabled and the `editor` (also an `Observable`) is not read–only:
+ * It is possible to bind more that one property at a time to shorten the code:
  *
- *		button.bind( 'isEnabled' ).to( command, 'isEnabled', editor, 'isReadOnly',
- *			( isCommandEnabled, isEditorReadOnly ) => isCommandEnabled && !isEditorReadOnly );
+ *		button.bind( 'isEnabled', 'value' ).to( command );
  *
- * From now on the value of `button.isEnabled` depends both on `command.isEnabled` and `editor.isReadOnly`
- * as specified by the function: the former must be `true` and the later must be `false` for the button
- * to become enabled.
+ * which corresponds to:
  *
- * # Binding with an array of observables
+ *		button.bind( 'isEnabled' ).to( command );
+ *		button.bind( 'value' ).to( command );
  *
- * It is possible to bind to the same property in an array of observables. Let's bind a `button`
- * to multiple commands (also `Observables`) so that each one of them must be enabled for the button
- * to become enabled:
+ * The binding can include more than one observable, combining multiple data sources in a custom callback:
+ *
+ *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
+ *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
+ *
+ * It is also possible to bind to the same property in an array of observables.
+ * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
+ * must be enabled for the button to become enabled, use the following code:
  *
  *		button.bind( 'isEnabled' ).toMany( [ commandA, commandB, commandC ], 'isEnabled',
  *			( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
- *
- * The binding can be simplified using the spread operator (`...`) and the `Array.every()` method:
- *
- *		button.bind( 'isEnabled' ).toMany( [ commandA, commandB, commandC ], 'isEnabled',
- *			( ...areEnabled ) => areEnabled.every( isCommandEnabled => isCommandEnabled ) );
  *
  * @method #bind
  * @param {...String} bindProperties Observable properties that will be bound to another observable(s).
