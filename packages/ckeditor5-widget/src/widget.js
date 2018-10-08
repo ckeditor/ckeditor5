@@ -9,9 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
@@ -248,7 +245,7 @@ export default class Widget extends Plugin {
 
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
-		if ( objectElement2 instanceof ModelElement && schema.isObject( objectElement2 ) ) {
+		if ( !!objectElement2 && schema.isObject( objectElement2 ) ) {
 			this._setSelectionOverElement( objectElement2 );
 
 			return true;
@@ -301,7 +298,7 @@ export default class Widget extends Plugin {
 		}
 
 		model.change( writer => {
-			writer.setSelection( ModelRange.createIn( limitElement ) );
+			writer.setSelection( writer.createRangeIn( limitElement ) );
 		} );
 
 		return true;
@@ -328,7 +325,7 @@ export default class Widget extends Plugin {
 			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
 
 			model.change( writer => {
-				writer.setSelection( ModelRange.createIn( widgetParent ) );
+				writer.setSelection( writer.createRangeIn( widgetParent ) );
 			} );
 
 			return true;
@@ -345,7 +342,7 @@ export default class Widget extends Plugin {
 	 */
 	_setSelectionOverElement( element ) {
 		this.editor.model.change( writer => {
-			writer.setSelection( ModelRange.createOn( element ) );
+			writer.setSelection( writer.createRangeOn( element ) );
 		} );
 	}
 
@@ -365,11 +362,11 @@ export default class Widget extends Plugin {
 
 		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
 		// to its current state after undo.
-		const probe = new ModelSelection( modelSelection );
+		const probe = model.createSelection( modelSelection );
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( objectElement instanceof ModelElement && schema.isObject( objectElement ) ) {
+		if ( !!objectElement && schema.isObject( objectElement ) ) {
 			return objectElement;
 		}
 

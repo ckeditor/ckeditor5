@@ -366,7 +366,7 @@ describe( 'widget utils', () => {
 		it( 'returns position after selected element', () => {
 			setData( model, '<paragraph>x</paragraph>[<image></image>]<paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 2 ] );
 		} );
@@ -374,7 +374,7 @@ describe( 'widget utils', () => {
 		it( 'returns position inside empty block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 1, 0 ] );
 		} );
@@ -382,7 +382,7 @@ describe( 'widget utils', () => {
 		it( 'returns position before block if at the beginning of that block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>[]foo</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
@@ -390,7 +390,7 @@ describe( 'widget utils', () => {
 		it( 'returns position before block if in the middle of that block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
@@ -398,7 +398,7 @@ describe( 'widget utils', () => {
 		it( 'returns position after block if at the end of that block', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>foo[]</paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 2 ] );
 		} );
@@ -407,7 +407,7 @@ describe( 'widget utils', () => {
 		it( 'returns position after block if at the end of that block (deeply nested)', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>foo<span>bar[]</span></paragraph><paragraph>y</paragraph>' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 2 ] );
 		} );
@@ -416,7 +416,7 @@ describe( 'widget utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'foo[]bar' );
 
-			const pos = findOptimalInsertionPosition( doc.selection );
+			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 3 ] );
 		} );
