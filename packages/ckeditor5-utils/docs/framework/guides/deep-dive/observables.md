@@ -82,7 +82,7 @@ Additionally, as the number of observable properties increases, you can save you
 
 ## Property bindings
 
-One observable can also propagate its state (or part of it) to another observable to simplify the code and avoid numerous `change:property` event listeners. First, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}.
+One observable can also propagate its state (or part of it) to another observable to simplify the code and avoid numerous `change:property` event listeners. First, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~ObservableMixin#bind `bind()`} method to create the binding.
 
 ### Simple bindings
 
@@ -93,7 +93,7 @@ const command = new Command( 'bold' );
 const command = new Button();
 ```
 
-Any decent button must update its look when the command becomes disabled. A simple property binding doing that could look as follows:
+Any "decent" button must update its look when the command becomes disabled. A simple property binding doing that could look as follows:
 
 ```js
 button.bind( 'isEnabled' ).to( command );
@@ -151,7 +151,7 @@ button.bind( 'isEnabled', 'currentState' ).to( command, 'isWorking', 'value' );
 
 ### Binding with multiple observables
 
-The binding can include more than one observable, combining multiple properties. Let's create a button that gets enabled only when the `command` is enabled and the `ui` (also an `Observable`) is visible:
+The binding can include more than one observable, combining multiple properties in a custom callback function. Let's create a button that gets enabled only when the `command` is enabled and the `ui` (also an `Observable`) is visible:
 
 ```js
 button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
@@ -183,3 +183,34 @@ button.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 	return areEnabled.every( isCommandEnabled => isCommandEnabled );
 } );
 ```
+
+### Releasing the bindings
+
+If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~ObservableMixin#unbind `unbind()`} method.
+
+You can specify the names of the properties to selectively unbind them
+
+```js
+button.bind( 'isEnabled', 'value' ).to( command );
+
+// ...
+
+// From now on, button.isEnabled is no longer bound to the command.
+button.unbind( 'isEnabled' );
+```
+
+or you can dismiss all bindings by calling the method without arguments
+
+```js
+button.bind( 'isEnabled', 'value' ).to( command );
+
+// ...
+
+// Both "isEnabled" and "value" properties are independent back again.
+// They will retain the values determined by the bindings, though.
+button.unbind();
+```
+
+## Decorating object methods
+
+TODO
