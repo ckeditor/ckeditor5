@@ -175,6 +175,10 @@ class Command {
 mix( Command, ObservableMixin );
 ```
 
+<info-box>
+	Check out the {@link framework/guides/deep-dive/observables deep dive into observables} guide to learn more about the advanced usage of observables and see more examples.
+</info-box>
+
 Besides decorating methods with events, observables allow to observe their chosen properties. For instance, the `Command` class makes its `#value` and `#isEnabled` observable by calling {@link module:utils/observablemixin~ObservableMixin#set `set()`}:
 
 ```js
@@ -219,7 +223,7 @@ source.bar = 1;
 target.foo; // -> 1
 ```
 
-You can find more about bindings in the {@link framework/guides/architecture/ui-library UI library architecture} guide.
+You can also find more about data bindings in the user interface in the {@link framework/guides/architecture/ui-library UI library architecture} guide.
 
 ## Read next
 
