@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v11.0.0...v11.0.1) (2018-10-08)
+
+### Bug fixes
+
+* `&nbsp;` is now correctly handled in mutations. Closes [#170](https://github.com/ckeditor/ckeditor5-typing/issues/170). ([9badb20](https://github.com/ckeditor/ckeditor5-typing/commit/9badb20))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v10.0.1...v11.0.0) (2018-07-18)
 
 ### Bug fixes
