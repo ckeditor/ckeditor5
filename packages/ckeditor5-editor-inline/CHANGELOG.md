@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.0...v11.0.1) (2018-10-08)
+
+### Bug fixes
+
+* Child views should be added in `InlineEditorUIView#render()` instead of `#constructor()` to allow early template manipulation. Closes [ckeditor/ckeditor5#1150](https://github.com/ckeditor/ckeditor5/issues/1150). ([b0be713](https://github.com/ckeditor/ckeditor5-editor-inline/commit/b0be713))
+
+  Huge thanks to [Alex Eckermann](https://github.com/alexeckermann) for this contribution!
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v10.0.1...v11.0.0) (2018-07-18)
 
 ### Features
