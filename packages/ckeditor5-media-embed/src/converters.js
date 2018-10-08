@@ -13,13 +13,13 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 /**
  * Returns a function that converts the model "url" attribute to the view representation.
  *
- * Depending on the configuration the view representation can be "sementaic" (for data pipeline):
+ * Depending on the configuration, the view representation can be "semantic" (for the data pipeline):
  *
  *		<figure class="media">
  *			<oembed url="foo"></div>
  *		</figure>
  *
- * or "non-semantic" (for editing view pipeline):
+ * or "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -31,7 +31,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry The registry providing
  * the media and their content.
  * @param {Object} options
- * @param {String} [options.renderMediaPreview] When `true`, the converter will create view in the non-semantic form.
+ * @param {String} [options.renderMediaPreview] When `true`, the converter will create the view in the non-semantic form.
  * @param {String} [options.renderForEditingView] When `true`, the converter will create a view specific for the
  * editing pipeline (e.g. including CSS classes, content placeholders).
  * @returns {Function}

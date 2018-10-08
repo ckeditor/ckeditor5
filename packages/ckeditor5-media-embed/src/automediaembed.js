@@ -46,7 +46,7 @@ export default class AutoMediaEmbed extends Plugin {
 		super( editor );
 
 		/**
-		 * A paste–to–embed `setTimeout` id. Stored as a property to allow
+		 * The paste–to–embed `setTimeout` ID. Stored as a property to allow
 		 * cleaning of the timeout.
 		 *
 		 * @private
@@ -55,7 +55,7 @@ export default class AutoMediaEmbed extends Plugin {
 		this._timeoutId = null;
 
 		/**
-		 * A position where the `<media>` element will be inserted after the timeout,
+		 * The position where the `<media>` element will be inserted after the timeout,
 		 * determined each time the new content is pasted into the document.
 		 *
 		 * @private
@@ -103,7 +103,7 @@ export default class AutoMediaEmbed extends Plugin {
 	}
 
 	/**
-	 * Analyzes the part of the document between provided positions in search for a URL representing a media.
+	 * Analyzes the part of the document between provided positions in search for a URL representing media.
 	 * When the URL is found, it is automatically converted into media.
 	 *
 	 * @protected

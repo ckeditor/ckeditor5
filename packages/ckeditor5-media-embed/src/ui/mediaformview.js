@@ -79,7 +79,7 @@ export default class MediaFormView extends View {
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
-		 * A collection of views which can be focused in the form.
+		 * A collection of views that can be focused in the form.
 		 *
 		 * @readonly
 		 * @protected
@@ -108,7 +108,7 @@ export default class MediaFormView extends View {
 		} );
 
 		/**
-		 * An array of the form validators used by {@link #isValid}.
+		 * An array of form validators used by {@link #isValid}.
 		 *
 		 * @readonly
 		 * @protected
@@ -191,8 +191,8 @@ export default class MediaFormView extends View {
 	/**
 	 * The native DOM `value` of the {@link #urlInputView} element.
 	 *
-	 * **Note**: Do not confuse with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
-	 * which works one way only and may not represent the actual state of the component in DOM.
+	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
+	 * which works one way only and may not represent the actual state of the component in the DOM.
 	 *
 	 * @type {Number}
 	 */
@@ -203,8 +203,8 @@ export default class MediaFormView extends View {
 	/**
 	 * Sets the native DOM `value` of the {@link #urlInputView} element.
 	 *
-	 * **Note**: Do not confuse with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
-	 * which works one way only and may not represent the actual state of the component in DOM.
+	 * **Note**: Do not confuse it with the {@link module:ui/inputtext/inputtextview~InputTextView#value}
+	 * which works one way only and may not represent the actual state of the component in the DOM.
 	 *
 	 * @param {String} url
 	 */
@@ -223,7 +223,7 @@ export default class MediaFormView extends View {
 		for ( const validator of this._validators ) {
 			const errorText = validator( this );
 
-			// One error per-field is enough.
+			// One error per field is enough.
 			if ( errorText ) {
 				// Apply updated error.
 				this.urlInputView.errorText = errorText;
@@ -264,7 +264,7 @@ export default class MediaFormView extends View {
 	 *
 	 * @private
 	 * @param {String} label The button label.
-	 * @param {String} icon The button's icon.
+	 * @param {String} icon The button icon.
 	 * @param {String} className The additional button CSS class name.
 	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.

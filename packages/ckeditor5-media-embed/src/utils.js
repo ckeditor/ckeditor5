@@ -45,7 +45,7 @@ export function isMediaWidget( viewElement ) {
  *			<oembed url="foo"></div>
  *		</figure>
  *
- * or "non-semantic" (for editing view pipeline):
+ * or "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -74,7 +74,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 }
 
 /**
- * Returns a selected media element in model, if any.
+ * Returns a selected media element in the model, if any.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}

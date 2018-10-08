@@ -16,7 +16,7 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 const mediaPlaceholderIconViewBox = '0 0 64 42';
 
 /**
- * A bridge between the raw media content provider definitions and editor view content.
+ * A bridge between the raw media content provider definitions and the editor view content.
  *
  * It helps translating media URLs to corresponding {@link module:engine/view/element~Element view elements}.
  *
@@ -40,7 +40,7 @@ export default class MediaRegistry {
 
 				if ( !name ) {
 					/**
-					 * One of the providers (or extraProviders) specified in the mediaEmbed configuration
+					 * One of the providers (or extra providers) specified in the media embed configuration
 					 * has no name and will not be used by the editor. In order to get this media
 					 * provider working, double check your editor configuration.
 					 *
@@ -74,7 +74,7 @@ export default class MediaRegistry {
 	/**
 	 * Checks whether the passed URL is representing a certain media type allowed in the editor.
 	 *
-	 * @param {String} url The url to be checked
+	 * @param {String} url The URL to be checked
 	 * @returns {Boolean}
 	 */
 	hasMedia( url ) {
@@ -88,7 +88,7 @@ export default class MediaRegistry {
 	 * **Note:** If no URL is specified, an empty view element is returned.
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
-	 * @param {String} url The url to be translated into a view element.
+	 * @param {String} url The URL to be translated into a view element.
 	 * @param {Object} options
 	 * @param {String} [options.renderMediaPreview]
 	 * @param {String} [options.renderForEditingView]
@@ -102,8 +102,8 @@ export default class MediaRegistry {
 	 * Returns a `Media` instance for the given URL.
 	 *
 	 * @protected
-	 * @param {String} url The url of the media.
-	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there's none.
+	 * @param {String} url The URL of the media.
+	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there is none.
 	 */
 	_getMedia( url ) {
 		if ( !url ) {
@@ -136,12 +136,12 @@ export default class MediaRegistry {
 	 * Tries to match `url` to `pattern`.
 	 *
 	 * @private
-	 * @param {String} url The url of the media.
-	 * @param {RegExp} pattern The pattern that should accept the media url.
+	 * @param {String} url The URL of the media.
+	 * @param {RegExp} pattern The pattern that should accept the media URL.
 	 * @returns {Array|null}
 	 */
 	_getUrlMatches( url, pattern ) {
-		// 1. Try to match without stripping the protocol and "www" sub-domain.
+		// 1. Try to match without stripping the protocol and "www" subdomain.
 		let match = url.match( pattern );
 
 		if ( match ) {
@@ -156,7 +156,7 @@ export default class MediaRegistry {
 			return match;
 		}
 
-		// 3. Try to match after stripping the "www" sub-domain.
+		// 3. Try to match after stripping the "www" subdomain.
 		rawUrl = rawUrl.replace( /^www\./, '' );
 		match = rawUrl.match( pattern );
 
@@ -169,9 +169,9 @@ export default class MediaRegistry {
 }
 
 /**
- * Represents a media defined by the provider configuration.
+ * Represents media defined by the provider configuration.
  *
- * It can be rendered to the {@link module:engine/view/element~Element view element} and used in editing or data pipeline.
+ * It can be rendered to the {@link module:engine/view/element~Element view element} and used in the editing or data pipeline.
  *
  * @private
  */
@@ -208,7 +208,7 @@ class Media {
 	}
 
 	/**
-	 * Returns view element representation of the media.
+	 * Returns the view element representation of the media.
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
@@ -269,7 +269,7 @@ class Media {
 	}
 
 	/**
-	 * Returns the placeholder HTML when media has no content preview.
+	 * Returns the placeholder HTML when the media has no content preview.
 	 *
 	 * @returns {String}
 	 */
@@ -319,9 +319,9 @@ class Media {
 	}
 
 	/**
-	 * Returns full url to specified media.
+	 * Returns the full URL to the specified media.
 	 *
-	 * @param {String} url The url of the media.
+	 * @param {String} url The URL of the media.
 	 * @returns {String|null}
 	 */
 	_getValidUrl( url ) {
