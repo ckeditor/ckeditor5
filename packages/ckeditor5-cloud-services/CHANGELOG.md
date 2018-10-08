@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [10.0.3](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.0.2...v10.0.3) (2018-10-08)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.0.1...v10.0.2) (2018-07-18)
 
 Internal changes only (updated dependencies, documentation, etc.).
