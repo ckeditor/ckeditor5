@@ -1,6 +1,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
@@ -30,7 +31,8 @@ export class Client {
 			// Typing is needed for delete command.
 			// UndoEditing is needed for undo command.
 			// Block plugins are needed for proper data serializing.
-			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing ]
+			// BoldEditing is needed for bold command.
+			plugins: [ Typing, Paragraph, ListEditing, UndoEditing, BlockQuoteEditing, HeadingEditing, BoldEditing ]
 		} ).then( editor => {
 			this.editor = editor;
 			this.document = editor.model.document;

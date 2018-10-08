@@ -275,4 +275,50 @@ describe( 'transform', () => {
 		john.redo();
 		expectClients( '<paragraph>Foo</paragraph>' );
 	} );
+
+	it( 'undo pasting', () => {
+		john.setData( '<paragraph>Foo[]Bar</paragraph>' );
+
+		// Below simulates pasting.
+		john.editor.model.change( () => {
+			john.split();
+			john.setSelection( [ 1 ] );
+
+			john.insert( '<paragraph>1</paragraph>' );
+			john.setSelection( [ 1 ] );
+			john.merge();
+
+			john.setSelection( [ 1 ] );
+			john.insert( '<paragraph>2</paragraph>' );
+			john.setSelection( [ 2 ] );
+			john.merge();
+		} );
+
+		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>FooBar</paragraph>' );
+	} );
+
+	it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
+		// This test is ported from undo to keep 100% CC in engine.
+		john.setData( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+		john.split();
+		john.setSelection( [ 1, 0 ] );
+		john._processExecute( 'bold' );
+		john._processExecute( 'forwardDelete' );
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph selection:bold="true"></paragraph><paragraph>Bar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph></paragraph><paragraph>Bar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+	} );
 } );
