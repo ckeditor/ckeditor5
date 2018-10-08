@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.3.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.2.0...v10.3.0) (2018-10-08)
+
+### Features
+
+* Introduce findOptimalInsertionPostion() utility method. ([9c0d4ce](https://github.com/ckeditor/ckeditor5-widget/commit/9c0d4ce))
+* Introduced the widget toolbar repository. Closes [ckeditor/ckeditor5-ui#442](https://github.com/ckeditor/ckeditor5-ui/issues/442). ([bc45176](https://github.com/ckeditor/ckeditor5-widget/commit/bc45176))
+
+
 ## [10.2.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.1.0...v10.2.0) (2018-07-18)
 
 ### Features
