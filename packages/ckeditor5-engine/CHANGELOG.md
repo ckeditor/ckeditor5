@@ -1,6 +1,62 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.2.0...v11.0.0) (2018-10-08)
+
+### Bug fixes
+
+* `Range#_getTransformedBySplitOperation()` will expand the range if `insertionPosition` is equal to the range end. Modified transformations to align with that change. Closes https://github.com/ckeditor/ckeditor5/issues/1278. ([e0e961f](https://github.com/ckeditor/ckeditor5-engine/commit/e0e961f))
+* `Schema#schema.checkAttributeInSelection()` will include selection's attributes in the context of the check. Closes [#1546](https://github.com/ckeditor/ckeditor5-engine/issues/1546). ([8fa632c](https://github.com/ckeditor/ckeditor5-engine/commit/8fa632c))
+* `startsWithFiller` should correctly work with DOM `Text` nodes that are inside of an iframe. ([16b0280](https://github.com/ckeditor/ckeditor5-engine/commit/16b0280))
+
+  Huge thanks to [Dmitri Pisarev](https://github.com/dimaip) for this contribution!
+* Fixed failing tests - fixed OT algorithms, expectations in tests and skipped two tests. ([6c1f87e](https://github.com/ckeditor/ckeditor5-engine/commit/6c1f87e))
+* Marked reused element attributes to be rendered if replacing element was also marked. Closes [#1560](https://github.com/ckeditor/ckeditor5-engine/issues/1560). Closes [#1561](https://github.com/ckeditor/ckeditor5-engine/issues/1561). ([6619a1f](https://github.com/ckeditor/ckeditor5-engine/commit/6619a1f))
+* Remove clone groups in `view.DowncastWriter` manually. Closes [#1571](https://github.com/ckeditor/ckeditor5-engine/issues/1571). ([420166a](https://github.com/ckeditor/ckeditor5-engine/commit/420166a))
+* Use numbers instead of booleans in Array.sort. ([00fbf7f](https://github.com/ckeditor/ckeditor5-engine/commit/00fbf7f))
+
+### Other changes
+
+* Added logging for new operations. Closes [#1491](https://github.com/ckeditor/ckeditor5-engine/issues/1491). ([5c0a34d](https://github.com/ckeditor/ckeditor5-engine/commit/5c0a34d))
+* Added new OT tests, reached 100% code coverage, fixed multiple OT scenarios, removed unreachable code. Closes [#1474](https://github.com/ckeditor/ckeditor5-engine/issues/1474). ([6c2151a](https://github.com/ckeditor/ckeditor5-engine/commit/6c2151a))
+* Allowed using `Mapper` outside the conversion scope. Closes [#1415](https://github.com/ckeditor/ckeditor5-engine/issues/1415). ([6de6a00](https://github.com/ckeditor/ckeditor5-engine/commit/6de6a00))
+
+  Thanks to [Mate Bartus](https://github.com/CHItA) for this contribution!
+* Always update attributes of reused elements while rendering. Closes [#1560](https://github.com/ckeditor/ckeditor5-engine/issues/1560). ([9b95a8a](https://github.com/ckeditor/ckeditor5-engine/commit/9b95a8a))
+* Changed long name returned by `Operation.className` property to the short one. Closes [#1513](https://github.com/ckeditor/ckeditor5-engine/issues/1513). ([7765953](https://github.com/ckeditor/ckeditor5-engine/commit/7765953))
+* Made the view's `stringify()` dev util output the content of the `UIElement` (see [ckeditor/ckeditor5-media-embed#1](https://github.com/ckeditor/ckeditor5-media-embed/issues/1)). ([49cd795](https://github.com/ckeditor/ckeditor5-engine/commit/49cd795))
+* Make `toJSON()` to serialize nested objects. Closes [#1477](https://github.com/ckeditor/ckeditor5-engine/issues/1477). ([27ab310](https://github.com/ckeditor/ckeditor5-engine/commit/27ab310))
+* Moved error logging from debug tools to OT code. ([74f00e9](https://github.com/ckeditor/ckeditor5-engine/commit/74f00e9))
+
+  Other: Aligned `Schema#getValidRanges` results to changes in `AttributeOperation`.
+  Other: Unified `RemoveOperation` and `ReinsertOperation` to have just one `MoveOperation`.
+  Other: Simplified `LiveRange#event:change` second parameter which is now an object containing `Position` not an `Operation`.
+  Internal: Operational transformations refactor followups. 
+  Internal: Additional improvements for the new OT algorithms.
+  Internal: Added relations to better solve cases in undo.
+  Internal: Improved cloning mechanism inside `WrapOperation`.
+  Internal: Improved `model.Range#getTransformedByMergeOperation`.
+  Internal: Other improvements in OT algorithms.
+  Internal: Improvements in docs.
+* Prevent rendering when in the `model.change()` or `model.enqueueChange()` block. Closes [#1528](https://github.com/ckeditor/ckeditor5-engine/issues/1528). ([2ef33b1](https://github.com/ckeditor/ckeditor5-engine/commit/2ef33b1))
+* Removed concept of deltas. Added new operations. Rewritten OT algorithms. Closes [#1162](https://github.com/ckeditor/ckeditor5-engine/issues/1162). ([a5cf8b1](https://github.com/ckeditor/ckeditor5-engine/commit/a5cf8b1))
+* Renamed view `Writer` to `DowncastWriter`. Closes [#1515](https://github.com/ckeditor/ckeditor5-engine/issues/1515). ([5fd1ea5](https://github.com/ckeditor/ckeditor5-engine/commit/5fd1ea5))
+* Swapped parameters order in the `DowncastWriter#rename()` method. The `DowncastWriter#remove()` method now accepts range or item. Closes [#1521](https://github.com/ckeditor/ckeditor5-engine/issues/1521). ([d289b74](https://github.com/ckeditor/ckeditor5-engine/commit/d289b74))
+* The `model.insertContent()` accepts range and position. Closes [ckeditor/ckeditor5#1243](https://github.com/ckeditor/ckeditor5/issues/1243). ([bcdaaa9](https://github.com/ckeditor/ckeditor5-engine/commit/bcdaaa9))
+* View post-fixer should be called once while rendering model changes. Closes [#1564](https://github.com/ckeditor/ckeditor5-engine/issues/1564). ([2f5af98](https://github.com/ckeditor/ckeditor5-engine/commit/2f5af98))
+
+### BREAKING CHANGES
+
+* View post-fixers are now called once while rendering model changes.
+* Swapped parameters order in the `DowncastWriter` (former `engine\view\writer`) `rename()`  method. See [#1521](https://github.com/ckeditor/ckeditor5-engine/issues/1521).
+* The `engine/view/writer` module was renamed to `engine/view/downcastwriter`.
+* `LiveRange#event:change` second parameter is now an object containing property `deletionPosition`. It can be `model.Position` instance, if the range was moved to the graveyard root. The position is equal to the position from which nodes were removed. Otherwise, it is set to `null`.
+* `Schema#getValidRanges` will return only flat ranges now. If an attribute is allowed on some nodes and in those nodes children, multiple "nested" ranges will be returned.
+* `Schema#getValidRanges` is a generator now.
+* Everything connected with deltas was removed from the editor.
+* `model.Writer#setAttribute` (and `AttributeOperation`) now applies attribute only to the top-level nodes in the `range` (instead of all the nodes in the range).
+
+
 ## [10.2.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.1.0...v10.2.0) (2018-07-18)
 
 ### Features
