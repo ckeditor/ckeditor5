@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.0.4](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.3...v10.0.4) (2018-10-08)
+
+### Other changes
+
+* The link button will be active when the selection is placed inside a link. Closes [#173](https://github.com/ckeditor/ckeditor5-link/issues/173). ([c9e4bc3](https://github.com/ckeditor/ckeditor5-link/commit/c9e4bc3))
+* Updated translations. ([6d0ce97](https://github.com/ckeditor/ckeditor5-link/commit/6d0ce97))
+
+
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.2...v10.0.3) (2018-07-18)
 
 ### Other changes
