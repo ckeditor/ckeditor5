@@ -449,6 +449,8 @@ class ContextFactory {
 							this._setRelation( opA, opB, 'insertAtSource' );
 						} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
 							this._setRelation( opA, opB, 'insertBetween' );
+						} else if ( opA.targetPosition.isAfter( opB.sourcePosition ) ) {
+							this._setRelation( opA, opB, 'moveTargetAfter' );
 						}
 
 						break;
@@ -1568,7 +1570,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// Do not transform if target position is same as split insertion position and this split comes from undo.
 	// This should be done on relations but it is too much work for now as it would require relations working in collaboration.
 	// We need to make a decision how we will resolve such conflict and this is less harmful way.
-	if ( !a.targetPosition.isEqual( b.insertionPosition ) || !b.graveyardPosition ) {
+	if ( !a.targetPosition.isEqual( b.insertionPosition ) || !b.graveyardPosition || context.abRelation == 'moveTargetAfter' ) {
 		newTargetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 	}
 

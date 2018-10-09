@@ -238,7 +238,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 
-	it.skip( 'delete split paragraphs', () => {
+	it( 'delete split paragraphs', () => {
 		john.setData( '<paragraph>Foo</paragraph><paragraph>B[]ar</paragraph>' );
 
 		john.split();
@@ -320,5 +320,28 @@ describe( 'transform', () => {
 
 		john.undo();
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1288
+	it( 'remove two groups of blocks then undo, undo', () => {
+		john.setData(
+			'<paragraph>X</paragraph><paragraph>A</paragraph><paragraph>B[</paragraph><paragraph>C</paragraph><paragraph>D]</paragraph>'
+		);
+
+		john.delete();
+		john.setSelection( [ 0, 1 ], [ 2, 1 ] );
+		john.delete();
+
+		expectClients( '<paragraph>X</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>X</paragraph><paragraph>A</paragraph><paragraph>B</paragraph>' );
+
+		john.undo();
+
+		expectClients(
+			'<paragraph>X</paragraph><paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph><paragraph>D</paragraph>'
+		);
 	} );
 } );
