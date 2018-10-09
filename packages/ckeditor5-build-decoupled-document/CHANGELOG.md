@@ -3,11 +3,11 @@ Changelog
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v11.0.1...v11.1.0) (2018-10-08)
 
+This is a minor release. Besides updating all used CKEditor 5 packages to their latest versions it brings the [Media embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) feature which is now enabled in this build by default.
+
+Blog post is comming soon...
+
 ### Dependencies
-
-New packages:
-
-* [@ckeditor/ckeditor5-media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed): [v10.0.0](https://github.com/ckeditor/ckeditor5-media-embed/releases/tag/v10.0.0)
 
 Major releases (contain breaking changes):
 
