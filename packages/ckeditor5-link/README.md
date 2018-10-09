@@ -10,7 +10,7 @@ CKEditor 5 link feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-link/status.svg)](https://david-dm.org/ckeditor/ckeditor5-link)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-link/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-link?type=dev)
 
-This package implements the link feature for CKEditor 5.
+This package implements the link feature for CKEditor 5. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
 ## Documentation
 
