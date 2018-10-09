@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Added styles for errors in the labeled inputs. See [ckeditor/ckeditor5-media-embed#1](https://github.com/ckeditor/ckeditor5-media-embed/issues/1). ([1b3ae62](https://github.com/ckeditor/ckeditor5-theme-lark/commit/1b3ae62))
+* Added styles for error messages in the labeled inputs. See [ckeditor/ckeditor5-media-embed#1](https://github.com/ckeditor/ckeditor5-media-embed/issues/1). ([1b3ae62](https://github.com/ckeditor/ckeditor5-theme-lark/commit/1b3ae62))
 
 ### Bug fixes
 
