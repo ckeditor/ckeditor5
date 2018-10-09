@@ -1,11 +1,14 @@
 Changelog
 =========
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.1.0) (2018-10-08)
+
+### Features
+
+* Heading 4 to heading 6 icons were added. This allows configuring the editor to contain heading1-heading6 buttons in the toolbar. Closes [#112](https://github.com/ckeditor/ckeditor5-heading/issues/112). ([1116f69](https://github.com/ckeditor/ckeditor5-heading/commit/1116f69))
 
 ### Other changes
 
-* Created heading level 4-6 icons. Closes [#112](https://github.com/ckeditor/ckeditor5-heading/issues/112). ([1116f69](https://github.com/ckeditor/ckeditor5-heading/commit/1116f69))
 * Updated translations. ([e3798e5](https://github.com/ckeditor/ckeditor5-heading/commit/e3798e5))
 
 
