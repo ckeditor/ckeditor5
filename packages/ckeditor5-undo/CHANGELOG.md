@@ -5,7 +5,6 @@ Changelog
 
 ### Other changes
 
-* `transformSets` is now exported as a function, not inside an object. ([12537f1](https://github.com/ckeditor/ckeditor5-undo/commit/12537f1))
 * Updated translations. ([7aec2df](https://github.com/ckeditor/ckeditor5-undo/commit/7aec2df))
 
 
