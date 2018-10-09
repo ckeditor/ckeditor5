@@ -1,9 +1,11 @@
 Changelog
 =========
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.0.2...v10.1.0) (2018-10-08)
 
-Internal changes only (updated dependencies, documentation, etc.).
+### Features
+
+* The `config.cloudService.tokenUrl` will now accept a callback (in addition to accepting a string).
 
 
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.0.1...v10.0.2) (2018-07-18)
