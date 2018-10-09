@@ -5,32 +5,32 @@ Changelog
 
 ### Features
 
-* Added the table feature to the build. See [ckeditor/ckeditor5#1247](https://github.com/ckeditor/ckeditor5/issues/1247). ([ea2caa3](https://github.com/ckeditor/ckeditor5-table/commit/ea2caa3))
-* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (e.g. pasting and collaboration). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
-* Introduced toolbar for the table widget, changed the toolbar configuration option from `table.toolbar` to `table.contentToolbar`. Closes [#113](https://github.com/ckeditor/ckeditor5-table/issues/113). Closes [#106](https://github.com/ckeditor/ckeditor5-table/issues/106). ([9f9486d](https://github.com/ckeditor/ckeditor5-table/commit/9f9486d))
+* Implemented the table post–fixer which bulletproofs the feature in various complex use–cases (e.g. pasting and real-time collaborative editing). Closes [#13](https://github.com/ckeditor/ckeditor5-table/issues/13). ([01f9a3b](https://github.com/ckeditor/ckeditor5-table/commit/01f9a3b))
+* Introduced the toolbar for the table widget (previously it was available only for single cells). Changed the toolbar configuration option from `table.toolbar` to `table.contentToolbar`. Closes [#113](https://github.com/ckeditor/ckeditor5-table/issues/113). Closes [#106](https://github.com/ckeditor/ckeditor5-table/issues/106). ([9f9486d](https://github.com/ckeditor/ckeditor5-table/commit/9f9486d))
 
   Other: `config.table.toolbar` is marked as depracted. Use `config.table.contentToolbar` instead.
-* Support block content inside table. Closes [#56](https://github.com/ckeditor/ckeditor5-table/issues/56). ([cdf718e](https://github.com/ckeditor/ckeditor5-table/commit/cdf718e))
+* Introduced a support for block content inside tables. Closes [#56](https://github.com/ckeditor/ckeditor5-table/issues/56). ([cdf718e](https://github.com/ckeditor/ckeditor5-table/commit/cdf718e))
 
 ### Bug fixes
 
 * A table cell should always have a `<paragraph>` in the model. Closes [#125](https://github.com/ckeditor/ckeditor5-table/issues/125). ([1eb5d6d](https://github.com/ckeditor/ckeditor5-table/commit/1eb5d6d))
 * Downcast converter for table attributes should work with not converted child elements. Closes [#92](https://github.com/ckeditor/ckeditor5-table/issues/92). ([a3ea18d](https://github.com/ckeditor/ckeditor5-table/commit/a3ea18d))
-* Merging down rowspanned cell from the head with a cell in body is now disabled. Closes [#86](https://github.com/ckeditor/ckeditor5-table/issues/86). ([cb77e38](https://github.com/ckeditor/ckeditor5-table/commit/cb77e38))
-* The upcast conversion now properly parses inline content in table cell into single paragraph. Closes [ckeditor/ckeditor5#1246](https://github.com/ckeditor/ckeditor5/issues/1246). ([ea1e16d](https://github.com/ckeditor/ckeditor5-table/commit/ea1e16d))
+* Merging down rowspanned cell from the head with a cell in the body is now disabled. Closes [#86](https://github.com/ckeditor/ckeditor5-table/issues/86). ([cb77e38](https://github.com/ckeditor/ckeditor5-table/commit/cb77e38))
+* The upcast conversion will now properly parse inline content in table cell into single paragraph. Closes [ckeditor/ckeditor5#1246](https://github.com/ckeditor/ckeditor5/issues/1246). ([ea1e16d](https://github.com/ckeditor/ckeditor5-table/commit/ea1e16d))
 * Toggling headers should always include the column or row the selection is anchored to. Closes [#34](https://github.com/ckeditor/ckeditor5-table/issues/34). ([bce6766](https://github.com/ckeditor/ckeditor5-table/commit/bce6766))
 
 ### Other changes
 
-* Aligned `tableToolbar` to the widget toolbar repository. Closes [#107](https://github.com/ckeditor/ckeditor5-table/issues/107). ([e276e66](https://github.com/ckeditor/ckeditor5-table/commit/e276e66))
+* Aligned `TableToolbar` to the widget toolbar repository. Closes [#107](https://github.com/ckeditor/ckeditor5-table/issues/107). ([e276e66](https://github.com/ckeditor/ckeditor5-table/commit/e276e66))
 * Media should not be allowed inside table cells for now. Closes [#124](https://github.com/ckeditor/ckeditor5-table/issues/124). ([2f2fe4a](https://github.com/ckeditor/ckeditor5-table/commit/2f2fe4a))
-* Table feature should insert table the same way as other widgets. Closes [#27](https://github.com/ckeditor/ckeditor5-table/issues/27). ([77d96a4](https://github.com/ckeditor/ckeditor5-table/commit/77d96a4))
-* The table cell view post-fixer should use changed elements from the view to run fixes. Closes [#130](https://github.com/ckeditor/ckeditor5-table/issues/130). ([efc53c9](https://github.com/ckeditor/ckeditor5-table/commit/efc53c9))
+* Table feature should insert table the same way as other widget features do. Closes [#27](https://github.com/ckeditor/ckeditor5-table/issues/27). ([77d96a4](https://github.com/ckeditor/ckeditor5-table/commit/77d96a4))
+* The table cell view post-fixer should use changed elements from the view to make fixes. Closes [#130](https://github.com/ckeditor/ckeditor5-table/issues/130). ([efc53c9](https://github.com/ckeditor/ckeditor5-table/commit/efc53c9))
 * Updated the table icon which used to feel bulky with a lighter design. Closes [#117](https://github.com/ckeditor/ckeditor5-table/issues/117). ([cd6f5ff](https://github.com/ckeditor/ckeditor5-table/commit/cd6f5ff))
 * Updated translations. ([de47767](https://github.com/ckeditor/ckeditor5-table/commit/de47767))
 
 ### BREAKING CHANGES
 
+* The `config.table.toolbar` was renamed to `config.table.contentToolbar`.
 * The `injectTablePostFixer()` function from  `table/converters/table-post-fixer` is now `injectTableLayoutPostFixer()`and is moved to `table/converters/table-layout-post-fixer` module.
 * The `TableUtils#createTable()` method now accepts model `Writer` instance instead of `Position`. The method no longer inserts created table to the model - use returned value instead.
 * Removed `table/commands/utils~getParentTable()` method. Use `table/commands/utils~findAncestor()` instead.

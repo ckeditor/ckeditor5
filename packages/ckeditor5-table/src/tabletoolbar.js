@@ -79,7 +79,7 @@ export default class TableToolbar extends Plugin {
 /**
  * Items to be placed in the table content toolbar.
  *
- * **Note:** This is a deprecated configuration option! Use {@link module:table/table~TableConfig#contentToolbar} instead.
+ * **Note:** This configuration option is deprecated! Use {@link module:table/table~TableConfig#contentToolbar} instead.
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
