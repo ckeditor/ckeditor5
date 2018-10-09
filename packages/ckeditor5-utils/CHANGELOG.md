@@ -1,11 +1,15 @@
 Changelog
 =========
 
-## [10.2.2](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v10.2.2) (2018-10-08)
+## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (2018-10-08)
 
 ### Other changes
 
-* Removed `lodash` library from this package. Closes [#251](https://github.com/ckeditor/ckeditor5-utils/issues/251). ([637c9e3](https://github.com/ckeditor/ckeditor5-utils/commit/637c9e3))
+* Removed the `lodash` library from this package (a modular `lodash` build has been kept under `src/lib/lodash/`). We now recommend using `lodash-es` directly. Closes [#251](https://github.com/ckeditor/ckeditor5-utils/issues/251). ([637c9e3](https://github.com/ckeditor/ckeditor5-utils/commit/637c9e3))
+
+### BREAKING CHANGES
+
+* Removed the `lodash` library from this package (a modular `lodash` build has been kept under `src/lib/lodash/`). We now recommend using `lodash-es` directly.
 
 
 ## [10.2.1](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.0...v10.2.1) (2018-07-18)
