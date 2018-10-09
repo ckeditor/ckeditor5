@@ -27,13 +27,13 @@ In order to start developing CKEditor 5 you will require:
 
 First, you need to install a couple of tools which you will be using later:
 
-* [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool),
-* [Lerna.js](https://github.com/lerna/lerna) (a multi-package management tool).
+* [mgit](https://www.npmjs.com/package/mgit2) &ndash; A multi-repo management tool,
+* [Lerna.js](https://github.com/lerna/lerna)@2 &ndash; A multi-package management tool. Note: Lerna@3 is [not supported yet](https://github.com/ckeditor/ckeditor5/issues/1214).
 
 It is best to install them globally in your system for an easier use later on:
 
 ```bash
-npm install -g lerna mgit2
+npm install -g lerna@2 mgit2
 ```
 
 Note: You may need to use `sudo` on Linux and macOS.
@@ -185,13 +185,20 @@ npm run docs
 
 The documentation will be available in `build/docs/`.
 
-This task accepts two arguments which can speed up the process:
+This task accepts the following arguments:
 
 * `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
 * `--skip-validation` &ndash; Skips the final link validation.
+* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
+* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
+* `--verbose` &ndash; Prints out more information.
 
-Note: These arguments must be passed after additional `--`: `npm run docs -- --skip-api`.
+Note: These arguments must be passed after additional `--`:
+
+```
+npm run docs -- --skip-api
+```
 
 ## Bisecting through a multi-repository
 

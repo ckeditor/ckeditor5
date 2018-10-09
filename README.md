@@ -1,4 +1,4 @@
-CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub%20&url=https://github.com/ckeditor/ckeditor5)
+CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
 ===================================
 
 [![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
@@ -14,13 +14,13 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 
 A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
 
-![CKEditor 5 Classic editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor%205%20classic%20screeshot.png)
+![CKEditor 5 Classic rich text editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor%205%20classic%20screeshot.png)
 
 ## ⚠ This package does not contain any source code
 
-CKEditor 5 is distributed as [four ready-to-use builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm).
+CKEditor 5 is distributed as [four ready-to-use rich text editor builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm).
 
-You can also [customize the existing builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html).
+You can also [customize the existing builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
 
 ## Table of contents
 
@@ -49,10 +49,10 @@ CKEditor 5 Builds are a set of ready-to-use rich text editors. Every "build" pro
 
 The following CKEditor 5 Builds are currently available:
 
-* [Classic editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#classic-editor)
-* [Inline editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#inline-editor)
-* [Balloon editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
-* [Document editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#document-editor)
+* [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
+* [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
+* [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
+* [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
 
 #### Example
 
@@ -67,13 +67,13 @@ In your HTML page add an element that CKEditor should replace:
 <textarea name="content" id="editor"></textarea>
 ```
 
-Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
+Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
 ```
 
-Call the [`ClassicEditor.create()`](https://docs.ckeditor.com/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#create) method:
+Call the [`ClassicEditor.create()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-classic_classiceditor-ClassicEditor.html#static-function-create) method:
 
 ```html
 <script>
@@ -87,23 +87,23 @@ Call the [`ClassicEditor.create()`](https://docs.ckeditor.com/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds check the [Quick start guide in the CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/quick-start.html).
+To find out how to start with other builds check the [Quick start guide in the CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/quick-start.html).
 
 ### CKEditor 5 Framework
 
 CKEditor 5 Builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
 
-To find out how to start building your own editor from scratch go to [CKEditor 5 Framework overview section of CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html).
+To find out how to start building your own editor from scratch go to [CKEditor 5 Framework overview section of CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
 
 ## Documentation and FAQ
 
-To find out more see the following [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/index.html) sections:
+To find out more see the following [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/index.html) sections:
 
-* [API documentation](https://docs.ckeditor.com/ckeditor5/latest/api/index.html)
-* [CKEditor 5 Framework documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 Builds documentation](https://docs.ckeditor.com/ckeditor5/latest/builds/index.html)
-* [CKEditor 5 Features documentation](https://docs.ckeditor.com/ckeditor5/latest/features/index.html)
-* [CKEditor 5 Examples](https://docs.ckeditor.com/ckeditor5/latest/examples/index.html)
+* [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
+* [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
+* [CKEditor 5 Builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
+* [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 
 The documentation is far from being complete and will be constantly evolving (as will the editor) until it is ready for v1.0.0.
 
@@ -120,13 +120,13 @@ The main development repository of CKEditor 5 is located at [https://github.com/
 
 CKEditor 5 is a modular, multi-package, multi-repository project. It consists of several packages that create the editing framework, based on which the feature packages are implemented.
 
-The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
+The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
 
 ### Reporting issues and feature requests
 
 Each repository handles its issues independently. However, it is recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
-Read more on the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/getting-support.html) page.
+Read more on the [Support](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/getting-support.html) page.
 
 ## Releases
 
@@ -497,6 +497,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The GitHub-flavored Markdown data processor.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-media-embed"><code>@ckeditor/ckeditor5-media-embed</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-media-embed.svg" alt="@ckeditor/ckeditor5-media-embed npm package badge"></a>
+	</td>
+	<td>
+		The media embed feature.
 	</td>
 </tr>
 

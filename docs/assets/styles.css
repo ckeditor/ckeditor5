@@ -7,7 +7,7 @@
 	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
 	.main .main__content .main__content-inner,
 	.main .main__content-wide .main__content-inner {
-		width: 800px;
+		width: 840px;
 	}
 }
 
@@ -17,6 +17,8 @@
 	.main .main__content .main__content-inner,
 	.main .main__content-wide .main__content-inner {
 		max-width: 900px;
+		padding-left: 30px;
+		padding-right: 30px
 	}
 }
 
@@ -27,7 +29,7 @@
 	}
 
 	.main .main__content-wide .main__content-inner {
-		max-width: 800px;
+		max-width: 840px;
 	}
 }
 

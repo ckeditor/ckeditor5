@@ -320,6 +320,56 @@ This kind of (default) dropdown comes with a set of behaviors:
 * It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#execute `execute`} event.
 * It focuses the view hosted in the panel, e.g. when navigating the toolbar using the keyboard.
 
+#### Setting label, icon, and tooltip
+
+To customize the button of the dropdown, use the {@link module:ui/dropdown/dropdownview~DropdownView#buttonView `buttonView`} property. It gives a direct access to the {@link module:ui/button/buttonview~ButtonView `ButtonView` instance} used by your dropdown.
+
+<info-box>
+	If your dropdown has been created using the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, use the {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView#actionView} to access its main region, e.g. `dropdownView.buttonView.actionView.set( ... )`.
+</info-box>
+
+To control the label of the dropdown, first make it visible using the {@link module:ui/button/buttonview~ButtonView#withText} property and then set the text of the {@link module:ui/button/buttonview~ButtonView#label}:
+
+```js
+const dropdownView = createDropdown( locale );
+
+dropdownView.buttonView.set( {
+	withText: true,
+	label: 'Label of the button',
+} );
+```
+
+The dropdown button can display an icon too. First, import the SVG file and then pass it to the {@link module:ui/button/buttonview~ButtonView#icon} property of the button:
+
+```js
+import iconFile from 'path/to/icon.svg';
+
+// ...
+
+dropdownView.buttonView.set( {
+	icon: iconFile
+} );
+```
+
+Note that `withText` and `icon` properties are independent so your dropdown can have:
+
+* just a text label,
+* just an icon,
+* both a label and an icon at the same time.
+
+<info-box>
+	Keep in mind that even if your dropdown has no visible label (`withText` is `false`), we recommend to set the `label` property anyway because it is essential for assistive technologies like screen readers to work properly with the editor.
+</info-box>
+
+Dropdowns can also display tooltips when hovered. Use the {@link module:ui/button/buttonview~ButtonView#tooltip} property of the button to enable this feature. It is possible to include keystroke information in the tooltip or create custom tooltips. Check out the documentation of the property to learn more.
+
+```js
+dropdownView.buttonView.set( {
+	// The tooltip text will repeat the label.
+	tooltip: true
+} );
+```
+
 #### Adding a list to a dropdown
 
 The {@link module:ui/list/listview~ListView} can be added to a dropdown using the {@link module:ui/dropdown/utils#addListToDropdown} helper.

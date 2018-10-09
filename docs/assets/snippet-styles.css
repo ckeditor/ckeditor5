@@ -18,6 +18,12 @@
 	margin-bottom: 0;
 }
 
+/* Override default Umberto's styles because they apply margins to media embed widgets with iframe
+previews breaking their structure. */
+.ck.ck-content iframe {
+	margin: initial;
+}
+
 /* Reset h1's styling – https://github.com/ckeditor/ckeditor5-heading/issues/86 */
 .ck.ck-content h1 {
 	display: block;
@@ -78,6 +84,16 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 .live-snippet .ck.ck-content .table table {
 	margin: 0;
 	display: table;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:first-child {
+	padding-top: 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:last-child {
+	margin-bottom: 0;
 }
 
 #snippet-inline-editor .ck-content {

@@ -10,9 +10,9 @@ Internal changes only (updated dependencies, documentation, etc.).
 
 ### Release notes
 
-This is a major releases that introduces two new plugins ([autosave](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/saving-data.html) and [block toolbar](https://docs.ckeditor.com/ckeditor5/latest/features/blocktoolbar.html)), many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4` and simplified structure of build repositories). Additionally, the `Editor#element` property was renamed to `Editor#sourceElement` and the `Editor#updateElement()` method was renamed to `Editor#updateSourceElement()`.
+This is a major releases that introduces two new plugins ([autosave](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/saving-data.html) and [block toolbar](https://ckeditor.com/docs/ckeditor5/latest/features/blocktoolbar.html)), many smaller features, dozens of bug fixes and a couple of infrastructure changes (an upgrade to `webpack@4` and simplified structure of build repositories). Additionally, the `Editor#element` property was renamed to `Editor#sourceElement` and the `Editor#updateElement()` method was renamed to `Editor#updateSourceElement()`.
 
-If you maintain a [custom build of CKEditor 5](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
+If you maintain a [custom build of CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/custom-builds.html) or [integrate CKEditor 5 from source](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source), we recommend reading the [migration guide](https://github.com/ckeditor/ckeditor5/issues/1136).
 
 Blog post is coming soon...
 
@@ -234,11 +234,11 @@ Major releases (contain breaking changes):
 
 ### Release notes
 
-This is a minor release that mainly focuses on stabilizing the [two-step caret movement around links](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/whats-new.html#caret-movement-around-links).
+This is a minor release that mainly focuses on stabilizing the [two-step caret movement around links](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/whats-new.html#caret-movement-around-links).
 
-A breaking change was introduced in the [document editor build](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#document-editor) – refer to its [changelog](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v1.0.0-beta.4) for more information.
+A breaking change was introduced in the [document editor build](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor) – refer to its [changelog](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v1.0.0-beta.4) for more information.
 
-Finally, two new plugins were introduced – [`ParagraphButtonUI`](https://docs.ckeditor.com/ckeditor5/latest/api/module_paragraph_paragraphbuttonui-ParagraphButtonUI.html) and [`HeadingButtonsUI`](https://docs.ckeditor.com/ckeditor5/latest/api/module_heading_headingbuttonsui-HeadingButtonsUI.html) which make it possible to replace the `headings` dropdown with separate buttons for each heading level.
+Finally, two new plugins were introduced – [`ParagraphButtonUI`](https://ckeditor.com/docs/ckeditor5/latest/api/module_paragraph_paragraphbuttonui-ParagraphButtonUI.html) and [`HeadingButtonsUI`](https://ckeditor.com/docs/ckeditor5/latest/api/module_heading_headingbuttonsui-HeadingButtonsUI.html) which make it possible to replace the `headings` dropdown with separate buttons for each heading level.
 
 PS. The `1.0.0-beta.3` version number was skipped in order to align the project version number which diverged from builds version numbers
 

@@ -166,6 +166,16 @@ editor.destroy()
 
 Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
 
+### Listening to changes
+
+{@link module:engine/model/document~Document#change:data `Document#change:data`}.
+
+editor.model.document.on( 'change:data', () => {
+    console.log( 'The data has changed!' );
+} );
+
+This event is fired when the document changes in such a way which is "visible" in the editor data. There is also a group of changes, like selection position changes, marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#change `Document#change`} event.
+
 ## UMD support
 
 Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), editor classes can be retrieved in various ways:
