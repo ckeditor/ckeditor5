@@ -4,17 +4,17 @@ category: builds-integration-frameworks
 order: 30
 ---
 
-# Rich-text editor component for React
+# Rich text editor component for React
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-react.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-react)
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich-text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application .
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application .
 
 ## Quick start
 
-Install the [CKEditor 5 rich-text editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
+Install the [CKEditor 5 rich text editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -134,7 +134,7 @@ export default App;
 
 ## Integrating CKEditor 5 built from source
 
-Integrating the rich-text editor from source allows you to use the full power of {@link framework/guides/overview CKEditor 5 Framework}.
+Integrating the rich text editor from source allows you to use the full power of {@link framework/guides/overview CKEditor 5 Framework}.
 
 This guide assumes that you are using [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source including CKEditor 5 built from source}.
 
