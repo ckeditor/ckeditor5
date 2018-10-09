@@ -3,9 +3,7 @@ Changelog
 
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-easy-image/compare/v10.0.2...v10.0.3) (2018-10-08)
 
-### Other changes
-
-* Align code to the changes in image upload command API. Closes [#19](https://github.com/ckeditor/ckeditor5-easy-image/issues/19). ([30c79a4](https://github.com/ckeditor/ckeditor5-easy-image/commit/30c79a4))
+Internal changes only (updated dependencies, documentation, etc.).
 
 
 ## [10.0.2](https://github.com/ckeditor/ckeditor5-easy-image/compare/v10.0.1...v10.0.2) (2018-07-18)
