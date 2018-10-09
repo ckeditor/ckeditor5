@@ -344,4 +344,35 @@ describe( 'transform', () => {
 			'<paragraph>X</paragraph><paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph><paragraph>D</paragraph>'
 		);
 	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1287 TC1
+	it( 'undo and redo pasting', () => {
+		john.setData( '<paragraph>Fo[o</paragraph><paragraph>B]ar</paragraph>' );
+
+		// Below simulates pasting.
+		john.editor.model.change( () => {
+			john.editor.model.deleteContent( john.document.selection );
+
+			john.setSelection( [ 0, 2 ] );
+			john.split();
+
+			john.setSelection( [ 1 ] );
+			john.insert( '<paragraph>1</paragraph>' );
+
+			john.setSelection( [ 1 ] );
+			john.merge();
+
+			john.setSelection( [ 1 ] );
+			john.insert( '<paragraph>2</paragraph>' );
+
+			john.setSelection( [ 2 ] );
+			john.merge();
+		} );
+
+		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+	} );
 } );

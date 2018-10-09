@@ -505,6 +505,12 @@ class ContextFactory {
 
 						break;
 					}
+
+					case SplitOperation: {
+						if ( opA.sourcePosition.isEqual( opB.splitPosition ) ) {
+							this._setRelation( opA, opB, 'splitAtSource' );
+						}
+					}
 				}
 
 				break;
@@ -1159,7 +1165,10 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 	//
 	// If neither or both operations point to graveyard, then let `aIsStrong` decide.
 	//
-	if ( a.sourcePosition.isEqual( b.sourcePosition ) && !a.targetPosition.isEqual( b.targetPosition ) && !context.bWasUndone ) {
+	if (
+		a.sourcePosition.isEqual( b.sourcePosition ) && !a.targetPosition.isEqual( b.targetPosition ) &&
+		!context.bWasUndone && context.abRelation != 'splitAtSource'
+	) {
 		const aToGraveyard = a.targetPosition.root.rootName == '$graveyard';
 		const bToGraveyard = b.targetPosition.root.rootName == '$graveyard';
 
@@ -1338,7 +1347,7 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 	// In this scenario the merge operation is now transformed by the split which has undone the previous merge operation.
 	// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
 	//
-	if ( a.sourcePosition.isEqual( b.splitPosition ) && context.abRelation == 'mergeSameElement' ) {
+	if ( a.sourcePosition.isEqual( b.splitPosition ) && ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) ) {
 		a.sourcePosition = Position.createFromPosition( b.moveTargetPosition );
 		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
