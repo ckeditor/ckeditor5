@@ -5,9 +5,8 @@ Changelog
 
 ### Other changes
 
-* Improved call frequency. Closes [#9](https://github.com/ckeditor/ckeditor5-autosave/issues/9). Closes [#10](https://github.com/ckeditor/ckeditor5-autosave/issues/10). Closes [#12](https://github.com/ckeditor/ckeditor5-autosave/issues/12). Closes [ckeditor/ckeditor5#1158](https://github.com/ckeditor/ckeditor5/issues/1158). ([820e060](https://github.com/ckeditor/ckeditor5-autosave/commit/820e060))
-* Updated translations. ([3f52ebc](https://github.com/ckeditor/ckeditor5-autosave/commit/3f52ebc))
-* Updated translations. ([8c702ee](https://github.com/ckeditor/ckeditor5-autosave/commit/8c702ee))
+* Improved heuristics for triggering the save callback. It will not be called before the previous save attempt completed. It will be called less often in when the user is in the middle of making changes. Closes [#9](https://github.com/ckeditor/ckeditor5-autosave/issues/9). Closes [#10](https://github.com/ckeditor/ckeditor5-autosave/issues/10). Closes [#12](https://github.com/ckeditor/ckeditor5-autosave/issues/12). Closes [ckeditor/ckeditor5#1158](https://github.com/ckeditor/ckeditor5/issues/1158). ([820e060](https://github.com/ckeditor/ckeditor5-autosave/commit/820e060))
+* Updated translations. ([3f52ebc](https://github.com/ckeditor/ckeditor5-autosave/commit/3f52ebc)) ([8c702ee](https://github.com/ckeditor/ckeditor5-autosave/commit/8c702ee))
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-autosave/tree/v10.0.0) (2018-07-18)
