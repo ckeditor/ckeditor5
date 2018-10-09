@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## [10.0.3](https://github.com/ckeditor/ckeditor5-block-quote/compare/v10.0.2...v10.0.3) (2018-10-08)
+## [10.1.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v10.0.2...v10.1.0) (2018-10-08)
+
+### Features
+
+* Implemented a post-fixer for cleaning incorrect blockquotes. ([fcb00c0](https://github.com/ckeditor/ckeditor5-block-quote/commit/fcb00c0))
 
 ### Other changes
 
