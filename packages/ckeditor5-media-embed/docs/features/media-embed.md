@@ -48,8 +48,38 @@ ClassicEditor
 ```
 
 <info-box>
-	Depending on how you will configure this feature, you may need to use services like [Iframely](http://iframe.ly/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
+	Depending on how you will configure this feature, you may need to use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to display content of embedded media on your target website. Read more about [displaying embedded media](#displaying-embedded-media-on-your-website).
 </info-box>
+
+## Previewable and non-previewable media
+
+When the media embed feature is asked to embed a specific media via its URL it needs to make a decision how this media will be displayed in the editor.
+
+### Previewable media
+
+If, for instance, the URL to embed is `https://www.youtube.com/watch?v=H08tGjXNHO4` this feature is able to predict that it needs to produce the following HTML to show this YouTube video:
+
+```html
+<div style="position: relative; padding-bottom: 100%; height: 0; padding-bottom: 56.2493%;">
+	<iframe src="https://www.youtube.com/embed/${ videoId }"
+		style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"
+		frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+	</iframe>
+</div>
+```
+
+Yes, it is quite complex, but that is the cost of making responsive content for today's web. The crucial part, though, is the iframe's `src` which the media embed feature can predict based on the given video URL and the aspect ratio (which affects `padding-bottom`).
+
+Thanks to the ability to hardcode this URL to HTML transformation, the media embed feature is able to show previews of YouTube, Dailymotion, Vimeo videos and Spotify widgets without requesting any external service.
+
+### Non-previewable media
+
+Unfortunately, to show previews of media such as tweets, Instagram photos or Facebook posts, the editor would need to retrieve the content of those from an external services. Some of these media providers expose [oEmbed endpoints](https://oembed.com/) but not all and those endpoints responses often require further processing to be embeddable. Most importantly, though, the media embed feature is often not able to request those services due to [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy).
+
+The above limitations can be overcome with a help of proxy services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/). However, the media embed feature [does not support asynchronous preview providers](https://github.com/ckeditor/ckeditor5-media-embed/issues/16) yet. Therefore, to still allow embedding tweets or Instagram photos, we chose to:
+
+1. Show a placeholder of the embedded media in the editor (see e.g. how a tweet is presented in the [demo](#demo) above).
+2. Produce a [semantic `<oembed url="...">` tag](#semantic-data-output-default) in the data output from the editor. This output makes it possible to later use services like [Iframely](https://iframely.com/) or [Embedly](https://embed.ly/) to [display the content of these media on your website](#displaying-embedded-media-on-your-website).
 
 ## Configuration
 
@@ -63,7 +93,7 @@ The data output format of the feature can be configured using the {@link module:
 
 #### Semantic data output (default)
 
-By default, the media embed feature outputs semantic `<oembed>` tags for previewable and non-previewable media. That being so, it works best when the application processes (expands) the media on the server side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
+By default, the media embed feature outputs semantic `<oembed url="...">` tags for previewable and non-previewable media. That being so, it works best when the application processes (expands) the media on the server side or [directly in the front–end](#displaying-embedded-media-on-your-website), preserving the versatile database representation:
 
 ```html
 <figure class="media">
@@ -92,6 +122,8 @@ Currently, the preview is only available for content providers for which CKEdito
 ```
 
 This means that, unless you [limited the list of providers](#media-providers) to only those which are previewable, you need to [make sure that the media are displayed on your website](#displaying-embedded-media-on-your-website).
+
+Read more about [non-previewable media](#previewable-and-non-previewable-media).
 
 ### Media providers
 
@@ -171,7 +203,11 @@ You can take inspiration from the default configuration of this feature which yo
 
 By default, the media embed feature produces output that does not contain previews of embedded media, called the [semantic output](#semantic-data-output-default). This means that you need to transform the output `<oembed>` elements into real media on your target website.
 
-There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your backend service or you can use different services than described in this section.
+There are many ways to do that. The simplest, plug-and-play solutions are described here. You can also implement this transformation as part of your back-end service or you can use different services than described in this section.
+
+<info-box>
+	While the easiest solution (which is described below) is to replace embedded media on the client-side, it is not necessarily the most optimal way. A more powerful and flexible solution is to request those services on your back-end. Refer to the documentation of the service of your choice for more information.
+</info-box>
 
 ### Iframely
 
