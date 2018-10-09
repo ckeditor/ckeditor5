@@ -8,7 +8,7 @@ menu-title: Overview
 
 ## Is CKEditor 5 compatible with framework XYZ?
 
-Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich-text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Threfore, unless the framework that you use has very not typical limitations, CKEditor 5 is compatible with it.
+Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Threfore, unless the framework that you use has very not typical limitations, CKEditor 5 is compatible with it.
 
 > How do I use CKEditor 5 with my framework?
 
@@ -16,7 +16,7 @@ While CKEditor 5 is compatible with your framework and initializing it requires 
 
 When checking how to integrate CKEditor 5 with your framework you can follow these steps:
 
-1. **Check whether an [official integration](#official-integrations) exists.**
+1. **Check whether an [official integration](#official-rich-text-editor-integrations) exists.**
 
 	There are two official integrations so far: for {@link builds/guides/frameworks/react React} and for {@link builds/guides/frameworks/angular Angular 2+}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
@@ -24,7 +24,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 	CKEditor 5 offers {@link builds/guides/overview ready-to-use builds} that expose a {@link builds/guides/integration/basic-api rich JavaScript API} which you can use to {@link builds/guides/integration/basic-api#creating-an-editor create editors} and {@link builds/guides/integration/basic-api#interacting-with-the-editor control them}.
 
-## Official rich-text editor integrations
+## Official rich text editor integrations
 
 There are two official integrations so far:
 
@@ -46,7 +46,7 @@ Check out a [sweet screencast of CKEditor 5 with real-time collaborative editing
 In order to display CKEditor 5 inside [Bootstrap](https://getbootstrap.com/) modals you need to proceed as follows:
 
 * Configure the `z-index` of CKEditor 5 floating balloons so they are displayed above the Bootstrap overlay.
-* Configure Bootstrap to not steal focus from rich-text editor fields.
+* Configure Bootstrap to not steal focus from rich text editor fields.
 
 The above can be ensured by adding this CSS:
 
