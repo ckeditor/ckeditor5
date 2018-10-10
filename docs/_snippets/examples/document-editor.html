@@ -177,11 +177,10 @@
 		margin-bottom: .952em;
 	}
 
-	/* Set the styles for "Paragraph" and single <span> inside table.
+	/* Set the styles for "Paragraph" and single <span> inside table (except fontSize plugin)
 	https://github.com/ckeditor/ckeditor5/issues/1291 */
 	.document-editor .ck-content p,
-	.document-editor .ck-content table th > span,
-	.document-editor .ck-content table td > span {
+	.document-editor .ck-content table span:not( [class*="text-"] )  {
 		font-size: 1em;
 		line-height: 1.63em;
 		padding-top: .5em;
