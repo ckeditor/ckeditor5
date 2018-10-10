@@ -1,78 +1,78 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Inserir tabela"
+msgstr "Vložiť tabuľku"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Coluna de cabeçalho"
+msgstr "Stĺpec hlavičky"
 
 msgctxt "Label for the insert table column before the current one button."
 msgid "Insert column before"
-msgstr "Inserir coluna antes"
+msgstr "Vložiť stĺpec vľavo"
 
 msgctxt "Label for the insert table column after the current one button."
 msgid "Insert column after"
-msgstr "Inserir coluna depois"
+msgstr "Vložiť stĺpec vpravo"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Excluir coluna"
+msgstr "Odstrániť stĺpec"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Coluna"
+msgstr "Stĺpec"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Linha de cabeçalho"
+msgstr "Riadok hlavičky"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Inserir linha abaixo"
+msgstr "Vložiť riadok pod"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Inserir linha acima"
+msgstr "Vložiť riadok nad"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Excluir linha"
+msgstr "Odstrániť riadok"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Linha"
+msgstr "Riadok"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Mesclar acima"
+msgstr "Zlúčiť bunku hore"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Mesclar à direita"
+msgstr "Zlúčiť bunku vpravo"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Mesclar abaixo"
+msgstr "Zlúčiť bunku dole"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Mesclar à esquerda"
+msgstr "Zlúčiť bunku vľavo"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Dividir verticalmente"
+msgstr "Rozdeliť bunku zvislo"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Dividir horizontalmente"
+msgstr "Rozdeliť bunku vodorovne"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Mesclar células"
+msgstr "Zlúčiť bunky"

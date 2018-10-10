@@ -1,78 +1,78 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Polish (https://www.transifex.com/ckeditor/teams/11143/pl/)\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Inserir tabela"
+msgstr "Wstaw tabelę"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Coluna de cabeçalho"
+msgstr "Kolumna nagłówka"
 
 msgctxt "Label for the insert table column before the current one button."
 msgid "Insert column before"
-msgstr "Inserir coluna antes"
+msgstr "Wstaw kolumnę przed"
 
 msgctxt "Label for the insert table column after the current one button."
 msgid "Insert column after"
-msgstr "Inserir coluna depois"
+msgstr "Wstaw kolumnę po"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Excluir coluna"
+msgstr "Usuń kolumnę"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Coluna"
+msgstr "Kolumna"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Linha de cabeçalho"
+msgstr "Wiersz nagłówka"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Inserir linha abaixo"
+msgstr "Wstaw wiersz poniżej"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Inserir linha acima"
+msgstr "Wstaw wiersz ponad"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Excluir linha"
+msgstr "Usuń wiersz"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Linha"
+msgstr "Wiersz"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Mesclar acima"
+msgstr "Scal komórkę w górę"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Mesclar à direita"
+msgstr "Scal komórkę w prawo"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Mesclar abaixo"
+msgstr "Scal komórkę w dół"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Mesclar à esquerda"
+msgstr "Scal komórkę w lewo"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Dividir verticalmente"
+msgstr "Podziel komórkę pionowo"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Dividir horizontalmente"
+msgstr "Podziel komórkę poziomo"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Mesclar células"
+msgstr "Scal komórki"

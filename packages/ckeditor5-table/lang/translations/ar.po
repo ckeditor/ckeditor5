@@ -1,78 +1,78 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Arabic (https://www.transifex.com/ckeditor/teams/11143/ar/)\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Inserir tabela"
+msgstr "إدراج جدول"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Coluna de cabeçalho"
+msgstr "عمود عنوان"
 
 msgctxt "Label for the insert table column before the current one button."
 msgid "Insert column before"
-msgstr "Inserir coluna antes"
+msgstr "ادراج عمود قبل"
 
 msgctxt "Label for the insert table column after the current one button."
 msgid "Insert column after"
-msgstr "Inserir coluna depois"
+msgstr "ادراج عمود بعد"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Excluir coluna"
+msgstr "حذف العمود"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Coluna"
+msgstr "عمود"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Linha de cabeçalho"
+msgstr "صف عنوان"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Inserir linha abaixo"
+msgstr "ادراج صف بعد"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Inserir linha acima"
+msgstr "ادراج صف قبل"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Excluir linha"
+msgstr "حذف الصف"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Linha"
+msgstr "صف"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Mesclar acima"
+msgstr "دمج الخلايا للأعلى"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Mesclar à direita"
+msgstr "دمج الخلايا لليمين"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Mesclar abaixo"
+msgstr "دمج الخلايا للأسفل"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Mesclar à esquerda"
+msgstr "دمج الخلايا لليسار"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Dividir verticalmente"
+msgstr "فصل الخلايا بشكل عمودي"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Dividir horizontalmente"
+msgstr "فصل الخلايا بشكل افقي"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Mesclar células"
+msgstr "دمج الخلايا"
