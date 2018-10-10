@@ -137,7 +137,7 @@ export default class Writer {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.insert( paragraph, anotherParagraph, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
@@ -159,7 +159,7 @@ export default class Writer {
 	insert( item, itemOrPosition, offset = 0 ) {
 		this._assertWriterUsedCorrectly();
 
-		const position = Position.createAt( itemOrPosition, offset );
+		const position = Position._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
 		if ( item.parent ) {
@@ -198,7 +198,7 @@ export default class Writer {
 		if ( item instanceof DocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from DocumentFragment to Document.
-				const rangeRootPosition = Position.createAt( markerRange.root, 0 );
+				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
 				const range = new Range(
 					markerRange.start._getCombined( rangeRootPosition, position ),
 					markerRange.end._getCombined( rangeRootPosition, position )
@@ -225,7 +225,7 @@ export default class Writer {
 	 *		// Inserts 'foo' after an image:
 	 *		writer.insertText( 'foo', image, 'after' );
 	 *
-	 * These parameters work in the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters work in the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -257,7 +257,7 @@ export default class Writer {
 	 *		// Inserts after an image:
 	 *		writer.insertElement( 'paragraph', image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -431,7 +431,7 @@ export default class Writer {
 	 *		// Moves all items in the range to a position after an image:
 	 *		writer.move( sourceRange, image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -464,7 +464,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-move-range-not-flat: Range to move is not flat.' );
 		}
 
-		const position = Position.createAt( itemOrPosition, offset );
+		const position = Position._createAt( itemOrPosition, offset );
 
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
@@ -501,7 +501,7 @@ export default class Writer {
 		} else {
 			const howMany = itemOrRange.is( 'text' ) ? itemOrRange.offsetSize : 1;
 
-			applyRemoveOperation( Position.createBefore( itemOrRange ), howMany, this.batch, this.model );
+			applyRemoveOperation( Position._createBefore( itemOrRange ), howMany, this.batch, this.model );
 		}
 	}
 
@@ -586,7 +586,7 @@ export default class Writer {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range.createIn( nodeAfter ), Position.createAt( nodeBefore, 'end' ) );
+		this.move( Range.createIn( nodeAfter ), Position._createAt( nodeBefore, 'end' ) );
 		this.remove( nodeAfter );
 	}
 
@@ -597,8 +597,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position between merged elements.
 	 */
 	_merge( position ) {
-		const targetPosition = Position.createAt( position.nodeBefore, 'end' );
-		const sourcePosition = Position.createAt( position.nodeAfter, 0 );
+		const targetPosition = Position._createAt( position.nodeBefore, 'end' );
+		const sourcePosition = Position._createAt( position.nodeAfter, 0 );
 
 		const graveyard = position.root.document.graveyard;
 		const graveyardPosition = new Position( graveyard, [ 0 ] );
@@ -632,7 +632,7 @@ export default class Writer {
 		}
 
 		const version = element.root.document ? element.root.document.version : null;
-		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, version );
+		const renameOperation = new RenameOperation( Position._createBefore( element ), element.name, newName, version );
 
 		this.batch.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
@@ -694,13 +694,13 @@ export default class Writer {
 				firstCopyElement = position.parent.nextSibling;
 			}
 
-			position = Position.createAfter( position.parent );
+			position = this.createPositionAfter( position.parent );
 			splitElement = position.parent;
 		} while ( splitElement !== limitElement );
 
 		return {
 			position,
-			range: new Range( Position.createAt( firstSplitElement, 'end' ), Position.createAt( firstCopyElement, 0 ) )
+			range: new Range( Position._createAt( firstSplitElement, 'end' ), Position._createAt( firstCopyElement, 0 ) )
 		};
 	}
 
@@ -755,7 +755,7 @@ export default class Writer {
 		const move = new MoveOperation(
 			range.start.getShiftedBy( 1 ),
 			range.end.offset - range.start.offset,
-			Position.createAt( element, 0 ),
+			Position._createAt( element, 0 ),
 			version === null ? null : version + 1
 		);
 
@@ -781,7 +781,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 		}
 
-		this.move( Range.createIn( element ), Position.createAfter( element ) );
+		this.move( Range.createIn( element ), this.createPositionAfter( element ) );
 		this.remove( element );
 	}
 
@@ -1072,7 +1072,7 @@ export default class Writer {
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/position~Position.createAt `Position.createAt()`} parameters.
+	 * {@link module:engine/model/position~Position._createAt `Position.createAt()`} parameters.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [of~fset=0] Offset or one of the flags. Used only when
@@ -1318,7 +1318,7 @@ function setAttributeOnItem( writer, key, value, item ) {
 
 			operation = new RootAttributeOperation( item, key, previousValue, value, version );
 		} else {
-			range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
+			range = new Range( Position._createBefore( item ), writer.createPositionAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 

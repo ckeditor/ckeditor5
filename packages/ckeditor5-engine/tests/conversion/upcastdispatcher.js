@@ -262,18 +262,18 @@ describe( 'UpcastDispatcher', () => {
 
 				// Create and insert empty split element before target element.
 				const emptySplit = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( emptySplit, ModelPosition.createAfter( paragraph ) );
+				conversionApi.writer.insert( emptySplit, ModelPosition._createAfter( paragraph ) );
 
 				// Create and insert not empty split after target element.
 				const notEmptySplit = conversionApi.writer.createElement( 'paragraph' );
 				conversionApi.writer.appendText( 'foo', notEmptySplit );
-				conversionApi.writer.insert( notEmptySplit, ModelPosition.createAfter( emptySplit ) );
+				conversionApi.writer.insert( notEmptySplit, ModelPosition._createAfter( emptySplit ) );
 
 				// Create and insert split with other split inside (both should be removed)
 				const outerSplit = conversionApi.writer.createElement( 'paragraph' );
 				const innerSplit = conversionApi.writer.createElement( 'paragraph' );
 				conversionApi.writer.append( innerSplit, outerSplit );
-				conversionApi.writer.insert( outerSplit, ModelPosition.createBefore( paragraph ) );
+				conversionApi.writer.insert( outerSplit, ModelPosition._createBefore( paragraph ) );
 
 				dispatcher._removeIfEmpty.add( emptySplit );
 				dispatcher._removeIfEmpty.add( notEmptySplit );
@@ -501,7 +501,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock, 0 ) );
+					const result = conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( rootMock, 0 ) );
 
 					expect( result.modelRange ).to.be.instanceof( ModelRange );
 					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
@@ -540,7 +540,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
-					const position = ModelPosition.createAt( paragraph, 0 );
+					const position = ModelPosition._createAt( paragraph, 0 );
 
 					const result = conversionApi.splitToAllowedParent( span, position );
 
@@ -572,13 +572,13 @@ describe( 'UpcastDispatcher', () => {
 					conversionApi.writer.insert( paragraph, section );
 					conversionApi.writer.insert( span, paragraph );
 
-					const position = ModelPosition.createAt( span, 0 );
+					const position = ModelPosition._createAt( span, 0 );
 
 					const paragraph2 = conversionApi.writer.createElement( 'paragraph' );
 					const result = conversionApi.splitToAllowedParent( paragraph2, position );
 
 					expect( result ).to.deep.equal( {
-						position: ModelPosition.createAfter( paragraph ),
+						position: ModelPosition._createAfter( paragraph ),
 						cursorParent: paragraph.parent.getChild( 1 ).getChild( 0 )
 					} );
 
@@ -597,7 +597,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
-					const position = ModelPosition.createAt( paragraph, 0 );
+					const position = ModelPosition._createAt( paragraph, 0 );
 
 					const result = conversionApi.splitToAllowedParent( span, position );
 

@@ -100,7 +100,7 @@ describe( 'transform', () => {
 
 			expected = {
 				type: InsertOperation,
-				position: Position.createFromPosition( position )
+				position: Position._createFromPosition( position )
 			};
 		} );
 
@@ -914,15 +914,15 @@ describe( 'transform', () => {
 			targetPosition = new Position( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
-			rangeEnd = Position.createFromPosition( sourcePosition );
+			rangeEnd = Position._createFromPosition( sourcePosition );
 			rangeEnd.offset += howMany;
 
 			op = new MoveOperation( sourcePosition, howMany, targetPosition, 0 );
 
 			expected = {
 				type: MoveOperation,
-				sourcePosition: Position.createFromPosition( sourcePosition ),
-				targetPosition: Position.createFromPosition( targetPosition ),
+				sourcePosition: Position._createFromPosition( sourcePosition ),
+				targetPosition: Position._createFromPosition( targetPosition ),
 				howMany
 			};
 		} );
@@ -1957,7 +1957,7 @@ describe( 'transform', () => {
 
 			beforeEach( () => {
 				transformBy = new MoveOperation(
-					Position.createFromPosition( op.sourcePosition ),
+					Position._createFromPosition( op.sourcePosition ),
 					op.howMany,
 					new Position( doc.graveyard, [ 0 ] ),
 					0
@@ -2015,11 +2015,11 @@ describe( 'transform', () => {
 			it( 'should force removing content even if was less important', () => {
 				const op = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 
-				const targetPosition = Position.createFromPosition( op.targetPosition );
+				const targetPosition = Position._createFromPosition( op.targetPosition );
 
 				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), 0 );
 
-				const sourcePosition = Position.createFromPosition( transformBy.targetPosition );
+				const sourcePosition = Position._createFromPosition( transformBy.targetPosition );
 
 				const transOp = transform( op, transformBy );
 
@@ -2441,7 +2441,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting oldRange: update oldRange', () => {
 				// Just CC things.
 				op.newRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 0 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( Position._createAt( root, 0 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2456,7 +2456,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting newRange: update newRange', () => {
 				// Just CC things.
 				op.oldRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 8 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( Position._createAt( root, 8 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2494,7 +2494,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.newRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 0 ), 1, Position.createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 0 ), 1, Position._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.newRange = null;
@@ -2506,7 +2506,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'moved range contains oldRange and is before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 2 ), 2, Position._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
@@ -2522,7 +2522,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.oldRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 2, Position.createAt( root, 11 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 2, Position._createAt( root, 11 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange = null;
@@ -2534,7 +2534,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'target position is inside oldRange and before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 4, Position._createAt( root, 2 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;

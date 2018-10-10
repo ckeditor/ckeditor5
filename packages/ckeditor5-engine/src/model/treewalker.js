@@ -85,9 +85,9 @@ export default class TreeWalker {
 		 * @member {module:engine/model/position~Position} module:engine/model/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = Position.createFromPosition( options.startPosition );
+			this.position = Position._createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = Position._createFromPosition( this.boundaries[ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		// Reset position stickiness in case it was set to other value, as the stickiness is kept after cloning.
@@ -208,7 +208,7 @@ export default class TreeWalker {
 	 */
 	_next() {
 		const previousPosition = this.position;
-		const position = Position.createFromPosition( this.position );
+		const position = Position._createFromPosition( this.position );
 		const parent = this._visitedParent;
 
 		// We are at the end of the root.
@@ -282,7 +282,7 @@ export default class TreeWalker {
 	 */
 	_previous() {
 		const previousPosition = this.position;
-		const position = Position.createFromPosition( this.position );
+		const position = Position._createFromPosition( this.position );
 		const parent = this._visitedParent;
 
 		// We are at the beginning of the root.
@@ -380,9 +380,9 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * @property {module:engine/model/position~Position} previousPosition Previous position of the iterator.
  * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
- * the node using {@link module:engine/model/position~Position.createBefore}. It is also more efficient to get the
+ * the node using {@link module:engine/model/position~Position._createBefore}. It is also more efficient to get the
  * position after node by shifting `previousPosition` by `length`, using {@link module:engine/model/position~Position#getShiftedBy},
- * then calculate the position using {@link module:engine/model/position~Position.createAfter}.
+ * then calculate the position using {@link module:engine/model/position~Position._createAfter}.
  * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * @property {module:engine/model/position~Position} nextPosition Next position of the iterator.

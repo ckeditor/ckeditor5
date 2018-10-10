@@ -62,7 +62,7 @@ export default function deleteContent( model, selection, options = {} ) {
 
 		const selRange = selection.getFirstRange();
 		const startPos = selRange.start;
-		const endPos = LivePosition.createFromPosition( selRange.end );
+		const endPos = LivePosition._createFromPosition( selRange.end );
 		endPos.stickiness = 'toNext';
 
 		// 2. Remove the content if there is any.
@@ -136,8 +136,8 @@ function mergeBranches( writer, startPos, endPos ) {
 	// <a><b>x[]</b></a><c><d>{}y</d></c>
 	// will become:
 	// <a><b>xy</b>[]</a><c>{}</c>
-	startPos = Position.createAfter( startParent );
-	endPos = Position.createBefore( endParent );
+	startPos = writer.createPositionAfter( startParent );
+	endPos = writer.createPositionBefore( endParent );
 
 	if ( !endPos.isEqual( startPos ) ) {
 		// In this case, before we merge, we need to move `endParent` to the `startPos`:
@@ -160,7 +160,7 @@ function mergeBranches( writer, startPos, endPos ) {
 	while ( endPos.parent.isEmpty ) {
 		const parentToRemove = endPos.parent;
 
-		endPos = Position.createBefore( parentToRemove );
+		endPos = writer.createPositionBefore( parentToRemove );
 
 		writer.remove( parentToRemove );
 	}
@@ -210,7 +210,7 @@ function replaceEntireContentWithParagraph( writer, selection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( Range.createIn( limitElement ) );
-	insertParagraph( writer, Position.createAt( limitElement, 0 ), selection );
+	insertParagraph( writer, Position._createAt( limitElement, 0 ), selection );
 }
 
 // We want to replace the entire content with a paragraph when:

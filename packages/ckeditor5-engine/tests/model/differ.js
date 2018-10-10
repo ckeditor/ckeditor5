@@ -139,9 +139,9 @@ describe( 'Differ', () => {
 				insert( image, position );
 
 				const caption = new Element( 'caption' );
-				insert( caption, Position.createAt( image, 0 ) );
+				insert( caption, Position._createAt( image, 0 ) );
 
-				insert( new Text( 'foo' ), Position.createAt( caption, 0 ) );
+				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: 'image', length: 1, position }
@@ -1606,7 +1606,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				rename( root.getChild( 1 ), 'heading' );
 				rename( root.getChild( 2 ), 'heading' );
-				remove( Position.createAt( root, 0 ), 3 );
+				remove( Position._createAt( root, 0 ), 3 );
 
 				expectChanges( [
 					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
@@ -1762,7 +1762,7 @@ describe( 'Differ', () => {
 	}
 
 	function remove( sourcePosition, howMany ) {
-		const targetPosition = Position.createAt( doc.graveyard, doc.graveyard.maxOffset );
+		const targetPosition = Position._createAt( doc.graveyard, doc.graveyard.maxOffset );
 		const operation = new MoveOperation( sourcePosition, howMany, targetPosition, doc.version );
 
 		model.applyOperation( operation );
@@ -1775,7 +1775,7 @@ describe( 'Differ', () => {
 	}
 
 	function rename( element, newName ) {
-		const operation = new RenameOperation( Position.createBefore( element ), element.name, newName, doc.version );
+		const operation = new RenameOperation( Position._createBefore( element ), element.name, newName, doc.version );
 
 		model.applyOperation( operation );
 	}

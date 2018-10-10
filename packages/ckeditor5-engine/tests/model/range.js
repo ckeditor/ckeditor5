@@ -68,8 +68,8 @@ describe( 'Range', () => {
 
 	describe( 'isEqual()', () => {
 		it( 'should return true if the ranges are the same', () => {
-			const sameStart = Position.createFromPosition( start );
-			const sameEnd = Position.createFromPosition( end );
+			const sameStart = Position._createFromPosition( start );
+			const sameEnd = Position._createFromPosition( end );
 
 			const sameRange = new Range( sameStart, sameEnd );
 
@@ -80,7 +80,7 @@ describe( 'Range', () => {
 			const range = new Range( start, end );
 
 			const diffStart = new Position( root, [ 0 ] );
-			const sameEnd = Position.createFromPosition( end );
+			const sameEnd = Position._createFromPosition( end );
 
 			const diffRange = new Range( diffStart, sameEnd );
 

@@ -199,7 +199,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( modelRoot, 3 ) ) );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -224,7 +224,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( modelRoot, 3 ) ) );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
 
@@ -253,7 +253,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
 					marker = writer.addMarker( 'marker2', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( modelRoot, 3 ) ) );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -279,7 +279,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
 					marker = writer.addMarker( 'marker3', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( modelRoot, 3 ) ) );
 				} );
 
 				// Remove view children manually (without firing additional conversion).

@@ -302,7 +302,7 @@ export default class Selection {
 	getFirstPosition() {
 		const first = this.getFirstRange();
 
-		return first ? Position.createFromPosition( first.start ) : null;
+		return first ? Position._createFromPosition( first.start ) : null;
 	}
 
 	/**
@@ -317,7 +317,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? Position._createFromPosition( lastRange.end ) : null;
 	}
 
 	/**
@@ -481,7 +481,7 @@ export default class Selection {
 	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/model/position~Position._createAt} parameters.
 	 *
 	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
@@ -500,7 +500,7 @@ export default class Selection {
 			);
 		}
 
-		const newFocus = Position.createAt( itemOrPosition, offset );
+		const newFocus = Position._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
@@ -665,7 +665,7 @@ export default class Selection {
 			const endBlock = getParentBlock( range.end, visited );
 
 			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position.createAt( endBlock, 0 ) ) ) {
+			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
 				yield endBlock;
 			}
 		}
@@ -683,8 +683,8 @@ export default class Selection {
 	 * @returns {Boolean}
 	 */
 	containsEntireContent( element = this.anchor.root ) {
-		const limitStartPosition = Position.createAt( element, 0 );
-		const limitEndPosition = Position.createAt( element, 'end' );
+		const limitStartPosition = Position._createAt( element, 0 );
+		const limitEndPosition = Position._createAt( element, 'end' );
 
 		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
 			limitEndPosition.isTouching( this.getLastPosition() );

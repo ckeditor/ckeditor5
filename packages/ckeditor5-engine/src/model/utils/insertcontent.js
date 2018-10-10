@@ -276,12 +276,12 @@ class Insertion {
 			return;
 		}
 
-		const livePos = LivePosition.createFromPosition( this.position );
+		const livePos = LivePosition._createFromPosition( this.position );
 		livePos.stickiness = 'toNext';
 
 		this.writer.insert( node, this.position );
 
-		this.position = Position.createFromPosition( livePos );
+		this.position = Position._createFromPosition( livePos );
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
@@ -306,18 +306,18 @@ class Insertion {
 
 		const mergeLeft = this._canMergeLeft( node, context );
 		const mergeRight = this._canMergeRight( node, context );
-		const mergePosLeft = LivePosition.createBefore( node );
+		const mergePosLeft = LivePosition._createBefore( node );
 		mergePosLeft.stickiness = 'toNext';
-		const mergePosRight = LivePosition.createAfter( node );
+		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
 		if ( mergeLeft ) {
-			const position = LivePosition.createFromPosition( this.position );
+			const position = LivePosition._createFromPosition( this.position );
 			position.stickiness = 'toNext';
 
 			this.writer.merge( mergePosLeft );
 
-			this.position = Position.createFromPosition( position );
+			this.position = Position._createFromPosition( position );
 			position.detach();
 		}
 
@@ -332,7 +332,7 @@ class Insertion {
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
 			// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
-			this.position = Position.createAt( mergePosRight.nodeBefore, 'end' );
+			this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
@@ -340,7 +340,7 @@ class Insertion {
 
 			this.writer.merge( mergePosRight );
 
-			this.position = Position.createFromPosition( position );
+			this.position = Position._createFromPosition( position );
 			position.detach();
 		}
 
@@ -428,7 +428,7 @@ class Insertion {
 
 			if ( this.position.isAtStart ) {
 				const parent = this.position.parent;
-				this.position = Position.createBefore( parent );
+				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>) so isAtStart == isAtEnd == true.
 				// We can remove the element after moving selection out of it.
@@ -436,9 +436,9 @@ class Insertion {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
-				this.position = Position.createAfter( this.position.parent );
+				this.position = this.writer.createPositionAfter( this.position.parent );
 			} else {
-				const tempPos = Position.createAfter( this.position.parent );
+				const tempPos = this.writer.createPositionAfter( this.position.parent );
 
 				this.writer.split( this.position );
 

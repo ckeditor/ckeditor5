@@ -31,7 +31,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.start = Position.createFromPosition( start );
+		this.start = Position._createFromPosition( start );
 
 		/**
 		 * End position.
@@ -39,7 +39,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
+		this.end = end ? Position._createFromPosition( end ) : Position._createFromPosition( start );
 
 		// If the range is collapsed, treat in a similar way as a position and set its boundaries stickiness to 'toNone'.
 		// In other case, make the boundaries stick to the "inside" of the range.
@@ -134,7 +134,7 @@ export default class Range {
 	 * @param {module:engine/model/item~Item} item Model item to check.
 	 */
 	containsItem( item ) {
-		const pos = Position.createBefore( item );
+		const pos = Position._createBefore( item );
 
 		return this.containsPosition( pos ) || this.start.isEqual( pos );
 	}
@@ -291,7 +291,7 @@ export default class Range {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		const pos = Position.createFromPosition( this.start );
+		const pos = Position._createFromPosition( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
@@ -578,7 +578,7 @@ export default class Range {
 
 			if ( operation.sourcePosition.isBefore( operation.targetPosition ) ) {
 				// Case 1.
-				start = Position.createFromPosition( end );
+				start = Position._createFromPosition( end );
 				start.offset = 0;
 			} else {
 				if ( !operation.deletionPosition.isEqual( start ) ) {
@@ -790,8 +790,8 @@ export default class Range {
 	 */
 	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
 		return new this(
-			Position.createFromParentAndOffset( startElement, startOffset ),
-			Position.createFromParentAndOffset( endElement, endOffset )
+			Position._createAt( startElement, startOffset ),
+			Position._createAt( endElement, endOffset )
 		);
 	}
 
@@ -823,7 +823,7 @@ export default class Range {
 	 * @returns {module:engine/model/range~Range}
 	 */
 	static createOn( item ) {
-		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
+		return this.createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
 	/**
@@ -835,8 +835,8 @@ export default class Range {
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	static createCollapsedAt( itemOrPosition, offset ) {
-		const start = Position.createAt( itemOrPosition, offset );
-		const end = Position.createFromPosition( start );
+		const start = Position._createAt( itemOrPosition, offset );
+		const end = Position._createFromPosition( start );
 
 		return new Range( start, end );
 	}
@@ -892,7 +892,7 @@ export default class Range {
 		if ( refIndex > 0 ) {
 			for ( let i = refIndex - 1; true; i++ ) {
 				if ( ranges[ i ].end.isEqual( result.start ) ) {
-					result.start = Position.createFromPosition( ranges[ i ].start );
+					result.start = Position._createFromPosition( ranges[ i ].start );
 				} else {
 					// If ranges are not starting/ending at the same position there is no point in looking further.
 					break;
@@ -904,7 +904,7 @@ export default class Range {
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
 			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				result.end = Position.createFromPosition( ranges[ i ].end );
+				result.end = Position._createFromPosition( ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;

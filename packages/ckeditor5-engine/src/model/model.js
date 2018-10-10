@@ -470,32 +470,40 @@ export default class Model {
 		return false;
 	}
 
+	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link module:engine/model/position~Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 *
+	 * This method is a shortcut to other constructors such as:
+	 *
+	 * * {@link module:engine/model/position~Position._createBefore},
+	 * * {@link module:engine/model/position~Position._createAfter},
+	 * * {@link module:engine/model/position~Position._createFromPosition}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
 	createPositionAt( itemOrPosition, offset ) {
-		if ( itemOrPosition instanceof ModelPosition ) {
-			return ModelPosition.createFromPosition( itemOrPosition );
-		} else {
-			const node = itemOrPosition;
-
-			if ( offset == 'end' ) {
-				offset = node.maxOffset;
-			} else if ( offset == 'before' ) {
-				return ModelPosition.createBefore( node );
-			} else if ( offset == 'after' ) {
-				return ModelPosition.createAfter( node );
-			} else if ( !offset ) {
-				offset = 0;
-			}
-
-			return ModelPosition.createFromParentAndOffset( node, offset );
-		}
+		return ModelPosition._createAt( itemOrPosition, offset );
 	}
 
+	/**
+	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
 	createPositionAfter( item ) {
-		return this.createPositionAt( item, 'after' );
+		return ModelPosition._createAfter( item );
 	}
 
 	createPositionBefore( item ) {
-		return this.createPositionAt( item, 'before' );
+		return ModelPosition._createBefore( item );
 	}
 
 	createPositionFromPath( root, path ) {

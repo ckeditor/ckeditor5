@@ -23,7 +23,7 @@ describe( 'RenameOperation', () => {
 		element = new Element( oldName );
 		root._appendChild( element );
 
-		position = Position.createBefore( element );
+		position = Position._createBefore( element );
 	} );
 
 	it( 'should have type equal to rename', () => {
@@ -64,7 +64,7 @@ describe( 'RenameOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if position is not before an element', () => {
-			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
 
 			expect( () => {
 				op._validate();
@@ -89,7 +89,7 @@ describe( 'RenameOperation', () => {
 	} );
 
 	it( 'should create a RenameOperation with the same parameters when cloned', () => {
-		const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+		const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
@@ -104,7 +104,7 @@ describe( 'RenameOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
@@ -119,7 +119,7 @@ describe( 'RenameOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper AttributeOperation from json object', () => {
-			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
 
 			const serialized = op.toJSON();
 			const deserialized = RenameOperation.fromJSON( serialized, doc );

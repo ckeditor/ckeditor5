@@ -39,19 +39,19 @@ describe( 'Operation utils', () => {
 
 	describe( 'insert', () => {
 		it( 'should insert nodes between nodes', () => {
-			utils._insert( Position.createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
+			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
 
 			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
-			utils._insert( Position.createAt( root, 5 ), new Element( 'p' ) );
+			utils._insert( Position._createAt( root, 5 ), new Element( 'p' ) );
 
 			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			utils._insert( Position.createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
+			utils._insert( Position._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
 		} );
@@ -90,14 +90,14 @@ describe( 'Operation utils', () => {
 	describe( 'move', () => {
 		it( 'should move a range of nodes', () => {
 			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
-			utils._move( range, Position.createAt( root, 0 ) );
+			utils._move( range, Position._createAt( root, 0 ) );
 
 			expectData( '<$text bold="true">bar</$text>foo<image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should correctly move if target position is in same element as moved range, but after range', () => {
 			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
-			utils._move( range, Position.createAt( root, 10 ) );
+			utils._move( range, Position._createAt( root, 10 ) );
 
 			expectData( 'foo<image src="img.jpg"></image>xyz<$text bold="true">bar</$text>' );
 		} );

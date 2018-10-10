@@ -468,7 +468,7 @@ export default class TreeWalker {
  * @property {module:engine/view/position~Position} previousPosition Previous position of the iterator.
  * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
- * the node using {@link module:engine/view/position~Position.createBefore}.
+ * the node using {@link module:engine/view/position~Position._createBefore}.
  * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the

@@ -65,7 +65,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method module:engine/model/liveposition~LivePosition.createAfter
-	 * @see module:engine/model/position~Position.createAfter
+	 * @see module:engine/model/position~Position._createAfter
 	 * @param {module:engine/model/node~Node} node
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
@@ -73,7 +73,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method module:engine/model/liveposition~LivePosition.createBefore
-	 * @see module:engine/model/position~Position.createBefore
+	 * @see module:engine/model/position~Position._createBefore
 	 * @param {module:engine/model/node~Node} node
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
@@ -90,7 +90,7 @@ export default class LivePosition extends Position {
 	/**
 	 * @static
 	 * @method module:engine/model/liveposition~LivePosition.createFromPosition
-	 * @see module:engine/model/position~Position.createFromPosition
+	 * @see module:engine/model/position~Position._createFromPosition
 	 * @param {module:engine/model/position~Position} position
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
@@ -132,7 +132,7 @@ function transform( operation ) {
 	const result = this.getTransformedByOperation( operation );
 
 	if ( !this.isEqual( result ) ) {
-		const oldPosition = Position.createFromPosition( this );
+		const oldPosition = Position._createFromPosition( this );
 
 		this.path = result.path;
 		this.root = result.root;

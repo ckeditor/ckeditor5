@@ -212,7 +212,7 @@ describe( 'MarkerCollection', () => {
 			markers._set( 'a', range );
 			const markerB = markers._set( 'b', range2 );
 
-			const result = Array.from( markers.getMarkersAtPosition( Position.createAt( root, 1 ) ) );
+			const result = Array.from( markers.getMarkersAtPosition( Position._createAt( root, 1 ) ) );
 
 			expect( result ).to.deep.equal( [ markerB ] );
 		} );

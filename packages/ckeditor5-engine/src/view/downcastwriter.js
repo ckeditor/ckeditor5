@@ -120,7 +120,7 @@ export default class DowncastWriter {
 	/**
 	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/position~Position._createAt} parameters.
 	 *
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when

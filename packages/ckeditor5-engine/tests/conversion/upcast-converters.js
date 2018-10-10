@@ -841,7 +841,7 @@ describe( 'upcast-converters', () => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( paragraph, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph, 0 ) );
+					conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( paragraph, 0 ) );
 
 					data.modelRange = ModelRange.createOn( paragraph );
 					data.modelCursor = data.modelRange.end;
@@ -863,7 +863,7 @@ describe( 'upcast-converters', () => {
 				new ViewContainerElement( 'div', null, [ new ViewText( 'abc' ), new ViewContainerElement( 'foo' ) ] ),
 				new ViewContainerElement( 'bar' )
 			] );
-			const position = ModelPosition.createAt( new ModelElement( 'element' ), 0 );
+			const position = ModelPosition._createAt( new ModelElement( 'element' ), 0 );
 
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );

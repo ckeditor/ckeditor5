@@ -169,16 +169,16 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
-		range = ModelRange.createIn( node );
+		range = model.createRangeIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new ModelDocumentFragment( node );
-			range = ModelRange.createIn( fragment );
+			range = model.createRangeIn( fragment );
 		} else {
 			range = new ModelRange(
-				ModelPosition.createBefore( node ),
-				ModelPosition.createAfter( node )
+				model.createPositionBefore( node ),
+				model.createPositionAfter( node )
 			);
 		}
 	}
@@ -391,7 +391,7 @@ function convertToModelElement() {
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element, 0 ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( element, 0 ) );
 
 		data.modelRange = ModelRange.createOn( element );
 		data.modelCursor = data.modelRange.end;

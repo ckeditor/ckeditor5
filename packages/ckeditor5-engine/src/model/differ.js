@@ -826,7 +826,7 @@ export default class Differ {
 	_getInsertDiff( parent, offset, name ) {
 		return {
 			type: 'insert',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++
@@ -845,7 +845,7 @@ export default class Differ {
 	_getRemoveDiff( parent, offset, name ) {
 		return {
 			type: 'remove',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++

@@ -922,8 +922,8 @@ describe( 'Writer', () => {
 
 			function getRange( startIndex, endIndex ) {
 				return new Range(
-					Position.createFromParentAndOffset( root, startIndex ),
-					Position.createFromParentAndOffset( root, endIndex )
+					Position._createAt( root, startIndex ),
+					Position._createAt( root, endIndex )
 				);
 			}
 

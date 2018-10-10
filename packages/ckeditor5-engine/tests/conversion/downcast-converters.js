@@ -622,7 +622,7 @@ describe( 'downcast-converters', () => {
 
 		dispatcher.on( 'attribute:class', changeAttribute() );
 
-		modelRootStart = ModelPosition.createAt( modelRoot, 0 );
+		modelRootStart = ModelPosition._createAt( modelRoot, 0 );
 	} );
 
 	function viewAttributesToString( item ) {

@@ -242,7 +242,7 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root, 3 ), 3, '$text' );
+			dispatcher.convertRemove( ModelPosition._createAt( root, 3 ), 3, '$text' );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 		} );

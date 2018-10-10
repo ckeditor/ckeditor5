@@ -69,7 +69,7 @@ export default class RenameOperation extends Operation {
 	 * @returns {module:engine/model/operation/renameoperation~RenameOperation} Clone of this operation.
 	 */
 	clone() {
-		return new RenameOperation( Position.createFromPosition( this.position ), this.oldName, this.newName, this.baseVersion );
+		return new RenameOperation( Position._createFromPosition( this.position ), this.oldName, this.newName, this.baseVersion );
 	}
 
 	/**
@@ -78,7 +78,7 @@ export default class RenameOperation extends Operation {
 	 * @returns {module:engine/model/operation/renameoperation~RenameOperation}
 	 */
 	getReversed() {
-		return new RenameOperation( Position.createFromPosition( this.position ), this.newName, this.oldName, this.baseVersion + 1 );
+		return new RenameOperation( Position._createFromPosition( this.position ), this.newName, this.oldName, this.baseVersion + 1 );
 	}
 
 	/**

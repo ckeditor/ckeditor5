@@ -257,7 +257,7 @@ describe( 'DocumentSelection', () => {
 	describe( '_setFocus()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
-			const endPos = Position.createAt( root, 'end' );
+			const endPos = Position._createAt( root, 'end' );
 
 			selection._setFocus( endPos );
 
@@ -266,9 +266,9 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'detaches the range it replaces', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 4 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
+			const newEndPos = Position._createAt( root, 4 );
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
 
 			selection._setTo( new Range( startPos, endPos ) );
@@ -281,7 +281,7 @@ describe( 'DocumentSelection', () => {
 		it( 'refreshes attributes', () => {
 			const spy = sinon.spy( selection._selection, '_updateAttributes' );
 
-			selection._setFocus( Position.createAt( root, 1 ) );
+			selection._setFocus( Position._createAt( root, 1 ) );
 
 			expect( spy.called ).to.be.true;
 		} );
@@ -671,7 +671,7 @@ describe( 'DocumentSelection', () => {
 
 				model.change( writer => {
 					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
+					writer.merge( Position._createAfter( emptyP ) );
 				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
@@ -717,7 +717,7 @@ describe( 'DocumentSelection', () => {
 
 				model.change( writer => {
 					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
+					writer.merge( Position._createAfter( emptyP ) );
 				} );
 
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );

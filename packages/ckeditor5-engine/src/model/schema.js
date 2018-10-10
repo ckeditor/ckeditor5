@@ -555,10 +555,10 @@ export default class Schema {
 					yield new Range( start, end );
 				}
 
-				start = Position.createAfter( item );
+				start = Position._createAfter( item );
 			}
 
-			end = Position.createAfter( item );
+			end = Position._createAfter( item );
 		}
 
 		if ( !start.isEqual( end ) ) {

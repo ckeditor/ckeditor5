@@ -97,10 +97,10 @@ export default function getSelectedContent( model, selection ) {
 		// [<quote><p>y</p><h>fir]st</h></quote><p>se[cond</p>]
 		if ( flatSubtreeRange != range ) {
 			// Find the position of the original range in the cloned fragment.
-			const newRange = range._getTransformedByMove( flatSubtreeRange.start, Position.createAt( frag, 0 ), howMany )[ 0 ];
+			const newRange = range._getTransformedByMove( flatSubtreeRange.start, Position._createAt( frag, 0 ), howMany )[ 0 ];
 
-			const leftExcessRange = new Range( Position.createAt( frag, 0 ), newRange.start );
-			const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
+			const leftExcessRange = new Range( Position._createAt( frag, 0 ), newRange.start );
+			const rightExcessRange = new Range( newRange.end, Position._createAt( frag, 'end' ) );
 
 			removeRangeContent( rightExcessRange, writer );
 			removeRangeContent( leftExcessRange, writer );

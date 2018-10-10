@@ -220,11 +220,11 @@ export class Client {
 		switch ( type ) {
 			default:
 			case 'start':
-				return Position.createFromPosition( selRange.start );
+				return Position._createFromPosition( selRange.start );
 			case 'end':
-				return Position.createFromPosition( selRange.end );
+				return Position._createFromPosition( selRange.end );
 			case 'beforeParent':
-				return Position.createBefore( selRange.start.parent );
+				return Position._createBefore( selRange.start.parent );
 		}
 	}
 

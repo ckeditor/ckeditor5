@@ -284,9 +284,9 @@ export default class Position {
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
-	 * * {@link module:engine/view/position~Position.createBefore},
-	 * * {@link module:engine/view/position~Position.createAfter},
-	 * * {@link module:engine/view/position~Position.createFromPosition}.
+	 * * {@link module:engine/view/position~Position._createBefore},
+	 * * {@link module:engine/view/position~Position._createAfter},
+	 * * {@link module:engine/view/position~Position._createFromPosition}.
 	 *
 	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when

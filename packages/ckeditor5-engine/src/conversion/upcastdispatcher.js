@@ -385,14 +385,14 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
 	for ( const markerElement of markerElements ) {
 		const markerName = markerElement.getAttribute( 'data-name' );
-		const currentPosition = ModelPosition.createBefore( markerElement );
+		const currentPosition = writer.createPositionBefore( markerElement );
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
 		if ( !markers.has( markerName ) ) {
-			markers.set( markerName, new ModelRange( ModelPosition.createFromPosition( currentPosition ) ) );
+			markers.set( markerName, new ModelRange( ModelPosition._createFromPosition( currentPosition ) ) );
 		// Otherwise is means that we have found end of the marker range.
 		} else {
-			markers.get( markerName ).end = ModelPosition.createFromPosition( currentPosition );
+			markers.get( markerName ).end = ModelPosition._createFromPosition( currentPosition );
 		}
 
 		// Remove marker element from DocumentFragment.
@@ -419,7 +419,7 @@ function createContextTree( contextDefinition, writer ) {
 			writer.append( current, position );
 		}
 
-		position = ModelPosition.createAt( current, 0 );
+		position = ModelPosition._createAt( current, 0 );
 	}
 
 	return position;

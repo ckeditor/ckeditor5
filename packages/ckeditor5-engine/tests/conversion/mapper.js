@@ -400,7 +400,7 @@ describe( 'Mapper', () => {
 		} );
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).to.equal( viewElement );
 			expect( viewPosition.offset ).to.equal( viewOffset );
@@ -530,7 +530,7 @@ describe( 'Mapper', () => {
 		} );
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).to.equal( viewElement );
 			expect( viewPosition.offset ).to.equal( viewOffset );
