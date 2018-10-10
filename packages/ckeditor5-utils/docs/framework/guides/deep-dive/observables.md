@@ -21,6 +21,7 @@ mix( AnyClass, ObservableMixin );
 
 Observables are useful when it comes to managing the state of the application, which can be dynamic and, more often than not, centralized and shared between components of the application. One observable can also propagate its state (or its part) to another using [property bindings](#property-bindings).
 
+Observables can also [decorate their methods](#decorating-object-methods) which makes it possible to control their execution using event listeners, giving external code some control over their behavior.
 
 ## Making properties observable
 
@@ -213,4 +214,90 @@ button.unbind();
 
 ## Decorating object methods
 
-TODO
+Decorating object methods transforms them into event–driven ones without changing their original behavior.
+
+When a method is decorated, an event of the same name is created and fired each time the method is executed. By listening to the event it is possible to cancel the execution, change the arguments or the value returned by the method. This offers an additional flexibility, e.g. giving a third–party code some way to interact with core classes that decorate their methods.
+
+Decorating is possible using the {@link module:utils/observablemixin~ObservableMixin#decorate `decorate()`} method. Having [mixed](#observables) the {@link module:utils/observablemixin~ObservableMixin}, we are going to use the `Command` class from previous sections of this guide to show the potential use–cases:
+
+```js
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
+class Command {
+	constructor() {
+		this.decorate( 'execute' );
+	}
+
+	// Because the method is decorated, it always fires the #execute event.
+	execute( value ) {
+		console.log( `Executed the command with value="${ value }"` );
+	}
+}
+
+mix( Command, ObservableMixin );
+```
+
+### Cancelling the execution
+
+Because the `execute()` method is event–driven, it can be controlled externally. E.g. the execution could be stopped for certain arguments. Note the `high` listener {@link module:utils/priorities~PriorityString priority} used to intercept the default action:
+
+```js
+const command = new Command();
+
+// ...
+
+// Some code interested in controlling this particular command.
+command.on( 'execute', ( evt, args ) => {
+	if ( args[ 0 ] !== 'bold' ) {
+		evt.stop();
+	}
+}, { priority: 'high' } );
+
+command.execute( 'bold' ); // -> 'Executed the command with value="bold"'
+command.execute( 'italic' ); // Nothing is logged, the execution has been stopped.
+```
+
+### Changing the returned value
+
+It is possible to control the returned value of a decorated method using an event listener. The returned value is passed in the event data as a `return` property:
+
+```js
+const command = new Command();
+
+// ...
+
+// Some code interested in controlling this particular command.
+command.on( 'execute', ( evt ) => {
+	if ( args[ 0 ] == 'bold' ) {
+		evt.return = true;
+	} else {
+		evt.return = false;
+	}
+} );
+
+console.log( command.execute( 'bold' ) ); // -> true
+console.log( command.execute( 'italic' ) ); // -> false
+console.log( command.execute() ); // -> false
+```
+
+### Changing arguments on the fly
+
+Just like the returned value, the arguments passed to the method can be changed in the event listener. Note the `high` listener {@link module:utils/priorities~PriorityString priority} of the used to intercept the default action:
+
+
+```js
+const command = new Command();
+
+// ...
+
+// Some code interested in controlling this particular command.
+command.on( 'execute', ( evt, args ) => {
+	if ( args[ 0 ] === 'bold' ) {
+		args[ 0 ] = 'underline';
+	}
+}, { priority: 'high' } );
+
+command.execute( 'bold' ); // -> 'Executed the command with value="underline"'
+command.execute( 'italic' ); // -> 'Executed the command with value="italic"'
+```

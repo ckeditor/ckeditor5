@@ -811,10 +811,13 @@ function attachBindToListeners( observable, toBindings ) {
  * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
  * (named after the method) and the original action will be plugged as a listener to that event.
  *
- * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
+ * Read more in the {@glink framework/guides/deep-dive/observables#decorating-object-methods dedicated guide}
+ * covering the topic of decorating methods with some additional examples.
+ *
+ * Decorating the method does not change its behavior (it only adds an event),
  * but it allows to modify it later on by listening to the method's event.
  *
- * For example, in order to cancel the method execution one can stop the event:
+ * For example, to cancel the method execution the event can be {@link module:utils/eventinfo~EventInfo#stop stopped}:
  *
  *		class Foo {
  *			constructor() {
@@ -834,10 +837,11 @@ function attachBindToListeners( observable, toBindings ) {
  *		foo.method(); // Nothing is logged.
  *
  *
- * Note: we used a high priority listener here to execute this callback before the one which
- * calls the original method (which used the default priority).
+ * **Note**: The high {@link module:utils/priorities~PriorityString priority} listener
+ * has been used to execute this particular callback before the one which calls the original method
+ * (which uses the "normal" priority).
  *
- * It's also possible to change the return value:
+ * It is also possible to change the returned value:
  *
  *		foo.on( 'method', ( evt ) => {
  *			evt.return = 'Foo!';
@@ -845,7 +849,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		foo.method(); // -> 'Foo'
  *
- * Finally, it's possible to access and modify the parameters:
+ * Finally, it is possible to access and modify the arguments the method is called with:
  *
  *		method( a, b ) {
  *			console.log( `${ a }, ${ b }`  );
