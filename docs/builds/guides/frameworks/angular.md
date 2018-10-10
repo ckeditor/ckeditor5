@@ -4,7 +4,7 @@ category: builds-integration-frameworks
 order: 20
 ---
 
-# Rich-text editor component for Angular 2+
+# Rich text editor component for Angular 2+
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
 
@@ -18,7 +18,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 ## Quick start
 
-In your existing Angular project, install the [CKEditor 5 rich-text editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+In your existing Angular project, install the [CKEditor 5 rich text editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install --save-dev @ckeditor/ckeditor5-angular
@@ -69,7 +69,7 @@ export class MyComponent {
 }
 ```
 
-Finally, use the `<ckeditor>` tag in the template to run the rich-text editor:
+Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
 <ckeditor [editor]="Editor" data="<p>Hello world!</p>"></ckeditor>

@@ -7,7 +7,7 @@ order: 60
 
 The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/development/custom-builds Custom builds} guide explains how to add or remove features from the build or change webpack configuration.
 
-In this guide, we would like to show you ways to closer integrate CKEditor with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
+In this guide, we would like to show you ways to closer integrate CKEditor 5 with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ Therefore, **a prerequisite to this guide is that you are using webpack as your 
 
 ## Scenario 1: Integrating existing builds
 
-This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the editor}). It also gives the fastest build times.
+This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the rich text editor}). It also gives the fastest build times.
 
 First, install the build of your choice {@link builds/guides/integration/installation#npm from npm}:
 
@@ -56,7 +56,7 @@ ClassicEditor
 	} );
 ```
 
-Since you are using an already built editor (so a result of passing CKEditor 5's source through webpack), you do not need any additional webpack configuration. In this case CKEditor works as a ready-to-use library.
+Since you are using an already built editor (so a result of passing CKEditor 5 source through webpack), you do not need any additional webpack configuration. In this case CKEditor works as a ready-to-use library.
 
 ## Scenario 2: Building from source
 
@@ -108,13 +108,13 @@ npm install --save \
 
 ### Webpack configuration
 
-You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor:
+You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor 5:
 
-* Handling CSS files of the CKEditor theme. They are included in the CKEditor sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
+* Handling CSS files of the CKEditor theme. They are included in the CKEditor 5 sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) webpack plugin.
 
-The minimal configuration, assuming that you use the same methods of handling assets as CKEditor builds, will look like this:
+The minimal configuration, assuming that you use the same methods of handling assets as CKEditor 5 builds, will look like this:
 
 ```js
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
@@ -328,11 +328,11 @@ ClassicEditor
 
 ### Building
 
-Finally, you can build your application. Run webpack on your project and the editor will be a part of it.
+Finally, you can build your application. Run webpack on your project and the rich text editor will be a part of it.
 
 ### Option: Minifying JavaScript
 
-Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes &mdash; `development` and `production`. The latter automatically enables [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which takes care of JavaScript minification. Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js` to optimize the build.
+Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes: `development` and `production`. The latter automatically enables [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which takes care of JavaScript minification. Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js` to optimize the build.
 
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
@@ -340,7 +340,7 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 
 ### Option: Extracting CSS
 
-One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use [`mini-css-extract-plugin`](https://www.npmjs.com/package/mini-css-extract-plugin):
+One of the most common requirements is to extract CKEditor 5 CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use [`mini-css-extract-plugin`](https://www.npmjs.com/package/mini-css-extract-plugin):
 
 ```bash
 npm install --save \
@@ -452,7 +452,7 @@ entry: [
 
 ## Scenario 3: Using two different editors
 
-A common requirement is the ability to use two or more types of editors on one page. For instance, you may want to use the {@link builds/guides/overview#classic-editor classic editor} next to a couple of {@link builds/guides/overview#inline-editor inline editors}.
+The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link builds/guides/overview#classic-editor classic editor} next to a couple of {@link builds/guides/overview#inline-editor inline editors}.
 
 **Do not load two builds on one page.** This is a mistake which leads to:
 
@@ -462,14 +462,14 @@ A common requirement is the ability to use two or more types of editors on one p
 
 ### Solutions
 
-If you want to load two different editors on one page you need to make sure that they are build together (once). This can be achieved in at least two ways:
+If you want to load two different editors on one page you need to make sure that they are built together (once). This can be achieved in at least two ways:
 
-* [Integrating CKEditor 5 from source](#running-the-editor-method-2) directly into your application. Since you build you application once the editors that you will use will be built together too.
+* [Integrating CKEditor 5 from source](#running-the-editor-method-2) directly into your application. Since you build you application once, the editors that you use will be built together, too.
 * [Creating a "super build" of CKEditor 5](#creating-super-builds). Instead of creating a build which exports just one editor, you can create a build which exports two or more at the same time.
 
 ### Creating "super builds"
 
-There is no limit for how many editor classes can a single build export. By default, the official builds export a single editor class only. However, they can easily import more.
+There is no limit for how many editor classes a single build can export. By default, the official builds export a single editor class only. However, they can easily import more.
 
 You can start from forking (or copying) an existing build like in the {@link builds/guides/development/custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5-build-classic`](http://github.com/ckeditor/ckeditor5-build-classic) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to it:
 
@@ -479,13 +479,13 @@ cd ckeditor5-build-classic
 npm install
 ```
 
-Now, it is time to add the missing editor package and install:
+Now it is time to add the missing editor package and install it:
 
 ```
 npm install --save-dev @ckeditor/ckeditor5-editor-inline
 ```
 
-Once all the dependencies are installed, let's modify the webpack's entry point which is the `src/ckeditor.js` file. For now it was exporting just a single class:
+Once all the dependencies are installed, modify the webpack's entry point which is the `src/ckeditor.js` file. For now it was exporting just a single class:
 
 ```js
 // The editor creator to use.
@@ -506,7 +506,7 @@ ClassicEditor.defaultConfig = {
 };
 ```
 
-Let's make it export an object with two classes – `ClassicEditor` and `InlineEditor`. To make both constructors work in the same way (load the same plugins and default configuration) we also need to assign `builtinPlugins` and `defaultConfig` static properties to both of them:
+Let's make it export an object with two classes: `ClassicEditor` and `InlineEditor`. To make both constructors work in the same way (load the same plugins and default configuration) you also need to assign `builtinPlugins` and `defaultConfig` static properties to both of them:
 
 ```js
 // The editor creators to use.
@@ -539,7 +539,7 @@ export default {
 };
 ```
 
-Since now we export an object with two properties `ClassicEditor` and `InlineEditor` it is also reasonable to rename the global variable to which webpack will assign this object. So far it was called `ClassicEditor`. A more adequate name now would be for example `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
+Since you now export an object with two properties (`ClassicEditor` and `InlineEditor`), it is also reasonable to rename the global variable to which webpack will assign this object. So far it was called `ClassicEditor`. A more adequate name now would be for example `CKEDITOR`. This variable is defined in `webpack.config.js` in the `output.library` setting:
 
 ```diff
 diff --git a/webpack.config.js b/webpack.config.js
@@ -563,7 +563,7 @@ Once you changed the `src/ckeditor.js` and `webpack.config.js` files it is time 
 npm run build
 ```
 
-Finally, webpack finishes compiling your super build, you can change the `samples/index.html` file to test both editors:
+Finally, when webpack finishes compiling your super build, you can change the `samples/index.html` file to test both editors:
 
 ```html
 <!DOCTYPE html>
