@@ -120,6 +120,12 @@ export default class DropdownView extends View {
 		 */
 		this.set( 'isEnabled', true );
 
+		/**
+		 * (Optional) The additional CSS class set on the dropdown {@link #element}.
+		 *
+		 * @observable
+		 * @member {String} #class
+		 */
 		this.set( 'class' );
 
 		/**
