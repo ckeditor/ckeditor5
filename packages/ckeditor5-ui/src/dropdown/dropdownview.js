@@ -121,6 +121,14 @@ export default class DropdownView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
+		 * (Optional) The additional CSS class set on the dropdown {@link #element}.
+		 *
+		 * @observable
+		 * @member {String} #class
+		 */
+		this.set( 'class' );
+
+		/**
 		 * Tracks information about DOM focus in the dropdown.
 		 *
 		 * @readonly
@@ -147,6 +155,7 @@ export default class DropdownView extends View {
 				class: [
 					'ck',
 					'ck-dropdown',
+					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				]
 			},
