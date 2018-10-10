@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "10.2.1",
+  "version": "11.0.0",
   "description": "Miscellaneous utils used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,12 +9,12 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "ckeditor5": "^11.0.1",
+    "ckeditor5": "^11.1.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^11.0.0",
-    "@ckeditor/ckeditor5-engine": "^10.2.0",
+    "@ckeditor/ckeditor5-core": "^11.0.1",
+    "@ckeditor/ckeditor5-engine": "^11.0.0",
     "del": "^2.2.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^1.0.7",
