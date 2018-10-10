@@ -97,19 +97,17 @@ describe( 'DropdownView', () => {
 				} );
 			} );
 
-			describe( 'DOM', () => {
-				describe( 'view#element .ck-disabled class to view#isEnabled', () => {
-					it( 'is activated', () => {
+			describe( 'DOM element bindings', () => {
+				describe( 'class', () => {
+					it( 'reacts on view#isEnabled', () => {
 						view.isEnabled = true;
 						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 
 						view.isEnabled = false;
 						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
 					} );
-				} );
 
-				describe( 'view#element should get custom css class', () => {
-					it( 'is custom-css-class', () => {
+					it( 'reacts on view#class', () => {
 						view.class = 'custom-css-class';
 						expect( view.element.classList.contains( 'custom-css-class' ) ).to.be.true;
 					} );
