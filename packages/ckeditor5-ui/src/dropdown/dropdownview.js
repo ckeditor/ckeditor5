@@ -120,6 +120,8 @@ export default class DropdownView extends View {
 		 */
 		this.set( 'isEnabled', true );
 
+		this.set( 'class' );
+
 		/**
 		 * Tracks information about DOM focus in the dropdown.
 		 *
@@ -147,6 +149,7 @@ export default class DropdownView extends View {
 				class: [
 					'ck',
 					'ck-dropdown',
+					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				]
 			},

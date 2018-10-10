@@ -107,6 +107,13 @@ describe( 'DropdownView', () => {
 						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
 					} );
 				} );
+
+				describe( 'view#element should get custom css class', () => {
+					it( 'is custom-css-class', () => {
+						view.class = 'custom-css-class';
+						expect( view.element.classList.contains( 'custom-css-class' ) ).to.be.true;
+					} );
+				} );
 			} );
 		} );
 	} );
