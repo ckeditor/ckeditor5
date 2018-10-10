@@ -276,12 +276,11 @@ class Insertion {
 			return;
 		}
 
-		const livePos = LivePosition._createFromPosition( this.position );
-		livePos.stickiness = 'toNext';
+		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
 
 		this.writer.insert( node, this.position );
 
-		this.position = Position._createFromPosition( livePos );
+		this.position = livePos.toPosition();
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
@@ -312,13 +311,13 @@ class Insertion {
 		mergePosRight.stickiness = 'toNext';
 
 		if ( mergeLeft ) {
-			const position = LivePosition._createFromPosition( this.position );
-			position.stickiness = 'toNext';
+			const livePosition = LivePosition.fromPosition( this.position );
+			livePosition.stickiness = 'toNext';
 
 			this.writer.merge( mergePosLeft );
 
-			this.position = Position._createFromPosition( position );
-			position.detach();
+			this.position = Position._createAt( livePosition );
+			livePosition.detach();
 		}
 
 		if ( mergeRight ) {
@@ -336,12 +335,12 @@ class Insertion {
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const position = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
+			const livePosition = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
 
 			this.writer.merge( mergePosRight );
 
-			this.position = Position._createFromPosition( position );
-			position.detach();
+			this.position = livePosition.toPosition();
+			livePosition.detach();
 		}
 
 		if ( mergeLeft || mergeRight ) {

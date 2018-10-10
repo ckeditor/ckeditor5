@@ -68,10 +68,12 @@ describe( 'LivePosition', () => {
 		LivePosition.prototype.stopListening.restore();
 	} );
 
-	it( 'createFromPosition should return LivePosition', () => {
-		const position = LivePosition._createFromPosition( new Position( root, [ 0 ] ) );
-		expect( position ).to.be.instanceof( LivePosition );
-		position.detach();
+	describe( 'static fromPosition()', () => {
+		it( 'should return LivePosition', () => {
+			const position = LivePosition.fromPosition( new Position( root, [ 0 ] ) );
+			expect( position ).to.be.instanceof( LivePosition );
+			position.detach();
+		} );
 	} );
 
 	it.skip( 'createFromParentAndOffset should return LivePosition', () => {

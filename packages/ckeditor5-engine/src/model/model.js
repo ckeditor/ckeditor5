@@ -482,7 +482,6 @@ export default class Model {
 	 *
 	 * * {@link module:engine/model/position~Position._createBefore},
 	 * * {@link module:engine/model/position~Position._createAfter},
-	 * * {@link module:engine/model/position~Position._createFromPosition}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when

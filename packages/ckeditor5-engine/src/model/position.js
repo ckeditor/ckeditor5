@@ -360,7 +360,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position._createFromPosition( this );
+		const shifted = Position._createAt( this );
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -448,13 +448,13 @@ export default class Position {
 				return true;
 
 			case 'before':
-				left = Position._createFromPosition( this );
-				right = Position._createFromPosition( otherPosition );
+				left = Position._createAt( this );
+				right = Position._createAt( otherPosition );
 				break;
 
 			case 'after':
-				left = Position._createFromPosition( otherPosition );
-				right = Position._createFromPosition( this );
+				left = Position._createAt( otherPosition );
+				right = Position._createAt( this );
 				break;
 
 			default:
@@ -538,7 +538,7 @@ export default class Position {
 				result = this._getTransformedByMergeOperation( operation );
 				break;
 			default:
-				result = Position._createFromPosition( this );
+				result = Position._createAt( this );
 				break;
 		}
 
@@ -612,7 +612,7 @@ export default class Position {
 				pos = pos._getTransformedByDeletion( operation.deletionPosition, 1 );
 			}
 		} else if ( this.isEqual( operation.deletionPosition ) ) {
-			pos = Position._createFromPosition( operation.deletionPosition );
+			pos = Position._createAt( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
 		}
@@ -630,7 +630,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position|null} Transformed position or `null`.
 	 */
 	_getTransformedByDeletion( deletePosition, howMany ) {
-		const transformed = Position._createFromPosition( this );
+		const transformed = Position._createAt( this );
 
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
@@ -678,7 +678,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany ) {
-		const transformed = Position._createFromPosition( this );
+		const transformed = Position._createAt( this );
 
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
@@ -721,7 +721,7 @@ export default class Position {
 
 		if ( sourcePosition.isEqual( targetPosition ) ) {
 			// If `targetPosition` is equal to `sourcePosition` this isn't really any move. Just return position as it is.
-			return Position._createFromPosition( this );
+			return Position._createAt( this );
 		}
 
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
@@ -774,7 +774,7 @@ export default class Position {
 		const i = source.path.length - 1;
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
-		const combined = Position._createFromPosition( target );
+		const combined = Position._createAt( target );
 		combined.stickiness = this.stickiness;
 
 		// Then we have to update the rest of the path.
@@ -813,7 +813,7 @@ export default class Position {
 	 * * {@link module:engine/model/position~Position._createBefore},
 	 * * {@link module:engine/model/position~Position._createAfter},
 	 * * {@link module:engine/model/position~Position.createFromParentAndOffset},
-	 * * {@link module:engine/model/position~Position._createFromPosition}.
+	 * * {@link module:engine/model/position~Position._createAt}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
@@ -822,7 +822,7 @@ export default class Position {
 	 */
 	static _createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
-			return this._createFromPosition( itemOrPosition );
+			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
 			const node = itemOrPosition;
 
@@ -905,19 +905,6 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position}
 	 */
 	// static createFromParentAndOffset( parent, offset ) {}
-
-	/**
-	 * Creates a new position, which is equal to passed position.
-	 *
-	 * @param {module:engine/model/position~Position} position Position to be cloned.
-	 * @returns {module:engine/model/position~Position}
-	 */
-	static _createFromPosition( position ) {
-		const newPos = new this( position.root, position.path.slice() );
-		newPos.stickiness = position.stickiness;
-
-		return newPos;
-	}
 
 	/**
 	 * Creates a `Position` instance from given plain object (i.e. parsed JSON string).

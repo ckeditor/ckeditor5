@@ -935,11 +935,11 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 		const secondPart = a.clone();
 
 		secondPart.range = new Range(
-			Position._createFromPosition( b.moveTargetPosition ),
+			Position._createAt( b.moveTargetPosition ),
 			a.range.end._getCombined( b.splitPosition, b.moveTargetPosition )
 		);
 
-		a.range.end = Position._createFromPosition( b.splitPosition );
+		a.range.end = Position._createAt( b.splitPosition );
 		a.range.end.stickiness = 'toPrevious';
 
 		return [ a, secondPart ];
@@ -1337,7 +1337,7 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 	// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
 	//
 	if ( a.sourcePosition.isEqual( b.splitPosition ) && context.abRelation == 'mergeSameElement' ) {
-		a.sourcePosition = Position._createFromPosition( b.moveTargetPosition );
+		a.sourcePosition = Position._createAt( b.moveTargetPosition );
 		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
 		return [ a ];
@@ -1563,7 +1563,7 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 } );
 
 setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
-	let newTargetPosition = Position._createFromPosition( a.targetPosition );
+	let newTargetPosition = Position._createAt( a.targetPosition );
 
 	// Do not transform if target position is same as split insertion position and this split comes from undo.
 	// This should be done on relations but it is too much work for now as it would require relations working in collaboration.
@@ -1694,7 +1694,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				if ( !context.bWasUndone ) {
 					return [ new NoOperation( 0 ) ];
 				} else {
-					a.sourcePosition = Position._createFromPosition( b.graveyardPosition );
+					a.sourcePosition = Position._createAt( b.graveyardPosition );
 					a.targetPosition = a.targetPosition._getTransformedByMergeOperation( b );
 
 					return [ a ];
@@ -1729,7 +1729,7 @@ setTransformation( RenameOperation, MergeOperation, ( a, b ) => {
 	// Element to rename got merged, so it was moved to `b.graveyardPosition`.
 	//
 	if ( a.position.isEqual( b.deletionPosition ) ) {
-		a.position = Position._createFromPosition( b.graveyardPosition );
+		a.position = Position._createAt( b.graveyardPosition );
 		a.position.stickiness = 'toNext';
 
 		return [ a ];
@@ -1882,7 +1882,7 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 
 		a.splitPosition = a.splitPosition._getTransformedByMergeOperation( b );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
-		a.graveyardPosition = Position._createFromPosition( additionalSplit.insertionPosition );
+		a.graveyardPosition = Position._createAt( additionalSplit.insertionPosition );
 		a.graveyardPosition.stickiness = 'toNext';
 
 		return [ additionalSplit, a ];
@@ -1940,7 +1940,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 			a.howMany += b.howMany;
 		}
 
-		a.splitPosition = Position._createFromPosition( b.sourcePosition );
+		a.splitPosition = Position._createAt( b.sourcePosition );
 		a.insertionPosition = SplitOperation.getInsertionPosition( a.splitPosition );
 
 		return [ a ];

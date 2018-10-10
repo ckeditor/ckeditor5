@@ -36,7 +36,7 @@ export default class DetachOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} #sourcePosition
 		 */
-		this.sourcePosition = Position._createFromPosition( sourcePosition );
+		this.sourcePosition = Position._createAt( sourcePosition );
 
 		/**
 		 * Offset size of moved range.

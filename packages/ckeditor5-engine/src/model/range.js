@@ -31,7 +31,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.start = Position._createFromPosition( start );
+		this.start = Position._createAt( start );
 
 		/**
 		 * End position.
@@ -39,7 +39,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.end = end ? Position._createFromPosition( end ) : Position._createFromPosition( start );
+		this.end = end ? Position._createAt( end ) : Position._createAt( start );
 
 		// If the range is collapsed, treat in a similar way as a position and set its boundaries stickiness to 'toNone'.
 		// In other case, make the boundaries stick to the "inside" of the range.
@@ -291,7 +291,7 @@ export default class Range {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		const pos = Position._createFromPosition( this.start );
+		const pos = Position._createAt( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
@@ -578,7 +578,7 @@ export default class Range {
 
 			if ( operation.sourcePosition.isBefore( operation.targetPosition ) ) {
 				// Case 1.
-				start = Position._createFromPosition( end );
+				start = Position._createAt( end );
 				start.offset = 0;
 			} else {
 				if ( !operation.deletionPosition.isEqual( start ) ) {
@@ -836,7 +836,7 @@ export default class Range {
 	 */
 	static createCollapsedAt( itemOrPosition, offset ) {
 		const start = Position._createAt( itemOrPosition, offset );
-		const end = Position._createFromPosition( start );
+		const end = Position._createAt( start );
 
 		return new Range( start, end );
 	}
@@ -892,7 +892,7 @@ export default class Range {
 		if ( refIndex > 0 ) {
 			for ( let i = refIndex - 1; true; i++ ) {
 				if ( ranges[ i ].end.isEqual( result.start ) ) {
-					result.start = Position._createFromPosition( ranges[ i ].start );
+					result.start = Position._createAt( ranges[ i ].start );
 				} else {
 					// If ranges are not starting/ending at the same position there is no point in looking further.
 					break;
@@ -904,7 +904,7 @@ export default class Range {
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
 			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				result.end = Position._createFromPosition( ranges[ i ].end );
+				result.end = Position._createAt( ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;

@@ -39,7 +39,7 @@ export default class InsertOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~InsertOperation#position
 		 */
-		this.position = Position._createFromPosition( position );
+		this.position = Position._createAt( position );
 		this.position.stickiness = 'toNone';
 
 		/**

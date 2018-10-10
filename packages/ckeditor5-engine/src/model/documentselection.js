@@ -1014,7 +1014,7 @@ class LiveSelection extends Selection {
 	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
-		const positionCandidate = Position._createFromPosition( removedRangeStart );
+		const positionCandidate = Position._createAt( removedRangeStart );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
 		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );

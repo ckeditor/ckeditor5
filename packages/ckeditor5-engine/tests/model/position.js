@@ -163,13 +163,14 @@ describe( 'Position', () => {
 			expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
 		} );
 
-		// TODO: dump?
 		it( 'should create positions from positions', () => {
-			const spy = testUtils.sinon.spy( Position, '_createFromPosition' );
+			const position = Position._createAt( ul, 0 );
 
-			expect( Position._createAt( Position._createAt( ul, 0 ) ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			const positionCopy = Position._createAt( position );
 
-			expect( spy.calledOnce ).to.be.true;
+			expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
+			expect( positionCopy ).to.not.equal( position );
 		} );
 
 		it( 'should create positions from node and offset', () => {
@@ -246,7 +247,7 @@ describe( 'Position', () => {
 	describe( 'createFromPosition()', () => {
 		it( 'should create a copy of given position', () => {
 			const original = new Position( root, [ 1, 2, 3 ] );
-			const position = Position._createFromPosition( original );
+			const position = Position._createAt( original );
 
 			expect( position ).to.be.instanceof( Position );
 			expect( position.isEqual( original ) ).to.be.true;

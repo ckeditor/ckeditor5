@@ -396,7 +396,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Position._createFromPosition( this._liveRange.start );
+		return Position._createAt( this._liveRange.start );
 	}
 
 	/**
@@ -409,7 +409,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Position._createFromPosition( this._liveRange.end );
+		return Position._createAt( this._liveRange.end );
 	}
 
 	/**

@@ -63,6 +63,19 @@ export default class LivePosition extends Position {
 	}
 
 	/**
+	 * Creates a {@link module:engine/model/position~Position position instance}, which is equal to this live position.
+	 *
+	 * @returns {module:engine/model/position~Position}
+	 */
+	toPosition() {
+		return new Position( this.root, this.path.slice(), this.stickiness );
+	}
+
+	static fromPosition( position, stickiness ) {
+		return new this( position.root, position.path.slice(), stickiness ? stickiness : position.stickiness );
+	}
+
+	/**
 	 * @static
 	 * @method module:engine/model/liveposition~LivePosition.createAfter
 	 * @see module:engine/model/position~Position._createAfter
@@ -84,14 +97,6 @@ export default class LivePosition extends Position {
 	 * @see module:engine/model/position~Position.createFromParentAndOffset
 	 * @param {module:engine/model/element~Element} parent
 	 * @param {Number} offset
-	 * @returns {module:engine/model/liveposition~LivePosition}
-	 */
-
-	/**
-	 * @static
-	 * @method module:engine/model/liveposition~LivePosition.createFromPosition
-	 * @see module:engine/model/position~Position._createFromPosition
-	 * @param {module:engine/model/position~Position} position
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
@@ -132,7 +137,7 @@ function transform( operation ) {
 	const result = this.getTransformedByOperation( operation );
 
 	if ( !this.isEqual( result ) ) {
-		const oldPosition = Position._createFromPosition( this );
+		const oldPosition = Position._createAt( this );
 
 		this.path = result.path;
 		this.root = result.root;
