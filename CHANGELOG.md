@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## [11.1.1](https://github.com/ckeditor/ckeditor5/compare/v11.1.0...v11.1.1) (2018-10-11)
+
+This releases fixes the README of the below listed 4 builds on npm.
+
+### Dependencies
+
+Patch releases (bug fixes, internal changes):
+
+* [@ckeditor/ckeditor5-build-balloon](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon): v11.1.0 => [v11.1.1](https://github.com/ckeditor/ckeditor5-build-balloon/releases/tag/v11.1.1)
+* [@ckeditor/ckeditor5-build-classic](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic): v11.1.0 => [v11.1.1](https://github.com/ckeditor/ckeditor5-build-classic/releases/tag/v11.1.1)
+* [@ckeditor/ckeditor5-build-decoupled-document](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document): v11.1.0 => [v11.1.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v11.1.1)
+* [@ckeditor/ckeditor5-build-inline](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline): v11.1.0 => [v11.1.1](https://github.com/ckeditor/ckeditor5-build-inline/releases/tag/v11.1.1)
+
+
 ## [11.1.0](https://github.com/ckeditor/ckeditor5/compare/v11.0.1...v11.1.0) (2018-10-08)
 
 We are happy to report the release of CKEditor 5 v11.1.0. This editor version brings the long-awaited [media embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) feature, [support for block content in tables](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#block-vs-inline-content-in-table-cells), tables available in real-time collaboration, as well as many smaller features and improvements.
