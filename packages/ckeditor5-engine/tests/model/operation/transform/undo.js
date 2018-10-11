@@ -276,7 +276,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph>' );
 	} );
 
-	it( 'undo pasting', () => {
+	it( 'pasting on collapsed selection undo and redo', () => {
 		john.setData( '<paragraph>Foo[]Bar</paragraph>' );
 
 		// Below simulates pasting.
@@ -297,8 +297,16 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
 
 		john.undo();
-
 		expectClients( '<paragraph>FooBar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>FooBar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
 	} );
 
 	it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
@@ -346,7 +354,7 @@ describe( 'transform', () => {
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/1287 TC1
-	it( 'undo and redo pasting', () => {
+	it( 'pasting on non-collapsed selection undo and redo', () => {
 		john.setData( '<paragraph>Fo[o</paragraph><paragraph>B]ar</paragraph>' );
 
 		// Below simulates pasting.
@@ -372,7 +380,9 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
 
 		john.undo();
-
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
 	} );
 } );

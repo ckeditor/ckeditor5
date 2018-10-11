@@ -1405,9 +1405,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	let insertBefore = !context.aIsStrong;
 
 	// If the relation is set, then use it to decide nodes order.
-	if ( context.abRelation == 'insertBefore' ) {
+	if ( context.abRelation == 'insertBefore' || context.baRelation == 'insertAfter' ) {
 		insertBefore = true;
-	} else if ( context.abRelation == 'insertAfter' ) {
+	} else if ( context.abRelation == 'insertAfter' || context.baRelation == 'insertBefore' ) {
 		insertBefore = false;
 	}
 
@@ -1692,7 +1692,15 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			// removed nodes might be unexpected. This means that in this scenario we will reverse merging and remove the element.
 			//
 			if ( !context.aWasUndone ) {
-				return [ b.getReversed(), a ];
+				const gyMove = new MoveOperation( b.graveyardPosition, 1, a.targetPosition.getShiftedBy( -1 ), 0 );
+
+				const targetPositionPath = gyMove.getMovedRangeStart().path.slice();
+				targetPositionPath.push( 0 );
+
+				return [
+					gyMove,
+					new MoveOperation( b.targetPosition, b.howMany, new Position( a.targetPosition.root, targetPositionPath ), 0 )
+				];
 			}
 		} else {
 			// Case 2:
@@ -1920,11 +1928,25 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 } );
 
 setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
+	const rangeToMove = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+
 	if ( a.graveyardPosition ) {
+		// Case 1:
+		//
+		// Split operation graveyard node was moved. In this case move operation is stronger and the split insertion position
+		// should be corrected.
+		//
+		if ( rangeToMove.containsPosition( a.graveyardPosition ) || rangeToMove.start.isEqual( a.graveyardPosition ) ) {
+			a.insertionPosition = Position.createFromPosition( b.targetPosition );
+			a.splitPosition = a.splitPosition._getTransformedByMoveOperation( b );
+
+			return [ a ];
+		}
+
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
 	}
 
-	// Case 1:
+	// Case 2:
 	//
 	// If the split position is inside the moved range, we need to shift the split position to a proper place.
 	// The position cannot be moved together with moved range because that would result in splitting of an incorrect element.
@@ -1941,8 +1963,6 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// After split:
 	// <paragraph>A</paragraph><paragraph>d</paragraph><paragraph>Xbcyz</paragraph>
 	//
-	const rangeToMove = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
-
 	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) ) {
 		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );
 		a.howMany -= howManyRemoved;
@@ -1957,7 +1977,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		return [ a ];
 	}
 
-	// Case 2:
+	// Case 3:
 	//
 	// Split is at a position where nodes were moved.
 	//
@@ -1975,13 +1995,16 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	}
 
 	// The default case.
+	// Don't change `howMany` if move operation does not really move anything.
 	//
-	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && a.splitPosition.offset <= b.sourcePosition.offset ) {
-		a.howMany -= b.howMany;
-	}
+	if ( !b.sourcePosition.isEqual( b.targetPosition ) ) {
+		if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && a.splitPosition.offset <= b.sourcePosition.offset ) {
+			a.howMany -= b.howMany;
+		}
 
-	if ( a.splitPosition.hasSameParentAs( b.targetPosition ) && a.splitPosition.offset < b.targetPosition.offset ) {
-		a.howMany += b.howMany;
+		if ( a.splitPosition.hasSameParentAs( b.targetPosition ) && a.splitPosition.offset < b.targetPosition.offset ) {
+			a.howMany += b.howMany;
+		}
 	}
 
 	// Change position stickiness to force a correct transformation.
