@@ -387,12 +387,18 @@ const items = new Collection();
 
 items.add( {
 	type: 'button',
-	model: new Model( { label: 'Foo' } )
+	model: new Model( {
+		withText: 'true',
+		label: 'Foo'
+	} )
 } );
 
 items.add( {
 	type: 'button',
-	model: new Model( { label: 'Bar' } )
+	model: new Model( {
+		withText: 'true',
+		label: 'Bar'
+	} )
 } );
 
 // Create a dropdown with a list inside the panel.
