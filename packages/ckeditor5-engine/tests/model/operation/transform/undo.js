@@ -384,5 +384,8 @@ describe( 'transform', () => {
 
 		john.redo();
 		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 } );

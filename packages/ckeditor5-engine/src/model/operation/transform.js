@@ -1692,9 +1692,10 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			// removed nodes might be unexpected. This means that in this scenario we will reverse merging and remove the element.
 			//
 			if ( !context.aWasUndone ) {
-				const gyMove = new MoveOperation( b.graveyardPosition, 1, a.targetPosition.getShiftedBy( -1 ), 0 );
+				const gyMoveTarget = Position.createFromPosition( b.graveyardPosition );
+				const gyMove = new MoveOperation( b.graveyardPosition, 1, gyMoveTarget, 0 );
 
-				const targetPositionPath = gyMove.getMovedRangeStart().path.slice();
+				const targetPositionPath = b.graveyardPosition.path.slice();
 				targetPositionPath.push( 0 );
 
 				return [
