@@ -183,9 +183,9 @@ describe( 'debug tools', () => {
 		} );
 
 		it( 'for ModelRange', () => {
-			const rangeInRoot = ModelRange.createIn( modelRoot );
-			const rangeInElement = ModelRange.createIn( modelElement );
-			const rangeInDocFrag = ModelRange.createIn( modelDocFrag );
+			const rangeInRoot = ModelRange._createIn( modelRoot );
+			const rangeInElement = ModelRange._createIn( modelElement );
+			const rangeInDocFrag = ModelRange._createIn( modelDocFrag );
 
 			expect( rangeInRoot.toString() ).to.equal( 'main [ 0 ] - [ 0 ]' );
 			expect( rangeInElement.toString() ).to.equal( '<paragraph> [ 0 ] - [ 3 ]' );
@@ -226,7 +226,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'AttributeOperation', () => {
-				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
+				const op = new AttributeOperation( ModelRange._createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
 				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
 
@@ -296,7 +296,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MarkerOperation', () => {
-				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, false, 0 );
+				const op = new MarkerOperation( 'marker', null, ModelRange._createIn( modelRoot ), modelDoc.markers, false, 0 );
 
 				expect( op.toString() ).to.equal( 'MarkerOperation( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 

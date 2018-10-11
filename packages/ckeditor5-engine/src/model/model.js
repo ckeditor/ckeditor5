@@ -453,7 +453,7 @@ export default class Model {
 	 */
 	hasContent( rangeOrElement ) {
 		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange.createIn( rangeOrElement );
+			rangeOrElement = ModelRange._createIn( rangeOrElement );
 		}
 
 		if ( rangeOrElement.isCollapsed ) {
@@ -514,11 +514,11 @@ export default class Model {
 	}
 
 	createRangeIn( element ) {
-		return ModelRange.createIn( element );
+		return ModelRange._createIn( element );
 	}
 
 	createRangeOn( element ) {
-		return ModelRange.createOn( element );
+		return ModelRange._createOn( element );
 	}
 
 	createSelection( selectable ) {

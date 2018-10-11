@@ -200,7 +200,7 @@ export default class Range {
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( Range.createFromRange( this ) );
+			ranges.push( Range._createFromRange( this ) );
 		}
 
 		return ranges;
@@ -413,7 +413,7 @@ export default class Range {
 				return [ this._getTransformedByMergeOperation( operation ) ];
 		}
 
-		return [ Range.createFromRange( this ) ];
+		return [ Range._createFromRange( this ) ];
 	}
 
 	/**
@@ -424,7 +424,7 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByOperations( operations ) {
-		const ranges = [ Range.createFromRange( this ) ];
+		const ranges = [ Range._createFromRange( this ) ];
 
 		for ( const operation of operations ) {
 			for ( let i = 0; i < ranges.length; i++ ) {
@@ -637,7 +637,7 @@ export default class Range {
 				)
 			];
 		} else {
-			const range = Range.createFromRange( this );
+			const range = Range._createFromRange( this );
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany );
 			range.end = range.end._getTransformedByInsertion( insertPosition, howMany );
@@ -780,28 +780,13 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range from given parents and offsets.
-	 *
-	 * @param {module:engine/model/element~Element} startElement Start position parent element.
-	 * @param {Number} startOffset Start position offset.
-	 * @param {module:engine/model/element~Element} endElement End position parent element.
-	 * @param {Number} endOffset End position offset.
-	 * @returns {module:engine/model/range~Range}
-	 */
-	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
-		return new this(
-			Position._createAt( startElement, startOffset ),
-			Position._createAt( endElement, endOffset )
-		);
-	}
-
-	/**
 	 * Creates a new instance of `Range` which is equal to passed range.
 	 *
 	 * @param {module:engine/model/range~Range} range Range to clone.
 	 * @returns {module:engine/model/range~Range}
+	 * @protected
 	 */
-	static createFromRange( range ) {
+	static _createFromRange( range ) {
 		return new this( range.start, range.end );
 	}
 
@@ -811,9 +796,10 @@ export default class Range {
 	 *
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
+	 * @protected
 	 */
-	static createIn( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
+	static _createIn( element ) {
+		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
 	}
 
 	/**
@@ -821,8 +807,9 @@ export default class Range {
 	 *
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
+	 * @protected
 	 */
-	static createOn( item ) {
+	static _createOn( item ) {
 		return this.createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
@@ -866,7 +853,7 @@ export default class Range {
 			 */
 			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
 		} else if ( ranges.length == 1 ) {
-			return this.createFromRange( ranges[ 0 ] );
+			return this._createFromRange( ranges[ 0 ] );
 		}
 
 		// 1. Set the first range in `ranges` array as a reference range.

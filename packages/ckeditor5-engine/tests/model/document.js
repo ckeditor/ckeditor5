@@ -8,7 +8,6 @@ import Document from '../../src/model/document';
 import RootElement from '../../src/model/rootelement';
 import Text from '../../src/model/text';
 import Batch from '../../src/model/batch';
-import Range from '../../src/model/range';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -228,7 +227,7 @@ describe( 'Document', () => {
 			sinon.spy( doc.differ, 'bufferMarkerChange' );
 
 			model.change( writer => {
-				const range = Range.createCollapsedAt( doc.getRoot(), 0 );
+				const range = writer.createRange( writer.createPositionAt( doc.getRoot(), 0 ) );
 				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
@@ -324,7 +323,7 @@ describe( 'Document', () => {
 			doc.on( 'change', spy );
 
 			model.change( writer => {
-				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
+				writer.setSelection( writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 2 ) ) );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -373,7 +372,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
+				writer.setSelection( writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 2 ) ) );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -388,7 +387,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
 			} );
 
@@ -404,7 +403,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.addMarker( 'name', { range, usingOperation: true } );
 			} );
 
@@ -420,7 +419,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.addMarker( 'name', { range, usingOperation: false, affectsData: true } );
 			} );
 
@@ -436,7 +435,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
@@ -471,7 +470,7 @@ describe( 'Document', () => {
 			doc.on( 'change', changeSpy );
 
 			model.change( writer => {
-				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 

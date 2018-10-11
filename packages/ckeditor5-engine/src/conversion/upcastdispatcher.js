@@ -372,7 +372,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	const markers = new Map();
 
 	// Create ModelTreeWalker.
-	const range = ModelRange.createIn( modelItem ).getItems();
+	const range = ModelRange._createIn( modelItem ).getItems();
 
 	// Walk through DocumentFragment and collect marker elements.
 	for ( const item of range ) {

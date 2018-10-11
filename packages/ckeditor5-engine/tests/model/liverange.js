@@ -68,13 +68,7 @@ describe( 'LiveRange', () => {
 	} );
 
 	it( 'createIn should return LiveRange', () => {
-		const range = LiveRange.createIn( p );
-		expect( range ).to.be.instanceof( LiveRange );
-		range.detach();
-	} );
-
-	it( 'createFromParentsAndOffsets should return LiveRange', () => {
-		const range = LiveRange.createFromParentsAndOffsets( root, 0, p, 2 );
+		const range = LiveRange._createIn( p );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
@@ -86,14 +80,14 @@ describe( 'LiveRange', () => {
 	} );
 
 	it( 'createFromRange should return LiveRange', () => {
-		const range = LiveRange.createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
+		const range = LiveRange._createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
 
 	it( 'should fire change:range event with when its boundaries are changed', () => {
 		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-		const copy = Range.createFromRange( live );
+		const copy = Range._createFromRange( live );
 
 		const spy = sinon.spy();
 		live.on( 'change:range', spy );
@@ -663,7 +657,7 @@ describe( 'LiveRange', () => {
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-			clone = Range.createFromRange( live );
+			clone = Range._createFromRange( live );
 
 			spy = sinon.spy();
 			live.on( 'change:content', spy );
@@ -748,7 +742,7 @@ describe( 'LiveRange', () => {
 		beforeEach( () => {
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-			clone = Range.createFromRange( live );
+			clone = Range._createFromRange( live );
 
 			spy = sinon.spy();
 			live.on( 'change', spy );

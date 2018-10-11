@@ -188,8 +188,9 @@ export default class SplitOperation extends Operation {
 			_insert( this.insertionPosition, newElement );
 		}
 
-		const sourceRange = Range.createFromParentsAndOffsets(
-			splitElement, this.splitPosition.offset, splitElement, splitElement.maxOffset
+		const sourceRange = new Range(
+			Position._createAt( splitElement, this.splitPosition.offset ),
+			Position._createAt( splitElement, splitElement.maxOffset )
 		);
 
 		_move( sourceRange, this.moveTargetPosition );

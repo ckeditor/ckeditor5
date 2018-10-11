@@ -149,7 +149,7 @@ export default class DataController {
 		this.mapper.clearBindings();
 
 		// First, convert elements.
-		const modelRange = ModelRange.createIn( modelElementOrFragment );
+		const modelRange = ModelRange._createIn( modelElementOrFragment );
 
 		const viewDocumentFragment = new ViewDocumentFragment();
 
@@ -227,7 +227,7 @@ export default class DataController {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
-			writer.remove( ModelRange.createIn( modelRoot ) );
+			writer.remove( ModelRange._createIn( modelRoot ) );
 			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
 		} );
 	}
@@ -297,7 +297,7 @@ function _getMarkersRelativeToElement( element ) {
 		return [];
 	}
 
-	const elementRange = ModelRange.createIn( element );
+	const elementRange = ModelRange._createIn( element );
 
 	for ( const marker of doc.model.markers ) {
 		const intersection = elementRange.getIntersection( marker.getRange() );

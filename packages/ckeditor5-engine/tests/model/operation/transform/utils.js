@@ -54,7 +54,7 @@ export class Client {
 
 		model.change( writer => {
 			// Replace existing model in document by new one.
-			writer.remove( Range.createIn( modelRoot ) );
+			writer.remove( Range._createIn( modelRoot ) );
 			writer.insert( modelDocumentFragment, modelRoot );
 		} );
 

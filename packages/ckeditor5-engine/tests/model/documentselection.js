@@ -447,7 +447,7 @@ describe( 'DocumentSelection', () => {
 
 				// Trigger selecton auto update on document change. It should not get attribute from surrounding text;
 				model.change( writer => {
-					writer.setAttribute( 'foo', 'bar', Range.createIn( fullP ) );
+					writer.setAttribute( 'foo', 'bar', Range._createIn( fullP ) );
 				} );
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
@@ -656,7 +656,7 @@ describe( 'DocumentSelection', () => {
 				selection._setAttribute( 'foo', 'bar' );
 
 				model.change( writer => {
-					writer.move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
+					writer.move( Range._createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
 				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
@@ -1210,8 +1210,8 @@ describe( 'DocumentSelection', () => {
 			] );
 
 			selection._setTo( [
-				Range.createIn( root.getNodeByPath( [ 0 ] ) ),
-				Range.createIn( root.getNodeByPath( [ 1 ] ) )
+				Range._createIn( root.getNodeByPath( [ 0 ] ) ),
+				Range._createIn( root.getNodeByPath( [ 1 ] ) )
 			] );
 
 			spyRange = sinon.spy();
@@ -1234,11 +1234,11 @@ describe( 'DocumentSelection', () => {
 		root._appendChild( '\uD83D\uDCA9' );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 2 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 	} );
 
@@ -1247,27 +1247,27 @@ describe( 'DocumentSelection', () => {
 		root._appendChild( 'foo̻̐ͩbar' );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 3, root, 9 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 3 ), Position._createAt( root, 9 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 4, root, 9 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 4 ), Position._createAt( root, 9 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 5, root, 9 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 5 ), Position._createAt( root, 9 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 3 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 1 ), Position._createAt( root, 3 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 4 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 1 ), Position._createAt( root, 4 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 		expect( () => {
-			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 1, root, 5 ) );
+			doc.selection._setTo( new Range( Position._createAt( root, 1 ), Position._createAt( root, 5 ) ) );
 		} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 	} );
 } );

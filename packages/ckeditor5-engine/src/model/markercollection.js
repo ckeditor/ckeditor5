@@ -101,7 +101,7 @@ export default class MarkerCollection {
 			let hasChanged = false;
 
 			if ( !oldRange.isEqual( range ) ) {
-				oldMarker._attachLiveRange( LiveRange.createFromRange( range ) );
+				oldMarker._attachLiveRange( LiveRange._createFromRange( range ) );
 				hasChanged = true;
 			}
 
@@ -122,7 +122,7 @@ export default class MarkerCollection {
 			return oldMarker;
 		}
 
-		const liveRange = LiveRange.createFromRange( range );
+		const liveRange = LiveRange._createFromRange( range );
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
@@ -429,7 +429,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Range.createFromRange( this._liveRange );
+		return Range._createFromRange( this._liveRange );
 	}
 
 	/**

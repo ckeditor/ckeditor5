@@ -656,7 +656,8 @@ describe( 'Position', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const op = new AttributeOperation( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) );
+				const op = new AttributeOperation( range, 'key', true, false, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
 				expect( transformed.path ).to.deep.equal( [ 3, 2 ] );
@@ -677,7 +678,7 @@ describe( 'Position', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
-					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, true, 1
+					'marker', null, new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) ), model.markers, true, 1
 				);
 				const transformed = pos.getTransformedByOperation( op );
 

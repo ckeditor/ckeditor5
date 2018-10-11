@@ -808,11 +808,10 @@ export default class Position {
 	 * * parent element and `'end'` (sets position at the end of that element),
 	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
-	 * This method is a shortcut to other constructors such as:
+	 * This method is a shortcut to other factory methods such as:
 	 *
 	 * * {@link module:engine/model/position~Position._createBefore},
 	 * * {@link module:engine/model/position~Position._createAfter},
-	 * * {@link module:engine/model/position~Position.createFromParentAndOffset},
 	 * * {@link module:engine/model/position~Position._createAt}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
@@ -896,15 +895,6 @@ export default class Position {
 
 		return this._createAt( item.parent, item.startOffset );
 	}
-
-	/**
-	 * Creates a new position from the parent element and an offset in that element.
-	 *
-	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent Position's parent.
-	 * @param {Number} offset Position's offset.
-	 * @returns {module:engine/model/position~Position}
-	 */
-	// static createFromParentAndOffset( parent, offset ) {}
 
 	/**
 	 * Creates a `Position` instance from given plain object (i.e. parsed JSON string).

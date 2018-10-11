@@ -166,7 +166,7 @@ export default class Writer {
 			// We need to check if item is going to be inserted within the same document.
 			if ( isSameTree( item.root, position.root ) ) {
 				// If it's we just need to move it.
-				this.move( Range.createOn( item ), position );
+				this.move( Range._createOn( item ), position );
 
 				return;
 			}
@@ -586,7 +586,7 @@ export default class Writer {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range.createIn( nodeAfter ), Position._createAt( nodeBefore, 'end' ) );
+		this.move( Range._createIn( nodeAfter ), Position._createAt( nodeBefore, 'end' ) );
 		this.remove( nodeAfter );
 	}
 
@@ -781,7 +781,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 		}
 
-		this.move( Range.createIn( element ), this.createPositionAfter( element ) );
+		this.move( Range._createIn( element ), this.createPositionAfter( element ) );
 		this.remove( element );
 	}
 

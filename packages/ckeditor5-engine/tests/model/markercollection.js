@@ -21,8 +21,8 @@ describe( 'MarkerCollection', () => {
 		markers = new MarkerCollection();
 
 		root = doc.createRoot();
-		range = Range.createFromParentsAndOffsets( root, 0, root, 1 );
-		range2 = Range.createFromParentsAndOffsets( root, 0, root, 2 );
+		range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+		range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 2 ) );
 	} );
 
 	describe( 'iterator', () => {
@@ -250,7 +250,7 @@ describe( 'Marker', () => {
 	it( 'should provide API that returns up-to-date marker range parameters', () => {
 		root._appendChild( new Text( 'foo' ) );
 
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		expect( marker.getRange().isEqual( range ) ).to.be.true;
@@ -261,7 +261,7 @@ describe( 'Marker', () => {
 			writer.insertText( 'abc', root );
 		} );
 
-		const updatedRange = Range.createFromParentsAndOffsets( root, 4, root, 5 );
+		const updatedRange = new Range( Position._createAt( root, 4 ), Position._createAt( root, 5 ) );
 
 		expect( marker.getRange().isEqual( updatedRange ) ).to.be.true;
 		expect( marker.getStart().isEqual( updatedRange.start ) ).to.be.true;
@@ -269,7 +269,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should throw when using the API if marker was removed from markers collection', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		model.markers._remove( 'name' );
@@ -296,7 +296,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should attach live range to marker', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 
 		const eventRange = sinon.spy();
@@ -313,7 +313,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should detach live range from marker', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 		const liveRange = marker._liveRange;
 
@@ -335,10 +335,10 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should reattach live range to marker', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 		const oldLiveRange = marker._liveRange;
-		const newLiveRange = LiveRange.createFromParentsAndOffsets( root, 0, root, 1 );
+		const newLiveRange = new LiveRange( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();
@@ -364,7 +364,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should change managedUsingOperations flag', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range, false );
 
 		expect( marker.managedUsingOperations ).to.be.false;
@@ -379,7 +379,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should change affectsData flag', () => {
-		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range, false, false );
 
 		expect( marker.affectsData ).to.be.false;

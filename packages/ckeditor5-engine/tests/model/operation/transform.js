@@ -2426,8 +2426,8 @@ describe( 'transform', () => {
 		let oldRange, newRange;
 
 		beforeEach( () => {
-			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
-			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
+			oldRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 4 ) );
+			newRange = new Range( Position._createAt( root, 10 ), Position._createAt( root, 12 ) );
 			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, false, 0 );
 
 			expected = {
@@ -2586,7 +2586,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
-				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2598,7 +2598,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
-				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy, strongContext );

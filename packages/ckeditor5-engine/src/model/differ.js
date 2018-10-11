@@ -391,10 +391,10 @@ export default class Differ {
 					let range;
 
 					if ( elementChildren[ i ].name == '$text' ) {
-						range = Range.createFromParentsAndOffsets( element, i, element, i + 1 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element, i + 1 ) );
 					} else {
 						const index = element.offsetToIndex( i );
-						range = Range.createFromParentsAndOffsets( element, i, element.getChild( index ), 0 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element.getChild( index ), 0 ) );
 					}
 
 					// Generate diff items for this change (there might be multiple attributes changed and
@@ -879,7 +879,7 @@ export default class Differ {
 				diffs.push( {
 					type: 'attribute',
 					position: range.start,
-					range: Range.createFromRange( range ),
+					range: Range._createFromRange( range ),
 					length: 1,
 					attributeKey: key,
 					attributeOldValue: oldValue,
@@ -898,7 +898,7 @@ export default class Differ {
 			diffs.push( {
 				type: 'attribute',
 				position: range.start,
-				range: Range.createFromRange( range ),
+				range: Range._createFromRange( range ),
 				length: 1,
 				attributeKey: key,
 				attributeOldValue: null,
@@ -948,7 +948,7 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_removeAllNestedChanges( parent, offset, howMany ) {
-		const range = Range.createFromParentsAndOffsets( parent, offset, parent, offset + howMany );
+		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {

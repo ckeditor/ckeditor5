@@ -13,7 +13,6 @@ import { convertText, convertToModelFragment } from '../../src/conversion/upcast
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
-import ModelRange from '../../src/model/range';
 
 import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
@@ -644,7 +643,10 @@ describe( 'Conversion', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, modelRoot.maxOffset ) );
+				writer.remove( writer.createRange(
+					writer.createPositionAt( modelRoot, 0 ),
+					writer.createPositionAt( modelRoot, modelRoot.maxOffset ) )
+				);
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
 		}

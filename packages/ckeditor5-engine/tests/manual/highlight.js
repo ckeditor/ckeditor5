@@ -127,7 +127,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 
 function addMarker( editor, color ) {
 	editor.model.change( writer => {
-		const range = ModelRange.createFromRange( editor.model.document.selection.getFirstRange() );
+		const range = ModelRange._createFromRange( editor.model.document.selection.getFirstRange() );
 		writer.addMarker( 'marker:' + color, { range, usingOperation: false } );
 	} );
 }

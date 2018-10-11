@@ -343,7 +343,7 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			const data = { item, range: Range.createOn( item ), markerName, markerRange };
+			const data = { item, range: Range._createOn( item ), markerName, markerRange };
 
 			this.fire( eventName, data, this.conversionApi );
 		}

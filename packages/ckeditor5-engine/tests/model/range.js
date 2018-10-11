@@ -108,7 +108,7 @@ describe( 'Range', () => {
 
 	describe( 'isIntersecting()', () => {
 		it( 'should return true if given range is equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = Range._createFromRange( range );
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
@@ -157,7 +157,7 @@ describe( 'Range', () => {
 
 		describe( 'createIn()', () => {
 			it( 'should return range', () => {
-				const range = Range.createIn( p );
+				const range = Range._createIn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
@@ -166,7 +166,7 @@ describe( 'Range', () => {
 
 		describe( 'createOn()', () => {
 			it( 'should return range', () => {
-				const range = Range.createOn( p );
+				const range = Range._createOn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -197,7 +197,7 @@ describe( 'Range', () => {
 
 		describe( 'createFromParentsAndOffsets()', () => {
 			it( 'should return range', () => {
-				const range = Range.createFromParentsAndOffsets( root, 0, p, 2 );
+				const range = new Range( Position._createAt( root, 0 ), Position._createAt( p, 2 ) );
 
 				expect( range.start.path ).to.deep.equal( [ 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 2 ] );
@@ -218,7 +218,7 @@ describe( 'Range', () => {
 
 		describe( 'createFromRange()', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
-				const clone = Range.createFromRange( range );
+				const clone = Range._createFromRange( range );
 
 				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
@@ -230,7 +230,7 @@ describe( 'Range', () => {
 				const ranges = [];
 
 				for ( let i = 0; i < points.length; i += 2 ) {
-					ranges.push( Range.createFromParentsAndOffsets( root, points[ i ], root, points[ i + 1 ] ) );
+					ranges.push( new Range( Position._createAt( root, points[ i ] ), Position._createAt( root, points[ i + 1 ] ) ) );
 				}
 
 				return ranges;
@@ -247,7 +247,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {
-				const original = Range.createFromParentsAndOffsets( root, 2, root, 3 );
+				const original = new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) );
 				const range = Range.createFromRanges( [ original ] );
 
 				expect( range.isEqual( original ) ).to.be.true;
@@ -417,7 +417,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = Range._createFromRange( range );
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -460,7 +460,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if element is inside range and false when it is not inside range', () => {
-			const range = Range.createFromParentsAndOffsets( root, 1, root, 3 ); // Range over `b` and `c`.
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 3 ) ); // Range over `b` and `c`.
 
 			expect( range.containsItem( a ) ).to.be.false;
 			expect( range.containsItem( b ) ).to.be.true;
@@ -791,7 +791,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a range equal to both ranges if both ranges are equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = Range._createFromRange( range );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;
@@ -804,7 +804,7 @@ describe( 'Range', () => {
 		let gyPos;
 
 		beforeEach( () => {
-			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
 			gyPos = new Position( gy, [ 0 ] );
 		} );
 
@@ -815,7 +815,8 @@ describe( 'Range', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const op = new AttributeOperation( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const opRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) );
+				const op = new AttributeOperation( opRange, 'key', true, false, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -848,7 +849,7 @@ describe( 'Range', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
-					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, true, 1
+					'marker', null, new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) ), model.markers, true, 1
 				);
 
 				const transformed = range.getTransformedByOperation( op );
@@ -1215,7 +1216,7 @@ describe( 'Range', () => {
 	describe( 'getTransformedByOperations()', () => {
 		beforeEach( () => {
 			root._appendChild( new Text( 'foobar' ) );
-			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
 		} );
 
 		function expectRange( range, startOffset, endOffset ) {

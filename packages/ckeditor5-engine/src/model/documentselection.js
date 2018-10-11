@@ -750,7 +750,7 @@ class LiveSelection extends Selection {
 			return;
 		}
 
-		const liveRange = LiveRange.createFromRange( range );
+		const liveRange = LiveRange._createFromRange( range );
 
 		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
 			this._hasChangedRange = true;

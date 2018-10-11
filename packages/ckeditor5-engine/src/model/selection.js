@@ -242,7 +242,7 @@ export default class Selection {
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
+			yield Range._createFromRange( range );
 		}
 	}
 
@@ -265,7 +265,7 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first ? Range._createFromRange( first ) : null;
 	}
 
 	/**
@@ -287,7 +287,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last ? Range._createFromRange( last ) : null;
 	}
 
 	/**
@@ -393,9 +393,9 @@ export default class Selection {
 			let range;
 
 			if ( placeOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
+				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
+				range = Range._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
 				range = Range.createCollapsedAt( selectable, placeOrOffset );
 			} else {
@@ -699,7 +699,7 @@ export default class Selection {
 	 */
 	_pushRange( range ) {
 		this._checkRange( range );
-		this._ranges.push( Range.createFromRange( range ) );
+		this._ranges.push( Range._createFromRange( range ) );
 	}
 
 	/**

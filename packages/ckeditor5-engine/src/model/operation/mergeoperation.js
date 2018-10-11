@@ -170,10 +170,10 @@ export default class MergeOperation extends Operation {
 	 */
 	_execute() {
 		const mergedElement = this.sourcePosition.parent;
-		const sourceRange = Range.createIn( mergedElement );
+		const sourceRange = Range._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );
-		_move( Range.createOn( mergedElement ), this.graveyardPosition );
+		_move( Range._createOn( mergedElement ), this.graveyardPosition );
 	}
 
 	/**

@@ -7,7 +7,6 @@ import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
-import ModelRange from '../../src/model/range';
 
 import MarkerOperation from '../../src/model/operation/markeroperation';
 
@@ -20,7 +19,7 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 			editing = new EditingController( model );
 			root = model.document.createRoot();
 			root._appendChild( new ModelText( 'foo' ) );
-			range = ModelRange.createFromParentsAndOffsets( root, 0, root, 0 );
+			range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );
 		} );
 
 		afterEach( () => {

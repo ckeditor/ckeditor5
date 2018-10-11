@@ -193,9 +193,9 @@ describe( 'Selection', () => {
 		let r1, r2, r3;
 
 		beforeEach( () => {
-			r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-			r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
-			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+			r1 = new Range( Position._createAt( root, 2 ), Position._createAt( root, 4 ) );
+			r2 = new Range( Position._createAt( root, 4 ), Position._createAt( root, 6 ) );
+			r3 = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 			selection.setTo( [ r1, r2 ] );
 		} );
 

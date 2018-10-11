@@ -7,6 +7,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
@@ -539,33 +540,33 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should return true if there is a text node in given range', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 2 );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return true if there is a part of text node in given range', () => {
 			const pFoo = root.getChild( 1 );
-			const range = ModelRange.createFromParentsAndOffsets( pFoo, 1, pFoo, 2 );
+			const range = new ModelRange( ModelPosition._createAt( pFoo, 1 ), ModelPosition._createAt( pFoo, 2 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return true if there is element that is an object in given range', () => {
 			const divImg = root.getChild( 2 );
-			const range = ModelRange.createFromParentsAndOffsets( divImg, 0, divImg, 1 );
+			const range = new ModelRange( ModelPosition._createAt( divImg, 0 ), ModelPosition._createAt( divImg, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return false if range is collapsed', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 1 );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
 		} );
 
 		it( 'should return false if range has only elements that are not objects', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
 		} );

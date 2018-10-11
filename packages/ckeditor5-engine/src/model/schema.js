@@ -547,7 +547,7 @@ export default class Schema {
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range.createIn( item ), attribute );
+				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
@@ -607,7 +607,7 @@ export default class Schema {
 			const value = data.value;
 
 			if ( value.type == type && this.isObject( value.item ) ) {
-				return Range.createOn( value.item );
+				return Range._createOn( value.item );
 			}
 
 			if ( this.checkChild( value.nextPosition, '$text' ) ) {

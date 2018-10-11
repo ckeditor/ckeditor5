@@ -162,7 +162,7 @@ describe( 'UpcastDispatcher', () => {
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.modelRange = ModelRange.createOn( text );
+				data.modelRange = ModelRange._createOn( text );
 			} );
 
 			const conversionResult = model.change( writer => dispatcher.convert( viewText, writer ) );
@@ -199,7 +199,7 @@ describe( 'UpcastDispatcher', () => {
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.modelRange = ModelRange.createOn( paragraph );
+				data.modelRange = ModelRange._createOn( paragraph );
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
@@ -236,7 +236,7 @@ describe( 'UpcastDispatcher', () => {
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.modelRange = ModelRange.createOn( text );
+				data.modelRange = ModelRange._createOn( text );
 			} );
 
 			const conversionResult = model.change( writer => dispatcher.convert( viewFragment, writer ) );
@@ -280,7 +280,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher._removeIfEmpty.add( outerSplit );
 				dispatcher._removeIfEmpty.add( innerSplit );
 
-				data.modelRange = ModelRange.createOn( paragraph );
+				data.modelRange = ModelRange._createOn( paragraph );
 				data.modelCursor = data.modelRange.end;
 
 				// We have the following result:
@@ -321,7 +321,7 @@ describe( 'UpcastDispatcher', () => {
 				conversionApi.writer.insert( fragment, data.modelCursor );
 
 				// Create range on this fragment as a conversion result.
-				data.modelRange = ModelRange.createIn( data.modelCursor.parent );
+				data.modelRange = ModelRange._createIn( data.modelCursor.parent );
 			} );
 
 			const conversionResult = model.change( writer => dispatcher.convert( viewFragment, writer ) );
@@ -404,14 +404,14 @@ describe( 'UpcastDispatcher', () => {
 			dispatcher.on( 'element:p', ( evt, data ) => {
 				spyP();
 
-				data.modelRange = ModelRange.createOn( modelP );
+				data.modelRange = ModelRange._createOn( modelP );
 				data.modelCursor = data.modelRange.end;
 			} );
 
 			dispatcher.on( 'text', ( evt, data ) => {
 				spyText();
 
-				data.modelRange = ModelRange.createOn( modelText );
+				data.modelRange = ModelRange._createOn( modelText );
 				data.modelCursor = data.modelRange.end;
 			} );
 

@@ -67,7 +67,7 @@ describe( 'model test utils', () => {
 			const stringifySpy = sinon.spy( getData, '_stringify' );
 			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
-				writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ) );
 			} );
 			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -355,7 +355,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes flat selection containing couple of nodes', () => {
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 4 ) );
+					writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 4 ) ) );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -365,7 +365,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes flat selection within text', () => {
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 3 ) );
+					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) ) );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -375,7 +375,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes multi-level selection', () => {
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ) );
+					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ) );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -385,7 +385,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection when is backward', () => {
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ), { backward: true } );
+					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ), { backward: true } );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -398,14 +398,14 @@ describe( 'model test utils', () => {
 
 				root._appendChild( new Text( 'நிலைக்கு' ) );
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 6 ) ) );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );
 
 			it( 'uses range and coverts it to selection', () => {
-				const range = Range.createFromParentsAndOffsets( elA, 0, elB, 0 );
+				const range = new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) );
 
 				expect( stringify( root, range ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
@@ -441,7 +441,9 @@ describe( 'model test utils', () => {
 				expect( el ).to.be.instanceOf( Element );
 				expect( fragment ).to.be.instanceOf( DocumentFragment );
 				expect( selection.rangeCount ).to.equal( 1 );
-				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 1 ) ) ).to.be.true;
+
+				const range = new Range( Position._createAt( fragment, 0 ), Position._createAt( fragment, 1 ) );
+				expect( selection.getFirstRange().isEqual( range ) ).to.be.true;
 			}
 		} );
 

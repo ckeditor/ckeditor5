@@ -41,7 +41,7 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see module:engine/model/range~Range.createIn
+	 * @see module:engine/model/range~Range._createIn
 	 * @static
 	 * @method module:engine/model/liverange~LiveRange.createIn
 	 * @param {module:engine/model/element~Element} element
@@ -58,18 +58,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * @see module:engine/model/range~Range.createFromParentsAndOffsets
-	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromParentsAndOffsets
-	 * @param {module:engine/model/element~Element} startElement
-	 * @param {Number} startOffset
-	 * @param {module:engine/model/element~Element} endElement
-	 * @param {Number} endOffset
-	 * @returns {module:engine/model/liverange~LiveRange}
-	 */
-
-	/**
-	 * @see module:engine/model/range~Range.createFromRange
+	 * @see module:engine/model/range~Range._createFromRange
 	 * @static
 	 * @method module:engine/model/liverange~LiveRange.createFromRange
 	 * @param {module:engine/model/range~Range} range
@@ -149,7 +138,7 @@ function transform( operation ) {
 			}
 		}
 
-		const oldRange = Range.createFromRange( this );
+		const oldRange = Range._createFromRange( this );
 
 		this.start = result.start;
 		this.end = result.end;
@@ -157,7 +146,7 @@ function transform( operation ) {
 		this.fire( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range.createFromRange( this ), { deletionPosition } );
+		this.fire( 'change:content', Range._createFromRange( this ), { deletionPosition } );
 	}
 }
 

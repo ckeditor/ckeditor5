@@ -843,7 +843,7 @@ describe( 'upcast-converters', () => {
 					conversionApi.writer.insert( paragraph, data.modelCursor );
 					conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( paragraph, 0 ) );
 
-					data.modelRange = ModelRange.createOn( paragraph );
+					data.modelRange = ModelRange._createOn( paragraph );
 					data.modelCursor = data.modelRange.end;
 				}
 			} );

@@ -174,7 +174,7 @@ class Insertion {
 	 */
 	getSelectionRange() {
 		if ( this.nodeToSelect ) {
-			return Range.createOn( this.nodeToSelect );
+			return Range._createOn( this.nodeToSelect );
 		}
 
 		return this.model.schema.getNearestSelectionRange( this.position );

@@ -901,7 +901,7 @@ export function highlightElement( highlightDescriptor ) {
 			conversionApi.consumable.consume( data.item, evt.name );
 
 			// Consume all children nodes.
-			for ( const value of ModelRange.createIn( data.item ) ) {
+			for ( const value of ModelRange._createIn( data.item ) ) {
 				conversionApi.consumable.consume( value.item, evt.name );
 			}
 

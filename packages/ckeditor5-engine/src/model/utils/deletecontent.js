@@ -208,7 +208,7 @@ function insertParagraph( writer, position, selection ) {
 function replaceEntireContentWithParagraph( writer, selection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
-	writer.remove( Range.createIn( limitElement ) );
+	writer.remove( Range._createIn( limitElement ) );
 	insertParagraph( writer, Position._createAt( limitElement, 0 ), selection );
 }
 

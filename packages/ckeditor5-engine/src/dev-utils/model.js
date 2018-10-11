@@ -115,7 +115,7 @@ export function setData( model, data, options = {} ) {
 
 	model.change( writer => {
 		// Replace existing model in document by new one.
-		writer.remove( ModelRange.createIn( modelRoot ) );
+		writer.remove( ModelRange._createIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
@@ -393,7 +393,7 @@ function convertToModelElement() {
 
 		conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( element, 0 ) );
 
-		data.modelRange = ModelRange.createOn( element );
+		data.modelRange = ModelRange._createOn( element );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
