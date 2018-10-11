@@ -34,14 +34,32 @@
 		z-index: var(--ck-z-modal);
 
 		position: absolute;
-		left: 0px;
-		transform: translate3d( 0, 100%, 0 );
 
 		&.ck-dropdown__panel-visible {
 			display: inline-block;
 
 			/* This will prevent blurry icons in dropdown on Firefox. See #340. */
 			will-change: transform;
+		}
+
+		&.ck-dropdown__panel_ne,
+		&.ck-dropdown__panel_nw {
+			bottom: 100%;
+		}
+
+		&.ck-dropdown__panel_se,
+		&.ck-dropdown__panel_sw {
+			transform: translate3d( 0, 100%, 0 );
+		}
+
+		&.ck-dropdown__panel_ne,
+		&.ck-dropdown__panel_se {
+			left: 0px;
+		}
+
+		&.ck-dropdown__panel_nw,
+		&.ck-dropdown__panel_sw {
+			right: 0px;
 		}
 	}
 }
