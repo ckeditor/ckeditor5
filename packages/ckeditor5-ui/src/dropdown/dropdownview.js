@@ -13,6 +13,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 import '../../theme/components/dropdown/dropdown.css';
 
+import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+
 /**
  * The dropdown view class. It manages the dropdown button and dropdown panel.
  *
@@ -129,6 +131,23 @@ export default class DropdownView extends View {
 		this.set( 'class' );
 
 		/**
+		 * The position of the panel, relative to the dropdown.
+		 *
+		 * **Note**: When `'auto'`, the panel will use one of the remaining positions to stay
+		 * in the viewport, visible to the user. The positions correspond directly to
+		 * {@link module:ui/dropdown/dropdownview~DropdownView.defaultPanelPositions default panel positions}.
+		 *
+		 * **Note**: This value has an impact on the
+		 * {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#position} property
+		 * each time the panel becomes {@link #isOpen open}.
+		 *
+		 * @observable
+		 * @default 'auto'
+		 * @member {'auto'|'se'|'sw'|'ne'|'nw'} #panelPosition
+		 */
+		this.set( 'panelPosition', 'auto' );
+
+		/**
 		 * Tracks information about DOM focus in the dropdown.
 		 *
 		 * @readonly
@@ -224,6 +243,34 @@ export default class DropdownView extends View {
 		// Toggle the visibility of the panel when the dropdown becomes open.
 		this.panelView.bind( 'isVisible' ).to( this, 'isOpen' );
 
+		// Let the dropdown control the position of the panel. The position must
+		// be updated every time the dropdown is open.
+		this.on( 'change:isOpen', () => {
+			if ( !this.isOpen ) {
+				return;
+			}
+
+			// If "auto", find the best position of the panel to fit into the viewport.
+			// Otherwise, simply assign the static position.
+			if ( this.panelPosition === 'auto' ) {
+				const defaultPanelPositions = DropdownView.defaultPanelPositions;
+
+				this.panelView.position = getOptimalPosition( {
+					element: this.panelView.element,
+					target: this.buttonView.element,
+					fitInViewport: true,
+					positions: [
+						defaultPanelPositions.southEast,
+						defaultPanelPositions.southWest,
+						defaultPanelPositions.northEast,
+						defaultPanelPositions.northWest
+					]
+				} ).name;
+			} else {
+				this.panelView.position = this.panelPosition;
+			}
+		} );
+
 		// Listen for keystrokes coming from within #element.
 		this.keystrokes.listenTo( this.element );
 
@@ -266,3 +313,82 @@ export default class DropdownView extends View {
 		this.buttonView.focus();
 	}
 }
+
+/**
+ * A set of positioning functions used by the dropdown view to determine
+ * the optimal position (i.e. fitting into the browser viewport) of its
+ * {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel} when
+ * {@link module:ui/dropdown/dropdownview~DropdownView#panelPosition} is set to 'auto'`.
+ *
+ * The available positioning functions are as follow:
+ *
+ * **South**
+ *
+ * * `southEast`
+ *
+ *		[ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
+ * * `southWest`
+ *
+ *		         [ Button ]
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *
+ * **North**
+ *
+ * * `northEast`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		[ Button ]
+ *
+ * * `northWest`
+ *
+ *		+-----------------+
+ *		|      Panel      |
+ *		+-----------------+
+ *		         [ Button ]
+ *
+ * Positioning functions are compatible with {@link module:utils/dom/position~Position}.
+ *
+ * The name that position function returns will be reflected in dropdown panel's class that
+ * controls its placement. See {@link module:ui/dropdown/dropdownview~DropdownView#panelPosition}
+ * to learn more.
+ *
+ * @member {Object} module:ui/dropdown/dropdownview~DropdownView.defaultPanelPositions
+ */
+DropdownView.defaultPanelPositions = {
+	southEast: buttonRect => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left,
+			name: 'se'
+		};
+	},
+	southWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom,
+			left: buttonRect.left - panelRect.width + buttonRect.width,
+			name: 'sw'
+		};
+	},
+	northEast: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.top - panelRect.height,
+			left: buttonRect.left,
+			name: 'ne'
+		};
+	},
+	northWest: ( buttonRect, panelRect ) => {
+		return {
+			top: buttonRect.bottom - panelRect.height,
+			left: buttonRect.left - panelRect.width + buttonRect.width,
+			name: 'nw'
+		};
+	}
+};
