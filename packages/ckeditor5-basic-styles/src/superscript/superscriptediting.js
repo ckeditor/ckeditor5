@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import AttributeCommand from '../attributecommand';
 
-const SUPER = 'super';
+const SUPERSCRIPT = 'superscript';
 
 /**
  * The superscript editing feature.
@@ -27,12 +27,12 @@ export default class SuperscriptEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		// Allow super attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: SUPER } );
+		editor.model.schema.extend( '$text', { allowAttributes: SUPERSCRIPT } );
 
 		// Build converter from model to view for data and editing pipelines.
 
 		editor.conversion.attributeToElement( {
-			model: SUPER,
+			model: SUPERSCRIPT,
 			view: 'sup',
 			upcastAlso: [
 				{
@@ -44,6 +44,6 @@ export default class SuperscriptEditing extends Plugin {
 		} );
 
 		// Create super command.
-		editor.commands.add( SUPER, new AttributeCommand( editor, SUPER ) );
+		editor.commands.add( SUPERSCRIPT, new AttributeCommand( editor, SUPERSCRIPT ) );
 	}
 }

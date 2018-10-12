@@ -13,6 +13,6 @@ describe( 'Superscript', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( Superscript.pluginName ).to.equal( 'Super' );
+		expect( Superscript.pluginName ).to.equal( 'Superscript' );
 	} );
 } );

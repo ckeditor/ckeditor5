@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import AttributeCommand from '../attributecommand';
 
-const SUB = 'sub';
+const SUBSCRIPT = 'subscript';
 
 /**
  * The subscript editing feature.
@@ -27,12 +27,12 @@ export default class SubscriptEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		// Allow sub attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: SUB } );
+		editor.model.schema.extend( '$text', { allowAttributes: SUBSCRIPT } );
 
 		// Build converter from model to view for data and editing pipelines.
 
 		editor.conversion.attributeToElement( {
-			model: SUB,
+			model: SUBSCRIPT,
 			view: 'sub',
 			upcastAlso: [
 				{
@@ -44,6 +44,6 @@ export default class SubscriptEditing extends Plugin {
 		} );
 
 		// Create sub command.
-		editor.commands.add( SUB, new AttributeCommand( editor, SUB ) );
+		editor.commands.add( SUBSCRIPT, new AttributeCommand( editor, SUBSCRIPT ) );
 	}
 }
