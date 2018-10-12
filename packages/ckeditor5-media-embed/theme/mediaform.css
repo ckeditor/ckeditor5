@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rwd.css";
+
 .ck.ck-media-form {
 	display: flex;
 	align-items: flex-start;
+	flex-direction: row;
+	flex-wrap: nowrap;
 
 	& .ck-labeled-input {
 		display: inline-block;
@@ -13,5 +17,17 @@
 
 	& .ck-label {
 		display: none;
+	}
+
+	@mixin ck-media-mobile {
+		flex-wrap: wrap;
+
+		& .ck-labeled-input {
+			flex-basis: 100%;
+		}
+
+		& .ck-button {
+			flex-basis: 50%;
+		}
 	}
 }
