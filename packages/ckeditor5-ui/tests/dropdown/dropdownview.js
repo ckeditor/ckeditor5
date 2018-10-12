@@ -9,9 +9,14 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DropdownView', () => {
 	let view, buttonView, panelView, locale;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -21,6 +26,15 @@ describe( 'DropdownView', () => {
 
 		view = new DropdownView( locale, buttonView, panelView );
 		view.render();
+
+		// The #panelView positioning depends on the utility that uses DOM Rects.
+		// To avoid an avalanche of warnings (DOM Rects do not work until
+		// the element is in DOM), let's allow the dropdown to render in DOM.
+		global.document.body.appendChild( view.element );
+	} );
+
+	afterEach( () => {
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -42,6 +56,10 @@ describe( 'DropdownView', () => {
 
 		it( 'sets view#isEnabled true', () => {
 			expect( view.isEnabled ).to.be.true;
+		} );
+
+		it( 'sets view#panelPosition "auto"', () => {
+			expect( view.panelPosition ).to.equal( 'auto' );
 		} );
 
 		it( 'creates #focusTracker instance', () => {
@@ -94,6 +112,103 @@ describe( 'DropdownView', () => {
 					view.isOpen = true;
 
 					expect( values ).to.have.members( [ true, false, true ] );
+				} );
+			} );
+
+			describe( 'view.panelView#position to view#panelPosition', () => {
+				it( 'does not update until the dropdown is opened', () => {
+					view.isOpen = false;
+					view.panelPosition = 'nw';
+
+					expect( panelView.position ).to.equal( 'se' );
+
+					view.isOpen = true;
+
+					expect( panelView.position ).to.equal( 'nw' );
+				} );
+
+				describe( 'in "auto" mode', () => {
+					beforeEach( () => {
+						// Bloat the panel a little to give the positioning algorithm something to
+						// work with. If the panel was empty, any smart positioning is pointless.
+						// Placing an empty element in the viewport isn't that hard, right?
+						panelView.element.style.width = '200px';
+						panelView.element.style.height = '200px';
+					} );
+
+					it( 'defaults to "south-east" when there is a plenty of space around', () => {
+						const windowRect = new Rect( global.window );
+
+						// "Put" the dropdown in the middle of the viewport.
+						stubElementClientRect( view.buttonView.element, {
+							top: windowRect.height / 2,
+							left: windowRect.width / 2,
+							width: 10,
+							height: 10
+						} );
+
+						view.isOpen = true;
+
+						expect( panelView.position ).to.equal( 'se' );
+					} );
+
+					it( 'when the dropdown in the north-west corner of the viewport', () => {
+						stubElementClientRect( view.buttonView.element, {
+							top: 0,
+							left: 0,
+							width: 100,
+							height: 10
+						} );
+
+						view.isOpen = true;
+
+						expect( panelView.position ).to.equal( 'se' );
+					} );
+
+					it( 'when the dropdown in the north-east corner of the viewport', () => {
+						const windowRect = new Rect( global.window );
+
+						stubElementClientRect( view.buttonView.element, {
+							top: 0,
+							left: windowRect.right - 100,
+							width: 100,
+							height: 10
+						} );
+
+						view.isOpen = true;
+
+						expect( panelView.position ).to.equal( 'sw' );
+					} );
+
+					it( 'when the dropdown in the south-west corner of the viewport', () => {
+						const windowRect = new Rect( global.window );
+
+						stubElementClientRect( view.buttonView.element, {
+							top: windowRect.bottom - 10,
+							left: 0,
+							width: 100,
+							height: 10
+						} );
+
+						view.isOpen = true;
+
+						expect( panelView.position ).to.equal( 'ne' );
+					} );
+
+					it( 'when the dropdown in the south-east corner of the viewport', () => {
+						const windowRect = new Rect( global.window );
+
+						stubElementClientRect( view.buttonView.element, {
+							top: windowRect.bottom - 10,
+							left: windowRect.right - 100,
+							width: 100,
+							height: 10
+						} );
+
+						view.isOpen = true;
+
+						expect( panelView.position ).to.equal( 'nw' );
+					} );
 				} );
 			} );
 
@@ -258,3 +373,12 @@ describe( 'DropdownView', () => {
 		} );
 	} );
 } );
+
+function stubElementClientRect( element, data ) {
+	const clientRect = Object.assign( {}, data );
+
+	clientRect.right = clientRect.left + clientRect.width;
+	clientRect.bottom = clientRect.top + clientRect.height;
+
+	testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( clientRect );
+}
