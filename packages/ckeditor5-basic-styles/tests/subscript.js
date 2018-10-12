@@ -13,6 +13,6 @@ describe( 'Subscript', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( Subscript.pluginName ).to.equal( 'Sub' );
+		expect( Subscript.pluginName ).to.equal( 'Subscript' );
 	} );
 } );

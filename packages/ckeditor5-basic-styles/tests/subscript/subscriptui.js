@@ -29,7 +29,7 @@ describe( 'SubscriptUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				subView = editor.ui.componentFactory.create( 'sub' );
+				subView = editor.ui.componentFactory.create( 'subscript' );
 			} );
 	} );
 
@@ -44,17 +44,17 @@ describe( 'SubscriptUI', () => {
 		expect( subView.icon ).to.match( /<svg / );
 	} );
 
-	it( 'should execute sub command on model execute event', () => {
+	it( 'should execute subscript command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		subView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'sub' );
+		sinon.assert.calledWithExactly( executeSpy, 'subscript' );
 	} );
 
-	it( 'should bind model to sub command', () => {
-		const command = editor.commands.get( 'sub' );
+	it( 'should bind model to subscript command', () => {
+		const command = editor.commands.get( 'subscript' );
 
 		expect( subView.isOn ).to.be.false;
 		expect( subView.isEnabled ).to.be.true;

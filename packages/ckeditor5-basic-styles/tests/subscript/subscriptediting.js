@@ -35,16 +35,16 @@ describe( 'SubEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'sub' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'sub' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'subscript' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'subscript' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
-		it( 'should register sub command', () => {
-			const command = editor.commands.get( 'sub' );
+		it( 'should register subscript command', () => {
+			const command = editor.commands.get( 'subscript' );
 
 			expect( command ).to.be.instanceOf( AttributeCommand );
-			expect( command ).to.have.property( 'attributeKey', 'sub' );
+			expect( command ).to.have.property( 'attributeKey', 'subscript' );
 		} );
 	} );
 
@@ -53,7 +53,7 @@ describe( 'SubEditing', () => {
 			editor.setData( '<p><sub>foo</sub>bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sub="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text subscript="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sub>foo</sub>bar</p>' );
 		} );
@@ -62,7 +62,7 @@ describe( 'SubEditing', () => {
 			editor.setData( '<p><span style="vertical-align: sub;">foo</span>bar</p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sub="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text subscript="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sub>foo</sub>bar</p>' );
 		} );
@@ -71,7 +71,7 @@ describe( 'SubEditing', () => {
 			editor.setData( '<sub>foo</sub>bar' );
 
 			expect( getModelData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph><$text sub="true">foo</$text>bar</paragraph>' );
+				.to.equal( '<paragraph><$text subscript="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><sub>foo</sub>bar</p>' );
 		} );
@@ -79,7 +79,7 @@ describe( 'SubEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( model, '<paragraph><$text sub="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text subscript="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><sub>foo</sub>bar</p>' );
 		} );

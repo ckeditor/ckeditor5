@@ -29,7 +29,7 @@ describe( 'SuperscriptUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				superView = editor.ui.componentFactory.create( 'super' );
+				superView = editor.ui.componentFactory.create( 'superscript' );
 			} );
 	} );
 
@@ -44,17 +44,17 @@ describe( 'SuperscriptUI', () => {
 		expect( superView.icon ).to.match( /<svg / );
 	} );
 
-	it( 'should execute super command on model execute event', () => {
+	it( 'should execute superscript command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		superView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'super' );
+		sinon.assert.calledWithExactly( executeSpy, 'superscript' );
 	} );
 
-	it( 'should bind model to super command', () => {
-		const command = editor.commands.get( 'super' );
+	it( 'should bind model to superscript command', () => {
+		const command = editor.commands.get( 'superscript' );
 
 		expect( superView.isOn ).to.be.false;
 		expect( superView.isEnabled ).to.be.true;
