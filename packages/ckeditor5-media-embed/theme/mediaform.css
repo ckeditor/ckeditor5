@@ -19,7 +19,7 @@
 		display: none;
 	}
 
-	@mixin ck-media-mobile {
+	@mixin ck-media-narrow {
 		flex-wrap: wrap;
 
 		& .ck-labeled-input {
