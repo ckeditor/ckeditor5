@@ -7,6 +7,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
+@import "../mixins/_rwd.css";
 
 .ck.ck-link-actions {
 	padding: var(--ck-spacing-standard);
@@ -55,7 +56,34 @@
 		outline: none;
 	}
 
-	& > :not(:first-child) {
+	& .ck-button:not(.ck-link-actions__preview) {
 		margin-left: var(--ck-spacing-standard);
+	}
+
+	@mixin ck-media-mobile {
+		padding: 0;
+		width: calc(.8 * var(--ck-input-text-width));
+
+		& .ck-button.ck-link-actions__preview {
+			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
+
+			& .ck-button__label {
+				min-width: 0;
+				max-width: 100%;
+			}
+		}
+
+		& .ck-button:not(.ck-link-actions__preview) {
+			margin-top: var(--ck-spacing-standard);
+			margin-left: 0;
+
+			border-radius: 0;
+			border: 0;
+			border-top: 1px solid var(--ck-color-base-border);
+
+			&:first-of-type {
+				border-right: 1px solid var(--ck-color-base-border);
+			}
+		}
 	}
 }

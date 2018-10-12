@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "../mixins/_rwd.css";
+
 .ck.ck-link-form {
 	padding: var(--ck-spacing-standard);
 
@@ -14,4 +16,32 @@
 	& > :not(:first-child) {
 		margin-left: var(--ck-spacing-standard);
 	}
+
+	@mixin ck-media-mobile {
+		padding: 0;
+		width: calc(.8 * var(--ck-input-text-width));
+
+		& .ck-labeled-input {
+			margin: var(--ck-spacing-standard) var(--ck-spacing-standard) 0;
+
+			& .ck-input-text {
+				min-width: 0;
+				width: 100%;
+			}
+		}
+
+		& .ck-button {
+			margin-top: var(--ck-spacing-standard);
+			margin-left: 0;
+
+			border-radius: 0;
+			border: 0;
+			border-top: 1px solid var(--ck-color-base-border);
+
+			&:first-of-type {
+				border-right: 1px solid var(--ck-color-base-border);
+			}
+		}
+	}
 }
+
