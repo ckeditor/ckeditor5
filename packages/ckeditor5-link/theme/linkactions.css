@@ -3,12 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rwd.css";
+
 .ck.ck-link-actions {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+
 	& .ck-link-actions__preview {
 		display: inline-block;
 
 		& .ck-button__label {
 			overflow: hidden;
+		}
+	}
+
+	@mixin ck-media-mobile {
+		flex-wrap: wrap;
+
+		& .ck-link-actions__preview {
+			flex-basis: 100%;
+		}
+
+		& .ck-button:not(.ck-link-actions__preview) {
+			flex-basis: 50%;
 		}
 	}
 }
