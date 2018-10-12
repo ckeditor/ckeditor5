@@ -27,6 +27,11 @@
 				min-width: 0;
 				width: 100%;
 			}
+
+			/* Let the long error messages wrap in the narrow form. */
+			& .ck-labeled-input__error {
+				white-space: normal;
+			}
 		}
 
 		& .ck-button {
