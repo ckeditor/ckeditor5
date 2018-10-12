@@ -10,9 +10,10 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^11.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^13.0.3",
     "@ckeditor/ckeditor5-engine": "^10.2.0",
-    "@ckeditor/ckeditor5-ui": "^11.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^11.0.0"
+    "@ckeditor/ckeditor5-theme-lark": "^11.0.0",
+    "@ckeditor/ckeditor5-ui": "^11.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "^10.0.2",
