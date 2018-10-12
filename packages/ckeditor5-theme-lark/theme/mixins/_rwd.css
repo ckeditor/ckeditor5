@@ -4,7 +4,7 @@
  */
 
 @define-mixin ck-media-mobile {
-	@media all and (max-width: 414px) {
+	@media screen and (max-width: 414px) {
 		@mixin-content;
 	}
 }
