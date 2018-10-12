@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import superscriptIcon from '../../theme/icons/superscript.svg';
 
-const SUPER = 'super';
+const SUPERSCRIPT = 'superscript';
 
 /**
  * The superscript UI feature. It introduces the Superscript button.
@@ -28,8 +28,8 @@ export default class SuperscriptUI extends Plugin {
 		const t = editor.t;
 
 		// Add superscript button to feature components.
-		editor.ui.componentFactory.add( SUPER, locale => {
-			const command = editor.commands.get( SUPER );
+		editor.ui.componentFactory.add( SUPERSCRIPT, locale => {
+			const command = editor.commands.get( SUPERSCRIPT );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -41,7 +41,7 @@ export default class SuperscriptUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( SUPER ) );
+			this.listenTo( view, 'execute', () => editor.execute( SUPERSCRIPT ) );
 
 			return view;
 		} );

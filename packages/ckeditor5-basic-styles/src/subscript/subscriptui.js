@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import subscriptIcon from '../../theme/icons/subscript.svg';
 
-const SUB = 'sub';
+const SUBSCRIPT = 'subscript';
 
 /**
  * The subscript UI feature. It introduces the Subscript button.
@@ -28,8 +28,8 @@ export default class SubscriptUI extends Plugin {
 		const t = editor.t;
 
 		// Add subscript button to feature components.
-		editor.ui.componentFactory.add( SUB, locale => {
-			const command = editor.commands.get( SUB );
+		editor.ui.componentFactory.add( SUBSCRIPT, locale => {
+			const command = editor.commands.get( SUBSCRIPT );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -41,7 +41,7 @@ export default class SubscriptUI extends Plugin {
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( SUB ) );
+			this.listenTo( view, 'execute', () => editor.execute( SUBSCRIPT ) );
 
 			return view;
 		} );

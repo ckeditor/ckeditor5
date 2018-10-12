@@ -13,11 +13,13 @@ import Italic from '../../src/italic';
 import Strikethrough from '../../src/strikethrough';
 import Underline from '../../src/underline';
 import Code from '../../src/code';
+import Subscript from '../../src/subscript';
+import Superscript from '../../src/Superscript';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, Underline, Code ],
-		toolbar: [ 'bold', 'italic', 'strikethrough', 'underline', 'code', 'undo', 'redo' ]
+		plugins: [ Essentials, Paragraph, Bold, Italic, Strikethrough, Underline, Code, Subscript, Superscript ],
+		toolbar: [ 'bold', 'italic', 'strikethrough', 'underline', 'code', 'undo', 'redo', 'subscript', 'superscript' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
