@@ -17,7 +17,7 @@
 		margin-left: var(--ck-spacing-standard);
 	}
 
-	@mixin ck-media-mobile {
+	@mixin ck-media-narrow {
 		padding: 0;
 		width: calc(.8 * var(--ck-input-text-width));
 
