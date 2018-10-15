@@ -222,13 +222,13 @@ export default class Model {
 	}
 
 	/**
-	 * Inserts content into the editor (specified selection) as one would expect the paste
+	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
 	 *
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
 	 * the content, clears the given selection's content before inserting nodes and moves the selection
 	 * to its target position at the end of the process.
-	 * It can split elements, merge them, wrap bare text nodes in paragraphs, etc. – just like the
+	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &mdash; just like the
 	 * pasting feature should do.
 	 *
 	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
@@ -244,15 +244,15 @@ export default class Model {
 	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
 	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
 	 *
-	 * So, while this method may seem similar to CKEditor 4's `editor.insertHtml()` (in fact, both methods
-	 * are used for paste-like content insertion), CKEditor 5's method cannot be use to insert arbitrary HTML
+	 * So, while this method may seem similar to CKEditor 4 `editor.insertHtml()` (in fact, both methods
+	 * are used for paste-like content insertion), the CKEditor 5 method cannot be use to insert arbitrary HTML
 	 * unless converters are defined for all elements and attributes in that HTML.
 	 *
 	 * # Examples
 	 *
 	 * Using `insertContent()` with a manually created model structure:
 	 *
-	 *		// Let's create a document fragment containing such a content:
+	 *		// Let's create a document fragment containing such content as:
 	 *		//
 	 *		// <paragrap>foo</paragraph>
 	 *		// <blockQuote>
@@ -273,26 +273,26 @@ export default class Model {
 	 *			return docFrag;
 	 *		} );
 	 *
-	 *		// insertContent() doesn't have to be used in a change() block. It can, though,
+	 *		// insertContent() does not have to be used in a change() block. It can, though,
 	 *		// so this code could be moved to the callback defined above.
 	 *		editor.model.insertContent( docFrag );
 	 *
-	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
+	 * Using `insertContent()` with an HTML string converted to a model document fragment (similar to the pasting mechanism):
 	 *
 	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
-	 *		// if you haven't overridden the default one (which is HtmlDataProcessor instance).
+	 *		// if you have not overridden the default one (which is the HtmlDataProcessor instance).
 	 *		const htmlDP = new HtmlDataProcessor();
 	 *
-	 *		// Convert an HTML string to a view document fragment.
+	 *		// Convert an HTML string to a view document fragment:
 	 *		const viewFragment = htmlDP.toView( htmlString );
 	 *
-	 *		// Convert a view document fragment to a model document fragment
-	 *		// in the context of $root. This conversion takes schema into
-	 *		// the account so if e.g. the view document fragment contained a bare text node
-	 *		// then that text node cannot be a child of $root, so it will be automatically
-	 *		// wrapped with a <paragraph>. You can define the context yourself (in the 2nd parameter),
+	 *		// Convert the view document fragment to a model document fragment
+	 *		// in the context of $root. This conversion takes the schema into
+	 *		// account so if, for example, the view document fragment contained a bare text node,
+	 *		// this text node cannot be a child of $root, so it will be automatically
+	 *		// wrapped with a <paragraph>. You can define the context yourself (in the second parameter),
 	 *		// and e.g. convert the content like it would happen in a <paragraph>.
-	 *		// Note: the clipboard feature uses a custom context called $clipboardHolder
+	 *		// Note: The clipboard feature uses a custom context called $clipboardHolder
 	 *		// which has a loosened schema.
 	 *		const modelFragment = editor.data.toModel( viewFragment );
 	 *
@@ -305,7 +305,7 @@ export default class Model {
 	 *			editor.model.insertContent( writer.createText( 'x' ) );
 	 *		} );
 	 *
-	 *		// Insert text at given position - document selection will not be modified.
+	 *		// Insert text at a given position - the document selection will not be modified.
 	 *		editor.model.change( writer => {
 	 *			editor.model.insertContent( writer.createText( 'x' ), Position.createAt( doc.getRoot(), 2 ) );
 	 *		} );
@@ -313,14 +313,14 @@ export default class Model {
 	 * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable`
 	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
-	 *		// Insert text replacing given selection instance.
+	 *		// Insert text replacing the given selection instance.
 	 *		const selection = new Selection( paragraph, 'in' );
 	 *
 	 *		editor.model.change( writer => {
 	 *			editor.model.insertContent( writer.createText( 'x' ), selection );
 	 *
 	 *			// insertContent() modifies the passed selection instance so it can be used to set the document selection.
-	 *			// Note: This is not necessary when you passed document selection to insertContent().
+	 *			// Note: This is not necessary when you passed the document selection to insertContent().
 	 *			writer.setSelection( selection );
 	 *		} );
 	 *
@@ -329,7 +329,7 @@ export default class Model {
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
-	 * Selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * The selection into which the content should be inserted. If not provided, the current model document selection will be used.
 	 */
 	insertContent( content, selectable ) {
 		insertContent( this, content, selectable );
