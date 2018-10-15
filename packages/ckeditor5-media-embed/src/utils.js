@@ -7,7 +7,6 @@
  * @module media-embed/utils
  */
 
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const mediaSymbol = Symbol( 'isMedia' );
@@ -68,7 +67,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
-	writer.insert( ViewPosition.createAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
+	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
 }
