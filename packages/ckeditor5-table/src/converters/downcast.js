@@ -7,8 +7,6 @@
  * @module table/converters/downcast
  */
 
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import TableWalker from './../tablewalker';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 import { toTableWidget } from '../utils';
@@ -38,7 +36,7 @@ export function downcastInsertTable( options = {} ) {
 
 		const figureElement = conversionApi.writer.createContainerElement( 'figure', { class: 'table' } );
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-		conversionApi.writer.insert( ViewPosition.createAt( figureElement, 0 ), tableElement );
+		conversionApi.writer.insert( conversionApi.writer.createPositionAt( figureElement, 0 ), tableElement );
 
 		let tableWidget;
 
@@ -65,7 +63,7 @@ export function downcastInsertTable( options = {} ) {
 			// Consume table cell - it will be always consumed as we convert whole table at once.
 			conversionApi.consumable.consume( cell, 'insert' );
 
-			const insertPosition = ViewPosition.createAt( trElement, 'end' );
+			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
 			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
 		}
@@ -113,7 +111,7 @@ export function downcastInsertRow( options = {} ) {
 			// Consume table cell - it will be always consumed as we convert whole row at once.
 			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
 
-			const insertPosition = ViewPosition.createAt( trElement, 'end' );
+			const insertPosition = conversionApi.writer.createPositionAt( trElement, 'end' );
 
 			createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
 		}
@@ -151,7 +149,7 @@ export function downcastInsertCell( options = {} ) {
 		for ( const tableWalkerValue of tableWalker ) {
 			if ( tableWalkerValue.cell === tableCell ) {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
-				const insertPosition = ViewPosition.createAt( trElement, tableRow.getChildIndex( tableCell ) );
+				const insertPosition = conversionApi.writer.createPositionAt( trElement, tableRow.getChildIndex( tableCell ) );
 
 				createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options );
 
@@ -286,23 +284,25 @@ export function downcastRemoveRow() {
 	return dispatcher => dispatcher.on( 'remove:tableRow', ( evt, data, conversionApi ) => {
 		// Prevent default remove converter.
 		evt.stop();
+		const viewWriter = conversionApi.writer;
+		const mapper = conversionApi.mapper;
 
-		const viewStart = conversionApi.mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
+		const viewStart = mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
 		const viewItem = viewStart.nodeAfter;
 		const tableSection = viewItem.parent;
 
 		// Remove associated <tr> from the view.
-		const removeRange = ViewRange.createOn( viewItem );
-		const removed = conversionApi.writer.remove( removeRange );
+		const removeRange = viewWriter.createRangeOn( viewItem );
+		const removed = viewWriter.remove( removeRange );
 
-		for ( const child of ViewRange.createIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child );
+		for ( const child of viewWriter.createRangeIn( removed ).getItems() ) {
+			mapper.unbindViewElement( child );
 		}
 
 		// Check if table section has any children left - if not remove it from the view.
 		if ( !tableSection.childCount ) {
 			// No need to unbind anything as table section is not represented in the model.
-			conversionApi.writer.remove( ViewRange.createOn( tableSection ) );
+			viewWriter.remove( viewWriter.createRangeOn( tableSection ) );
 		}
 	}, { priority: 'higher' } );
 }
@@ -316,6 +316,7 @@ export function downcastRemoveRow() {
 // @param {Object} conversionApi
 // @param {Boolean} asWidget
 function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
+	const viewWriter = conversionApi.writer;
 	const viewCell = conversionApi.mapper.toViewElement( tableCell );
 
 	// View cell might be not yet converted - skip it as it will be properly created by cell converter later on.
@@ -326,14 +327,14 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 	let renamedCell;
 
 	if ( asWidget ) {
-		const editable = conversionApi.writer.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
-		renamedCell = toWidgetEditable( editable, conversionApi.writer );
+		const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
+		renamedCell = toWidgetEditable( editable, viewWriter );
 
-		conversionApi.writer.insert( ViewPosition.createAfter( viewCell ), renamedCell );
-		conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell, 0 ) );
-		conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
+		viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
+		viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
+		viewWriter.remove( viewWriter.createRangeOn( viewCell ) );
 	} else {
-		renamedCell = conversionApi.writer.rename( desiredCellElementName, viewCell );
+		renamedCell = viewWriter.rename( desiredCellElementName, viewCell );
 	}
 
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
@@ -381,7 +382,7 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 	if ( isSingleParagraph ) {
 		const innerParagraph = tableCell.getChild( 0 );
-		const paragraphInsertPosition = ViewPosition.createAt( cellElement, 'end' );
+		const paragraphInsertPosition = conversionApi.writer.createPositionAt( cellElement, 'end' );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
@@ -423,7 +424,7 @@ function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 		const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
 		const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 
-		const position = ViewPosition.createAt( tableSection, offset );
+		const position = conversionApi.writer.createPositionAt( tableSection, offset );
 		conversionApi.writer.insert( position, trElement );
 	}
 
@@ -497,7 +498,9 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 function createTableSection( sectionName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
 
-	conversionApi.writer.insert( ViewPosition.createAt( tableElement, sectionName == 'tbody' ? 'end' : 0 ), tableChildElement );
+	const insertPosition = conversionApi.writer.createPositionAt( tableElement, sectionName == 'tbody' ? 'end' : 0 );
+
+	conversionApi.writer.insert( insertPosition, tableChildElement );
 
 	return tableChildElement;
 }
@@ -511,7 +514,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
 
 	if ( tableSection && tableSection.childCount === 0 ) {
-		conversionApi.writer.remove( ViewRange.createOn( tableSection ) );
+		conversionApi.writer.remove( conversionApi.writer.createRangeOn( tableSection ) );
 	}
 }
 
@@ -529,7 +532,10 @@ function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi
 
 		// View table row might be not yet converted - skip it as it will be properly created by cell converter later on.
 		if ( viewTableRow ) {
-			conversionApi.writer.move( ViewRange.createOn( viewTableRow ), ViewPosition.createAt( viewTableSection, offset ) );
+			conversionApi.writer.move(
+				conversionApi.writer.createRangeOn( viewTableRow ),
+				conversionApi.writer.createPositionAt( viewTableSection, offset )
+			);
 		}
 	}
 }
