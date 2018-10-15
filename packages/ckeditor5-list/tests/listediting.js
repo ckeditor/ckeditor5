@@ -3725,6 +3725,75 @@ describe( 'ListEditing', () => {
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
+
+		it( 'should handle block elements inside pasted list #1', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should handle block elements inside pasted list #2', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should handle block elements inside pasted list #3', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
+				'<paragraph>X</paragraph>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+			);
+		} );
 	} );
 
 	describe( 'other', () => {
