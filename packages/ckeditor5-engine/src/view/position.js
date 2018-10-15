@@ -275,6 +275,21 @@ export default class Position {
 	}
 
 	/**
+	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this positions as a start position.
+	 *
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}
+	 * @param {module:engine/view/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
+	 * @param {Boolean} [options.singleCharacters=false]
+	 * @param {Boolean} [options.shallow=false]
+	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 */
+	getWalker( options = {} ) {
+		options.startPosition = this;
+
+		return new TreeWalker( options );
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/view/position~Position position},
