@@ -114,7 +114,7 @@ describe( 'ChangeBuffer', () => {
 		} );
 
 		it( 'is not reset when changes are added to batch which existed previously', () => {
-			const externalBatch = new Batch();
+			const externalBatch = model.createBatch();
 
 			model.change( writer => {
 				writer.insertText( 'a', root );

@@ -12,10 +12,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-
-import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
-
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -183,10 +179,13 @@ describe( 'Typing – spellchecking integration', () => {
 function emulateSpellcheckerMutation( editor, nodeIndex, rangeStart, rangeEnd, oldText, newText ) {
 	const view = editor.editing.view;
 	const viewRoot = view.document.getRoot();
-	const viewSelection = new ViewSelection();
+	const viewSelection = view.createSelection();
 	const node = viewRoot.getChild( nodeIndex ).getChild( 0 );
 
-	viewSelection.setTo( ViewRange.createFromParentsAndOffsets( node, rangeStart, node, rangeEnd ) );
+	viewSelection.setTo( view.createRange(
+		view.createPositionAt( node, rangeStart ),
+		view.createPositionAt( node, rangeEnd )
+	) );
 
 	view.document.fire( 'mutations',
 		[

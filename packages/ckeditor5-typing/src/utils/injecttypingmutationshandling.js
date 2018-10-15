@@ -7,7 +7,6 @@
  * @module typing/utils/injecttypingmutationshandling
  */
 
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 
@@ -211,7 +210,7 @@ class MutationHandler {
 		}
 
 		// Get the position in view and model where the changes will happen.
-		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
+		const viewPos = this.editing.view.createPositionAt( mutation.node, firstChangeAt );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const removeRange = this.editor.model.createRange( modelPos, modelPos.getShiftedBy( deletions ) );
 		const insertText = newText.substr( firstChangeAt, insertions );
@@ -232,7 +231,7 @@ class MutationHandler {
 		}
 
 		const change = getSingleTextNodeChange( mutation );
-		const viewPos = new ViewPosition( mutation.node, change.index );
+		const viewPos = this.editing.view.createPositionAt( mutation.node, change.index );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const insertedText = change.values[ 0 ].data;
 
