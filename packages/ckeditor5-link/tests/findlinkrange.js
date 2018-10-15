@@ -121,7 +121,7 @@ describe( 'findLinkRange', () => {
 		const result = findLinkRange( startPosition, 'url', model );
 
 		expect( result ).to.instanceOf( Range );
-		const expectedRange = new Range(
+		const expectedRange = model.createRange(
 			model.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ),
 			model.createPositionAt( root.getNodeByPath( [ 1 ] ), 6 )
 		);

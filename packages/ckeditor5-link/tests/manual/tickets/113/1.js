@@ -8,8 +8,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
@@ -105,7 +103,8 @@ function startExternalDelete( editor ) {
 
 	wait( 3000 ).then( () => {
 		model.enqueueChange( 'transparent', writer => {
-			writer.remove( Range.createFromPositionAndShift( model.createPositionFromPath( model.document.getRoot(), [ 1 ] ), 1 ) );
+			const start = writer.createPositionFromPath( model.document.getRoot(), [ 1 ] );
+			writer.remove( writer.createRange( start, start.getShiftedBy( 1 ) ) );
 		} );
 	} );
 }

@@ -19,7 +19,6 @@ import LinkActionsView from '../src/ui/linkactionsview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 describe( 'LinkUI', () => {
@@ -291,7 +290,7 @@ describe( 'LinkUI', () => {
 
 				// Move selection to foo[].
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+					writer.setSelection( writer.createRange( writer.createPositionAt( text, 3 ) ), true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -311,7 +310,7 @@ describe( 'LinkUI', () => {
 				const text = root.getChild( 0 ).getChild( 0 );
 
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+					writer.setSelection( writer.createRange( writer.createPositionAt( text, 3 ) ), true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -334,7 +333,7 @@ describe( 'LinkUI', () => {
 
 				// Move selection to b[]ar.
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
+					writer.setSelection( writer.createRange( writer.createPositionAt( text, 1 ) ), true );
 				} );
 
 				sinon.assert.calledOnce( spyHide );
@@ -357,7 +356,10 @@ describe( 'LinkUI', () => {
 
 				// Move selection to f[o]o.
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( text, 1 ),
+						writer.createPositionAt( text, 2 )
+					), true );
 				} );
 
 				sinon.assert.calledOnce( spyHide );
@@ -378,7 +380,10 @@ describe( 'LinkUI', () => {
 
 				// Move selection to f[o]o.
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( text, 1 ),
+						writer.createPositionAt( text, 2 )
+					), true );
 				} );
 
 				sinon.assert.calledOnce( spyHide );
