@@ -68,9 +68,9 @@ export default class ListEditing extends Plugin {
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		editing.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );

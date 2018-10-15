@@ -7,8 +7,6 @@ import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
@@ -396,7 +394,7 @@ describe( 'ListEditing', () => {
 			describe( 'view to model', () => {
 				function test( testName, viewPath, modelPath ) {
 					it( testName, () => {
-						const viewPos = getViewPosition( viewRoot, viewPath );
+						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
 						expect( modelPos.root ).to.equal( modelRoot );
@@ -1374,7 +1372,7 @@ describe( 'ListEditing', () => {
 			describe( 'view to model', () => {
 				function test( testName, viewPath, modelPath ) {
 					it( testName, () => {
-						const viewPos = getViewPosition( viewRoot, viewPath );
+						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
 						expect( modelPos.root ).to.equal( modelRoot );
@@ -3675,13 +3673,12 @@ describe( 'ListEditing', () => {
 		it( 'ul and ol should not be inserted before ui element - injectViewList()', () => {
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-			const uiElement = new ViewUIElement( 'span' );
-
 			// Append ui element at the end of first <li>.
 			view.change( writer => {
 				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
 
-				writer.insert( ViewPosition.createAt( firstChild, 'end' ), uiElement );
+				const uiElement = writer.createUIElement( 'span' );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3701,13 +3698,12 @@ describe( 'ListEditing', () => {
 		it( 'ul and ol should not be inserted before ui element - hoistNestedLists()', () => {
 			editor.setData( '<ul><li>Foo</li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
-			const uiElement = new ViewUIElement( 'span' );
-
 			// Append ui element at the end of first <li>.
 			view.change( writer => {
 				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
 
-				writer.insert( ViewPosition.createAt( firstChild, 'end' ), uiElement );
+				const uiElement = writer.createUIElement( 'span' );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3724,20 +3720,18 @@ describe( 'ListEditing', () => {
 		} );
 
 		describe( 'remove converter should properly handle ui elements', () => {
-			let uiElement, liFoo, liBar;
+			let liFoo, liBar;
 
 			beforeEach( () => {
 				editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 				liFoo = modelRoot.getChild( 0 );
 				liBar = modelRoot.getChild( 1 );
-
-				uiElement = new ViewUIElement( 'span' );
 			} );
 
 			it( 'ui element before <ul>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot, 0 ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot, 0 ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -3751,7 +3745,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element before first <li>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ), 0 ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 0 ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -3765,7 +3759,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element in the middle of list', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ), 'end' ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 'end' ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -3857,14 +3851,14 @@ describe( 'ListEditing', () => {
 		} );
 	} );
 
-	function getViewPosition( root, path ) {
+	function getViewPosition( root, path, view ) {
 		let parent = root;
 
 		while ( path.length > 1 ) {
 			parent = parent.getChild( path.shift() );
 		}
 
-		return new ViewPosition( parent, path[ 0 ] );
+		return view.createPositionAt( parent, path[ 0 ] );
 	}
 
 	function getViewPath( position ) {

@@ -4,7 +4,6 @@
  */
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import { createViewListItemElement } from '../src/utils';
 
@@ -39,23 +38,23 @@ describe( 'utils', () => {
 				const innerListItem1 = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( innerListItem1, 0 ),
+					writer.createPositionAt( innerListItem1, 0 ),
 					writer.createText( 'foo' )
 				);
 
 				const innerListItem2 = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( innerListItem2, 0 ),
+					writer.createPositionAt( innerListItem2, 0 ),
 					writer.createText( 'bar' )
 				);
 
 				const innerList = writer.createContainerElement( 'ul' );
-				writer.insert( ViewPosition.createAt( innerList, 0 ), innerListItem1 );
-				writer.insert( ViewPosition.createAt( innerList, 0 ), innerListItem2 );
+				writer.insert( writer.createPositionAt( innerList, 0 ), innerListItem1 );
+				writer.insert( writer.createPositionAt( innerList, 0 ), innerListItem2 );
 
 				const outerListItem = createViewListItemElement( writer );
-				writer.insert( ViewPosition.createAt( outerListItem, 0 ), innerList );
+				writer.insert( writer.createPositionAt( outerListItem, 0 ), innerList );
 
 				expect( outerListItem.getFillerOffset() ).to.equal( 0 );
 			} );
@@ -64,7 +63,7 @@ describe( 'utils', () => {
 				const item = createViewListItemElement( writer );
 
 				writer.insert(
-					ViewPosition.createAt( item, 0 ),
+					writer.createPositionAt( item, 0 ),
 					writer.createText( 'foo' )
 				);
 
