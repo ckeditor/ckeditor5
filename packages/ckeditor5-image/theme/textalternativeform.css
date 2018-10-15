@@ -18,7 +18,7 @@
 		display: none;
 	}
 
-	@mixin ck-media-narrow {
+	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
 		& .ck-labeled-input {
