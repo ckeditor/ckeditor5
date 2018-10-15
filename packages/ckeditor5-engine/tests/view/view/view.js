@@ -250,7 +250,7 @@ describe( 'view', () => {
 		it( 'scrolls to the first range in selection with an offset', () => {
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
-			const range = ViewRange.createIn( root );
+			const range = ViewRange._createIn( root );
 
 			view.attachDomRoot( domRoot );
 
@@ -478,8 +478,8 @@ describe( 'view', () => {
 
 					return element;
 				} );
-				writer.insert( ViewPosition.createAt( p, 0 ), ui );
-				writer.insert( ViewPosition.createAt( viewRoot, 0 ), p );
+				writer.insert( ViewPosition._createAt( p, 0 ), ui );
+				writer.insert( ViewPosition._createAt( viewRoot, 0 ), p );
 			} );
 
 			expect( renderingCalled ).to.be.true;

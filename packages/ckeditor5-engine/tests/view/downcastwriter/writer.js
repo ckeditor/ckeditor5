@@ -22,7 +22,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelection()', () => {
 		it( 'should set document view selection', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position );
 
 			const ranges = Array.from( doc.selection.getRanges() );
@@ -33,7 +33,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should be able to set fake selection', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position, { fake: true, label: 'foo' } );
 
 			expect( doc.selection.isFake ).to.be.true;
@@ -43,7 +43,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelectionFocus()', () => {
 		it( 'should use selection._setFocus method internally', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position );
 
 			const spy = sinon.spy( writer.document.selection, '_setFocus' );
@@ -260,7 +260,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
 			const text = writer.createText( 'abccccde' );
 
-			writer.insert( ViewPosition.createAt( root, 0 ), text );
+			writer.insert( ViewPosition._createAt( root, 0 ), text );
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'foo' } );
 			span._priority = 20;
@@ -289,7 +289,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange.createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {
@@ -308,7 +308,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should not create groups for attribute elements that are not created in document root', () => {
 			const p = writer.createContainerElement( 'p' );
 			const foo = writer.createText( 'foo' );
-			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p, 0 ), foo );
 			// <p>foo</p>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
@@ -325,7 +325,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should add attribute elements to clone groups deeply', () => {
 			const p = writer.createContainerElement( 'p' );
 			const foo = writer.createText( 'foo' );
-			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p, 0 ), foo );
 			// <p>foo</p>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
@@ -334,7 +334,7 @@ describe( 'DowncastWriter', () => {
 			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
 
 			// <div><p><span>foo</span></p>
-			writer.insert( ViewPosition.createAt( root, 0 ), p );
+			writer.insert( ViewPosition._createAt( root, 0 ), p );
 
 			// Find the span.
 			const createdSpan = p.getChild( 0 );
@@ -348,10 +348,10 @@ describe( 'DowncastWriter', () => {
 			const foo = writer.createText( 'foo' );
 			const bar = writer.createText( 'bar' );
 
-			writer.insert( ViewPosition.createAt( root, 0 ), p1 );
-			writer.insert( ViewPosition.createAt( root, 1 ), p2 );
-			writer.insert( ViewPosition.createAt( p1, 0 ), foo );
-			writer.insert( ViewPosition.createAt( p2, 0 ), bar );
+			writer.insert( ViewPosition._createAt( root, 0 ), p1 );
+			writer.insert( ViewPosition._createAt( root, 1 ), p2 );
+			writer.insert( ViewPosition._createAt( p1, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p2, 0 ), bar );
 			// <div><p>foo</p><p>bar</p></div>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
@@ -363,7 +363,7 @@ describe( 'DowncastWriter', () => {
 			writer.wrap( ViewRange.createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
 
 			// <div><p><span>b</span>ar</p></div>
-			writer.remove( ViewRange.createOn( p1 ) );
+			writer.remove( ViewRange._createOn( p1 ) );
 
 			// Find the span.
 			const spanInTree = p2.getChild( 0 );

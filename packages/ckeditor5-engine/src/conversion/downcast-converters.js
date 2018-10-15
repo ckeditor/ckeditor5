@@ -540,7 +540,7 @@ export function remove() {
 
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
-		for ( const child of ViewRange.createIn( removed ).getItems() ) {
+		for ( const child of ViewRange._createIn( removed ).getItems() ) {
 			conversionApi.mapper.unbindViewElement( child );
 		}
 	};
@@ -626,7 +626,7 @@ export function removeUIElement() {
 		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
 
 		for ( const element of elements ) {
-			conversionApi.writer.clear( ViewRange.createOn( element ), element );
+			conversionApi.writer.clear( ViewRange._createOn( element ), element );
 		}
 
 		conversionApi.writer.clearClonedElementsGroup( data.markerName );
@@ -963,7 +963,7 @@ export function removeHighlight( highlightDescriptor ) {
 
 		for ( const element of elements ) {
 			if ( element.is( 'attributeElement' ) ) {
-				conversionApi.writer.unwrap( ViewRange.createOn( element ), viewHighlightElement );
+				conversionApi.writer.unwrap( ViewRange._createOn( element ), viewHighlightElement );
 			} else {
 				// if element.is( 'containerElement' ).
 				element.getCustomProperty( 'removeHighlight' )( element, descriptor.id, conversionApi.writer );

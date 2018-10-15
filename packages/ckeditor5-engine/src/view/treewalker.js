@@ -73,9 +73,9 @@ export default class TreeWalker {
 		 * @member {module:engine/view/position~Position} module:engine/view/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = Position.createFromPosition( options.startPosition );
+			this.position = Position._createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = Position._createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -189,7 +189,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_next() {
-		let position = Position.createFromPosition( this.position );
+		let position = Position._createFromPosition( this.position );
 		const previousPosition = this.position;
 		const parent = position.parent;
 
@@ -210,7 +210,7 @@ export default class TreeWalker {
 		if ( parent instanceof Text ) {
 			if ( position.isAtEnd ) {
 				// Prevent returning "elementEnd" for Text node. Skip that value and return the next walker step.
-				this.position = Position.createAfter( parent );
+				this.position = Position._createAfter( parent );
 
 				return this._next();
 			}
@@ -244,7 +244,7 @@ export default class TreeWalker {
 				if ( node == this._boundaryEndParent ) {
 					charactersCount = this.boundaries.end.offset;
 					item = new TextProxy( node, 0, charactersCount );
-					position = Position.createAfter( item );
+					position = Position._createAfter( item );
 				} else {
 					item = new TextProxy( node, 0, node.data.length );
 					// If not just keep moving forward.
@@ -275,7 +275,7 @@ export default class TreeWalker {
 			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
-			position = Position.createAfter( parent );
+			position = Position._createAfter( parent );
 			this.position = position;
 
 			if ( this.ignoreElementEnd ) {
@@ -295,7 +295,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
-		let position = Position.createFromPosition( this.position );
+		let position = Position._createFromPosition( this.position );
 		const previousPosition = this.position;
 		const parent = position.parent;
 
@@ -316,7 +316,7 @@ export default class TreeWalker {
 		if ( parent instanceof Text ) {
 			if ( position.isAtStart ) {
 				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
-				this.position = Position.createBefore( parent );
+				this.position = Position._createBefore( parent );
 
 				return this._previous();
 			}
@@ -358,7 +358,7 @@ export default class TreeWalker {
 
 					item = new TextProxy( node, offset, node.data.length - offset );
 					charactersCount = item.data.length;
-					position = Position.createBefore( item );
+					position = Position._createBefore( item );
 				} else {
 					item = new TextProxy( node, 0, node.data.length );
 					// If not just keep moving backward.
@@ -390,7 +390,7 @@ export default class TreeWalker {
 			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
-			position = Position.createBefore( parent );
+			position = Position._createBefore( parent );
 			this.position = position;
 
 			return this._formatReturnValue( 'elementStart', parent, previousPosition, position, 1 );
@@ -417,22 +417,22 @@ export default class TreeWalker {
 			// Position is at the end of Text.
 			if ( item.offsetInText + item.data.length == item.textNode.data.length ) {
 				if ( this.direction == 'forward' && !( this.boundaries && this.boundaries.end.isEqual( this.position ) ) ) {
-					nextPosition = Position.createAfter( item.textNode );
+					nextPosition = Position._createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				} else {
-					previousPosition = Position.createAfter( item.textNode );
+					previousPosition = Position._createAfter( item.textNode );
 				}
 			}
 
 			// Position is at the begining ot the text.
 			if ( item.offsetInText === 0 ) {
 				if ( this.direction == 'backward' && !( this.boundaries && this.boundaries.start.isEqual( this.position ) ) ) {
-					nextPosition = Position.createBefore( item.textNode );
+					nextPosition = Position._createBefore( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
 				} else {
-					previousPosition = Position.createBefore( item.textNode );
+					previousPosition = Position._createBefore( item.textNode );
 				}
 			}
 		}

@@ -41,7 +41,7 @@ viewDocument.on( 'mouseup', ( evt, data ) => {
 		console.log( 'Making selection around the <strong>.' );
 
 		view.change( writer => {
-			writer.setSelection( ViewRange.createOn( viewStrong ), { fake: true, label: 'fake selection over bar' } );
+			writer.setSelection( ViewRange._createOn( viewStrong ), { fake: true, label: 'fake selection over bar' } );
 		} );
 
 		data.preventDefault();

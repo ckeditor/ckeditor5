@@ -131,7 +131,7 @@ export default class Position {
 	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position.createFromPosition( this );
+		const shifted = Position._createFromPosition( this );
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -292,18 +292,18 @@ export default class Position {
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	static createAt( itemOrPosition, offset ) {
+	static _createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
-			return this.createFromPosition( itemOrPosition );
+			return this._createFromPosition( itemOrPosition );
 		} else {
 			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
 				offset = node.is( 'text' ) ? node.data.length : node.childCount;
 			} else if ( offset == 'before' ) {
-				return this.createBefore( node );
+				return this._createBefore( node );
 			} else if ( offset == 'after' ) {
-				return this.createAfter( node );
+				return this._createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
 				throw new CKEditorError(
 					'view-position-createAt-required-second-parameter: ' +
@@ -320,7 +320,7 @@ export default class Position {
 	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	static createAfter( item ) {
+	static _createAfter( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText + item.data.length );
@@ -345,7 +345,7 @@ export default class Position {
 	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	static createBefore( item ) {
+	static _createBefore( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText );
@@ -370,7 +370,7 @@ export default class Position {
 	 * @param {module:engine/view/position~Position} position Position to be cloned.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	static createFromPosition( position ) {
+	static _createFromPosition( position ) {
 		return new this( position.parent, position.offset );
 	}
 }

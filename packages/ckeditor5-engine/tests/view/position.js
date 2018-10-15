@@ -151,47 +151,45 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'createAt', () => {
+	describe( 'static _createAt()', () => {
 		it( 'should throw if no offset is passed', () => {
 			const element = new Element( 'p' );
 
-			expect( () => Position.createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-required-second-parameter/ );
+			expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-required-second-parameter/ );
 		} );
 
 		it( 'should create positions from positions', () => {
-			const spy = sinon.spy( Position, 'createFromPosition' );
-
 			const p = new Element( 'p' );
 			const position = new Position( p, 0 );
-			const created = Position.createAt( position, 0 );
+			const created = Position._createAt( position, 0 );
 
 			expect( created.isEqual( position ) ).to.be.true;
-			expect( spy.calledOnce ).to.be.true;
+			expect( created ).to.not.be.equal( position );
 		} );
 
 		it( 'should create positions from node and offset', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			expect( Position.createAt( foo, 0 ).parent ).to.equal( foo );
-			expect( Position.createAt( foo, 0 ).offset ).to.equal( 0 );
+			expect( Position._createAt( foo, 0 ).parent ).to.equal( foo );
+			expect( Position._createAt( foo, 0 ).offset ).to.equal( 0 );
 
-			expect( Position.createAt( foo, 2 ).parent ).to.equal( foo );
-			expect( Position.createAt( foo, 2 ).offset ).to.equal( 2 );
+			expect( Position._createAt( foo, 2 ).parent ).to.equal( foo );
+			expect( Position._createAt( foo, 2 ).offset ).to.equal( 2 );
 
-			expect( Position.createAt( p, 1 ).parent ).to.equal( p );
-			expect( Position.createAt( p, 1 ).offset ).to.equal( 1 );
+			expect( Position._createAt( p, 1 ).parent ).to.equal( p );
+			expect( Position._createAt( p, 1 ).offset ).to.equal( 1 );
 		} );
 
 		it( 'should create positions from node and flag', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			const fooEnd = Position.createAt( foo, 'end' );
-			const fooBefore = Position.createAt( foo, 'before' );
-			const fooAfter = Position.createAt( foo, 'after' );
+			const fooEnd = Position._createAt( foo, 'end' );
+			const fooBefore = Position._createAt( foo, 'before' );
+			const fooAfter = Position._createAt( foo, 'after' );
 
-			const pEnd = Position.createAt( p, 'end' );
+			const pEnd = Position._createAt( p, 'end' );
 			// pBefore and pAfter would throw.
 
 			expect( fooEnd.parent ).to.equal( foo );
@@ -211,8 +209,8 @@ describe( 'Position', () => {
 			const foo = new Text( 'foo' );
 			const docFrag = new DocumentFragment( [ foo ] );
 
-			const pStart = Position.createAt( docFrag, 0 );
-			const pEnd = Position.createAt( docFrag, 'end' );
+			const pStart = Position._createAt( docFrag, 0 );
+			const pEnd = Position._createAt( docFrag, 'end' );
 
 			expect( pStart.parent ).to.equal( docFrag );
 			expect( pStart.offset ).to.equal( 0 );
@@ -225,7 +223,7 @@ describe( 'Position', () => {
 		it( 'creates new Position with same parent and offset', () => {
 			const offset = 50;
 			const position = new Position( parentMock, offset );
-			const newPosition = Position.createFromPosition( position );
+			const newPosition = Position._createFromPosition( position );
 
 			expect( position ).to.not.equal( newPosition );
 			expect( position.offset ).to.equal( offset );
@@ -456,10 +454,10 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'createBefore', () => {
+	describe( 'static _createBefore()', () => {
 		it( 'should throw error if one try to create positions before root', () => {
 			expect( () => {
-				Position.createBefore( parse( '<p></p>' ) );
+				Position._createBefore( parse( '<p></p>' ) );
 			} ).to.throw( CKEditorError, /view-position-before-root/ );
 		} );
 
@@ -468,7 +466,7 @@ describe( 'Position', () => {
 			const position = selection.getFirstPosition();
 			const nodeAfter = position.nodeAfter;
 
-			expect( Position.createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
+			expect( Position._createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
 		} );
 
 		it( 'should create positions before `TextProxy`', () => {
@@ -477,14 +475,14 @@ describe( 'Position', () => {
 			const textProxy = new TextProxy( text, 1, 1 );
 			const position = new Position( text, 1 );
 
-			expect( Position.createBefore( textProxy ) ).deep.equal( position );
+			expect( Position._createBefore( textProxy ) ).deep.equal( position );
 		} );
 	} );
 
-	describe( 'createAfter', () => {
+	describe( 'static _createAfter()', () => {
 		it( 'should throw error if one try to create positions after root', () => {
 			expect( () => {
-				Position.createAfter( parse( '<p></p>' ) );
+				Position._createAfter( parse( '<p></p>' ) );
 			} ).to.throw( CKEditorError, /view-position-after-root/ );
 		} );
 
@@ -493,7 +491,7 @@ describe( 'Position', () => {
 			const position = selection.getFirstPosition();
 			const nodeBefore = position.nodeBefore;
 
-			expect( Position.createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
+			expect( Position._createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
 		} );
 
 		it( 'should create positions after `TextProxy`', () => {
@@ -502,7 +500,7 @@ describe( 'Position', () => {
 			const textProxy = new TextProxy( text, 1, 2 );
 			const position = new Position( text, 3 );
 
-			expect( Position.createAfter( textProxy ) ).deep.equal( position );
+			expect( Position._createAfter( textProxy ) ).deep.equal( position );
 		} );
 	} );
 
@@ -572,13 +570,13 @@ describe( 'Position', () => {
 
 		it( 'for two the same positions returns the parent element', () => {
 			const afterLoremPosition = new Position( liOl1, 5 );
-			const otherPosition = Position.createFromPosition( afterLoremPosition );
+			const otherPosition = Position._createFromPosition( afterLoremPosition );
 
 			test( afterLoremPosition, otherPosition, liOl1 );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
-			const startMaecenasPosition = Position.createAt( liOl2, 0 );
+			const startMaecenasPosition = Position._createAt( liOl2, 0 );
 			const beforeTellusPosition = new Position( liOl2, 18 );
 
 			test( startMaecenasPosition, beforeTellusPosition, liOl2 );

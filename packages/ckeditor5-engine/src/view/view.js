@@ -11,6 +11,9 @@ import Document from './document';
 import DowncastWriter from './downcastwriter';
 import Renderer from './renderer';
 import DomConverter from './domconverter';
+import Position from './position';
+import Range from './range';
+import Selection from './selection';
 
 import MutationObserver from './observer/mutationobserver';
 import KeyObserver from './observer/keyobserver';
@@ -392,6 +395,34 @@ export default class View {
 		}
 
 		this.stopListening();
+	}
+
+	createPositionAt( itemOrPosition, offset ) {
+		return Position._createAt( itemOrPosition, offset );
+	}
+
+	createPositionAfter( item ) {
+		return Position._createAfter( item );
+	}
+
+	createPositionBefore( item ) {
+		return Position._createBefore( item );
+	}
+
+	createRange( start, end ) {
+		return new Range( start, end );
+	}
+
+	createRangeOn( item ) {
+		return Range._createOn( item );
+	}
+
+	createRangeIn( item ) {
+		return Range._createIn( item );
+	}
+
+	createSelection( selectable, placeOrOffset, options ) {
+		return new Selection( selectable, placeOrOffset, options );
 	}
 
 	/**

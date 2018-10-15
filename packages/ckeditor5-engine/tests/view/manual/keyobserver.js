@@ -20,7 +20,7 @@ view.attachDomRoot( document.getElementById( 'editable' ), 'editable' );
 
 view.change( writer => {
 	const text = writer.createText( 'foobar' );
-	writer.insert( Position.createAt( viewRoot ), text );
+	writer.insert( Position._createAt( viewRoot ), text );
 	writer.setSelection( text, 3 );
 } );
 

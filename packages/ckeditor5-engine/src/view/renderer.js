@@ -330,7 +330,7 @@ export default class Renderer {
 		const firstPos = this.selection.getFirstPosition();
 
 		if ( firstPos.parent.is( 'text' ) ) {
-			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
+			return ViewPosition._createBefore( this.selection.getFirstPosition().parent );
 		} else {
 			return firstPos;
 		}

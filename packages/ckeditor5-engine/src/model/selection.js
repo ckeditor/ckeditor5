@@ -397,7 +397,7 @@ export default class Selection {
 			} else if ( placeOrOffset == 'on' ) {
 				range = Range._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
-				range = Range.createCollapsedAt( selectable, placeOrOffset );
+				range = new Range( Position._createAt( selectable, placeOrOffset ) );
 			} else {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.

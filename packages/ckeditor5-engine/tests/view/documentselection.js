@@ -198,7 +198,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position.createAt( el, 'end' );
+			const endPos = Position._createAt( el, 'end' );
 
 			expect( () => {
 				documentSelection._setFocus( endPos );
@@ -206,8 +206,8 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
 
 			documentSelection._setTo( startPos );
 
@@ -218,8 +218,8 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 0 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 0 );
 
 			documentSelection._setTo( startPos );
 
@@ -231,9 +231,9 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'modifies existing non-collapsed selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
-			const newEndPos = Position.createAt( el, 3 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
+			const newEndPos = Position._createAt( el, 3 );
 
 			documentSelection._setTo( new Range( startPos, endPos ) );
 
@@ -244,9 +244,9 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
-			const newEndPos = Position.createAt( el, 0 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
+			const newEndPos = Position._createAt( el, 0 );
 
 			documentSelection._setTo( new Range( startPos, endPos ) );
 
@@ -258,9 +258,9 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'makes existing backward selection a forward selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
-			const newEndPos = Position.createAt( el, 3 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
+			const newEndPos = Position._createAt( el, 3 );
 
 			documentSelection._setTo( new Range( startPos, endPos ), { backward: true } );
 
@@ -272,9 +272,9 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'modifies existing backward selection', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
-			const newEndPos = Position.createAt( el, 0 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
+			const newEndPos = Position._createAt( el, 0 );
 
 			documentSelection._setTo( new Range( startPos, endPos ), { backward: true } );
 
@@ -287,12 +287,12 @@ describe( 'DocumentSelection', () => {
 
 		it( 'modifies only the last range', () => {
 			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
-			const startPos1 = Position.createAt( el, 4 );
-			const endPos1 = Position.createAt( el, 5 );
-			const startPos2 = Position.createAt( el, 1 );
-			const endPos2 = Position.createAt( el, 2 );
+			const startPos1 = Position._createAt( el, 4 );
+			const endPos1 = Position._createAt( el, 5 );
+			const startPos2 = Position._createAt( el, 1 );
+			const endPos2 = Position._createAt( el, 2 );
 
-			const newEndPos = Position.createAt( el, 0 );
+			const newEndPos = Position._createAt( el, 0 );
 
 			documentSelection._setTo( [
 				new Range( startPos1, endPos1 ),
@@ -313,8 +313,8 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'collapses the selection when extending to the anchor', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
 
 			documentSelection._setTo( new Range( startPos, endPos ) );
 
@@ -325,11 +325,11 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'uses Position.createAt', () => {
-			const startPos = Position.createAt( el, 1 );
-			const endPos = Position.createAt( el, 2 );
-			const newEndPos = Position.createAt( el, 4 );
+			const startPos = Position._createAt( el, 1 );
+			const endPos = Position._createAt( el, 2 );
+			const newEndPos = Position._createAt( el, 4 );
 
-			const spy = sinon.stub( Position, 'createAt' ).returns( newEndPos );
+			const spy = sinon.stub( Position, '_createAt' ).returns( newEndPos );
 
 			documentSelection._setTo( new Range( startPos, endPos ) );
 			documentSelection._setFocus( el, 'end' );
@@ -337,7 +337,7 @@ describe( 'DocumentSelection', () => {
 			expect( spy.calledOnce ).to.be.true;
 			expect( documentSelection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 
-			Position.createAt.restore();
+			Position._createAt.restore();
 		} );
 	} );
 

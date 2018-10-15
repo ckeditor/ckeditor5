@@ -972,7 +972,7 @@ describe( 'TreeWalker', () => {
 
 	it( 'should not return elementEnd for a text node when iteration begins at the end of that text node', () => {
 		const iterator = new TreeWalker( {
-			startPosition: Position.createAt( textAbcd, 'end' )
+			startPosition: Position._createAt( textAbcd, 'end' )
 		} );
 
 		const step = iterator.next();
@@ -983,7 +983,7 @@ describe( 'TreeWalker', () => {
 
 	it( 'should not return elementStart for a text node when iteration begins at the start of that text node', () => {
 		const iterator = new TreeWalker( {
-			startPosition: Position.createAt( textAbcd, 0 ),
+			startPosition: Position._createAt( textAbcd, 0 ),
 			direction: 'backward'
 		} );
 
@@ -1039,7 +1039,7 @@ describe( 'TreeWalker', () => {
 			}
 		];
 
-		const iterator = new TreeWalker( { boundaries: Range.createIn( docFrag ) } );
+		const iterator = new TreeWalker( { boundaries: Range._createIn( docFrag ) } );
 		let i = 0;
 
 		for ( const value of iterator ) {

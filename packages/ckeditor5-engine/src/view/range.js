@@ -29,7 +29,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.start = Position.createFromPosition( start );
+		this.start = Position._createFromPosition( start );
 
 		/**
 		 * End position.
@@ -37,7 +37,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
+		this.end = end ? Position._createFromPosition( end ) : Position._createFromPosition( start );
 	}
 
 	/**
@@ -107,11 +107,11 @@ export default class Range {
 
 		// Fix positions, in case if they are in Text node.
 		if ( start.parent.is( 'text' ) && start.isAtStart ) {
-			start = Position.createBefore( start.parent );
+			start = Position._createBefore( start.parent );
 		}
 
 		if ( end.parent.is( 'text' ) && end.isAtEnd ) {
-			end = Position.createAfter( end.parent );
+			end = Position._createAfter( end.parent );
 		}
 
 		return new Range( start, end );
@@ -245,7 +245,7 @@ export default class Range {
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( Range.createFromRange( this ) );
+			ranges.push( Range._createFromRange( this ) );
 		}
 
 		return ranges;
@@ -407,7 +407,7 @@ export default class Range {
 	 * @param {module:engine/view/range~Range} range Range to clone.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	static createFromRange( range ) {
+	static _createFromRange( range ) {
 		return new this( range.start, range.end );
 	}
 
@@ -433,7 +433,7 @@ export default class Range {
 	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	static createIn( element ) {
+	static _createIn( element ) {
 		return this.createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 
@@ -443,25 +443,10 @@ export default class Range {
 	 * @param {module:engine/view/item~Item} item
 	 * @returns {module:engine/view/range~Range}
 	 */
-	static createOn( item ) {
+	static _createOn( item ) {
 		const size = item.is( 'textProxy' ) ? item.offsetSize : 1;
 
-		return this.createFromPositionAndShift( Position.createBefore( item ), size );
-	}
-
-	/**
-	 * Creates a collapsed range at given {@link module:engine/view/position~Position position}
-	 * or on the given {@link module:engine/view/item~Item item}.
-	 *
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
-	 */
-	static createCollapsedAt( itemOrPosition, offset ) {
-		const start = Position.createAt( itemOrPosition, offset );
-		const end = Position.createFromPosition( start );
-
-		return new Range( start, end );
+		return this.createFromPositionAndShift( Position._createBefore( item ), size );
 	}
 }
 

@@ -28,8 +28,8 @@ view.change( writer => {
 	text1 = writer.createText( 'Foo bar baz' );
 	text2 = writer.createText( 'Foo bar baz' );
 
-	writer.insert( ViewPosition.createAt( editable1 ), text1 );
-	writer.insert( ViewPosition.createAt( editable2 ), text2 );
+	writer.insert( ViewPosition._createAt( editable1 ), text1 );
+	writer.insert( ViewPosition._createAt( editable2 ), text2 );
 } );
 
 document.getElementById( 'button1' ).addEventListener( 'click', () => {

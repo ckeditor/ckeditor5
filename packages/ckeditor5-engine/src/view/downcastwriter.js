@@ -8,11 +8,12 @@
  */
 
 import Position from './position';
+import Range from './range';
+import Selection from './selection';
 import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
-import Range from './range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -452,19 +453,19 @@ export default class DowncastWriter {
 		}
 
 		if ( position.isAtStart ) {
-			return Position.createBefore( element );
+			return Position._createBefore( element );
 		} else if ( !position.isAtEnd ) {
 			const newElement = element._clone( false );
 
-			this.insert( Position.createAfter( element ), newElement );
+			this.insert( Position._createAfter( element ), newElement );
 
-			const sourceRange = new Range( position, Position.createAt( element, 'end' ) );
+			const sourceRange = new Range( position, Position._createAt( element, 'end' ) );
 			const targetPosition = new Position( newElement, 0 );
 
 			this.move( sourceRange, targetPosition );
 		}
 
-		return Position.createAfter( element );
+		return Position._createAfter( element );
 	}
 
 	/**
@@ -575,10 +576,10 @@ export default class DowncastWriter {
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
-		const newPosition = lastChild instanceof Text ? Position.createAt( lastChild, 'end' ) : Position.createAt( prev, 'end' );
+		const newPosition = lastChild instanceof Text ? Position._createAt( lastChild, 'end' ) : Position._createAt( prev, 'end' );
 
-		this.move( Range.createIn( next ), Position.createAt( prev, 'end' ) );
-		this.remove( Range.createOn( next ) );
+		this.move( Range._createIn( next ), Position._createAt( prev, 'end' ) );
+		this.remove( Range._createOn( next ) );
 
 		return newPosition;
 	}
@@ -657,7 +658,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
 	 */
 	remove( rangeOrItem ) {
-		const range = rangeOrItem instanceof Range ? rangeOrItem : Range.createOn( rangeOrItem );
+		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
 
 		validateRangeContainer( range );
 
@@ -682,7 +683,7 @@ export default class DowncastWriter {
 		// Merge after removing.
 		const mergePosition = this.mergeAttributes( breakStart );
 		range.start = mergePosition;
-		range.end = Position.createFromPosition( mergePosition );
+		range.end = Position._createFromPosition( mergePosition );
 
 		// Return removed nodes.
 		return new DocumentFragment( removed );
@@ -716,7 +717,7 @@ export default class DowncastWriter {
 			// When current item matches to the given element.
 			if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 				// Create range on this element.
-				rangeToRemove = Range.createOn( item );
+				rangeToRemove = Range._createOn( item );
 				// When range starts inside Text or TextProxy element.
 			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
 				// We need to check if parent of this text matches to given element.
@@ -726,7 +727,7 @@ export default class DowncastWriter {
 
 				// If it is then create range inside this element.
 				if ( parentElement ) {
-					rangeToRemove = Range.createIn( parentElement );
+					rangeToRemove = Range._createIn( parentElement );
 				}
 			}
 
@@ -914,9 +915,9 @@ export default class DowncastWriter {
 	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
-		this.insert( Position.createAfter( viewElement ), newElement );
-		this.move( Range.createIn( viewElement ), Position.createAt( newElement, 0 ) );
-		this.remove( Range.createOn( viewElement ) );
+		this.insert( Position._createAfter( viewElement ), newElement );
+		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
+		this.remove( Range._createOn( viewElement ) );
 
 		return newElement;
 	}
@@ -937,6 +938,34 @@ export default class DowncastWriter {
 	 */
 	clearClonedElementsGroup( groupName ) {
 		this._cloneGroups.delete( groupName );
+	}
+
+	createPositionAt( itemOrPosition, offset ) {
+		return Position._createAt( itemOrPosition, offset );
+	}
+
+	createPositionAfter( item ) {
+		return Position._createAfter( item );
+	}
+
+	createPositionBefore( item ) {
+		return Position._createBefore( item );
+	}
+
+	createRange( start, end ) {
+		return new Range( start, end );
+	}
+
+	createRangeOn( item ) {
+		return Range._createOn( item );
+	}
+
+	createRangeIn( item ) {
+		return Range._createIn( item );
+	}
+
+	createSelection( selectable, placeOrOffset, options ) {
+		return new Selection( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -1094,8 +1123,8 @@ export default class DowncastWriter {
 		if ( rangeSpansOnAllChildren( range ) && this._wrapAttributeElement( attribute, range.start.parent ) ) {
 			const parent = range.start.parent;
 
-			const end = this.mergeAttributes( Position.createAfter( parent ) );
-			const start = this.mergeAttributes( Position.createBefore( parent ) );
+			const end = this.mergeAttributes( Position._createAfter( parent ) );
+			const start = this.mergeAttributes( Position._createBefore( parent ) );
 
 			return new Range( start, end );
 		}
@@ -1155,7 +1184,7 @@ export default class DowncastWriter {
 	_wrapPosition( position, attribute ) {
 		// Return same position when trying to wrap with attribute similar to position parent.
 		if ( attribute.isSimilar( position.parent ) ) {
-			return movePositionToTextNode( Position.createFromPosition( position ) );
+			return movePositionToTextNode( Position._createFromPosition( position ) );
 		}
 
 		// When position is inside text node - break it and place new position between two text nodes.
@@ -1399,12 +1428,12 @@ export default class DowncastWriter {
 
 		// There are no attributes to break and text nodes breaking is not forced.
 		if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
-			return Position.createFromPosition( position );
+			return Position._createFromPosition( position );
 		}
 
 		// Position's parent is container, so no attributes to break.
 		if ( isContainerOrFragment( positionParent ) ) {
-			return Position.createFromPosition( position );
+			return Position._createFromPosition( position );
 		}
 
 		// Break text and start again in new position.

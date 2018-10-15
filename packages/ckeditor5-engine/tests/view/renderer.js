@@ -3212,7 +3212,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createAfter( textNode ), new ViewAttributeElement( 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -3238,7 +3238,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createBefore( textNode ), new ViewAttributeElement( 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -3268,7 +3268,7 @@ describe( 'Renderer', () => {
 			const firstElement = container.getChild( 0 );
 
 			view.change( writer => {
-				writer.remove( ViewRange.createOn( firstElement ) );
+				writer.remove( ViewRange._createOn( firstElement ) );
 				writer.insert( new ViewPosition( container, 2 ), firstElement );
 			} );
 

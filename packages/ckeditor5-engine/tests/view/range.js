@@ -318,7 +318,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return false if ranges are equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = Range._createFromRange( range );
 
 			expect( range.containsRange( otherRange ) ).to.be.false;
 		} );
@@ -330,7 +330,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = Range._createFromRange( range );
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -378,7 +378,7 @@ describe( 'Range', () => {
 		describe( 'isIntersecting', () => {
 			it( 'should return true if given range is equal', () => {
 				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 2 );
-				const otherRange = Range.createFromRange( range );
+				const otherRange = Range._createFromRange( range );
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
@@ -656,7 +656,7 @@ describe( 'Range', () => {
 
 		describe( 'createIn', () => {
 			it( 'should return range', () => {
-				const range = Range.createIn( p );
+				const range = Range._createIn( p );
 
 				expect( range.start.parent ).to.deep.equal( p );
 				expect( range.start.offset ).to.deep.equal( 0 );
@@ -667,7 +667,7 @@ describe( 'Range', () => {
 
 		describe( 'createOn', () => {
 			it( 'should return range', () => {
-				const range = Range.createOn( p );
+				const range = Range._createOn( p );
 
 				expect( range.start.parent ).to.equal( div );
 				expect( range.start.offset ).to.equal( 0 );
@@ -678,34 +678,12 @@ describe( 'Range', () => {
 			it( 'should create a proper range on a text proxy', () => {
 				const text = new Text( 'foobar' );
 				const textProxy = new TextProxy( text, 2, 3 );
-				const range = Range.createOn( textProxy );
+				const range = Range._createOn( textProxy );
 
 				expect( range.start.parent ).to.equal( text );
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.parent ).to.equal( text );
 				expect( range.end.offset ).to.equal( 5 );
-			} );
-		} );
-
-		describe( 'createCollapsedAt()', () => {
-			it( 'should return new collapsed range at the given item position', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 0 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 0 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-
-			it( 'should return new collapse range at the given item position and offset', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 1 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 1 );
-
-				expect( range.isCollapsed ).to.be.true;
 			} );
 		} );
 
@@ -745,7 +723,7 @@ describe( 'Range', () => {
 		describe( 'createFromRange', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
 				const range = new Range( new Position( foz, 0 ), new Position( foz, 2 ) );
-				const clone = Range.createFromRange( range );
+				const clone = Range._createFromRange( range );
 
 				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense

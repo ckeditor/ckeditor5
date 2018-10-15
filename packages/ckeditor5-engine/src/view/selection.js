@@ -168,7 +168,7 @@ export default class Selection {
 		const range = this._ranges[ this._ranges.length - 1 ];
 		const anchor = this._lastRangeBackward ? range.end : range.start;
 
-		return Position.createFromPosition( anchor );
+		return Position._createFromPosition( anchor );
 	}
 
 	/**
@@ -184,7 +184,7 @@ export default class Selection {
 		const range = this._ranges[ this._ranges.length - 1 ];
 		const focus = this._lastRangeBackward ? range.start : range.end;
 
-		return Position.createFromPosition( focus );
+		return Position._createFromPosition( focus );
 	}
 
 	/**
@@ -236,7 +236,7 @@ export default class Selection {
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
+			yield Range._createFromRange( range );
 		}
 	}
 
@@ -257,7 +257,7 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first ? Range._createFromRange( first ) : null;
 	}
 
 	/**
@@ -276,7 +276,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last ? Range._createFromRange( last ) : null;
 	}
 
 	/**
@@ -289,7 +289,7 @@ export default class Selection {
 	getFirstPosition() {
 		const firstRange = this.getFirstRange();
 
-		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
+		return firstRange ? Position._createFromPosition( firstRange.start ) : null;
 	}
 
 	/**
@@ -302,7 +302,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? Position._createFromPosition( lastRange.end ) : null;
 	}
 
 	/**
@@ -515,11 +515,11 @@ export default class Selection {
 					'selection.setTo requires the second parameter when the first parameter is a node.'
 				);
 			} else if ( placeOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
+				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
+				range = Range._createOn( selectable );
 			} else {
-				range = Range.createCollapsedAt( selectable, placeOrOffset );
+				range = new Range( Position._createAt( selectable, placeOrOffset ) );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -563,7 +563,7 @@ export default class Selection {
 			);
 		}
 
-		const newFocus = Position.createAt( itemOrPosition, offset );
+		const newFocus = Position._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
@@ -684,7 +684,7 @@ export default class Selection {
 			}
 		}
 
-		this._ranges.push( Range.createFromRange( range ) );
+		this._ranges.push( Range._createFromRange( range ) );
 	}
 
 	/**

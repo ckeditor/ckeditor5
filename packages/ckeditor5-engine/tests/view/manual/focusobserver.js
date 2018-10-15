@@ -31,8 +31,8 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 } );
 
 view.change( writer => {
-	writer.insert( Position.createAt( editable1 ), writer.createText( 'First editable.' ) );
-	writer.insert( Position.createAt( editable2 ), writer.createText( 'Second editable.' ) );
+	writer.insert( Position._createAt( editable1 ), writer.createText( 'First editable.' ) );
+	writer.insert( Position._createAt( editable2 ), writer.createText( 'Second editable.' ) );
 
 	writer.setSelection( editable1 );
 } );

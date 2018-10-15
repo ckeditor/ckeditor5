@@ -173,28 +173,6 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createCollapsedAt()', () => {
-			it( 'should return new collapsed range at the given item position', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 0 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 0 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-
-			it( 'should return new collapse range at the given item position and offset', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 1 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 1 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-		} );
-
 		describe( 'createFromParentsAndOffsets()', () => {
 			it( 'should return range', () => {
 				const range = new Range( Position._createAt( root, 0 ), Position._createAt( p, 2 ) );

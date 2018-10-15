@@ -464,7 +464,7 @@ describe( 'DataController', () => {
 			const firstViewElement = viewDocumentFragment.getChild( 0 );
 
 			const modelRange = ModelRange._createOn( firstModelElement );
-			const viewRange = ViewRange.createOn( firstViewElement );
+			const viewRange = ViewRange._createOn( firstViewElement );
 
 			const mappedModelRange = data.mapper.toModelRange( viewRange );
 			const mappedViewRange = data.mapper.toViewRange( modelRange );
