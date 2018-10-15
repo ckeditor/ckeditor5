@@ -8,7 +8,6 @@
  */
 
 import HighlightStack from './highlightstack';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -314,6 +313,6 @@ function addSelectionHandler( editable, writer ) {
 	} );
 
 	// Append the selection handler into the widget wrapper.
-	writer.insert( ViewPosition.createAt( editable, 0 ), selectionHandler );
+	writer.insert( writer.createPositionAt( editable, 0 ), selectionHandler );
 	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }

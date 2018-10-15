@@ -9,8 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
 import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -413,7 +411,7 @@ function isSelectAllKeyCode( domEventData ) {
 // @returns {Boolean}
 function isInsideNestedEditable( element ) {
 	while ( element ) {
-		if ( element instanceof ViewEditableElement && !( element instanceof RootEditableElement ) ) {
+		if ( !!element && element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
 			return true;
 		}
 

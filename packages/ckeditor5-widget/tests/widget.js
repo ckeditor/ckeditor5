@@ -10,7 +10,6 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -87,7 +86,7 @@ describe( 'Widget', () => {
 						view: ( modelItem, viewWriter ) => {
 							const b = viewWriter.createAttributeElement( 'b' );
 							const div = viewWriter.createContainerElement( 'div' );
-							viewWriter.insert( ViewPosition.createAt( div, 0 ), b );
+							viewWriter.insert( viewWriter.createPositionAt( div, 0 ), b );
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
