@@ -10,9 +10,6 @@ import ImageEditing from '../../src/image/imageediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -153,9 +150,9 @@ describe( 'ImageCaptionEditing', () => {
 						conversionApi.consumable.consume( data.item, 'insert' );
 
 						const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
-						const viewElement = new ViewAttributeElement( 'span' );
+						const viewElement = conversionApi.writer.createAttributeElement( 'span' );
 
-						const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+						const viewPosition = conversionApi.writer.createPositionAt( imageFigure, 'end' );
 						conversionApi.mapper.bindElements( data.item, viewElement );
 						conversionApi.writer.insert( viewPosition, viewElement );
 					},

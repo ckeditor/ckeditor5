@@ -21,12 +21,10 @@ import { toImageWidget } from './utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-
 /**
  * The image engine plugin.
  * It registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
- * It also egisters converters for editing and data pipelines.
+ * It also registers converters for editing and data pipelines.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -120,7 +118,7 @@ export function createImageViewElement( writer ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 	const figure = writer.createContainerElement( 'figure', { class: 'image' } );
 
-	writer.insert( ViewPosition.createAt( figure, 0 ), emptyElement );
+	writer.insert( writer.createPositionAt( figure, 0 ), emptyElement );
 
 	return figure;
 }

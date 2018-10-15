@@ -86,7 +86,7 @@ describe( 'ImageUploadEditing', () => {
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot() ), 1, model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
@@ -119,7 +119,7 @@ describe( 'ImageUploadEditing', () => {
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot() ), 1, model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
@@ -144,7 +144,7 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( command.isEnabled ).to.be.false;
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot() ), 0, model.createPositionAt( doc.getRoot(), 0 ) );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 0 ), model.createPositionAt( doc.getRoot(), 0 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
@@ -206,7 +206,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot() ), 1, model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
@@ -245,7 +245,7 @@ describe( 'ImageUploadEditing', () => {
 
 		fileRepository.createUploadAdapter = undefined;
 
-		const targetRange = model.createRange( model.createPositionAt( doc.getRoot() ), 1, model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		expect( () => {
@@ -287,7 +287,7 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				'<img></img>' +
+			'<img></img>' +
 			'</figure>]' );
 	} );
 
@@ -525,7 +525,7 @@ describe( 'ImageUploadEditing', () => {
 			model.document.once( 'change', () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
+					'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
 					'</figure>]<p>foo bar</p>'
 				);
 				expect( loader.status ).to.equal( 'idle' );

@@ -8,8 +8,6 @@
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import Position from '@ckeditor/ckeditor5-engine/src/view/position';
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -106,8 +104,8 @@ describe( 'ImageLoadObserver', () => {
 		view.change( writer => {
 			const text = writer.createText( 'foo', { b: true } );
 
-			writer.insert( Position.createAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 ), text );
-			writer.wrap( Range.createOn( text ), writer.createAttributeElement( 'b' ) );
+			writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 ), text );
+			writer.wrap( writer.createRangeOn( text ), writer.createAttributeElement( 'b' ) );
 		} );
 
 		sinon.assert.calledWith( mapSpy, viewP );
