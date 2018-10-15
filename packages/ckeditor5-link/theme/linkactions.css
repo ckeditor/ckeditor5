@@ -18,7 +18,7 @@
 		}
 	}
 
-	@mixin ck-media-narrow {
+	@mixin ck-media-phone {
 		flex-wrap: wrap;
 
 		& .ck-link-actions__preview {
