@@ -16,7 +16,7 @@
 		margin-left: var(--ck-spacing-standard);
 	}
 
-	@mixin ck-media-narrow {
+	@mixin ck-media-phone {
 		padding: 0;
 		width: calc(.8 * var(--ck-input-text-width));
 

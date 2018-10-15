@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-@define-mixin ck-media-narrow {
-	@media screen and (max-width: 414px) {
+@define-mixin ck-media-phone {
+	@media screen and (max-width: 600px) {
 		@mixin-content;
 	}
 }
