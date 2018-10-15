@@ -43,13 +43,13 @@ export function isWidget( element ) {
 }
 
 /**
- * Converts given {@link module:engine/view/element~Element} to widget in following way:
+ * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
- * * sets `contenteditable` attribute to `"true"`,
- * * adds `ck-widget` CSS class,
- * * adds custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
- * * adds custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
- * * implements {@link ~setHighlightHandling view highlight on widgets}.
+ * * sets the `contenteditable` attribute to `"true"`,
+ * * adds the `ck-widget` CSS class,
+ * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
+ * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
+ * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *
  * This function needs to be used in conjuction with {@link module:engine/conversion/downcast-converters downcast converters}
  * like {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
@@ -76,16 +76,16 @@ export function isWidget( element ) {
  *				}
  *			} ) );
  *
- * See a full source code of a widget (with nested editable) schema definition and converters in
+ * See the full source code of the widget (with a nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
  *
  * @param {module:engine/view/element~Element} element
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {Object} [options={}]
- * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
+ * @param {String|Function} [options.label] Element's label provided to the {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string. It represents the widget for assistive technologies (like screen readers).
  * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
- * @returns {module:engine/view/element~Element} Returns same element.
+ * @returns {module:engine/view/element~Element} Returns the same element.
  */
 export function toWidget( element, writer, options = {} ) {
 	// The selection on Edge behaves better when the whole editor contents is in a single contentedible element.
@@ -177,12 +177,12 @@ export function getLabel( element ) {
 }
 
 /**
- * Adds functionality to a provided {@link module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+ * Adds functionality to the provided {@link module:engine/view/editableelement~EditableElement} to act as a widget's editable:
  *
- * * sets `contenteditable` as `true` when {@link module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
- * otherwise set `false`,
- * * adds `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
- * * adds `ck-editor__nested-editable_focused` CSS class when editable is focused and removes it when it is blurred.
+ * * sets the `contenteditable` attribute to `true` when {@link module:engine/view/editableelement~EditableElement#isReadOnly} is `false`,
+ * otherwise sets it to `false`,
+ * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
+ * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
@@ -208,12 +208,12 @@ export function getLabel( element ) {
  *				}
  *			} ) );
  *
- * See a full source code of a widget (with nested editable) schema definition and converters in
+ * See the full source code of the widget (with nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
+ * @returns {module:engine/view/editableelement~EditableElement} Returns the same element that was provided in the `editable` parameter
  */
 export function toWidgetEditable( editable, writer ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
