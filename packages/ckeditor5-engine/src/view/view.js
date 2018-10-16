@@ -308,16 +308,19 @@ export default class View {
 	 * Change method is the primary way of changing the view. You should use it to modify any node in the view tree.
 	 * It makes sure that after all changes are made view is rendered to DOM. It prevents situations when DOM is updated
 	 * when view state is not yet correct. It allows to nest calls one inside another and still perform single rendering
-	 * after all changes are applied.
+	 * after all changes are applied. It also returns the result of its callback.
 	 *
-	 *		view.change( writer => {
-	 *			writer.insert( position1, writer.createText( 'foo' ) );
+	 *		const text = view.change( writer => {
+	 *			const newText = writer.createText( 'foo' );
+	 *			writer.insert( position1, newText );
 	 *
 	 *			view.change( writer => {
 	 *				writer.insert( position2, writer.createText( 'bar' ) );
 	 *			} );
 	 *
 	 * 			writer.remove( range );
+	 *
+	 * 			return newText;
 	 *		} );
 	 *
 	 * Change block is executed immediately.
@@ -329,6 +332,7 @@ export default class View {
 	 * change block is used after rendering to DOM has started.
 	 *
 	 * @param {Function} callback Callback function which may modify the view.
+	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
 		if ( this._renderingInProgress || this._postFixersInProgress ) {
@@ -350,15 +354,13 @@ export default class View {
 
 		// Recursive call to view.change() method - execute listener immediately.
 		if ( this._ongoingChange ) {
-			callback( this._writer );
-
-			return;
+			return callback( this._writer );
 		}
 
 		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
 		// event for all nested calls.
 		this._ongoingChange = true;
-		callback( this._writer );
+		const callbackResult = callback( this._writer );
 		this._ongoingChange = false;
 
 		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
@@ -370,6 +372,8 @@ export default class View {
 
 			this.fire( 'render' );
 		}
+
+		return callbackResult;
 	}
 
 	/**
