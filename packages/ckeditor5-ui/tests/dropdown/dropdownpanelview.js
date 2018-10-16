@@ -50,6 +50,14 @@ describe( 'DropdownPanelView', () => {
 					view.isVisible = false;
 					expect( view.element.classList.contains( 'ck-dropdown__panel-visible' ) ).to.be.false;
 				} );
+
+				it( 'reacts on view#position', () => {
+					expect( view.element.classList.contains( 'ck-dropdown__panel_se' ) ).to.be.true;
+
+					view.position = 'nw';
+					expect( view.element.classList.contains( 'ck-dropdown__panel_se' ) ).to.be.false;
+					expect( view.element.classList.contains( 'ck-dropdown__panel_nw' ) ).to.be.true;
+				} );
 			} );
 
 			describe( 'listeners', () => {
