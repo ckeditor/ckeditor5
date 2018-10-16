@@ -371,7 +371,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		writer.insert( listItem, splitResult.position );
 
-		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi, writer );
+		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
 
 		conversionStore.indent--;
 
@@ -806,9 +806,8 @@ function generateLiInUl( modelItem, conversionApi ) {
 // @param {module:engine/model/element~Element} listItemModel List item model element to which converted children will be inserted.
 // @param {Iterable.<module:engine/view/node~Node>} viewChildren View elements which will be converted.
 // @param {Object} conversionApi Conversion interface to be used by the callback.
-// @param {module:engine/model/writer~Writer} writer Writer used to manipulate model elements.
 // @returns {module:engine/model/position~Position} Position on which next elements should be inserted after children conversion.
-function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi, writer ) {
+function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi ) {
 	let lastListItem = listItemModel;
 	let nextPosition = ModelPosition.createAfter( lastListItem );
 
@@ -824,6 +823,8 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			const result = conversionApi.convertItem( child, ModelPosition.createAt( lastListItem, 'end' ) );
 			const convertedChild = Array.from( result.modelRange )[ 0 ];
 
+			nextPosition = ModelPosition.createAt( lastListItem, 'end' );
+
 			// If there is a block element child being converted it will split the current list item, for example:
 			//
 			//		<li><p>Foo</p></li>
@@ -837,8 +838,8 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 				nextPosition = result.modelCursor;
 				lastListItem = nextPosition.getAncestors().pop();
 
-				// Depending on the used converter for block elements, usually the position (marked as #)
-				// points to the second list item after conversion:
+				// Depending on the used converter for block elements, usually the position (`result.modelCursor`
+				// marked as # below) points to the second list item after conversion:
 				//
 				//		`<li><p>Foo</p></li>` -> `<listItem></listItem><paragraph>Foo</paragraph><listItem>#</listItem>`
 				//
@@ -846,31 +847,11 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 				//
 				//		`<li><h2>Foo</h2></li>` -> `<listItem></listItem><paragraph>Foo#</paragraph><listItem></listItem>`
 				//
-				// We need to check fo such cases and use proper list item and position based on it.
+				// We need to check for such cases and use proper list item and position based on it.
 				if ( !lastListItem.is( 'listItem' ) && lastListItem.nextSibling && lastListItem.nextSibling.is( 'listItem' ) ) {
 					lastListItem = lastListItem.nextSibling;
 					nextPosition = ModelPosition.createAt( lastListItem, 'end' );
 				}
-			// If list item was split by the block element, the text from splitted list item needs to be moved.
-			//
-			//		`<li>Foo<p>123</p>Bar</li>`
-			//
-			// Is converted to:
-			//
-			//		<listItem>FooBar</listItem><paragraph>123</paragraph><listItem></listItem>
-			//
-			// So the text which was after splitting element (`<p>` in this case) should be move to second list item:
-			//
-			//		<listItem>Foo</listItem><paragraph>123</paragraph><listItem>Bar</listItem>
-			} else if ( convertedChild.type === 'text' && listItemModel !== lastListItem ) {
-				// 1. Remove text part from the list item positioned before splitting element.
-				writer.remove( ModelRange.createOn( convertedChild.item ) );
-
-				// 2. Insert text part into list item positioned after splitting element.
-				writer.insert( convertedChild.item, nextPosition );
-
-				// 3. Update 'nextPosition' so it points after last list item.
-				nextPosition = ModelPosition.createAfter( lastListItem );
 			}
 		}
 	}
