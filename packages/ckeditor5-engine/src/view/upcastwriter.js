@@ -7,7 +7,9 @@
  * @module module:engine/view/upcastwriter
  */
 
+import DocumentFragment from './documentfragment';
 import Element from './element';
+import Text from './text';
 import { isPlainObject } from 'lodash-es';
 
 /**
@@ -17,6 +19,49 @@ import { isPlainObject } from 'lodash-es';
  * see {@link module:engine/view/downcastwriter~DowncastWriter writer}.
  */
 export default class UpcastWriter {
+	/**
+	 * Creates new {@link module:engine/view/documentfragment~DocumentFragment}.
+	 *
+	 * @see module:engine/view/documentfragment~DocumentFragment#constructor
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * List of nodes to be inserted into created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} Created document fragment.
+	 */
+	createDocumentFragment( children ) {
+		return new DocumentFragment( children );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/element~Element}.
+	 *
+	 * Attributes can be passed in various formats:
+	 *
+	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
+	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		new Element( 'div', mapOfAttributes ); // map
+	 *
+	 * @see module:engine/view/element~Element#constructor
+	 * @param {String} name Node name.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * List of nodes to be inserted into created element.
+	 * @returns {module:engine/view/element~Element} Created element.
+	 */
+	createElement( name, attrs, children ) {
+		return new Element( name, attrs, children );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/text~Text}.
+	 *
+	 * @see module:engine/view/text~Text#constructor
+	 * @param {String} data Text
+	 * @returns {module:engine/view/text~Text} Created text.
+	 */
+	createText( data ) {
+		return new Text( data );
+	}
+
 	/**
 	 * Clones provided element.
 	 *

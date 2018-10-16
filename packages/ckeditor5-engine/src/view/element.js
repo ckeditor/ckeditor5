@@ -53,8 +53,9 @@ export default class Element extends Node {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement} for inline element,
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} for block element,
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement} for editable element,
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} for empty element or
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} for UI element instead.
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} for empty element,
+	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} for UI element instead or
+	 * {@link module:engine/view/upcastwriter~UpcastWriter#createElement} for general element creation.
 	 *
 	 * @protected
 	 * @param {String} name Node name.
