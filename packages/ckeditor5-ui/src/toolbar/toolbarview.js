@@ -14,8 +14,14 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import '../../theme/components/toolbar/toolbar.css';
+import doubleRightArrowIcon from '@ckeditor/ckeditor5-core/theme/icons/double-right-arrow.svg';
+
+const SUDDEN_SCROLL_GROUP_SAFETY_OFFSET = 25;
 
 /**
  * The toolbar view class.
@@ -57,6 +63,19 @@ export default class ToolbarView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
+		 * The dropdown that aggregates items that wrap to the next line. It is displayed
+		 * at the end of the toolbar and offers a nested toolbar which displays items
+		 * that would normally be wrapped to the next line.
+		 *
+		 * **Note:** It is created on demand when the space in the toolbar is scarce and only
+		 * if {@link #enableWrappedItemsGroupping} has been called for this dropdown.
+		 *
+		 * @readonly
+		 * @member {module:ui/dropdown/dropdownview~DropdownView} #wrappedItemsDropdown
+		 */
+		this.wrappedItemsDropdown = null;
+
+		/**
 		 * Controls the orientation of toolbar items.
 		 *
 		 * @observable
@@ -91,6 +110,23 @@ export default class ToolbarView extends View {
 				focusNext: [ 'arrowright', 'arrowdown' ]
 			}
 		} );
+
+		/**
+		 * A map that connects views belonging to {@link #items} with their Rects.
+		 *
+		 * It makes sense only when {@link #enableWrappedItemsGroupping} has been used.
+		 * When a toolbar item lands in the {@link #wrappedItemsDropdown}, it saves the item's
+		 * DOM rect so the algorithm can use it later on to decide if that particular item
+		 * can be "ungroupped" from the dropdown when there's enough space in the toolbar.
+		 *
+		 * Because "groupped" items in the dropdown are invisible, their Rects cannot be obtained, so
+		 * decision about their location is made using the Rect cached in this map beforehand.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {Map.<module:ui/view~View,module:utils/dom/rect~Rect>}
+		 */
+		this._grouppedItemRects = new Map();
 
 		this.setTemplate( {
 			tag: 'div',
@@ -133,6 +169,19 @@ export default class ToolbarView extends View {
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		// The dropdown may not be in #items at the moment of toolbar destruction
+		// so let's make sure it's actually destroyed along with the toolbar.
+		if ( this.wrappedItemsDropdown ) {
+			this.wrappedItemsDropdown.destroy();
+		}
+
+		return super.destroy();
 	}
 
 	/**
@@ -186,6 +235,193 @@ export default class ToolbarView extends View {
 				);
 			}
 		} );
+	}
+
+	/**
+	 * Enables the toolbar functionality that prevents its {@link #items} from wrapping to the next line
+	 * when the space becomes scarce. Instead, the toolbar items are grouped under the
+	 * {@link #wrappedItemsDropdown dropdown} displayed at the end of the space, which offers its own
+	 * nested toolbar.
+	 *
+	 * When called, the toolbar will automatically analyze the location of its children and "group"
+	 * them in the dropdown if necessary. It will also observe the browser window for size changes in
+	 * the future and respond to them by grouping more items or reverting already grouped back to the
+	 * main {@link #element}, depending on the visual space available.
+	 *
+	 * **Note:** Calling this method **before** the toolbar {@link #element} is in a DOM tree and visible (i.e.
+	 * not `display: none`) will cause lots of warnings in the console from the utilities analyzing
+	 * the geometry of the toolbar items — they depend on the toolbar to be visible in DOM.
+	 */
+	enableWrappedItemsGroupping() {
+		this._checkItemsWrappingAndUnwrapping();
+
+		this.listenTo( global.window, 'resize', () => {
+			this._checkItemsWrappingAndUnwrapping();
+		} );
+	}
+
+	/**
+	 * Returns the last of {@link #items} which is not {@link #wrappedItemsDropdown}.
+	 *
+	 * @protected
+	 */
+	get _lastRegularItem() {
+		return this.items.get( this.items.length - 2 );
+	}
+
+	/**
+	 * Returns `true` when {@link #wrappedItemsDropdown} exists and currently is in {@link #items}.
+	 * `false` otherwise.
+	 *
+	 * @protected
+	 */
+	get _isWrappedItemsDropdownInItems() {
+		return this.wrappedItemsDropdown && this.items.getIndex( this.wrappedItemsDropdown ) > -1;
+	}
+
+	/**
+	 * Creates the {@link #wrappedItemsDropdown} on demand. Used when the space in the toolbar
+	 * is scarce and some items start wrapping and need grouping.
+	 *
+	 * See {@link #_groupLastRegularItem}.
+	 *
+	 * @protected
+	 */
+	_createWrappedItemsDropdown() {
+		const t = this.t;
+		const locale = this.locale;
+
+		this.wrappedItemsDropdown = createDropdown( locale );
+		this.wrappedItemsDropdown.class = 'ck-toolbar__groupped-dropdown';
+		addToolbarToDropdown( this.wrappedItemsDropdown, [] );
+
+		this.wrappedItemsDropdown.buttonView.set( {
+			label: t( 'Show more items' ),
+			tooltip: true,
+			icon: doubleRightArrowIcon
+		} );
+	}
+
+	/**
+	 * When called it will remove the last {@link #_lastRegularItem regular item} from {@link #items}
+	 * and move it to the {@link #wrappedItemsDropdown}.
+	 *
+	 * If the dropdown does not exist or does not
+	 * belong to {@link #items} it is created and located at the end of the collection.
+	 *
+	 * @protected
+	 */
+	_groupLastRegularItem() {
+		// Add the groupped list dropdown if not already there.
+		if ( !this._isWrappedItemsDropdownInItems ) {
+			if ( !this.wrappedItemsDropdown ) {
+				this._createWrappedItemsDropdown();
+			}
+
+			this.items.add( this.wrappedItemsDropdown );
+		}
+
+		const lastItem = this._lastRegularItem;
+
+		this._grouppedItemRects.set( lastItem, new Rect( lastItem.element ) );
+
+		this.wrappedItemsDropdown.toolbarView.items.add( this.items.remove( lastItem ), 0 );
+	}
+
+	/**
+	 * Moves the very first item from the toolbar belonging to {@link #wrappedItemsDropdown} back
+	 * to the {@link #items} collection.
+	 *
+	 * In some way, it's the opposite of {@link #_groupLastRegularItem}.
+	 *
+	 * @protected
+	 */
+	_ungroupFirstGrouppedItem() {
+		this.items.add( this.wrappedItemsDropdown.toolbarView.items.remove( 0 ), this.items.length - 1 );
+	}
+
+	/**
+	 * When called it will try to moves the very first item from the toolbar belonging to {@link #wrappedItemsDropdown}
+	 * back to the {@link #items} collection.
+	 *
+	 * Whether the items is moved or not, it depends on the remaining space in the toolbar, which is
+	 * verified using {@link #_grouppedItemRects}.
+	 *
+	 * @protected
+	 */
+	_tryUngroupLastItem() {
+		const firstGrouppedItem = this.wrappedItemsDropdown.toolbarView.items.get( 0 );
+		const firstGrouppedItemRect = this._grouppedItemRects.get( firstGrouppedItem );
+		const wrappedItemsDropdownRect = new Rect( this.wrappedItemsDropdown.element );
+		const lastItemRect = new Rect( this._lastRegularItem.element );
+
+		// If there's only one grouped item, then when ungrouped, it should replace the wrapped items
+		// dropdown. Consider that fact when analyzing rects, because the conditions are different.
+		if ( this.wrappedItemsDropdown.toolbarView.items.length === 1 ) {
+			if ( lastItemRect.right + firstGrouppedItemRect.width + SUDDEN_SCROLL_GROUP_SAFETY_OFFSET < wrappedItemsDropdownRect.right ) {
+				this._ungroupFirstGrouppedItem();
+				this.items.remove( this.wrappedItemsDropdown );
+			}
+		} else if ( lastItemRect.right + firstGrouppedItemRect.width + SUDDEN_SCROLL_GROUP_SAFETY_OFFSET < wrappedItemsDropdownRect.left ) {
+			this._ungroupFirstGrouppedItem();
+		}
+	}
+
+	/**
+	 * Returns `true` when any of toolbar {@link #items} wrapped visually to the next line.
+	 * `false` otherwise.
+	 *
+	 * @protected
+	 */
+	get _areItemsWrapping() {
+		let previousItemRect;
+
+		for ( const item of this.items ) {
+			const itemRect = new Rect( item.element );
+
+			if ( previousItemRect ) {
+				if ( itemRect.top > previousItemRect.bottom ) {
+					return true;
+				}
+			}
+
+			previousItemRect = itemRect;
+		}
+
+		return false;
+	}
+
+	/**
+	 * When called it will check if any of the {@link #items} wraps to the next line and if so, it will
+	 * move it to the {@link #wrappedItemsDropdown}.
+	 *
+	 * At the same time, it will also check if there is enough space in the toolbar for the first of the
+	 * "grouped" items in the {@link #wrappedItemsDropdown} to be returned back.
+	 *
+	 * @protected
+	 */
+	_checkItemsWrappingAndUnwrapping() {
+		if ( !this.element || !this.element.parentNode ) {
+			return;
+		}
+
+		while ( this._areItemsWrapping ) {
+			this._groupLastRegularItem();
+		}
+
+		if ( this._isWrappedItemsDropdownInItems ) {
+			// Post-fixing just in case the page content grows up and a scrollbar appears.
+			// If the last item is too close to the wrapped items dropdown, put it in the
+			// dropdown too: if scrollbar shows up, it could push the dropdown to the next line.
+			const wrappedItemsDropdownRect = new Rect( this.wrappedItemsDropdown.element );
+			const lastItemRect = new Rect( this._lastRegularItem.element );
+
+			if ( lastItemRect.right + SUDDEN_SCROLL_GROUP_SAFETY_OFFSET > wrappedItemsDropdownRect.left ) {
+				this._groupLastRegularItem();
+			}
+
+			this._tryUngroupLastItem();
+		}
 	}
 }
 
