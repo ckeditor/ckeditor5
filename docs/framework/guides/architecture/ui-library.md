@@ -388,7 +388,7 @@ const items = new Collection();
 items.add( {
 	type: 'button',
 	model: new Model( {
-		withText: 'true',
+		withText: true,
 		label: 'Foo'
 	} )
 } );
@@ -396,7 +396,7 @@ items.add( {
 items.add( {
 	type: 'button',
 	model: new Model( {
-		withText: 'true',
+		withText: true,
 		label: 'Bar'
 	} )
 } );
