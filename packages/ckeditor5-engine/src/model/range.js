@@ -517,13 +517,16 @@ export default class Range {
 	 */
 	_getTransformedBySplitOperation( operation ) {
 		const start = this.start._getTransformedBySplitOperation( operation );
-
-		let end;
+		let end = this.end._getTransformedBySplitOperation( operation );
 
 		if ( this.end.isEqual( operation.insertionPosition ) ) {
 			end = this.end.getShiftedBy( 1 );
-		} else {
-			end = this.end._getTransformedBySplitOperation( operation );
+		}
+
+		// Below may happen when range contains graveyard element used by split operation.
+		if ( start.root != end.root ) {
+			// End position was next to the moved graveyard element and was moved with it. Fix it.
+			end = this.end.getShiftedBy( -1 );
 		}
 
 		return new Range( start, end );
