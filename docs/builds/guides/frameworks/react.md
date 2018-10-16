@@ -12,6 +12,12 @@ CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds}
 
 The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application .
 
+<info-box warning>
+	We are aware that [the latest version of `create-react-app`](https://reactjs.org/blog/2018/10/01/create-react-app-v2.html) does not work with CKEditor 5 Builds. For more details, see [the issue which is about support `create-react-app@2`](https://github.com/ckeditor/ckeditor5-react/issues/40).
+
+	Until the issue isn't resolved, we recommend using `create-react-app@1`.
+</info-box>
+
 ## Quick start
 
 Install the [CKEditor 5 rich text editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
@@ -141,7 +147,7 @@ This guide assumes that you are using [Create React App CLI](https://github.com/
 Install React CLI:
 
 ```bash
-npm install -g create-react-app
+npm install -g create-react-app@1
 ```
 
 Create your project using the CLI and go to the project's directory:
