@@ -56,7 +56,7 @@ function enterBlock( model, writer, selection, schema ) {
 	}
 
 	if ( isSelectionEmpty ) {
-		splitBlock( writer, selection, range.start );
+		splitBlock( writer, range.start );
 	} else {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		const isContainedWithinOneElement = ( startElement == endElement );
@@ -68,7 +68,7 @@ function enterBlock( model, writer, selection, schema ) {
 			//
 			// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
 			if ( isContainedWithinOneElement ) {
-				splitBlock( writer, selection, selection.focus );
+				splitBlock( writer, selection.focus );
 			}
 			// Selection over multiple elements.
 			//
@@ -80,23 +80,7 @@ function enterBlock( model, writer, selection, schema ) {
 	}
 }
 
-function splitBlock( writer, selection, splitPos ) {
-	const oldElement = splitPos.parent;
-	const newElement = new oldElement.constructor( oldElement.name, oldElement.getAttributes() );
-
-	if ( splitPos.isAtEnd ) {
-		// If the split is at the end of element, instead of splitting, just create a clone of position's parent
-		// element and insert it after split element. The result is the same but less operations are done
-		// and it's more semantically correct (when it comes to operational transformation).
-		writer.insert( newElement, splitPos.parent, 'after' );
-	} else if ( splitPos.isAtStart ) {
-		// If the split is at the start of element, instead of splitting, just create a clone of position's parent
-		// element and insert it before split element. The result is the same but less operations are done
-		// and it's more semantically correct (when it comes to operational transformation).
-		writer.insert( newElement, splitPos.parent, 'before' );
-	} else {
-		writer.split( splitPos );
-	}
-
+function splitBlock( writer, splitPos ) {
+	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling, 0 );
 }

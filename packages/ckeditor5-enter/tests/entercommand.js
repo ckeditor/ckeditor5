@@ -5,7 +5,6 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import EnterCommand from '../src/entercommand';
-import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'EnterCommand', () => {
@@ -46,7 +45,7 @@ describe( 'EnterCommand', () => {
 	} );
 
 	describe( 'EnterCommand', () => {
-		it( 'enters a block using parent batch', () => {
+		it( 'splits a block using parent batch', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			model.change( writer => {
@@ -54,26 +53,6 @@ describe( 'EnterCommand', () => {
 				editor.execute( 'enter' );
 				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
-		} );
-
-		it( 'creates InsertOperation if enter is at the beginning of block', () => {
-			setData( model, '<p>[]foo</p>' );
-
-			editor.execute( 'enter' );
-
-			const ops = doc.history.getOperations();
-
-			expect( ops[ ops.length - 1 ] ).to.be.instanceof( InsertOperation );
-		} );
-
-		it( 'creates InsertOperation if enter is at the end of block', () => {
-			setData( model, '<p>foo[]</p>' );
-
-			editor.execute( 'enter' );
-
-			const operations = Array.from( doc.history.getOperations() );
-
-			expect( operations[ operations.length - 1 ] ).to.be.instanceof( InsertOperation );
 		} );
 	} );
 
