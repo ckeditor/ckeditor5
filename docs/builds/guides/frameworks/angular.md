@@ -32,14 +32,6 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 npm install --save-dev @ckeditor/ckeditor5-build-classic
 ```
 
-**Note:** You may need to allow external JavaScript in your project's `tsconfig.json` for the builds to work properly:
-
-```json
-"compilerOptions": {
-	"allowJs": true
-}
-```
-
 Now, add `CKEditorModule` to your application module imports:
 
 ```ts
