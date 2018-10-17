@@ -22,8 +22,10 @@ const commonOptions = {
 const editorBuildsGlob = '@ckeditor/ckeditor5-build-*';
 
 const optionsForDependencies = Object.assign( {}, commonOptions, {
-	skipPackages: editorBuildsGlob
+	skipPackages: editorBuildsGlob,
+	skipMainRepository: true
 } );
+
 const optionsForBuilds = Object.assign( {}, commonOptions, {
 	scope: editorBuildsGlob
 } );
