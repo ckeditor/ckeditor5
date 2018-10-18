@@ -31,7 +31,15 @@ const env = {
 	 * @static
 	 * @member {Boolean} module:utils/env~env#isEdge
 	 */
-	isEdge: isEdge( userAgent )
+	isEdge: isEdge( userAgent ),
+
+	/**
+	 * Indicates that the application is running in Firefox (Gecko).
+	 *
+	 * @static
+	 * @member {Boolean} module:utils/env~env#isEdge
+	 */
+	isGecko: isGecko( userAgent )
 };
 
 export default env;
@@ -54,4 +62,14 @@ export function isMac( userAgent ) {
  */
 export function isEdge( userAgent ) {
 	return !!userAgent.match( /edge\/(\d+.?\d*)/ );
+}
+
+/**
+ * Checks if User Agent represented by the string is Firefox (Gecko).
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Firefox or not.
+ */
+export function isGecko( userAgent ) {
+	return !!userAgent.match( /gecko\/\d+/ );
 }

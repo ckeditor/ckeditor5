@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import env, { isEdge, isMac } from '../src/env';
+import env, { isEdge, isMac, isGecko } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -26,6 +26,12 @@ describe( 'Env', () => {
 	describe( 'isEdge', () => {
 		it( 'is a boolean', () => {
 			expect( env.isEdge ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isGecko', () => {
+		it( 'is a boolean', () => {
+			expect( env.isGecko ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -72,6 +78,28 @@ describe( 'Env', () => {
 			// IE11
 			expect( isEdge( toLowerCase(
 				'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
+			) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isGecko()', () => {
+		it( 'returns true for Firefox UA strings', () => {
+			expect( isGecko( 'gecko/42' ) ).to.be.true;
+			expect( isGecko( 'foo gecko/42 bar' ) ).to.be.true;
+
+			expect( isGecko( toLowerCase(
+				'mozilla/5.0 (macintosh; intel mac os x 10.13; rv:62.0) gecko/20100101 firefox/62.0'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non–Edge UA strings', () => {
+			expect( isGecko( '' ) ).to.be.false;
+			expect( isGecko( 'foo' ) ).to.be.false;
+			expect( isGecko( 'Mozilla' ) ).to.be.false;
+
+			// Chrome
+			expect( isGecko( toLowerCase(
+				'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36'
 			) ) ).to.be.false;
 		} );
 	} );
