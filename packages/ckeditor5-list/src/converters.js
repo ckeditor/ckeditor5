@@ -835,7 +835,8 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			//		<listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
 			//
 			// so we need to update reference to `lastListItem`.
-			if ( convertedChild.is( 'element' ) && !conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
+			if ( convertedChild && convertedChild.is( 'element' ) &&
+				!conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
 				lastListItem = nextPosition.parent;
 
 				// Depending on the used converter for block elements, usually the position (`result.modelCursor`

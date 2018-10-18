@@ -518,6 +518,11 @@ describe( 'ListEditing', () => {
 						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Baz</li></ul><p>123</p><ul><li>456<ol><li>ABC</li></ol></li></ul>' +
 							'<p>DEF</p><ol><li>GHI</li></ol>'
 					);
+					test(
+						'list with empty inline element',
+						'<ul><li><span></span>Foo<p>Bar</p></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p>'
+					);
 				} );
 			} );
 		} );
