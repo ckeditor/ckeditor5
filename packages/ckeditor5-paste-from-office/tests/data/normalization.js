@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../src/pastefromoffice';
 
 import { generateTests } from '../_utils/utils';
@@ -10,7 +11,7 @@ import { generateTests } from '../_utils/utils';
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 
 const editorConfig = {
-	plugins: [ PasteFromOffice ]
+	plugins: [ Clipboard, PasteFromOffice ]
 };
 
 generateTests( {
