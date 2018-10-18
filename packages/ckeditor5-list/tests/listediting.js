@@ -402,6 +402,7 @@ describe( 'ListEditing', () => {
 						'<p>123</p><p>456</p><p>Foo</p><p>Bar</p>'
 					);
 				} );
+
 				describe.skip( 'multiple blocks', () => { // Skip due to #112 issue.
 					test(
 						'nested items #1',
