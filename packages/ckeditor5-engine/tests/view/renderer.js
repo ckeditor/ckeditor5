@@ -25,6 +25,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
@@ -1712,6 +1713,74 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domRoot.innerHTML ).to.equal( '<ul><li>Foo<ul><li><b>Bar</b><i>Baz</i></li></ul></li></ul>' );
+		} );
+
+		// #1439
+		it( 'should force–refresh the selection in FF after a soft break to nudge the caret (non-gecko)', () => {
+			const domSelection = domRoot.ownerDocument.defaultView.getSelection();
+
+			testUtils.sinon.stub( env, 'isGecko' ).get( () => false );
+			const spy = testUtils.sinon.stub( domSelection, 'addRange' );
+
+			// <p>foo<br/>[]</p>
+			const { view: viewP, selection: newSelection } = parse(
+				'<container:p>' +
+					'foo[]' +
+					'<empty:br></empty:br>[]' +
+				'</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		// #1439
+		it( 'should force–refresh the selection in FF after a soft break to nudge the caret (gecko)', () => {
+			const domSelection = domRoot.ownerDocument.defaultView.getSelection();
+
+			testUtils.sinon.stub( env, 'isGecko' ).get( () => true );
+			const spy = testUtils.sinon.stub( domSelection, 'addRange' );
+
+			// <p>foo[]<b>bar</b></p>
+			let { view: viewP, selection: newSelection } = parse(
+				'<container:p>' +
+					'foo[]' +
+					'<attribute:b>bar</attribute:b>' +
+				'</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			sinon.assert.notCalled( spy );
+
+			// <p>foo<b>bar</b></p><p>foo[]<br/></p>
+			( { view: viewP, selection: newSelection } = parse(
+				'<container:p>' +
+					'foo[]' +
+					'<empty:br></empty:br>' +
+				'</container:p>' ) );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			sinon.assert.notCalled( spy );
+
+			// <p>foo<b>bar</b></p><p>foo<br/>[]</p>
+			selection._setTo( [
+				new ViewRange( new ViewPosition( viewP, 2 ), new ViewPosition( viewP, 2 ) )
+			] );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			sinon.assert.calledOnce( spy );
 		} );
 
 		describe( 'fake selection', () => {
