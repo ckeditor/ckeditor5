@@ -4,7 +4,7 @@
  */
 
 /**
- * @module pastefromoffice/filters/utils
+ * @module paste-from-office/filters/utils
  */
 
 /* globals DOMParser */
@@ -12,11 +12,8 @@
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
 
-const domParser = new DOMParser();
-const domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
-
 /**
- * Parses provided HTML extracting contents of `body` and `style` tags.
+ * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
  *
  * @param {String} htmlString HTML string to be parsed.
  * @returns {Object} result
@@ -28,6 +25,8 @@ const domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
  * @returns {String} result.stylesString All `style` tags contents combined in the order of occurrence into one string.
  */
 export function parseHtml( htmlString ) {
+	const domParser = new DOMParser();
+
 	// Parse htmlString as native Document object.
 	const htmlDocument = domParser.parseFromString( normalizeSpacing( htmlString ), 'text/html' );
 
@@ -55,6 +54,7 @@ export function parseHtml( htmlString ) {
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument ) {
+	const domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 
@@ -75,11 +75,12 @@ function documentToView( htmlDocument ) {
 function extractStyles( htmlDocument ) {
 	const styles = [];
 	const stylesString = [];
+	const styleTags = Array.from( htmlDocument.getElementsByTagName( 'style' ) );
 
-	for ( const el of htmlDocument.all ) {
-		if ( el.tagName.toLowerCase() === 'style' && el.sheet && el.sheet.rules && el.sheet.rules.length ) {
-			styles.push( el.sheet );
-			stylesString.push( el.innerHTML );
+	for ( const style of styleTags ) {
+		if ( style.sheet && style.sheet.cssRules && style.sheet.cssRules.length ) {
+			styles.push( style.sheet );
+			stylesString.push( style.innerHTML );
 		}
 	}
 

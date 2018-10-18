@@ -78,5 +78,19 @@ describe( 'Filters', () => {
 				expect( stylesString ).to.equal( '' );
 			} );
 		} );
+
+		it( 'correctly parses HTML with body contents and empty style tag', () => {
+			const html = '<head><style></style></head><body><p>Foo Bar</p></body>';
+			const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+			expect( body ).to.instanceof( DocumentFragment );
+			expect( body.childCount ).to.equal( 1 );
+
+			expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+
+			expect( styles.length ).to.equal( 0 );
+
+			expect( stylesString ).to.equal( '' );
+		} );
 	} );
 } );

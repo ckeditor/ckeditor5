@@ -4,17 +4,22 @@
  */
 
 /**
- * @module pastefromoffice/pastefromoffice
+ * @module paste-from-office/pastefromoffice
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/utils';
-import { paragraphsToLists } from './filters/list';
+import { transformListItemLikeElementsIntoLists } from './filters/list';
 
 /**
- * This plugin handles content pasted from Word and transforms it (if necessary)
- * to format suitable for editor {@link module:engine/model/model~Model}.
+ * The Paste from Office plugin.
+ *
+ * This plugin handles content pasted from Office apps (for now only Word) and transforms it (if necessary)
+ * to a valid structure which can then be understood by the editor features.
+ *
+ * For more information about this feature check the {@glink api/paste-from-office package page}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -31,25 +36,20 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const document = editor.editing.view.document;
 
-		this.listenTo( document, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
 			const html = data.dataTransfer.getData( 'text/html' );
 
 			if ( isWordInput( html ) ) {
-				evt.stop();
-
-				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', {
-					content: this._normalizeWordInput( html )
-				} );
+				data.content = this._normalizeWordInput( html );
 			}
-		} );
+		}, { priority: 'high' } );
 	}
 
 	/**
 	 * Normalizes input pasted from Word to format suitable for editor {@link module:engine/model/model~Model}.
 	 *
-	 * **Notice**: this function was exposed mainly for testing purposes and should not be called directly.
+	 * **Note**: this function was exposed mainly for testing purposes and should not be called directly.
 	 *
 	 * @protected
 	 * @param {String} input Word input.
@@ -57,9 +57,9 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	_normalizeWordInput( input ) {
 		const { body, stylesString } = parseHtml( input );
-		const normalizedInput = paragraphsToLists( body, stylesString );
+		transformListItemLikeElementsIntoLists( body, stylesString );
 
-		return normalizedInput;
+		return body;
 	}
 }
 

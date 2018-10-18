@@ -5,15 +5,20 @@
 
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import PasteFromOffice from '../src/pastefromoffice';
 import { createDataTransfer } from './_utils/utils';
 
 describe( 'Paste from Office plugin', () => {
-	let editor, normalizeSpy;
+	let editor, content, normalizeSpy;
 
 	testUtils.createSinonSandbox();
+
+	before( () => {
+		content = new DocumentFragment();
+	} );
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -31,7 +36,7 @@ describe( 'Paste from Office plugin', () => {
 			'text/html': '<meta name=Generator content="Microsoft Word 15">'
 		} );
 
-		editor.editing.view.document.fire( 'clipboardInput', { dataTransfer } );
+		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
 
 		expect( normalizeSpy.calledOnce ).to.true;
 	} );
@@ -41,7 +46,7 @@ describe( 'Paste from Office plugin', () => {
 			'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
 		} );
 
-		editor.editing.view.document.fire( 'clipboardInput', { dataTransfer } );
+		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
 
 		expect( normalizeSpy.calledOnce ).to.true;
 	} );
@@ -51,7 +56,7 @@ describe( 'Paste from Office plugin', () => {
 			'text/html': '<meta name=Generator content="Other">'
 		} );
 
-		editor.editing.view.document.fire( 'clipboardInput', { dataTransfer } );
+		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
 
 		expect( normalizeSpy.called ).to.false;
 	} );
