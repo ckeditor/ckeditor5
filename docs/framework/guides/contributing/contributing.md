@@ -15,7 +15,7 @@ Before you start, here are some things to keep in mind:
 * There is no guarantee that your contribution will be incorporated into the project code. Still, pull requests make it easy for you to keep them for your own use or for others who may be interested in them.
 * If you plan to start working on a bigger task, it might be worth asking the core team (beforehand) whether a specific feature or a solution to an issue will be accepted.
 * If you need any assistance when creating a patch or implementing a feature, ping us under the ticket or on [Gitter](https://gitter.im/ckeditor/ckeditor5).
-* Having a CLA is essential to have your contributions accepted ([see below](#contributor-license-agreement-cla)).
+* [Having a CLA](#contributor-license-agreement-cla) is essential to have your contributions accepted.
 
 ### Setting up the development environment
 
@@ -43,31 +43,42 @@ Read more about our {@link framework/guides/contributing/testing-environment tes
 
 Assuming that you would like to propose some changes in the [Link](https://github.com/ckeditor/ckeditor5-link) feature, these are the steps you should take to create a pull request:
 
-* Make sure your {@link framework/guides/contributing/development-environment development environment} is ready.
-* Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo) ([ckeditor5-link](https://github.com/ckeditor/ckeditor5-link) in this particular case). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5-link`.
-* Open your terminal, then go to the package ("repository") folder in your development environment:
-   ```shell
-   $ cd path/to/ckeditor5/packages/ckeditor5-link
-   ```
-* Start a new branch for your code. We use the `t/GITHUB-ISSUE-NUMBER` convention for branch names:
-   ```shell
-   $ git checkout -b t/GITHUB-ISSUE-NUMBER
-   ```
-* Make the changes. Stick to the [code-style guidelines](#code-style) and remember about [tests and 100% code coverage](#tests)!
-* Commit your changes. Make sure your commit message text matches the {@link framework/guides/contributing/git-commit-message-convention convention}:
-  ```shell
-  $ git commit -m "Fix: Squashed a nasty bug in the link editing. Closes #GITHUB-ISSUE-NUMBER."
-  ```
-* Now it is time to make your changes public. First, you need to let `git` know about the fork you created by adding the remote:
-  ```shell
-  $ git remote add my-fork https://github.com/YOUR-USERNAME/ckeditor5-link
-  ```
-* Push your changes to your forked repository:
-  ```shell
-  $ git push my-fork t/GITHUB-ISSUE-NUMBER
-  ```
-* Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions.
-* **Let us know about your pull request!** The best way is to comment under the original issue.
+1. Make sure to open a ticket describing the issue/feature/problem that you want to solve in your pull request. This can be skipped in case of obvious and trivial changes (typos, documentation, etc.). You can report this ticket in the specific repository in which you will make a pull request or in https://github.com/ckeditor/ckeditor5.
+1. Make sure your {@link framework/guides/contributing/development-environment development environment} is ready.
+1. Go to GitHub and [fork the repository](https://help.github.com/articles/fork-a-repo) ([ckeditor5-link](https://github.com/ckeditor/ckeditor5-link) in this particular case). The forked repository will appear in your GitHub account as `https://github.com/YOUR-USERNAME/ckeditor5-link`.
+1. Open your terminal, then go to the package ("repository") folder in your development environment:
+
+	```shell
+	$ cd path/to/ckeditor5/packages/ckeditor5-link
+	```
+
+1. Start a new branch for your code. We use the `t/GITHUB-ISSUE-NUMBER` convention for branch names:
+
+	```shell
+	$ git checkout -b t/GITHUB-ISSUE-NUMBER
+	```
+
+1. Make the changes. Stick to the [code-style guidelines](#code-style) and remember about [tests and 100% code coverage](#tests)!
+1. Commit your changes:
+
+	```shell
+	$ git commit -m "Squashed a nasty bug in the link editing."
+	```
+
+1. Now it is time to make your changes public. First, you need to let `git` know about the fork you created by adding the remote:
+
+	```shell
+	$ git remote add my-fork https://github.com/YOUR-USERNAME/ckeditor5-link
+	```
+
+1. Push your changes to your forked repository:
+
+	```shell
+	$ git push my-fork t/GITHUB-ISSUE-NUMBER
+	```
+
+1. Go to your forked repository on GitHub. Use the [pull request button](https://help.github.com/articles/about-pull-requests/) and follow the instructions. Make sure to include a merge commit message text matches the {@link framework/guides/contributing/git-commit-message-convention convention}
+1. **Let us know about your pull request!** The best way is to comment under the original issue.
 
 Some additional things you should keep in mind:
 
@@ -95,4 +106,4 @@ Read the {@link framework/guides/support/reporting-issues reporting issues} guid
 
 To accept contributions sent to us in form of code, documentation or translations, a Contributor License Agreement (CLA) must be in place in order to clarify the intellectual property license granted with them. This license is for your protection as a contributor as well as the protection of us and our users; it does not change your rights to use your own contributions for any other purpose.
 
-To sign the CLA and to get more information, please follow this link: [http://cla.ckeditor.com/](http://cla.ckeditor.com/).
+To sign the CLA and to get more information, please follow this link: [https://cla.ckeditor.com/](https://cla.ckeditor.com/).
