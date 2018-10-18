@@ -325,8 +325,8 @@ describe( 'ListEditing', () => {
 
 	describe( 'flat lists', () => {
 		describe( 'setting data', () => {
-			function test( testName, string, expectedString = null, skip = false ) {
-				( skip ? it.skip : it )( testName, () => {
+			function test( testName, string, expectedString = null ) {
+				it( testName, () => {
 					editor.setData( string );
 					expect( editor.getData() ).to.equal( expectedString || string );
 				} );
@@ -397,15 +397,16 @@ describe( 'ListEditing', () => {
 						'<p>123</p><p>Foo</p><p>Bar</p>'
 					);
 					test(
-						'nested items #1',
-						'<ol><li><p>123</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul><p>456</p></li></ol>',
-						'<p>123</p><p>Foo</p><p>Bar</p><p>456</p>',
-						true // Skip due to #112 issue.
-					);
-					test(
 						'nested items #2',
 						'<ol><li><p>123</p><p>456</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul></li></ol>',
 						'<p>123</p><p>456</p><p>Foo</p><p>Bar</p>'
+					);
+				} );
+				describe.skip( 'multiple blocks', () => { // Skip due to #112 issue.
+					test(
+						'nested items #1',
+						'<ol><li><p>123</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul><p>456</p></li></ol>',
+						'<p>123</p><p>Foo</p><p>Bar</p><p>456</p>'
 					);
 				} );
 

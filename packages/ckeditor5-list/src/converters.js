@@ -814,18 +814,19 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 	// Check all children of the converted `<li>`. At this point we assume there are no "whitespace" view text nodes
 	// in view list, between view list items. This should be handled by `<ul>` and `<ol>` converters.
 	for ( const child of viewChildren ) {
-		// If this is a view list element, we will convert it after last `listItem` model element.
+		// If this is a view list element, we will insert its conversion result after currently handled `listItem`.
 		if ( child.name == 'ul' || child.name == 'ol' ) {
 			nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
 		}
-		// If it was not a list view element it was a "regular" list item content. Convert it to a `listItem`.
+		// If it is not a view list element it is a "regular" list item content. Its conversion result will
+		// be inserted as `listItem` children (block children may split current `listItem`).
 		else {
 			const result = conversionApi.convertItem( child, ModelPosition.createAt( lastListItem, 'end' ) );
-			const convertedChild = Array.from( result.modelRange )[ 0 ];
+			const convertedChild = result.modelRange.start.nodeAfter;
 
-			nextPosition = ModelPosition.createAt( lastListItem, 'end' );
+			nextPosition = result.modelCursor;
 
-			// If there is a block element child being converted it will split the current list item, for example:
+			// If there is a block element child being converted it may split the current list item, for example:
 			//
 			//		<li><p>Foo</p></li>
 			//
@@ -833,10 +834,9 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			//
 			//		<listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
 			//
-			// so we need to update reference to `lastListItem` and `nextPosition`.
-			if ( convertedChild.type === 'elementStart' && convertedChild.item.is( 'element' ) ) {
-				nextPosition = result.modelCursor;
-				lastListItem = nextPosition.getAncestors().pop();
+			// so we need to update reference to `lastListItem`.
+			if ( convertedChild.is( 'element' ) && !conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
+				lastListItem = nextPosition.parent;
 
 				// Depending on the used converter for block elements, usually the position (`result.modelCursor`
 				// marked as # below) points to the second list item after conversion:
