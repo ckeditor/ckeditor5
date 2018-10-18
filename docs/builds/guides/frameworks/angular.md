@@ -32,14 +32,6 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 npm install --save-dev @ckeditor/ckeditor5-build-classic
 ```
 
-**Note:** You may need to allow external JavaScript in your project's `tsconfig.json` for the builds to work properly:
-
-```json
-"compilerOptions": {
-	"allowJs": true
-}
-```
-
 Now, add `CKEditorModule` to your application module imports:
 
 ```ts
@@ -72,10 +64,10 @@ export class MyComponent {
 Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 ```html
-<ckeditor [editor]="Editor" data="<p>Hello world!</p>"></ckeditor>
+<ckeditor [editor]="Editor" data="<p>Hello, world!</p>"></ckeditor>
 ```
 
-Rebuild your application and CKEditor 5 should greet you with "Hello world!".
+Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
 ### Note: Using the Document editor build
 
@@ -102,7 +94,7 @@ export class MyComponent {
 And then, in the template:
 
 ```html
-<ckeditor [editor]="Editor" data="<p>Hello world!</p>" (ready)="onReady($event)"></ckeditor>
+<ckeditor [editor]="Editor" data="<p>Hello, world!</p>" (ready)="onReady($event)"></ckeditor>
 ```
 
 ## Integration with `ngModel`
@@ -117,7 +109,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 	} )
 	export class MyComponent {
 		public model = {
-			editorData: '<p>Hello world!</p>'
+			editorData: '<p>Hello, world!</p>'
 		};
 		...
 	}
@@ -154,7 +146,7 @@ The {@link module:core/editor/editorconfig~EditorConfig configuration} of the ed
 The initial data of the editor. It can be a static value:
 
 ```html
-<ckeditor data="<p>Hello world!</p>" ...></ckeditor>
+<ckeditor data="<p>Hello, world!</p>" ...></ckeditor>
 ```
 
 or a shared parent component's property
@@ -164,7 +156,7 @@ or a shared parent component's property
 	...
 } )
 export class MyComponent {
-	public editorData = '<p>Hello world!</p>';
+	public editorData = '<p>Hello, world!</p>';
 	...
 }
 ```
