@@ -7,7 +7,7 @@
  * @module paste-from-office/filters/utils
  */
 
-/* globals DOMParser */
+/* globals DOMParser, btoa */
 
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
@@ -47,6 +47,18 @@ export function parseHtml( htmlString ) {
 		styles: stylesObject.styles,
 		stylesString: stylesObject.stylesString
 	};
+}
+
+/**
+ * Converts given HEX string to base64 representation.
+ *
+ * @param {String} hexString The HEX string to be converted.
+ * @returns {String} Base64 representation of a given HEX string.
+ */
+export function convertHexToBase64( hexString ) {
+	return btoa( hexString.match( /\w{2}/g ).map( char => {
+		return String.fromCharCode( parseInt( char, 16 ) );
+	} ).join( '' ) );
 }
 
 // Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}.
