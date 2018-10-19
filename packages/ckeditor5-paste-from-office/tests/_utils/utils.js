@@ -145,8 +145,12 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+				const dataTransfer = createDataTransfer( {
+					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
+				} );
+
 				expectNormalized(
-					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], editor ),
+					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], dataTransfer ),
 					fixtures.normalized[ name ]
 				);
 			} );
@@ -195,7 +199,10 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 }
 
 // Checks if provided view element instance equals expected HTML. The element is stringified
-// by before comparing so its entire structure can be compared.
+// before comparing so its entire structure can be compared.
+// If the given `actual` or `expected` structure contains base64 encoded images,
+// these images are extracted (so HTML diff is readable) and compared
+// one by one separately (so it is visible if base64 representation is malformed).
 //
 // This function is designed for comparing normalized data so expected input is preprocessed before comparing:
 //
@@ -225,8 +232,18 @@ function expectNormalized( actual, expected ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
 	const actualNormalized = stringifyView( actual ).replace( /\u00A0/g, ' ' );
+	const expectedNormalized = normalizeHtml( expectedInlined );
 
-	expect( actualNormalized ).to.equal( normalizeHtml( expectedInlined ) );
+	// Extract base64 images so they do not pollute HTML diff and can be compared separately.
+	const { data: actualSimplified, images: actualImages } = extractBase64Srcs( actualNormalized );
+	const { data: expectedSimplified, images: expectedImages } = extractBase64Srcs( expectedNormalized );
+
+	expect( actualSimplified ).to.equal( expectedSimplified );
+
+	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
+		expect( actualImages.length ).to.equal( expectedImages.length );
+		expect( actualImages ).to.deep.equal( expectedImages );
+	}
 }
 
 // Compares two models string representations. The input HTML is processed through paste
@@ -265,6 +282,25 @@ function inlineData( data ) {
 		.replace( /^\t*</gm, '<' )
 		// Replace line breaks (after closing tags) too.
 		.replace( /[\r\n]/gm, '' );
+}
+
+// Extracts base64 part representing an image from the given HTML / model representation.
+//
+// @param {String} data Data from which bas64 strings will be extracted.
+// @returns {Object} result
+// @returns {String} result.data Data without bas64 strings.
+// @returns {Array.<String>} result.images Array of extracted base64 strings.
+function extractBase64Srcs( data ) {
+	const regexp = /src="data:image\/(png|jpe?g);base64,([^"]*)"/gm;
+	const images = [];
+
+	let match;
+	while ( ( match = regexp.exec( data ) ) !== null ) {
+		images.push( match[ 2 ].toLowerCase() );
+		data = data.replace( match[ 2 ], '' );
+	}
+
+	return { data, images };
 }
 
 // Fires paste event on a given editor instance with a specific HTML data.
