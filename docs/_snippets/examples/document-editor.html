@@ -127,7 +127,8 @@
 
 	/* Scale down all heading previews because they are way too big to be presented in the UI.
 	Preserve the relative scale, though. */
-	.document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading1 .ck-button__label,
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading2 .ck-button__label {
 		transform: scale(0.8);
 		transform-origin: left;
 	}
@@ -175,16 +176,6 @@
 		line-height: 1.24em;
 		padding-top: .286em;
 		margin-bottom: .952em;
-	}
-
-	/* Set the styles for "Paragraph" and single <span> inside table (except fontSize plugin)
-	https://github.com/ckeditor/ckeditor5/issues/1291 */
-	.document-editor .ck-content p,
-	.document-editor .ck-content table span:not( [class*="text-"] )  {
-		font-size: 1em;
-		line-height: 1.63em;
-		padding-top: .5em;
-		margin-bottom: 1.13em;
 	}
 
 	/* Make the block quoted text serif with some additional spacing. */
