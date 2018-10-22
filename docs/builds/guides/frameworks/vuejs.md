@@ -28,7 +28,7 @@ Assuming [Vue is installed](https://vuejs.org/v2/guide/installation.html) in you
 
 ```html
 <script src="../node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-<script src="../node_modules/@ckeditor/ckeditor5-vue.js"></script>
+<script src="../node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js"></script>
 ```
 
 Install the plugin in your application using the [`Vue.use`](https://vuejs.org/v2/api/#Vue-use) method, specifying the editor build:
