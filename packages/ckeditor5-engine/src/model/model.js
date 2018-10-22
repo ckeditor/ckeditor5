@@ -309,16 +309,16 @@ export default class Model {
 	 *
 	 *		// Insert text at given position - document selection will not be modified.
 	 *		editor.model.change( writer => {
-	 *			editor.model.insertContent( writer.createText( 'x' ), Position.createAt( doc.getRoot(), 2 ) );
+	 *			editor.model.insertContent( writer.createText( 'x' ), writer.createPositionAt( doc.getRoot(), 2 ) );
 	 *		} );
 	 *
 	 * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable`
 	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
-	 *		// Insert text replacing given selection instance.
-	 *		const selection = new Selection( paragraph, 'in' );
-	 *
 	 *		editor.model.change( writer => {
+	 *			// Insert text replacing given selection instance.
+	 *			const selection = writer.createSelection( paragraph, 'in' );
+	 *
 	 *			editor.model.insertContent( writer.createText( 'x' ), selection );
 	 *
 	 *			// insertContent() modifies the passed selection instance so it can be used to set the document selection.
@@ -471,6 +471,22 @@ export default class Model {
 	}
 
 	/**
+	 * Creates a position.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createPositionFromPath writer.createPositionFromPath()}:
+	 *
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
+	 * See {@link module:engine/model/position~PositionStickiness}.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionFromPath( root, path, stickiness ) {
+		return new ModelPosition( root, path, stickiness );
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/model/position~Position position},
@@ -478,10 +494,13 @@ export default class Model {
 	 * * parent element and `'end'` (sets position at the end of that element),
 	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
-	 * This method is a shortcut to other constructors such as:
+	 * This method is a shortcut to other factory methods such as:
 	 *
-	 * * {@link module:engine/model/position~Position._createBefore},
-	 * * {@link module:engine/model/position~Position._createAfter},
+	 * * {@link module:engine/model/model~Model#createBefore},
+	 * * {@link module:engine/model/model~Model#createAfter}.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()}:
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
@@ -494,6 +513,9 @@ export default class Model {
 	/**
 	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
 	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createPositionAfter writer.createPositionAfter()}:
+	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
 	 */
@@ -501,30 +523,151 @@ export default class Model {
 		return ModelPosition._createAfter( item );
 	}
 
+	/**
+	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createPositionBefore writer.createPositionBefore()}:
+	 *
+	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
 	createPositionBefore( item ) {
 		return ModelPosition._createBefore( item );
 	}
 
-	createPositionFromPath( root, path ) {
-		return new ModelPosition( root, path );
-	}
-
+	/**
+	 * Creates a range spanning from `start` position to `end` position.
+	 *
+	 * **Note:** Range constructor creates it's own {@link module:engine/model/position~Position Position} instances
+	 * basing on passed values.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createRange writer.createRange()}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRange( paragraph );
+	 *		} );
+	 *
+	 * @param {module:engine/model/position~Position} start Start position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @returns {module:engine/model/range~Range}
+	 */
 	createRange( start, end ) {
 		return new ModelRange( start, end );
 	}
 
+	/**
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createRangeIn writer.createRangeIn()}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRangeIn( paragraph );
+	 *		} );
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
 	createRangeIn( element ) {
 		return ModelRange._createIn( element );
 	}
 
-	createRangeOn( element ) {
-		return ModelRange._createOn( element );
+	/**
+	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createRangeOn writer.createRangeOn()}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRangeOn( paragraph );
+	 *		} );
+	 *
+	 * @param {module:engine/model/item~Item} item
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRangeOn( item ) {
+		return ModelRange._createOn( item );
 	}
 
-	createSelection( selectable ) {
-		return new ModelSelection( selectable );
+	/**
+	 * Creates a new selection instance
+	 * based on the given {@link module:engine/model/selection~Selection selection},
+	 * or based on the given {@link module:engine/model/range~Range range},
+	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
+	 * or at the given {@link module:engine/model/position~Position position},
+	 * or on the given {@link module:engine/model/element~Element element},
+	 * or creates an empty selection if no arguments were passed.
+	 *
+	 * **Note:** This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createSelection writer.createSelection()}:
+	 *
+	 *		// Creates empty selection without ranges.
+	 *		const selection = writer.createSelection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
+	 *
+	 *		// Creates selection at the given ranges
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
+	 *
+	 *		// Creates selection from the given document selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const selection = writer.createSelection( documentSelection );
+	 *
+	 *		// Creates selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
+	 *
+	 *		// Creates selection at the given offset in the given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = writer.createSelection( paragraph, offset );
+	 *
+	 *		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 *		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @returns {module:engine/model/selection~Selection}
+	 */
+	createSelection( selectable, placeOrOffset, options ) {
+		return new ModelSelection( selectable, placeOrOffset, options );
 	}
 
+	/**
+	 * Creates a {@link module:engine/model/batch~Batch} instance.
+	 *
+	 * **Note:** In most cases creating a batch instance is not necessary as they are created when using:
+	 *
+	 * * {@link #change},
+	 * * {@link #enqueueChange}.
+	 *
+	 * @returns {module:engine/model/batch~Batch}
+	 */
 	createBatch() {
 		return new Batch();
 	}

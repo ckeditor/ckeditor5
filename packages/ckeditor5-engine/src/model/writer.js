@@ -544,36 +544,95 @@ export default class Writer {
 		}
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath model.createPositionFromPath()}.
+	 *
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
+	 * See {@link module:engine/model/position~PositionStickiness}.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionFromPath( root, path, stickiness ) {
+		return this.model.createPositionFromPath( root, path, stickiness );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt model.createPositionAt()}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @returns {module:engine/model/position~Position}
+	 */
 	createPositionAt( itemOrPosition, offset ) {
 		return this.model.createPositionAt( itemOrPosition, offset );
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAfter model.createPositionAfter()}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
 	createPositionAfter( item ) {
 		return this.model.createPositionAfter( item );
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionBefore model.createPositionBefore()}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
 	createPositionBefore( item ) {
 		return this.model.createPositionBefore( item );
 	}
 
-	createPositionFromPath( root, path ) {
-		return this.model.createPositionFromPath( root, path );
-	}
-
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRange model.createRange()}.
+	 *
+	 * @param {module:engine/model/position~Position} start Start position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @returns {module:engine/model/range~Range}
+	 */
 	createRange( start, end ) {
 		return this.model.createRange( start, end );
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeIn model.createRangeIn()}.
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
 	createRangeIn( element ) {
 		return this.model.createRangeIn( element );
 	}
 
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeOn model.createRangeOn()}.
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
 	createRangeOn( element ) {
 		return this.model.createRangeOn( element );
 	}
 
-	createSelection( selectable ) {
-		return this.model.createSelection( selectable );
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createSelection model.createSelection()}.
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @returns {module:engine/model/selection~Selection}
+	 */
+	createSelection( selectable, placeOrOffset, options ) {
+		return this.model.createSelection( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -1014,15 +1073,15 @@ export default class Writer {
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		writer.setSelection( otherSelection );
 	 *
 	 *		// Sets selection to the given document selection.
@@ -1030,7 +1089,7 @@ export default class Writer {
 	 *		writer.setSelection( documentSelection );
 	 *
 	 *		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPosition( root, path );
 	 *		writer.setSelection( position );
 	 *
 	 *		// Sets collapsed selection at the position of the given node and an offset.

@@ -71,10 +71,16 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *  	 				conversionApi.writer.insert( paragraph, splitResult.position );
  *
  *  	 				// Convert children to paragraph.
- *  	 				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph, 0 ) );
+ *  	 				const { modelRange } = conversionApi.convertChildren(
+ *  	 					data.viewItem,
+ *  	 					conversionApi.writer.createPositionAt( paragraph, 0 )
+ *  	 				);
  *
  * 						// Set as conversion result, attribute converters may use this property.
- *  	 				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
+ *  	 				data.modelRange = conversionApi.writer.createRange(
+ *  	 					conversionApi.writer.createPositionBefore( paragraph ),
+ *  	 					modelRange.end
+ *  	 				);
  *
  *  	 				// Continue conversion inside paragraph.
  *  	 				data.modelCursor = data.modelRange.end;

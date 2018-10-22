@@ -751,9 +751,9 @@ export default class Position {
 	 *
 	 * Example:
 	 *
-	 *		let original = new Position( root, [ 2, 3, 1 ] );
-	 *		let source = new Position( root, [ 2, 2 ] );
-	 *		let target = new Position( otherRoot, [ 1, 1, 3 ] );
+	 *		let original = model.createPositionFromPath( root, [ 2, 3, 1 ] );
+	 *		let source = model.createPositionFromPath( root, [ 2, 2 ] );
+	 *		let target = model.createPositionFromPath( otherRoot, [ 1, 1, 3 ] );
 	 *		original._getCombined( source, target ); // path is [ 1, 1, 4, 1 ], root is `otherRoot`
 	 *
 	 * Explanation:
@@ -811,8 +811,7 @@ export default class Position {
 	 * This method is a shortcut to other factory methods such as:
 	 *
 	 * * {@link module:engine/model/position~Position._createBefore},
-	 * * {@link module:engine/model/position~Position._createAfter},
-	 * * {@link module:engine/model/position~Position._createAt}.
+	 * * {@link module:engine/model/position~Position._createAfter}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when

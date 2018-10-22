@@ -21,6 +21,10 @@ export default class Range {
 	 *
 	 * **Note:** Constructor creates it's own {@link module:engine/model/position~Position Position} instances basing on passed values.
 	 *
+	 * **Note:** Should not be used directly outside the engine module.
+	 * Use {@link module:engine/model/writer~Writer#createRange writer#createRange()} method instead.
+	 * @see module:engine/model/writer~Writer#createRange
+	 * @see {@link module:engine/model/writer~Writer#createRange}
 	 * @param {module:engine/model/position~Position} start Start position.
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
@@ -165,16 +169,19 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 5 ] ) );
 	 *		let transformed = range.getDifference( otherRange );
 	 *		// transformed array has no ranges because `otherRange` contains `range`
 	 *
-	 *		otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 3 ] ) );
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has one range: from [ 3 ] to [ 4, 0, 1 ]
 	 *
-	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 3 ] ), model.createPositionFromPath( root, [ 4 ] ) );
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 	 *
@@ -212,11 +219,14 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 2 ] ) );
 	 *		let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
 	 *
-	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 3 ] ), model.createPositionFromPath( root, [ 5 ] ) );
 	 *		transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to check for intersection.
@@ -603,17 +613,20 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let transformed = range._getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 1 ] ), 2 );
 	 *		// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 4, 0, 0 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 4, 0, 0 ] ), 4 );
 	 *		// transformed array has one range from [ 2, 7 ] to [ 4, 0, 5 ]
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 3, 2 ] ), 4 );
 	 *		// transformed array has one range, which is equal to original range
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 3, 2 ] ), 4, true );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 	 *
 	 * @protected

@@ -36,46 +36,46 @@ export default class Selection {
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Creates empty selection without ranges.
-	 *		const selection = new Selection();
+	 *		const selection = writer.createSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range );
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges );
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const otherSelection = new Selection();
-	 *		const selection = new Selection( otherSelection );
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
 	 *
 	 *		// Creates selection from the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
-	 *		const selection = new Selection( documentSelection );
+	 *		const selection = writer.createSelection( documentSelection );
 	 *
 	 *		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
 	 *
 	 *		// Creates selection at the given offset in the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		const selection = writer.createSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
 	 *		// first child of that element and ends after the last child of that element.
-	 *		const selection = new Selection( paragraph, 'in' );
+	 *		const selection = writer.createSelection( paragraph, 'in' );
 	 *
 	 *		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
 	 *		// just after the item.
-	 *		const selection = new Selection( paragraph, 'on' );
+	 *		const selection = writer.createSelection( paragraph, 'on' );
 	 *
 	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
 	 *
 	 *		// Creates backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
@@ -330,16 +330,16 @@ export default class Selection {
 	 *		selection.setTo( null );
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		selection.setTo( ranges );
 	 *
 	 *		// Sets selection to other selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		selection.setTo( otherSelection );
 	 *
 	 *		// Sets selection to the given document selection.
@@ -348,7 +348,7 @@ export default class Selection {
 	 *		selection.setTo( documentSelection );
 	 *
 	 *		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionFromPath( root, path );
 	 *		selection.setTo( position );
 	 *
 	 *		// Sets collapsed selection at the position of the given node and an offset.
@@ -366,7 +366,7 @@ export default class Selection {
 	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
 	 *
 	 *		// Sets backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/node~Node|
