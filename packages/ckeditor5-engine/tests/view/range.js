@@ -654,7 +654,7 @@ describe( 'Range', () => {
 			div = new Element( 'div', null, p );
 		} );
 
-		describe( 'createIn', () => {
+		describe( '_createIn', () => {
 			it( 'should return range', () => {
 				const range = Range._createIn( p );
 
@@ -665,7 +665,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createOn', () => {
+		describe( '_createOn', () => {
 			it( 'should return range', () => {
 				const range = Range._createOn( p );
 
@@ -687,7 +687,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromParentsAndOffsets', () => {
+		describe( '_createFromParentsAndOffsets', () => {
 			it( 'should return range', () => {
 				const range = Range._createFromParentsAndOffsets( div, 0, foz, 1 );
 
@@ -698,7 +698,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromPositionAndShift', () => {
+		describe( '_createFromPositionAndShift', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( foz, 1 );
 				const range = Range._createFromPositionAndShift( position, 2 );
@@ -720,7 +720,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromRange', () => {
+		describe( '_createFromRange', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
 				const range = new Range( new Position( foz, 0 ), new Position( foz, 2 ) );
 				const clone = Range._createFromRange( range );

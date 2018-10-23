@@ -151,7 +151,7 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'static _createAt()', () => {
+	describe( '_createAt()', () => {
 		it( 'should throw if no offset is passed', () => {
 			const element = new Element( 'p' );
 
@@ -216,18 +216,6 @@ describe( 'Position', () => {
 			expect( pStart.offset ).to.equal( 0 );
 			expect( pEnd.parent ).to.equal( docFrag );
 			expect( pEnd.offset ).to.equal( 1 );
-		} );
-	} );
-
-	describe( 'createFromPosition', () => {
-		it( 'creates new Position with same parent and offset', () => {
-			const offset = 50;
-			const position = new Position( parentMock, offset );
-			const newPosition = Position._createFromPosition( position );
-
-			expect( position ).to.not.equal( newPosition );
-			expect( position.offset ).to.equal( offset );
-			expect( position.parent ).to.equal( parentMock );
 		} );
 	} );
 
@@ -454,7 +442,7 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'static _createBefore()', () => {
+	describe( '_createBefore()', () => {
 		it( 'should throw error if one try to create positions before root', () => {
 			expect( () => {
 				Position._createBefore( parse( '<p></p>' ) );
@@ -479,7 +467,7 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'static _createAfter()', () => {
+	describe( '_createAfter()', () => {
 		it( 'should throw error if one try to create positions after root', () => {
 			expect( () => {
 				Position._createAfter( parse( '<p></p>' ) );
@@ -570,7 +558,7 @@ describe( 'Position', () => {
 
 		it( 'for two the same positions returns the parent element', () => {
 			const afterLoremPosition = new Position( liOl1, 5 );
-			const otherPosition = Position._createFromPosition( afterLoremPosition );
+			const otherPosition = Position._createAt( afterLoremPosition );
 
 			test( afterLoremPosition, otherPosition, liOl1 );
 		} );

@@ -14,9 +14,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
 import { parse } from '../../src/dev-utils/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DocumentSelection', () => {
 	let documentSelection, el, range1, range2, range3;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		const text = new Text( 'xxxxxxxxxxxxxxxxxxxx' );
@@ -322,22 +325,6 @@ describe( 'DocumentSelection', () => {
 
 			expect( documentSelection.focus.compareWith( startPos ) ).to.equal( 'same' );
 			expect( documentSelection.isCollapsed ).to.be.true;
-		} );
-
-		it( 'uses Position.createAt', () => {
-			const startPos = Position._createAt( el, 1 );
-			const endPos = Position._createAt( el, 2 );
-			const newEndPos = Position._createAt( el, 4 );
-
-			const spy = sinon.stub( Position, '_createAt' ).returns( newEndPos );
-
-			documentSelection._setTo( new Range( startPos, endPos ) );
-			documentSelection._setFocus( el, 'end' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( documentSelection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
-
-			Position._createAt.restore();
 		} );
 	} );
 

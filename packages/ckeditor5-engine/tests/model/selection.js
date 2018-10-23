@@ -567,21 +567,6 @@ describe( 'Selection', () => {
 			expect( selection.focus.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.isCollapsed ).to.be.true;
 		} );
-
-		// TODO: why this test?
-		it.skip( 'uses Position._createAt', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 4 );
-			const spy = testUtils.sinon.stub( Position, '_createAt' ).returns( newEndPos );
-
-			selection.setTo( new Range( startPos, endPos ) );
-
-			selection.setFocus( root, 'end' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
-		} );
 	} );
 
 	describe( 'setTo - selection set to null', () => {

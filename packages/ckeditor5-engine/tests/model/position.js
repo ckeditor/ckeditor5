@@ -126,9 +126,22 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	// TODO: move?
-	describe( 'createFromParentAndOffset()', () => {
-		it( 'should create positions form node and offset', () => {
+	describe( '_createAt()', () => {
+		it( 'should throw if no offset is passed', () => {
+			expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
+		} );
+
+		it( 'should create positions from positions', () => {
+			const position = Position._createAt( ul, 0 );
+
+			const positionCopy = Position._createAt( position );
+
+			expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
+			expect( positionCopy ).to.not.equal( position );
+		} );
+
+		it( 'should create positions from node and offset', () => {
 			expect( Position._createAt( root, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
 			expect( Position._createAt( root, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
 			expect( Position._createAt( root, 2 ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
@@ -145,40 +158,6 @@ describe( 'Position', () => {
 			expect( Position._createAt( li1, 3 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 3 ] );
 		} );
 
-		it( 'throws when parent is not an element', () => {
-			expect( () => {
-				Position._createAt( b, 0 );
-			} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
-		} );
-
-		it( 'works with a doc frag', () => {
-			const frag = new DocumentFragment();
-
-			expect( Position._createAt( frag, 0 ) ).to.have.property( 'root', frag );
-		} );
-	} );
-
-	describe( 'createAt()', () => {
-		it( 'should throw if no offset is passed', () => {
-			expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
-		} );
-
-		it( 'should create positions from positions', () => {
-			const position = Position._createAt( ul, 0 );
-
-			const positionCopy = Position._createAt( position );
-
-			expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-			expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
-			expect( positionCopy ).to.not.equal( position );
-		} );
-
-		it( 'should create positions from node and offset', () => {
-			expect( Position._createAt( ul, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
-			expect( Position._createAt( li1, 0 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 0, 0 ] );
-			expect( Position._createAt( ul, 1 ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1 ] );
-		} );
-
 		it( 'should create positions from node and flag', () => {
 			expect( Position._createAt( root, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
@@ -189,6 +168,18 @@ describe( 'Position', () => {
 			expect( Position._createAt( a, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 
 			expect( Position._createAt( ul, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+		} );
+
+		it( 'throws when parent is not an element', () => {
+			expect( () => {
+				Position._createAt( b, 0 );
+			} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
+		} );
+
+		it( 'works with a doc frag', () => {
+			const frag = new DocumentFragment();
+
+			expect( Position._createAt( frag, 0 ) ).to.have.property( 'root', frag );
 		} );
 	} );
 
@@ -241,17 +232,6 @@ describe( 'Position', () => {
 			expect( () => {
 				Position._createAfter( root );
 			} ).to.throw( CKEditorError, /model-position-after-root/ );
-		} );
-	} );
-
-	describe( 'createFromPosition()', () => {
-		it( 'should create a copy of given position', () => {
-			const original = new Position( root, [ 1, 2, 3 ] );
-			const position = Position._createAt( original );
-
-			expect( position ).to.be.instanceof( Position );
-			expect( position.isEqual( original ) ).to.be.true;
-			expect( position ).not.to.be.equal( original );
 		} );
 	} );
 

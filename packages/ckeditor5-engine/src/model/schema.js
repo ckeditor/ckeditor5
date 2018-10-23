@@ -1172,7 +1172,7 @@ export class SchemaContext {
  *		schema.checkChild( contextDefinition, childToCheck );
  *
  *		// Also check in [ rootElement, blockQuoteElement, paragraphElement ].
- *		schema.checkChild( Position.createAt( paragraphElement, 0 ), 'foo' );
+ *		schema.checkChild( model.createPositionAt( paragraphElement, 0 ), 'foo' );
  *
  *		// Check in [ rootElement, paragraphElement ].
  *		schema.checkChild( [ rootElement, paragraphElement ], 'foo' );

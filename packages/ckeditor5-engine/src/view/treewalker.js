@@ -73,9 +73,9 @@ export default class TreeWalker {
 		 * @member {module:engine/view/position~Position} module:engine/view/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
-			this.position = Position._createFromPosition( options.startPosition );
+			this.position = Position._createAt( options.startPosition );
 		} else {
-			this.position = Position._createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
+			this.position = Position._createAt( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
@@ -189,7 +189,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_next() {
-		let position = Position._createFromPosition( this.position );
+		let position = Position._createAt( this.position );
 		const previousPosition = this.position;
 		const parent = position.parent;
 
@@ -295,7 +295,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
-		let position = Position._createFromPosition( this.position );
+		let position = Position._createAt( this.position );
 		const previousPosition = this.position;
 		const parent = position.parent;
 

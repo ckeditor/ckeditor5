@@ -68,7 +68,7 @@ describe( 'LivePosition', () => {
 		LivePosition.prototype.stopListening.restore();
 	} );
 
-	describe( 'static fromPosition()', () => {
+	describe( '_fromPosition()', () => {
 		it( 'should return LivePosition', () => {
 			const position = LivePosition.fromPosition( new Position( root, [ 0 ] ) );
 			expect( position ).to.be.instanceof( LivePosition );
@@ -76,19 +76,13 @@ describe( 'LivePosition', () => {
 		} );
 	} );
 
-	it.skip( 'createFromParentAndOffset should return LivePosition', () => {
-		const position = LivePosition.createFromParentAndOffset( ul, 0 );
-		expect( position ).to.be.instanceof( LivePosition );
-		position.detach();
-	} );
-
-	it( 'createBefore should return LivePosition', () => {
+	it( '_createBefore should return LivePosition', () => {
 		const position = LivePosition._createBefore( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
 
-	it( 'createAfter should return LivePosition', () => {
+	it( '_createAfter should return LivePosition', () => {
 		const position = LivePosition._createAfter( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();

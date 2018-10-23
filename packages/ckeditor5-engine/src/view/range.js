@@ -29,7 +29,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.start = Position._createFromPosition( start );
+		this.start = Position._createAt( start );
 
 		/**
 		 * End position.
@@ -37,7 +37,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
-		this.end = end ? Position._createFromPosition( end ) : Position._createFromPosition( start );
+		this.end = end ? Position._createAt( end ) : Position._createAt( start );
 	}
 
 	/**

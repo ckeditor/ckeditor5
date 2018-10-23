@@ -131,7 +131,7 @@ export default class Position {
 	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position._createFromPosition( this );
+		const shifted = Position._createAt( this );
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -300,8 +300,7 @@ export default class Position {
 	 * This method is a shortcut to other constructors such as:
 	 *
 	 * * {@link module:engine/view/position~Position._createBefore},
-	 * * {@link module:engine/view/position~Position._createAfter},
-	 * * {@link module:engine/view/position~Position._createFromPosition}.
+	 * * {@link module:engine/view/position~Position._createAfter}.
 	 *
 	 * @protected
 	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
@@ -310,7 +309,7 @@ export default class Position {
 	 */
 	static _createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
-			return this._createFromPosition( itemOrPosition );
+			return new this( itemOrPosition.parent, itemOrPosition.offset );
 		} else {
 			const node = itemOrPosition;
 

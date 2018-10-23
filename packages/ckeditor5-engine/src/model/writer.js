@@ -137,7 +137,7 @@ export default class Writer {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.insert( paragraph, anotherParagraph, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
@@ -225,7 +225,7 @@ export default class Writer {
 	 *		// Inserts 'foo' after an image:
 	 *		writer.insertText( 'foo', image, 'after' );
 	 *
-	 * These parameters work in the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
+	 * These parameters work in the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -257,7 +257,7 @@ export default class Writer {
 	 *		// Inserts after an image:
 	 *		writer.insertElement( 'paragraph', image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -431,7 +431,7 @@ export default class Writer {
 	 *		// Moves all items in the range to a position after an image:
 	 *		writer.move( sourceRange, image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position._createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -1131,7 +1131,7 @@ export default class Writer {
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/position~Position._createAt `Position.createAt()`} parameters.
+	 * {@link #createPositionAt `writer.createPositionAt()`} parameters.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [of~fset=0] Offset or one of the flags. Used only when
