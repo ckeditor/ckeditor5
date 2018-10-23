@@ -276,7 +276,7 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo</paragraph>' );
 	} );
 
-	it( 'undo pasting', () => {
+	it( 'pasting on collapsed selection undo and redo', () => {
 		john.setData( '<paragraph>Foo[]Bar</paragraph>' );
 
 		// Below simulates pasting.
@@ -297,8 +297,16 @@ describe( 'transform', () => {
 		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
 
 		john.undo();
-
 		expectClients( '<paragraph>FooBar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>FooBar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Foo1</paragraph><paragraph>2Bar</paragraph>' );
 	} );
 
 	it( 'selection attribute setting: split, bold, merge, undo, undo, undo', () => {
@@ -343,5 +351,41 @@ describe( 'transform', () => {
 		expectClients(
 			'<paragraph>X</paragraph><paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph><paragraph>D</paragraph>'
 		);
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1287 TC1
+	it( 'pasting on non-collapsed selection undo and redo', () => {
+		john.setData( '<paragraph>Fo[o</paragraph><paragraph>B]ar</paragraph>' );
+
+		// Below simulates pasting.
+		john.editor.model.change( () => {
+			john.editor.model.deleteContent( john.document.selection );
+
+			john.setSelection( [ 0, 2 ] );
+			john.split();
+
+			john.setSelection( [ 1 ] );
+			john.insert( '<paragraph>1</paragraph>' );
+
+			john.setSelection( [ 1 ] );
+			john.merge();
+
+			john.setSelection( [ 1 ] );
+			john.insert( '<paragraph>2</paragraph>' );
+
+			john.setSelection( [ 2 ] );
+			john.merge();
+		} );
+
+		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+
+		john.redo();
+		expectClients( '<paragraph>Fo1</paragraph><paragraph>2ar</paragraph>' );
+
+		john.undo();
+		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
 } );
