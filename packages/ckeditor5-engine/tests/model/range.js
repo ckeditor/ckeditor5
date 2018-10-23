@@ -173,19 +173,10 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromParentsAndOffsets()', () => {
-			it( 'should return range', () => {
-				const range = new Range( Position._createAt( root, 0 ), Position._createAt( p, 2 ) );
-
-				expect( range.start.path ).to.deep.equal( [ 0 ] );
-				expect( range.end.path ).to.deep.equal( [ 0, 2 ] );
-			} );
-		} );
-
 		describe( 'createFromPositionAndShift()', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( root, [ 1, 2, 3 ] );
-				const range = Range.createFromPositionAndShift( position, 4 );
+				const range = Range._createFromPositionAndShift( position, 4 );
 
 				expect( range ).to.be.instanceof( Range );
 				expect( range.start.isEqual( position ) ).to.be.true;
@@ -220,20 +211,20 @@ describe( 'Range', () => {
 
 			it( 'should throw if empty array is passed', () => {
 				expect( () => {
-					Range.createFromRanges( [] );
+					Range._createFromRanges( [] );
 				} ).to.throw( CKEditorError, /^range-create-from-ranges-empty-array/ );
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {
 				const original = new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) );
-				const range = Range.createFromRanges( [ original ] );
+				const range = Range._createFromRanges( [ original ] );
 
 				expect( range.isEqual( original ) ).to.be.true;
 				expect( range ).not.to.be.equal( original );
 			} );
 
 			it( 'should combine ranges with reference range', () => {
-				const range = Range.createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
+				const range = Range._createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
 
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.offset ).to.equal( 9 );

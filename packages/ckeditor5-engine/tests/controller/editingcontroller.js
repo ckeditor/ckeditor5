@@ -159,7 +159,7 @@ describe( 'EditingController', () => {
 		it( 'should convert delete', () => {
 			model.change( writer => {
 				writer.remove(
-					ModelRange.createFromPositionAndShift( model.document.selection.getFirstPosition(), 1 )
+					ModelRange._createFromPositionAndShift( model.document.selection.getFirstPosition(), 1 )
 				);
 
 				writer.setSelection( writer.createRange(

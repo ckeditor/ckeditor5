@@ -34,7 +34,7 @@ view.change( writer => {
 
 document.getElementById( 'button1' ).addEventListener( 'click', () => {
 	view.change( writer => {
-		writer.setSelection( ViewRange.createFromParentsAndOffsets( text1, 4, text1, 7 ) );
+		writer.setSelection( ViewRange._createFromParentsAndOffsets( text1, 4, text1, 7 ) );
 	} );
 
 	view.focus();
@@ -42,7 +42,7 @@ document.getElementById( 'button1' ).addEventListener( 'click', () => {
 
 document.getElementById( 'button2' ).addEventListener( 'click', () => {
 	view.change( writer => {
-		writer.setSelection( ViewRange.createFromParentsAndOffsets( text2, 0, text2, 3 ) );
+		writer.setSelection( ViewRange._createFromParentsAndOffsets( text2, 0, text2, 3 ) );
 	} );
 
 	view.focus();

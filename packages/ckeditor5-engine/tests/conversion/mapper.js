@@ -379,7 +379,7 @@ describe( 'Mapper', () => {
 
 		describe( 'toModelRange', () => {
 			it( 'should transform range', () => {
-				const viewRange = ViewRange.createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
+				const viewRange = ViewRange._createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
 				const modelRange = mapper.toModelRange( viewRange );
 				expect( modelRange.start.parent ).to.equal( modelDiv );
 				expect( modelRange.start.offset ).to.equal( 0 );

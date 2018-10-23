@@ -149,7 +149,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to EmptyElement', () => {
 			const srcAttribute = new AttributeElement( 'b' );
 			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
-			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstEmpty = new EmptyElement( 'img' );
 			new ContainerElement( 'p', null, dstEmpty ); // eslint-disable-line no-new
@@ -172,7 +172,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to UIElement', () => {
 			const srcAttribute = new AttributeElement( 'b' );
 			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
-			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstUI = new UIElement( 'span' );
 			new ContainerElement( 'p', null, dstUI ); // eslint-disable-line no-new

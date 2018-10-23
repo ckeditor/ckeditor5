@@ -56,23 +56,23 @@ export default class DowncastWriter {
 	 * ### Usage:
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets backward selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		writer.setSelection( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionFromPath( root, path );
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
@@ -940,30 +940,143 @@ export default class DowncastWriter {
 		this._cloneGroups.delete( groupName );
 	}
 
+	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link module:engine/view/position~Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 *
+	 * This method is a shortcut to other constructors such as:
+	 *
+	 * * {@link #createPositionBefore},
+	 * * {@link #createPositionAfter},
+	 *
+	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 */
 	createPositionAt( itemOrPosition, offset ) {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
+	/**
+	 * Creates a new position after given view item.
+	 *
+	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
+	 * @returns {module:engine/view/position~Position}
+	 */
 	createPositionAfter( item ) {
 		return Position._createAfter( item );
 	}
 
+	/**
+	 * Creates a new position before given view item.
+	 *
+	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
+	 * @returns {module:engine/view/position~Position}
+	 */
 	createPositionBefore( item ) {
 		return Position._createBefore( item );
 	}
 
+	/**
+	 * Creates a range spanning from `start` position to `end` position.
+	 *
+	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 *
+	 * @param {module:engine/view/position~Position} start Start position.
+	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @returns {module:engine/view/range~Range}
+	 */
 	createRange( start, end ) {
 		return new Range( start, end );
 	}
 
+	/**
+	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 *
+	 * @param {module:engine/view/item~Item} item
+	 * @returns {module:engine/view/range~Range}
+	 */
 	createRangeOn( item ) {
 		return Range._createOn( item );
 	}
 
+	/**
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/view/range~Range}
+	 */
 	createRangeIn( item ) {
 		return Range._createIn( item );
 	}
 
+	/**
+	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 *
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = writer.createSelection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
+	 *
+	 *		// Creates selection from the document selection.
+	 *		const selection = writer.createSelection( editor.editing.view.document.selection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
+	 *
+	 *		// Creates collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 *		const selection = writer.createSelection( paragraph, offset );
+	 *
+	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
+	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
+	 *
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
+	 * @returns {module:engine/view/selection~Selection}
+	 */
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
 	}
@@ -1031,7 +1144,7 @@ export default class DowncastWriter {
 			}
 		}
 
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1103,7 +1216,7 @@ export default class DowncastWriter {
 			}
 		}
 
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**

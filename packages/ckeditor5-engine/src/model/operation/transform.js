@@ -798,7 +798,7 @@ setTransformation( AttributeOperation, MergeOperation, ( a, b ) => {
 	//
 	if ( a.range.start.hasSameParentAs( b.deletionPosition ) ) {
 		if ( a.range.containsPosition( b.deletionPosition ) || a.range.start.isEqual( b.deletionPosition ) ) {
-			ranges.push( Range.createFromPositionAndShift( b.graveyardPosition, 1 ) );
+			ranges.push( Range._createFromPositionAndShift( b.graveyardPosition, 1 ) );
 		}
 	}
 
@@ -837,7 +837,7 @@ setTransformation( AttributeOperation, MoveOperation, ( a, b ) => {
 // @param {module:engine/model/operation/moveoperation~MoveOperation} moveOp
 // @returns {Array.<module:engine/model/range~Range>}
 function _breakRangeByMoveOperation( range, moveOp ) {
-	const moveRange = Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
+	const moveRange = Range._createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
 
 	// We are transforming `range` (original range) by `moveRange` (range moved by move operation). As usual when it comes to
 	// transforming a ranges, we may have a common part of the ranges and we may have a difference part (zero to two ranges).
@@ -1062,11 +1062,11 @@ setTransformation( MarkerOperation, MergeOperation, ( a, b ) => {
 
 setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
 	if ( a.oldRange ) {
-		a.oldRange = Range.createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
+		a.oldRange = Range._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
 	}
 
 	if ( a.newRange ) {
-		a.newRange = Range.createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
+		a.newRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
 	}
 
 	return [ a ];
@@ -1210,7 +1210,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// The exception of this rule would be if the remove operation was later undone.
 	//
-	const removedRange = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	if ( b.type == 'remove' && !context.bWasUndone ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
@@ -1358,7 +1358,7 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 // -----------------------
 
 setTransformation( MoveOperation, InsertOperation, ( a, b ) => {
-	const moveRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 	const transformed = moveRange._getTransformedByInsertOperation( b, false )[ 0 ];
 
 	a.sourcePosition = transformed.start;
@@ -1382,8 +1382,8 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	// Setting and evaluating some variables that will be used in special cases and default algorithm.
 	//
 	// Create ranges from `MoveOperations` properties.
-	const rangeA = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
-	const rangeB = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const rangeA = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const rangeB = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
 	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
@@ -1579,7 +1579,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// In this case the default range transformation will not work correctly as the element created by
 	// split operation would be outside the range. The range to move needs to be fixed manually.
 	//
-	const moveRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( moveRange.end.isEqual( b.insertionPosition ) ) {
 		// Do it only if this is a "natural" split, not a one that comes from undo.
@@ -1667,7 +1667,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 } );
 
 setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
-	const movedRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const movedRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( b.deletionPosition.hasSameParentAs( a.sourcePosition ) && movedRange.containsPosition( b.sourcePosition ) ) {
 		if ( a.type == 'remove' ) {
@@ -1705,7 +1705,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	const moveRange = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 	const transformed = moveRange._getTransformedByMergeOperation( b );
 
 	a.sourcePosition = transformed.start;
@@ -1930,7 +1930,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	// After split:
 	// <paragraph>A</paragraph><paragraph>d</paragraph><paragraph>Xbcyz</paragraph>
 	//
-	const rangeToMove = Range.createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const rangeToMove = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	if ( a.splitPosition.hasSameParentAs( b.sourcePosition ) && rangeToMove.containsPosition( a.splitPosition ) ) {
 		const howManyRemoved = b.howMany - ( a.splitPosition.offset - b.sourcePosition.offset );

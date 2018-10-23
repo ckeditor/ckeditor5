@@ -265,7 +265,7 @@ describe( 'TreeWalker', () => {
 					}
 				];
 
-				range = Range.createFromParentsAndOffsets( root, 1, paragraph, 3 );
+				range = Range._createFromParentsAndOffsets( root, 1, paragraph, 3 );
 			} );
 
 			it( 'should iterating over the range', () => {
@@ -328,7 +328,7 @@ describe( 'TreeWalker', () => {
 					}
 				];
 
-				range = Range.createFromParentsAndOffsets( textAbcd, 1, paragraph, 3 );
+				range = Range._createFromParentsAndOffsets( textAbcd, 1, paragraph, 3 );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -493,7 +493,7 @@ describe( 'TreeWalker', () => {
 					}
 				];
 
-				const range = Range.createFromParentsAndOffsets( bold, 1, paragraph, 3 );
+				const range = Range._createFromParentsAndOffsets( bold, 1, paragraph, 3 );
 
 				const iterator = new TreeWalker( {
 					boundaries: range,

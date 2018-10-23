@@ -24,9 +24,9 @@ describe( 'DocumentSelection', () => {
 
 		documentSelection = new DocumentSelection();
 
-		range1 = Range.createFromParentsAndOffsets( text, 5, text, 10 );
-		range2 = Range.createFromParentsAndOffsets( text, 1, text, 2 );
-		range3 = Range.createFromParentsAndOffsets( text, 12, text, 14 );
+		range1 = Range._createFromParentsAndOffsets( text, 5, text, 10 );
+		range2 = Range._createFromParentsAndOffsets( text, 1, text, 2 );
+		range3 = Range._createFromParentsAndOffsets( text, 12, text, 14 );
 	} );
 
 	describe( 'constructor()', () => {
@@ -118,7 +118,7 @@ describe( 'DocumentSelection', () => {
 
 		it( 'should throw an error when ranges intersects', () => {
 			const text = el.getChild( 0 );
-			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+			const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
 
 			expect( () => {
 				// eslint-disable-next-line no-new
@@ -343,22 +343,22 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'isCollapsed', () => {
 		it( 'should return true when there is single collapsed range', () => {
-			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+			const range = Range._createFromParentsAndOffsets( el, 5, el, 5 );
 			documentSelection._setTo( range );
 
 			expect( documentSelection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should return false when there are multiple ranges', () => {
-			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 5 );
-			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 15 );
+			const range1 = Range._createFromParentsAndOffsets( el, 5, el, 5 );
+			const range2 = Range._createFromParentsAndOffsets( el, 15, el, 15 );
 			documentSelection._setTo( [ range1, range2 ] );
 
 			expect( documentSelection.isCollapsed ).to.be.false;
 		} );
 
 		it( 'should return false when there is not collapsed range', () => {
-			const range = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+			const range = Range._createFromParentsAndOffsets( el, 15, el, 16 );
 			documentSelection._setTo( range );
 
 			expect( documentSelection.isCollapsed ).to.be.false;
@@ -381,8 +381,8 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'isBackward', () => {
 		it( 'is defined by the last added range', () => {
-			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 10 );
-			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
+			const range1 = Range._createFromParentsAndOffsets( el, 5, el, 10 );
+			const range2 = Range._createFromParentsAndOffsets( el, 15, el, 16 );
 
 			documentSelection._setTo( range1, { backward: true } );
 			expect( documentSelection ).to.have.property( 'isBackward', true );
@@ -392,7 +392,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'is false when last range is collapsed', () => {
-			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
+			const range = Range._createFromParentsAndOffsets( el, 5, el, 5 );
 
 			documentSelection._setTo( range, { backward: true } );
 
@@ -693,10 +693,10 @@ describe( 'DocumentSelection', () => {
 			const span2 = p2.getChild( 0 );
 
 			// <p>[<span>{]</span>}</p><p>[<span>{xx}</span>]</p>
-			const rangeA1 = Range.createFromParentsAndOffsets( p1, 0, span1, 0 );
-			const rangeB1 = Range.createFromParentsAndOffsets( span1, 0, p1, 1 );
-			const rangeA2 = Range.createFromParentsAndOffsets( p2, 0, p2, 1 );
-			const rangeB2 = Range.createFromParentsAndOffsets( span2, 0, span2, 1 );
+			const rangeA1 = Range._createFromParentsAndOffsets( p1, 0, span1, 0 );
+			const rangeB1 = Range._createFromParentsAndOffsets( span1, 0, p1, 1 );
+			const rangeA2 = Range._createFromParentsAndOffsets( p2, 0, p2, 1 );
+			const rangeB2 = Range._createFromParentsAndOffsets( span2, 0, span2, 1 );
 
 			documentSelection._setTo( [ rangeA1, rangeA2 ] );
 
@@ -721,10 +721,10 @@ describe( 'DocumentSelection', () => {
 			const span2 = p2.getChild( 0 );
 
 			// <p>[<span>{]</span>}</p><p>[<span>{xx}</span>]</p>
-			const rangeA1 = Range.createFromParentsAndOffsets( p1, 0, span1, 0 );
-			const rangeB1 = Range.createFromParentsAndOffsets( span1, 0, p1, 1 );
-			const rangeA2 = Range.createFromParentsAndOffsets( p2, 0, p2, 1 );
-			const rangeB2 = Range.createFromParentsAndOffsets( span2, 0, span2, 1 );
+			const rangeA1 = Range._createFromParentsAndOffsets( p1, 0, span1, 0 );
+			const rangeB1 = Range._createFromParentsAndOffsets( span1, 0, p1, 1 );
+			const rangeA2 = Range._createFromParentsAndOffsets( p2, 0, p2, 1 );
+			const rangeB2 = Range._createFromParentsAndOffsets( span2, 0, span2, 1 );
 
 			documentSelection._setTo( [ rangeA1, rangeA2 ] );
 
@@ -1009,7 +1009,7 @@ describe( 'DocumentSelection', () => {
 
 			it( 'should throw when range is intersecting with already added range', () => {
 				const text = el.getChild( 0 );
-				const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+				const range2 = Range._createFromParentsAndOffsets( text, 7, text, 15 );
 
 				expect( () => {
 					documentSelection._setTo( [ range1, range2 ] );
@@ -1079,7 +1079,7 @@ describe( 'DocumentSelection', () => {
 			const element = new Element( 'p' );
 			root._appendChild( element );
 
-			documentSelection._setTo( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
+			documentSelection._setTo( Range._createFromParentsAndOffsets( element, 0, element, 0 ) );
 
 			expect( documentSelection.editableElement ).to.equal( root );
 		} );

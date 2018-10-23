@@ -82,7 +82,7 @@ export default class DetachOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		_remove( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ) );
+		_remove( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 	}
 
 	/**

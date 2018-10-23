@@ -690,7 +690,7 @@ export default class Range {
 		// <div><p>ab</p><p>c[d</p></div><p>e]f</p> --> <div><p>ab</p>{</div>}<p>c[d</p><p>e]f</p>
 		//
 		// This special case is applied only if the range is to be kept together (not spread).
-		const moveRange = Range.createFromPositionAndShift( sourcePosition, howMany );
+		const moveRange = Range._createFromPositionAndShift( sourcePosition, howMany );
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( this.containsPosition( targetPosition ) && !spread ) {
@@ -781,11 +781,12 @@ export default class Range {
 	 * Creates a new range, spreading from specified {@link module:engine/model/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
+	 * @protected
 	 * @param {module:engine/model/position~Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	static createFromPositionAndShift( position, shift ) {
+	static _createFromPositionAndShift( position, shift ) {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -795,9 +796,9 @@ export default class Range {
 	/**
 	 * Creates a new instance of `Range` which is equal to passed range.
 	 *
+	 * @protected
 	 * @param {module:engine/model/range~Range} range Range to clone.
 	 * @returns {module:engine/model/range~Range}
-	 * @protected
 	 */
 	static _createFromRange( range ) {
 		return new this( range.start, range.end );
@@ -807,9 +808,9 @@ export default class Range {
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
+	 * @protected
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
-	 * @protected
 	 */
 	static _createIn( element ) {
 		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
@@ -818,12 +819,12 @@ export default class Range {
 	/**
 	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
 	 *
+	 * @protected
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
-	 * @protected
 	 */
 	static _createOn( item ) {
-		return this.createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
+		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
 	/**
@@ -841,11 +842,11 @@ export default class Range {
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to combine.
 	 * @returns {module:engine/model/range~Range} Combined range.
 	 */
-	static createFromRanges( ranges ) {
+	static _createFromRanges( ranges ) {
 		if ( ranges.length === 0 ) {
 			/**
 			 * At least one range has to be passed to
-			 * {@link module:engine/model/range~Range.createFromRanges `Range.createFromRanges()`}.
+			 * {@link module:engine/model/range~Range._createFromRanges `Range.createFromRanges()`}.
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */

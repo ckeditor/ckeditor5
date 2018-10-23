@@ -210,16 +210,19 @@ export default class Range {
 	 *		let bar = new Text( 'bar' );
 	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
-	 *		let range = new Range( new Position( foo, 2 ), new Position( bar, 1 ); // "o", img, "b" are in range.
-	 *		let otherRange = new Range( new Position( foo, 1 ), new Position( bar, 2 ); "oo", img, "ba" are in range.
+	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
+	 *		let otherRange = view.createRange( // "oo", img, "ba" are in range.
+	 *			view.createPositionAt( foo, 1 ),
+	 *			view.createPositionAt( bar, 2 )
+	 *		);
 	 *		let transformed = range.getDifference( otherRange );
 	 *		// transformed array has no ranges because `otherRange` contains `range`
 	 *
-	 *		otherRange = new Range( new Position( foo, 1 ), new Position( p, 2 ); // "oo", img are in range.
+	 *		otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has one range: from ( p, 2 ) to ( bar, 1 )
 	 *
-	 *		otherRange = new Range( new Position( p, 1 ), new Position( p, 2 ) ); // img is in range.
+	 *		otherRange = view.createRange( view.createPositionAt( p, 1 ), view.createPositionAt( p, 2 ) ); // img is in range.
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from ( foo, 1 ) to ( p, 1 ) and from ( p, 2 ) to ( bar, 1 )
 	 *
@@ -262,11 +265,11 @@ export default class Range {
 	 *		let bar = new Text( 'bar' );
 	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
-	 *		let range = new Range( new Position( foo, 2 ), new Position( bar, 1 ); // "o", img, "b" are in range.
-	 *		let otherRange = new Range( new Position( foo, 1 ), new Position( p, 2 ); // "oo", img are in range.
+	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
+	 *		let otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
 	 *		let transformed = range.getIntersection( otherRange ); // range from ( foo, 1 ) to ( p, 2 ).
 	 *
-	 *		otherRange = new Range( new Position( bar, 1 ), new Position( bar, 3 ); "ar" is in range.
+	 *		otherRange = view.createRange( view.createPositionAt( bar, 1 ), view.createPositionAt( bar, 3 ); "ar" is in range.
 	 *		transformed = range.getIntersection( otherRange ); // null - no common part.
 	 *
 	 * @param {module:engine/view/range~Range} otherRange Range to check for intersection.
@@ -386,6 +389,7 @@ export default class Range {
 	/**
 	 * Creates a range from given parents and offsets.
 	 *
+	 * @protected
 	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} startElement Start position
 	 * parent element.
 	 * @param {Number} startOffset Start position offset.
@@ -394,7 +398,7 @@ export default class Range {
 	 * @param {Number} endOffset End position offset.
 	 * @returns {module:engine/view/range~Range} Created range.
 	 */
-	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
+	static _createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
 		return new this(
 			new Position( startElement, startOffset ),
 			new Position( endElement, endOffset )
@@ -404,6 +408,7 @@ export default class Range {
 	/**
 	 * Creates and returns a new instance of Range which is equal to passed range.
 	 *
+	 * @protected
 	 * @param {module:engine/view/range~Range} range Range to clone.
 	 * @returns {module:engine/view/range~Range}
 	 */
@@ -415,11 +420,12 @@ export default class Range {
 	 * Creates a new range, spreading from specified {@link module:engine/view/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
+	 * @protected
 	 * @param {module:engine/view/position~Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	static createFromPositionAndShift( position, shift ) {
+	static _createFromPositionAndShift( position, shift ) {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -430,23 +436,25 @@ export default class Range {
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
+	 * @protected
 	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/view/range~Range}
 	 */
 	static _createIn( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.childCount );
+		return this._createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item} item
 	 * @returns {module:engine/view/range~Range}
 	 */
 	static _createOn( item ) {
 		const size = item.is( 'textProxy' ) ? item.offsetSize : 1;
 
-		return this.createFromPositionAndShift( Position._createBefore( item ), size );
+		return this._createFromPositionAndShift( Position._createBefore( item ), size );
 	}
 }
 

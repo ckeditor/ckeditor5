@@ -41,7 +41,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Remove second paragraph where selection is placed.
 		model.enqueueChange( 'transparent', writer => {
-			writer.remove( Range.createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
+			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>foo bar baz[]</paragraph>' );
@@ -64,7 +64,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Remove second paragraph.
 		model.enqueueChange( 'transparent', writer => {
-			writer.remove( Range.createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
+			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
 		// Selection attributes set by command should stay as they were.

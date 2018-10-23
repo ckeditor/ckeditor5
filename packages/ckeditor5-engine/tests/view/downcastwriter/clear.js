@@ -39,7 +39,7 @@ describe( 'DowncastWriter', () => {
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				writer.clear( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -47,7 +47,7 @@ describe( 'DowncastWriter', () => {
 			const el = new AttributeElement( 'b' );
 
 			expect( () => {
-				writer.clear( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 

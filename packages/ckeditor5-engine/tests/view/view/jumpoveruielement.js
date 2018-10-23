@@ -92,7 +92,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
 				} );
 
 				renderAndFireKeydownEvent( { keyCode: keyCodes.arrowleft } );
@@ -110,7 +110,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( p, 1, p, 1 ) ] );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -130,7 +130,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -150,7 +150,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -172,7 +172,7 @@ describe( 'View', () => {
 				view.change( writer => {
 					viewRoot._appendChild( p );
 					viewRoot._appendChild( div );
-					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+					writer.setSelection( [ ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -193,7 +193,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -214,7 +214,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( b, 1, b, 1 ) );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -245,7 +245,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -275,7 +275,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent();
@@ -306,7 +306,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
@@ -385,7 +385,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
@@ -413,7 +413,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
@@ -442,7 +442,7 @@ describe( 'View', () => {
 				viewRoot._appendChild( p );
 
 				view.change( writer => {
-					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+					writer.setSelection( ViewRange._createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );

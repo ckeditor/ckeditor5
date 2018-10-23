@@ -266,13 +266,13 @@ describe( 'DowncastWriter', () => {
 			span._priority = 20;
 
 			// <div>ab<span>cccc</span>de</div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( text, 2, text, 6 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( text, 2, text, 6 ), span );
 
 			const i = writer.createAttributeElement( 'i' );
 
 			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
 			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
+				ViewRange._createFromParentsAndOffsets(
 					root.getChild( 0 ), 1,
 					root.getChild( 1 ).getChild( 0 ), 1
 				),
@@ -281,7 +281,7 @@ describe( 'DowncastWriter', () => {
 
 			// <div>a<i>b<span>c</span></i><span>c</span><i><span>cc</span>d</i>e</div>
 			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
+				ViewRange._createFromParentsAndOffsets(
 					root.getChild( 2 ).getChild( 0 ), 1,
 					root.getChild( 3 ), 1
 				),
@@ -314,7 +314,7 @@ describe( 'DowncastWriter', () => {
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <p><span>foo</span></p>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
 
 			// Find the span.
 			const createdSpan = p.getChild( 0 );
@@ -331,7 +331,7 @@ describe( 'DowncastWriter', () => {
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <p><span>foo</span></p>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
 
 			// <div><p><span>foo</span></p>
 			writer.insert( ViewPosition._createAt( root, 0 ), p );
@@ -357,10 +357,10 @@ describe( 'DowncastWriter', () => {
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <div><p>fo<span>o</span></p><p>bar</p></div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 2, foo, 3 ), span );
 
 			// <div><p>fo<span>o</span></p><p><span>b</span>ar</p></div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
 
 			// <div><p><span>b</span>ar</p></div>
 			writer.remove( ViewRange._createOn( p1 ) );

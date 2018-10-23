@@ -420,7 +420,7 @@ function convertToModelText( withAttributes = false ) {
 
 		conversionApi.writer.insert( node, data.modelCursor );
 
-		data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, node.offsetSize );
+		data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, node.offsetSize );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();

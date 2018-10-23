@@ -311,7 +311,7 @@ function enableLoggingTools() {
 	} );
 
 	sandbox.mock( DetachOperation.prototype, 'toString', function() {
-		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
+		const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
 		const nodes = Array.from( range.getItems() );
 		const nodeString = nodes.length > 1 ? `[ ${ nodes.length } ]` : nodes[ 0 ];
 
@@ -330,7 +330,7 @@ function enableLoggingTools() {
 	} );
 
 	sandbox.mock( MoveOperation.prototype, 'toString', function() {
-		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
+		const range = ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany );
 
 		return getClassName( this ) + `( ${ this.baseVersion } ): ${ range } -> ${ this.targetPosition }`;
 	} );

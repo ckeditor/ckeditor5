@@ -601,7 +601,7 @@ export function convertText() {
 
 				conversionApi.writer.insert( text, data.modelCursor );
 
-				data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
 				data.modelCursor = data.modelRange.end;
 			}
 		}

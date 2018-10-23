@@ -49,7 +49,7 @@ export default class LiveRange extends Range {
 	 */
 
 	/**
-	 * @see module:engine/model/range~Range.createFromPositionAndShift
+	 * @see module:engine/model/range~Range._createFromPositionAndShift
 	 * @static
 	 * @method module:engine/model/liverange~LiveRange.createFromPositionAndShift
 	 * @param {module:engine/model/position~Position} position
@@ -118,7 +118,7 @@ function bindWithDocument() {
 function transform( operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
-	const result = Range.createFromRanges( ranges );
+	const result = Range._createFromRanges( ranges );
 
 	const boundariesChanged = !result.isEqual( this );
 	const contentChanged = doesOperationChangeRangeContent( this, operation );

@@ -761,7 +761,7 @@ describe( 'upcast-converters', () => {
 				if ( conversionApi.consumable.consume( data.viewItem ) ) {
 					const text = conversionApi.writer.createText( data.viewItem.data.replace( /fuck/gi, '****' ) );
 					conversionApi.writer.insert( text, data.modelCursor );
-					data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+					data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
 					data.modelCursor = data.modelRange.end;
 				}
 			} );

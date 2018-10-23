@@ -379,7 +379,7 @@ describe( 'DocumentSelection', () => {
 
 			setData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
 
-			selection._setTo( [ Range.createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
+			selection._setTo( [ Range._createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
 
 			expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			expect( selection.hasAttribute( 'italic' ) ).to.equal( false );

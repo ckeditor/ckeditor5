@@ -45,7 +45,7 @@ describe( 'DowncastWriter', () => {
 			const p2 = new ContainerElement( 'p' );
 
 			expect( () => {
-				writer.remove( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+				writer.remove( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -53,13 +53,13 @@ describe( 'DowncastWriter', () => {
 			const el = new AttributeElement( 'b' );
 
 			expect( () => {
-				writer.remove( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+				writer.remove( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
 			const p = new ContainerElement( 'p' );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
+			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
 			expect( fragment ).to.be.instanceof( DocumentFragment );
@@ -131,7 +131,7 @@ describe( 'DowncastWriter', () => {
 			const emptyElement = new EmptyElement( 'img' );
 			const attributeElement = new AttributeElement( 'b' );
 			new ContainerElement( 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
-			const range = Range.createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
+			const range = Range._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expect( () => {
 				writer.remove( range );
@@ -150,7 +150,7 @@ describe( 'DowncastWriter', () => {
 			const uiElement = new UIElement( 'span' );
 			const attributeElement = new AttributeElement( 'b' );
 			new ContainerElement( 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
-			const range = Range.createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
+			const range = Range._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expect( () => {
 				writer.remove( range );

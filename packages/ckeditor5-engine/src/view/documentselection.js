@@ -35,11 +35,11 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createSelection( start, end );
 	 *		const selection = new DocumentSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createSelection( start1, end2 ), writer.createSelection( star2, end2 ) ];
 	 *		const selection = new DocumentSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
@@ -47,7 +47,7 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection( otherSelection );
 	 *
 	 * 		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, offset );
 	 *		const selection = new DocumentSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
@@ -290,11 +290,11 @@ export default class DocumentSelection {
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createSelection( start, end );
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createSelection( start1, end2 ), writer.createSelection( star2, end2 ) ];
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
@@ -302,7 +302,7 @@ export default class DocumentSelection {
 	 *		documentSelection._setTo( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, offset );
 	 *		documentSelection._setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.

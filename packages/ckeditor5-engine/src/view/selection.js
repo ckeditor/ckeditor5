@@ -38,44 +38,48 @@ export default class Selection {
 	/**
 	 * Creates new selection instance.
 	 *
+	 * **Note**: The selection constructor is available as factory method:
+	 * - {@link module:engine/view/view~View#createSelection()}
+	 * - {@link module:engine/view/downcastwriter~DowncastWriter#createSelection()}.
+	 *
 	 * 		// Creates empty selection without ranges.
-	 *		const selection = new Selection();
+	 *		const selection = writer.createSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range );
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges );
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
-	 *		const otherSelection = new Selection();
-	 *		const selection = new Selection( otherSelection );
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
 	 *
 	 *		// Creates selection from the document selection.
-	 *		const selection = new Selection( editor.editing.view.document.selection );
+	 *		const selection = writer.createSelection( editor.editing.view.document.selection );
 	 *
 	 * 		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createContainerElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		const selection = writer.createSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
 	 *		// first child of that element and ends after the last child of that element.
-	 *		const selection = new Selection( paragraph, 'in' );
+	 *		const selection = writer.createSelection( paragraph, 'in' );
 	 *
 	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
 	 *		// just after the item.
-	 *		const selection = new Selection( paragraph, 'on' );
+	 *		const selection = writer.createSelection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Creates backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -85,7 +89,7 @@ export default class Selection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
+	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
 	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
@@ -429,22 +433,22 @@ export default class Selection {
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		selection.setTo( otherSelection );
 	 *
 	 *	 	// Sets selection to contents of DocumentSelection.
 	 *		selection.setTo( editor.editing.view.document.selection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, path );
 	 *		selection.setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.

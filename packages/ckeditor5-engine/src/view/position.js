@@ -303,6 +303,7 @@ export default class Position {
 	 * * {@link module:engine/view/position~Position._createAfter},
 	 * * {@link module:engine/view/position~Position._createFromPosition}.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
@@ -332,6 +333,7 @@ export default class Position {
 	/**
 	 * Creates a new position after given view item.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
@@ -357,6 +359,7 @@ export default class Position {
 	/**
 	 * Creates a new position before given view item.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
@@ -382,6 +385,7 @@ export default class Position {
 	/**
 	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
 	 *
+	 * @protected
 	 * @param {module:engine/view/position~Position} position Position to be cloned.
 	 * @returns {module:engine/view/position~Position}
 	 */

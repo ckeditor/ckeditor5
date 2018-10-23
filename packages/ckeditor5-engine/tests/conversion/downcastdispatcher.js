@@ -43,7 +43,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.stub( dispatcher, 'convertInsert' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
@@ -73,7 +73,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.stub( dispatcher, 'convertAttribute' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
@@ -92,7 +92,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.stub( dispatcher, 'convertAttribute' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [
 				{ type: 'insert', position, length: 1 },

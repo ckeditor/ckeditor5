@@ -72,7 +72,7 @@ class AutoLinker extends Plugin {
 					if ( entry.position.offset + entry.length == index + length ) {
 						const livePos = LivePosition._createAt( parent, index );
 						this.editor.model.enqueueChange( writer => {
-							const urlRange = Range.createFromPositionAndShift( livePos, length );
+							const urlRange = Range._createFromPositionAndShift( livePos, length );
 							writer.setAttribute( 'link', url, urlRange );
 						} );
 						return;

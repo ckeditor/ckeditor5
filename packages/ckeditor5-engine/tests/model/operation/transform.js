@@ -217,7 +217,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
 				const transformBy = new AttributeOperation(
-					Range.createFromPositionAndShift( position, 2 ),
+					Range._createFromPositionAndShift( position, 2 ),
 					'foo',
 					null,
 					'bar',
