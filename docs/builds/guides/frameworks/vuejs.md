@@ -10,7 +10,7 @@ order: 30
 
 The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component.
 
-It is also possible to use [custom builds created from source](#integrating-ckeditor-5-from-source) with the component.
+The component can also work with [custom builds created from source](#integrating-ckeditor-5-from-source).
 
 ## Quick start
 
@@ -22,7 +22,7 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 npm install --save @ckeditor/ckeditor5-vue @ckeditor/ckeditor5-build-classic
 ```
 
-### Direct `<script>` Include
+### Direct script include
 
 This is the quickest way to start using CKEditor in your project. Assuming [Vue is installed](https://vuejs.org/v2/guide/installation.html), include the `<script>` tags for the editor component and the build:
 
@@ -49,7 +49,7 @@ Use the component in your template:
 
 * The [`editor`](#editor) directive will specify the editor build.
 * The [`v-model`](#v-model) directive enables an out–of–the–box two–way data binding.
-* The [`config`](#v-model) directive will help you pass the configuration to the editor instance.
+* The [`config`](#config) directive will help you pass the configuration to the editor instance.
 
 ```html
 <div id="app">
@@ -99,7 +99,7 @@ The following examples represents a single–file component of the application. 
 
 * The [`editor`](#editor) directive will specify the editor build.
 * The [`v-model`](#v-model) directive enables an out–of–the–box two–way data binding.
-* The [`config`](#v-model) directive will help you pass the configuration to the editor instance.
+* The [`config`](#config) directive will help you pass the configuration to the editor instance.
 
 ```html
 <template>
