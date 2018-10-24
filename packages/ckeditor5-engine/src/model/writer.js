@@ -204,7 +204,7 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.addMarker( markerName, { range, usingOperation: true } );
+				this.addMarker( markerName, { range, usingOperation: true, affectsData: true } );
 			}
 		}
 	}
