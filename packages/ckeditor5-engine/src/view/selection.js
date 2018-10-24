@@ -548,7 +548,8 @@ export default class Selection {
 	/**
 	 * Moves {@link #focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position._createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * parameters.
 	 *
 	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition

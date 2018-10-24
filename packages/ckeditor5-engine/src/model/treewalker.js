@@ -380,9 +380,9 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * @property {module:engine/model/position~Position} previousPosition Previous position of the iterator.
  * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
- * the node using {@link module:engine/model/position~Position._createBefore}. It is also more efficient to get the
+ * the node using {@link module:engine/model/model~createPositionBefore}. It is also more efficient to get the
  * position after node by shifting `previousPosition` by `length`, using {@link module:engine/model/position~Position#getShiftedBy},
- * then calculate the position using {@link module:engine/model/position~Position._createAfter}.
+ * then calculate the position using {@link module:engine/model/model~Model#createPositionAfter}.
  * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * @property {module:engine/model/position~Position} nextPosition Next position of the iterator.

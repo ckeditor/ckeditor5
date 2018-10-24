@@ -77,7 +77,8 @@ export default class LivePosition extends Position {
 
 	/**
 	 * @static
-	 * @method module:engine/model/liveposition~LivePosition.createAfter
+	 * @protected
+	 * @method module:engine/model/liveposition~LivePosition._createAfter
 	 * @see module:engine/model/position~Position._createAfter
 	 * @param {module:engine/model/node~Node} node
 	 * @returns {module:engine/model/liveposition~LivePosition}
@@ -85,18 +86,10 @@ export default class LivePosition extends Position {
 
 	/**
 	 * @static
-	 * @method module:engine/model/liveposition~LivePosition.createBefore
+	 * @protected
+	 * @method module:engine/model/liveposition~LivePosition._createBefore
 	 * @see module:engine/model/position~Position._createBefore
 	 * @param {module:engine/model/node~Node} node
-	 * @returns {module:engine/model/liveposition~LivePosition}
-	 */
-
-	/**
-	 * @static
-	 * @method module:engine/model/liveposition~LivePosition.createFromParentAndOffset
-	 * @see module:engine/model/position~Position.createFromParentAndOffset
-	 * @param {module:engine/model/element~Element} parent
-	 * @param {Number} offset
 	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 

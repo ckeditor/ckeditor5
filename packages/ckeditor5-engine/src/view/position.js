@@ -380,17 +380,6 @@ export default class Position {
 
 		return new Position( item.parent, item.index );
 	}
-
-	/**
-	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
-	 *
-	 * @protected
-	 * @param {module:engine/view/position~Position} position Position to be cloned.
-	 * @returns {module:engine/view/position~Position}
-	 */
-	static _createFromPosition( position ) {
-		return new this( position.parent, position.offset );
-	}
 }
 
 /**

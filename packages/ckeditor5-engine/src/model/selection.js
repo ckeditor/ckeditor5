@@ -481,7 +481,8 @@ export default class Selection {
 	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position._createAt} parameters.
+	 * The location can be specified in the same form as
+	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition

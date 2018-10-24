@@ -332,7 +332,8 @@ export default class DocumentSelection {
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position._createAt} parameters.
+	 * The location can be specified in the same form as
+	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @see module:engine/model/writer~Writer#setSelectionFocus
 	 * @protected

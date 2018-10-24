@@ -496,8 +496,8 @@ export default class Model {
 	 *
 	 * This method is a shortcut to other factory methods such as:
 	 *
-	 * * {@link module:engine/model/model~Model#createBefore},
-	 * * {@link module:engine/model/model~Model#createAfter}.
+	 * * {@link module:engine/model/model~Model#createPositionBefore},
+	 * * {@link module:engine/model/model~Model#createPositionAfter}.
 	 *
 	 * **Note:** This method is also available on `writer` instance as
 	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()}:
