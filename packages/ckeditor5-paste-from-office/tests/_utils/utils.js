@@ -192,7 +192,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
-				expectModel( editor, fixtures.input[ name ], fixtures.model[ name ] );
+				expectModel( editor, fixtures.input[ name ], fixtures.model[ name ], fixtures.inputRtf && fixtures.inputRtf[ name ] );
 			} );
 		}
 	} );
@@ -251,7 +251,8 @@ function expectNormalized( actualView, expectedHtml ) {
 // @param {module:core/editor/editor~Editor} editor Editor instance.
 // @param {String} input Input HTML which will be pasted into the editor.
 // @param {String} expected Expected model.
-function expectModel( editor, input, expected ) {
+// @param {String} [inputRtf] Input RTF data which will be pasted into the editor.
+function expectModel( editor, input, expected, inputRtf = null ) {
 	const editorModel = editor.model;
 	const insertContent = editorModel.insertContent;
 
@@ -264,11 +265,23 @@ function expectModel( editor, input, expected ) {
 		insertContent.call( editorModel, content, selection );
 	} );
 
-	firePasteEvent( editor, input );
+	firePasteEvent( editor, {
+		'text/html': input,
+		'text/rtf': inputRtf
+	} );
 
 	sinon.restore();
 
-	expect( actual ).to.equal( inlineData( expected ) );
+	// Extract base64 images so they do not pollute model diff and can be compared separately.
+	const { data: actualModel, images: actualImages } = extractBase64Srcs( actual );
+	const { data: expectedModel, images: expectedImages } = extractBase64Srcs( inlineData( expected ) );
+
+	expect( actualModel ).to.equal( expectedModel );
+
+	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
+		expect( actualImages.length ).to.equal( expectedImages.length );
+		expect( actualImages ).to.deep.equal( expectedImages );
+	}
 }
 
 // Inlines given HTML / model representation string by removing preceding tabs and line breaks.
@@ -291,11 +304,16 @@ function inlineData( data ) {
 function extractBase64Srcs( data ) {
 	const regexp = /src="data:image\/(png|jpe?g);base64,([^"]*)"/gm;
 	const images = [];
+	const replacements = [];
 
 	let match;
 	while ( ( match = regexp.exec( data ) ) !== null ) {
 		images.push( match[ 2 ].toLowerCase() );
-		data = data.replace( match[ 2 ], '' );
+		replacements.push( match[ 2 ] );
+	}
+
+	for ( const replacement of replacements ) {
+		data = data.replace( replacement, '' );
 	}
 
 	return { data, images };
@@ -304,10 +322,10 @@ function extractBase64Srcs( data ) {
 // Fires paste event on a given editor instance with a specific HTML data.
 //
 // @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
-// @param {String} html The HTML data with which paste event will be fired.
-function firePasteEvent( editor, html ) {
+// @param {Object} data Object with `type: content` pairs used as data transfer data in the fired paste event.
+function firePasteEvent( editor, data ) {
 	editor.editing.view.document.fire( 'paste', {
-		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		dataTransfer: createDataTransfer( data ),
 		preventDefault() {}
 	} );
 }

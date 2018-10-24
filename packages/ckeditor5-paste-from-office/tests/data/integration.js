@@ -13,6 +13,8 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import PasteFromOffice from '../../src/pastefromoffice';
 
 import { generateTests } from '../_utils/utils';
@@ -28,6 +30,15 @@ generateTests( {
 	},
 	skip: {
 		safari: [ 'italicStartingText', 'multipleStylesSingleLine', 'multipleStylesMultiline' ] // Skip due to spacing issue (#13).
+	}
+} );
+
+generateTests( {
+	input: 'image',
+	type: 'integration',
+	browsers,
+	editorConfig: {
+		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
 	}
 } );
 
