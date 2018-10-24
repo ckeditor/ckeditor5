@@ -314,6 +314,8 @@ describe( 'Writer', () => {
 			expect( range.root ).to.equal( root );
 			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
 			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
+			expect( range.usingOperation ).to.equal( true );
+			expect( range.affectsData ).to.equal( true );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
