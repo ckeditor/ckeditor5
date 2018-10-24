@@ -254,7 +254,8 @@ mix( FileRepository, ObservableMixin );
 
 /**
  * File loader class.
- * It is used to control the process of file reading and uploading using specified adapter.
+ *
+ * It is used to control the process of reading the file and uploading it using the specified upload adapter.
  */
 class FileLoader {
 	/**
