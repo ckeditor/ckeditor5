@@ -525,7 +525,8 @@ export default class Range {
 
 		// Below may happen when range contains graveyard element used by split operation.
 		if ( start.root != end.root ) {
-			// End position was next to the moved graveyard element and was moved with it. Fix it.
+			// End position was next to the moved graveyard element and was moved with it.
+			// Fix it by using old `end` which has proper `root`.
 			end = this.end.getShiftedBy( -1 );
 		}
 
