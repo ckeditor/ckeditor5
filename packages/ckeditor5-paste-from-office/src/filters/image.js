@@ -13,32 +13,128 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 import { convertHexToBase64 } from './utils';
 
-export function transformImages( documentFragment, dataTransfer ) {
+/**
+ * Replaces source attribute of all `<img>` elements representing regular
+ * images (not the Word shapes) with inlined base64 image representation extracted from RTF data.
+ *
+ * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment on which transform images.
+ * @param {String} rtfData The RTF data from which images representation will be used.
+ */
+export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
 
+	const upcastWriter = new UpcastWriter();
+	const shapesIds = findAllShapesIds( documentFragment );
+
+	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
+	removeAllShapeElements( documentFragment, upcastWriter );
+
 	const imageElements = findAllImageElements( documentFragment );
 
 	if ( imageElements.length ) {
-		const upcastWriter = new UpcastWriter();
-		const imageData = extractImageDataFromRtf( dataTransfer.getData( 'text/rtf' ) );
+		const imageData = extractImageDataFromRtf( rtfData );
 
-		replaceImageSourceWithInlineData( imageElements, imageData, upcastWriter );
+		replaceImagesSourceWithInlineRepresentation( imageElements, imageData, upcastWriter );
 	}
 }
 
-function findAllImageElements( documentFragment ) {
+// Finds all shapes (`<v:*>...</v:*>`) ids. Shapes can represent images (canvas) or Word shapes (which does not have RTF representation).
+//
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to extract shape ids.
+// @returns {Array.<String>} Array of shape ids.
+function findAllShapesIds( documentFragment ) {
 	const range = Range.createIn( documentFragment );
 
-	const listItemLikeElementsMatcher = new Matcher( {
+	const shapeElementsMatcher = new Matcher( {
+		name: /v:(.+)/
+	} );
+
+	const shapesIds = [];
+
+	for ( const value of range ) {
+		const el = value.item;
+		const prevSiblingName = el.previousSibling && el.previousSibling.name || null;
+
+		// If shape element have 'o:gfxdata' attribute and is not directly before `<v:shapetype>` element it means it represent Word shape.
+		if ( shapeElementsMatcher.match( el ) && el.getAttribute( 'o:gfxdata' ) && prevSiblingName !== 'v:shapetype' ) {
+			shapesIds.push( value.item.getAttribute( 'id' ) );
+		}
+	}
+
+	return shapesIds;
+}
+
+// Removes all `<img>` elements which represents Word shapes and not regular images.
+//
+// @param {Array.<String>} shapesIds Shape ids which will be checked against `<img>` elements.
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove `<img>` elements.
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
+function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, writer ) {
+	const range = Range.createIn( documentFragment );
+
+	const imageElementsMatcher = new Matcher( {
 		name: 'img'
 	} );
 
 	const imgs = [];
 
 	for ( const value of range ) {
-		if ( value.type === 'elementStart' && listItemLikeElementsMatcher.match( value.item ) ) {
+		if ( imageElementsMatcher.match( value.item ) ) {
+			const el = value.item;
+			const shapes = el.getAttribute( 'v:shapes' ) ? el.getAttribute( 'v:shapes' ).split( ' ' ) : [];
+
+			if ( shapes.length && shapes.every( shape => shapesIds.indexOf( shape ) > -1 ) ) {
+				imgs.push( el );
+			}
+		}
+	}
+
+	for ( const img of imgs ) {
+		writer.remove( img );
+	}
+}
+
+// Removes all shape elements (`<v:*>...</v:*>`) so they do not pollute the output structure.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove shape elements.
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
+function removeAllShapeElements( documentFragment, writer ) {
+	const range = Range.createIn( documentFragment );
+
+	const shapeElementsMatcher = new Matcher( {
+		name: /v:(.+)/
+	} );
+
+	const shapes = [];
+
+	for ( const value of range ) {
+		if ( shapeElementsMatcher.match( value.item ) ) {
+			shapes.push( value.item );
+		}
+	}
+
+	for ( const shape of shapes ) {
+		writer.remove( shape );
+	}
+}
+
+// Finds all `<img>` elements in a given document fragment.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment in which to look for `<img>` elements.
+// @returns {Array.<module:engine/view/element~Element>} Array of found `<img>` elements.
+function findAllImageElements( documentFragment ) {
+	const range = Range.createIn( documentFragment );
+
+	const imageElementsMatcher = new Matcher( {
+		name: 'img'
+	} );
+
+	const imgs = [];
+
+	for ( const value of range ) {
+		if ( imageElementsMatcher.match( value.item ) ) {
 			imgs.push( value.item );
 		}
 	}
@@ -46,6 +142,13 @@ function findAllImageElements( documentFragment ) {
 	return imgs;
 }
 
+// Extracts all images HEX representations from a given RTF data.
+//
+// @param {String} rtfData The RTF data from which to extract images HEX representation.
+// @returns {Array.<Object>} Array of found HEX representations. Each array item is an object containing:
+//
+// 		* {String} hex Image representation in HEX format.
+// 		* {string} type Type of image, `image/png` or `image/jpeg`.
 function extractImageDataFromRtf( rtfData ) {
 	if ( !rtfData ) {
 		return [];
@@ -80,18 +183,21 @@ function extractImageDataFromRtf( rtfData ) {
 	return result;
 }
 
-function replaceImageSourceWithInlineData( imageElements, imagesRtfData, upcastWriter ) {
-	// Assuming there is equal amount of Images in RTF and HTML source, so we can match them accordingly to the existing order.
-	if ( imageElements.length === imagesRtfData.length ) {
+// Replaces `src` attribute value of all given images with the corresponding base64 image representation.
+//
+// @param {Array.<module:engine/view/element~Element>} imageElements Array of image elements which will have its source replaced.
+// @param {Array.<Object>} imagesHexSources Array of images hex sources (usually the result of `extractImageDataFromRtf()` function).
+// The array should be the same length as `imageElements` parameter.
+// @param {module:engine/view/upcastwriter~UpcastWriter} upcastWriter
+function replaceImagesSourceWithInlineRepresentation( imageElements, imagesHexSources, upcastWriter ) {
+	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
+	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
-			// Replace only `file` urls of images (shapes get newSrcValue with null).
-			if ( ( imageElements[ i ].getAttribute( 'src' ).indexOf( 'file://' ) === 0 ) && imagesRtfData[ i ] ) {
-				upcastWriter.setAttribute( 'src', createSrcWithBase64( imagesRtfData[ i ] ), imageElements[ i ] );
+			// Replace only `file` urls of images (online images are also represented with local `file://` path).
+			if ( imageElements[ i ].getAttribute( 'src' ).indexOf( 'file://' ) === 0 && imagesHexSources[ i ] ) {
+				const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ convertHexToBase64( imagesHexSources[ i ].hex ) }`;
+				upcastWriter.setAttribute( 'src', newSrc, imageElements[ i ] );
 			}
 		}
 	}
-}
-
-function createSrcWithBase64( img ) {
-	return img.type ? 'data:' + img.type + ';base64,' + convertHexToBase64( img.hex ) : null;
 }

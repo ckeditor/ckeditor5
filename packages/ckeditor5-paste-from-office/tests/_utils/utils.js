@@ -224,21 +224,19 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 // 	because tab preceding `03` text will be treated as formatting character and will be removed.
 //
 // @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
-// actual Actual HTML.
-// @param {String} expected Expected HTML.
-function expectNormalized( actual, expected ) {
-	const expectedInlined = inlineData( expected );
-
+// actualView Actual HTML.
+// @param {String} expectedHtml Expected HTML.
+function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
-	const actualNormalized = stringifyView( actual ).replace( /\u00A0/g, ' ' );
-	const expectedNormalized = normalizeHtml( expectedInlined );
+	const actualNormalized = stringifyView( actualView ).replace( /\u00A0/g, ' ' );
+	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ) );
 
 	// Extract base64 images so they do not pollute HTML diff and can be compared separately.
-	const { data: actualSimplified, images: actualImages } = extractBase64Srcs( actualNormalized );
-	const { data: expectedSimplified, images: expectedImages } = extractBase64Srcs( expectedNormalized );
+	const { data: actual, images: actualImages } = extractBase64Srcs( actualNormalized );
+	const { data: expected, images: expectedImages } = extractBase64Srcs( expectedNormalized );
 
-	expect( actualSimplified ).to.equal( expectedSimplified );
+	expect( actual ).to.equal( expected );
 
 	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
 		expect( actualImages.length ).to.equal( expectedImages.length );

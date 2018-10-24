@@ -12,7 +12,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/utils';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
-import { transformImages } from './filters/image';
+import { replaceImagesSourceWithBase64 } from './filters/image';
 
 /**
  * The Paste from Office plugin.
@@ -61,7 +61,7 @@ export default class PasteFromOffice extends Plugin {
 		const { body, stylesString } = parseHtml( input );
 
 		transformListItemLikeElementsIntoLists( body, stylesString );
-		transformImages( body, dataTransfer );
+		replaceImagesSourceWithBase64( body, dataTransfer.getData( 'text/rtf' ) );
 
 		return body;
 	}
