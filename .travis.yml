@@ -19,7 +19,7 @@ before_install:
 install:
   - npm install
   - npm install mgit2 lerna
-  - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
+  - mgit sync --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
   - npm t -- --reporter=dots
