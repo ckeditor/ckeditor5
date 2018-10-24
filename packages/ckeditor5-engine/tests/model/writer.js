@@ -310,12 +310,13 @@ describe( 'Writer', () => {
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
-			const range = model.markers.get( 'marker' ).getRange();
+			const modelMarker = model.markers.get( 'marker' );
+			const range = modelMarker.getRange();
 			expect( range.root ).to.equal( root );
 			expect( range.start.path ).to.deep.equal( [ 2, 1 ] );
 			expect( range.end.path ).to.deep.equal( [ 2, 5 ] );
-			expect( range.usingOperation ).to.equal( true );
-			expect( range.affectsData ).to.equal( true );
+			expect( modelMarker.managedUsingOperations ).to.be.true;
+			expect( modelMarker.affectsData ).to.be.true;
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
