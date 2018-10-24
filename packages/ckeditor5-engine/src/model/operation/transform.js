@@ -1669,12 +1669,21 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// The default case.
 	//
 	const transformed = moveRange._getTransformedBySplitOperation( b );
+	const ranges = [ transformed ];
 
-	a.sourcePosition = transformed.start;
-	a.howMany = transformed.end.offset - transformed.start.offset;
-	a.targetPosition = newTargetPosition;
+	// Case 5:
+	//
+	// Moved range contains graveyard element used by split operation. Add extra move operation to the result.
+	//
+	if ( b.graveyardPosition ) {
+		const movesGraveyardElement = moveRange.start.isEqual( b.graveyardPosition ) || moveRange.containsPosition( b.graveyardPosition );
 
-	return [ a ];
+		if ( a.howMany > 1 && movesGraveyardElement ) {
+			ranges.push( Range.createFromPositionAndShift( b.insertionPosition, 1 ) );
+		}
+	}
+
+	return _makeMoveOperationsFromRanges( ranges, newTargetPosition );
 } );
 
 setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
@@ -1692,16 +1701,30 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			// removed nodes might be unexpected. This means that in this scenario we will reverse merging and remove the element.
 			//
 			if ( !context.aWasUndone ) {
-				const gyMoveTarget = Position.createFromPosition( b.graveyardPosition );
-				const gyMove = new MoveOperation( b.graveyardPosition, 1, gyMoveTarget, 0 );
+				const results = [];
 
-				const targetPositionPath = b.graveyardPosition.path.slice();
+				let gyMoveSource = Position.createFromPosition( b.graveyardPosition );
+				let splitNodesMoveSource = Position.createFromPosition( b.targetPosition );
+
+				if ( a.howMany > 1 ) {
+					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
+					gyMoveSource = gyMoveSource._getTransformedByInsertion( a.targetPosition, a.howMany - 1 );
+					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
+				}
+
+				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, a.targetPosition );
+				const gyMove = new MoveOperation( gyMoveSource, 1, gyMoveTarget, 0 );
+
+				const targetPositionPath = gyMove.getMovedRangeStart().path.slice();
 				targetPositionPath.push( 0 );
 
-				return [
-					gyMove,
-					new MoveOperation( b.targetPosition, b.howMany, new Position( a.targetPosition.root, targetPositionPath ), 0 )
-				];
+				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, targetPositionPath );
+				const splitNodesMove = new MoveOperation( splitNodesMoveSource, b.howMany, splitNodesMoveTarget, 0 );
+
+				results.push( gyMove );
+				results.push( splitNodesMove );
+
+				return results;
 			}
 		} else {
 			// Case 2:
@@ -1934,14 +1957,21 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 	if ( a.graveyardPosition ) {
 		// Case 1:
 		//
-		// Split operation graveyard node was moved. In this case move operation is stronger and the split insertion position
-		// should be corrected.
+		// Split operation graveyard node was moved. In this case move operation is stronger. Since graveyard element
+		// is already moved to the correct position, we need to only move the nodes after the split position.
+		// This will be done by `MoveOperation` instead of `SplitOperation`.
 		//
-		if ( rangeToMove.containsPosition( a.graveyardPosition ) || rangeToMove.start.isEqual( a.graveyardPosition ) ) {
-			a.insertionPosition = Position.createFromPosition( b.targetPosition );
-			a.splitPosition = a.splitPosition._getTransformedByMoveOperation( b );
+		if ( rangeToMove.start.isEqual( a.graveyardPosition ) || rangeToMove.containsPosition( a.graveyardPosition ) ) {
+			const sourcePosition = a.splitPosition._getTransformedByMoveOperation( b );
 
-			return [ a ];
+			const newParentPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
+			const newTargetPath = newParentPosition.path.slice();
+			newTargetPath.push( 0 );
+
+			const newTargetPosition = new Position( newParentPosition.root, newTargetPath );
+			const moveOp = new MoveOperation( sourcePosition, a.howMany, newTargetPosition, 0 );
+
+			return [ moveOp ];
 		}
 
 		a.graveyardPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
@@ -2172,7 +2202,14 @@ function _makeMoveOperationsFromRanges( ranges, targetPosition ) {
 	for ( let i = 0; i < ranges.length; i++ ) {
 		// Create new operation out of a range and target position.
 		const range = ranges[ i ];
-		const op = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, 0 );
+		const op = new MoveOperation(
+			range.start,
+			range.end.offset - range.start.offset,
+			// If the target is the end of the move range this operation doesn't really move anything.
+			// In this case, it is better for OT to use range start instead of range end.
+			targetPosition.isEqual( range.end ) ? range.start : targetPosition,
+			0
+		);
 
 		operations.push( op );
 

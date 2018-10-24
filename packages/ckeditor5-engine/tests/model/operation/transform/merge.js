@@ -174,9 +174,7 @@ describe( 'transform', () => {
 				kate.undo();
 				syncClients();
 
-				expectClients(
-					'<paragraph>Foo</paragraph>'
-				);
+				expectClients( '<paragraph>Foo</paragraph>' );
 			} );
 		} );
 
@@ -221,6 +219,40 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph>FooBar</paragraph>' );
+			} );
+
+			it( 'remove merged element then undo #3', () => {
+				john.setData( '[<paragraph>A</paragraph><paragraph>B</paragraph>]<paragraph>C</paragraph>' );
+				kate.setData( '<paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph>' );
+
+				kate.merge();
+				john.remove();
+
+				syncClients();
+				expectClients( '<paragraph>C</paragraph>' );
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
+			} );
+
+			it( 'remove merged element then undo #4', () => {
+				john.setData( '<paragraph>A</paragraph>[<paragraph>B</paragraph><paragraph>C</paragraph>]' );
+				kate.setData( '<paragraph>A</paragraph>[]<paragraph>B</paragraph><paragraph>C</paragraph>' );
+
+				kate.merge();
+				john.remove();
+
+				syncClients();
+				expectClients( '<paragraph>A</paragraph>' );
+
+				john.undo();
+				kate.undo();
+
+				syncClients();
+				expectClients( '<paragraph>A</paragraph><paragraph>B</paragraph><paragraph>C</paragraph>' );
 			} );
 		} );
 
@@ -407,6 +439,24 @@ describe( 'transform', () => {
 						'<paragraph>C</paragraph>' +
 					'</listItem>'
 				);
+			} );
+		} );
+
+		describe( 'by split', () => {
+			it( 'merge element which got split (the element is in blockquote) and undo', () => {
+				john.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>[]Bar</paragraph></blockQuote>' );
+				kate.setData( '<paragraph>Foo</paragraph><blockQuote><paragraph>B[]ar</paragraph></blockQuote>' );
+
+				john._processExecute( 'delete' );
+				kate.split();
+
+				syncClients();
+				expectClients( '<paragraph>FooB</paragraph><paragraph>ar</paragraph>' );
+
+				john.undo();
+
+				syncClients();
+				expectClients( '<paragraph>Foo</paragraph><blockQuote><paragraph>B</paragraph><paragraph>ar</paragraph></blockQuote>' );
 			} );
 		} );
 	} );
