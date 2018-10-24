@@ -1716,7 +1716,7 @@ describe( 'Renderer', () => {
 		} );
 
 		// #1439
-		it( 'should force–refresh the selection in FF after a soft break to nudge the caret (non-gecko)', () => {
+		it( 'should not force–refresh the selection in non–Gecko browsers after a soft break', () => {
 			const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 
 			testUtils.sinon.stub( env, 'isGecko' ).get( () => false );
@@ -1738,7 +1738,7 @@ describe( 'Renderer', () => {
 		} );
 
 		// #1439
-		it( 'should force–refresh the selection in FF after a soft break to nudge the caret (gecko)', () => {
+		it( 'should force–refresh the selection in Gecko browsers after a soft break to nudge the caret', () => {
 			const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 
 			testUtils.sinon.stub( env, 'isGecko' ).get( () => true );
