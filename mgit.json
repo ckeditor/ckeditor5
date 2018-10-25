@@ -32,6 +32,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#900912b",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#81e681c",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#2fcddea",
+    "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#a0379fa",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#4b16e65",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#55b8dff",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#e717ad1",
