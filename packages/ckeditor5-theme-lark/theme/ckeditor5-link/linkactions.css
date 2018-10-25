@@ -74,6 +74,7 @@
 		}
 
 		& .ck-button:not(.ck-link-actions__preview) {
+			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
 			margin-left: 0;
 

@@ -35,6 +35,7 @@
 		}
 
 		& .ck-button {
+			padding: var(--ck-spacing-standard);
 			margin-top: var(--ck-spacing-standard);
 			margin-left: 0;
 
