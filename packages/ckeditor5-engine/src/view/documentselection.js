@@ -43,7 +43,7 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		const selection = new DocumentSelection( otherSelection );
 	 *
 	 * 		// Creates selection at the given position.
@@ -298,7 +298,7 @@ export default class DocumentSelection {
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		documentSelection._setTo( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.

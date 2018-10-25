@@ -44,7 +44,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
 			selection = selectable;
 		} else {
-			selection = new Selection( selectable, placeOrOffset );
+			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
 		if ( !selection.isCollapsed ) {

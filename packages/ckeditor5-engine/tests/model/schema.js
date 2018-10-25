@@ -15,7 +15,6 @@ import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
-import Selection from '../../src/model/selection';
 
 import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
 
@@ -1187,7 +1186,7 @@ describe( 'Schema', () => {
 			setData( model, input );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection( validRanges );
+			const sel = model.createSelection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( output );
 		}
