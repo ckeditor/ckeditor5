@@ -43,7 +43,17 @@ export default class LiveRange extends Range {
 	/**
 	 * @see module:engine/model/range~Range._createIn
 	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createIn
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createIn
+	 * @param {module:engine/model/element~Element} element
+	 * @returns {module:engine/model/liverange~LiveRange}
+	 */
+
+	/**
+	 * @see module:engine/model/range~Range._createOn
+	 * @static
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createOn
 	 * @param {module:engine/model/element~Element} element
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
@@ -51,7 +61,8 @@ export default class LiveRange extends Range {
 	/**
 	 * @see module:engine/model/range~Range._createFromPositionAndShift
 	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromPositionAndShift
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createFromPositionAndShift
 	 * @param {module:engine/model/position~Position} position
 	 * @param {Number} shift
 	 * @returns {module:engine/model/liverange~LiveRange}
@@ -60,7 +71,8 @@ export default class LiveRange extends Range {
 	/**
 	 * @see module:engine/model/range~Range._createFromRange
 	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromRange
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createFromRange
 	 * @param {module:engine/model/range~Range} range
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */

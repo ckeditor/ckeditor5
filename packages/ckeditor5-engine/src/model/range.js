@@ -846,7 +846,7 @@ export default class Range {
 		if ( ranges.length === 0 ) {
 			/**
 			 * At least one range has to be passed to
-			 * {@link module:engine/model/range~Range._createFromRanges `Range.createFromRanges()`}.
+			 * {@link module:engine/model/range~Range._createFromRanges `Range._createFromRanges()`}.
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */

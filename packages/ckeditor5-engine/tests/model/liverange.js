@@ -67,19 +67,19 @@ describe( 'LiveRange', () => {
 		LiveRange.prototype.stopListening.restore();
 	} );
 
-	it( 'createIn should return LiveRange', () => {
+	it( '_createIn should return LiveRange', () => {
 		const range = LiveRange._createIn( p );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
 
-	it( 'createFromPositionAndShift should return LiveRange', () => {
+	it( '_createFromPositionAndShift should return LiveRange', () => {
 		const range = LiveRange._createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
 
-	it( 'createFromRange should return LiveRange', () => {
+	it( '_createFromRange should return LiveRange', () => {
 		const range = LiveRange._createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
