@@ -28,24 +28,27 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 		return;
 	}
 
-	const listLikeItems = findAllListItemLikeElements( documentFragment );
+	const itemLikeElements = findAllItemLikeElements( documentFragment );
 
-	if ( listLikeItems.length ) {
-		const writer = new UpcastWriter();
-
-		let currentList = null;
-
-		for ( let i = 0; i < listLikeItems.length; i++ ) {
-			if ( !currentList || listLikeItems[ i - 1 ].id !== listLikeItems[ i ].id ) {
-				const listStyle = findListStyle( listLikeItems[ i ], stylesString );
-				currentList = insertEmptyList( listStyle, listLikeItems[ i ].element, writer );
-			}
-
-			const listItem = transformElementIntoListItem( listLikeItems[ i ].element, writer );
-
-			writer.appendChild( listItem, currentList );
-		}
+	if ( !itemLikeElements.length ) {
+		return;
 	}
+
+	const writer = new UpcastWriter();
+
+	let currentList = null;
+
+	itemLikeElements.forEach( ( itemLikeElement, i ) => {
+		if ( !currentList || isNewListNeeded( itemLikeElements[ i - 1 ], itemLikeElement ) ) {
+			const listStyle = detectListStyle( itemLikeElement, stylesString );
+
+			currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+		}
+
+		const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
+
+		writer.appendChild( listItem, currentList );
+	} );
 }
 
 // Finds all list-like elements in a given document fragment.
@@ -58,24 +61,24 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 //		* {Number} id List item id parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} order List item creation order parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} indent List item indentation level parsed from `mso-list` style (see `getListItemData()` function).
-function findAllListItemLikeElements( documentFragment ) {
+function findAllItemLikeElements( documentFragment ) {
 	const range = Range.createIn( documentFragment );
 
 	// Matcher for finding list-like elements.
-	const listItemLikeElementsMatcher = new Matcher( {
+	const itemLikeElementsMatcher = new Matcher( {
 		name: /^p|h\d+$/,
 		styles: {
 			'mso-list': /.*/
 		}
 	} );
 
-	const listLikeItems = [];
+	const itemLikeElements = [];
 
 	for ( const value of range ) {
-		if ( value.type === 'elementStart' && listItemLikeElementsMatcher.match( value.item ) ) {
+		if ( value.type === 'elementStart' && itemLikeElementsMatcher.match( value.item ) ) {
 			const itemData = getListItemData( value.item );
 
-			listLikeItems.push( {
+			itemLikeElements.push( {
 				element: value.item,
 				id: itemData.id,
 				order: itemData.order,
@@ -84,7 +87,7 @@ function findAllListItemLikeElements( documentFragment ) {
 		}
 	}
 
-	return listLikeItems;
+	return itemLikeElements;
 }
 
 // Extracts list item style from the provided CSS.
@@ -101,14 +104,14 @@ function findAllListItemLikeElements( documentFragment ) {
 // and will be removed during CSS parsing.
 //
 // @param {Object} listLikeItem List-like item for which list style will be searched for. Usually
-// a result of `findAllListItemLikeElements()` function.
+// a result of `findAllItemLikeElements()` function.
 // @param {String} stylesString CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type List type, could be `ul` or `ol`.
 // @returns {String} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
 // directly from Word stylesheet without further processing and may be not compatible
 // with CSS `list-style-type` property accepted values.
-function findListStyle( listLikeItem, stylesString ) {
+function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
 	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
 
@@ -132,11 +135,11 @@ function findListStyle( listLikeItem, stylesString ) {
 // Creates empty list of a given type and inserts it after a specified element.
 //
 // @param {Object} listStyle List style object which determines the type of newly created list.
-// Usually a result of `findListStyle()` function.
+// Usually a result of `detectListStyle()` function.
 // @param {module:engine/view/element~Element} element Element before which list is inserted.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} Newly created list element.
-function insertEmptyList( listStyle, element, writer ) {
+function insertNewEmptyList( listStyle, element, writer ) {
 	const list = new Element( listStyle.type );
 	const position = element.parent.getChildIndex( element );
 
@@ -150,6 +153,8 @@ function insertEmptyList( listStyle, element, writer ) {
 //
 // @param {module:engine/view/element~Element} element Element which will be transformed into list item.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
+// @returns {module:engine/view/element~Element} New element to which the given one was transformed. It is
+// inserted in place of the old element (the reference to the old element is lost due to renaming).
 function transformElementIntoListItem( element, writer ) {
 	removeBulletElement( element, writer );
 
@@ -204,4 +209,8 @@ function removeBulletElement( element, writer ) {
 			writer.remove( value.item );
 		}
 	}
+}
+
+function isNewListNeeded( previousItem, currentItem ) {
+	return previousItem.id !== currentItem.id;
 }
