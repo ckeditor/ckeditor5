@@ -9,6 +9,8 @@ import EditableElement from '../../../src/view/editableelement';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
+import ViewElement from '../../../src/view/element';
+import ViewSelection from '../../../src/view/selection';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
@@ -253,6 +255,62 @@ describe( 'DowncastWriter', () => {
 
 			writer.removeCustomProperty( 'foo', element );
 			expect( element.getCustomProperty( 'foo' ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionAt( doc.getRoot(), 0 ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionAfter( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionBefore( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRange( writer.createPositionAt( doc.getRoot(), 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRangeIn( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRangeOn( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
 		} );
 	} );
 
