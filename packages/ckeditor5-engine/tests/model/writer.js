@@ -2567,6 +2567,102 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'createPositionFromPath()', () => {
+		it( 'should call model.createPositionFromPath()', () => {
+			const stub = sinon.stub( model, 'createPositionFromPath' );
+
+			model.change( writer => {
+				writer.createPositionFromPath();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should call model.createPositionAt()', () => {
+			const stub = sinon.stub( model, 'createPositionAt' );
+
+			model.change( writer => {
+				writer.createPositionAt();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should call model.createPositionAfter()', () => {
+			const stub = sinon.stub( model, 'createPositionAfter' );
+
+			model.change( writer => {
+				writer.createPositionAfter();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should call model.createPositionBefore()', () => {
+			const stub = sinon.stub( model, 'createPositionBefore' );
+
+			model.change( writer => {
+				writer.createPositionBefore();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should call model.createRange()', () => {
+			const stub = sinon.stub( model, 'createRange' );
+
+			model.change( writer => {
+				writer.createRange();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should call model.createRangeIn()', () => {
+			const stub = sinon.stub( model, 'createRangeIn' );
+
+			model.change( writer => {
+				writer.createRangeIn();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should call model.createRangeOn()', () => {
+			const stub = sinon.stub( model, 'createRangeOn' );
+
+			model.change( writer => {
+				writer.createRangeOn();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should call model.createSelection()', () => {
+			const stub = sinon.stub( model, 'createSelection' );
+
+			model.change( writer => {
+				writer.createSelection();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
 	function createText( data, attributes ) {
 		return model.change( writer => {
 			return writer.createText( data, attributes );
