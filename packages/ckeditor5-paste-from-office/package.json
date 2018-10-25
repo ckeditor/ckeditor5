@@ -7,16 +7,16 @@
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "paste from Word",
-    "paste from Office"
+    "ckeditor5-plugin"
   ],
-  "dependencies": {},
-  "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^10.0.3",
+  "dependencies": {
     "@ckeditor/ckeditor5-clipboard": "^10.0.3",
     "@ckeditor/ckeditor5-core": "^11.0.1",
+    "@ckeditor/ckeditor5-engine": "^11.0.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^10.0.3",
     "@ckeditor/ckeditor5-editor-classic": "^11.0.1",
-    "@ckeditor/ckeditor5-engine": "^11.0.0",
     "@ckeditor/ckeditor5-enter": "^10.1.2",
     "@ckeditor/ckeditor5-heading": "^10.1.0",
     "@ckeditor/ckeditor5-link": "^10.0.4",
@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-table": "^11.0.0",
     "@ckeditor/ckeditor5-utils": "^11.0.0",
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.8",
+    "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0"
   },
@@ -36,13 +36,16 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com",
-  "bugs": {
-    "url": "https://github.com/ckeditor/ckeditor5-paste-from-office/issues"
-  },
+  "bugs": "https://github.com/ckeditor/ckeditor5-paragraph/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ckeditor/ckeditor5-paste-from-office.git"
+    "url": "https://github.com/ckeditor/ckeditor5-paragraph.git"
   },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ],
   "scripts": {
     "lint": "eslint --quiet '**/*.js'",
     "precommit": "lint-staged"
