@@ -10,6 +10,7 @@ import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
+import Batch from '../../src/model/batch';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
 
 describe( 'Model', () => {
@@ -569,6 +570,75 @@ describe( 'Model', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'createPositionFromPath()', () => {
+		it( 'should return instance of Position', () => {
+			expect( model.createPositionFromPath( model.document.getRoot(), [ 0 ] ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			expect( model.createPositionAt( model.document.getRoot(), 0 ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createPositionAfter( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createPositionBefore( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRange( model.createPositionAt( model.document.getRoot(), 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRangeIn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRangeOn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			expect( model.createSelection() ).to.be.instanceof( ModelSelection );
+		} );
+	} );
+
+	describe( 'createBatch()', () => {
+		it( 'should return instance of Batch', () => {
+			expect( model.createBatch() ).to.be.instanceof( Batch );
 		} );
 	} );
 
