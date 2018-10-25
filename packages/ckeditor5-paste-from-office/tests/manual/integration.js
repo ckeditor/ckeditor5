@@ -14,13 +14,15 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import PasteFromOffice from '../../src/pastefromoffice';
+
 const htmlDiv = document.querySelector( '#html' );
 const textDiv = document.querySelector( '#text' );
 const dataDiv = document.querySelector( '#data' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table ],
+		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, PasteFromOffice ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
 			'bulletedList', 'numberedList', 'blockQuote', 'table', 'undo', 'redo' ]
 	} )

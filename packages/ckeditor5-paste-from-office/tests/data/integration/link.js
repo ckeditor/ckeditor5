@@ -14,11 +14,11 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { expectPaste } from '../_utils/utils';
+import { expectPaste } from '../../_utils/utils';
 
-import withinText from '../data/integration/link/within-text/input.word2016.html';
-import combined from '../data/integration/link/combined/input.word2016.html';
-import twoLine from '../data/integration/link/two-line/input.word2016.html';
+import withinText from '../../_data/link/within-text/input.word2016.html';
+import combined from '../../_data/link/combined/input.word2016.html';
+import twoLine from '../../_data/link/two-line/input.word2016.html';
 
 describe( 'Link – integration', () => {
 	let element, editor;

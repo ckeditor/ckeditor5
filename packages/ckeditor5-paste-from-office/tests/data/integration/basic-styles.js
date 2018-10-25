@@ -15,14 +15,14 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { expectPaste } from '../_utils/utils';
+import { expectPaste } from '../../_utils/utils';
 
-import boldWithinText from '../data/integration/basic-styles/bold-within-text/input.word2016.html';
-import italicStartingText from '../data/integration/basic-styles/italic-starting-text/input.word2016.html';
-import underlinedText from '../data/integration/basic-styles/underlined-text/input.word2016.html';
-import strikethroughEndingText from '../data/integration/basic-styles/strikethrough-ending-text/input.word2016.html';
-import multipleStylesSingleLine from '../data/integration/basic-styles/multiple-styles-single-line/input.word2016.html';
-import multipleStylesMultiline from '../data/integration/basic-styles/multiple-styles-multiline/input.word2016.html';
+import boldWithinText from '../../_data/basic-styles/bold-within-text/input.word2016.html';
+import italicStartingText from '../../_data/basic-styles/italic-starting-text/input.word2016.html';
+import underlinedText from '../../_data/basic-styles/underlined-text/input.word2016.html';
+import strikethroughEndingText from '../../_data/basic-styles/strikethrough-ending-text/input.word2016.html';
+import multipleStylesSingleLine from '../../_data/basic-styles/multiple-styles-single-line/input.word2016.html';
+import multipleStylesMultiline from '../../_data/basic-styles/multiple-styles-multiline/input.word2016.html';
 
 describe( 'Basic Styles – integration', () => {
 	let element, editor;
@@ -240,7 +240,7 @@ describe( 'Basic Styles – integration', () => {
 	//		<p><s>Third</s> line <b>styling, <i>space on e</i>nd </b></p>
 	// Input same for: Chrome, Firefox and Edge.
 	describe( 'mulitple styles multiline', () => {
-		it( 'pastes in the empty editor', () => {
+		it.skip( 'pastes in the empty editor', () => {
 			expectPaste( editor, multipleStylesMultiline, '<paragraph>Line ' +
 				'<$text bold="true">bold</$text> and <$text italic="true">italics</$text></paragraph>' +
 				'<paragraph>Line <$text bold="true" underline="true">foo</$text><$text underline="true"> bar</$text></paragraph>' +
@@ -249,7 +249,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text></paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the paragraph', () => {
+		it.skip( 'pastes in the paragraph', () => {
 			setData( editor.model, '<paragraph>More [] text</paragraph>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<paragraph>More Line ' +
@@ -260,7 +260,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text> text</paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the different block context', () => {
+		it.skip( 'pastes in the different block context', () => {
 			setData( editor.model, '<heading1>More [] text</heading1>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<heading1>More Line ' +
@@ -271,7 +271,7 @@ describe( 'Basic Styles – integration', () => {
 				'<$text bold="true">nd []</$text> text</paragraph>' ); // The last space '...nd </b></p>' goes missing.
 		} );
 
-		it( 'pastes in the inline styling context', () => {
+		it.skip( 'pastes in the inline styling context', () => {
 			setData( editor.model, '<paragraph><$text bold="true">Bol[]d</$text></paragraph>' );
 
 			expectPaste( editor, multipleStylesMultiline, '<paragraph><$text bold="true">Bol</$text>Line ' +
