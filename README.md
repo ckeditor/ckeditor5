@@ -528,6 +528,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-paste-from-office"><code>@ckeditor/ckeditor5-paste-from-office</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-paste-from-office.svg" alt="@ckeditor/ckeditor5-paste-from-office npm package badge"></a>
+	</td>
+	<td>
+		The Paste from Office (Word, Excel, Google Docs, etc.) plugin.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-table"><code>@ckeditor/ckeditor5-table</code></a>
 	</td>
 	<td>
