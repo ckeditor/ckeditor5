@@ -44,7 +44,7 @@ import adjacentGroupsModel from './adjacent-groups/model.word2016.html';
 import onlineOfflineModel from './online-offline/model.word2016.html';
 import shapesOnlineOfflineModel from './shapes-online-offline/model.word2016.html';
 
-export const fixtures = {
+const genericFixtures = {
 	input: {
 		offline,
 		linked,
@@ -90,5 +90,7 @@ export const fixtures = {
 		shapesOnlineOffline: shapesOnlineOfflineModel
 	}
 };
+
+export const fixtures = genericFixtures;
 
 export const browserFixtures = {};
