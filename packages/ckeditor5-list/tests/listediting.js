@@ -358,6 +358,167 @@ describe( 'ListEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
 			} );
+
+			describe( 'block elements inside list items', () => {
+				describe( 'single block', () => {
+					test(
+						'single item',
+						'<ul><li><p>Foo</p></li></ul>',
+						'<p>Foo</p>'
+					);
+					test(
+						'multiple items',
+						'<ul><li><p>Foo</p></li><li><p>Bar</p></li></ul>',
+						'<p>Foo</p><p>Bar</p>'
+					);
+					test(
+						'nested items',
+						'<ul><li><p>Foo</p><ol><li><p>Bar</p></li></ol></li></ul>',
+						'<p>Foo</p><p>Bar</p>'
+					);
+				} );
+
+				describe( 'multiple blocks', () => {
+					test(
+						'single item',
+						'<ul><li><h2>Foo</h2><p>Bar</p></li></ul>',
+						'<p>Foo</p><p>Bar</p>'
+					);
+					test(
+						'multiple items',
+						'<ol><li><p>123</p></li></ol><ul><li><h2>Foo</h2><p>Bar</p></li></ul>',
+						'<p>123</p><p>Foo</p><p>Bar</p>'
+					);
+					test(
+						'nested items #2',
+						'<ol><li><p>123</p><p>456</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul></li></ol>',
+						'<p>123</p><p>456</p><p>Foo</p><p>Bar</p>'
+					);
+				} );
+
+				describe.skip( 'multiple blocks', () => { // Skip due to #112 issue.
+					test(
+						'nested items #1',
+						'<ol><li><p>123</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul><p>456</p></li></ol>',
+						'<p>123</p><p>Foo</p><p>Bar</p><p>456</p>'
+					);
+				} );
+
+				describe( 'inline + block', () => {
+					test(
+						'single item',
+						'<ul><li>Foo<p>Bar</p></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p>'
+					);
+					test(
+						'multiple items',
+						'<ul><li>Foo<p>Bar</p></li><li>Foz<p>Baz</p></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Foz</li></ul><p>Baz</p>'
+					);
+					test(
+						'split by list items',
+						'<ul><li>Foo</li><li><p>Bar</p></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p>'
+					);
+					test(
+						'nested split by list items',
+						'<ul><li>Foo<ol><li><p>Bar</p></li></ol></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p>'
+					);
+					test(
+						'nested items #1',
+						'<ol><li>Foo<p>Bar</p><ul><li>123<h2>456</h2></li></ul></li></ol>',
+						'<ol><li>Foo</li></ol><p>Bar</p><ul><li>123</li></ul><p>456</p>'
+					);
+					test(
+						'nested items #2',
+						'<ol><li>Foo<p>Bar</p><ul><li>123<h2>456</h2></li></ul></li><li>abc<h2>def</h2></li></ol>',
+						'<ol><li>Foo</li></ol><p>Bar</p><ul><li>123</li></ul><p>456</p><ol><li>abc</li></ol><p>def</p>'
+					);
+				} );
+
+				describe( 'block + inline', () => {
+					test(
+						'single item',
+						'<ul><li><p>Foo</p>Bar</li></ul>',
+						'<p>Foo</p><ul><li>Bar</li></ul>'
+					);
+					test(
+						'multiple items',
+						'<ul><li><p>Foo</p>Bar</li><li><p>Foz</p>Baz</li></ul>',
+						'<p>Foo</p><ul><li>Bar</li></ul><p>Foz</p><ul><li>Baz</li></ul>'
+					);
+					test(
+						'split by list items',
+						'<ul><li><p>Bar</p><li>Foo</li></li></ul>',
+						'<p>Bar</p><ul><li>Foo</li></ul>'
+					);
+					test(
+						'nested split by list items',
+						'<ul><li><p>Bar</p><ol><li>Foo</li></ol></li></ul>',
+						'<p>Bar</p><ol><li>Foo</li></ol>'
+					);
+					test(
+						'nested items #1',
+						'<ol><li><p>Foo</p>Bar<ul><li><h2>123</h2>456</li></ul></li></ol>',
+						'<p>Foo</p><ol><li>Bar</li></ol><p>123</p><ul><li>456</li></ul>'
+					);
+					test(
+						'nested items #2',
+						'<ol><li><p>Foo</p>Bar<ul><li><h2>123</h2>456</li></ul></li><li><h2>abc</h2>def</li></ol>',
+						'<p>Foo</p><ol><li>Bar</li></ol><p>123</p><ul><li>456</li></ul><p>abc</p><ol><li>def</li></ol>'
+					);
+				} );
+
+				describe( 'complex', () => {
+					test(
+						'single item with inline block inline',
+						'<ul><li>Foo<p>Bar</p>Baz</li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Baz</li></ul>'
+					);
+					test(
+						'single item with inline block block',
+						'<ul><li>Text<p>Foo</p><p>Bar</p></li></ul>',
+						'<ul><li>Text</li></ul><p>Foo</p><p>Bar</p>'
+					);
+					test(
+						'single item with block block inline',
+						'<ul><li><p>Foo</p><p>Bar</p>Text</li></ul>',
+						'<p>Foo</p><p>Bar</p><ul><li>Text</li></ul>'
+					);
+					test(
+						'single item with block block block',
+						'<ul><li><p>Foo</p><p>Bar</p><p>Baz</p></li></ul>',
+						'<p>Foo</p><p>Bar</p><p>Baz</p>'
+					);
+					test(
+						'item inline + item block and inline',
+						'<ul><li>Foo</li><li><p>Bar</p>Baz</li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Baz</li></ul>'
+					);
+					test(
+						'item inline and block + item inline',
+						'<ul><li>Foo<p>Bar</p></li><li>Baz</li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Baz</li></ul>'
+					);
+					test(
+						'multiple items inline/block mix',
+						'<ul><li>Text<p>Foo</p></li><li>Bar<p>Baz</p>123</li></ul>',
+						'<ul><li>Text</li></ul><p>Foo</p><ul><li>Bar</li></ul><p>Baz</p><ul><li>123</li></ul>'
+					);
+					test(
+						'nested items',
+						'<ul><li>Foo<p>Bar</p></li><li>Baz<p>123</p>456<ol><li>ABC<p>DEF</p></li><li>GHI</li></ol></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p><ul><li>Baz</li></ul><p>123</p><ul><li>456<ol><li>ABC</li></ol></li></ul>' +
+							'<p>DEF</p><ol><li>GHI</li></ol>'
+					);
+					test(
+						'list with empty inline element',
+						'<ul><li><span></span>Foo<p>Bar</p></li></ul>',
+						'<ul><li>Foo</li></ul><p>Bar</p>'
+					);
+				} );
+			} );
 		} );
 
 		describe( 'position mapping', () => {
@@ -3574,6 +3735,75 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="1" listType="numbered">X</listItem>' +
 				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'should handle block elements inside pasted list #1', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should handle block elements inside pasted list #2', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should handle block elements inside pasted list #3', () => {
+			setModelData( model,
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'Clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
+				'<paragraph>X</paragraph>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 	} );
