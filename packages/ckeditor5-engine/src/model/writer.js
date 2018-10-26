@@ -1043,7 +1043,7 @@ export default class Writer {
 	 * {@link module:engine/model/position~Position.createAt `Position.createAt()`} parameters.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [of~fset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
