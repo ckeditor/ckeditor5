@@ -269,7 +269,7 @@ export function findOptimalInsertionPosition( selection ) {
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return ModelPosition.createAt( firstBlock );
+			return ModelPosition.createAt( firstBlock, 0 );
 		}
 
 		const positionAfter = ModelPosition.createAfter( firstBlock );
@@ -314,6 +314,6 @@ function addSelectionHandler( editable, writer ) {
 	} );
 
 	// Append the selection handler into the widget wrapper.
-	writer.insert( ViewPosition.createAt( editable ), selectionHandler );
+	writer.insert( ViewPosition.createAt( editable, 0 ), selectionHandler );
 	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }
