@@ -350,7 +350,6 @@ export default class Model {
 	 * @fires deleteContent
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 	 * Selection of which the content should be deleted.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the operations will be added.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
 	 *

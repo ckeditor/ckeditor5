@@ -423,7 +423,7 @@ export default class Differ {
 			// If change happens at the same position...
 			if ( a.position.isEqual( b.position ) ) {
 				// Keep chronological order of operations.
-				return a.changeCount < b.changeCount ? -1 : 1;
+				return a.changeCount - b.changeCount;
 			}
 
 			// If positions differ, position "on the left" should be earlier in the result.
