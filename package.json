@@ -51,6 +51,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "^10.0.3",
     "@ckeditor/ckeditor5-media-embed": "^10.0.0",
     "@ckeditor/ckeditor5-paragraph": "^10.0.3",
+    "@ckeditor/ckeditor5-paste-from-office": "^0.0.1",
     "@ckeditor/ckeditor5-table": "^11.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^11.1.0",
     "@ckeditor/ckeditor5-typing": "^11.0.1",
