@@ -767,7 +767,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
  *
- * It is possible to bind more that one property at a time to shorten the code:
+ * It is possible to bind more than one property at a time to shorten the code:
  *
  *		button.bind( 'isEnabled', 'value' ).to( command );
  *
