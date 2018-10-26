@@ -79,7 +79,7 @@ export default class LabeledInputView extends View {
 		 * Set it to `null` to hide the message.
 		 *
 		 * **Note:** This text will be displayed in the same place as {@link #errorText} but the
-		 * later always takes precedence: if the {@link #errorText} is set, it replaces
+		 * latter always takes precedence: if the {@link #errorText} is set, it replaces
 		 * {@link #errorText} for as long as the value of the input is invalid.
 		 *
 		 * @observable
