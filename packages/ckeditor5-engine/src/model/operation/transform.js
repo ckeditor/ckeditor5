@@ -1679,7 +1679,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 		const movesGraveyardElement = moveRange.start.isEqual( b.graveyardPosition ) || moveRange.containsPosition( b.graveyardPosition );
 
 		if ( a.howMany > 1 && movesGraveyardElement ) {
-			ranges.push( Range.createFromPositionAndShift( b.insertionPosition, 1 ) );
+			ranges.push( Range._createFromPositionAndShift( b.insertionPosition, 1 ) );
 		}
 	}
 
@@ -1703,8 +1703,8 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 			if ( !context.aWasUndone ) {
 				const results = [];
 
-				let gyMoveSource = Position.createFromPosition( b.graveyardPosition );
-				let splitNodesMoveSource = Position.createFromPosition( b.targetPosition );
+				let gyMoveSource = Position._createAt( b.graveyardPosition );
+				let splitNodesMoveSource = Position._createAt( b.targetPosition );
 
 				if ( a.howMany > 1 ) {
 					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
