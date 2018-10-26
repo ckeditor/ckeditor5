@@ -19,6 +19,11 @@ const boundPropertiesSymbol = Symbol( 'boundProperties' );
  * Mixin that injects the "observable properties" and data binding functionality described in the
  * {@link ~Observable} interface.
  *
+ * Read more about the concept of observables in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
+ * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/observablemixin~Observable
@@ -661,6 +666,11 @@ function attachBindToListeners( observable, toBindings ) {
  *
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
+ * Read more about the usage of this interface in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
+ * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ *
  * @interface Observable
  * @extends module:utils/emittermixin~Emitter
  */
@@ -730,26 +740,53 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Binds observable properties to another objects implementing {@link module:utils/observablemixin~Observable}
- * interface (like {@link module:ui/model~Model}).
+ * Binds {@link #set obvervable properties} to other objects implementing the
+ * {@link module:utils/observablemixin~Observable} interface.
  *
- * Once bound, the observable will immediately share the current state of properties
- * of the observable it is bound to and react to the changes to these properties
- * in the future.
+ * Read more in the {@glink framework/guides/deep-dive/observables#property-bindings dedicated guide}
+ * covering the topic of property bindings with some additional examples.
+ *
+ * Let's consider two objects: a `button` and an associated `command` (both `Observable`).
+ *
+ * A simple property binding could be as follows:
+ *
+ *		button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+ *
+ * or even shorter:
+ *
+ *		button.bind( 'isEnabled' ).to( command );
+ *
+ * which works in the following way:
+ *
+ * * `button.isEnabled` **instantly equals** `command.isEnabled`,
+ * * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
  *
  * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
  *
- * Using `bind().to()` chain:
+ * You can also "rename" the property in the binding by specifying the new name in the `to()` chain:
  *
- *		A.bind( 'a' ).to( B );
- *		A.bind( 'a' ).to( B, 'b' );
- *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
- *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
+ *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
  *
- * It is also possible to bind to the same property in a observables collection using `bind().toMany()` chain:
+ * It is possible to bind more than one property at a time to shorten the code:
  *
- *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( a, b, c ) => a + b + c );
- *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( ...x ) => x.every( x => x ) );
+ *		button.bind( 'isEnabled', 'value' ).to( command );
+ *
+ * which corresponds to:
+ *
+ *		button.bind( 'isEnabled' ).to( command );
+ *		button.bind( 'value' ).to( command );
+ *
+ * The binding can include more than one observable, combining multiple data sources in a custom callback:
+ *
+ *		button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
+ *			( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
+ *
+ * It is also possible to bind to the same property in an array of observables.
+ * To bind a `button` to multiple commands (also `Observables`) so that each and every one of them
+ * must be enabled for the button to become enabled, use the following code:
+ *
+ *		button.bind( 'isEnabled' ).toMany( [ commandA, commandB, commandC ], 'isEnabled',
+ *			( isAEnabled, isBEnabled, isCEnabled ) => isAEnabled && isBEnabled && isCEnabled );
  *
  * @method #bind
  * @param {...String} bindProperties Observable properties that will be bound to another observable(s).
@@ -759,7 +796,10 @@ function attachBindToListeners( observable, toBindings ) {
 /**
  * Removes the binding created with {@link #bind}.
  *
+ *		// Removes the binding for the 'a' property.
  *		A.unbind( 'a' );
+ *
+ *		// Removes bindings for all properties.
  *		A.unbind();
  *
  * @method #unbind
@@ -771,10 +811,13 @@ function attachBindToListeners( observable, toBindings ) {
  * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
  * (named after the method) and the original action will be plugged as a listener to that event.
  *
- * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
+ * Read more in the {@glink framework/guides/deep-dive/observables#decorating-object-methods dedicated guide}
+ * covering the topic of decorating methods with some additional examples.
+ *
+ * Decorating the method does not change its behavior (it only adds an event),
  * but it allows to modify it later on by listening to the method's event.
  *
- * For example, in order to cancel the method execution one can stop the event:
+ * For example, to cancel the method execution the event can be {@link module:utils/eventinfo~EventInfo#stop stopped}:
  *
  *		class Foo {
  *			constructor() {
@@ -794,10 +837,11 @@ function attachBindToListeners( observable, toBindings ) {
  *		foo.method(); // Nothing is logged.
  *
  *
- * Note: we used a high priority listener here to execute this callback before the one which
- * calls the original method (which used the default priority).
+ * **Note**: The high {@link module:utils/priorities~PriorityString priority} listener
+ * has been used to execute this particular callback before the one which calls the original method
+ * (which uses the "normal" priority).
  *
- * It's also possible to change the return value:
+ * It is also possible to change the returned value:
  *
  *		foo.on( 'method', ( evt ) => {
  *			evt.return = 'Foo!';
@@ -805,7 +849,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		foo.method(); // -> 'Foo'
  *
- * Finally, it's possible to access and modify the parameters:
+ * Finally, it is possible to access and modify the arguments the method is called with:
  *
  *		method( a, b ) {
  *			console.log( `${ a }, ${ b }`  );
