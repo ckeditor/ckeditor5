@@ -227,7 +227,7 @@ export default class DataController {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
-			writer.remove( ModelRange._createIn( modelRoot ) );
+			writer.remove( writer.createRangeIn( modelRoot ) );
 			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
 		} );
 	}

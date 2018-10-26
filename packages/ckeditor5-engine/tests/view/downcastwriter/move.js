@@ -204,11 +204,11 @@ describe( 'DowncastWriter', () => {
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 2 );
 
-			writer.remove( Range._createOn( attrElemA ) );
+			writer.remove( writer.createRangeOn( attrElemA ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 
-			writer.move( Range._createOn( attrElemB ), new Position( dstContainer, 0 ) );
+			writer.move( writer.createRangeOn( attrElemB ), new Position( dstContainer, 0 ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 		} );

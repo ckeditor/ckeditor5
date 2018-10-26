@@ -656,7 +656,7 @@ describe( 'DocumentSelection', () => {
 				selection._setAttribute( 'foo', 'bar' );
 
 				model.change( writer => {
-					writer.move( Range._createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
+					writer.move( writer.createRangeOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
 				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
@@ -671,7 +671,7 @@ describe( 'DocumentSelection', () => {
 
 				model.change( writer => {
 					// <emptyP>{}<emptyP2>
-					writer.merge( Position._createAfter( emptyP ) );
+					writer.merge( writer.createPositionAfter( emptyP ) );
 				} );
 
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
@@ -717,7 +717,7 @@ describe( 'DocumentSelection', () => {
 
 				model.change( writer => {
 					// <emptyP>{}<emptyP2>
-					writer.merge( Position._createAfter( emptyP ) );
+					writer.merge( writer.createPositionAfter( emptyP ) );
 				} );
 
 				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );

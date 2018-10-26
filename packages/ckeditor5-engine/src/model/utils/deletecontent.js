@@ -8,7 +8,6 @@
  */
 
 import LivePosition from '../liveposition';
-import Position from '../position';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
 
@@ -206,8 +205,8 @@ function insertParagraph( writer, position, selection ) {
 function replaceEntireContentWithParagraph( writer, selection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
-	writer.remove( Range._createIn( limitElement ) );
-	insertParagraph( writer, Position._createAt( limitElement, 0 ), selection );
+	writer.remove( writer.createRangeIn( limitElement ) );
+	insertParagraph( writer, writer.createPositionAt( limitElement, 0 ), selection );
 }
 
 // We want to replace the entire content with a paragraph when:

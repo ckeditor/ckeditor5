@@ -115,7 +115,7 @@ export function setData( model, data, options = {} ) {
 
 	model.change( writer => {
 		// Replace existing model in document by new one.
-		writer.remove( ModelRange._createIn( modelRoot ) );
+		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.

@@ -6,7 +6,6 @@
 /* globals console, document */
 
 import View from '../../../src/view/view';
-import Position from '../../../src/view/position';
 import createViewRoot from '../_utils/createroot';
 
 const view = new View();
@@ -20,7 +19,7 @@ view.attachDomRoot( document.getElementById( 'editable' ), 'editable' );
 
 view.change( writer => {
 	const text = writer.createText( 'foobar' );
-	writer.insert( Position._createAt( viewRoot ), text );
+	writer.insert( writer.createPositionAt( viewRoot ), text );
 	writer.setSelection( text, 3 );
 } );
 

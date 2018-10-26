@@ -378,7 +378,7 @@ describe( 'DowncastWriter', () => {
 			const attribute = writer.createAttributeElement( 'span', null, { id: 'foo' } );
 			const container = writer.createContainerElement( 'div' );
 
-			writer.insert( Position._createAt( container, 0 ), attribute );
+			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( Range._createOn( attribute ), unwrapper );
 
 			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
@@ -389,8 +389,8 @@ describe( 'DowncastWriter', () => {
 			const attribute = writer.createAttributeElement( 'span', { foo: 'foo' }, { id: 'foo' } );
 			const container = writer.createContainerElement( 'div' );
 
-			writer.insert( Position._createAt( container, 0 ), attribute );
-			writer.unwrap( Range._createOn( attribute ), unwrapper );
+			writer.insert( writer.createPositionAt( container, 0 ), attribute );
+			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
 		} );
@@ -403,8 +403,8 @@ describe( 'DowncastWriter', () => {
 			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' }, { id: 'id' } );
 			const container = writer.createContainerElement( 'div' );
 
-			writer.insert( Position._createAt( container, 0 ), attribute );
-			writer.unwrap( Range._createOn( attribute ), unwrapper );
+			writer.insert( writer.createPositionAt( container, 0 ), attribute );
+			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = stringify( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
@@ -415,8 +415,8 @@ describe( 'DowncastWriter', () => {
 			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' } );
 			const container = writer.createContainerElement( 'div' );
 
-			writer.insert( Position._createAt( container, 0 ), attribute );
-			writer.unwrap( Range._createOn( attribute ), unwrapper );
+			writer.insert( writer.createPositionAt( container, 0 ), attribute );
+			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = stringify( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
@@ -427,8 +427,8 @@ describe( 'DowncastWriter', () => {
 			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' }, { id: 'b' } );
 			const container = writer.createContainerElement( 'div' );
 
-			writer.insert( Position._createAt( container, 0 ), attribute );
-			writer.unwrap( Range._createOn( attribute ), unwrapper );
+			writer.insert( writer.createPositionAt( container, 0 ), attribute );
+			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
 			const view = stringify( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
