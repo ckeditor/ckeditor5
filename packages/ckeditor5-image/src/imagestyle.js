@@ -69,7 +69,7 @@ export default class ImageStyle extends Plugin {
  *				{ name: 'full', icon: 'right' },
  *
  *				// This will customize the icon, title and CSS class of the default "side" style.
- *				{ name: 'side', icon: customIcon, title: 'My side style', class: 'custom-side-image' }
+ *				{ name: 'side', icon: customIcon, title: 'My side style', className: 'custom-side-image' }
  *			]
  *		};
  *
