@@ -36,7 +36,7 @@ generateTests( {
 generateTests( {
 	input: 'image',
 	type: 'integration',
-	browsers,
+	browsers: [ 'chrome', 'firefox', 'edge' ],
 	editorConfig: {
 		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
 	}

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-// Default.
+// Generic.
 import offline from './offline/input.word2016.html';
 import linked from './linked/input.word2016.html';
 import rotated from './rotated/input.word2016.html';
@@ -13,16 +13,6 @@ import reflection from './reflection/input.word2016.html';
 import adjacentGroups from './adjacent-groups/input.word2016.html';
 import onlineOffline from './online-offline/input.word2016.html';
 import shapesOnlineOffline from './shapes-online-offline/input.word2016.html';
-
-import offlineRtf from './offline/input.word2016.rtf';
-import linkedRtf from './linked/input.word2016.rtf';
-import rotatedRtf from './rotated/input.word2016.rtf';
-import wrappedRtf from './wrapped/input.word2016.rtf';
-import alternativeTextRtf from './alternative-text/input.word2016.rtf';
-import reflectionRtf from './reflection/input.word2016.rtf';
-import adjacentGroupsRtf from './adjacent-groups/input.word2016.rtf';
-import onlineOfflineRtf from './online-offline/input.word2016.rtf';
-import shapesOnlineOfflineRtf from './shapes-online-offline/input.word2016.rtf';
 
 import offlineNormalized from './offline/normalized.word2016.html';
 import linkedNormalized from './linked/normalized.word2016.html';
@@ -56,17 +46,6 @@ const genericFixtures = {
 		onlineOffline,
 		shapesOnlineOffline
 	},
-	inputRtf: {
-		offline: offlineRtf,
-		linked: linkedRtf,
-		rotated: rotatedRtf,
-		wrapped: wrappedRtf,
-		alternativeText: alternativeTextRtf,
-		reflection: reflectionRtf,
-		adjacentGroups: adjacentGroupsRtf,
-		onlineOffline: onlineOfflineRtf,
-		shapesOnlineOffline: shapesOnlineOfflineRtf
-	},
 	normalized: {
 		offline: offlineNormalized,
 		linked: linkedNormalized,
@@ -93,4 +72,78 @@ const genericFixtures = {
 
 export const fixtures = genericFixtures;
 
-export const browserFixtures = {};
+// Browser specific.
+// Chrome
+import offlineRtfChrome from './offline/input.chrome.word2016.rtf';
+import linkedRtfChrome from './linked/input.chrome.word2016.rtf';
+import rotatedRtfChrome from './rotated/input.chrome.word2016.rtf';
+import wrappedRtfChrome from './wrapped/input.chrome.word2016.rtf';
+import alternativeTextRtfChrome from './alternative-text/input.chrome.word2016.rtf';
+import reflectionRtfChrome from './reflection/input.chrome.word2016.rtf';
+import adjacentGroupsRtfChrome from './adjacent-groups/input.chrome.word2016.rtf';
+import onlineOfflineRtfChrome from './online-offline/input.chrome.word2016.rtf';
+import shapesOnlineOfflineRtfChrome from './shapes-online-offline/input.chrome.word2016.rtf';
+// Firefox
+import offlineRtfFirefox from './offline/input.firefox.word2016.rtf';
+import linkedRtfFirefox from './linked/input.firefox.word2016.rtf';
+import rotatedRtfFirefox from './rotated/input.firefox.word2016.rtf';
+import wrappedRtfFirefox from './wrapped/input.firefox.word2016.rtf';
+import alternativeTextRtfFirefox from './alternative-text/input.firefox.word2016.rtf';
+import reflectionRtfFirefox from './reflection/input.firefox.word2016.rtf';
+import adjacentGroupsRtfFirefox from './adjacent-groups/input.firefox.word2016.rtf';
+import onlineOfflineRtfFirefox from './online-offline/input.firefox.word2016.rtf';
+import shapesOnlineOfflineRtfFirefox from './shapes-online-offline/input.firefox.word2016.rtf';
+// Edge
+import offlineRtfEdge from './offline/input.edge.word2016.rtf';
+import linkedRtfEdge from './linked/input.edge.word2016.rtf';
+import rotatedRtfEdge from './rotated/input.edge.word2016.rtf';
+import wrappedRtfEdge from './wrapped/input.edge.word2016.rtf';
+import alternativeTextRtfEdge from './alternative-text/input.edge.word2016.rtf';
+import reflectionRtfEdge from './reflection/input.edge.word2016.rtf';
+import adjacentGroupsRtfEdge from './adjacent-groups/input.edge.word2016.rtf';
+import onlineOfflineRtfEdge from './online-offline/input.edge.word2016.rtf';
+import shapesOnlineOfflineRtfEdge from './shapes-online-offline/input.edge.word2016.rtf';
+
+export const browserFixtures = {
+	chrome: Object.assign( {}, genericFixtures, {
+		inputRtf: {
+			offline: offlineRtfChrome,
+			linked: linkedRtfChrome,
+			rotated: rotatedRtfChrome,
+			wrapped: wrappedRtfChrome,
+			alternativeText: alternativeTextRtfChrome,
+			reflection: reflectionRtfChrome,
+			adjacentGroups: adjacentGroupsRtfChrome,
+			onlineOffline: onlineOfflineRtfChrome,
+			shapesOnlineOffline: shapesOnlineOfflineRtfChrome
+		}
+	} ),
+
+	firefox: Object.assign( {}, genericFixtures, {
+		inputRtf: {
+			offline: offlineRtfFirefox,
+			linked: linkedRtfFirefox,
+			rotated: rotatedRtfFirefox,
+			wrapped: wrappedRtfFirefox,
+			alternativeText: alternativeTextRtfFirefox,
+			reflection: reflectionRtfFirefox,
+			adjacentGroups: adjacentGroupsRtfFirefox,
+			onlineOffline: onlineOfflineRtfFirefox,
+			shapesOnlineOffline: shapesOnlineOfflineRtfFirefox
+		}
+	} ),
+
+	edge: Object.assign( {}, genericFixtures, {
+		inputRtf: {
+			offline: offlineRtfEdge,
+			linked: linkedRtfEdge,
+			rotated: rotatedRtfEdge,
+			wrapped: wrappedRtfEdge,
+			alternativeText: alternativeTextRtfEdge,
+			reflection: reflectionRtfEdge,
+			adjacentGroups: adjacentGroupsRtfEdge,
+			onlineOffline: onlineOfflineRtfEdge,
+			shapesOnlineOffline: shapesOnlineOfflineRtfEdge
+		}
+	} )
+};
