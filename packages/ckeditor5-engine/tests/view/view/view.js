@@ -478,8 +478,8 @@ describe( 'view', () => {
 
 					return element;
 				} );
-				writer.insert( ViewPosition.createAt( p ), ui );
-				writer.insert( ViewPosition.createAt( viewRoot ), p );
+				writer.insert( ViewPosition.createAt( p, 0 ), ui );
+				writer.insert( ViewPosition.createAt( viewRoot, 0 ), p );
 			} );
 
 			expect( renderingCalled ).to.be.true;

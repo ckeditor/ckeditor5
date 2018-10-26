@@ -394,8 +394,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( Position.createAt( root1 ) );
-			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+			const rootContext = new SchemaContext( Position.createAt( root1, 0 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1, 0 ) );
 
 			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
 			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
@@ -405,8 +405,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a position as a context', () => {
-			const posInRoot = Position.createAt( root1 );
-			const posInParagraph = Position.createAt( r1p1 );
+			const posInRoot = Position.createAt( root1, 0 );
+			const posInParagraph = Position.createAt( r1p1, 0 );
 
 			expect( schema.checkChild( posInRoot, 'paragraph' ) ).to.be.true;
 			expect( schema.checkChild( posInRoot, '$text' ) ).to.be.false;
@@ -486,16 +486,16 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a position as a context', () => {
-			const posInRoot = Position.createAt( root1 );
-			const posInParagraph = Position.createAt( r1p1 );
+			const posInRoot = Position.createAt( root1, 0 );
+			const posInParagraph = Position.createAt( r1p1, 0 );
 
 			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( Position.createAt( root1 ) );
-			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+			const rootContext = new SchemaContext( Position.createAt( root1, 0 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1, 0 ) );
 
 			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
@@ -1575,7 +1575,7 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it', () => {
 			const node = new Element( 'paragraph' );
 
-			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp, 0 ) );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
@@ -1583,7 +1583,7 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
-			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp, 0 ) );
 
 			expect( parent ).to.equal( r1bQp );
 		} );
@@ -1597,7 +1597,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp, 0 ) );
 
 			expect( parent ).to.null;
 		} );
@@ -1611,7 +1611,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp, 0 ) );
 
 			expect( parent ).to.null;
 		} );
@@ -1619,7 +1619,7 @@ describe( 'Schema', () => {
 		it( 'should return null when there is no allowed ancestor for given position', () => {
 			const node = new Element( 'section' );
 
-			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp, 0 ) );
 
 			expect( parent ).to.null;
 		} );
@@ -2866,7 +2866,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a position', () => {
-			const pos = Position.createAt( root.getChild( 0 ).getChild( 0 ) );
+			const pos = Position.createAt( root.getChild( 0 ).getChild( 0 ), 0 );
 			const ctx = new SchemaContext( pos );
 
 			expect( ctx.length ).to.equal( 3 );

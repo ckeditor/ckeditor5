@@ -152,12 +152,18 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'createAt', () => {
+		it( 'should throw if no offset is passed', () => {
+			const element = new Element( 'p' );
+
+			expect( () => Position.createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-offset-required/ );
+		} );
+
 		it( 'should create positions from positions', () => {
 			const spy = sinon.spy( Position, 'createFromPosition' );
 
 			const p = new Element( 'p' );
 			const position = new Position( p, 0 );
-			const created = Position.createAt( position );
+			const created = Position.createAt( position, 0 );
 
 			expect( created.isEqual( position ) ).to.be.true;
 			expect( spy.calledOnce ).to.be.true;
@@ -167,8 +173,8 @@ describe( 'Position', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			expect( Position.createAt( foo ).parent ).to.equal( foo );
-			expect( Position.createAt( foo ).offset ).to.equal( 0 );
+			expect( Position.createAt( foo, 0 ).parent ).to.equal( foo );
+			expect( Position.createAt( foo, 0 ).offset ).to.equal( 0 );
 
 			expect( Position.createAt( foo, 2 ).parent ).to.equal( foo );
 			expect( Position.createAt( foo, 2 ).offset ).to.equal( 2 );
@@ -572,7 +578,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
-			const startMaecenasPosition = Position.createAt( liOl2 );
+			const startMaecenasPosition = Position.createAt( liOl2, 0 );
 			const beforeTellusPosition = new Position( liOl2, 18 );
 
 			test( startMaecenasPosition, beforeTellusPosition, liOl2 );

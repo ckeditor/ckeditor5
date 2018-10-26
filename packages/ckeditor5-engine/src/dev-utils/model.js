@@ -391,7 +391,7 @@ function convertToModelElement() {
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element, 0 ) );
 
 		data.modelRange = ModelRange.createOn( element );
 		data.modelCursor = data.modelRange.end;

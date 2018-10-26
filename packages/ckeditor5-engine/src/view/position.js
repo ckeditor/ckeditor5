@@ -288,8 +288,8 @@ export default class Position {
 	 * * {@link module:engine/view/position~Position.createAfter},
 	 * * {@link module:engine/view/position~Position.createFromPosition}.
 	 *
-	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	static createAt( itemOrPosition, offset ) {
@@ -304,8 +304,16 @@ export default class Position {
 				return this.createBefore( node );
 			} else if ( offset == 'after' ) {
 				return this.createAfter( node );
-			} else if ( !offset ) {
-				offset = 0;
+			} else if ( offset !== 0 && !offset ) {
+				/**
+				 * {@link module:engine/view/position~Position.createAt `Position.createAt()`}
+				 * requires the offset to be specified when the first parameter is a view item.
+				 *
+				 * @error view-position-createAt-offset-required
+				 */
+				throw new CKEditorError(
+					'view-position-createAt-offset-required: ' +
+					'Position.createAt() requires the offset when the first parameter is a view item.' );
 			}
 
 			return new Position( node, offset );

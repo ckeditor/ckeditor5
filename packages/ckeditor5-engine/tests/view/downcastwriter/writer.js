@@ -22,7 +22,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelection()', () => {
 		it( 'should set document view selection', () => {
-			const position = ViewPosition.createAt( root );
+			const position = ViewPosition.createAt( root, 0 );
 			writer.setSelection( position );
 
 			const ranges = Array.from( doc.selection.getRanges() );
@@ -33,7 +33,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should be able to set fake selection', () => {
-			const position = ViewPosition.createAt( root );
+			const position = ViewPosition.createAt( root, 0 );
 			writer.setSelection( position, { fake: true, label: 'foo' } );
 
 			expect( doc.selection.isFake ).to.be.true;
@@ -43,7 +43,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelectionFocus()', () => {
 		it( 'should use selection._setFocus method internally', () => {
-			const position = ViewPosition.createAt( root );
+			const position = ViewPosition.createAt( root, 0 );
 			writer.setSelection( position );
 
 			const spy = sinon.spy( writer.document.selection, '_setFocus' );

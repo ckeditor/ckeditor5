@@ -690,7 +690,7 @@ describe( 'Range', () => {
 		describe( 'createCollapsedAt()', () => {
 			it( 'should return new collapsed range at the given item position', () => {
 				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item );
+				const range = Range.createCollapsedAt( item, 0 );
 
 				expect( range.start.parent ).to.equal( item );
 				expect( range.start.offset ).to.equal( 0 );

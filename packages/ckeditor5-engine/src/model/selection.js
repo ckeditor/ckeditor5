@@ -485,7 +485,7 @@ export default class Selection {
 	 *
 	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	setFocus( itemOrPosition, offset ) {
@@ -665,7 +665,7 @@ export default class Selection {
 			const endBlock = getParentBlock( range.end, visited );
 
 			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position.createAt( endBlock ) ) ) {
+			if ( endBlock && !range.end.isTouching( Position.createAt( endBlock, 0 ) ) ) {
 				yield endBlock;
 			}
 		}
@@ -683,7 +683,7 @@ export default class Selection {
 	 * @returns {Boolean}
 	 */
 	containsEntireContent( element = this.anchor.root ) {
-		const limitStartPosition = Position.createAt( element );
+		const limitStartPosition = Position.createAt( element, 0 );
 		const limitEndPosition = Position.createAt( element, 'end' );
 
 		return limitStartPosition.isTouching( this.getFirstPosition() ) &&

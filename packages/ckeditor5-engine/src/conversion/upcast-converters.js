@@ -358,7 +358,7 @@ function _prepareToElementConverter( config ) {
 		conversionApi.writer.insert( modelElement, splitResult.position );
 
 		// Convert children and insert to element.
-		const childrenResult = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelElement ) );
+		const childrenResult = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelElement, 0 ) );
 
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match.match );
@@ -380,7 +380,7 @@ function _prepareToElementConverter( config ) {
 		// before: <allowed><notAllowed>[]</notAllowed></allowed>
 		// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 		if ( splitResult.cursorParent ) {
-			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
 
 			// Otherwise just continue after inserted element.
 		} else {

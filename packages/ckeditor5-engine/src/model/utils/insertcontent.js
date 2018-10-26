@@ -33,8 +33,9 @@ import Selection from '../selection';
  * module:engine/model/position~Position|module:engine/model/element~Element|
  * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
  */
-export default function insertContent( model, content, selectable ) {
+export default function insertContent( model, content, selectable, placeOrOffset ) {
 	model.change( writer => {
 		let selection;
 
@@ -43,7 +44,7 @@ export default function insertContent( model, content, selectable ) {
 		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
 			selection = selectable;
 		} else {
-			selection = new Selection( selectable );
+			selection = new Selection( selectable, placeOrOffset );
 		}
 
 		if ( !selection.isCollapsed ) {

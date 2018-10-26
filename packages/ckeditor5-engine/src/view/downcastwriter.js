@@ -123,7 +123,7 @@ export default class DowncastWriter {
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
@@ -915,7 +915,7 @@ export default class DowncastWriter {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
 		this.insert( Position.createAfter( viewElement ), newElement );
-		this.move( Range.createIn( viewElement ), Position.createAt( newElement ) );
+		this.move( Range.createIn( viewElement ), Position.createAt( newElement, 0 ) );
 		this.remove( Range.createOn( viewElement ) );
 
 		return newElement;

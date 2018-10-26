@@ -201,7 +201,7 @@ export default class DataController {
 		const modelRoot = this.model.document.getRoot( rootName );
 
 		this.model.enqueueChange( 'transparent', writer => {
-			writer.insert( this.parse( data, modelRoot ), modelRoot );
+			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
 		} );
 
 		return Promise.resolve();
@@ -228,7 +228,7 @@ export default class DataController {
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 			writer.remove( ModelRange.createIn( modelRoot ) );
-			writer.insert( this.parse( data, modelRoot ), modelRoot );
+			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
 		} );
 	}
 

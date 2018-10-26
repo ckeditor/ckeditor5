@@ -501,7 +501,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock ) );
+					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock, 0 ) );
 
 					expect( result.modelRange ).to.be.instanceof( ModelRange );
 					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
@@ -540,7 +540,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
-					const position = ModelPosition.createAt( paragraph );
+					const position = ModelPosition.createAt( paragraph, 0 );
 
 					const result = conversionApi.splitToAllowedParent( span, position );
 
@@ -572,7 +572,7 @@ describe( 'UpcastDispatcher', () => {
 					conversionApi.writer.insert( paragraph, section );
 					conversionApi.writer.insert( span, paragraph );
 
-					const position = ModelPosition.createAt( span );
+					const position = ModelPosition.createAt( span, 0 );
 
 					const paragraph2 = conversionApi.writer.createElement( 'paragraph' );
 					const result = conversionApi.splitToAllowedParent( paragraph2, position );
@@ -597,7 +597,7 @@ describe( 'UpcastDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
-					const position = ModelPosition.createAt( paragraph );
+					const position = ModelPosition.createAt( paragraph, 0 );
 
 					const result = conversionApi.splitToAllowedParent( span, position );
 
