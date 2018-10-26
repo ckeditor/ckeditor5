@@ -832,6 +832,11 @@ export default class Position {
 			} else if ( offset == 'after' ) {
 				return this.createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
+				/**
+				 * The position offset is required.
+				 *
+				 * @error model-position-createAt-required-second-parameter
+				 */
 				throw new CKEditorError(
 					'model-position-createAt-required-second-parameter: ' +
 					'Position.createAt requires the second parameter offset when first parameter is a model item.' );
