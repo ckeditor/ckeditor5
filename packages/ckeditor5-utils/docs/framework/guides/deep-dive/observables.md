@@ -105,7 +105,7 @@ After that:
 * `button.isEnabled` **instantly equals** `command.isEnabled`,
 * whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
 
-Note that `command.isEnabled` **must** be defined using the `set()` method for the binding to be dynamic – we did that in the [previous chapter](#making-properties-observable). The `button.isEnabled` property does not need to exist prior to the `bind()` call and in such case, it will be created on demand. If the `button.isEnabled` property is already observable, don't worry: binding it to the command will do no harm.
+Note that `command.isEnabled` **must** be defined using the `set()` method for the binding to be dynamic &mdash; we did that in the [previous chapter](#making-properties-observable). The `button.isEnabled` property does not need to exist prior to the `bind()` call and in such case, it will be created on demand. If the `button.isEnabled` property is already observable, don't worry: binding it to the command will do no harm.
 
 By creating the binding, we allowed the button to simply use its own `isEnabled` property, e.g. in the dynamic template (check out {@link framework/guides/architecture/ui-library#template this guide} to learn how).
 
