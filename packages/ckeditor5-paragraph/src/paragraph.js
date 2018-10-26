@@ -76,7 +76,7 @@ export default class Paragraph extends Plugin {
 				conversionApi.writer.insert( paragraph, splitResult.position );
 
 				// Convert children to paragraph.
-				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph ) );
+				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph, 0 ) );
 
 				// Output range starts before paragraph but ends inside it after last child.
 				// This is because we want to keep siblings inside the same paragraph as long as it is possible.
@@ -189,7 +189,7 @@ function wrapInParagraph( input, position, conversionApi ) {
 	const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 	conversionApi.writer.insert( paragraph, position );
-	return conversionApi.convertItem( input, Position.createAt( paragraph ) );
+	return conversionApi.convertItem( input, Position.createAt( paragraph, 0 ) );
 }
 
 function isParagraphable( node, position, schema ) {
