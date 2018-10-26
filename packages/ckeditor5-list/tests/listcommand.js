@@ -307,7 +307,7 @@ describe( 'ListCommand', () => {
 					// Command value=false, we are turning on list items.
 					model.change( writer => {
 						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 2 ) ),
+							Position.createAt( root.getChild( 2 ), 0 ),
 							Position.createAt( root.getChild( 3 ), 'end' )
 						) );
 					} );
@@ -332,7 +332,7 @@ describe( 'ListCommand', () => {
 					// Command value=true, we are turning off list items.
 					model.change( writer => {
 						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 1 ) ),
+							Position.createAt( root.getChild( 1 ), 0 ),
 							Position.createAt( root.getChild( 4 ), 'end' )
 						) );
 					} );
@@ -357,8 +357,8 @@ describe( 'ListCommand', () => {
 					// From first numbered lsit item to third bulleted list item.
 					model.change( writer => {
 						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 4 ) ),
-							Position.createAt( root.getChild( 6 ) )
+							Position.createAt( root.getChild( 4 ), 0 ),
+							Position.createAt( root.getChild( 6 ), 0 )
 						) );
 					} );
 
@@ -382,7 +382,7 @@ describe( 'ListCommand', () => {
 					// From first numbered list item to third bulleted list item.
 					model.change( writer => {
 						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 1 ) ),
+							Position.createAt( root.getChild( 1 ), 0 ),
 							Position.createAt( root.getChild( 5 ), 'end' )
 						) );
 					} );

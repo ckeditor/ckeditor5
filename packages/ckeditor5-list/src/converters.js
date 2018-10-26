@@ -381,7 +381,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// When modelCursor parent had to be split to insert list item.
 		if ( splitResult.cursorParent ) {
 			// Then continue conversion in split element.
-			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
 		} else {
 			// Otherwise continue conversion after last list item.
 			data.modelCursor = data.modelRange.end;
@@ -792,7 +792,7 @@ function generateLiInUl( modelItem, conversionApi ) {
 	const viewItem = createViewListItemElement( viewWriter );
 
 	const viewList = viewWriter.createContainerElement( listType, null );
-	viewWriter.insert( ViewPosition.createAt( viewList ), viewItem );
+	viewWriter.insert( ViewPosition.createAt( viewList, 0 ), viewItem );
 
 	mapper.bindElements( modelItem, viewItem );
 
