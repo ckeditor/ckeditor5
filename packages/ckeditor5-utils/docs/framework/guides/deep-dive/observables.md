@@ -93,7 +93,7 @@ Let's consider two objects: a `command` and a corresponding `button` (both {@lin
 
 ```js
 const command = new Command( 'bold' );
-const command = new Button();
+const button = new Button();
 ```
 
 Any "decent" button must update its look when the command becomes disabled. A simple property binding doing that could look as follows:
