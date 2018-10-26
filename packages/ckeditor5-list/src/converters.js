@@ -371,22 +371,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		writer.insert( listItem, splitResult.position );
 
-		// Remember position after list item, next list items will be inserted at this position.
-		let nextPosition = ModelPosition.createAfter( listItem );
-
-		// Check all children of the converted `<li>`.
-		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
-		// This should be handled by `<ul>` and `<ol>` converters.
-		for ( const child of data.viewItem.getChildren() ) {
-			// If this is a view list element, we will convert it after last `listItem` model element.
-			if ( child.name == 'ul' || child.name == 'ol' ) {
-				nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
-			}
-			// If it was not a list it was a "regular" list item content. Just convert it to `listItem`.
-			else {
-				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
-			}
-		}
+		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
 
 		conversionStore.indent--;
 
@@ -812,6 +797,67 @@ function generateLiInUl( modelItem, conversionApi ) {
 	mapper.bindElements( modelItem, viewItem );
 
 	return viewItem;
+}
+
+// Helper function that converts children of a given `<li>` view element into corresponding model elements.
+// The function maintains proper order of elements if model `listItem` is split during the conversion
+// due to block children conversion.
+//
+// @param {module:engine/model/element~Element} listItemModel List item model element to which converted children will be inserted.
+// @param {Iterable.<module:engine/view/node~Node>} viewChildren View elements which will be converted.
+// @param {Object} conversionApi Conversion interface to be used by the callback.
+// @returns {module:engine/model/position~Position} Position on which next elements should be inserted after children conversion.
+function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi ) {
+	let lastListItem = listItemModel;
+	let nextPosition = ModelPosition.createAfter( lastListItem );
+
+	// Check all children of the converted `<li>`. At this point we assume there are no "whitespace" view text nodes
+	// in view list, between view list items. This should be handled by `<ul>` and `<ol>` converters.
+	for ( const child of viewChildren ) {
+		// If this is a view list element, we will insert its conversion result after currently handled `listItem`.
+		if ( child.name == 'ul' || child.name == 'ol' ) {
+			nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
+		}
+		// If it is not a view list element it is a "regular" list item content. Its conversion result will
+		// be inserted as `listItem` children (block children may split current `listItem`).
+		else {
+			const result = conversionApi.convertItem( child, ModelPosition.createAt( lastListItem, 'end' ) );
+			const convertedChild = result.modelRange.start.nodeAfter;
+
+			nextPosition = result.modelCursor;
+
+			// If there is a block element child being converted it may split the current list item, for example:
+			//
+			//		<li><p>Foo</p></li>
+			//
+			// will be converted to:
+			//
+			//		<listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
+			//
+			// so we need to update reference to `lastListItem`.
+			if ( convertedChild && convertedChild.is( 'element' ) &&
+				!conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
+				lastListItem = nextPosition.parent;
+
+				// Depending on the used converter for block elements, usually the position (`result.modelCursor`
+				// marked as # below) points to the second list item after conversion:
+				//
+				//		`<li><p>Foo</p></li>` -> `<listItem></listItem><paragraph>Foo</paragraph><listItem>#</listItem>`
+				//
+				// However, in some cases like autoparagraphing the position is placed on the end of the block element:
+				//
+				//		`<li><h2>Foo</h2></li>` -> `<listItem></listItem><paragraph>Foo#</paragraph><listItem></listItem>`
+				//
+				// We need to check for such cases and use proper list item and position based on it.
+				if ( !lastListItem.is( 'listItem' ) && lastListItem.nextSibling && lastListItem.nextSibling.is( 'listItem' ) ) {
+					lastListItem = lastListItem.nextSibling;
+					nextPosition = ModelPosition.createAt( lastListItem, 'end' );
+				}
+			}
+		}
+	}
+
+	return nextPosition;
 }
 
 // Helper function that seeks for a list item sibling of given model item (or position) which meets given criteria.
