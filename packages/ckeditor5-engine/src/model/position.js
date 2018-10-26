@@ -833,13 +833,14 @@ export default class Position {
 				return this.createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
 				/**
-				 * The position offset is required.
+				 * {@link module:engine/model/position~Position.createAt `Position.createAt()`}
+				 * requires the offset to be specified when the first parameter is a model item.
 				 *
-				 * @error model-position-createAt-required-second-parameter
+				 * @error model-position-createAt-offset-required
 				 */
 				throw new CKEditorError(
-					'model-position-createAt-required-second-parameter: ' +
-					'Position.createAt requires the second parameter offset when first parameter is a model item.' );
+					'model-position-createAt-offset-required: ' +
+					'Position.createAt() requires the offset when the first parameter is a model item.' );
 			}
 
 			return this.createFromParentAndOffset( node, offset );
