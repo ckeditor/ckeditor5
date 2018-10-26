@@ -74,7 +74,7 @@ export default class Command {
 		 *			return () => {
 		 *				cmd.off( 'set:isEnabled', forceDisable );
 		 *				cmd.refresh();
-		 *			}
+		 *			};
 		 *
 		 *			function forceDisable( evt ) {
 		 *				evt.return = false;
