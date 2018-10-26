@@ -2762,6 +2762,14 @@ describe( 'Schema', () => {
 			expect( schema.isObject( 'caption' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'createContext()', () => {
+		it( 'should return SchemaContext instance', () => {
+			const ctx = schema.createContext( [ 'a', 'b', 'c' ] );
+
+			expect( ctx ).to.be.instanceof( SchemaContext );
+		} );
+	} );
 } );
 
 describe( 'SchemaContext', () => {
