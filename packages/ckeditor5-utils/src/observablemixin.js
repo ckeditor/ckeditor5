@@ -763,7 +763,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
  *
- * You can also "rename" the property in the binding by specifying in in the `to()` chain:
+ * You can also "rename" the property in the binding by specifying the new name in the `to()` chain:
  *
  *		button.bind( 'isEnabled' ).to( command, 'isWorking' );
  *
