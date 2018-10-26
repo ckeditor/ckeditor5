@@ -62,7 +62,7 @@ export default class InsertTableCommand extends Command {
 
 			model.insertContent( table, insertPosition );
 
-			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
+			writer.setSelection( Position.createAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
 	}
 }

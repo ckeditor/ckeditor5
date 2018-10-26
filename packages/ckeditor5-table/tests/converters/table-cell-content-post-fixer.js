@@ -62,7 +62,7 @@ describe( 'Table cell content post-fixer', () => {
 		// Insert table row with one table cell
 		model.change( writer => {
 			writer.insertElement( 'tableRow', Position.createAfter( root.getNodeByPath( [ 0, 0 ] ) ) );
-			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 1 ] ) ) );
+			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 1 ] ), 0 ) );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
@@ -88,7 +88,7 @@ describe( 'Table cell content post-fixer', () => {
 
 		// Insert table row with one table cell
 		model.change( writer => {
-			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 0 ], 'end' ) ) );
+			writer.insertElement( 'tableCell', Position.createAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(

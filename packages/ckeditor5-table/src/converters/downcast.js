@@ -38,7 +38,7 @@ export function downcastInsertTable( options = {} ) {
 
 		const figureElement = conversionApi.writer.createContainerElement( 'figure', { class: 'table' } );
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-		conversionApi.writer.insert( ViewPosition.createAt( figureElement ), tableElement );
+		conversionApi.writer.insert( ViewPosition.createAt( figureElement, 0 ), tableElement );
 
 		let tableWidget;
 
@@ -215,7 +215,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 				.reverse(); // The rows will be moved from <thead> to <tbody> in reverse order at the beginning of a <tbody>.
 
 			const viewTableBody = getOrCreateTableSection( 'tbody', viewTable, conversionApi );
-			moveViewRowsToTableSection( rowsToMove, viewTableBody, conversionApi );
+			moveViewRowsToTableSection( rowsToMove, viewTableBody, conversionApi, 0 );
 
 			// Check if cells moved from <thead> to <tbody> requires renaming to <td> as this depends on current heading columns attribute.
 			const tableWalker = new TableWalker( table, { startRow: newRows ? newRows - 1 : newRows, endRow: oldRows - 1 } );
@@ -330,7 +330,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 		renamedCell = toWidgetEditable( editable, conversionApi.writer );
 
 		conversionApi.writer.insert( ViewPosition.createAfter( viewCell ), renamedCell );
-		conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell ) );
+		conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell, 0 ) );
 		conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
 	} else {
 		renamedCell = conversionApi.writer.rename( desiredCellElementName, viewCell );
@@ -497,7 +497,7 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 function createTableSection( sectionName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
 
-	conversionApi.writer.insert( ViewPosition.createAt( tableElement, sectionName == 'tbody' ? 'end' : 'start' ), tableChildElement );
+	conversionApi.writer.insert( ViewPosition.createAt( tableElement, sectionName == 'tbody' ? 'end' : 0 ), tableChildElement );
 
 	return tableChildElement;
 }
@@ -522,7 +522,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection
 // @param {Object} conversionApi
-// @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags.
+// @param {Number|'end'|'before'|'after'} offset Offset or one of the flags.
 function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi, offset ) {
 	for ( const tableRow of rowsToMove ) {
 		const viewTableRow = conversionApi.mapper.toViewElement( tableRow );
