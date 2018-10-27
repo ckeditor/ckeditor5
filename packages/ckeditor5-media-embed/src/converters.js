@@ -55,6 +55,6 @@ export function modelToViewUrlAttributeConverter( registry, options ) {
 
 		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, options );
 
-		viewWriter.insert( ViewPosition.createAt( figure ), mediaViewElement );
+		viewWriter.insert( ViewPosition.createAt( figure, 0 ), mediaViewElement );
 	}
 }
