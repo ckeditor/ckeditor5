@@ -151,8 +151,8 @@ describe( 'MediaEmbedUI', () => {
 		} );
 
 		describe( '#change:isOpen event', () => {
-			it( 'resets form errors', () => {
-				const spy = sinon.spy( form, 'resetErrors' );
+			it( 'resets form status', () => {
+				const spy = sinon.spy( form, 'resetFormStatus' );
 
 				dropdown.fire( 'change:isOpen' );
 

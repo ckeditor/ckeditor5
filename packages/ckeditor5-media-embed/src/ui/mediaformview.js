@@ -218,7 +218,7 @@ export default class MediaFormView extends View {
 	 * @returns {Boolean}
 	 */
 	isValid() {
-		this.resetErrors();
+		this.resetFormStatus();
 
 		for ( const validator of this._validators ) {
 			const errorText = validator( this );
@@ -236,10 +236,14 @@ export default class MediaFormView extends View {
 	}
 
 	/**
-	 * Cleans up the errors in all form fields. See {@link #isValid}.
+	 * Cleans up the supplementary error and information text of the {@link #urlInputView}
+	 * bringing them back to the state when the form has been displayed for the first time.
+	 *
+	 * See {@link #isValid}.
 	 */
-	resetErrors() {
-		this.urlInputView.errorText = false;
+	resetFormStatus() {
+		this.urlInputView.errorText = null;
+		this.urlInputView.infoText = null;
 	}
 
 	/**
@@ -252,9 +256,17 @@ export default class MediaFormView extends View {
 		const t = this.locale.t;
 
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
+		const inputView = labeledInput.inputView;
 
 		labeledInput.label = t( 'Media URL' );
-		labeledInput.inputView.placeholder = 'https://example.com';
+		inputView.placeholder = 'https://example.com';
+
+		inputView.on( 'input', () => {
+			// Display the #infoText only when there's some value to hide it when the input
+			// is empty, e.g. user used backspace to clean it up.
+			labeledInput.infoText = inputView.element.value ?
+				t( 'Paste the URL into the content to embed faster.' ) : null;
+		} );
 
 		return labeledInput;
 	}
