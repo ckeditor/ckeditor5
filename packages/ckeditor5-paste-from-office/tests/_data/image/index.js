@@ -73,6 +73,7 @@ const genericFixtures = {
 export const fixtures = genericFixtures;
 
 // Browser specific.
+
 // Chrome
 import offlineRtfChrome from './offline/input.chrome.word2016.rtf';
 import linkedRtfChrome from './linked/input.chrome.word2016.rtf';
@@ -83,6 +84,7 @@ import reflectionRtfChrome from './reflection/input.chrome.word2016.rtf';
 import adjacentGroupsRtfChrome from './adjacent-groups/input.chrome.word2016.rtf';
 import onlineOfflineRtfChrome from './online-offline/input.chrome.word2016.rtf';
 import shapesOnlineOfflineRtfChrome from './shapes-online-offline/input.chrome.word2016.rtf';
+
 // Firefox
 import offlineRtfFirefox from './offline/input.firefox.word2016.rtf';
 import linkedRtfFirefox from './linked/input.firefox.word2016.rtf';
@@ -93,6 +95,7 @@ import reflectionRtfFirefox from './reflection/input.firefox.word2016.rtf';
 import adjacentGroupsRtfFirefox from './adjacent-groups/input.firefox.word2016.rtf';
 import onlineOfflineRtfFirefox from './online-offline/input.firefox.word2016.rtf';
 import shapesOnlineOfflineRtfFirefox from './shapes-online-offline/input.firefox.word2016.rtf';
+
 // Edge
 import offlineRtfEdge from './offline/input.edge.word2016.rtf';
 import linkedRtfEdge from './linked/input.edge.word2016.rtf';
@@ -104,8 +107,32 @@ import adjacentGroupsRtfEdge from './adjacent-groups/input.edge.word2016.rtf';
 import onlineOfflineRtfEdge from './online-offline/input.edge.word2016.rtf';
 import shapesOnlineOfflineRtfEdge from './shapes-online-offline/input.edge.word2016.rtf';
 
+// Safari
+import offlineSafari from './offline/input.safari.word2016.html';
+import linkedSafari from './linked/input.safari.word2016.html';
+import rotatedSafari from './rotated/input.safari.word2016.html';
+import wrappedSafari from './wrapped/input.safari.word2016.html';
+import alternativeTextSafari from './alternative-text/input.safari.word2016.html';
+import reflectionSafari from './reflection/input.safari.word2016.html';
+import adjacentGroupsSafari from './adjacent-groups/input.safari.word2016.html';
+import onlineOfflineSafari from './online-offline/input.safari.word2016.html';
+import shapesOnlineOfflineSafari from './shapes-online-offline/input.safari.word2016.html';
+
+import offlineNormalizedSafari from './offline/normalized.safari.word2016.html';
+import linkedNormalizedSafari from './linked/normalized.safari.word2016.html';
+import rotatedNormalizedSafari from './rotated/normalized.safari.word2016.html';
+import wrappedNormalizedSafari from './wrapped/normalized.safari.word2016.html';
+import alternativeTextNormalizedSafari from './alternative-text/normalized.safari.word2016.html';
+import reflectionNormalizedSafari from './reflection/normalized.safari.word2016.html';
+import adjacentGroupsNormalizedSafari from './adjacent-groups/normalized.safari.word2016.html';
+import onlineOfflineNormalizedSafari from './online-offline/normalized.safari.word2016.html';
+import shapesOnlineOfflineNormalizedSafari from './shapes-online-offline/normalized.safari.word2016.html';
+
 export const browserFixtures = {
-	chrome: Object.assign( {}, genericFixtures, {
+	chrome: {
+		input: Object.assign( {}, genericFixtures.input ),
+		normalized: Object.assign( {}, genericFixtures.normalized ),
+		model: Object.assign( {}, genericFixtures.model ),
 		inputRtf: {
 			offline: offlineRtfChrome,
 			linked: linkedRtfChrome,
@@ -116,10 +143,14 @@ export const browserFixtures = {
 			adjacentGroups: adjacentGroupsRtfChrome,
 			onlineOffline: onlineOfflineRtfChrome,
 			shapesOnlineOffline: shapesOnlineOfflineRtfChrome
-		}
-	} ),
+		},
 
-	firefox: Object.assign( {}, genericFixtures, {
+	},
+
+	firefox: {
+		input: Object.assign( {}, genericFixtures.input ),
+		normalized: Object.assign( {}, genericFixtures.normalized ),
+		model: Object.assign( {}, genericFixtures.model ),
 		inputRtf: {
 			offline: offlineRtfFirefox,
 			linked: linkedRtfFirefox,
@@ -131,9 +162,12 @@ export const browserFixtures = {
 			onlineOffline: onlineOfflineRtfFirefox,
 			shapesOnlineOffline: shapesOnlineOfflineRtfFirefox
 		}
-	} ),
+	},
 
-	edge: Object.assign( {}, genericFixtures, {
+	edge: {
+		input: Object.assign( {}, genericFixtures.input ),
+		normalized: Object.assign( {}, genericFixtures.normalized ),
+		model: Object.assign( {}, genericFixtures.model ),
 		inputRtf: {
 			offline: offlineRtfEdge,
 			linked: linkedRtfEdge,
@@ -145,5 +179,32 @@ export const browserFixtures = {
 			onlineOffline: onlineOfflineRtfEdge,
 			shapesOnlineOffline: shapesOnlineOfflineRtfEdge
 		}
-	} )
+	},
+
+	safari: {
+		input: {
+			offline: offlineSafari,
+			linked: linkedSafari,
+			rotated: rotatedSafari,
+			wrapped: wrappedSafari,
+			alternativeText: alternativeTextSafari,
+			reflection: reflectionSafari,
+			adjacentGroups: adjacentGroupsSafari,
+			onlineOffline: onlineOfflineSafari,
+			shapesOnlineOffline: shapesOnlineOfflineSafari
+		},
+		normalized: {
+			offline: offlineNormalizedSafari,
+			linked: linkedNormalizedSafari,
+			rotated: rotatedNormalizedSafari,
+			wrapped: wrappedNormalizedSafari,
+			alternativeText: alternativeTextNormalizedSafari,
+			reflection: reflectionNormalizedSafari,
+			adjacentGroups: adjacentGroupsNormalizedSafari,
+			onlineOffline: onlineOfflineNormalizedSafari,
+			shapesOnlineOffline: shapesOnlineOfflineNormalizedSafari
+		},
+		model: {},
+		inputRtf: {}
+	}
 };

@@ -24,7 +24,7 @@ generateTests( {
 generateTests( {
 	input: 'image',
 	type: 'normalization',
-	browsers: [ 'chrome', 'firefox', 'edge' ],
+	browsers,
 	editorConfig
 } );
 
