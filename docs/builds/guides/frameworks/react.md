@@ -10,9 +10,19 @@ order: 30
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application .
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application.
 
 ## Quick start
+
+<info-box>
+	### Compatibility with `create-react-app@2`
+
+	The latest version of `create-react-app` (2.x) does not work with CKEditor 5 Builds due to a [bug (most likely in Babel)](https://github.com/facebook/create-react-app/issues/5387).
+
+	If you want to use CKEditor 5 with an application created via `create-react-app@2` you will need to [eject the configuration even in the development mode](https://github.com/facebook/create-react-app/issues/5387#issuecomment-429255695).
+
+	Until the above issue is resolved, in this guide we will use `create-react-app@1` which does not require ejecting the configuration when testing your application in the development mode. You will have to, however, eject it anyway to [build your app for production](#note-building-for-production).
+</info-box>
 
 Install the [CKEditor 5 rich text editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
 
@@ -141,7 +151,7 @@ This guide assumes that you are using [Create React App CLI](https://github.com/
 Install React CLI:
 
 ```bash
-npm install -g create-react-app
+npm install -g create-react-app@1
 ```
 
 Create your project using the CLI and go to the project's directory:

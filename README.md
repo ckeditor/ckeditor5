@@ -122,6 +122,8 @@ CKEditor 5 is a modular, multi-package, multi-repository project. It consists of
 
 The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
 
+See the [official contributors' guide](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html) to learn how to contribute your code to the project.
+
 ### Reporting issues and feature requests
 
 Each repository handles its issues independently. However, it is recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
@@ -521,6 +523,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The paragraph feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-paste-from-office"><code>@ckeditor/ckeditor5-paste-from-office</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-paste-from-office.svg" alt="@ckeditor/ckeditor5-paste-from-office npm package badge"></a>
+	</td>
+	<td>
+		The Paste from Office (Word, Excel, Google Docs, etc.) plugin.
 	</td>
 </tr>
 
