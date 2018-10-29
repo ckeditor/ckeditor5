@@ -8,7 +8,7 @@ menu-title: Overview
 
 ## Is CKEditor 5 compatible with framework XYZ?
 
-Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Threfore, unless the framework that you use has very not typical limitations, CKEditor 5 is compatible with it.
+Yes. CKEditor 5 is compatible with every JavaScript framework that we have heard of so far. CKEditor 5 is a JavaScript rich text editing component (a pretty complex one but still) and it does not require any uncommon techniques or technologies to be used. Therefore, unless the framework that you use has very not typical limitations, CKEditor 5 is compatible with it.
 
 > How do I use CKEditor 5 with my framework?
 
@@ -24,13 +24,13 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 	CKEditor 5 offers {@link builds/guides/overview ready-to-use builds} that expose a {@link builds/guides/integration/basic-api rich JavaScript API} which you can use to {@link builds/guides/integration/basic-api#creating-an-editor create editors} and {@link builds/guides/integration/basic-api#interacting-with-the-editor control them}.
 
-## Official rich text editor integrations
+## Official WYSIWYG editor integrations
 
 There are three official integrations so far:
 
-* {@link builds/guides/frameworks/react CKEditor 5 component for React}
-* {@link builds/guides/frameworks/angular CKEditor 5 component for Angular 2+}
-* {@link builds/guides/frameworks/vuejs CKEditor 5 component for Vue.js}
+* {@link builds/guides/frameworks/angular CKEditor 5 rich-text editor for Angular 2+}
+* {@link builds/guides/frameworks/react CKEditor 5 rich-text editor for React}
+* {@link builds/guides/frameworks/vuejs CKEditor 5 rich-text editor for Vue.js}
 
 Refer to their documentation to learn how to use them.
 
