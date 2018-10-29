@@ -7,9 +7,13 @@
  * @module paste-from-office/filters/image
  */
 
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
+/* globals XMLHttpRequest, FileReader */
+
+import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import { convertHexToBase64 } from './utils';
 
@@ -19,8 +23,9 @@ import { convertHexToBase64 } from './utils';
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment on which transform images.
  * @param {String} rtfData The RTF data from which images representation will be used.
+ * @param {module:engine/model/model~Model} model Editor model.
  */
-export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
+export function replaceImagesSourceWithBase64( documentFragment, rtfData, model ) {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
@@ -31,12 +36,14 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
 	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
 	removeAllShapeElements( documentFragment, upcastWriter );
 
-	const imageElements = findAllImageElements( documentFragment );
+	const images = findAllImageElementsWithLocalSource( documentFragment );
 
-	if ( imageElements.length ) {
-		const imageData = extractImageDataFromRtf( rtfData );
+	if ( images.file.length ) {
+		replaceImagesFileSourceWithInlineRepresentation( images.file, extractImageDataFromRtf( rtfData ), upcastWriter );
+	}
 
-		replaceImagesSourceWithInlineRepresentation( imageElements, imageData, upcastWriter );
+	if ( images.blob.length ) {
+		replaceImagesBlobSourceWithInlineRepresentation( images.blob, model );
 	}
 }
 
@@ -45,9 +52,9 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to extract shape ids.
 // @returns {Array.<String>} Array of shape ids.
 function findAllShapesIds( documentFragment ) {
-	const range = Range.createIn( documentFragment );
+	const range = ViewRange.createIn( documentFragment );
 
-	const shapeElementsMatcher = new Matcher( {
+	const shapeElementsMatcher = new ViewMatcher( {
 		name: /v:(.+)/
 	} );
 
@@ -72,9 +79,9 @@ function findAllShapesIds( documentFragment ) {
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove `<img>` elements.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, writer ) {
-	const range = Range.createIn( documentFragment );
+	const range = ViewRange.createIn( documentFragment );
 
-	const imageElementsMatcher = new Matcher( {
+	const imageElementsMatcher = new ViewMatcher( {
 		name: 'img'
 	} );
 
@@ -86,6 +93,8 @@ function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, wr
 			const shapes = el.getAttribute( 'v:shapes' ) ? el.getAttribute( 'v:shapes' ).split( ' ' ) : [];
 
 			if ( shapes.length && shapes.every( shape => shapesIds.indexOf( shape ) > -1 ) ) {
+				imgs.push( el );
+			} else if ( !el.getAttribute( 'src' ) ) {
 				imgs.push( el );
 			}
 		}
@@ -101,9 +110,9 @@ function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, wr
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove shape elements.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 function removeAllShapeElements( documentFragment, writer ) {
-	const range = Range.createIn( documentFragment );
+	const range = ViewRange.createIn( documentFragment );
 
-	const shapeElementsMatcher = new Matcher( {
+	const shapeElementsMatcher = new ViewMatcher( {
 		name: /v:(.+)/
 	} );
 
@@ -120,22 +129,31 @@ function removeAllShapeElements( documentFragment, writer ) {
 	}
 }
 
-// Finds all `<img>` elements in a given document fragment.
+// Finds all `<img>` elements in a given document fragment which have source pointing to local `file://` or `blob:` resource.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment in which to look for `<img>` elements.
-// @returns {Array.<module:engine/view/element~Element>} Array of found `<img>` elements.
-function findAllImageElements( documentFragment ) {
-	const range = Range.createIn( documentFragment );
+// @returns {Object} result All found images grouped by source type.
+// @returns {Array.<module:engine/view/element~Element>} result.file Array of found `<img>` elements with `file://` source.
+// @returns {Array.<module:engine/view/element~Element>} result.blob Array of found `<img>` elements with `blob:` source.
+function findAllImageElementsWithLocalSource( documentFragment ) {
+	const range = ViewRange.createIn( documentFragment );
 
-	const imageElementsMatcher = new Matcher( {
+	const imageElementsMatcher = new ViewMatcher( {
 		name: 'img'
 	} );
 
-	const imgs = [];
+	const imgs = {
+		file: [],
+		blob: []
+	};
 
 	for ( const value of range ) {
 		if ( imageElementsMatcher.match( value.item ) ) {
-			imgs.push( value.item );
+			if ( value.item.getAttribute( 'src' ).indexOf( 'file://' ) === 0 ) {
+				imgs.file.push( value.item );
+			} else if ( value.item.getAttribute( 'src' ).indexOf( 'blob:' ) === 0 ) {
+				imgs.blob.push( value.item );
+			}
 		}
 	}
 
@@ -189,7 +207,7 @@ function extractImageDataFromRtf( rtfData ) {
 // @param {Array.<Object>} imagesHexSources Array of images hex sources (usually the result of `extractImageDataFromRtf()` function).
 // The array should be the same length as `imageElements` parameter.
 // @param {module:engine/view/upcastwriter~UpcastWriter} upcastWriter
-function replaceImagesSourceWithInlineRepresentation( imageElements, imagesHexSources, upcastWriter ) {
+function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesHexSources, upcastWriter ) {
 	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
 	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
@@ -200,4 +218,59 @@ function replaceImagesSourceWithInlineRepresentation( imageElements, imagesHexSo
 			}
 		}
 	}
+}
+
+// Extracts all view images sources data from blob url, converts it to base64 and replaces source in the corresponding model images.
+//
+// @param {Array.<module:engine/view/element~Element>} imageElements Image elements from which sources extract blob data.
+// @param {module:engine/model/model~Model} model Model containing corresponding image elements which sources will be updated.
+function replaceImagesBlobSourceWithInlineRepresentation( imageElements, model ) {
+	for ( const img of imageElements ) {
+		const src = img.getAttribute( 'src' );
+
+		fetchImageDataFromBlobUrlAsBase64( src )
+			.then( data => {
+				model.enqueueChange( 'transparent', writer => {
+					const root = model.document.getRoot();
+					const range = ModelRange.createIn( root );
+
+					for ( const value of range ) {
+						if ( value.item.is( 'element', 'image' ) && value.item.getAttribute( 'src' ) === src ) {
+							writer.setAttribute( 'src', data, value.item );
+						}
+					}
+				} );
+			} )
+			// In case of error we basically can't do nothing. Still images with blob URLs are locally
+			// visible so it is not noticeable until the content will be opened in a new browser tab.
+			.catch();
+	}
+}
+
+// Fetches blob data via XHR and converts it to base64 representation.
+//
+// @param {String} url Blob url from which to fetch blob data.
+// @returns {Promise} A promise which resolves once blob data is successfully fetched and converted to base64.
+function fetchImageDataFromBlobUrlAsBase64( url ) {
+	return new Promise( ( resolve, reject ) => {
+		const xhr = new XMLHttpRequest();
+
+		xhr.open( 'GET', url, true );
+
+		xhr.responseType = 'blob';
+
+		xhr.addEventListener( 'error', () => reject() );
+		xhr.addEventListener( 'abort', () => reject() );
+		xhr.addEventListener( 'load', () => {
+			const reader = new FileReader();
+
+			reader.onloadend = () => {
+				resolve( reader.result );
+			};
+
+			reader.readAsDataURL( xhr.response );
+		} );
+
+		xhr.send();
+	} );
 }
