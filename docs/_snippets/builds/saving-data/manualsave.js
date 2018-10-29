@@ -18,7 +18,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-manualsave' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		}
 	} )
 	.then( editor => {

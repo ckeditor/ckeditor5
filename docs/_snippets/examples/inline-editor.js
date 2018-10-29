@@ -17,7 +17,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			styles: [ 'full', 'alignLeft', 'alignRight' ]
 		},
 		toolbar: {
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		cloudServices: CS_CONFIG
 	};
