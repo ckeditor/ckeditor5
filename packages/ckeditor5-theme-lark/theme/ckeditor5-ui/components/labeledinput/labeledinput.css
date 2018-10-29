@@ -3,8 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-labeled-input .ck-labeled-input__error {
+.ck.ck-labeled-input .ck-labeled-input__status {
 	font-size: var(--ck-font-size-small);
-	color: var(--ck-color-base-error);
 	margin-top: var(--ck-spacing-small);
+
+	/* Let the info wrap to the next line to avoid stretching the layout horizontally.
+	The status could be very long. */
+	white-space: normal;
+}
+
+.ck.ck-labeled-input .ck-labeled-input__status_error {
+	color: var(--ck-color-base-error);
 }
