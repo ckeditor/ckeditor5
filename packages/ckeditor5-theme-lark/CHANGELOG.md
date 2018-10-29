@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.0.0...v11.1.0) (2018-10-08)
+
+### Features
+
+* Added styles for error messages in the labeled inputs. See [ckeditor/ckeditor5-media-embed#1](https://github.com/ckeditor/ckeditor5-media-embed/issues/1). ([1b3ae62](https://github.com/ckeditor/ckeditor5-theme-lark/commit/1b3ae62))
+
+### Bug fixes
+
+* Buttons should override the `-webkit-appearance` property to work in the Bootstrap 4 environment. Closes [#189](https://github.com/ckeditor/ckeditor5-theme-lark/issues/189). ([a65dfbd](https://github.com/ckeditor/ckeditor5-theme-lark/commit/a65dfbd))
+* Removed the initial transform property of the text input with an error to allow the shake animation in Safari. Closes [ckeditor/ckeditor5-ui#443](https://github.com/ckeditor/ckeditor5-ui/issues/443). ([01491bc](https://github.com/ckeditor/ckeditor5-theme-lark/commit/01491bc))
+
+### Other changes
+
+* Added a subtle shake animation to the .ck-input-text when it gets an error. Closes [#198](https://github.com/ckeditor/ckeditor5-theme-lark/issues/198). ([f84102b](https://github.com/ckeditor/ckeditor5-theme-lark/commit/f84102b))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.1.0...v11.0.0) (2018-07-18)
 
 ### Features
