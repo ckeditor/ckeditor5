@@ -166,20 +166,20 @@ generateTests( {
 	* normalized output fixture - `normalized.word2016.html`
 	* model output fixture - `model.word2016.html`
 	* any browser specific fixtures
-3. Add new fixtures to groups `index.js` file.
+3. Add new fixtures to group `index.js` file.
 
 That's all, added fixtures will be now used to generate normalization and integration test.
 
-### To a new tests group
+### To a new group
 
-1. Create new group directory for example `_data/new-group/`.
-2. Create new fixtures directories (one per input fixture file), each containing:
+1. Create new group directory, for example `_data/new-group/`.
+2. Create new fixtures directories (one per input fixture file) in `_data/new-group/`, each containing:
 	* original input file - `new-use-case.docx`
 	* input fixture - `input.word2016.html` (to acquire clipboard data you may use `integration.html` manual test which prints `text/html` on paste)
 	* normalized output fixture - `normalized.word2016.html`
 	* model output fixture - `model.word2016.html`
 	* any browser specific fixtures
-3. Create group `index.js` file in `_data/new-group/index.js` importing all necessary fixtures.
+3. Create group `index.js` file (`_data/new-group/index.js`) importing all necessary fixtures.
 4. Add new group to fixtures util `_utils/fixtures.js`:
 
 
