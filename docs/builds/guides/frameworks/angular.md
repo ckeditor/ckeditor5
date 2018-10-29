@@ -246,6 +246,59 @@ Fired with an object containing the editor and the CKEditor 5 `blur` event data.
 Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 Fired with an object containing the editor and the CKEditor 5 `focus` event data.
 
+## Styling
+
+The CKEditor 5 component for Angular can be styled using the component stylesheet or using a global stylesheet. Let's show how to set the CKEditor 5 component's height using these two approaches.
+
+### Setting the CKEditor 5 component's height via the component stylesheet
+
+First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors.
+
+```css
+/* src/app/app.component.css */
+
+:host ::ng-deep .ck-editor__editable {
+  	min-height: 500px;
+}
+```
+
+Then in the parent component add the relative path to the above stylesheet.
+
+```ts
+/* src/app/app.component.ts */
+
+@Component( {
+  // ...
+  styleUrls: [ './app.component.css' ]
+} )
+```
+
+### Setting the CKEditor 5 component's height via a global stylesheet
+
+To style the component using a global stylesheet, first, create it
+
+```css
+/* src/styles.css */
+
+.ck-editor__editable {
+  	min-height: 500px;
+}
+```
+
+Then, add it in the `angular.json` configuration file.
+
+```json
+"architect": {
+	"build": {
+		"options": {
+			"styles": [
+              	{ "input": "src/styles.css" }
+            ]
+		}
+	}
+}
+```
+
 ## Localization
 
 CKEditor 5 can be localized in two steps.
