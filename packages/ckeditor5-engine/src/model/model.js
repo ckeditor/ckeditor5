@@ -309,6 +309,9 @@ export default class Model {
 	 *
 	 *		// Insert text at given position - document selection will not be modified.
 	 *		editor.model.change( writer => {
+	 *			editor.model.insertContent( writer.createText( 'x' ), doc.getRoot(), 2 );
+	 *
+	 *			// Which is a shorthand for:
 	 *			editor.model.insertContent( writer.createText( 'x' ), writer.createPositionAt( doc.getRoot(), 2 ) );
 	 *		} );
 	 *
@@ -329,10 +332,11 @@ export default class Model {
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * module:engine/model/position~Position|module:engine/model/item~Item|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
 	 * Selection into which the content should be inserted. If not provided the current model document selection will be used.
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
+	 * This param defines a position in relation to that item.
 	 */
 	insertContent( content, selectable, placeOrOffset ) {
 		insertContent( this, content, selectable, placeOrOffset );
