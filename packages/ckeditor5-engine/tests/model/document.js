@@ -323,7 +323,7 @@ describe( 'Document', () => {
 			doc.on( 'change', spy );
 
 			model.change( writer => {
-				writer.setSelection( writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 2 ) ) );
+				writer.setSelection( root, 2 );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -372,7 +372,7 @@ describe( 'Document', () => {
 			doc.on( 'change:data', spy );
 
 			model.change( writer => {
-				writer.setSelection( writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 2 ) ) );
+				writer.setSelection( root, 2 );
 			} );
 
 			sinon.assert.notCalled( spy );

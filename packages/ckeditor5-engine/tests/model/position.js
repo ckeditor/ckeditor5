@@ -129,7 +129,7 @@ describe( 'Position', () => {
 	describe( 'static creators', () => {
 		describe( '_createAt()', () => {
 			it( 'should throw if no offset is passed', () => {
-				expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-required-second-parameter/ );
+				expect( () => Position._createAt( ul ) ).to.throw( CKEditorError, /model-position-createAt-offset-required/ );
 			} );
 
 			it( 'should create positions from positions', () => {

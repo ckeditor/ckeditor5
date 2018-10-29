@@ -196,7 +196,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -221,7 +221,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
 
@@ -250,7 +250,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker2', { range, usingOperation: false } );
-					writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -276,7 +276,7 @@ describe( 'downcast-selection-converters', () => {
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker3', { range, usingOperation: false } );
-					writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).

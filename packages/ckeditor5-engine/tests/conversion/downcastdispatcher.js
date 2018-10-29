@@ -409,7 +409,7 @@ describe( 'DowncastDispatcher', () => {
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 1 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
-				writer.setSelection( writer.createRange( writer.createPositionAt( caption, 1 ), writer.createPositionAt( caption, 1 ) ) );
+				writer.setSelection( caption, 1 );
 			} );
 			sinon.spy( dispatcher, 'fire' );
 
