@@ -150,13 +150,22 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  *
  *		items.add( {
  *			type: 'button',
- *			model: new Model( { label: 'First item', labelStyle: 'color: red' } )
+ *			model: new Model( {
+ *				withText: true,
+ *				label: 'First item',
+ *				labelStyle: 'color: red'
+ *			} )
  *		} );
  *
  *		items.add( {
  *			 type: 'button',
- *			 model: new Model( { label: 'Second item', labelStyle: 'color: green', class: 'foo' } )
- * 		} );
+ *			 model: new Model( {
+ *				withText: true,
+ *				label: 'Second item',
+ *				labelStyle: 'color: green',
+ *				class: 'foo'
+ *			} )
+ *		} );
  *
  *		const dropdown = createDropdown( locale );
  *

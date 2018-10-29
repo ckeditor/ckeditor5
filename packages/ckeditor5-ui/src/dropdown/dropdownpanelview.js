@@ -34,6 +34,18 @@ export default class DropdownPanelView extends View {
 		this.set( 'isVisible', false );
 
 		/**
+		 * The position of the panel, relative to the parent.
+		 *
+		 * This property is reflected in the CSS class set to {@link #element} that controls
+		 * the position of the panel.
+		 *
+		 * @observable
+		 * @default 'se'
+		 * @member {'se'|'sw'|'ne'|'nw'} #position
+		 */
+		this.set( 'position', 'se' );
+
+		/**
 		 * Collection of the child views in this panel.
 		 *
 		 * A common child type is the {@link module:ui/list/listview~ListView} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
@@ -53,6 +65,7 @@ export default class DropdownPanelView extends View {
 					'ck',
 					'ck-reset',
 					'ck-dropdown__panel',
+					bind.to( 'position', value => `ck-dropdown__panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-dropdown__panel-visible' )
 				]
 			},
