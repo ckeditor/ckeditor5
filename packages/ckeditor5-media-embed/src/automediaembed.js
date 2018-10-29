@@ -138,7 +138,7 @@ export default class AutoMediaEmbed extends Plugin {
 
 		const mediaEmbedCommand = editor.commands.get( 'mediaEmbed' );
 
-		// Do not anything if media element cannot be inserted at the current position.
+		// Do not anything if media element cannot be inserted at the current position (#47).
 		if ( !mediaEmbedCommand.isEnabled ) {
 			return;
 		}
