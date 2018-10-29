@@ -57,9 +57,7 @@ describe( 'Input feature', () => {
 				editor.setData( '<p>foobar</p>' );
 
 				model.change( writer => {
-					writer.setSelection(
-						writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 3 ) )
-					);
+					writer.setSelection( modelRoot.getChild( 0 ), 3 );
 				} );
 			} );
 	} );
@@ -385,9 +383,7 @@ describe( 'Input feature', () => {
 
 		it( 'should replace last &nbsp; with space', () => {
 			model.change( writer => {
-				writer.setSelection(
-					writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 6 ) )
-				);
+				writer.setSelection( modelRoot.getChild( 0 ), 6 );
 			} );
 
 			viewDocument.fire( 'mutations', [
@@ -428,9 +424,7 @@ describe( 'Input feature', () => {
 
 		it( 'should replace all &nbsp; with spaces', () => {
 			model.change( writer => {
-				writer.setSelection(
-					writer.createRange( writer.createPositionAt( modelRoot.getChild( 0 ), 6 ) )
-				);
+				writer.setSelection( modelRoot.getChild( 0 ), 6 );
 			} );
 
 			viewDocument.fire( 'mutations', [
@@ -539,10 +533,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p><a href="#"><strong>F</strong></a><strong>oo&nbsp;bar</strong></p>' );
 
 			model.change( writer => {
-				writer.setSelection( writer.createRange(
-					writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
-					writer.createPositionAt( modelRoot.getChild( 0 ), 1 )
-				) );
+				writer.setSelection( modelRoot.getChild( 0 ), 1 );
 			} );
 
 			// We need to change the DOM content manually because typing algorithm actually does not check

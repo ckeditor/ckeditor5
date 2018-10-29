@@ -60,7 +60,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should handle block merging', () => {
 		// 1. Set selection to '<h2>Heading 1</h2><p>{}Paragraph</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 1 ), 0 ) ) );
+			writer.setSelection( modelRoot.getChild( 1 ), 0 );
 		} );
 
 		const modelContent = '<heading1>Heading 1</heading1><paragraph>[]Paragraph</paragraph><heading2>Heading 2</heading2>';
@@ -293,7 +293,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		// 4. Simulate user selection change which is identical as Android native change on 'Backspace'.
 		model.change( writer => {
-			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 2 ), 0 ) ) );
+			writer.setSelection( modelRoot.getChild( 2 ), 0 );
 		} );
 
 		// 5. Simulate 'Backspace' flow on Android.
@@ -313,7 +313,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should not be triggered for container insertion mutations', () => {
 		// 1. Set selection to '<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
-			writer.setSelection( writer.createRange( writer.createPositionAt( modelRoot.getChild( 1 ), 9 ) ) );
+			writer.setSelection( modelRoot.getChild( 1 ), 9 );
 		} );
 
 		const modelContent = '<heading1>Heading 1</heading1><paragraph>Paragraph[]</paragraph><heading2>Heading 2</heading2>';
