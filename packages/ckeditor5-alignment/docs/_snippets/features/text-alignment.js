@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		cloudServices: CS_CONFIG
 	} )
