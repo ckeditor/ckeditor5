@@ -86,6 +86,18 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: table;
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:first-child {
+	padding-top: 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:last-child,
+.live-snippet .ck.ck-content .table ul:last-child,
+.live-snippet .ck.ck-content .table ol:last-child {
+	margin-bottom: 0;
+}
+
 #snippet-inline-editor .ck-content {
 	margin-bottom: 1rem;
 	padding: 2rem;

@@ -109,19 +109,39 @@ refresh() {
 
 This method is called automatically (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
-The important thing about commands is that every change in their state as well as calling the `execute()` method fires an event (e.g. {@link module:core/command~Command#event-change:{property} `change:value`} or {@link module:core/command~Command#event:execute `execute`}).
+The important thing about commands is that every change in their state as well as calling the `execute()` method fire events (e.g. {@link module:core/command~Command#event-set:{property} `#set:value`} and {@link module:core/command~Command#event-change:{property} `#change:value`} when you change the `#value` property and {@link module:core/command~Command#event:execute `#execute`} when you execute the command).
+
+<info-box>
+	Read more about this mechanism in the {@link framework/guides/deep-dive/observables Observables} deep dive guide.
+</info-box>
 
 These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
 
 ```js
-const command = editor.commands.get( 'someCommand' );
+function disableCommand( cmd ) {
+	cmd.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 
-command.on( 'change:isEnabled', forceDisable, { priority: 'lowest' } );
-command.isEnabled = false;
+	cmd.isEnabled = false;
 
-function forceDisabled() {
-	this.isEnabled = false;
+	// Make it possible to enable the command again.
+	return () => {
+		cmd.off( 'set:isEnabled', forceDisable );
+		cmd.refresh();
+	};
+
+	function forceDisable( evt ) {
+		evt.return = false;
+		evt.stop();
+	}
 }
+
+// Usage:
+
+// Disabling the command.
+const enableBold = disableCommand( editor.commands.get( 'bold' ) );
+
+// Enabling the command again.
+enableBold();
 ```
 
 The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
@@ -143,7 +163,7 @@ class MyPlugin extends Plugin {
 		// Make MyPlugin listen to someOtherCommand#execute and block it.
 		// You listen with a high priority to block the event before
 		// someOtherCommand's execute() method is called.
-		this.listenTo( someOtherCommand, 'execute', ( evt ) => {
+		this.listenTo( someOtherCommand, 'execute', evt => {
 			evt.stop();
 		}, { priority: 'high' } );
 	}
