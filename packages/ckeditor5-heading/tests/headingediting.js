@@ -135,32 +135,23 @@ describe( 'HeadingEditing', () => {
 			elementToElementSpy = testUtils.sinon.spy( Conversion.prototype, 'elementToElement' );
 		} );
 
-		it( 'should set default h1 conversion for default `options.heading` config', () => {
+		it( 'should set default h1 conversion with default `options.heading` config', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ HeadingEditing ]
 				} )
 				.then( () => {
-					expect( elementToElementSpy.calledWith( getDefaultConversion() ) ).to.true;
+					expect( elementToElementSpy.calledWith( {
+						model: 'heading1',
+						view: 'h1',
+						title: 'Heading 1',
+						class: 'ck-heading_heading1',
+						converterPriority: priorities.get( 'low' ) + 1
+					} ) ).to.true;
 				} );
 		} );
 
-		it( 'should set default h1 conversion based on provided config if `h2` -> `heading1` conversion defined', () => {
-			const options = [
-				{ model: 'heading1', view: 'h2', title: 'User H2' }
-			];
-
-			return VirtualTestEditor
-				.create( {
-					plugins: [ HeadingEditing ],
-					heading: { options }
-				} )
-				.then( () => {
-					expect( elementToElementSpy.calledWith( getDefaultConversion( options[ 0 ] ) ) ).to.true;
-				} );
-		} );
-
-		it( 'should not set default h1 conversion if no `h2` -> `heading1` conversion defined', () => {
+		it( 'should set default h1 conversion independently from `options.heading` config', () => {
 			const options = [
 				{ model: 'heading1', view: 'h3', title: 'User H3' },
 				{ model: 'heading2', view: 'h4', title: 'User H4' }
@@ -172,71 +163,15 @@ describe( 'HeadingEditing', () => {
 					heading: { options }
 				} )
 				.then( () => {
-					expect( elementToElementSpy.neverCalledWith( getDefaultConversion( options[ 0 ] ) ) ).to.true;
+					expect( elementToElementSpy.calledWith( {
+						model: 'heading1',
+						view: 'h1',
+						title: 'Heading 1',
+						class: 'ck-heading_heading1',
+						converterPriority: priorities.get( 'low' ) + 1
+					} ) ).to.true;
 				} );
 		} );
-
-		it( 'should use user defined h1 conversion (low + 1 priority)', () => {
-			const options = [
-				{ model: 'paragraph', title: 'paragraph' },
-				{ model: 'heading3', view: 'h1', title: 'User H1', converterPriority: priorities.get( 'low' ) + 1 },
-				{ model: 'heading4', view: 'h2', title: 'User H2' }
-			];
-
-			return VirtualTestEditor
-				.create( {
-					plugins: [ HeadingEditing ],
-					heading: { options }
-				} )
-				.then( editor => {
-					editor.setData( '<h2>h2</h2><h1>h1</h1>' );
-
-					expect( getData( editor.model, { withoutSelection: true } ) )
-						.to.equal( '<heading4>h2</heading4><heading3>h1</heading3>' );
-
-					expect( editor.getData() ).to.equal( '<h2>h2</h2><h1>h1</h1>' );
-				} );
-		} );
-
-		it( 'should use user defined h1 conversion not adding default one (default priority)', () => {
-			const options = [
-				{ model: 'paragraph', title: 'paragraph' },
-				{ model: 'heading1', view: 'h6', title: 'User H6' },
-				{ model: 'heading2', view: 'h1', title: 'User H1' },
-				{ model: 'heading3', view: 'h2', title: 'User H2' }
-			];
-
-			return VirtualTestEditor
-				.create( {
-					plugins: [ HeadingEditing ],
-					heading: { options }
-				} )
-				.then( editor => {
-					editor.setData( '<h2>h2</h2><h1>h1</h1>' );
-
-					expect( elementToElementSpy.neverCalledWith( getDefaultConversion() ) ).to.true;
-					expect( elementToElementSpy.neverCalledWith( getDefaultConversion( options[ 1 ] ) ) ).to.true;
-
-					expect( getData( editor.model, { withoutSelection: true } ) )
-						.to.equal( '<heading3>h2</heading3><heading2>h1</heading2>' );
-
-					expect( editor.getData() ).to.equal( '<h2>h2</h2><h1>h1</h1>' );
-				} );
-		} );
-
-		function getDefaultConversion( conversionOptionBase = null ) {
-			if ( conversionOptionBase ) {
-				return Object.assign( {}, conversionOptionBase, { view: 'h1', converterPriority: priorities.get( 'low' ) + 1 } );
-			}
-
-			return {
-				model: 'heading1',
-				view: 'h1',
-				title: 'Heading 1',
-				class: 'ck-heading_heading1',
-				converterPriority: priorities.get( 'low' ) + 1
-			};
-		}
 	} );
 
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
