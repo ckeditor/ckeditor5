@@ -130,10 +130,10 @@ describe( 'HighlightCommand', () => {
 
 					model.change( writer => {
 						// Simulate clicking right arrow key by changing selection ranges.
-						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
+						writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 
 						// Get back to previous selection.
-						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 1 ) ) ] );
+						writer.setSelection( root.getNodeByPath( [ 0 ] ), 1 );
 					} );
 
 					expect( command.value ).to.be.undefined;
@@ -152,14 +152,14 @@ describe( 'HighlightCommand', () => {
 					// Attribute should be stored.
 					// Simulate clicking somewhere else in the editor.
 					model.change( writer => {
-						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
+						writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 					} );
 
 					expect( command.value ).to.be.undefined;
 
 					// Go back to where attribute was stored.
 					model.change( writer => {
-						writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ) ) ] );
+						writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
 					} );
 
 					// Attribute should be restored.
