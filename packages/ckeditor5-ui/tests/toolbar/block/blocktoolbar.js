@@ -135,6 +135,8 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should hide the panel on toolbar blur', () => {
+				blockToolbar.toolbarView.focusTracker.isFocused = true;
+
 				blockToolbar.buttonView.fire( 'execute' );
 
 				expect( blockToolbar.panelView.isVisible ).to.be.true;

@@ -12,3 +12,7 @@ msgstr "កម្មវិធី​កែសម្រួល​អត្ថបទ
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
 msgstr "កម្មវិធី​កែសម្រួល​អត្ថបទ​សម្បូរបែប"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr ""

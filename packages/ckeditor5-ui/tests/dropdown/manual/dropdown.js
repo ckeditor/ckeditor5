@@ -45,10 +45,14 @@ function testList() {
 	const collection = new Collection( { idProperty: 'label' } );
 
 	[ '0.8em', '1em', '1.2em', '1.5em', '2.0em', '3.0em' ].forEach( font => {
-		collection.add( new Model( {
-			label: font,
-			style: `font-size: ${ font }`
-		} ) );
+		collection.add( {
+			type: 'button',
+			model: new Model( {
+				label: font,
+				labelStyle: `font-size: ${ font }`,
+				withText: true
+			} )
+		} );
 	} );
 
 	const dropdownView = createDropdown( {} );

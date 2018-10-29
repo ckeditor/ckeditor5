@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.0.0...v11.1.0) (2018-10-08)
+
+### Features
+
+* Allowed displaying an error message next to the `LabeledInputVIew` (see [ckeditor/ckeditor5-media-embed#1](https://github.com/ckeditor/ckeditor5-media-embed/issues/1)). ([81aaea4](https://github.com/ckeditor/ckeditor5-ui/commit/81aaea4))
+
+### Bug fixes
+
+* Made the `Edit block` string translatable. Closes [#445](https://github.com/ckeditor/ckeditor5-ui/issues/445). ([1fa84e9](https://github.com/ckeditor/ckeditor5-ui/commit/1fa84e9))
+
+### Other changes
+
+* Updated translations. ([baff3c9](https://github.com/ckeditor/ckeditor5-ui/commit/baff3c9))
+* Updated translations. ([e58bcbb](https://github.com/ckeditor/ckeditor5-ui/commit/e58bcbb))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.1.0...v11.0.0) (2018-07-18)
 
 ### Features

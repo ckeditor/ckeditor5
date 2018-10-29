@@ -46,7 +46,7 @@ import '../../theme/components/dropdown/listdropdown.css';
  *		document.body.appendChild( dropdown.element );
  *
  * You can also provide other button views (they need to implement the
- * {module:ui/dropdown/button/dropdownbutton~DropdownButton} interface). For instance, you can use
+ * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface). For instance, you can use
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} to create a dropdown with a split button.
  *
  *		const dropdown = createDropdown( model, SplitButtonView );
@@ -150,13 +150,22 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  *
  *		items.add( {
  *			type: 'button',
- *			model: new Model( { label: 'First item', labelStyle: 'color: red' } )
+ *			model: new Model( {
+ *				withText: true,
+ *				label: 'First item',
+ *				labelStyle: 'color: red'
+ *			} )
  *		} );
  *
  *		items.add( {
  *			 type: 'button',
- *			 model: new Model( { label: 'Second item', labelStyle: 'color: green', class: 'foo' } )
- * 		} );
+ *			 model: new Model( {
+ *				withText: true,
+ *				label: 'Second item',
+ *				labelStyle: 'color: green',
+ *				class: 'foo'
+ *			} )
+ *		} );
  *
  *		const dropdown = createDropdown( locale );
  *

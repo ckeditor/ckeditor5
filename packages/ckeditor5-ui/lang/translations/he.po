@@ -1,17 +1,17 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Hebrew (https://www.transifex.com/ckeditor/teams/11143/he/)\n"
+"Language: he\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Editor de Texto Enriquecido, %0"
+msgstr "עורך טקסט עשיר"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
-msgstr "Editor de Texto Enriquecido"
+msgstr ""
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
