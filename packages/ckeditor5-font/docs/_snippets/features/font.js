@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'fontSize', 'fontFamily', '|', 'bulletedList', 'numberedList', 'undo', 'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		}
 	} )
 	.then( editor => {
