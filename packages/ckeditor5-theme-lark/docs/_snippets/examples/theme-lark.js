@@ -16,7 +16,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, EasyImage ],
 		toolbar: {
 			items: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
