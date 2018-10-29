@@ -24,7 +24,7 @@ The easiest way to use CKEditor 5 in your React application is by choosing one o
 	Until the above issue is resolved, in this guide we will use `create-react-app@1` which does not require ejecting the configuration when testing your application in the development mode. You will have to, however, eject it anyway to [build your app for production](#note-building-for-production).
 </info-box>
 
-Install the [CKEditor 5 rich text editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
+Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -372,4 +372,4 @@ export default App;
 
 ## Contributing and reporting issues
 
-The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-react.
+The source code of rich text editor component for React is available on GitHub in https://github.com/ckeditor/ckeditor5-react.
