@@ -290,7 +290,7 @@ describe( 'LinkUI', () => {
 
 				// Move selection to foo[].
 				view.change( writer => {
-					writer.setSelection( writer.createRange( writer.createPositionAt( text, 3 ) ), true );
+					writer.setSelection( text, 3, true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -310,7 +310,7 @@ describe( 'LinkUI', () => {
 				const text = root.getChild( 0 ).getChild( 0 );
 
 				view.change( writer => {
-					writer.setSelection( writer.createRange( writer.createPositionAt( text, 3 ) ), true );
+					writer.setSelection( text, 3, true );
 				} );
 
 				sinon.assert.calledOnce( spy );
@@ -333,7 +333,7 @@ describe( 'LinkUI', () => {
 
 				// Move selection to b[]ar.
 				view.change( writer => {
-					writer.setSelection( writer.createRange( writer.createPositionAt( text, 1 ) ), true );
+					writer.setSelection( text, 1, true );
 				} );
 
 				sinon.assert.calledOnce( spyHide );
