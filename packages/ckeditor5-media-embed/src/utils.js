@@ -42,10 +42,10 @@ export function isMediaWidget( viewElement ) {
  * Creates a view element representing the media. Either "semantic" one for the data pipeline:
  *
  *		<figure class="media">
- *			<oembed url="foo"></div>
+ *			<oembed url="foo"></oembed>
  *		</figure>
  *
- * or "non-semantic" (for editing view pipeline):
+ * or "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -68,13 +68,13 @@ export function createMediaFigureElement( writer, registry, url, options ) {
 	// Note: The hack is a copy&paste from widget utils; it makes the figure act like it's a widget.
 	figure.getFillerOffset = getFillerOffset;
 
-	writer.insert( ViewPosition.createAt( figure ), registry.getMediaViewElement( writer, url, options ) );
+	writer.insert( ViewPosition.createAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
 
 	return figure;
 }
 
 /**
- * Returns a selected media element in model, if any.
+ * Returns a selected media element in the model, if any.
  *
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}

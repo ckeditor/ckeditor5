@@ -17,6 +17,8 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -29,7 +31,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing ]
+				plugins: [ MediaEmbed, AutoMediaEmbed, Link, List, Bold, Typing, Image, ImageCaption ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -299,6 +301,52 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>youtube.com/watch?v=H08tGjXNHO4&param=foo bar[]</paragraph>'
+			);
+		} );
+
+		// #47
+		it( 'does not transform a valid URL into a media if the element cannot be placed in the current position', () => {
+			setData( editor.model, '<image src="foo.png"><caption>Foo.[]</caption></image>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<image src="foo.png"><caption>Foo.https://www.youtube.com/watch?v=H08tGjXNHO4[]</caption></image>'
+			);
+		} );
+
+		it( 'replaces a URL in media if pasted a link when other media element was selected', () => {
+			setData(
+				editor.model,
+				'[<media url="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"></media>]'
+			);
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]'
+			);
+		} );
+
+		it( 'inserts a new media element if pasted a link when other media element was selected in correct place', () => {
+			setData(
+				editor.model,
+				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
+				'[<media url="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA"></media>]' +
+				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
+			);
+
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>Foo. <$text linkHref="https://cksource.com">Bar</$text></paragraph>' +
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+				'<paragraph><$text bold="true">Bar</$text>.</paragraph>'
 			);
 		} );
 

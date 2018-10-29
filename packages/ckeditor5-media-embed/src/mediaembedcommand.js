@@ -16,7 +16,7 @@ import { getSelectedMediaElement } from './utils';
  *
  * The command is registered by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} as `'mediaEmbed'`.
  *
- * To insert a media at the current selection, execute the command and specify the URL:
+ * To insert media at the current selection, execute the command and specify the URL:
  *
  *		editor.execute( 'mediaEmbed', 'http://url.to.the/media' );
  *
@@ -46,7 +46,7 @@ export default class MediaEmbedCommand extends Command {
 	/**
 	 * Executes the command, which either:
 	 *
-	 * * updates the URL of a selected media,
+	 * * updates the URL of the selected media,
 	 * * inserts the new media into the editor and puts the selection around it.
 	 *
 	 * @fires execute
