@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'insertTable', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
