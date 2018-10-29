@@ -6,10 +6,6 @@
 @import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
 
 .ck-media__wrapper {
-	& > *:not(.ck-media__placeholder) {
-		pointer-events: none;
-	}
-
 	& .ck-media__placeholder {
 		display: flex;
 		flex-direction: column;
@@ -42,4 +38,10 @@
 			display: none;
 		}
 	}
+}
+
+/* Disable all mouse interaction as long as the editor is not read–only.
+   https://github.com/ckeditor/ckeditor5-media-embed/issues/58 */
+*[contenteditable=true] .ck-media__wrapper > *:not(.ck-media__placeholder) {
+	pointer-events: none;
 }
