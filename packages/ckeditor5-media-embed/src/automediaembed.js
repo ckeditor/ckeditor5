@@ -136,6 +136,13 @@ export default class AutoMediaEmbed extends Plugin {
 			return;
 		}
 
+		const mediaEmbedCommand = editor.commands.get( 'mediaEmbed' );
+
+		// Do not anything if media element cannot be inserted at the current position (#47).
+		if ( !mediaEmbedCommand.isEnabled ) {
+			return;
+		}
+
 		// Position won't be available in the `setTimeout` function so let's clone it.
 		this._positionToInsert = LivePosition.fromPosition( leftPosition );
 
@@ -151,7 +158,7 @@ export default class AutoMediaEmbed extends Plugin {
 					writer.setSelection( this._positionToInsert );
 				}
 
-				editor.commands.execute( 'mediaEmbed', url );
+				mediaEmbedCommand.execute( url );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;
