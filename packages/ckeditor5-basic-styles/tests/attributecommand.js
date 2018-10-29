@@ -251,14 +251,14 @@ describe( 'AttributeCommand', () => {
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
 			model.change( writer => {
-				writer.setSelection( [ writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 2 ) ) ] );
+				writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 			} );
 
 			expect( command.value ).to.be.false;
 
 			// Go back to where attribute was stored.
 			model.change( writer => {
-				writer.setSelection( writer.createRange( writer.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ) ) );
+				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
 			} );
 
 			// Attribute should be restored.
