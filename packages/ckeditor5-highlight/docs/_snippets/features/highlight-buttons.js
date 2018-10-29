@@ -15,7 +15,7 @@ ClassicEditor
 				'heading', '|', 'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
 				'highlight:greenPen', 'highlight:redPen', 'removeHighlight', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		}
 	} )
 	.then( editor => {
