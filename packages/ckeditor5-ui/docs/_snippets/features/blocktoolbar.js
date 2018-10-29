@@ -16,7 +16,7 @@ BalloonEditor
 		plugins: BalloonEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
 			items: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		blockToolbar: [
 			'paragraph', 'heading1', 'heading2', 'heading3',
