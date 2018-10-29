@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'fontFamily', 'bulletedList', 'numberedList', 'undo', 'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		},
 		fontFamily: {
 			options: [
