@@ -316,7 +316,7 @@ class Insertion {
 
 			this.writer.merge( mergePosLeft );
 
-			this.position = Position._createAt( livePosition );
+			this.position = livePosition.toPosition();
 			livePosition.detach();
 		}
 

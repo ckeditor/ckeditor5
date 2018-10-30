@@ -12,7 +12,8 @@ import LivePosition from '../../src/model/liveposition';
 import Range from '../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'LivePosition', () => {
+describe( 'LivePosition', () =>
+{
 	let model, doc, root, ul, p, li1, li2;
 
 	beforeEach( () => {
@@ -68,7 +69,7 @@ describe( 'LivePosition', () => {
 		LivePosition.prototype.stopListening.restore();
 	} );
 
-	describe( '_fromPosition()', () => {
+	describe( 'fromPosition()', () => {
 		it( 'should return LivePosition', () => {
 			const position = LivePosition.fromPosition( new Position( root, [ 0 ] ) );
 			expect( position ).to.be.instanceof( LivePosition );

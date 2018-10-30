@@ -395,10 +395,10 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
 		if ( !markers.has( markerName ) ) {
-			markers.set( markerName, new ModelRange( ModelPosition._createAt( currentPosition ) ) );
+			markers.set( markerName, new ModelRange( currentPosition.clone() ) );
 		// Otherwise is means that we have found end of the marker range.
 		} else {
-			markers.get( markerName ).end = ModelPosition._createAt( currentPosition );
+			markers.get( markerName ).end = currentPosition.clone();
 		}
 
 		// Remove marker element from DocumentFragment.

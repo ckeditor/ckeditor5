@@ -100,7 +100,7 @@ describe( 'transform', () => {
 
 			expected = {
 				type: InsertOperation,
-				position: Position._createAt( position )
+				position: position.clone()
 			};
 		} );
 
@@ -914,15 +914,15 @@ describe( 'transform', () => {
 			targetPosition = new Position( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
-			rangeEnd = Position._createAt( sourcePosition );
+			rangeEnd = sourcePosition.clone();
 			rangeEnd.offset += howMany;
 
 			op = new MoveOperation( sourcePosition, howMany, targetPosition, 0 );
 
 			expected = {
 				type: MoveOperation,
-				sourcePosition: Position._createAt( sourcePosition ),
-				targetPosition: Position._createAt( targetPosition ),
+				sourcePosition: sourcePosition.clone(),
+				targetPosition: targetPosition.clone(),
 				howMany
 			};
 		} );
@@ -1957,7 +1957,7 @@ describe( 'transform', () => {
 
 			beforeEach( () => {
 				transformBy = new MoveOperation(
-					Position._createAt( op.sourcePosition ),
+					op.sourcePosition.clone(),
 					op.howMany,
 					new Position( doc.graveyard, [ 0 ] ),
 					0
@@ -2015,11 +2015,11 @@ describe( 'transform', () => {
 			it( 'should force removing content even if was less important', () => {
 				const op = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 
-				const targetPosition = Position._createAt( op.targetPosition );
+				const targetPosition = op.targetPosition.clone();
 
 				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), 0 );
 
-				const sourcePosition = Position._createAt( transformBy.targetPosition );
+				const sourcePosition = transformBy.targetPosition.clone();
 
 				const transOp = transform( op, transformBy );
 

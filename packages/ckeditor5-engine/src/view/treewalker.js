@@ -189,7 +189,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_next() {
-		let position = Position._createAt( this.position );
+		let position = this.position.clone();
 		const previousPosition = this.position;
 		const parent = position.parent;
 
@@ -295,7 +295,7 @@ export default class TreeWalker {
 	 * @returns {module:engine/view/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
-		let position = Position._createAt( this.position );
+		let position = this.position.clone();
 		const previousPosition = this.position;
 		const parent = position.parent;
 

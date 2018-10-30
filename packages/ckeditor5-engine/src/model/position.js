@@ -360,7 +360,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position._createAt( this );
+		const shifted = this.clone();
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -798,6 +798,15 @@ export default class Position {
 			path: Array.from( this.path ),
 			stickiness: this.stickiness
 		};
+	}
+
+	/**
+	 * Returns a new position that is equal to current position.
+	 *
+	 * @returns {module:engine/model/position~Position}
+	 */
+	clone() {
+		return new this.constructor( this.root, this.path, this.stickiness );
 	}
 
 	/**

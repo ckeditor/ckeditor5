@@ -289,6 +289,10 @@ export default class Position {
 		return new TreeWalker( options );
 	}
 
+	clone() {
+		return new Position( this.parent, this.offset );
+	}
+
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *

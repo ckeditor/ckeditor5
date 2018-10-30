@@ -8,7 +8,6 @@
  */
 
 import LiveRange from './liverange';
-import Position from './position';
 import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -396,7 +395,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Position._createAt( this._liveRange.start );
+		return this._liveRange.start.clone();
 	}
 
 	/**
@@ -409,7 +408,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Position._createAt( this._liveRange.end );
+		return this._liveRange.end.clone();
 	}
 
 	/**

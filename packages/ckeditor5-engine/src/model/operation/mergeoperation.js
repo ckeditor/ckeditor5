@@ -45,7 +45,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#sourcePosition
 		 */
-		this.sourcePosition = Position._createAt( sourcePosition );
+		this.sourcePosition = sourcePosition.clone();
 		// This is, and should always remain, the first position in its parent.
 		this.sourcePosition.stickiness = 'toPrevious';
 
@@ -61,7 +61,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#targetPosition
 		 */
-		this.targetPosition = Position._createAt( targetPosition );
+		this.targetPosition = targetPosition.clone();
 		// Except of a rare scenario in `MergeOperation` x `MergeOperation` transformation,
 		// this is, and should always remain, the last position in its parent.
 		this.targetPosition.stickiness = 'toNext';
@@ -71,7 +71,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#graveyardPosition
 		 */
-		this.graveyardPosition = Position._createAt( graveyardPosition );
+		this.graveyardPosition = graveyardPosition.clone();
 	}
 
 	/**

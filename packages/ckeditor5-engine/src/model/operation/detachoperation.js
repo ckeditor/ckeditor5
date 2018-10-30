@@ -8,7 +8,6 @@
  */
 
 import Operation from './operation';
-import Position from '../position';
 import Range from '../range';
 import { _remove } from './utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -36,7 +35,7 @@ export default class DetachOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} #sourcePosition
 		 */
-		this.sourcePosition = Position._createAt( sourcePosition );
+		this.sourcePosition = sourcePosition.clone();
 
 		/**
 		 * Offset size of moved range.

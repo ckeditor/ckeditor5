@@ -11,7 +11,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import Selection from './selection';
-import Position from './position';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
@@ -1015,7 +1014,7 @@ class LiveSelection extends Selection {
 	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
-		const positionCandidate = Position._createAt( removedRangeStart );
+		const positionCandidate = removedRangeStart.clone();
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
 		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );

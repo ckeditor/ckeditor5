@@ -302,7 +302,7 @@ export default class Selection {
 	getFirstPosition() {
 		const first = this.getFirstRange();
 
-		return first ? Position._createAt( first.start ) : null;
+		return first ? first.start.clone() : null;
 	}
 
 	/**
@@ -317,7 +317,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position._createAt( lastRange.end ) : null;
+		return lastRange ? lastRange.end.clone() : null;
 	}
 
 	/**

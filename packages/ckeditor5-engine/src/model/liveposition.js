@@ -71,6 +71,13 @@ export default class LivePosition extends Position {
 		return new Position( this.root, this.path.slice(), this.stickiness );
 	}
 
+	/**
+	 * Creates a `LivePosition` instance that is equal to position.
+	 *
+	 * @param {module:engine/model/position~Position} position
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
+	 * @returns {module:engine/model/position~Position}
+	 */
 	static fromPosition( position, stickiness ) {
 		return new this( position.root, position.path.slice(), stickiness ? stickiness : position.stickiness );
 	}
@@ -130,7 +137,7 @@ function transform( operation ) {
 	const result = this.getTransformedByOperation( operation );
 
 	if ( !this.isEqual( result ) ) {
-		const oldPosition = Position._createAt( this );
+		const oldPosition = this.toPosition();
 
 		this.path = result.path;
 		this.root = result.root;

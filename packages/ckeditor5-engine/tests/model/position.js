@@ -19,6 +19,7 @@ import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import LivePosition from '../../src/model/liveposition';
 
 describe( 'Position', () => {
 	let doc, model, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
@@ -140,6 +141,16 @@ describe( 'Position', () => {
 				expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
 				expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
 				expect( positionCopy ).to.not.equal( position );
+			} );
+
+			it( 'should create positions from LivePosition', () => {
+				const position = new LivePosition( root, [ 0, 0 ] );
+				const created = Position._createAt( position );
+
+				expect( created.isEqual( position ) ).to.be.true;
+				expect( created ).to.not.be.equal( position );
+				expect( created ).to.be.instanceof( Position );
+				expect( created ).to.not.be.instanceof( LivePosition );
 			} );
 
 			it( 'should create positions from node and offset', () => {
@@ -624,6 +635,18 @@ describe( 'Position', () => {
 			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
 			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
+		} );
+	} );
+
+	describe( 'clone()', () => {
+		it( 'should return new instance of position', () => {
+			const position = Position._createAt( ul, 0 );
+
+			const positionCopy = position.clone();
+
+			expect( positionCopy ).to.have.property( 'path' ).that.deep.equals( [ 1, 0 ] );
+			expect( positionCopy ).to.have.property( 'root' ).that.equals( position.root );
+			expect( positionCopy ).to.not.equal( position );
 		} );
 	} );
 
