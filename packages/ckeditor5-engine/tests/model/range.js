@@ -108,7 +108,7 @@ describe( 'Range', () => {
 
 	describe( 'isIntersecting()', () => {
 		it( 'should return true if given range is equal', () => {
-			const otherRange = Range._createFromRange( range );
+			const otherRange = range.clone();
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
@@ -187,7 +187,7 @@ describe( 'Range', () => {
 
 		describe( '_createFromRange()', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
-				const clone = Range._createFromRange( range );
+				const clone = range.clone();
 
 				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
@@ -386,7 +386,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range._createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -760,7 +760,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a range equal to both ranges if both ranges are equal', () => {
-			const otherRange = Range._createFromRange( range );
+			const otherRange = range.clone();
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;

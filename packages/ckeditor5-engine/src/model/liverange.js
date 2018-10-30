@@ -41,6 +41,25 @@ export default class LiveRange extends Range {
 	}
 
 	/**
+	 * Creates a {@link module:engine/model/range~Range range instance}, which is equal to this live range.
+	 *
+	 * @returns {module:engine/model/range~Range}
+	 */
+	toRange() {
+		return new Range( this.start, this.end );
+	}
+
+	/**
+	 * Creates a `LiveRange` instance that is equal to position.
+	 *
+	 * @param {module:engine/model/range~Range} range
+	 * @returns {module:engine/model/range~Range}
+	 */
+	static fromRange( range ) {
+		return new LiveRange( range.start, range.end );
+	}
+
+	/**
 	 * @see module:engine/model/range~Range._createIn
 	 * @static
 	 * @protected
@@ -72,7 +91,7 @@ export default class LiveRange extends Range {
 	 * @see module:engine/model/range~Range._createFromRange
 	 * @static
 	 * @protected
-	 * @method module:engine/model/liverange~LiveRange._createFromRange
+	 * @method module:engine/model/liverange~LiveRange.fromRange
 	 * @param {module:engine/model/range~Range} range
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
@@ -150,7 +169,7 @@ function transform( operation ) {
 			}
 		}
 
-		const oldRange = Range._createFromRange( this );
+		const oldRange = this.toRange();
 
 		this.start = result.start;
 		this.end = result.end;
@@ -158,7 +177,7 @@ function transform( operation ) {
 		this.fire( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range._createFromRange( this ), { deletionPosition } );
+		this.fire( 'change:content', this.toRange(), { deletionPosition } );
 	}
 }
 

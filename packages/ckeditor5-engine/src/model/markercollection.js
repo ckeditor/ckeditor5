@@ -8,7 +8,6 @@
  */
 
 import LiveRange from './liverange';
-import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -100,7 +99,7 @@ export default class MarkerCollection {
 			let hasChanged = false;
 
 			if ( !oldRange.isEqual( range ) ) {
-				oldMarker._attachLiveRange( LiveRange._createFromRange( range ) );
+				oldMarker._attachLiveRange( LiveRange.fromRange( range ) );
 				hasChanged = true;
 			}
 
@@ -121,7 +120,7 @@ export default class MarkerCollection {
 			return oldMarker;
 		}
 
-		const liveRange = LiveRange._createFromRange( range );
+		const liveRange = LiveRange.fromRange( range );
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
@@ -428,7 +427,7 @@ class Marker {
 			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
 		}
 
-		return Range._createFromRange( this._liveRange );
+		return this._liveRange.toRange();
 	}
 
 	/**

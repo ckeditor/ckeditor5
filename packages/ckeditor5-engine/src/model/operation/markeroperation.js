@@ -41,7 +41,7 @@ export default class MarkerOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/range~Range}
 		 */
-		this.oldRange = oldRange ? Range._createFromRange( oldRange ) : null;
+		this.oldRange = oldRange ? oldRange.clone() : null;
 
 		/**
 		 * Marker range after the change.
@@ -49,7 +49,7 @@ export default class MarkerOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/range~Range}
 		 */
-		this.newRange = newRange ? Range._createFromRange( newRange ) : null;
+		this.newRange = newRange ? newRange.clone() : null;
 
 		/**
 		 * Specifies whether the marker operation affects the data produced by the data pipeline

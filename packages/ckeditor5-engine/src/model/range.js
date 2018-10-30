@@ -207,7 +207,7 @@ export default class Range {
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( Range._createFromRange( this ) );
+			ranges.push( new Range( this.start, this.end ) );
 		}
 
 		return ranges;
@@ -423,7 +423,7 @@ export default class Range {
 				return [ this._getTransformedByMergeOperation( operation ) ];
 		}
 
-		return [ Range._createFromRange( this ) ];
+		return [ new Range( this.start, this.end ) ];
 	}
 
 	/**
@@ -434,7 +434,7 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByOperations( operations ) {
-		const ranges = [ Range._createFromRange( this ) ];
+		const ranges = [ new Range( this.start, this.end ) ];
 
 		for ( const operation of operations ) {
 			for ( let i = 0; i < ranges.length; i++ ) {
@@ -484,6 +484,15 @@ export default class Range {
 			start: this.start.toJSON(),
 			end: this.end.toJSON()
 		};
+	}
+
+	/**
+	 * Returns a new range that is equal to current range.
+	 *
+	 * @returns {module:engine/model/range~Range}
+	 */
+	clone() {
+		return new this.constructor( this.start, this.end );
 	}
 
 	/**
@@ -654,7 +663,7 @@ export default class Range {
 				)
 			];
 		} else {
-			const range = Range._createFromRange( this );
+			const range = new Range( this.start, this.end );
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany );
 			range.end = range.end._getTransformedByInsertion( insertPosition, howMany );
@@ -798,17 +807,6 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a new instance of `Range` which is equal to passed range.
-	 *
-	 * @protected
-	 * @param {module:engine/model/range~Range} range Range to clone.
-	 * @returns {module:engine/model/range~Range}
-	 */
-	static _createFromRange( range ) {
-		return new this( range.start, range.end );
-	}
-
-	/**
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
@@ -856,7 +854,7 @@ export default class Range {
 			 */
 			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
 		} else if ( ranges.length == 1 ) {
-			return this._createFromRange( ranges[ 0 ] );
+			return ranges[ 0 ].clone();
 		}
 
 		// 1. Set the first range in `ranges` array as a reference range.

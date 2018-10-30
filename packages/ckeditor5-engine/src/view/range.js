@@ -248,7 +248,7 @@ export default class Range {
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( Range._createFromRange( this ) );
+			ranges.push( this.clone() );
 		}
 
 		return ranges;
@@ -324,6 +324,10 @@ export default class Range {
 	 */
 	getCommonAncestor() {
 		return this.start.getCommonAncestor( this.end );
+	}
+
+	clone() {
+		return new Range( this.start, this.end );
 	}
 
 	/**
@@ -403,17 +407,6 @@ export default class Range {
 			new Position( startElement, startOffset ),
 			new Position( endElement, endOffset )
 		);
-	}
-
-	/**
-	 * Creates and returns a new instance of Range which is equal to passed range.
-	 *
-	 * @protected
-	 * @param {module:engine/view/range~Range} range Range to clone.
-	 * @returns {module:engine/view/range~Range}
-	 */
-	static _createFromRange( range ) {
-		return new this( range.start, range.end );
 	}
 
 	/**

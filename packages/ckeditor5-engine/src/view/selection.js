@@ -240,7 +240,7 @@ export default class Selection {
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
-			yield Range._createFromRange( range );
+			yield range.clone();
 		}
 	}
 
@@ -261,7 +261,7 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range._createFromRange( first ) : null;
+		return first ? first.clone() : null;
 	}
 
 	/**
@@ -280,7 +280,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range._createFromRange( last ) : null;
+		return last ? last.clone() : null;
 	}
 
 	/**
@@ -689,7 +689,7 @@ export default class Selection {
 			}
 		}
 
-		this._ranges.push( Range._createFromRange( range ) );
+		this._ranges.push( new Range( range.start, range.end ) );
 	}
 
 	/**

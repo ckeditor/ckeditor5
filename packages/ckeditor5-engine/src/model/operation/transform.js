@@ -1047,7 +1047,7 @@ setTransformation( MarkerOperation, InsertOperation, ( a, b ) => {
 setTransformation( MarkerOperation, MarkerOperation, ( a, b, context ) => {
 	if ( a.name == b.name ) {
 		if ( context.aIsStrong ) {
-			a.oldRange = b.newRange ? Range._createFromRange( b.newRange ) : null;
+			a.oldRange = b.newRange ? b.newRange.clone() : null;
 		} else {
 			return [ new NoOperation( 0 ) ];
 		}

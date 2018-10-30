@@ -5,9 +5,6 @@
 
 /* global console, window, document */
 
-import ModelRange from '../../src/model/range';
-import ViewPosition from '../../src/view/position';
-
 import {
 	upcastElementToElement,
 } from '../../src/conversion/upcast-converters';
@@ -51,7 +48,7 @@ class FancyWidget extends Plugin {
 			model: 'fancywidget',
 			view: ( modelItem, viewWriter ) => {
 				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
-				viewWriter.insert( ViewPosition._createAt( widgetElement ), viewWriter.createText( 'widget' ) );
+				viewWriter.insert( viewWriter.createPositionAt( widgetElement ), viewWriter.createText( 'widget' ) );
 
 				return toWidget( widgetElement, viewWriter );
 			}
@@ -127,7 +124,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 
 function addMarker( editor, color ) {
 	editor.model.change( writer => {
-		const range = ModelRange._createFromRange( editor.model.document.selection.getFirstRange() );
+		const range = editor.model.document.selection.getFirstRange();
 		writer.addMarker( 'marker:' + color, { range, usingOperation: false } );
 	} );
 }

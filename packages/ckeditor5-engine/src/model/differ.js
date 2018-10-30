@@ -879,7 +879,7 @@ export default class Differ {
 				diffs.push( {
 					type: 'attribute',
 					position: range.start,
-					range: Range._createFromRange( range ),
+					range: range.clone(),
 					length: 1,
 					attributeKey: key,
 					attributeOldValue: oldValue,
@@ -898,7 +898,7 @@ export default class Differ {
 			diffs.push( {
 				type: 'attribute',
 				position: range.start,
-				range: Range._createFromRange( range ),
+				range: range.clone(),
 				length: 1,
 				attributeKey: key,
 				attributeOldValue: null,

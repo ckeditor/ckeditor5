@@ -318,7 +318,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return false if ranges are equal', () => {
-			const otherRange = Range._createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange ) ).to.be.false;
 		} );
@@ -330,7 +330,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range._createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -378,7 +378,7 @@ describe( 'Range', () => {
 		describe( 'isIntersecting', () => {
 			it( 'should return true if given range is equal', () => {
 				const range = Range._createFromParentsAndOffsets( t1, 0, t3, 2 );
-				const otherRange = Range._createFromRange( range );
+				const otherRange = range.clone();
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
@@ -717,16 +717,6 @@ describe( 'Range', () => {
 				expect( range.end.isEqual( position ) ).to.be.true;
 				expect( range.start.parent ).to.equal( foz );
 				expect( range.start.offset ).to.deep.equal( 2 );
-			} );
-		} );
-
-		describe( '_createFromRange', () => {
-			it( 'should create a new instance of Range that is equal to passed range', () => {
-				const range = new Range( new Position( foz, 0 ), new Position( foz, 2 ) );
-				const clone = Range._createFromRange( range );
-
-				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
-				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 			} );
 		} );
 	} );
