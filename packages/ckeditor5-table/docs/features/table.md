@@ -160,8 +160,8 @@ The {@link module:table/table~Table} plugin registers the following UI component
 And the following commands:
 
 * The `'insertTable'` command implemented by {@link module:table/commands/inserttablecommand~InsertTableCommand}.
-* The `'insertTableColumnBefore'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
-* The `'insertTableColumnAfter'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
+* The `'insertTableColumnLeft'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
+* The `'insertTableColumnRight'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
 * The `'insertTableRowAbove'` command implemented by {@link module:table/commands/insertrowcommand~InsertRowCommand}.
 * The `'insertTableRowBelow'` command implemented by {@link module:table/commands/insertrowcommand~InsertRowCommand}.
 * The `'removeTableColumn'` command implemented by {@link module:table/commands/removecolumncommand~RemoveColumnCommand}.

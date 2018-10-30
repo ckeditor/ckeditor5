@@ -89,12 +89,12 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'insertTableRowBelow' ) ).to.be.instanceOf( InsertRowCommand );
 	} );
 
-	it( 'adds insertColumnBefore command', () => {
-		expect( editor.commands.get( 'insertTableColumnBefore' ) ).to.be.instanceOf( InsertColumnCommand );
+	it( 'adds insertColumnLeft command', () => {
+		expect( editor.commands.get( 'insertTableColumnLeft' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
-	it( 'adds insertColumnAfter command', () => {
-		expect( editor.commands.get( 'insertTableColumnAfter' ) ).to.be.instanceOf( InsertColumnCommand );
+	it( 'adds insertColumnRight command', () => {
+		expect( editor.commands.get( 'insertTableColumnRight' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
 	it( 'adds removeRow command', () => {

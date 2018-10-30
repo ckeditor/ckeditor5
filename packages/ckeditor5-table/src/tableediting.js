@@ -129,8 +129,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
 		editor.commands.add( 'insertTableRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
-		editor.commands.add( 'insertTableColumnBefore', new InsertColumnCommand( editor, { order: 'before' } ) );
-		editor.commands.add( 'insertTableColumnAfter', new InsertColumnCommand( editor, { order: 'after' } ) );
+		editor.commands.add( 'insertTableColumnLeft', new InsertColumnCommand( editor, { order: 'left' } ) );
+		editor.commands.add( 'insertTableColumnRight', new InsertColumnCommand( editor, { order: 'right' } ) );
 
 		editor.commands.add( 'removeTableRow', new RemoveRowCommand( editor ) );
 		editor.commands.add( 'removeTableColumn', new RemoveColumnCommand( editor ) );
