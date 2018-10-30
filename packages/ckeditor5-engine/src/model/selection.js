@@ -53,7 +53,7 @@ export default class Selection {
 	 *
 	 *		// Creates selection from the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const documentSelection = model.document.selection;
 	 *		const selection = writer.createSelection( documentSelection );
 	 *
 	 *		// Creates selection at the given position.

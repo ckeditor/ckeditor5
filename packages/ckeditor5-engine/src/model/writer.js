@@ -1085,7 +1085,7 @@ export default class Writer {
 	 *		writer.setSelection( otherSelection );
 	 *
 	 *		// Sets selection to the given document selection.
-	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const documentSelection = model.document.selection;
 	 *		writer.setSelection( documentSelection );
 	 *
 	 *		// Sets collapsed selection at the given position.
