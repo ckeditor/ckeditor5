@@ -226,7 +226,7 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column before', 'Insert column after', 'Delete column' ] );
+			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {

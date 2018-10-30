@@ -14,8 +14,8 @@
 3. While the table cell is selected there should be a toolbar attached to the table with 3 dropdowns:
   * column dropdown with items:
     - header column,
-    - insert column before,
-    - insert column after,
+    - insert column left,
+    - insert column right,
     - delete column.
   * row dropdown with items:
     - header row,
