@@ -14,7 +14,7 @@ Any class can become observable; all you need to do is mix the {@link module:uti
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-export default class AnyClass {
+class AnyClass {
 	// ...
 }
 
@@ -27,73 +27,140 @@ Observables can also [decorate their methods](#decorating-object-methods) which 
 
 ## Making properties observable
 
-Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~ObservableMixin#set `set()` method}. Let's set a couple of properties and see what they look like in a simple `Command` class:
+Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~ObservableMixin#set `set()` method}.
+
+Let's create a simple UI view (component) named `Button` with a couple of properties and see what they look like:
 
 ```js
-export default class Command {
-	constructor( name ) {
+class Button extends View {
+	constructor() {
+		super();
+
 		// This property is not observable.
-		// Not all properties must be observable, it's up to you!
-		this.name = name;
+		// Not all properties must be observable, it's always up to you!
+		this.type = 'button';
 
-		// this.value is observable but undefined.
-		this.set( 'value' );
+		const bind = this.bindTemplate;
 
-		// this.isEnabled is observable and false.
-		this.set( 'isEnabled', false );
+		// this.label is observable but undefined.
+		this.set( 'label' );
+
+		// this.isOn is observable and false.
+		this.set( 'isOn', false );
+
+		// this.isEnabled is observable and true.
+		this.set( 'isEnabled', true );
+
+		// ...
 	}
 }
-
-mix( Command, ObservableMixin );
 ```
+
+Note that because `Button` extends the {@link module:ui/view~View `View`} class (which is already observable), you do not need to mix the `ObservableMixin`.
 
 <info-box info>
 	The `set()` method can accept an object of key/value pairs to shorten the code. Knowing that, making properties observable can be as simple as:
 
 	```js
 	this.set( {
-		value: undefined,
-		isEnabled: false
+		label: undefined,
+		isOn: false,
+		isEnabled: true
 	} );
 	```
 </info-box>
 
-Finally, let's create a new command and see how it communicates with the world.
+Finally, let's create a new view and see how it communicates with the world.
 
-Each time the `value` property changes, the command fires the `change:value` event containing information about its state in the past and the new value. The corresponding `change:isEnabled` will be fired when the `isEnabled` property changes too.
+Each time the `label` property changes, the view fires the `change:label` event containing information about its state in the past and the new value. The `change:isEnabled` and `change:isOn` events will be fired for changes of `isEnabled` and `isOn`, respectively.
 
 ```js
-const command = new Command( 'bold' );
+const view = new Button();
 
-command.on( 'change:value', ( evt, propertyName, newValue, oldValue ) => {
+view.on( 'change:label', ( evt, propertyName, newLabel, oldLabel ) => {
     console.log(
-        `${ propertyName } has changed from ${ oldValue } to ${ newValue }`
+        `#${ propertyName } has changed from "${ oldValue }" to "${ newValue }"`
     );
 } )
 
-command.value = true; // -> 'value has changed from undefined to true'
-command.value = false; // -> 'value has changed from true to false'
+view.label = 'Hello world!'; // -> #label has changed from "undefined" to "Hello world!"
+view.label = 'Bold'; // -> #label has changed from "Hello world!" to "Bold"
 
-command.name = 'italic'; // -> changing a regular property fires no event
+view.type = 'submit'; // Changing a regular property fires no event.
 ```
 
-During its life cycle, an instance of the `Command` can be enabled and disabled many times just as its `value` can change very often and different parts of the application will certainly be interested in that state.
+The events fired by the view are used to update the DOM and make the component dynamic. Let's give our view some template and bind it to the observable properties we created.
 
-For instance, some commands can be represented by a button, which should be able to figure out its look ("pushed", disabled, etc.) as soon as possible. Using observable properties makes it a lot easier because all the button must know about its command is the names of properties to listen to apply changes instantly.
+<info-box>
+	You can learn more about the UI of the editor and template system in the dedicated {@link framework/guides/architecture/ui-library#templates guide}.
+</info-box>
 
-Additionally, as the number of observable properties increases, you can save yourself the hassle of creating and maintaining multiple `command.on( 'change:property', () => { ... } )` listeners by sharing command's state with the button using [bound properties](#property-bindings), which are the key topic of the next chapter.
+```js
+class Button extends View {
+	constructor() {
+		super();
+
+		// ...
+
+		// This template will have the following symbolic representation in DOM:
+		//
+		// 	<button class="[ck-disabled] ck-[on|off]" type="button">
+		// 		{{ this.label }}
+		// 	</button>
+		//
+		this.setTemplate( {
+			tag: 'button',
+			attributes: {
+				class: [
+					// The 'ck-on' and 'ck-off' classes toggle according to the #isOn property.
+					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
+
+					// The 'ck-enabled' class appears when the #isEnabled property is false.
+					bind.if( 'isEnabled', 'ck-disabled', value => !value )
+				],
+				type: this.type
+			},
+			children: [
+				{
+					// The text of the button is bound to the #label property.
+					text: bind.to( 'label' )
+				}
+			]
+		} );
+	}
+}
+```
+
+Because `label`, `isOn`, and `isEnabled` are observables, any change will be immediately reflected in DOM:
+
+```js
+const button = new Button();
+
+// Render the button to create its #element.
+button.render();
+
+button.label = 'Bold';     // <button class="ck-off" type="button">Bold</button>
+button.isOn = true;        // <button class="ck-on" type="button">Bold</button>
+button.label = 'B';        // <button class="ck-on" type="button">B</button>
+button.isOff = false;      // <button class="ck-off" type="button">B</button>
+button.isEnabled = false;  // <button class="ck-off ck-disabled" type="button">B</button>
+```
 
 ## Property bindings
 
-One observable can also propagate its state (or part of it) to another observable to simplify the code and avoid numerous `change:property` event listeners. First, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~ObservableMixin#bind `bind()`} method to create the binding.
+One observable can also propagate its state (or part of it) to another observable to simplify the code, e.g. to avoid numerous `change:property` event listeners. To start binding object properties, make sure both objects (classes) mix the {@link module:utils/observablemixin~ObservableMixin}, then use the {@link module:utils/observablemixin~ObservableMixin#bind `bind()`} method to create the binding.
 
 ### Simple bindings
 
-Let's consider two objects: a `command` and a corresponding `button` (both {@link module:utils/observablemixin~Observable}).
+Let's use our bold button instance from the previous chapter and bind it to the bold command. That will let the button use certain command properties and automate the user interface in just a couple of lines.
+
+The bold command is an actual command of the editor (registered by the {@link module:basic-styles/bold/boldediting~BoldEditing `BoldEditing`}) and offers two observable properties: `value` and `isEnabled`. To get the command, use `editor.commands.get( 'bold' )`.
+
+Note that both `Button` and {@link module:core/command~Command `Command`} classes are {@link module:utils/observablemixin~Observable observable}, which is why we can bind their properties.
 
 ```js
-const command = new Command( 'bold' );
 const button = new Button();
+const command = editor.commands.get( 'bold' );
 ```
 
 Any "decent" button must update its look when the command becomes disabled. A simple property binding doing that could look as follows:
@@ -105,71 +172,75 @@ button.bind( 'isEnabled' ).to( command );
 After that:
 
 * `button.isEnabled` **instantly equals** `command.isEnabled`,
-* whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value.
+* whenever `command.isEnabled` changes, `button.isEnabled` will immediately reflect its value,
+* because the template of the button has its class bound to `button.isEnabled`, the DOM element of the button will also be updated.
 
-Note that `command.isEnabled` **must** be defined using the `set()` method for the binding to be dynamic &mdash; we did that in the [previous chapter](#making-properties-observable). The `button.isEnabled` property does not need to exist prior to the `bind()` call and in such case, it will be created on demand. If the `button.isEnabled` property is already observable, don't worry: binding it to the command will do no harm.
-
-By creating the binding, we allowed the button to simply use its own `isEnabled` property, e.g. in the dynamic template (check out {@link framework/guides/architecture/ui-library#template this guide} to learn how).
+Note that `command.isEnabled` **must** be defined using the `set()` method for the binding to be dynamic. In this case we are lucky because {@link module:core/command~Command#isEnabled `isEnabled`} is a standard observable property of every command in the editor. But keep in mind that when you create your own observable class, using `set()` method is the only way to define observable properties.
 
 #### Renaming properties
 
-Now let's dive into the `bind( ... ).to( ... )` syntax for a minute. The last example corresponds to the following code:
+Now let's dive into the `bind( ... ).to( ... )` syntax for a minute. As a matter of fact, the last example corresponds to the following code:
 
 ```js
+const button = new Button();
+const command = editor.commands.get( 'bold' );
+
 button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 ```
 
-You probably noticed the `to( ... )` interface which helps specify the name of the property ("rename" the property in the binding).
+You probably noticed the `to( ... )` interface which helps specify the name of the property (or just "rename" the property in the binding).
 
-What if instead of `isEnabled`, the `Command` class implemented the `isWorking` property, which does not quite fit into the button object? Let's bind two properties that have different names then:
+Both `Button` and `Command` class share the same `isEnabled` property, which allowed us to shorten the code. But if we decided to bind the `Button#isOn` to the `Command#value`, the code would be as follows:
 
 ```js
-button.bind( 'isEnabled' ).to( command, 'isWorking' );
+button.bind( 'isOn' ).to( command, 'value' );
 ```
 
-From now on, whenever `command.isWorking` changes, the value of `button.isEnabled` will reflect it.
+The property has been "renamed" in the binding and from now on, whenever `command.value` changes, the value of `button.isOn` will reflect it.
 
 ### Binding multiple properties
 
-It is also possible to bind more that one property at a time to simplify the code:
+It is possible to bind more that one property at a time to simplify the code:
 
 ```js
-button.bind( 'isEnabled', 'value' ).to( command );
+const button = new Button();
+const command = editor.commands.get( 'bold' );
+
+button.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 ```
 
-which is the same as
+which is the same as:
 
 ```js
-button.bind( 'isEnabled' ).to( command );
-button.bind( 'value' ).to( command );
+button.bind( 'isOn' ).to( command, 'value' );
+button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 ```
 
-In the above binding, the value of `button.isEnabled` will reflect `command.isEnabled` and the value of `button.value` will reflect `command.value`.
+In the above binding, the value of `button.isEnabled` will reflect `command.isEnabled` and the value of `button.isOn` will reflect `command.value`.
 
-Renaming is still possible when binding multiple properties. Consider the following example which binds `button.isEnabled` to `command.isWorking` and `button.currentState` to `command.value`:
-
-```js
-button.bind( 'isEnabled', 'currentState' ).to( command, 'isWorking', 'value' );
-```
+Note that the `value` property of the command has also been "renamed" in the binding like in the [previous example](#renaming-properties).
 
 ### Binding with multiple observables
 
-The binding can include more than one observable, combining multiple properties in a custom callback function. Let's create a button that gets enabled only when the `command` is enabled and the `ui` (also an `Observable`) is visible:
+The binding can include more than one observable, combining multiple properties in a custom callback function. Let's create a button that gets enabled only when the `command` is enabled and the {@link module:engine/view/document~Document editing document} (also an `Observable`) is focused:
 
 ```js
-button.bind( 'isEnabled' ).to( command, 'isEnabled', ui, 'isVisible',
-	( isCommandEnabled, isUIVisible ) => isCommandEnabled && isUIVisible );
+const button = new Button();
+const command = editor.commands.get( 'bold' );
+const editingDocument = editor.editing.view.document;
+
+button.bind( 'isEnabled' ).to( command, 'isEnabled', editingDocument, 'isFocused',
+	( isCommandEnabled, isDocumentFocused ) => isCommandEnabled && isDocumentFocused );
 ```
 
-From now on, the value of `button.isEnabled` depends both on `command.isEnabled` and `ui.isVisible`
-as specified by the function: both must be `true` for the button to become enabled.
+The binding makes the value of `button.isEnabled` depend both on `command.isEnabled` and `editingDocument.isFocused` as specified by the function: both must be `true` for the button to become enabled.
 
 ### Binding with an array of observables
 
-It is possible to bind to the same property in an array of observables. Let's bind a `button` to multiple commands so that each and every one must be enabled for the button
-to become enabled:
+It is possible to bind the same property to an array of observables. Let's bind our button to multiple commands so that each and every one must be enabled for the button to become enabled:
 
 ```js
+const button = new Button();
 const commands =  [ commandA, commandB, commandC ];
 
 button.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( isAEnabled, isBEnabled, isCEnabled ) => {
@@ -187,6 +258,8 @@ button.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 } );
 ```
 
+This kind of binding can be useful e.g. when a button opens a dropdown containing a number of other commands' buttons and it should be disabled when none of the commands is enabled.
+
 ### Releasing the bindings
 
 If you don't want your object's properties to be bound any longer, you can use the {@link module:utils/observablemixin~ObservableMixin#unbind `unbind()`} method.
@@ -194,23 +267,29 @@ If you don't want your object's properties to be bound any longer, you can use t
 You can specify the names of the properties to selectively unbind them
 
 ```js
-button.bind( 'isEnabled', 'value' ).to( command );
+const button = new Button();
+const command = editor.commands.get( 'bold' );
+
+button.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 // ...
 
-// From now on, button.isEnabled is no longer bound to the command.
+// From now on, button#isEnabled is no longer bound to the command.
 button.unbind( 'isEnabled' );
 ```
 
 or you can dismiss all bindings by calling the method without arguments
 
 ```js
-button.bind( 'isEnabled', 'value' ).to( command );
+const button = new Button();
+const command = editor.commands.get( 'bold' );
+
+button.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 // ...
 
-// Both "isEnabled" and "value" properties are independent back again.
-// They will retain the values determined by the bindings, though.
+// Both #isEnabled and #isOn properties are independent back again.
+// They will retain the last values determined by the bindings, though.
 button.unbind();
 ```
 
@@ -220,44 +299,58 @@ Decorating object methods transforms them into event–driven ones without chang
 
 When a method is decorated, an event of the same name is created and fired each time the method is executed. By listening to the event it is possible to cancel the execution, change the arguments or the value returned by the method. This offers an additional flexibility, e.g. giving a third–party code some way to interact with core classes that decorate their methods.
 
-Decorating is possible using the {@link module:utils/observablemixin~ObservableMixin#decorate `decorate()`} method. Having [mixed](#observables) the {@link module:utils/observablemixin~ObservableMixin}, we are going to use the `Command` class from previous sections of this guide to show the potential use–cases:
+Decorating is possible using the {@link module:utils/observablemixin~ObservableMixin#decorate `decorate()`} method. Let's decorate a `focus` method of a `Button` class we created in the [previous chapters](#making-properties-observable) and see what if offers:
 
 ```js
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-
-class Command {
+class Button extends View {
 	constructor() {
-		this.decorate( 'execute' );
+		// ...
+
+		this.decorate( 'focus' );
 	}
 
-	// Because the method is decorated, it always fires the #execute event.
-	execute( value ) {
-		console.log( `Executed the command with value="${ value }"` );
+	/**
+	 * Focuses the button.
+	 *
+	 * @param {Boolean} force When `true`, the button will be focused again, even if already
+	 * focused in DOM.
+	 * @returns {Boolean} `true` when the DOM element was focused in DOM, `false` otherwise.
+	 */
+	focus( force ) {
+		console.log( `Focusing button, force argument="${ force }"` );
+
+		// Unless forced, the button will only focus when not already focused.
+		if ( force || document.activeElement != this.element ) {
+			this.element.focus();
+
+			return true;
+		}
+
+		return false;
 	}
 }
-
-mix( Command, ObservableMixin );
 ```
 
 ### Cancelling the execution
 
-Because the `execute()` method is event–driven, it can be controlled externally. E.g. the execution could be stopped for certain arguments. Note the `high` listener {@link module:utils/priorities~PriorityString priority} used to intercept the default action:
+Because the `focus()` method is now event–driven, it can be controlled externally. E.g. the focusing could be stopped for certain arguments. Note the `high` listener {@link module:utils/priorities~PriorityString priority} used to intercept the default action:
 
 ```js
-const command = new Command();
+const button = new Button();
 
-// ...
+// Render the button to create its #element.
+button.render();
 
-// Some code interested in controlling this particular command.
-command.on( 'execute', ( evt, args ) => {
-	if ( args[ 0 ] !== 'bold' ) {
+// The logic controlling the behavior of the button.
+button.on( 'focus', ( evt, [ isForced ] ) => {
+	// Disallow forcing the focus of this button.
+	if ( isForced === true ) {
 		evt.stop();
 	}
 }, { priority: 'high' } );
 
-command.execute( 'bold' ); // -> 'Executed the command with value="bold"'
-command.execute( 'italic' ); // Nothing is logged, the execution has been stopped.
+button.focus(); // -> 'Focusing button, force argument="undefined"'
+button.focus( true ); // Nothing is logged, the execution has been stopped.
 ```
 
 ### Changing the returned value
@@ -265,22 +358,21 @@ command.execute( 'italic' ); // Nothing is logged, the execution has been stoppe
 It is possible to control the returned value of a decorated method using an event listener. The returned value is passed in the event data as a `return` property:
 
 ```js
-const command = new Command();
+const button = new Button();
 
-// ...
+// Render the button to create its #element.
+button.render();
 
-// Some code interested in controlling this particular command.
-command.on( 'execute', ( evt ) => {
-	if ( args[ 0 ] == 'bold' ) {
-		evt.return = true;
-	} else {
+// The logic controlling the behavior of the button.
+button.on( 'focus', ( evt, [ isForced ] ) => {
+	// Pretend the button wasn't focused if the focus was forced.
+	if ( isForced === true ) {
 		evt.return = false;
 	}
 } );
 
-console.log( command.execute( 'bold' ) ); // -> true
-console.log( command.execute( 'italic' ) ); // -> false
-console.log( command.execute() ); // -> false
+console.log( button.focus() ); // -> true
+console.log( button.focus( true ) ); // -> false
 ```
 
 ### Changing arguments on the fly
@@ -289,17 +381,17 @@ Just like the returned value, the arguments passed to the method can be changed 
 
 
 ```js
-const command = new Command();
+const button = new Button();
 
-// ...
+// Render the button to create its #element.
+button.render();
 
-// Some code interested in controlling this particular command.
-command.on( 'execute', ( evt, args ) => {
-	if ( args[ 0 ] === 'bold' ) {
-		args[ 0 ] = 'underline';
-	}
+// The logic controlling the behavior of the button.
+button.on( 'focus', ( evt, args ) => {
+	// Always force the focus.
+	args[ 0 ] = true;
 }, { priority: 'high' } );
 
-command.execute( 'bold' ); // -> 'Executed the command with value="underline"'
-command.execute( 'italic' ); // -> 'Executed the command with value="italic"'
+button.focus(); // -> 'Focusing button, force="true"'
+button.focus( true ); // -> 'Focusing button, force="true"'
 ```
