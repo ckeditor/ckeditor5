@@ -8,6 +8,7 @@ import HeadingCommand from '../src/headingcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingEditing', () => {
@@ -73,6 +74,13 @@ describe( 'HeadingEditing', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
+	it( 'should convert h1 to heading1 using default, low-priority converter', () => {
+		editor.setData( '<h1>foobar</h1>' );
+
+		expect( getData( model, { withoutSelection: true } ) ).to.equal( '<heading1>foobar</heading1>' );
+		expect( editor.getData() ).to.equal( '<h2>foobar</h2>' );
+	} );
+
 	describe( 'user defined', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
@@ -113,6 +121,83 @@ describe( 'HeadingEditing', () => {
 				.to.equal( '<heading1>foobar</heading1><paragraph>Normal paragraph</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<h1>foobar</h1><p>Normal paragraph</p>' );
+		} );
+	} );
+
+	describe( 'default h1 conversion', () => {
+		let addDefaultConversionSpy;
+
+		testUtils.createSinonSandbox();
+
+		beforeEach( () => {
+			addDefaultConversionSpy = testUtils.sinon.spy( HeadingEditing.prototype, '_addDefaultH1Conversion' );
+		} );
+
+		it( 'should define the default h1 to heading1 converter' +
+			'when heading.options is not specified and apply it during conversions', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ]
+				} )
+				.then( editor => {
+					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+
+					editor.setData( '<h1>Foo</h1><h2>Bar</h2><p>Baz</p>' );
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<heading1>Foo</heading1><heading1>Bar</heading1><paragraph>Baz</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<h2>Foo</h2><h2>Bar</h2><p>Baz</p>' );
+				} );
+		} );
+
+		it( 'should define the default h1 to heading1 converter' +
+			'when heading.options is specified and apply it during conversions', () => {
+			const options = [
+				{ model: 'heading1', view: 'h3' },
+				{ model: 'heading2', view: 'h4' }
+			];
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: { options }
+				} )
+				.then( editor => {
+					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+
+					editor.setData( '<h1>Foo</h1><h3>Bar</h3><h4>Baz</h4><h2>Bax</h2>' );
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<heading1>Foo</heading1><heading1>Bar</heading1><heading2>Baz</heading2><paragraph>Bax</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<h3>Foo</h3><h3>Bar</h3><h4>Baz</h4><p>Bax</p>' );
+				} );
+		} );
+
+		it( 'should define the default h1 to heading1 converter' +
+			'when heading.options is specified with h1 but not apply it during conversions', () => {
+			const options = [
+				{ model: 'heading1', view: 'h2' },
+				{ model: 'heading2', view: 'h1' },
+				{ model: 'heading3', view: 'h3' }
+			];
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ HeadingEditing ],
+					heading: { options }
+				} )
+				.then( editor => {
+					expect( addDefaultConversionSpy.callCount ).to.equal( 1 );
+
+					editor.setData( '<h1>Foo</h1><h2>Bar</h2><h3>Baz</h3><h4>Bax</h4>' );
+
+					expect( getData( editor.model, { withoutSelection: true } ) )
+						.to.equal( '<heading2>Foo</heading2><heading1>Bar</heading1><heading3>Baz</heading3><paragraph>Bax</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<h1>Foo</h1><h2>Bar</h2><h3>Baz</h3><p>Bax</p>' );
+				} );
 		} );
 	} );
 
