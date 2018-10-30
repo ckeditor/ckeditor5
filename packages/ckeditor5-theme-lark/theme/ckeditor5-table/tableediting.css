@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- :root {
+:root {
 	--ck-color-table-focused-cell-background: hsl(208, 90%, 98%);
 	--ck-color-link-selected-inside-table-background: hsl(201, 100%, 92%);
 }
