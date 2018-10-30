@@ -12,6 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 const defaultModelElement = 'paragraph';
 
@@ -104,14 +105,12 @@ export default class HeadingEditing extends Plugin {
 	 * @param {module:core/editor/editor~Editor} editor Editor instance on which to add the `h1` conversion.
 	 */
 	_addDefaultH1Conversion( editor ) {
-		editor.conversion.elementToElement( {
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
 			model: 'heading1',
 			view: 'h1',
-			title: 'Heading 1',
-			class: 'ck-heading_heading1',
 			// With a `low` priority, `paragraph` plugin autoparagraphing mechanism is executed. Make sure
 			// this listener is called before it. If not, `h1` will be transformed into a paragraph.
 			converterPriority: priorities.get( 'low' ) + 1
-		} );
+		} ) );
 	}
 }
