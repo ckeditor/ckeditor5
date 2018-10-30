@@ -35,11 +35,11 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = writer.createSelection( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		const selection = new DocumentSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ writer.createSelection( start1, end2 ), writer.createSelection( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
 	 *		const selection = new DocumentSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
@@ -290,11 +290,11 @@ export default class DocumentSelection {
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = writer.createSelection( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ writer.createSelection( start1, end2 ), writer.createSelection( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
