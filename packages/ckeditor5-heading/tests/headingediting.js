@@ -135,7 +135,7 @@ describe( 'HeadingEditing', () => {
 			elementToElementSpy = testUtils.sinon.spy( Conversion.prototype, 'elementToElement' );
 		} );
 
-		it( 'should set default h1 conversion with default `options.heading` config', () => {
+		it( 'should define the default h1 to heading1 converter when heading.options is not specified', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ HeadingEditing ]
