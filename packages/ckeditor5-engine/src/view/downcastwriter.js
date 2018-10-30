@@ -1012,8 +1012,8 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/view/range~Range}
 	 */
-	createRangeIn( item ) {
-		return Range._createIn( item );
+	createRangeIn( element ) {
+		return Range._createIn( element );
 	}
 
 	/**

@@ -6,6 +6,9 @@
 import Element from '../../src/view/element';
 import UpcastWriter from '../../src/view/upcastwriter';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import ViewPosition from '../../src/view/position';
+import ViewRange from '../../src/view/range';
+import ViewSelection from '../../src/view/selection';
 
 describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor;
@@ -476,6 +479,53 @@ describe( 'UpcastWriter', () => {
 
 			expect( el.getCustomProperty( 'prop1' ) ).to.undefined;
 			expect( Array.from( el.getCustomProperties() ).length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span' );
+			expect( writer.createPositionAt( span, 0 ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createPositionAfter( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createPositionBefore( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			expect( writer.createRange( writer.createPositionAt( new Element( 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createRangeIn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createRangeOn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
 		} );
 	} );
 } );
