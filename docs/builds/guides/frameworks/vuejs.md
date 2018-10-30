@@ -10,7 +10,7 @@ order: 40
 
 The [easiest way](#quick-start) to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component.
 
-Advanced integrations can make use of the component working with [custom builds created from source](#using-ckeditor-built-from-source) after some [configuration](#configuring-vueconfigjs).
+Advanced integrations can make use of the component working with [custom builds created from source](#using-ckeditor-from-source) after some [configuration](#configuring-vueconfigjs).
 
 <info-box>
 	The component is compatible with Vue.js 2.x.
@@ -46,11 +46,11 @@ Vue.use( CKEditor, {
 ```
 
 <info-box>
-	Check out the [plugin configuration](#plugin-configuration) section to learn more about the available options.
+	Check out the [component configuration](#component-configuration) section to learn more about the available options.
 </info-box>
 
 <info-box>
-	You can always configure the component locally if you do not want to [specify editor builds](#local-build-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
+	You can always configure the component locally if you do not want to [specify editor builds](#local-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
 </info-box>
 
 Use the `<ckeditor>` component in your template:
@@ -100,11 +100,11 @@ Vue.use( CKEditor, {
 ```
 
 <info-box>
-	Check out the [plugin configuration](#plugin-configuration) section to learn more.
+	Check out the [component configuration](#component-configuration) section to learn more.
 </info-box>
 
 <info-box>
-	You can always configure the component locally if you do not want to [specify editor builds](#local-build-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
+	You can always configure the component locally if you do not want to [specify editor builds](#local-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
 </info-box>
 
 The following example showcases a single–file component of the application. Use the `<ckeditor>` component in your template:
@@ -141,15 +141,15 @@ The following example showcases a single–file component of the application. Us
 
 ### Using the component locally
 
-#### Local build configuration
+#### Local configuration
 
-If a per–view editor build configuration is what suits you best, you can skip the [`editors`](#editors) option in `Vue.use()`:
+If a per–view editor configuration is what suits you best, you can skip the [`editors`](#editors) option in `Vue.use()`:
 
 ```js
 Vue.use( CKEditor );
 ```
 
-and then pass the build of your choice in the [`editor`](#editor) directive:
+and then pass the editor of your choice in the [`editor`](#editor) directive:
 
 ```html
 <template>
@@ -201,7 +201,7 @@ If you do not want the CKEditor component to be enabled globally, you can entire
 </script>
 ```
 
-## Using CKEditor built from source
+## Using CKEditor from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
 
@@ -274,9 +274,9 @@ module.exports = {
 };
 ```
 
-### Creating a custom editor build
+### Configuring the editor from source
 
-Having configured `vue.config.js`, you can finally define your custom editor build. Install the packages the build will be made from:
+Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration:
 
 ```bash
 npm install --save \
@@ -290,7 +290,7 @@ npm install --save \
 
 You can use more packages, depending on which feature are needed in your application.
 
-Create a separate `ckeditor.js` file that will combine editor features (`BoldPlugin`, `ItalicPlugin`, etc.) with the base editor (`ClassicEditorBase`) and export it as your custom build (`MyEditorBuild`):
+Create a separate `ckeditor.js` file that will combine editor features (`BoldPlugin`, `ItalicPlugin`, etc.) with the base editor (`ClassicEditorBase`) and export it as your custom editor (`MyEditor`):
 
 <info-box>
 	You can use the same methodology to integrate multiple CKEditor builds in your application as an optimized {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}, e.g. when you need both `ClassicEditor` and `BalloonEditor`.
@@ -304,9 +304,9 @@ import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-export default class MyEditorBuild extends ClassicEditorBase {}
+export default class MyEditor extends ClassicEditorBase {}
 
-MyEditorBuild.builtinPlugins = [
+MyEditor.builtinPlugins = [
     EssentialsPlugin,
     BoldPlugin,
     ItalicPlugin,
@@ -314,7 +314,7 @@ MyEditorBuild.builtinPlugins = [
     ParagraphPlugin
 ];
 
-MyEditorBuild.defaultConfig = {
+MyEditor.defaultConfig = {
     toolbar: {
         items: [
             'bold',
@@ -328,31 +328,31 @@ MyEditorBuild.defaultConfig = {
 };
 ```
 
-### Using the custom editor build
+### Using the editor from source
 
-Make sure your build is [available to the component](#editors) (e.g. in `main.js`):
+Make sure your editor is [available to the component](#editors) (e.g. in `main.js`):
 
 ```js
 import CKEditor from '@ckeditor/ckeditor5-vue';
-import MyEditorBuild from './ckeditor';
+import MyEditor from './ckeditor';
 
 Vue.use( CKEditor, {
 	editors: {
-		myBuild: MyEditorBuild
+		myEditor: MyEditor
 	}
 } );
 ```
 
 <info-box>
-	You can always configure the component locally if you do not want to [specify editor builds](#local-build-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
+	You can always configure the component locally if you do not want to [specify the editors](#local-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
 </info-box>
 
-Now all you need to do is specify `myBuild` in the [`editor`](#editor) directive to get your CKEditor instance use `MyEditorBuild`:
+Now all you need to do is specify `myEditor` in the [`editor`](#editor) directive to get your CKEditor instance use `MyEditor`:
 
 ```html
 <template>
 	<div id="app">
-		<ckeditor editor="myBuild" v-model="editorData" :config="editorConfig"></ckeditor>
+		<ckeditor editor="myEditor" v-model="editorData" :config="editorConfig"></ckeditor>
 	</div>
 </template>
 
@@ -371,7 +371,7 @@ Now all you need to do is specify `myBuild` in the [`editor`](#editor) directive
 </script>
 ```
 
-## Plugin configuration
+## Component configuration
 
 <info-box>
 	You can entirely skip the configuration part if you decide to [configure the component locally](#local-component-registration-and-configuration).
@@ -379,7 +379,7 @@ Now all you need to do is specify `myBuild` in the [`editor`](#editor) directive
 
 ### `editors`
 
-This configuration specifies editor builds available to the component. Editors can be either {@link builds/guides/overview ready-to-use editor builds} or [custom builds created from source](#using-ckeditor-built-from-source):
+This configuration specifies editors available to the component. You can use {@link builds/guides/overview ready-to-use builds} or [editors from source](#using-ckeditor-from-source):
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -393,18 +393,18 @@ Vue.use( CKEditor, {
 } );
 ```
 
-Use the [name of the build](#editor) in your template to create the editor instance of your choice:
+Use the [name of the editor](#editor) in your template to create the editor instance of your choice:
 
 ```html
 <ckeditor editor="classic"></ckeditor>
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need a [custom build created from source](#using-ckeditor-built-from-source) or a {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
 </info-box>
 
 <info-box>
-	You can skip this configuration and [pass the editor build directly](#local-build-configuration) in the [`editor`](#editor) directive.
+	You can skip this configuration and [pass the editor directly](#local-configuration) in the [`editor`](#editor) directive.
 </info-box>
 
 ### `componentName`
@@ -427,9 +427,9 @@ Use the new component name in the template to create editor instances:
 
 ### `editor`
 
-This directive specifies the editor build to be used by the component. It should either:
+This directive specifies the editor to be used by the component. It should either:
 
-* correspond to one of [registered editor builds](#editors):
+* correspond to one of [registered editors](#editors):
    ```js
    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -446,7 +446,7 @@ This directive specifies the editor build to be used by the component. It should
    <ckeditor editor="classic"></ckeditor>
    ```
 
-* [directly reference](#local-build-configuration) the editor build to be used in the template:
+* [directly reference](#local-configuration) the editor to be used in the template:
    ```html
    <template>
        <div id="app">
@@ -469,7 +469,7 @@ This directive specifies the editor build to be used by the component. It should
    ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need a [custom build created from source](#using-ckeditor-built-from-source) or a {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
 </info-box>
 
 ### `tag-name`
