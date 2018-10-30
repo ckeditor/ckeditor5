@@ -131,12 +131,17 @@ const safeKeycodes = [
 	35, // Home
 	36, // End,
 	45, // Insert,
+	91, // Windows,
+	93, // Menu key,
+	144, // NumLock
+	145, // ScrollLock,
 	173, // Mute/Unmute
 	174, // Volume up
 	175, // Volume down,
 	176, // Next song,
 	177, // Previous song,
-	179, // Play/Stop,
+	178, // Stop,
+	179, // Play/Pause,
 	255 // Display brightness (increase and decrease)
 ];
 
