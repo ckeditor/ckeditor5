@@ -151,7 +151,7 @@ describe( 'HeadingEditing', () => {
 				} );
 		} );
 
-		it( 'should set default h1 conversion independently from `options.heading` config', () => {
+		it( 'should define the default h1 to heading1 converter when heading.options is specified', () => {
 			const options = [
 				{ model: 'heading1', view: 'h3', title: 'User H3' },
 				{ model: 'heading2', view: 'h4', title: 'User H4' }
