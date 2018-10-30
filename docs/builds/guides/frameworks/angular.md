@@ -18,7 +18,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 
 ## Quick start
 
-In your existing Angular project, install the [CKEditor 5 rich text editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
+In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
 npm install --save-dev @ckeditor/ckeditor5-angular
@@ -30,14 +30,6 @@ Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs
 
 ```bash
 npm install --save-dev @ckeditor/ckeditor5-build-classic
-```
-
-**Note:** You may need to allow external JavaScript in your project's `tsconfig.json` for the builds to work properly:
-
-```json
-"compilerOptions": {
-	"allowJs": true
-}
 ```
 
 Now, add `CKEditorModule` to your application module imports:
@@ -302,4 +294,4 @@ For advanced usage see the {@link features/ui-language Setting UI language} guid
 
 ## Contributing and reporting issues
 
-The source code of this component is available on GitHub in https://github.com/ckeditor/ckeditor5-angular.
+The source code of the rich text editor component for Angular 2+ is available on GitHub in https://github.com/ckeditor/ckeditor5-angular.

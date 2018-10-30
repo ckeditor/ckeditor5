@@ -6,7 +6,7 @@
 			<h3 style="text-align:center;">Welcome letter</h3>
 
 			<p>Dear Guest,</p>
-			<p>We are delighted to welcome you to the annual <em>Flavorful Tuscany Meetup</em> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
+			<p>We are delighted to welcome you to the annual <i>Flavorful Tuscany Meetup</i> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
 			<p>Please find below the full schedule of the event.</p>
 
 			<figure class="table">
@@ -18,16 +18,26 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>9:30&nbsp;AM&nbsp;-&nbsp;11:30&nbsp;AM</td>
-							<td>Americano vs. Brewed - “know your coffee” session with <strong>Stefano Garau</strong></td>
+							<td>9:30 AM - 11:30 AM</td>
+							<td>
+								<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+								<ul>
+									<li>Giulia Bianchi</li>
+									<li>Stefano Garau</li>
+									<li>Giuseppe Russo</li>
+								</ul>
+							</td>
 						</tr>
 						<tr>
-							<td>1:00&nbsp;PM&nbsp;-&nbsp;3:00&nbsp;PM</td>
-							<td>Pappardelle al pomodoro - <mark class="marker-yellow">live cooking session</mark> with <strong>Rita Fresco</strong></td>
+							<td>1:00 PM - 3:00 PM</td>
+							<td>
+								<p><strong>Pappardelle al pomodoro</strong> - live cooking</p>
+								<p>Incorporate the freshest ingredients&nbsp;<br>with Rita Fresco</p>
+							</td>
 						</tr>
 						<tr>
-							<td>5:00&nbsp;PM&nbsp;-&nbsp;8:00&nbsp;PM</td>
-							<td>Tuscan vineyards at a glance - wine-tasting session with <strong>Frederico Riscoli</strong></td>
+							<td>5:00 PM - 8:00 PM</td>
+							<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;<br>with Frederico Riscoli</td>
 						</tr>
 					</tbody>
 				</table>
@@ -127,7 +137,8 @@
 
 	/* Scale down all heading previews because they are way too big to be presented in the UI.
 	Preserve the relative scale, though. */
-	.document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading1 .ck-button__label,
+	.document-editor .ck-heading-dropdown .ck-list .ck-heading_heading2 .ck-button__label {
 		transform: scale(0.8);
 		transform-origin: left;
 	}
@@ -177,18 +188,16 @@
 		margin-bottom: .952em;
 	}
 
-	/* Set the styles for "Paragraph". */
-	.document-editor .ck-content p {
-		font-size: 1em;
-		line-height: 1.63em;
-		padding-top: .5em;
-		margin-bottom: 1.13em;
-	}
-
 	/* Make the block quoted text serif with some additional spacing. */
 	.document-editor .ck-content blockquote {
 		font-family: Georgia, serif;
 		margin-left: calc( 2 * var(--ck-spacing-large) );
 		margin-right: calc( 2 * var(--ck-spacing-large) );
+	}
+
+	/* Some table cells have a lot content and some not. Align them vertically
+	to make reading easier. */
+	.document-editor .ck-content table td {
+		vertical-align: middle;
 	}
 </style>
