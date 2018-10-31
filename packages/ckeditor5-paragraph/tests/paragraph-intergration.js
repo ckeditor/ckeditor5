@@ -35,8 +35,8 @@ describe( 'Paragraph feature – integration', () => {
 				} );
 		} );
 
-		// Explainer: the heading feature is configured to handle h2-h4 elements, so h1 has no handler.
-		it( 'pastes h1+h2+p as p+h2+p when heading feature is present', () => {
+		// Explainer: the heading feature is configured to handle h1-h4 elements, so h5 has no handler.
+		it( 'pastes h1+h2+h5+p as h1+h2+p+p when heading feature is present', () => {
 			return VirtualTestEditor
 				.create( { plugins: [ Paragraph, Clipboard, HeadingEditing ] } )
 				.then( newEditor => {
@@ -46,11 +46,11 @@ describe( 'Paragraph feature – integration', () => {
 					setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 					clipboard.fire( 'inputTransformation', {
-						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
+						content: parseView( '<h1>foo</h1><h2>bar</h2><h5>baz</h5><p>bom</p>' )
 					} );
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'<paragraph>foo</paragraph><heading1>bar</heading1><paragraph>bom[]</paragraph>'
+						'<heading1>foo</heading1><heading1>bar</heading1><paragraph>baz</paragraph><paragraph>bom[]</paragraph>'
 					);
 				} );
 		} );
