@@ -644,8 +644,18 @@ describe( 'Input feature', () => {
 			} );
 
 			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
+			viewDocument.fire( 'keydown', { keyCode: 19 } ); // Pause
 			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
 			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
+			viewDocument.fire( 'keydown', { keyCode: 255 } ); // Display brightness
+
+			// Media control keys
+			viewDocument.fire( 'keydown', { keyCode: 173 } ); // Mute
+			viewDocument.fire( 'keydown', { keyCode: 174 } ); // Volume up
+			viewDocument.fire( 'keydown', { keyCode: 175 } ); // Volume down
+			viewDocument.fire( 'keydown', { keyCode: 176 } ); // Next song
+			viewDocument.fire( 'keydown', { keyCode: 177 } ); // Previous song
+			viewDocument.fire( 'keydown', { keyCode: 179 } ); // Stop
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );

@@ -123,12 +123,26 @@ const safeKeycodes = [
 	16, // Shift
 	17, // Ctrl
 	18, // Alt
+	19, // Pause
 	20, // CapsLock
 	27, // Escape
 	33, // PageUp
 	34, // PageDown
 	35, // Home
-	36 // End
+	36, // End,
+	45, // Insert,
+	91, // Windows,
+	93, // Menu key,
+	144, // NumLock
+	145, // ScrollLock,
+	173, // Mute/Unmute
+	174, // Volume up
+	175, // Volume down,
+	176, // Next song,
+	177, // Previous song,
+	178, // Stop,
+	179, // Play/Pause,
+	255 // Display brightness (increase and decrease)
 ];
 
 // Function keys.
