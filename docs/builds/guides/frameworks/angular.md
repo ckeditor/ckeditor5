@@ -21,7 +21,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-angular
+npm install --save @ckeditor/ckeditor5-angular
 ```
 
 Install one of the {@link builds/guides/overview#available-builds official editor builds} or {@link builds/guides/development/custom-builds create a custom one} (e.g. if you want to install more plugins or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration}).
@@ -29,7 +29,7 @@ Install one of the {@link builds/guides/overview#available-builds official edito
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-build-classic
+npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
 Now, add `CKEditorModule` to your application module imports:
