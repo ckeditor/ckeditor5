@@ -7,8 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import InputCommand from '../src/inputcommand';
 import ChangeBuffer from '../src/utils/changebuffer';
 import Input from '../src/input';
@@ -181,7 +179,7 @@ describe( 'InputCommand', () => {
 
 			editor.execute( 'input', {
 				text: 'new',
-				resultRange: new Range( new Position( doc.getRoot(), [ 0, 5 ] ) )
+				resultRange: editor.model.createRange( editor.model.createPositionFromPath( doc.getRoot(), [ 0, 5 ] ) )
 			} );
 
 			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>newba[]r</p>' );
@@ -193,7 +191,10 @@ describe( 'InputCommand', () => {
 
 			editor.execute( 'input', {
 				text: 'new',
-				resultRange: new Range( new Position( doc.getRoot(), [ 0, 3 ] ), new Position( doc.getRoot(), [ 0, 6 ] ) )
+				resultRange: editor.model.createRange(
+					editor.model.createPositionFromPath( doc.getRoot(), [ 0, 3 ] ),
+					editor.model.createPositionFromPath( doc.getRoot(), [ 0, 6 ] )
+				)
 			} );
 
 			expect( getData( model, { selection: true } ) ).to.be.equal( '<p>new[bar]</p>' );

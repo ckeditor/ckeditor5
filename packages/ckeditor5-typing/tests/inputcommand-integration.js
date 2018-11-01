@@ -14,10 +14,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Typing – InputCommand integration', () => {
@@ -74,7 +71,10 @@ describe( 'Typing – InputCommand integration', () => {
 
 	function setSelection( pathA, pathB ) {
 		model.change( writer => {
-			writer.setSelection( new Range( new Position( doc.getRoot(), pathA ), new Position( doc.getRoot(), pathB ) ) );
+			writer.setSelection( writer.createRange(
+				writer.createPositionFromPath( doc.getRoot(), pathA ),
+				writer.createPositionFromPath( doc.getRoot(), pathB )
+			) );
 		} );
 	}
 

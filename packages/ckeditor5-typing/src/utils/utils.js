@@ -7,7 +7,6 @@
  * @module typing/utils/utils
  */
 
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 
@@ -61,7 +60,7 @@ export function getSingleTextNodeChange( mutation ) {
 	const change = changes[ 0 ];
 
 	// Which is text.
-	if ( !( change.values[ 0 ] instanceof ViewText ) ) {
+	if ( !( !!change.values[ 0 ] && change.values[ 0 ].is( 'text' ) ) ) {
 		return;
 	}
 
@@ -78,7 +77,7 @@ export function getSingleTextNodeChange( mutation ) {
  * @returns {Boolean}
  */
 export function compareChildNodes( oldChild, newChild ) {
-	if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
+	if ( !!oldChild && oldChild.is( 'text' ) && !!newChild && newChild.is( 'text' ) ) {
 		return oldChild.data === newChild.data;
 	} else {
 		return oldChild === newChild;

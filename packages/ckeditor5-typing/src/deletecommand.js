@@ -8,11 +8,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import ChangeBuffer from './utils/changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
+
+import ChangeBuffer from './utils/changebuffer';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
@@ -67,7 +65,7 @@ export default class DeleteCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
-			const selection = new Selection( doc.selection );
+			const selection = writer.createSelection( doc.selection );
 
 			// Do not replace the whole selected content if selection was collapsed.
 			// This prevents such situation:
@@ -173,9 +171,9 @@ export default class DeleteCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 		const limitElement = model.schema.getLimitElement( selection );
-		const paragraph = new Element( 'paragraph' );
+		const paragraph = writer.createElement( 'paragraph' );
 
-		writer.remove( Range.createIn( limitElement ) );
+		writer.remove( writer.createRangeIn( limitElement ) );
 		writer.insert( paragraph, limitElement );
 
 		writer.setSelection( paragraph, 0 );

@@ -7,8 +7,6 @@
  * @module typing/utils/changebuffer
  */
 
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
  * {@link module:engine/model/batch~Batch batches}.
@@ -119,7 +117,7 @@ export default class ChangeBuffer {
 	 */
 	get batch() {
 		if ( !this._batch ) {
-			this._batch = new Batch();
+			this._batch = this.model.createBatch();
 		}
 
 		return this._batch;
