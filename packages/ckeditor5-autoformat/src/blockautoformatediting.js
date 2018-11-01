@@ -7,8 +7,6 @@
  * @module autoformat/blockautoformatediting
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
  * it can be configured to turn a paragraph starting with `*` and followed by a space into a list item.
@@ -90,7 +88,9 @@ export default class BlockAutoformatEditing {
 			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
 			editor.model.enqueueChange( writer => {
 				// Matched range.
-				const range = Range.createFromParentsAndOffsets( item.parent, 0, item.parent, match[ 0 ].length );
+				const start = writer.createPositionAt( item.parent, 0 );
+				const end = writer.createPositionAt( item.parent, match[ 0 ].length );
+				const range = writer.createRange( start, end );
 
 				// Remove matched text.
 				writer.remove( range );
