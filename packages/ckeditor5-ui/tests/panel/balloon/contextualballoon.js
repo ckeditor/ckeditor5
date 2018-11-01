@@ -10,8 +10,6 @@ import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -105,12 +103,12 @@ describe( 'ContextualBalloon', () => {
 
 				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 					model: 'widget',
-					view: () => new ViewContainerElement( 'figure', { contenteditable: 'false' } )
+					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figure', { contenteditable: 'false' } )
 				} ) );
 
 				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 					model: 'nestedEditable',
-					view: () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } )
+					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figcaption', { contenteditable: 'true' } )
 				} ) );
 
 				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
