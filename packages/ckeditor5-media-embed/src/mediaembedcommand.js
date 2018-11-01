@@ -62,7 +62,7 @@ export default class MediaEmbedCommand extends Command {
 				writer.setAttribute( 'url', url, selectedMedia );
 			} );
 		} else {
-			const insertPosition = findOptimalInsertionPosition( selection );
+			const insertPosition = findOptimalInsertionPosition( selection, model );
 
 			model.change( writer => {
 				const mediaElement = writer.createElement( 'media', { url } );

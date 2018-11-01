@@ -7,9 +7,6 @@
  * @module media-embed/converters
  */
 
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-
 /**
  * Returns a function that converts the model "url" attribute to the view representation.
  *
@@ -51,10 +48,10 @@ export function modelToViewUrlAttributeConverter( registry, options ) {
 		const figure = conversionApi.mapper.toViewElement( data.item );
 
 		// TODO: removing it and creating it from scratch is a hack. We can do better than that.
-		viewWriter.remove( ViewRange.createIn( figure ) );
+		viewWriter.remove( viewWriter.createRangeIn( figure ) );
 
 		const mediaViewElement = registry.getMediaViewElement( viewWriter, url, options );
 
-		viewWriter.insert( ViewPosition.createAt( figure, 0 ), mediaViewElement );
+		viewWriter.insert( viewWriter.createPositionAt( figure, 0 ), mediaViewElement );
 	}
 }

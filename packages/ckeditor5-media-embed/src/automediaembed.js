@@ -12,7 +12,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
 import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -77,10 +76,10 @@ export default class AutoMediaEmbed extends Plugin {
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', () => {
 			const firstRange = modelDocument.selection.getFirstRange();
 
-			const leftLivePosition = LivePosition.createFromPosition( firstRange.start );
+			const leftLivePosition = LivePosition.fromPosition( firstRange.start );
 			leftLivePosition.stickiness = 'toPrevious';
 
-			const rightLivePosition = LivePosition.createFromPosition( firstRange.end );
+			const rightLivePosition = LivePosition.fromPosition( firstRange.end );
 			rightLivePosition.stickiness = 'toNext';
 
 			modelDocument.once( 'change:data', () => {
@@ -113,8 +112,9 @@ export default class AutoMediaEmbed extends Plugin {
 	_embedMediaBetweenPositions( leftPosition, rightPosition ) {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
+		// TODO: Use marker instead of LiveRange & LivePositions.
 		const urlRange = new LiveRange( leftPosition, rightPosition );
-		const walker = new TreeWalker( { boundaries: urlRange, ignoreElementEnd: true } );
+		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 
 		let url = '';
 
@@ -144,7 +144,7 @@ export default class AutoMediaEmbed extends Plugin {
 		}
 
 		// Position won't be available in the `setTimeout` function so let's clone it.
-		this._positionToInsert = LivePosition.createFromPosition( leftPosition );
+		this._positionToInsert = LivePosition.fromPosition( leftPosition );
 
 		// This action mustn't be executed if undo was called between pasting and auto-embedding.
 		this._timeoutId = global.window.setTimeout( () => {

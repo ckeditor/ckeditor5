@@ -15,8 +15,6 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -434,7 +432,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 				setTimeout( () => {
 					editor.model.enqueueChange( 'transparent', writer => {
-						writer.insertText( characters[ i ], new ModelPosition( rootEl, [ 0, i ] ) );
+						writer.insertText( characters[ i ], writer.createPositionFromPath( rootEl, [ 0, i ] ) );
 					} );
 				}, i * 5 );
 			}
@@ -476,7 +474,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
 			editor.model.enqueueChange( 'transparent', writer => {
-				writer.remove( ModelRange.createOn( editor.model.document.getRoot().getChild( 1 ) ) );
+				writer.remove( writer.createRangeOn( editor.model.document.getRoot().getChild( 1 ) ) );
 			} );
 
 			setTimeout( () => {
@@ -495,7 +493,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			editor.model.enqueueChange( 'transparent', writer => {
 				const paragraph = writer.createElement( 'paragraph' );
-				writer.insert( paragraph, ModelPosition.createAfter( editor.model.document.getRoot().getChild( 0 ) ) );
+				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 0 ) ) );
 				writer.setSelection( paragraph, 'in' );
 			} );
 
@@ -526,7 +524,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 			editor.model.enqueueChange( 'transparent', writer => {
 				const paragraph = writer.createElement( 'paragraph' );
-				writer.insert( paragraph, ModelPosition.createAfter( editor.model.document.getRoot().getChild( 1 ) ) );
+				writer.insert( paragraph, writer.createPositionAfter( editor.model.document.getRoot().getChild( 1 ) ) );
 				writer.setSelection( paragraph, 'in' );
 			} );
 
