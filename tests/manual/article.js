@@ -18,6 +18,8 @@ import {
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 class Container extends Plugin {
@@ -60,11 +62,51 @@ class Container extends Plugin {
 		// * container -> div.slot (new)
 		// * div.slot -> container (new)
 		// * div.container -> container (old)
+		// editor.conversion.for( 'editingDowncast' ).add(
+		// 	dispatcher => {
+		// 		const insertViewElement = insertElement( ( modelElement, viewWriter ) => {
+		// 			const viewContainer = viewWriter.createContainerElement( 'div', { class: 'container' } );
+		// 			const viewSlot = viewWriter.createContainerElement( 'div', { class: 'slot' } );
+
+		// 			viewWriter.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
+
+		// 			return viewContainer;
+		// 		} );
+
+		// 		dispatcher.on( 'insert:container', ( evt, data, conversionApi ) => {
+		// 			insertViewElement( evt, data, conversionApi );
+
+		// 			// Use the existing "old" mapping created by `insertViewElement()`.
+		// 			const viewContainer = conversionApi.mapper.toViewElement( data.item );
+		// 			const viewSlot = viewContainer.getChild( 0 );
+
+		// 			conversionApi.mapper.bindElements( data.item, viewSlot );
+		// 		} );
+		// 	}
+		// );
+
+		// # Step 3.
+		//
+		// Actually, an alternative solution could be to try controlling only positions, without
+		// controlling element binding. To that, you can listen to Mapper#modelToViewPosition and
+		// Mapper#viewToModelPosition events and override the default behaviour. This approach
+		// may also be used as a complementary solution to the one used in "Step 2." –
+		// it will allow fixing some remaining position mapping issues if some are found.
+		// For now, I haven't found anything that would break.
+
+		// # Step 4.
+		//
+		// Make it a widget.
+		//
+		// At this point it doesn't work very well. `toWidget()` alone does work, but `toWidgetEditable()` does not.
+		// Clicking in a nested editable (in the slot) does not put the selection there. Probably because it's
+		// mapped to a selection in a <container> element which is then non-editable in the view, so
+		// some mechanism makes it a widget selection. May be related to https://github.com/ckeditor/ckeditor5/issues/1331.
 		editor.conversion.for( 'editingDowncast' ).add(
 			dispatcher => {
 				const insertViewElement = insertElement( ( modelElement, viewWriter ) => {
-					const viewContainer = viewWriter.createContainerElement( 'div', { class: 'container' } );
-					const viewSlot = viewWriter.createContainerElement( 'div', { class: 'slot' } );
+					const viewContainer = toWidget( viewWriter.createContainerElement( 'div', { class: 'container' } ), viewWriter );
+					const viewSlot = toWidgetEditable( viewWriter.createContainerElement( 'div', { class: 'slot' } ), viewWriter );
 
 					viewWriter.insert( ViewPosition.createAt( viewContainer, 0 ), viewSlot );
 
@@ -82,15 +124,6 @@ class Container extends Plugin {
 				} );
 			}
 		);
-
-		// # Step 3.
-		//
-		// Actually, an alternative solution could be to try controlling only positions, without
-		// controlling element binding. To that, you can listen to Mapper#modelToViewPosition and
-		// Mapper#viewToModelPosition events and override the default behaviour. This approach
-		// may also be used as a complementary solution to the one used in "Step 2." –
-		// it will allow fixing some remaining position mapping issues if some are found.
-		// For now, I haven't found anything that would break.
 	}
 }
 
