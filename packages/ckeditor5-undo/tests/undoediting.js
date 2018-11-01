@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+
 import UndoEditing from '../src/undoediting';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -60,7 +60,7 @@ describe( 'UndoEditing', () => {
 		sinon.spy( undo._undoCommand, 'addBatch' );
 		sinon.spy( undo._redoCommand, 'clearStack' );
 
-		const batch = new Batch();
+		const batch = model.createBatch();
 
 		undo._redoCommand._createdBatches.add( batch );
 
@@ -76,7 +76,7 @@ describe( 'UndoEditing', () => {
 		sinon.spy( undo._redoCommand, 'addBatch' );
 		sinon.spy( undo._redoCommand, 'clearStack' );
 
-		undo._undoCommand.fire( 'revert', null, new Batch() );
+		undo._undoCommand.fire( 'revert', null, model.createBatch() );
 
 		expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
 		expect( undo._redoCommand.clearStack.called ).to.be.false;

@@ -4,8 +4,6 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
@@ -29,8 +27,8 @@ describe( 'UndoCommand', () => {
 	} );
 
 	describe( 'UndoCommand', () => {
-		const p = pos => new Position( root, [].concat( pos ) );
-		const r = ( a, b ) => new Range( p( a ), p( b ) );
+		const p = pos => model.createPositionFromPath( root, [].concat( pos ) );
+		const r = ( a, b ) => model.createRange( p( a ), p( b ) );
 
 		describe( 'execute()', () => {
 			let batch0, batch1, batch2, batch3;
@@ -43,7 +41,7 @@ describe( 'UndoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 0, 0 ) );
 				} );
-				batch0 = new Batch();
+				batch0 = model.createBatch();
 				undo.addBatch( batch0 );
 				model.enqueueChange( batch0, writer => {
 					writer.insertText( 'foobar', p( 0 ) );
@@ -62,7 +60,7 @@ describe( 'UndoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 2, 4 ), { backward: true } );
 				} );
-				batch1 = new Batch();
+				batch1 = model.createBatch();
 				undo.addBatch( batch1 );
 				model.enqueueChange( batch1, writer => {
 					writer.setAttribute( 'key', 'value', r( 2, 4 ) );
@@ -80,7 +78,7 @@ describe( 'UndoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 1, 3 ) );
 				} );
-				batch2 = new Batch();
+				batch2 = model.createBatch();
 				undo.addBatch( batch2 );
 				model.enqueueChange( batch2, writer => {
 					writer.move( r( 1, 3 ), p( 6 ) );
@@ -98,7 +96,7 @@ describe( 'UndoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 1, 4 ) );
 				} );
-				batch3 = new Batch();
+				batch3 = model.createBatch();
 				undo.addBatch( batch3 );
 				model.enqueueChange( batch3, writer => {
 					writer.wrap( r( 1, 4 ), 'p' );
@@ -265,7 +263,7 @@ describe( 'UndoCommand', () => {
 				// Graveyard contains "foobar".
 				expect( doc.graveyard.maxOffset ).to.equal( 6 );
 
-				for ( const item of Range.createIn( doc.graveyard ).getItems() ) {
+				for ( const item of model.createRangeIn( doc.graveyard ).getItems() ) {
 					expect( item.hasAttribute( 'key' ) ).to.be.false;
 				}
 
@@ -332,7 +330,7 @@ describe( 'UndoCommand', () => {
 			model.change( writer => {
 				writer.setSelection( r( 1, 4 ) );
 			} );
-			const batch0 = new Batch();
+			const batch0 = model.createBatch();
 			undo.addBatch( batch0 );
 			model.enqueueChange( batch0, writer => {
 				writer.setAttribute( 'uppercase', true, r( 1, 4 ) );
@@ -342,7 +340,7 @@ describe( 'UndoCommand', () => {
 			model.change( writer => {
 				writer.setSelection( r( 3, 4 ) );
 			} );
-			const batch1 = new Batch();
+			const batch1 = model.createBatch();
 			undo.addBatch( batch1 );
 			model.enqueueChange( batch1, writer => {
 				writer.move( r( 3, 4 ), p( 1 ) );
