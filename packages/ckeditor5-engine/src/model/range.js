@@ -13,18 +13,18 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
- * Range class. Range is iterable.
+ * Represents a range in the model tree.
+ *
+ * A range is defined by its {@link module:engine/model/range~Range#start} and {@link module:engine/model/range~Range#end}
+ * positions.
+ *
+ * You can create range instances via its constructor or the `createRange*()` factory methods of
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
  */
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** Constructor creates it's own {@link module:engine/model/position~Position Position} instances basing on passed values.
-	 *
-	 * **Note:** Should not be used directly outside the engine module.
-	 * Use {@link module:engine/model/writer~Writer#createRange writer#createRange()} method instead.
-	 * @see module:engine/model/writer~Writer#createRange
-	 * @see {@link module:engine/model/writer~Writer#createRange}
 	 * @param {module:engine/model/position~Position} start Start position.
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */

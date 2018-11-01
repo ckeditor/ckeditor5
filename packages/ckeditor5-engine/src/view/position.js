@@ -325,14 +325,14 @@ export default class Position {
 				return this._createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
 				/**
-				 * {@link module:engine/view/position~Position.createAt `Position.createAt()`}
+				 * {@link module:engine/view/view~View#createPositionAt `View#createPositionAt()`}
 				 * requires the offset to be specified when the first parameter is a view item.
 				 *
-				 * @error view-position-createAt-offset-required
+				 * @error view-createPositionAt-offset-required
 				 */
 				throw new CKEditorError(
-					'view-position-createAt-offset-required: ' +
-					'Position.createAt() requires the offset when the first parameter is a view item.' );
+					'view-createPositionAt-offset-required: ' +
+					'View#createPositionAt() requires the offset when the first parameter is a view item.' );
 			}
 
 			return new Position( node, offset );

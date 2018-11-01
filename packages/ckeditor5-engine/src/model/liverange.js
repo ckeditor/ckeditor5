@@ -41,7 +41,7 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * Creates a {@link module:engine/model/range~Range range instance}, which is equal to this live range.
+	 * Creates a {@link module:engine/model/range~Range range instance} that is equal to this live range.
 	 *
 	 * @returns {module:engine/model/range~Range}
 	 */
@@ -50,10 +50,10 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * Creates a `LiveRange` instance that is equal to position.
+	 * Creates a `LiveRange` instance that is equal to the given range.
 	 *
 	 * @param {module:engine/model/range~Range} range
-	 * @returns {module:engine/model/range~Range}
+	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 	static fromRange( range ) {
 		return new LiveRange( range.start, range.end );
@@ -84,15 +84,6 @@ export default class LiveRange extends Range {
 	 * @method module:engine/model/liverange~LiveRange._createFromPositionAndShift
 	 * @param {module:engine/model/position~Position} position
 	 * @param {Number} shift
-	 * @returns {module:engine/model/liverange~LiveRange}
-	 */
-
-	/**
-	 * @see module:engine/model/range~Range._createFromRange
-	 * @static
-	 * @protected
-	 * @method module:engine/model/liverange~LiveRange.fromRange
-	 * @param {module:engine/model/range~Range} range
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 

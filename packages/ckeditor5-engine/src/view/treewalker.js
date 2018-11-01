@@ -464,24 +464,24 @@ export default class TreeWalker {
  *
  * @typedef {Object} module:engine/view/treewalker~TreeWalkerValue
  * @property {module:engine/view/treewalker~TreeWalkerValueType} type
- * @property {module:engine/view/item~Item} item Item between old and new positions of {@link module:engine/view/treewalker~TreeWalker}.
+ * @property {module:engine/view/item~Item} item Item between the old and the new positions
+ * of the tree walker.
  * @property {module:engine/view/position~Position} previousPosition Previous position of the iterator.
  * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
- * position before the item. Note that it is more efficient to use this position then calculate the position before
- * the node using {@link module:engine/view/view~view.createPositionBefore}.
+ * position before the item.
  * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
- * inside of the Text to its parent just before or just after Text.
+ * inside of the text to its parent just before or just after that text.
  * @property {module:engine/view/position~Position} nextPosition Next position of the iterator.
  * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after the item.
  * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
  * before the item.
  * * If the position is at the beginning or at the end of the {@link module:engine/view/text~Text} it is always moved from the
- * inside of the Text to its parent just before or just after Text.
- * @property {Number} [length] Length of the item. For `'elementStart'` it is 1. For `'text'` it is
- * the length of the text. For `'elementEnd'` it is undefined.
+ * inside of the text to its parent just before or just after that text.
+ * @property {Number} [length] Length of the item. For `'elementStart'` it is `1`. For `'text'` it is
+ * the length of that text. For `'elementEnd'` it is `undefined`.
  */
 
 /**

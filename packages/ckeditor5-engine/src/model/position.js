@@ -16,20 +16,25 @@ import { last } from 'lodash-es';
 /**
  * Represents a position in the model tree.
  *
- * **Note:** Position is based on offsets, not indexes. This means that position in element containing two text nodes
- * with data `foo` and `bar`, position between them has offset `3`, not `1`.
- * See {@link module:engine/model/position~Position#path} for more.
+ * A position is represented by its {@link module:engine/model/position~Position#root} and
+ * a {@link module:engine/model/position~Position#path} in that root.
  *
- * Since position in a model is represented by a {@link module:engine/model/position~Position#root position root} and
- * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing elements.
- * This requirement is important for operational transformation.
+ * You can create position instances via its constructor or the `createPosition*()` factory methods of
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ *
+ * **Note:** Position is based on offsets, not indexes. This means that a position between two text nodes
+ * `foo` and `bar` has offset `3`, not `1`. See {@link module:engine/model/position~Position#path} for more information.
+ *
+ * Since a position in the model is represented by a {@link module:engine/model/position~Position#root position root} and
+ * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing places.
+ * This requirement is important for operational transformation algorithms.
  *
  * Also, {@link module:engine/model/operation/operation~Operation operations}
- * kept in {@link module:engine/model/document~Document#history document history}
+ * kept in the {@link module:engine/model/document~Document#history document history}
  * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
- * after document got changed.
+ * after the document has changed.
  *
- * When changes are applied to model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
+ * When changes are applied to the model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
  * will change even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
  * {@link module:engine/model/position~Position#parent} and some other properties and methods will throw errors.
  *
@@ -841,14 +846,14 @@ export default class Position {
 				return this._createAfter( node );
 			} else if ( offset !== 0 && !offset ) {
 				/**
-				 * {@link module:engine/model/position~Position.createAt `Position.createAt()`}
+				 * {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}
 				 * requires the offset to be specified when the first parameter is a model item.
 				 *
-				 * @error model-position-createAt-offset-required
+				 * @error model-createPositionAt-offset-required
 				 */
 				throw new CKEditorError(
-					'model-position-createAt-offset-required: ' +
-					'Position.createAt() requires the offset when the first parameter is a model item.' );
+					'model-createPositionAt-offset-required: ' +
+					'Model#createPositionAt() requires the offset when the first parameter is a model item.' );
 			}
 
 			if ( !node.is( 'element' ) && !node.is( 'documentFragment' ) ) {

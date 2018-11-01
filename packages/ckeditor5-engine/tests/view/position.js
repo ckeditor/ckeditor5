@@ -383,7 +383,7 @@ describe( 'Position', () => {
 			it( 'should throw if no offset is passed', () => {
 				const element = new Element( 'p' );
 
-				expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-offset-required/ );
+				expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-createPositionAt-offset-required/ );
 			} );
 
 			it( 'should create positions from positions', () => {

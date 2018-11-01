@@ -22,11 +22,15 @@ import EditableElement from './editableelement';
 import { isPlainObject } from 'lodash-es';
 
 /**
- * View downcast writer class. Provides set of methods used to properly manipulate nodes attached to
- * {@link module:engine/view/document~Document view document}. It is not recommended to use it directly. To get an instance
- * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
- * The `DowncastWriter` is designed to work with semantic view which is the view downcasted from model. For working with
- * ordinary view (e.g. parsed from string) {@link module:engine/view/upcastwriter~UpcastWriter upcast writer} should be used.
+ * View downcast writer.
+ *
+ * It provides a set of methods used to manipulate view nodes.
+ *
+ * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
+ * To work with ordinary views (e.g. parsed from a string) use the {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ *
+ * Do not create an instance of this writer manually. To modify a view structure, use
+ * the {@link module:engine/view/view~View#change View#change()) block.
  */
 export default class DowncastWriter {
 	constructor( document ) {
@@ -53,7 +57,7 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 * ### Usage:
+	 * Usage:
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );

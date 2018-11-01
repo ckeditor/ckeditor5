@@ -14,14 +14,17 @@ import Range from './range';
 import Selection from './selection';
 
 /**
- * View upcast writer class. Provides set of methods used to properly manipulate nodes attached to
- * {@link module:engine/view/view~View view instance}. It should be only used to manipulate non-semantic view
- * (view created from HTML string). For view which was downcasted from the {@link module:engine/model/model~Model model}
- * see {@link module:engine/view/downcastwriter~DowncastWriter writer}.
+ * View upcast writer.
+ *
+ * It provides a set of methods used to manipulate view nodes.
+ * It should be used only while working on a non-semantic view
+ * (e.g. a view created from HTML string on paste).
+ * To manipulate a view which was or is being downcasted from the the model use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
  */
 export default class UpcastWriter {
 	/**
-	 * Clones provided element.
+	 * Clones the provided element.
 	 *
 	 * @see module:engine/view/element~Element#_clone
 	 * @param {module:engine/view/element~Element} element Element to be cloned.
@@ -65,7 +68,7 @@ export default class UpcastWriter {
 	}
 
 	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
+	 * Removes the given number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @see module:engine/view/element~Element#_removeChildren
 	 * @param {Number} index Offset from which nodes will be removed.
@@ -325,7 +328,7 @@ export default class UpcastWriter {
 	}
 
 	/**
-	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates a new {@link module:engine/view/selection~Selection} instance.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();

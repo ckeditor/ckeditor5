@@ -19,28 +19,25 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import DocumentSelection from './documentselection';
 
 /**
- * Class representing selection in tree view.
+ * Class representing an arbirtary selection in the view.
+ * See also {@link module:engine/view/documentselection~DocumentSelection}.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/selection~Selection#setTo setTo} method.
- * That method create copies of provided ranges and store those copies internally. Further modifications to passed
- * ranges will not change selection's state.
- * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
- * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange} and
- * {@link module:engine/view/selection~Selection#getLastRange getLastRange} methods, which return copies of ranges
- * stored inside selection. Modifications made on these copies will not change selection's state. Similar situation
- * occurs when getting {@link module:engine/view/selection~Selection#anchor anchor},
- * {@link module:engine/view/selection~Selection#focus focus}, {@link module:engine/view/selection~Selection#getFirstPosition first}
- * and {@link module:engine/view/selection~Selection#getLastPosition last} positions - all will return
- * copies of requested positions.
+ * New selection instances can be created via the constructor or one these methods:
+ *
+ * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+ * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
+ *
+ * A selection can consist of {@link module:engine/view/range~Range ranges} that can be set by using
+ * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
 export default class Selection {
 	/**
 	 * Creates new selection instance.
 	 *
-	 * **Note**: The selection constructor is available as factory method:
-	 * - {@link module:engine/view/view~View#createSelection()}
-	 * - {@link module:engine/view/downcastwriter~DowncastWriter#createSelection()}.
+	 * **Note**: The selection constructor is available as a factory method:
+	 *
+	 * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+	 * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();

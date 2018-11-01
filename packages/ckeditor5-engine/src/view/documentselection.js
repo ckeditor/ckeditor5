@@ -12,20 +12,14 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
- * Class representing document selection in tree view. It's instance is stored at
- * {@link module:engine/view/document~Document#selection}. It is similar to {@link module:engine/view/selection~Selection} but
- * it has read-only API and can be modified only by writer obtained from {@link module:engine/view/view~View#change} method.
+ * Class representing the document selection in the view.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges}.
- * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstRange getFirstRange}
- * and {@link module:engine/view/documentselection~DocumentSelection#getLastRange getLastRange}
- * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
- * selection's state. Similar situation occurs when getting {@link module:engine/view/documentselection~DocumentSelection#anchor anchor},
- * {@link module:engine/view/documentselection~DocumentSelection#focus focus},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstPosition first} and
- * {@link module:engine/view/documentselection~DocumentSelection#getLastPosition last} positions - all will return
- * copies of requested positions.
+ * Its instance is available in {@link module:engine/view/document~Document#selection `Document#selection`}.
+ *
+ * It is similar to {@link module:engine/view/selection~Selection} but
+ * it has a read-only API and can be modified only by the writer available in
+ * the {@link module:engine/view/view~View#change `View#change()`} block
+ * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
 export default class DocumentSelection {
 	/**

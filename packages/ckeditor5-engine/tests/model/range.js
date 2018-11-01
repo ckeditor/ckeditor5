@@ -185,7 +185,7 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( '_createFromRange()', () => {
+		describe( 'clone()', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
 				const clone = range.clone();
 

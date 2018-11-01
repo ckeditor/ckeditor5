@@ -446,10 +446,11 @@ export default class Model {
 	}
 
 	/**
-	 * Checks whether given {@link module:engine/model/range~Range range} or {@link module:engine/model/element~Element element}
+	 * Checks whether the given {@link module:engine/model/range~Range range} or
+	 * {@link module:engine/model/element~Element element}
 	 * has any content.
 	 *
-	 * Content is any text node or element which is registered in {@link module:engine/model/schema~Schema schema}.
+	 * Content is any text node or element which is registered in the {@link module:engine/model/schema~Schema schema}.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @returns {Boolean}
@@ -474,10 +475,10 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a position.
+	 * Creates a position from the given root and path in that root.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createPositionFromPath writer.createPositionFromPath()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionFromPath `Writer#createPositionFromPath()`}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
 	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
@@ -493,17 +494,18 @@ export default class Model {
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/model/position~Position position},
-	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 * * a parent element and offset in that element,
+	 * * a parent element and `'end'` (the position will be set at the end of that element),
+	 * * a {@link module:engine/model/item~Item model item} and `'before'` or `'after'`
+	 * (the position will be set before or after the given model item).
 	 *
 	 * This method is a shortcut to other factory methods such as:
 	 *
-	 * * {@link module:engine/model/model~Model#createPositionBefore},
-	 * * {@link module:engine/model/model~Model#createPositionAfter}.
+	 * * {@link module:engine/model/model~Model#createPositionBefore `createPositionBefore()`},
+	 * * {@link module:engine/model/model~Model#createPositionAfter `createPositionAfter()`}.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionAt `Writer#createPositionAt()`},
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
@@ -514,10 +516,10 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position after the given {@link module:engine/model/item~Item model item}.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createPositionAfter writer.createPositionAfter()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionAfter `Writer#createPositionAfter()`}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
@@ -527,10 +529,10 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position before the given {@link module:engine/model/item~Item model item}.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createPositionBefore writer.createPositionBefore()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionBefore `Writer#createPositionBefore()`}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
@@ -540,20 +542,18 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a range spanning from `start` position to `end` position.
+	 * Creates a range spanning from the `start` position to the `end` position.
 	 *
-	 * **Note:** Range constructor creates it's own {@link module:engine/model/position~Position Position} instances
-	 * basing on passed values.
-	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createRange writer.createRange()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createRange `Writer#createRange()`}:
 	 *
 	 *		model.change( writer => {
-	 *			const range = writer.createRange( paragraph );
+	 *			const range = writer.createRange( start, end );
 	 *		} );
 	 *
 	 * @param {module:engine/model/position~Position} start Start position.
-	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, the range will be collapsed
+	 * to the `start` position.
 	 * @returns {module:engine/model/range~Range}
 	 */
 	createRange( start, end ) {
@@ -561,11 +561,11 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside the given element which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createRangeIn writer.createRangeIn()}:
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createRangeIn `Writer#createRangeIn()`}:
 	 *
 	 *		model.change( writer => {
 	 *			const range = writer.createRangeIn( paragraph );
@@ -579,10 +579,10 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
+	 * Creates a range that starts before the given {@link module:engine/model/item~Item model item} and ends after it.
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createRangeOn writer.createRangeOn()}:
+	 * Note: This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createRangeOn `Writer.createRangeOn()`}:
 	 *
 	 *		model.change( writer => {
 	 *			const range = writer.createRangeOn( paragraph );
@@ -596,16 +596,17 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new selection instance
-	 * based on the given {@link module:engine/model/selection~Selection selection},
-	 * or based on the given {@link module:engine/model/range~Range range},
-	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
-	 * or at the given {@link module:engine/model/position~Position position},
-	 * or on the given {@link module:engine/model/element~Element element},
-	 * or creates an empty selection if no arguments were passed.
+	 * Creates a new selection instance based on:
 	 *
-	 * **Note:** This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createSelection writer.createSelection()}:
+	 * * the given {@link module:engine/model/selection~Selection selection},
+	 * * or based on the given {@link module:engine/model/range~Range range},
+	 * * or based on the given iterable collection of {@link module:engine/model/range~Range ranges}
+	 * * or at the given {@link module:engine/model/position~Position position},
+	 * * or on the given {@link module:engine/model/element~Element element},
+	 * * or creates an empty selection if no arguments were passed.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
 	 *
 	 *		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();
@@ -644,7 +645,7 @@ export default class Model {
 	 *		// just after the item.
 	 *		const selection = writer.createSelection( paragraph, 'on' );
 	 *
-	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
+	 *		// Additional options (`'backward'`) can be specified as the last argument.
 	 *
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
@@ -666,8 +667,8 @@ export default class Model {
 	 *
 	 * **Note:** In most cases creating a batch instance is not necessary as they are created when using:
 	 *
-	 * * {@link #change},
-	 * * {@link #enqueueChange}.
+	 * * {@link #change `change()`},
+	 * * {@link #enqueueChange `enqueueChange()`}.
 	 *
 	 * @returns {module:engine/model/batch~Batch}
 	 */

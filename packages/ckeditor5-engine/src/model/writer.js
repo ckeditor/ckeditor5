@@ -545,7 +545,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath model.createPositionFromPath()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath `Model#createPositionFromPath()`}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
 	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
@@ -558,7 +558,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt model.createPositionAt()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
@@ -570,7 +570,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createPositionAfter model.createPositionAfter()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAfter `Model#createPositionAfter()`}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
@@ -580,7 +580,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createPositionBefore model.createPositionBefore()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionBefore `Model#createPositionBefore()`}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
@@ -590,7 +590,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createRange model.createRange()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createRange `Model#createRange()`}.
 	 *
 	 * @param {module:engine/model/position~Position} start Start position.
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
@@ -601,7 +601,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createRangeIn model.createRangeIn()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeIn `Model#createRangeIn()`}.
 	 *
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
@@ -611,7 +611,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createRangeOn model.createRangeOn()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeOn `Model#createRangeOn()`}.
 	 *
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
@@ -621,7 +621,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Shortcut for {@link module:engine/model/model~Model#createSelection model.createSelection()}.
+	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
@@ -1067,10 +1067,14 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * Sets the document's selection (ranges and direction) to the specified location based on:
+	 *
+	 * * the given {@link module:engine/model/selection~Selection selection},
+	 * * or the given {@link module:engine/model/position~Position position},
+	 * * or the given {@link module:engine/model/range~Range range},
+	 * * or the given iterable of {@link module:engine/model/range~Range ranges},
+	 * * or the given {@link module:engine/model/node~Node node},
+	 * * or `null`.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );
