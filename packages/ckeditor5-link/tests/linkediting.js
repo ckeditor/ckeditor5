@@ -10,7 +10,6 @@ import UnlinkCommand from '../src/unlinkcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
@@ -283,10 +282,10 @@ describe( 'LinkEditing', () => {
 				);
 
 				model.change( writer => {
-					writer.remove( ModelRange.createFromParentsAndOffsets(
-						model.document.getRoot().getChild( 0 ), 0,
-						model.document.getRoot().getChild( 0 ), 5 )
-					);
+					writer.remove( writer.createRange(
+						writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ),
+						writer.createPositionAt( model.document.getRoot().getChild( 0 ), 5 )
+					) );
 				} );
 
 				expect( getViewData( view ) ).to.equal(
@@ -300,7 +299,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				model.change( writer => {
-					writer.setAttribute( 'linkHref', 'new-url', new ModelRange(
+					writer.setAttribute( 'linkHref', 'new-url', writer.createRange(
 						model.document.selection.getFirstPosition().getShiftedBy( -1 ),
 						model.document.selection.getFirstPosition().getShiftedBy( 1 ) )
 					);
@@ -317,7 +316,7 @@ describe( 'LinkEditing', () => {
 				);
 
 				model.change( writer => {
-					writer.setSelection( new ModelRange(
+					writer.setSelection( writer.createRange(
 						model.document.selection.getFirstPosition().getShiftedBy( -1 ),
 						model.document.selection.getFirstPosition().getShiftedBy( 1 ) )
 					);
@@ -336,9 +335,9 @@ describe( 'LinkEditing', () => {
 				);
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets(
-						model.document.getRoot().getChild( 0 ), 0,
-						model.document.getRoot().getChild( 0 ), 5
+					const range = writer.createRange(
+						writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ),
+						writer.createPositionAt( model.document.getRoot().getChild( 0 ), 5 )
 					);
 
 					writer.addMarker( 'fooMarker', { range, usingOperation: true } );

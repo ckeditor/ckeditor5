@@ -7,9 +7,6 @@
  * @module link/findlinkrange
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
 /**
  * Returns a range containing the entire link in which the given `position` is placed.
  *
@@ -20,8 +17,8 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
  * @param {String} value The `linkHref` attribute value.
  * @returns {module:engine/model/range~Range} The link range.
  */
-export default function findLinkRange( position, value ) {
-	return new Range( _findBound( position, value, true ), _findBound( position, value, false ) );
+export default function findLinkRange( position, value, model ) {
+	return model.createRange( _findBound( position, value, true, model ), _findBound( position, value, false, model ) );
 }
 
 // Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same `linkHref` attribute value
@@ -31,7 +28,7 @@ export default function findLinkRange( position, value ) {
 // @param {String} value The `linkHref` attribute value.
 // @param {Boolean} lookBack Whether the walk direction is forward (`false`) or backward (`true`).
 // @returns {module:engine/model/position~Position} The position just before the last matched node.
-function _findBound( position, value, lookBack ) {
+function _findBound( position, value, lookBack, model ) {
 	// Get node before or after position (depends on `lookBack` flag).
 	// When position is inside text node then start searching from text node.
 	let node = position.textNode || ( lookBack ? position.nodeBefore : position.nodeAfter );
@@ -43,5 +40,5 @@ function _findBound( position, value, lookBack ) {
 		node = lookBack ? node.previousSibling : node.nextSibling;
 	}
 
-	return lastNode ? Position.createAt( lastNode, lookBack ? 'before' : 'after' ) : position;
+	return lastNode ? model.createPositionAt( lastNode, lookBack ? 'before' : 'after' ) : position;
 }
