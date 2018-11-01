@@ -11,13 +11,13 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^11.0.1",
-    "@ckeditor/ckeditor5-engine": "^11.0.0",
     "@ckeditor/ckeditor5-ui": "^11.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-block-quote": "^10.1.0",
     "@ckeditor/ckeditor5-cloud-services": "^10.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^11.0.1",
+    "@ckeditor/ckeditor5-engine": "^11.0.0",
     "@ckeditor/ckeditor5-enter": "^10.1.2",
     "@ckeditor/ckeditor5-heading": "^10.1.0",
     "@ckeditor/ckeditor5-image": "^11.0.0",
