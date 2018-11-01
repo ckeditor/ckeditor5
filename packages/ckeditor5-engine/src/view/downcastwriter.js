@@ -146,7 +146,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
 	 *		writer.createAttributeElement( 'strong' );
-	 *		writer.createAttributeElement( 'strong', { 'alignment': 'center' } );
+	 *		writer.createAttributeElement( 'strong', { alignment: 'center' } );
 	 *
 	 *		// Make `<a>` element contain other attributes element so the `<a>` element is not broken.
 	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
@@ -179,7 +179,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/containerelement~ContainerElement}.
 	 *
 	 *		writer.createContainerElement( 'paragraph' );
-	 *		writer.createContainerElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createContainerElement( 'paragraph', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -193,7 +193,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 *		writer.createEditableElement( 'div' );
-	 *		writer.createEditableElement( 'div', { 'alignment': 'center' } );
+	 *		writer.createEditableElement( 'div', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -210,7 +210,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
 	 *		writer.createEmptyElement( 'img' );
-	 *		writer.createEmptyElement( 'img', { 'alignment': 'center' } );
+	 *		writer.createEmptyElement( 'img', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -224,7 +224,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/uielement~UIElement}.
 	 *
 	 *		writer.createUIElement( 'span' );
-	 *		writer.createUIElement( 'span', { 'alignment': 'center' } );
+	 *		writer.createUIElement( 'span', { alignment: 'center' } );
 	 *
 	 * Custom render function can be provided as third parameter:
 	 *

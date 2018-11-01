@@ -47,7 +47,8 @@ import { cloneDeep } from 'lodash-es';
  * @param {Object} config Conversion configuration.
  * @param {String} config.model The name of the model element to convert.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
- * that takes the model element and view writer as parameters and returns a view container element.
+ * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+ * as parameters and returns a view container element.
  * @returns {Function} Conversion helper.
  */
 export function downcastElementToElement( config ) {
@@ -123,7 +124,8 @@ export function downcastElementToElement( config ) {
  * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
  * of `String`s with possible values if the model attribute is an enumerable.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
- * that takes the model attribute value and view writer as parameters and returns a view attribute element. If `config.model.values` is
+ * that takes the model attribute value and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+ * as parameters and returns a view attribute element. If `config.model.values` is
  * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
