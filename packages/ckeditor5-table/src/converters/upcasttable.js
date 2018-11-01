@@ -7,8 +7,6 @@
  * @module table/converters/upcasttable
  */
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import { createEmptyTableCell } from '../commands/utils';
 
 /**
@@ -56,24 +54,24 @@ export default function upcastTable() {
 
 			if ( rows.length ) {
 				// Upcast table rows in proper order (heading rows first).
-				rows.forEach( row => conversionApi.convertItem( row, ModelPosition.createAt( table, 'end' ) ) );
+				rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
 			} else {
 				// Create one row and one table cell for empty table.
 				const row = conversionApi.writer.createElement( 'tableRow' );
-				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
+				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
 
-				createEmptyTableCell( conversionApi.writer, ModelPosition.createAt( row, 'end' ) );
+				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
 			}
 
 			// Set conversion result range.
-			data.modelRange = new ModelRange(
+			data.modelRange = conversionApi.writer.createRange(
 				// Range should start before inserted element
-				ModelPosition.createBefore( table ),
+				conversionApi.writer.createPositionBefore( table ),
 				// Should end after but we need to take into consideration that children could split our
 				// element, so we need to move range after parent of the last converted child.
 				// before: <allowed>[]</allowed>
 				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-				ModelPosition.createAfter( table )
+				conversionApi.writer.createPositionAfter( table )
 			);
 
 			// Now we need to check where the modelCursor should be.
@@ -82,7 +80,7 @@ export default function upcastTable() {
 			// before: <allowed><notAllowed>[]</notAllowed></allowed>
 			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 			if ( splitResult.cursorParent ) {
-				data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
+				data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
 
 				// Otherwise just continue after inserted element.
 			} else {
@@ -115,7 +113,7 @@ export function upcastTableCell( elementName ) {
 			conversionApi.writer.insert( tableCell, splitResult.position );
 			conversionApi.consumable.consume( viewTableCell, { name: true } );
 
-			const modelCursor = ModelPosition.createAt( tableCell, 0 );
+			const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
 			conversionApi.convertChildren( viewTableCell, modelCursor );
 
 			// Ensure a paragraph in the model for empty table cells.
@@ -124,14 +122,14 @@ export function upcastTableCell( elementName ) {
 			}
 
 			// Set conversion result range.
-			data.modelRange = new ModelRange(
+			data.modelRange = conversionApi.writer.createRange(
 				// Range should start before inserted element
-				ModelPosition.createBefore( tableCell ),
+				conversionApi.writer.createPositionBefore( tableCell ),
 				// Should end after but we need to take into consideration that children could split our
 				// element, so we need to move range after parent of the last converted child.
 				// before: <allowed>[]</allowed>
 				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-				ModelPosition.createAfter( tableCell )
+				conversionApi.writer.createPositionAfter( tableCell )
 			);
 
 			// Continue after inserted element.
