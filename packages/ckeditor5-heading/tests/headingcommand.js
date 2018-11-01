@@ -6,7 +6,6 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
 import HeadingCommand from '../src/headingcommand';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const options = [
@@ -65,7 +64,7 @@ describe( 'HeadingCommand', () => {
 				model.change( writer => {
 					const ranges = [
 						...model.document.selection.getRanges(),
-						Range.createFromParentsAndOffsets( element, 3, element, 3 )
+						writer.createRange( writer.createPositionAt( element, 3 ) )
 					];
 					writer.setSelection( ranges );
 				} );
@@ -83,7 +82,7 @@ describe( 'HeadingCommand', () => {
 				const element = document.getRoot().getChild( 1 );
 
 				model.change( writer => {
-					writer.setSelection( Range.createIn( element ) );
+					writer.setSelection( writer.createRangeIn( element ) );
 				} );
 
 				expect( command.value ).to.be.false;
@@ -94,7 +93,7 @@ describe( 'HeadingCommand', () => {
 				const element = document.getRoot().getChild( 1 );
 
 				model.change( writer => {
-					writer.setSelection( Range.createIn( element ) );
+					writer.setSelection( writer.createRangeIn( element ) );
 
 					expect( command.value ).to.equal( modelElement );
 					command.refresh();
