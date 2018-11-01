@@ -5,8 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ParagraphCommand from '../src/paragraphcommand';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ParagraphCommand', () => {
@@ -72,7 +71,7 @@ describe( 'ParagraphCommand', () => {
 			const element = document.getRoot().getChild( 1 );
 
 			model.change( writer => {
-				writer.setSelection( Range.createIn( element ) );
+				writer.setSelection( writer.createRangeIn( element ) );
 			} );
 
 			expect( command.value ).to.be.false;
@@ -83,7 +82,7 @@ describe( 'ParagraphCommand', () => {
 			const element = document.getRoot().getChild( 1 );
 
 			model.change( writer => {
-				writer.setSelection( Range.createIn( element ) );
+				writer.setSelection( writer.createRangeIn( element ) );
 
 				expect( command.value ).to.be.true;
 				command.refresh();
@@ -185,7 +184,10 @@ describe( 'ParagraphCommand', () => {
 
 				const secondToLastHeading = root.getChild( 1 );
 				const lastHeading = root.getChild( 2 );
-				const selection = new Selection( Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) );
+				const selection = model.createSelection( model.createRange(
+					model.createPositionAt( secondToLastHeading, 0 ),
+					model.createPositionAt( lastHeading, 1 )
+				) );
 
 				command.execute( { selection } );
 				expect( getData( model ) ).to.equal(

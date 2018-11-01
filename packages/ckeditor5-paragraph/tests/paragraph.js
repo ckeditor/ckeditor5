@@ -18,7 +18,6 @@ import { upcastElementToElement, upcastElementToAttribute } from '@ckeditor/cked
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'Paragraph feature', () => {
 	let model, editor, doc, root;
@@ -402,7 +401,7 @@ describe( 'Paragraph feature', () => {
 			expect( editor.getData() ).to.equal( '<p>Foobar</p>' );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 			} );
 
 			expect( doc.getRoot().childCount ).to.equal( 1 );
@@ -417,7 +416,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 			} );
 
 			expect( editor.getData() ).to.equal( '' );
@@ -428,7 +427,7 @@ describe( 'Paragraph feature', () => {
 
 			model.enqueueChange( writer => {
 				removeBatch = writer.batch;
-				writer.remove( ModelRange.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 
 				model.enqueueChange( writer => {
 					attributeBatch = writer.batch;
