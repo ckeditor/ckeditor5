@@ -6,8 +6,6 @@
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import ListCommand from '../src/listcommand';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ListCommand', () => {
@@ -306,9 +304,9 @@ describe( 'ListCommand', () => {
 					// From first paragraph to second paragraph.
 					// Command value=false, we are turning on list items.
 					model.change( writer => {
-						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 2 ), 0 ),
-							Position.createAt( root.getChild( 3 ), 'end' )
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( root.getChild( 2 ), 0 ),
+							writer.createPositionAt( root.getChild( 3 ), 'end' )
 						) );
 					} );
 
@@ -331,9 +329,9 @@ describe( 'ListCommand', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
 					model.change( writer => {
-						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 1 ), 0 ),
-							Position.createAt( root.getChild( 4 ), 'end' )
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( root.getChild( 1 ), 0 ),
+							writer.createPositionAt( root.getChild( 4 ), 'end' )
 						) );
 					} );
 
@@ -356,9 +354,9 @@ describe( 'ListCommand', () => {
 				it( 'should change closest listItem\'s type', () => {
 					// From first numbered lsit item to third bulleted list item.
 					model.change( writer => {
-						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 4 ), 0 ),
-							Position.createAt( root.getChild( 6 ), 0 )
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( root.getChild( 4 ), 0 ),
+							writer.createPositionAt( root.getChild( 6 ), 0 )
 						) );
 					} );
 
@@ -381,9 +379,9 @@ describe( 'ListCommand', () => {
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
 					// From first numbered list item to third bulleted list item.
 					model.change( writer => {
-						writer.setSelection( new Range(
-							Position.createAt( root.getChild( 1 ), 0 ),
-							Position.createAt( root.getChild( 5 ), 'end' )
+						writer.setSelection( writer.createRange(
+							writer.createPositionAt( root.getChild( 1 ), 0 ),
+							writer.createPositionAt( root.getChild( 5 ), 'end' )
 						) );
 					} );
 

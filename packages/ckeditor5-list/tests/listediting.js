@@ -6,14 +6,7 @@
 import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
@@ -562,7 +555,7 @@ describe( 'ListEditing', () => {
 			describe( 'view to model', () => {
 				function test( testName, viewPath, modelPath ) {
 					it( testName, () => {
-						const viewPos = getViewPosition( viewRoot, viewPath );
+						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
 						expect( modelPos.root ).to.equal( modelRoot );
@@ -587,7 +580,7 @@ describe( 'ListEditing', () => {
 			describe( 'model to view', () => {
 				function test( testName, modelPath, viewPath ) {
 					it( testName, () => {
-						const modelPos = new ModelPosition( modelRoot, modelPath );
+						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
 						expect( viewPos.root ).to.equal( viewRoot );
@@ -1540,7 +1533,7 @@ describe( 'ListEditing', () => {
 			describe( 'view to model', () => {
 				function test( testName, viewPath, modelPath ) {
 					it( testName, () => {
-						const viewPos = getViewPosition( viewRoot, viewPath );
+						const viewPos = getViewPosition( viewRoot, viewPath, view );
 						const modelPos = mapper.toModelPosition( viewPos );
 
 						expect( modelPos.root ).to.equal( modelRoot );
@@ -1578,7 +1571,7 @@ describe( 'ListEditing', () => {
 			describe( 'model to view', () => {
 				function test( testName, modelPath, viewPath ) {
 					it( testName, () => {
-						const modelPos = new ModelPosition( modelRoot, modelPath );
+						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
 						const viewPos = mapper.toViewPosition( modelPos );
 
 						expect( viewPos.root ).to.equal( viewRoot );
@@ -3273,7 +3266,7 @@ describe( 'ListEditing', () => {
 					model.change( writer => {
 						setModelData( model, input );
 
-						const targetPosition = ModelPosition.createAt( modelRoot, offset );
+						const targetPosition = writer.createPositionAt( modelRoot, offset );
 
 						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
@@ -3488,13 +3481,16 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent(
+			model.insertContent(
 				parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
 				),
-				new ModelRange( new ModelPosition( modelRoot, [ 1, 1 ] ), new ModelPosition( modelRoot, [ 1, 1 ] ) )
+				model.createRange(
+					model.createPositionFromPath( modelRoot, [ 1, 1 ] ),
+					model.createPositionFromPath( modelRoot, [ 1, 1 ] )
+				)
 			);
 
 			expect( getModelData( model ) ).to.equal(
@@ -3513,7 +3509,12 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent( new ModelElement( 'listItem', { listType: 'bulleted', listIndent: '0' }, 'X' ) );
+			model.change( writer => {
+				const listItem = writer.createElement( 'listItem', { listType: 'bulleted', listIndent: '0' } );
+				writer.insertText( 'X', listItem );
+
+				model.insertContent( listItem );
+			} );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3530,7 +3531,9 @@ describe( 'ListEditing', () => {
 				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
-			editor.model.insertContent( new ModelText( 'X' ) );
+			model.change( writer => {
+				model.insertContent( writer.createText( 'X' ) );
+			} );
 
 			expect( getModelData( model ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
@@ -3672,7 +3675,9 @@ describe( 'ListEditing', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( () => {
-				editor.model.insertContent( new ModelDocumentFragment() );
+				model.change( writer => {
+					editor.model.insertContent( writer.createDocumentFragment() );
+				} );
 			} ).not.to.throw();
 		} );
 
@@ -3898,13 +3903,12 @@ describe( 'ListEditing', () => {
 		it( 'ul and ol should not be inserted before ui element - injectViewList()', () => {
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
-			const uiElement = new ViewUIElement( 'span' );
-
 			// Append ui element at the end of first <li>.
 			view.change( writer => {
 				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
 
-				writer.insert( ViewPosition.createAt( firstChild, 'end' ), uiElement );
+				const uiElement = writer.createUIElement( 'span' );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3924,13 +3928,12 @@ describe( 'ListEditing', () => {
 		it( 'ul and ol should not be inserted before ui element - hoistNestedLists()', () => {
 			editor.setData( '<ul><li>Foo</li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 
-			const uiElement = new ViewUIElement( 'span' );
-
 			// Append ui element at the end of first <li>.
 			view.change( writer => {
 				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
 
-				writer.insert( ViewPosition.createAt( firstChild, 'end' ), uiElement );
+				const uiElement = writer.createUIElement( 'span' );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
@@ -3947,20 +3950,18 @@ describe( 'ListEditing', () => {
 		} );
 
 		describe( 'remove converter should properly handle ui elements', () => {
-			let uiElement, liFoo, liBar;
+			let liFoo, liBar;
 
 			beforeEach( () => {
 				editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 				liFoo = modelRoot.getChild( 0 );
 				liBar = modelRoot.getChild( 1 );
-
-				uiElement = new ViewUIElement( 'span' );
 			} );
 
 			it( 'ui element before <ul>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot, 0 ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot, 0 ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -3974,7 +3975,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element before first <li>', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ), 0 ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 0 ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -3988,7 +3989,7 @@ describe( 'ListEditing', () => {
 			it( 'ui element in the middle of list', () => {
 				view.change( writer => {
 					// Append ui element before <ul>.
-					writer.insert( ViewPosition.createAt( viewRoot.getChild( 0 ), 'end' ), uiElement );
+					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 'end' ), writer.createUIElement( 'span' ) );
 				} );
 
 				model.change( writer => {
@@ -4080,14 +4081,14 @@ describe( 'ListEditing', () => {
 		} );
 	} );
 
-	function getViewPosition( root, path ) {
+	function getViewPosition( root, path, view ) {
 		let parent = root;
 
 		while ( path.length > 1 ) {
 			parent = parent.getChild( path.shift() );
 		}
 
-		return new ViewPosition( parent, path[ 0 ] );
+		return view.createPositionAt( parent, path[ 0 ] );
 	}
 
 	function getViewPath( position ) {
@@ -4185,9 +4186,9 @@ describe( 'ListEditing', () => {
 
 	function testMove( testName, input, rootOffset, output, testUndo = true ) {
 		const actionCallback = selection => {
-			const targetPosition = ModelPosition.createAt( modelRoot, rootOffset );
-
 			model.change( writer => {
+				const targetPosition = writer.createPositionAt( modelRoot, rootOffset );
+
 				writer.move( selection.getFirstRange(), targetPosition );
 			} );
 		};
@@ -4241,7 +4242,7 @@ describe( 'ListEditing', () => {
 			// Ensure no undo step is generated.
 			model.enqueueChange( 'transparent', writer => {
 				// Replace existing model in document by new one.
-				writer.remove( ModelRange.createIn( modelRoot ) );
+				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( modelDocumentFragment, modelRoot );
 
 				// Clean up previous document selection.
@@ -4252,13 +4253,13 @@ describe( 'ListEditing', () => {
 			const ranges = [];
 
 			for ( const range of selection.getRanges() ) {
-				const start = new ModelPosition( modelRoot, range.start.path );
-				const end = new ModelPosition( modelRoot, range.end.path );
+				const start = model.createPositionFromPath( modelRoot, range.start.path );
+				const end = model.createPositionFromPath( modelRoot, range.end.path );
 
-				ranges.push( new ModelRange( start, end ) );
+				ranges.push( model.createRange( start, end ) );
 			}
 
-			return new Selection( ranges );
+			return model.createSelection( ranges );
 		}
 	}
 } );

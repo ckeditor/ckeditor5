@@ -68,23 +68,23 @@ export default class ListEditing extends Plugin {
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
-		editing.mapper.on( 'viewToModelPosition', viewToModelPosition );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
+		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		editing.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion );
+		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
 		data.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion );
+		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
 
 		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
 		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
-		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent );
-		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent );
+		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
 
-		editing.downcastDispatcher.on( 'remove:listItem', modelViewRemove );
+		editing.downcastDispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
 		editing.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-		data.downcastDispatcher.on( 'remove:listItem', modelViewRemove );
+		data.downcastDispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
 		data.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 
 		data.upcastDispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
