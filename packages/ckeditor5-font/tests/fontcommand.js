@@ -8,8 +8,6 @@ import FontCommand from '../src/fontcommand';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;
@@ -172,10 +170,10 @@ describe( 'FontCommand', () => {
 
 			model.change( writer => {
 				// Simulate clicking right arrow key by changing selection ranges.
-				writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+				writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 
 				// Get back to previous selection.
-				writer.setSelection( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+				writer.setSelection( root.getNodeByPath( [ 0 ] ), 1 );
 			} );
 
 			expect( command.value ).to.be.undefined;
@@ -194,14 +192,14 @@ describe( 'FontCommand', () => {
 			// Attribute should be stored.
 			// Simulate clicking somewhere else in the editor.
 			model.change( writer => {
-				writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+				writer.setSelection( root.getNodeByPath( [ 0 ] ), 2 );
 			} );
 
 			expect( command.value ).to.be.undefined;
 
 			// Go back to where attribute was stored.
 			model.change( writer => {
-				writer.setSelection( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+				writer.setSelection( root.getNodeByPath( [ 1 ] ), 0 );
 			} );
 
 			// Attribute should be restored.
