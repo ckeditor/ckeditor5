@@ -9,9 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -113,7 +110,7 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	_removeQuote( writer, blocks ) {
 		// Unquote all groups of block. Iterate in the reverse order to not break following ranges.
-		getRangesOfBlockGroups( blocks ).reverse().forEach( groupRange => {
+		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
 			if ( groupRange.start.isAtStart && groupRange.end.isAtEnd ) {
 				writer.unwrap( groupRange.start.parent );
 
@@ -122,7 +119,7 @@ export default class BlockQuoteCommand extends Command {
 
 			// The group of blocks are at the beginning of an <bQ> so let's move them left (out of the <bQ>).
 			if ( groupRange.start.isAtStart ) {
-				const positionBefore = Position.createBefore( groupRange.start.parent );
+				const positionBefore = writer.createPositionBefore( groupRange.start.parent );
 
 				writer.move( groupRange, positionBefore );
 
@@ -137,7 +134,7 @@ export default class BlockQuoteCommand extends Command {
 
 			// Now we are sure that groupRange.end.isAtEnd is true, so let's move the blocks right.
 
-			const positionAfter = Position.createAfter( groupRange.end.parent );
+			const positionAfter = writer.createPositionAfter( groupRange.end.parent );
 
 			writer.move( groupRange, positionAfter );
 		} );
@@ -154,11 +151,11 @@ export default class BlockQuoteCommand extends Command {
 		const quotesToMerge = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
-		getRangesOfBlockGroups( blocks ).reverse().forEach( groupRange => {
+		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
 			let quote = findQuote( groupRange.start );
 
 			if ( !quote ) {
-				quote = new Element( 'blockQuote' );
+				quote = writer.createElement( 'blockQuote' );
 
 				writer.wrap( groupRange, quote );
 			}
@@ -172,7 +169,7 @@ export default class BlockQuoteCommand extends Command {
 		// we want to keep the reference to the first (furthest left) one.
 		quotesToMerge.reverse().reduce( ( currentQuote, nextQuote ) => {
 			if ( currentQuote.nextSibling == nextQuote ) {
-				writer.merge( Position.createAfter( currentQuote ) );
+				writer.merge( writer.createPositionAfter( currentQuote ) );
 
 				return currentQuote;
 			}
@@ -194,7 +191,7 @@ function findQuote( elementOrPosition ) {
 //
 // @param {Array.<module:engine/model/element~Element>} blocks
 // @returns {Array.<module:engine/model/range~Range>}
-function getRangesOfBlockGroups( blocks ) {
+function getRangesOfBlockGroups( writer, blocks ) {
 	let startPosition;
 	let i = 0;
 	const ranges = [];
@@ -204,11 +201,11 @@ function getRangesOfBlockGroups( blocks ) {
 		const nextBlock = blocks[ i + 1 ];
 
 		if ( !startPosition ) {
-			startPosition = Position.createBefore( block );
+			startPosition = writer.createPositionBefore( block );
 		}
 
 		if ( !nextBlock || block.nextSibling != nextBlock ) {
-			ranges.push( new Range( startPosition, Position.createAfter( block ) ) );
+			ranges.push( writer.createRange( startPosition, writer.createPositionAfter( block ) ) );
 			startPosition = null;
 		}
 

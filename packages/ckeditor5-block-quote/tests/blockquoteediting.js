@@ -8,8 +8,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -94,7 +92,7 @@ describe( 'BlockQuoteEditing', () => {
 			const root = model.document.getRoot();
 			const bq = root.getChild( 0 );
 
-			writer.remove( Range.createIn( bq ) );
+			writer.remove( writer.createRangeIn( bq ) );
 		} );
 
 		expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' ); // Autoparagraphed.
@@ -122,7 +120,7 @@ describe( 'BlockQuoteEditing', () => {
 		model.change( writer => {
 			const root = model.document.getRoot();
 
-			writer.wrap( Range.createIn( root ), 'blockQuote' );
+			writer.wrap( writer.createRangeIn( root ), 'blockQuote' );
 		} );
 
 		expect( editor.getData() ).to.equal( '<blockquote><p>Foo</p><p>Bar</p></blockquote>' );
@@ -136,7 +134,7 @@ describe( 'BlockQuoteEditing', () => {
 			const root = model.document.getRoot();
 			const p = root.getChild( 0 ).getChild( 0 );
 
-			writer.setAttribute( 'bold', true, Range.createIn( p ) );
+			writer.setAttribute( 'bold', true, writer.createRangeIn( p ) );
 		} );
 
 		expect( editor.getData() ).to.equal( '<blockquote><p><strong>Foo</strong></p></blockquote>' );
