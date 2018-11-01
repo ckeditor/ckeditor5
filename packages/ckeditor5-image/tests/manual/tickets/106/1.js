@@ -8,9 +8,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-
 const config = {
 	plugins: [ ArticlePluginSet ],
 	toolbar: [ 'undo', 'redo', 'link' ],
@@ -54,7 +51,7 @@ function startExternalInsert( editor ) {
 
 	function type( path, text ) {
 		return new Promise( resolve => {
-			let position = new Position( model.document.getRoot(), path );
+			let position = model.createPositionFromPath( model.document.getRoot(), path );
 			let index = 0;
 
 			function typing() {
@@ -82,7 +79,7 @@ function startExternalInsert( editor ) {
 	function insertNewLine( path ) {
 		return wait( 200 ).then( () => {
 			model.enqueueChange( 'transparent', writer => {
-				writer.insertElement( 'paragraph', new Position( model.document.getRoot(), path ) );
+				writer.insertElement( 'paragraph', writer.createPositionFromPath( model.document.getRoot(), path ) );
 			} );
 
 			return Promise.resolve();
@@ -106,7 +103,8 @@ function startExternalDelete( editor ) {
 
 	function removeSecondBlock() {
 		model.enqueueChange( 'transparent', writer => {
-			writer.remove( Range.createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
+			const start = writer.createPositionFromPath( model.document.getRoot(), [ 1 ] );
+			writer.remove( writer.createRange( start, start.getShiftedBy( 1 ) ) );
 		} );
 	}
 

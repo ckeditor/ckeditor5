@@ -25,7 +25,7 @@ export default class ImageUploadCommand extends Command {
 		const selection = model.document.selection;
 		const schema = model.schema;
 
-		this.isEnabled = isImageAllowedInParent( selection, schema ) && checkSelectionWithObject( selection, schema );
+		this.isEnabled = isImageAllowedInParent( selection, schema, model ) && checkSelectionWithObject( selection, schema );
 	}
 
 	/**
@@ -54,7 +54,8 @@ export default class ImageUploadCommand extends Command {
 // @param {module:core/editor/editor~Editor} editor
 // @param {File} file
 function uploadImage( writer, editor, file ) {
-	const doc = editor.model.document;
+	const model = editor.model;
+	const doc = model.document;
 	const fileRepository = editor.plugins.get( FileRepository );
 
 	const loader = fileRepository.createLoader( file );
@@ -66,9 +67,9 @@ function uploadImage( writer, editor, file ) {
 
 	const imageElement = writer.createElement( 'image', { uploadId: loader.id } );
 
-	const insertAtSelection = findOptimalInsertionPosition( doc.selection );
+	const insertAtSelection = findOptimalInsertionPosition( doc.selection, model );
 
-	editor.model.insertContent( imageElement, insertAtSelection );
+	model.insertContent( imageElement, insertAtSelection );
 
 	// Inserting an image might've failed due to schema regulations.
 	if ( imageElement.parent ) {
@@ -77,8 +78,8 @@ function uploadImage( writer, editor, file ) {
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
-function isImageAllowedInParent( selection, schema ) {
-	const parent = getInsertImageParent( selection );
+function isImageAllowedInParent( selection, schema, model ) {
+	const parent = getInsertImageParent( selection, model );
 
 	return schema.checkChild( parent, 'image' );
 }
@@ -96,8 +97,8 @@ function checkSelectionWithObject( selection, schema ) {
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
-function getInsertImageParent( selection ) {
-	const insertAt = findOptimalInsertionPosition( selection );
+function getInsertImageParent( selection, model ) {
+	const insertAt = findOptimalInsertionPosition( selection, model );
 
 	let parent = insertAt.parent;
 

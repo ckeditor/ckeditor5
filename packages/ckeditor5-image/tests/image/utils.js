@@ -3,12 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImageWidgetSelected, isImage } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -18,8 +15,9 @@ describe( 'image widget utils', () => {
 
 	beforeEach( () => {
 		writer = new ViewDowncastWriter( new ViewDocument() );
-		image = new ViewElement( 'img' );
-		element = new ViewElement( 'figure', null, image );
+		image = writer.createContainerElement( 'img' );
+		element = writer.createContainerElement( 'figure' );
+		writer.insert( writer.createPositionAt( element, 0 ), image );
 		toImageWidget( element, writer, 'image widget' );
 	} );
 
@@ -51,7 +49,7 @@ describe( 'image widget utils', () => {
 		} );
 
 		it( 'should return false for non-widgetized elements', () => {
-			expect( isImageWidget( new ViewElement( 'p' ) ) ).to.be.false;
+			expect( isImageWidget( writer.createContainerElement( 'p' ) ) ).to.be.false;
 		} );
 	} );
 
@@ -62,28 +60,28 @@ describe( 'image widget utils', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ element ] );
 
-			const selection = new ViewSelection( element, 'on' );
+			const selection = writer.createSelection( element, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.true;
 		} );
 
 		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
-			const notWidgetizedElement = new ViewElement( 'p' );
+			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ notWidgetizedElement ] );
 
-			const selection = new ViewSelection( notWidgetizedElement, 'on' );
+			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );
 
 		it( 'should return false when widget element is not the only element in the selection', () => {
-			const notWidgetizedElement = new ViewElement( 'p' );
+			const notWidgetizedElement = writer.createContainerElement( 'p' );
 
 			frag = new ViewDocumentFragment( [ element, notWidgetizedElement ] );
 
-			const selection = new ViewSelection( ViewRange.createIn( frag ) );
+			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );

@@ -12,9 +12,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/imageuploadprogress.css';
@@ -159,7 +156,7 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 	}
 
 	if ( !_getUIElement( viewFigure, placeholderSymbol ) ) {
-		writer.insert( ViewPosition.createAfter( viewImg ), _createPlaceholder( writer ) );
+		writer.insert( writer.createPositionAfter( viewImg ), _createPlaceholder( writer ) );
 	}
 }
 
@@ -184,7 +181,7 @@ function _hidePlaceholder( viewFigure, writer ) {
 // @param {module:engine/view/view~View} view
 function _showProgressBar( viewFigure, writer, loader, view ) {
 	const progressBar = _createProgressBar( writer );
-	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
+	writer.insert( writer.createPositionAt( viewFigure, 'end' ), progressBar );
 
 	// Update progress bar width when uploadedPercent is changed.
 	loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
@@ -208,12 +205,12 @@ function _hideProgressBar( viewFigure, writer ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/view~View} view
 function _showCompleteIcon( viewFigure, writer, view ) {
-	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
+	const completeIcon = writer.createUIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
 
-	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
+	writer.insert( writer.createPositionAt( viewFigure, 'end' ), completeIcon );
 
 	setTimeout( () => {
-		view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
+		view.change( writer => writer.remove( writer.createRangeOn( completeIcon ) ) );
 	}, 3000 );
 }
 
@@ -268,6 +265,6 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 	const element = _getUIElement( viewFigure, uniqueProperty );
 
 	if ( element ) {
-		writer.remove( ViewRange.createOn( element ) );
+		writer.remove( writer.createRangeOn( element ) );
 	}
 }

@@ -9,9 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+
+import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { isImageType } from '../../src/imageupload/utils';
 
 /**
@@ -57,13 +57,11 @@ export default class ImageUploadEditing extends Plugin {
 
 			const images = Array.from( data.dataTransfer.files ).filter( isImageType );
 
-			const targetModelSelection = new ModelSelection(
-				data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) )
-			);
+			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
 
 			editor.model.change( writer => {
 				// Set selection to paste target.
-				writer.setSelection( targetModelSelection );
+				writer.setSelection( ranges );
 
 				if ( images.length ) {
 					evt.stop();

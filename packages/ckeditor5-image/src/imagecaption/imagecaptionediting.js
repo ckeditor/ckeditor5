@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { isImage } from '../image/utils';
 import {
@@ -240,7 +239,7 @@ function captionModelToView( elementCreator, hide = true ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewImage
 // @param {Object} conversionApi
 function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, conversionApi ) {
-	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
+	const viewPosition = conversionApi.writer.createPositionAt( viewImage, 'end' );
 
 	conversionApi.writer.insert( viewPosition, viewCaption );
 	conversionApi.mapper.bindElements( modelCaption, viewCaption );

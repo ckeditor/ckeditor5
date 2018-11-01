@@ -12,7 +12,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -135,7 +134,7 @@ describe( 'ImageToolbar', () => {
 			model.change( writer => {
 				// Select the [<image></image>]
 				writer.setSelection(
-					Range.createOn( doc.getRoot().getChild( 1 ) )
+					writer.createRangeOn( doc.getRoot().getChild( 1 ) )
 				);
 			} );
 
@@ -177,7 +176,7 @@ describe( 'ImageToolbar', () => {
 			model.change( writer => {
 				// Select the <paragraph>[...]</paragraph>
 				writer.setSelection(
-					Range.createIn( doc.getRoot().getChild( 0 ) )
+					writer.createRangeIn( doc.getRoot().getChild( 0 ) )
 				);
 			} );
 
