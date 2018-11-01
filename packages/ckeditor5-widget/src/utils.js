@@ -8,8 +8,6 @@
  */
 
 import HighlightStack from './highlightstack';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -254,13 +252,14 @@ export function toWidgetEditable( editable, writer ) {
  *
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * The selection based on which the insertion position should be calculated.
+ * @param {module:engine/model/model~Model} model Model instance.
  * @returns {module:engine/model/position~Position} The optimal position.
  */
-export function findOptimalInsertionPosition( selection ) {
+export function findOptimalInsertionPosition( selection, model ) {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement ) {
-		return ModelPosition.createAfter( selectedElement );
+		return model.createPositionAfter( selectedElement );
 	}
 
 	const firstBlock = selection.getSelectedBlocks().next().value;
@@ -269,10 +268,10 @@ export function findOptimalInsertionPosition( selection ) {
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return ModelPosition.createAt( firstBlock, 0 );
+			return model.createPositionAt( firstBlock, 0 );
 		}
 
-		const positionAfter = ModelPosition.createAfter( firstBlock );
+		const positionAfter = model.createPositionAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
 		if ( selection.focus.isTouching( positionAfter ) ) {
@@ -280,7 +279,7 @@ export function findOptimalInsertionPosition( selection ) {
 		}
 
 		// Otherwise return position before the block.
-		return ModelPosition.createBefore( firstBlock );
+		return model.createPositionBefore( firstBlock );
 	}
 
 	return selection.focus;
@@ -314,6 +313,6 @@ function addSelectionHandler( editable, writer ) {
 	} );
 
 	// Append the selection handler into the widget wrapper.
-	writer.insert( ViewPosition.createAt( editable, 0 ), selectionHandler );
+	writer.insert( writer.createPositionAt( editable, 0 ), selectionHandler );
 	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }
