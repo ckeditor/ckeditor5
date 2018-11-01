@@ -8,8 +8,6 @@
 import ClipboardObserver from '../src/clipboardobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
-import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import DataTransfer from '../src/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
@@ -24,11 +22,11 @@ describe( 'ClipboardObserver', () => {
 
 		// Create view and DOM structures.
 		el = writer.createContainerElement( 'p' );
-		writer.insert( Position.createAt( root, 0 ), el );
+		writer.insert( writer.createPositionAt( root, 0 ), el );
 		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
-		range = new Range( new Position( root, 1 ) );
+		range = writer.createRange( writer.createPositionAt( root, 1 ) );
 		// Just making sure that the following tests will check anything.
 		expect( range.isEqual( doc.selection.getFirstRange() ) ).to.be.false;
 
