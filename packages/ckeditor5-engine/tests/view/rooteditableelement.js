@@ -45,11 +45,13 @@ describe( 'RootEditableElement', () => {
 			el = new RootEditableElement( 'div' );
 		} );
 
-		it( 'should return true for rootElement/containerElement/element, also with correct name and element name', () => {
+		it( 'should return true for rootElement/containerElement/editable/element, also with correct name and element name', () => {
 			expect( el.is( 'rootElement' ) ).to.be.true;
 			expect( el.is( 'rootElement', 'div' ) ).to.be.true;
 			expect( el.is( 'containerElement' ) ).to.be.true;
 			expect( el.is( 'containerElement', 'div' ) ).to.be.true;
+			expect( el.is( 'editableElement' ) ).to.be.true;
+			expect( el.is( 'editableElement', 'div' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
 			expect( el.is( 'element', 'div' ) ).to.be.true;
 			expect( el.is( 'div' ) ).to.be.true;

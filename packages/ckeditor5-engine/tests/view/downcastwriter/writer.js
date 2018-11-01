@@ -9,6 +9,8 @@ import EditableElement from '../../../src/view/editableelement';
 import ViewPosition from '../../../src/view/position';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
+import ViewElement from '../../../src/view/element';
+import ViewSelection from '../../../src/view/selection';
 
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
@@ -22,7 +24,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelection()', () => {
 		it( 'should set document view selection', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position );
 
 			const ranges = Array.from( doc.selection.getRanges() );
@@ -33,7 +35,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should be able to set fake selection', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position, { fake: true, label: 'foo' } );
 
 			expect( doc.selection.isFake ).to.be.true;
@@ -43,7 +45,7 @@ describe( 'DowncastWriter', () => {
 
 	describe( 'setSelectionFocus()', () => {
 		it( 'should use selection._setFocus method internally', () => {
-			const position = ViewPosition.createAt( root, 0 );
+			const position = ViewPosition._createAt( root, 0 );
 			writer.setSelection( position );
 
 			const spy = sinon.spy( writer.document.selection, '_setFocus' );
@@ -256,23 +258,79 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionAt( doc.getRoot(), 0 ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionAfter( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createPositionBefore( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRange( writer.createPositionAt( doc.getRoot(), 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRangeIn( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createRangeOn( doc.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
+		} );
+	} );
+
 	describe( 'manages AttributeElement#_clonesGroup', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
 			const text = writer.createText( 'abccccde' );
 
-			writer.insert( ViewPosition.createAt( root, 0 ), text );
+			writer.insert( ViewPosition._createAt( root, 0 ), text );
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'foo' } );
 			span._priority = 20;
 
 			// <div>ab<span>cccc</span>de</div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( text, 2, text, 6 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( text, 2, text, 6 ), span );
 
 			const i = writer.createAttributeElement( 'i' );
 
 			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
 			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
+				ViewRange._createFromParentsAndOffsets(
 					root.getChild( 0 ), 1,
 					root.getChild( 1 ).getChild( 0 ), 1
 				),
@@ -281,7 +339,7 @@ describe( 'DowncastWriter', () => {
 
 			// <div>a<i>b<span>c</span></i><span>c</span><i><span>cc</span>d</i>e</div>
 			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
+				ViewRange._createFromParentsAndOffsets(
 					root.getChild( 2 ).getChild( 0 ), 1,
 					root.getChild( 3 ), 1
 				),
@@ -289,7 +347,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange.createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange._createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {
@@ -308,13 +366,13 @@ describe( 'DowncastWriter', () => {
 		it( 'should not create groups for attribute elements that are not created in document root', () => {
 			const p = writer.createContainerElement( 'p' );
 			const foo = writer.createText( 'foo' );
-			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p, 0 ), foo );
 			// <p>foo</p>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <p><span>foo</span></p>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
 
 			// Find the span.
 			const createdSpan = p.getChild( 0 );
@@ -325,16 +383,16 @@ describe( 'DowncastWriter', () => {
 		it( 'should add attribute elements to clone groups deeply', () => {
 			const p = writer.createContainerElement( 'p' );
 			const foo = writer.createText( 'foo' );
-			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p, 0 ), foo );
 			// <p>foo</p>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <p><span>foo</span></p>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
 
 			// <div><p><span>foo</span></p>
-			writer.insert( ViewPosition.createAt( root, 0 ), p );
+			writer.insert( ViewPosition._createAt( root, 0 ), p );
 
 			// Find the span.
 			const createdSpan = p.getChild( 0 );
@@ -348,22 +406,22 @@ describe( 'DowncastWriter', () => {
 			const foo = writer.createText( 'foo' );
 			const bar = writer.createText( 'bar' );
 
-			writer.insert( ViewPosition.createAt( root, 0 ), p1 );
-			writer.insert( ViewPosition.createAt( root, 1 ), p2 );
-			writer.insert( ViewPosition.createAt( p1, 0 ), foo );
-			writer.insert( ViewPosition.createAt( p2, 0 ), bar );
+			writer.insert( ViewPosition._createAt( root, 0 ), p1 );
+			writer.insert( ViewPosition._createAt( root, 1 ), p2 );
+			writer.insert( ViewPosition._createAt( p1, 0 ), foo );
+			writer.insert( ViewPosition._createAt( p2, 0 ), bar );
 			// <div><p>foo</p><p>bar</p></div>
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
 
 			// <div><p>fo<span>o</span></p><p>bar</p></div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( foo, 2, foo, 3 ), span );
 
 			// <div><p>fo<span>o</span></p><p><span>b</span>ar</p></div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
+			writer.wrap( ViewRange._createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
 
 			// <div><p><span>b</span>ar</p></div>
-			writer.remove( ViewRange.createOn( p1 ) );
+			writer.remove( ViewRange._createOn( p1 ) );
 
 			// Find the span.
 			const spanInTree = p2.getChild( 0 );

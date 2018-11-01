@@ -4,8 +4,6 @@
  */
 
 import Model from '../../../src/model/model';
-import ModelPosition from '../../../src/model/position';
-import ModelRange from '../../../src/model/range';
 
 import { injectSelectionPostFixer } from '../../../src/model/utils/selection-post-fixer';
 
@@ -88,7 +86,7 @@ describe( 'Selection post-fixer', () => {
 			// <paragraph>foo</paragraph>[]<image></image>
 			model.change( writer => {
 				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 )
+					writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 1 ) )
 				);
 			} );
 
@@ -109,9 +107,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #1', () => {
 				// <paragraph>f[oo</paragraph><table><tableRow><tableCell></tableCell>]<tableCell>...
 				model.change( writer => {
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 0 ), 1,
-						modelRoot.getChild( 1 ).getChild( 0 ), 1
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 1 )
 					) );
 				} );
 
@@ -127,9 +125,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #2', () => {
 				// ...<table><tableRow><tableCell></tableCell>[<tableCell></tableCell></tableRow></table><paragraph>b]ar</paragraph>
 				model.change( writer => {
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 1 ).getChild( 0 ), 1,
-						modelRoot.getChild( 2 ), 1
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 2 ), 1 )
 					) );
 				} );
 
@@ -145,9 +143,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #3', () => {
 				// <paragraph>f[oo</paragraph><table>]<tableRow>...
 				model.change( writer => {
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 0 ), 1,
-						modelRoot.getChild( 1 ), 0
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ), 0 )
 					) );
 				} );
 
@@ -163,9 +161,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #4', () => {
 				// <paragraph>foo</paragraph><table><tableRow><tableCell>a[aa</tableCell><tableCell>b]bb</tableCell>
 				model.change( writer => {
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ), 1,
-						modelRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ), 2
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ), 2 )
 					) );
 				} );
 
@@ -295,8 +293,14 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix multiple ranges #1', () => {
 				model.change( writer => {
 					const ranges = [
-						new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
-						new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 1, 1 ] ) )
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 0, 1 ] ),
+							writer.createPositionFromPath( modelRoot, [ 1, 0 ] )
+						),
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 1, 0, 0, 0 ] ),
+							writer.createPositionFromPath( modelRoot, [ 1, 1 ] )
+						)
 					];
 					writer.setSelection( ranges );
 				} );
@@ -313,8 +317,14 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix multiple ranges #2', () => {
 				model.change( writer => {
 					const ranges = [
-						new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
-						new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) )
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 0, 1 ] ),
+							writer.createPositionFromPath( modelRoot, [ 1, 0 ] )
+						),
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 1, 0, 0, 0 ] ),
+							writer.createPositionFromPath( modelRoot, [ 2, 2 ] )
+						)
 					];
 
 					writer.setSelection( ranges );
@@ -356,9 +366,18 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix multiple ranges #4', () => {
 				model.change( writer => {
 					const ranges = [
-						new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
-						new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 1 ] ) ),
-						new ModelRange( new ModelPosition( modelRoot, [ 2, 2 ] ), new ModelPosition( modelRoot, [ 2, 3 ] ) )
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 0, 1 ] ),
+							writer.createPositionFromPath( modelRoot, [ 1, 0 ] )
+						),
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 1, 0, 0, 0 ] ),
+							writer.createPositionFromPath( modelRoot, [ 2, 1 ] )
+						),
+						writer.createRange(
+							writer.createPositionFromPath( modelRoot, [ 2, 2 ] ),
+							writer.createPositionFromPath( modelRoot, [ 2, 3 ] )
+						)
 					];
 
 					writer.setSelection( ranges );
@@ -388,9 +407,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #1 (crossing object and limit boundaries)', () => {
 				model.change( writer => {
 					// <paragraph>f[oo</paragraph><image><caption>x]xx</caption>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 0 ), 1,
-						modelRoot.getChild( 1 ).getChild( 0 ), 1
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 1 )
 					) );
 				} );
 
@@ -406,9 +425,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #2 (crossing object boundary)', () => {
 				model.change( writer => {
 					// <paragraph>f[oo</paragraph><image>]<caption>xxx</caption>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 0 ), 1,
-						modelRoot.getChild( 1 ), 0
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ), 0 )
 					) );
 				} );
 
@@ -424,9 +443,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #3 (crossing object boundary)', () => {
 				model.change( writer => {
 					// <paragraph>f[oo</paragraph><image><caption>xxx</caption>]</image>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 0 ), 1,
-						modelRoot.getChild( 1 ), 1
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ), 1 )
 					) );
 				} );
 
@@ -442,9 +461,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #4 (element selection of not an object)', () => {
 				model.change( writer => {
 					// <paragraph>foo</paragraph><image>[<caption>xxx</caption>]</image>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot.getChild( 1 ), 0,
-						modelRoot.getChild( 1 ), 1
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ), 0 ),
+						writer.createPositionAt( modelRoot.getChild( 1 ), 1 )
 					) );
 				} );
 
@@ -460,9 +479,9 @@ describe( 'Selection post-fixer', () => {
 			it( 'should not fix #1 (element selection of an object)', () => {
 				model.change( writer => {
 					// <paragraph>foo</paragraph>[<image><caption>xxx</caption></image>]...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						modelRoot, 1,
-						modelRoot, 2
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( modelRoot, 1 ),
+						writer.createPositionAt( modelRoot, 2 )
 					) );
 				} );
 
@@ -480,9 +499,9 @@ describe( 'Selection post-fixer', () => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
 					// <paragraph>foo</paragraph><image><caption>[xxx]</caption></image>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						caption, 0,
-						caption, 3
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( caption, 0 ),
+						writer.createPositionAt( caption, 3 )
 					) );
 				} );
 
@@ -500,9 +519,9 @@ describe( 'Selection post-fixer', () => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
 					// <paragraph>foo</paragraph><image><caption>[xx]x</caption></image>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						caption, 0,
-						caption, 2
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( caption, 0 ),
+						writer.createPositionAt( caption, 2 )
 					) );
 				} );
 
@@ -520,9 +539,9 @@ describe( 'Selection post-fixer', () => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
 					// <paragraph>foo</paragraph><image><caption>x[xx]</caption></image>...
-					writer.setSelection( ModelRange.createFromParentsAndOffsets(
-						caption, 1,
-						caption, 3
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( caption, 1 ),
+						writer.createPositionAt( caption, 3 )
 					) );
 				} );
 
@@ -713,7 +732,7 @@ describe( 'Selection post-fixer', () => {
 				// <table>[]<tableRow>...
 				model.change( writer => {
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
+						writer.createRange( writer.createPositionAt( modelRoot.getChild( 1 ), 0 ) )
 					);
 				} );
 
@@ -732,7 +751,7 @@ describe( 'Selection post-fixer', () => {
 					const row = modelRoot.getChild( 1 ).getChild( 0 );
 
 					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( row, 0, row, 0 )
+						writer.createRange( writer.createPositionAt( row, 0 ) )
 					);
 				} );
 
@@ -750,8 +769,8 @@ describe( 'Selection post-fixer', () => {
 				model.change( writer => {
 					writer.setSelection(
 						[
-							ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 ),
-							ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 )
+							writer.createRange( writer.createPositionAt( modelRoot, 0 ) ),
+							writer.createRange( writer.createPositionAt( modelRoot, 1 ) )
 						]
 					);
 				} );

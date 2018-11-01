@@ -15,6 +15,10 @@ import TextProxy from '../../src/view/textproxy';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import { parse, stringify } from '../../src/dev-utils/view';
+import TreeWalker from '../../src/view/treewalker';
+import createViewRoot from './_utils/createroot';
+import AttributeElement from '../../src/view/attributeelement';
+import ContainerElement from '../../src/view/containerelement';
 
 describe( 'Position', () => {
 	const parentMock = {};
@@ -148,88 +152,6 @@ describe( 'Position', () => {
 			const docFrag = new DocumentFragment();
 
 			expect( new Position( docFrag, 0 ).getAncestors() ).to.deep.equal( [ docFrag ] );
-		} );
-	} );
-
-	describe( 'createAt', () => {
-		it( 'should throw if no offset is passed', () => {
-			const element = new Element( 'p' );
-
-			expect( () => Position.createAt( element ) ).to.throw( CKEditorError, /view-position-createAt-offset-required/ );
-		} );
-
-		it( 'should create positions from positions', () => {
-			const spy = sinon.spy( Position, 'createFromPosition' );
-
-			const p = new Element( 'p' );
-			const position = new Position( p, 0 );
-			const created = Position.createAt( position, 0 );
-
-			expect( created.isEqual( position ) ).to.be.true;
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should create positions from node and offset', () => {
-			const foo = new Text( 'foo' );
-			const p = new Element( 'p', null, foo );
-
-			expect( Position.createAt( foo, 0 ).parent ).to.equal( foo );
-			expect( Position.createAt( foo, 0 ).offset ).to.equal( 0 );
-
-			expect( Position.createAt( foo, 2 ).parent ).to.equal( foo );
-			expect( Position.createAt( foo, 2 ).offset ).to.equal( 2 );
-
-			expect( Position.createAt( p, 1 ).parent ).to.equal( p );
-			expect( Position.createAt( p, 1 ).offset ).to.equal( 1 );
-		} );
-
-		it( 'should create positions from node and flag', () => {
-			const foo = new Text( 'foo' );
-			const p = new Element( 'p', null, foo );
-
-			const fooEnd = Position.createAt( foo, 'end' );
-			const fooBefore = Position.createAt( foo, 'before' );
-			const fooAfter = Position.createAt( foo, 'after' );
-
-			const pEnd = Position.createAt( p, 'end' );
-			// pBefore and pAfter would throw.
-
-			expect( fooEnd.parent ).to.equal( foo );
-			expect( fooEnd.offset ).to.equal( 3 );
-
-			expect( fooBefore.parent ).to.equal( p );
-			expect( fooBefore.offset ).to.equal( 0 );
-
-			expect( fooAfter.parent ).to.equal( p );
-			expect( fooAfter.offset ).to.equal( 1 );
-
-			expect( pEnd.parent ).to.equal( p );
-			expect( pEnd.offset ).to.equal( 1 );
-		} );
-
-		it( 'should create positions in document fragment', () => {
-			const foo = new Text( 'foo' );
-			const docFrag = new DocumentFragment( [ foo ] );
-
-			const pStart = Position.createAt( docFrag, 0 );
-			const pEnd = Position.createAt( docFrag, 'end' );
-
-			expect( pStart.parent ).to.equal( docFrag );
-			expect( pStart.offset ).to.equal( 0 );
-			expect( pEnd.parent ).to.equal( docFrag );
-			expect( pEnd.offset ).to.equal( 1 );
-		} );
-	} );
-
-	describe( 'createFromPosition', () => {
-		it( 'creates new Position with same parent and offset', () => {
-			const offset = 50;
-			const position = new Position( parentMock, offset );
-			const newPosition = Position.createFromPosition( position );
-
-			expect( position ).to.not.equal( newPosition );
-			expect( position.offset ).to.equal( offset );
-			expect( position.parent ).to.equal( parentMock );
 		} );
 	} );
 
@@ -456,53 +378,123 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'createBefore', () => {
-		it( 'should throw error if one try to create positions before root', () => {
-			expect( () => {
-				Position.createBefore( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /view-position-before-root/ );
+	describe( 'static creators', () => {
+		describe( '_createAt()', () => {
+			it( 'should throw if no offset is passed', () => {
+				const element = new Element( 'p' );
+
+				expect( () => Position._createAt( element ) ).to.throw( CKEditorError, /view-createPositionAt-offset-required/ );
+			} );
+
+			it( 'should create positions from positions', () => {
+				const p = new Element( 'p' );
+				const position = new Position( p, 0 );
+				const created = Position._createAt( position, 0 );
+
+				expect( created.isEqual( position ) ).to.be.true;
+				expect( created ).to.not.be.equal( position );
+			} );
+
+			it( 'should create positions from node and offset', () => {
+				const foo = new Text( 'foo' );
+				const p = new Element( 'p', null, foo );
+
+				expect( Position._createAt( foo, 0 ).parent ).to.equal( foo );
+				expect( Position._createAt( foo, 0 ).offset ).to.equal( 0 );
+
+				expect( Position._createAt( foo, 2 ).parent ).to.equal( foo );
+				expect( Position._createAt( foo, 2 ).offset ).to.equal( 2 );
+
+				expect( Position._createAt( p, 1 ).parent ).to.equal( p );
+				expect( Position._createAt( p, 1 ).offset ).to.equal( 1 );
+			} );
+
+			it( 'should create positions from node and flag', () => {
+				const foo = new Text( 'foo' );
+				const p = new Element( 'p', null, foo );
+
+				const fooEnd = Position._createAt( foo, 'end' );
+				const fooBefore = Position._createAt( foo, 'before' );
+				const fooAfter = Position._createAt( foo, 'after' );
+
+				const pEnd = Position._createAt( p, 'end' );
+				// pBefore and pAfter would throw.
+
+				expect( fooEnd.parent ).to.equal( foo );
+				expect( fooEnd.offset ).to.equal( 3 );
+
+				expect( fooBefore.parent ).to.equal( p );
+				expect( fooBefore.offset ).to.equal( 0 );
+
+				expect( fooAfter.parent ).to.equal( p );
+				expect( fooAfter.offset ).to.equal( 1 );
+
+				expect( pEnd.parent ).to.equal( p );
+				expect( pEnd.offset ).to.equal( 1 );
+			} );
+
+			it( 'should create positions in document fragment', () => {
+				const foo = new Text( 'foo' );
+				const docFrag = new DocumentFragment( [ foo ] );
+
+				const pStart = Position._createAt( docFrag, 0 );
+				const pEnd = Position._createAt( docFrag, 'end' );
+
+				expect( pStart.parent ).to.equal( docFrag );
+				expect( pStart.offset ).to.equal( 0 );
+				expect( pEnd.parent ).to.equal( docFrag );
+				expect( pEnd.offset ).to.equal( 1 );
+			} );
 		} );
 
-		it( 'should create positions before `Node`', () => {
-			const { selection } = parse( '<p>[]<b></b></p>' );
-			const position = selection.getFirstPosition();
-			const nodeAfter = position.nodeAfter;
+		describe( '_createBefore()', () => {
+			it( 'should throw error if one try to create positions before root', () => {
+				expect( () => {
+					Position._createBefore( parse( '<p></p>' ) );
+				} ).to.throw( CKEditorError, /view-position-before-root/ );
+			} );
 
-			expect( Position.createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
+			it( 'should create positions before `Node`', () => {
+				const { selection } = parse( '<p>[]<b></b></p>' );
+				const position = selection.getFirstPosition();
+				const nodeAfter = position.nodeAfter;
+
+				expect( Position._createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
+			} );
+
+			it( 'should create positions before `TextProxy`', () => {
+				const text = new Text( 'abc' );
+
+				const textProxy = new TextProxy( text, 1, 1 );
+				const position = new Position( text, 1 );
+
+				expect( Position._createBefore( textProxy ) ).deep.equal( position );
+			} );
 		} );
 
-		it( 'should create positions before `TextProxy`', () => {
-			const text = new Text( 'abc' );
+		describe( '_createAfter()', () => {
+			it( 'should throw error if one try to create positions after root', () => {
+				expect( () => {
+					Position._createAfter( parse( '<p></p>' ) );
+				} ).to.throw( CKEditorError, /view-position-after-root/ );
+			} );
 
-			const textProxy = new TextProxy( text, 1, 1 );
-			const position = new Position( text, 1 );
+			it( 'should create positions after `Node`', () => {
+				const { selection } = parse( '<p><b></b>[]</p>' );
+				const position = selection.getFirstPosition();
+				const nodeBefore = position.nodeBefore;
 
-			expect( Position.createBefore( textProxy ) ).deep.equal( position );
-		} );
-	} );
+				expect( Position._createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
+			} );
 
-	describe( 'createAfter', () => {
-		it( 'should throw error if one try to create positions after root', () => {
-			expect( () => {
-				Position.createAfter( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /view-position-after-root/ );
-		} );
+			it( 'should create positions after `TextProxy`', () => {
+				const text = new Text( 'abcd' );
 
-		it( 'should create positions after `Node`', () => {
-			const { selection } = parse( '<p><b></b>[]</p>' );
-			const position = selection.getFirstPosition();
-			const nodeBefore = position.nodeBefore;
+				const textProxy = new TextProxy( text, 1, 2 );
+				const position = new Position( text, 3 );
 
-			expect( Position.createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
-		} );
-
-		it( 'should create positions after `TextProxy`', () => {
-			const text = new Text( 'abcd' );
-
-			const textProxy = new TextProxy( text, 1, 2 );
-			const position = new Position( text, 3 );
-
-			expect( Position.createAfter( textProxy ) ).deep.equal( position );
+				expect( Position._createAfter( textProxy ) ).deep.equal( position );
+			} );
 		} );
 	} );
 
@@ -572,13 +564,13 @@ describe( 'Position', () => {
 
 		it( 'for two the same positions returns the parent element', () => {
 			const afterLoremPosition = new Position( liOl1, 5 );
-			const otherPosition = Position.createFromPosition( afterLoremPosition );
+			const otherPosition = Position._createAt( afterLoremPosition );
 
 			test( afterLoremPosition, otherPosition, liOl1 );
 		} );
 
 		it( 'for two positions in the same element returns the element', () => {
-			const startMaecenasPosition = Position.createAt( liOl2, 0 );
+			const startMaecenasPosition = Position._createAt( liOl2, 0 );
 			const beforeTellusPosition = new Position( liOl2, 18 );
 
 			test( startMaecenasPosition, beforeTellusPosition, liOl2 );
@@ -610,5 +602,55 @@ describe( 'Position', () => {
 			expect( positionA.getCommonAncestor( positionB ) ).to.equal( lca );
 			expect( positionB.getCommonAncestor( positionA ) ).to.equal( lca );
 		}
+	} );
+
+	describe( 'getWalker()', () => {
+		let root;
+
+		beforeEach( () => {
+			const doc = new Document();
+
+			root = createViewRoot( doc );
+
+			const textAbcd = new Text( 'abcd' );
+			const bold = new AttributeElement( 'b', null, [ textAbcd ] );
+
+			const paragraph = new ContainerElement( 'p', null, [ bold ] );
+			const img = new ContainerElement( 'img' );
+
+			root._insertChild( 0, [ img, paragraph ] );
+		} );
+
+		it( 'should be possible to iterate using this method', () => {
+			const position = new Position( root, 0 );
+
+			const items = [];
+			const walker = position.getWalker();
+
+			for ( const value of walker ) {
+				items.push( value.type + ':' + ( value.item.name || value.item.data ) );
+			}
+
+			expect( items ).to.deep.equal( [
+				'elementStart:img',
+				'elementEnd:img',
+				'elementStart:p',
+				'elementStart:b',
+				'text:abcd',
+				'elementEnd:b',
+				'elementEnd:p'
+			] );
+		} );
+
+		it( 'should return treewalker with given options', () => {
+			const position = new Position( root, 0 );
+			const walker = position.getWalker( { singleCharacters: true } );
+
+			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
+			expect( walker ).to.have.property( 'position' );
+			expect( walker.position.isEqual( position ) ).to.be.true;
+			expect( walker ).to.have.property( 'shallow' ).that.is.false;
+		} );
 	} );
 } );

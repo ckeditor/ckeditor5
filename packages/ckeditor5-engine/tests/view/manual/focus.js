@@ -28,13 +28,13 @@ view.change( writer => {
 	text1 = writer.createText( 'Foo bar baz' );
 	text2 = writer.createText( 'Foo bar baz' );
 
-	writer.insert( ViewPosition.createAt( editable1 ), text1 );
-	writer.insert( ViewPosition.createAt( editable2 ), text2 );
+	writer.insert( ViewPosition._createAt( editable1 ), text1 );
+	writer.insert( ViewPosition._createAt( editable2 ), text2 );
 } );
 
 document.getElementById( 'button1' ).addEventListener( 'click', () => {
 	view.change( writer => {
-		writer.setSelection( ViewRange.createFromParentsAndOffsets( text1, 4, text1, 7 ) );
+		writer.setSelection( ViewRange._createFromParentsAndOffsets( text1, 4, text1, 7 ) );
 	} );
 
 	view.focus();
@@ -42,7 +42,7 @@ document.getElementById( 'button1' ).addEventListener( 'click', () => {
 
 document.getElementById( 'button2' ).addEventListener( 'click', () => {
 	view.change( writer => {
-		writer.setSelection( ViewRange.createFromParentsAndOffsets( text2, 0, text2, 3 ) );
+		writer.setSelection( ViewRange._createFromParentsAndOffsets( text2, 0, text2, 3 ) );
 	} );
 
 	view.focus();

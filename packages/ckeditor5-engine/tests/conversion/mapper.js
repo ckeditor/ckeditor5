@@ -379,7 +379,7 @@ describe( 'Mapper', () => {
 
 		describe( 'toModelRange', () => {
 			it( 'should transform range', () => {
-				const viewRange = ViewRange.createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
+				const viewRange = ViewRange._createFromParentsAndOffsets( viewDiv, 0, viewTextFOO, 2 );
 				const modelRange = mapper.toModelRange( viewRange );
 				expect( modelRange.start.parent ).to.equal( modelDiv );
 				expect( modelRange.start.offset ).to.equal( 0 );
@@ -390,7 +390,7 @@ describe( 'Mapper', () => {
 
 		describe( 'toViewRange', () => {
 			it( 'should transform range', () => {
-				const modelRange = ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelP, 3 );
+				const modelRange = new ModelRange( ModelPosition._createAt( modelDiv, 0 ), ModelPosition._createAt( modelP, 3 ) );
 				const viewRange = mapper.toViewRange( modelRange );
 				expect( viewRange.start.parent ).to.equal( viewTextX );
 				expect( viewRange.start.offset ).to.equal( 0 );
@@ -400,7 +400,7 @@ describe( 'Mapper', () => {
 		} );
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).to.equal( viewElement );
 			expect( viewPosition.offset ).to.equal( viewOffset );
@@ -530,7 +530,7 @@ describe( 'Mapper', () => {
 		} );
 
 		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const modelPosition = ModelPosition._createAt( modelElement, modelOffset );
 			const viewPosition = mapper.toViewPosition( modelPosition );
 			expect( viewPosition.parent ).to.equal( viewElement );
 			expect( viewPosition.offset ).to.equal( viewOffset );

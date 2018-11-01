@@ -12,7 +12,8 @@ import LivePosition from '../../src/model/liveposition';
 import Range from '../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'LivePosition', () => {
+describe( 'LivePosition', () =>
+{
 	let model, doc, root, ul, p, li1, li2;
 
 	beforeEach( () => {
@@ -68,26 +69,22 @@ describe( 'LivePosition', () => {
 		LivePosition.prototype.stopListening.restore();
 	} );
 
-	it( 'createFromPosition should return LivePosition', () => {
-		const position = LivePosition.createFromPosition( new Position( root, [ 0 ] ) );
+	describe( 'fromPosition()', () => {
+		it( 'should return LivePosition', () => {
+			const position = LivePosition.fromPosition( new Position( root, [ 0 ] ) );
+			expect( position ).to.be.instanceof( LivePosition );
+			position.detach();
+		} );
+	} );
+
+	it( '_createBefore should return LivePosition', () => {
+		const position = LivePosition._createBefore( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
 
-	it( 'createFromParentAndOffset should return LivePosition', () => {
-		const position = LivePosition.createFromParentAndOffset( ul, 0 );
-		expect( position ).to.be.instanceof( LivePosition );
-		position.detach();
-	} );
-
-	it( 'createBefore should return LivePosition', () => {
-		const position = LivePosition.createBefore( ul );
-		expect( position ).to.be.instanceof( LivePosition );
-		position.detach();
-	} );
-
-	it( 'createAfter should return LivePosition', () => {
-		const position = LivePosition.createAfter( ul );
+	it( '_createAfter should return LivePosition', () => {
+		const position = LivePosition._createAfter( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
@@ -140,7 +137,7 @@ describe( 'LivePosition', () => {
 			it( 'is at the same parent and closer offset', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 1, 1, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -154,7 +151,7 @@ describe( 'LivePosition', () => {
 				live.stickiness = 'toNext';
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 1, 1, 3 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -167,7 +164,7 @@ describe( 'LivePosition', () => {
 			it( 'is at a position before a node from the live position path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 1, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -180,7 +177,7 @@ describe( 'LivePosition', () => {
 			it( 'is from the same parent and closer offset', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 1, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 1, 0, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -193,7 +190,7 @@ describe( 'LivePosition', () => {
 			it( 'is from a position before a node from the live position path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 1, 2 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -206,7 +203,7 @@ describe( 'LivePosition', () => {
 			it( 'contains live position (same level)', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 1, 2 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 1, 0, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -219,7 +216,7 @@ describe( 'LivePosition', () => {
 			it( 'contains live position (deep)', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 1, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -295,7 +292,7 @@ describe( 'LivePosition', () => {
 			it( 'is at the same parent and further offset', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 1, 1, 6 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -312,7 +309,7 @@ describe( 'LivePosition', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 1, 1, 3 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -327,7 +324,7 @@ describe( 'LivePosition', () => {
 			it( 'is at a position after a node from the live position path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 0, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 2 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -340,7 +337,7 @@ describe( 'LivePosition', () => {
 			it( 'is from the same parent and further offset', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 1, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( otherRoot, [ 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -357,7 +354,7 @@ describe( 'LivePosition', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 1, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( otherRoot, [ 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -374,7 +371,7 @@ describe( 'LivePosition', () => {
 					writer.insertText( 'foo', new Position( otherRoot, [ 0 ] ) );
 
 					const sourcePosition = new Position( otherRoot, [ 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( otherRoot, [ 3 ] );
 
 					writer.move( sourceRange, targetPosition );

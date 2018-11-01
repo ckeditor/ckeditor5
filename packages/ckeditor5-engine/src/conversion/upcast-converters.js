@@ -6,7 +6,6 @@
 import Matcher from '../view/matcher';
 
 import ModelRange from '../model/range';
-import ModelPosition from '../model/position';
 
 import { cloneDeep } from 'lodash-es';
 
@@ -358,7 +357,7 @@ function _prepareToElementConverter( config ) {
 		conversionApi.writer.insert( modelElement, splitResult.position );
 
 		// Convert children and insert to element.
-		const childrenResult = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelElement, 0 ) );
+		const childrenResult = conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
 
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( data.viewItem, match.match );
@@ -366,12 +365,12 @@ function _prepareToElementConverter( config ) {
 		// Set conversion result range.
 		data.modelRange = new ModelRange(
 			// Range should start before inserted element
-			ModelPosition.createBefore( modelElement ),
+			conversionApi.writer.createPositionBefore( modelElement ),
 			// Should end after but we need to take into consideration that children could split our
 			// element, so we need to move range after parent of the last converted child.
 			// before: <allowed>[]</allowed>
 			// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-			ModelPosition.createAfter( childrenResult.modelCursor.parent )
+			conversionApi.writer.createPositionAfter( childrenResult.modelCursor.parent )
 		);
 
 		// Now we need to check where the modelCursor should be.
@@ -380,7 +379,7 @@ function _prepareToElementConverter( config ) {
 		// before: <allowed><notAllowed>[]</notAllowed></allowed>
 		// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 		if ( splitResult.cursorParent ) {
-			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent, 0 );
+			data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
 
 			// Otherwise just continue after inserted element.
 		} else {
@@ -602,7 +601,7 @@ export function convertText() {
 
 				conversionApi.writer.insert( text, data.modelCursor );
 
-				data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
 				data.modelCursor = data.modelRange.end;
 			}
 		}

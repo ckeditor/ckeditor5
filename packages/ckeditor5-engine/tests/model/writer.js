@@ -925,8 +925,8 @@ describe( 'Writer', () => {
 
 			function getRange( startIndex, endIndex ) {
 				return new Range(
-					Position.createFromParentAndOffset( root, startIndex ),
-					Position.createFromParentAndOffset( root, endIndex )
+					Position._createAt( root, startIndex ),
+					Position._createAt( root, endIndex )
 				);
 			}
 
@@ -944,7 +944,7 @@ describe( 'Writer', () => {
 
 			function getCompressedAttrs() {
 				// default: 111---111222---1112------
-				const range = Range.createIn( root );
+				const range = Range._createIn( root );
 
 				return Array.from( range.getItems( { singleCharacters: true } ) )
 					.map( item => item.getAttribute( 'a' ) || '-' )
@@ -1218,7 +1218,7 @@ describe( 'Writer', () => {
 					appendElement( 'e', { a: 1 }, root );
 					appendText( 'xxx', root );
 
-					const range = Range.createIn( root );
+					const range = Range._createIn( root );
 
 					clearAttributes( range );
 
@@ -1286,7 +1286,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range', () => {
-			const range = Range.createIn( frag );
+			const range = Range._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1308,7 +1308,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
-			const range = Range.createIn( frag );
+			const range = Range._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1454,8 +1454,8 @@ describe( 'Writer', () => {
 		it( 'should move flat range of nodes', () => {
 			move( range, new Position( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+			expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
 		it( 'should throw if object to move is not a range', () => {
@@ -1525,20 +1525,20 @@ describe( 'Writer', () => {
 
 				expect( root.maxOffset ).to.equal( 1 );
 				expect( root.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1582,20 +1582,20 @@ describe( 'Writer', () => {
 
 				expect( frag.maxOffset ).to.equal( 1 );
 				expect( frag.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range.createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range.createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range.createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range.createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( Range._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1828,7 +1828,7 @@ describe( 'Writer', () => {
 		it( 'should wrap inside document fragment', () => {
 			const docFrag = new DocumentFragment( new Text( 'foo' ) );
 
-			wrap( Range.createIn( docFrag ), 'p' );
+			wrap( Range._createIn( docFrag ), 'p' );
 
 			expect( docFrag.maxOffset ).to.equal( 1 );
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
@@ -1919,7 +1919,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range.createIn( root );
+			range = Range._createIn( root );
 		} );
 
 		it( 'should throw if options.usingOperations is not defined', () => {
@@ -1979,7 +1979,7 @@ describe( 'Writer', () => {
 		it( 'should throw when trying to update existing marker in the document marker collection', () => {
 			addMarker( 'name', { range, usingOperation: false } );
 
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			expect( () => {
 				addMarker( 'name', { range: range2, usingOperation: false } );
@@ -2028,12 +2028,12 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range.createIn( root );
+			range = Range._createIn( root );
 		} );
 
 		it( 'should update managed marker\'s range by marker instance using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2048,7 +2048,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2 } );
 
@@ -2063,7 +2063,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker instance using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2, usingOperation: true } );
 
@@ -2078,7 +2078,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2, usingOperation: true } );
 
@@ -2096,7 +2096,7 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2131,7 +2131,7 @@ describe( 'Writer', () => {
 		it( 'should create additional operation when marker type changes to not managed using operation and changing its range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: true } );
 			updateMarker( 'name', { range: range2, usingOperation: false } );
@@ -2174,7 +2174,7 @@ describe( 'Writer', () => {
 		it( 'should enable changing marker to be managed using operation while changing range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: false } );
 			updateMarker( 'name', { range: range2, usingOperation: true } );
@@ -2212,7 +2212,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not change affectsData property if not provided', () => {
-			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, affectsData: false, usingOperation: false } );
 			updateMarker( 'name', { range: range2 } );
@@ -2280,7 +2280,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range.createIn( root );
+			range = Range._createIn( root );
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
@@ -2567,6 +2567,102 @@ describe( 'Writer', () => {
 			restoreSelectionGravity( overrideUid );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+		} );
+	} );
+
+	describe( 'createPositionFromPath()', () => {
+		it( 'should call model.createPositionFromPath()', () => {
+			const stub = sinon.stub( model, 'createPositionFromPath' );
+
+			model.change( writer => {
+				writer.createPositionFromPath();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should call model.createPositionAt()', () => {
+			const stub = sinon.stub( model, 'createPositionAt' );
+
+			model.change( writer => {
+				writer.createPositionAt();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should call model.createPositionAfter()', () => {
+			const stub = sinon.stub( model, 'createPositionAfter' );
+
+			model.change( writer => {
+				writer.createPositionAfter();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should call model.createPositionBefore()', () => {
+			const stub = sinon.stub( model, 'createPositionBefore' );
+
+			model.change( writer => {
+				writer.createPositionBefore();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should call model.createRange()', () => {
+			const stub = sinon.stub( model, 'createRange' );
+
+			model.change( writer => {
+				writer.createRange();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should call model.createRangeIn()', () => {
+			const stub = sinon.stub( model, 'createRangeIn' );
+
+			model.change( writer => {
+				writer.createRangeIn();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should call model.createRangeOn()', () => {
+			const stub = sinon.stub( model, 'createRangeOn' );
+
+			model.change( writer => {
+				writer.createRangeOn();
+			} );
+
+			sinon.assert.calledOnce( stub );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should call model.createSelection()', () => {
+			const stub = sinon.stub( model, 'createSelection' );
+
+			model.change( writer => {
+				writer.createSelection();
+			} );
+
+			sinon.assert.calledOnce( stub );
 		} );
 	} );
 

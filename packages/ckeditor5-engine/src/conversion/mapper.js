@@ -101,7 +101,7 @@ export default class Mapper {
 
 			const modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
-			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
+			data.modelPosition = ModelPosition._createAt( modelParent, modelOffset );
 		}, { priority: 'low' } );
 	}
 

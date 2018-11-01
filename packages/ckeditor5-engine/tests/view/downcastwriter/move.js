@@ -118,7 +118,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should correctly move text nodes inside same parent', () => {
 			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
 
-			const newRange = writer.move( selection.getFirstRange(), Position.createAt( view, 2 ) );
+			const newRange = writer.move( selection.getFirstRange(), Position._createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
@@ -130,7 +130,7 @@ describe( 'DowncastWriter', () => {
 			);
 
 			const viewText = view.getChild( 3 );
-			const newRange = writer.move( selection.getFirstRange(), Position.createAt( viewText, 1 ) );
+			const newRange = writer.move( selection.getFirstRange(), Position._createAt( viewText, 1 ) );
 
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
@@ -149,7 +149,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to EmptyElement', () => {
 			const srcAttribute = new AttributeElement( 'b' );
 			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
-			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstEmpty = new EmptyElement( 'img' );
 			new ContainerElement( 'p', null, dstEmpty ); // eslint-disable-line no-new
@@ -172,7 +172,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw if trying to move to UIElement', () => {
 			const srcAttribute = new AttributeElement( 'b' );
 			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
-			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstUI = new UIElement( 'span' );
 			new ContainerElement( 'p', null, dstUI ); // eslint-disable-line no-new
@@ -204,11 +204,11 @@ describe( 'DowncastWriter', () => {
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 2 );
 
-			writer.remove( Range.createOn( attrElemA ) );
+			writer.remove( writer.createRangeOn( attrElemA ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 
-			writer.move( Range.createOn( attrElemB ), new Position( dstContainer, 0 ) );
+			writer.move( writer.createRangeOn( attrElemB ), new Position( dstContainer, 0 ) );
 
 			expect( mapper.markerNameToElements( 'foo' ).size ).to.equal( 1 );
 		} );

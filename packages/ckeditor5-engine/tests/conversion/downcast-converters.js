@@ -10,8 +10,6 @@ import Conversion from '../../src/conversion/conversion';
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
-import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
 
 import ViewElement from '../../src/view/element';
 import ViewAttributeElement from '../../src/view/attributeelement';
@@ -473,7 +471,7 @@ describe( 'downcast-helpers', () => {
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
 
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) );
 				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
@@ -488,7 +486,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) );
 				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
@@ -510,7 +508,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) );
 				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
@@ -529,7 +527,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) );
 				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
@@ -545,7 +543,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
 				writer.addMarker( 'comment', { range, usingOperation: false } );
 			} );
 
@@ -560,7 +558,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
 				writer.addMarker( 'comment', { range, usingOperation: false } );
 			} );
 
@@ -583,7 +581,7 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 3 ) );
 				writer.addMarker( 'comment:abc', { range, usingOperation: false } );
 			} );
 
@@ -622,7 +620,7 @@ describe( 'downcast-converters', () => {
 
 		dispatcher.on( 'attribute:class', changeAttribute() );
 
-		modelRootStart = ModelPosition.createAt( modelRoot, 0 );
+		modelRootStart = model.createPositionAt( modelRoot, 0 );
 	} );
 
 	function viewAttributesToString( item ) {
@@ -815,7 +813,7 @@ describe( 'downcast-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
 			model.change( writer => {
-				writer.removeAttribute( 'bold', ModelRange.createIn( modelElement ) );
+				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -839,7 +837,7 @@ describe( 'downcast-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
 			model.change( writer => {
-				writer.removeAttribute( 'style', ModelRange.createIn( modelElement ) );
+				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -866,7 +864,7 @@ describe( 'downcast-converters', () => {
 
 			// Set new attribute on old link but also on non-linked characters.
 			model.change( writer => {
-				writer.setAttribute( 'link', 'http://foobar.com', ModelRange.createIn( modelElement ) );
+				writer.setAttribute( 'link', 'http://foobar.com', writer.createRangeIn( modelElement ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
@@ -885,7 +883,7 @@ describe( 'downcast-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
 			model.change( writer => {
-				writer.removeAttribute( 'bold', ModelRange.createIn( modelElement ) );
+				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
@@ -945,7 +943,7 @@ describe( 'downcast-converters', () => {
 
 		describe( 'collapsed range', () => {
 			beforeEach( () => {
-				range = ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 );
+				range = model.createRange( model.createPositionAt( modelElement, 3 ), model.createPositionAt( modelElement, 3 ) );
 			} );
 
 			it( 'should insert and remove ui element', () => {
@@ -1006,7 +1004,7 @@ describe( 'downcast-converters', () => {
 
 		describe( 'non-collapsed range', () => {
 			beforeEach( () => {
-				range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 5 );
+				range = model.createRange( model.createPositionAt( modelElement, 2 ), model.createPositionAt( modelElement, 5 ) );
 			} );
 
 			it( 'should insert and remove ui element - element as a creator', () => {
@@ -1106,7 +1104,9 @@ describe( 'downcast-converters', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 4 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foar</p></div>' );
@@ -1122,7 +1122,9 @@ describe( 'downcast-converters', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelElement, 2 ), writer.createPositionAt( modelElement, 4 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -1136,7 +1138,9 @@ describe( 'downcast-converters', () => {
 			} );
 
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelElement, 0, modelElement, 6 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelElement, 0 ), writer.createPositionAt( modelElement, 6 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>கு</p></div>' );
@@ -1152,14 +1156,18 @@ describe( 'downcast-converters', () => {
 
 			// Remove 'b'.
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelRoot, 3 ), writer.createPositionAt( modelRoot, 4 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foz<span></span>ar</div>' );
 
 			// Remove 'z'.
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 3 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelRoot, 2 ), writer.createPositionAt( modelRoot, 3 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>fo<span></span>ar</div>' );
@@ -1175,7 +1183,9 @@ describe( 'downcast-converters', () => {
 
 			// Remove 'z<span></span>b'.
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ) );
+				writer.remove(
+					writer.createRange( writer.createPositionAt( modelRoot, 2 ), writer.createPositionAt( modelRoot, 4 ) )
+				);
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foar</div>' );
@@ -1250,7 +1260,7 @@ describe( 'downcast-converters', () => {
 
 			// Remove second paragraph element.
 			model.change( writer => {
-				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+				writer.remove( writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 2 ) ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p></p><span></span><span></span></div>' );
@@ -1290,7 +1300,7 @@ describe( 'downcast-converters', () => {
 					writer.insert( [ modelElement1, modelElement2 ], modelRootStart );
 				} );
 
-				markerRange = ModelRange.createIn( modelRoot );
+				markerRange = model.createRangeIn( modelRoot );
 			} );
 
 			it( 'should wrap and unwrap text nodes', () => {
@@ -1378,7 +1388,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( descriptor ), { priority: 'high' } );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( descriptor ), { priority: 'high' } );
 
-				markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 );
+				markerRange = model.createRange( model.createPositionAt( modelRoot, 0 ), model.createPositionAt( modelRoot, 0 ) );
 
 				model.change( writer => {
 					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
@@ -1410,7 +1420,7 @@ describe( 'downcast-converters', () => {
 				const p2 = modelRoot.getChild( 1 );
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( p1, 0, p1, 3 );
+					const range = writer.createRange( writer.createPositionAt( p1, 0 ), writer.createPositionAt( p1, 3 ) );
 					writer.addMarker( 'markerFoo', { range, usingOperation: false } );
 				} );
 
@@ -1424,7 +1434,7 @@ describe( 'downcast-converters', () => {
 				);
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( p1, 1, p2, 2 );
+					const range = writer.createRange( writer.createPositionAt( p1, 1 ), writer.createPositionAt( p2, 2 ) );
 					writer.addMarker( 'markerBar', { range, usingOperation: false } );
 				} );
 
@@ -1444,7 +1454,7 @@ describe( 'downcast-converters', () => {
 				);
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( p1, 2, p2, 3 );
+					const range = writer.createRange( writer.createPositionAt( p1, 2 ), writer.createPositionAt( p2, 3 ) );
 					writer.addMarker( 'markerXyz', { range, usingOperation: false } );
 				} );
 
@@ -1516,7 +1526,7 @@ describe( 'downcast-converters', () => {
 				const p1 = modelRoot.getChild( 0 );
 				const p2 = modelRoot.getChild( 1 );
 
-				const markerRange = ModelRange.createFromParentsAndOffsets( p1, 3, p2, 0 );
+				const markerRange = model.createRange( model.createPositionAt( p1, 3 ), model.createPositionAt( p2, 0 ) );
 
 				model.change( writer => {
 					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
@@ -1564,7 +1574,7 @@ describe( 'downcast-converters', () => {
 					writer.insert( modelElement, modelRootStart );
 				} );
 
-				markerRange = ModelRange.createOn( modelElement );
+				markerRange = model.createRangeOn( modelElement );
 
 				dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
 				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );

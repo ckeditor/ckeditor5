@@ -64,6 +64,17 @@ export default class EditableElement extends ContainerElement {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'editableElement' || super.is( type );
+		} else {
+			return ( type == 'editableElement' && name == this.name ) || super.is( type, name );
+		}
+	}
+
+	/**
 	 * Returns document associated with the editable.
 	 *
 	 * @readonly

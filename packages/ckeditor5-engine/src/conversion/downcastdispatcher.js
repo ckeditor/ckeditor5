@@ -131,7 +131,7 @@ export default class DowncastDispatcher {
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {
-				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ), writer );
+				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else {
@@ -166,7 +166,7 @@ export default class DowncastDispatcher {
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const value of range ) {
 			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
 				item,
 				range: itemRange
@@ -226,7 +226,7 @@ export default class DowncastDispatcher {
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
 			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
 				item,
 				range: itemRange,
@@ -343,7 +343,7 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			const data = { item, range: Range.createOn( item ), markerName, markerRange };
+			const data = { item, range: Range._createOn( item ), markerName, markerRange };
 
 			this.fire( eventName, data, this.conversionApi );
 		}

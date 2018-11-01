@@ -8,7 +8,6 @@ import insertContent from '../../../src/model/utils/insertcontent';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
-import Selection from '../../../src/model/selection';
 import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
@@ -38,7 +37,7 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'x' ), selection );
@@ -50,8 +49,8 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
-			const selectionCopy = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
+			const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.true;
 
@@ -61,7 +60,7 @@ describe( 'DataController utils', () => {
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.false;
 
-			const insertionSelection = new Selection( new Position( doc.getRoot(), [ 3 ] ) );
+			const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
 			expect( selection.isEqual( insertionSelection ) ).to.be.true;
 		} );
 

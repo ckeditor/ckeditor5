@@ -318,7 +318,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return false if ranges are equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange ) ).to.be.false;
 		} );
@@ -330,7 +330,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -377,47 +377,47 @@ describe( 'Range', () => {
 
 		describe( 'isIntersecting', () => {
 			it( 'should return true if given range is equal', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 2 );
-				const otherRange = Range.createFromRange( range );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t3, 2 );
+				const otherRange = range.clone();
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
 
 			it( 'should return true if given range contains this range', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( p1, 1, t2, 2 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
 
 			it( 'should return true if given range ends in this range', () => {
-				const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+				const range = Range._createFromParentsAndOffsets( root, 1, t3, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( t1, 0, p2, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
 
 			it( 'should return true if given range starts in this range', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( p1, 1, p2, 0 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( p1, 1, p2, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.true;
 				expect( otherRange.isIntersecting( range ) ).to.be.true;
 			} );
 
 			it( 'should return false if given range is fully before/after this range', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( root, 1, t3, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.false;
 				expect( otherRange.isIntersecting( range ) ).to.be.false;
 			} );
 
 			it( 'should return false if ranges are in different roots', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( new Element( 'div' ), 1, t3, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.false;
 				expect( otherRange.isIntersecting( range ) ).to.be.false;
@@ -426,8 +426,8 @@ describe( 'Range', () => {
 
 		describe( 'getDifference', () => {
 			it( 'should return range equal to original range if other range does not intersect with it', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( root, 1, t3, 0 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( root, 1, t3, 0 );
 				const difference = range.getDifference( otherRange );
 
 				expect( difference.length ).to.equal( 1 );
@@ -435,8 +435,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return shrunken range if other range intersects with it', () => {
-				const range = Range.createFromParentsAndOffsets( root, 1, t3, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( t1, 0, p2, 0 );
+				const range = Range._createFromParentsAndOffsets( root, 1, t3, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( t1, 0, p2, 0 );
 				const difference = range.getDifference( otherRange );
 
 				expect( difference.length ).to.equal( 1 );
@@ -448,16 +448,16 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return an empty array if other range contains or is same as the original range', () => {
-				const range = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
-				const otherRange = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const range = Range._createFromParentsAndOffsets( p1, 1, t2, 2 );
+				const otherRange = Range._createFromParentsAndOffsets( t1, 0, t3, 3 );
 				const difference = range.getDifference( otherRange );
 
 				expect( difference.length ).to.equal( 0 );
 			} );
 
 			it( 'should two ranges if other range is contained by the original range', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t3, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( p1, 1, t2, 2 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t3, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( p1, 1, t2, 2 );
 				const difference = range.getDifference( otherRange );
 
 				expect( difference.length ).to.equal( 2 );
@@ -476,32 +476,32 @@ describe( 'Range', () => {
 
 		describe( 'getIntersection', () => {
 			it( 'should return range equal to original range if other range contains it', () => {
-				const range = Range.createFromParentsAndOffsets( t2, 0, t3, 0 );
-				const otherRange = Range.createFromParentsAndOffsets( t1, 1, t3, 1 );
+				const range = Range._createFromParentsAndOffsets( t2, 0, t3, 0 );
+				const otherRange = Range._createFromParentsAndOffsets( t1, 1, t3, 1 );
 				const intersection = range.getIntersection( otherRange );
 
 				expect( intersection.isEqual( range ) ).to.be.true;
 			} );
 
 			it( 'should return range equal to other range if it is contained in original range', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 1, t3, 1 );
-				const otherRange = Range.createFromParentsAndOffsets( t2, 0, t3, 0 );
+				const range = Range._createFromParentsAndOffsets( t1, 1, t3, 1 );
+				const otherRange = Range._createFromParentsAndOffsets( t2, 0, t3, 0 );
 				const intersection = range.getIntersection( otherRange );
 
 				expect( intersection.isEqual( otherRange ) ).to.be.true;
 			} );
 
 			it( 'should return null if ranges do not intersect', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( t3, 0, t3, 3 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( t3, 0, t3, 3 );
 				const intersection = range.getIntersection( otherRange );
 
 				expect( intersection ).to.be.null;
 			} );
 
 			it( 'should return common part if ranges intersect partially', () => {
-				const range = Range.createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range.createFromParentsAndOffsets( t2, 0, t3, 3 );
+				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
+				const otherRange = Range._createFromParentsAndOffsets( t2, 0, t3, 3 );
 				const intersection = range.getIntersection( otherRange );
 
 				expect( intersection.start.parent ).to.equal( t2 );
@@ -654,9 +654,9 @@ describe( 'Range', () => {
 			div = new Element( 'div', null, p );
 		} );
 
-		describe( 'createIn', () => {
+		describe( '_createIn', () => {
 			it( 'should return range', () => {
-				const range = Range.createIn( p );
+				const range = Range._createIn( p );
 
 				expect( range.start.parent ).to.deep.equal( p );
 				expect( range.start.offset ).to.deep.equal( 0 );
@@ -665,9 +665,9 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createOn', () => {
+		describe( '_createOn', () => {
 			it( 'should return range', () => {
-				const range = Range.createOn( p );
+				const range = Range._createOn( p );
 
 				expect( range.start.parent ).to.equal( div );
 				expect( range.start.offset ).to.equal( 0 );
@@ -678,7 +678,7 @@ describe( 'Range', () => {
 			it( 'should create a proper range on a text proxy', () => {
 				const text = new Text( 'foobar' );
 				const textProxy = new TextProxy( text, 2, 3 );
-				const range = Range.createOn( textProxy );
+				const range = Range._createOn( textProxy );
 
 				expect( range.start.parent ).to.equal( text );
 				expect( range.start.offset ).to.equal( 2 );
@@ -687,31 +687,9 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createCollapsedAt()', () => {
-			it( 'should return new collapsed range at the given item position', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 0 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 0 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-
-			it( 'should return new collapse range at the given item position and offset', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 1 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 1 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-		} );
-
-		describe( 'createFromParentsAndOffsets', () => {
+		describe( '_createFromParentsAndOffsets', () => {
 			it( 'should return range', () => {
-				const range = Range.createFromParentsAndOffsets( div, 0, foz, 1 );
+				const range = Range._createFromParentsAndOffsets( div, 0, foz, 1 );
 
 				expect( range.start.parent ).to.deep.equal( div );
 				expect( range.start.offset ).to.deep.equal( 0 );
@@ -720,10 +698,10 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromPositionAndShift', () => {
+		describe( '_createFromPositionAndShift', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( foz, 1 );
-				const range = Range.createFromPositionAndShift( position, 2 );
+				const range = Range._createFromPositionAndShift( position, 2 );
 
 				expect( range ).to.be.instanceof( Range );
 				expect( range.start.isEqual( position ) ).to.be.true;
@@ -733,22 +711,12 @@ describe( 'Range', () => {
 
 			it( 'should accept negative shift value', () => {
 				const position = new Position( foz, 3 );
-				const range = Range.createFromPositionAndShift( position, -1 );
+				const range = Range._createFromPositionAndShift( position, -1 );
 
 				expect( range ).to.be.instanceof( Range );
 				expect( range.end.isEqual( position ) ).to.be.true;
 				expect( range.start.parent ).to.equal( foz );
 				expect( range.start.offset ).to.deep.equal( 2 );
-			} );
-		} );
-
-		describe( 'createFromRange', () => {
-			it( 'should create a new instance of Range that is equal to passed range', () => {
-				const range = new Range( new Position( foz, 0 ), new Position( foz, 2 ) );
-				const clone = Range.createFromRange( range );
-
-				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
-				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 			} );
 		} );
 	} );

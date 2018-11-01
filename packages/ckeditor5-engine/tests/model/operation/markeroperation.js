@@ -5,7 +5,6 @@
 
 import Model from '../../../src/model/model';
 import Text from '../../../src/model/text';
-import Range from '../../../src/model/range';
 import MarkerOperation from '../../../src/model/operation/markeroperation';
 
 function matchRange( range ) {
@@ -20,7 +19,7 @@ describe( 'MarkerOperation', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		root._appendChild( new Text( 'foo' ) );
-		range = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+		range = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 0 ) );
 	} );
 
 	it( 'should have property type equal to "marker"', () => {
@@ -45,7 +44,7 @@ describe( 'MarkerOperation', () => {
 			new MarkerOperation( 'name', null, range, model.markers, true, doc.version )
 		);
 
-		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
+		const range2 = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 3 ) );
 
 		sinon.spy( model.markers, '_set' );
 
@@ -99,7 +98,7 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {
-		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
+		const range2 = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 3 ) );
 
 		const op1 = new MarkerOperation( 'name', null, range, model.markers, true, doc.version );
 		const reversed1 = op1.getReversed();

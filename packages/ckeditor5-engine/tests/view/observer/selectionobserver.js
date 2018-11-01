@@ -107,7 +107,7 @@ describe( 'SelectionObserver', () => {
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
 		view.change( writer => {
-			writer.setSelection( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
+			writer.setSelection( ViewRange._createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
 		} );
 	} );
 
@@ -192,7 +192,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		viewDocument.selection._setTo( ViewRange._createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 		const spy = testUtils.sinon.spy( log, 'warn' );
 
 		viewDocument.on( 'selectionChangeDone', () => {

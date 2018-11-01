@@ -4,9 +4,6 @@
  */
 
 import Model from '../../src/model/model';
-import ModelElement from '../../src/model/element';
-import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
 
 import View from '../../src/view/view';
 import ViewUIElement from '../../src/view/uielement';
@@ -197,9 +194,9 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -207,7 +204,7 @@ describe( 'downcast-selection-converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -222,9 +219,9 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
 
@@ -233,7 +230,7 @@ describe( 'downcast-selection-converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -251,9 +248,9 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'foobar' );
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker2', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -261,7 +258,7 @@ describe( 'downcast-selection-converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -277,9 +274,9 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'foobar' );
 
 				model.change( writer => {
-					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
 					marker = writer.addMarker( 'marker3', { range, usingOperation: false } );
-					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.setSelection( modelRoot, 3 );
 				} );
 
 				// Remove view children manually (without firing additional conversion).
@@ -287,7 +284,7 @@ describe( 'downcast-selection-converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -308,7 +305,7 @@ describe( 'downcast-selection-converters', () => {
 				] );
 
 				model.change( writer => {
-					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 0 ] ) ) );
+					writer.setSelection( writer.createRange( writer.createPositionFromPath( modelRoot, [ 0 ] ) ) );
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
@@ -327,13 +324,13 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'x' );
 
 				model.change( writer => {
-					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) );
+					writer.setSelection( writer.createRange( writer.createPositionFromPath( modelRoot, [ 1 ] ) ) );
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
@@ -352,13 +349,13 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, '<$text bold="true">x</$text>y' );
 
 				model.change( writer => {
-					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) );
+					writer.setSelection( writer.createRange( writer.createPositionFromPath( modelRoot, [ 1 ] ) ) );
 					writer.setSelectionAttribute( 'bold', true );
 				} );
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
@@ -439,7 +436,7 @@ describe( 'downcast-selection-converters', () => {
 				);
 
 				view.change( writer => {
-					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+					const modelRange = model.createRange( model.createPositionAt( modelRoot, 1 ), model.createPositionAt( modelRoot, 1 ) );
 					model.change( writer => {
 						writer.setSelection( modelRange );
 					} );
@@ -465,7 +462,7 @@ describe( 'downcast-selection-converters', () => {
 					// Remove <strong></strong> manually.
 					writer.mergeAttributes( viewSelection.getFirstPosition() );
 
-					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+					const modelRange = model.createRange( model.createPositionAt( modelRoot, 1 ), model.createPositionAt( modelRoot, 1 ) );
 					model.change( writer => {
 						writer.setSelection( modelRange );
 					} );
@@ -480,7 +477,7 @@ describe( 'downcast-selection-converters', () => {
 			} );
 
 			it( 'should clear fake selection', () => {
-				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+				const modelRange = model.createRange( model.createPositionAt( modelRoot, 1 ), model.createPositionAt( modelRoot, 1 ) );
 
 				view.change( writer => {
 					writer.setSelection( modelRange, { fake: true } );
@@ -521,7 +518,7 @@ describe( 'downcast-selection-converters', () => {
 				for ( const range of selection.getRanges() ) {
 					const node = range.start.parent;
 
-					if ( node instanceof ModelElement && node.name == 'td' ) {
+					if ( !!node && node.is( 'td' ) ) {
 						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
@@ -571,12 +568,12 @@ describe( 'downcast-selection-converters', () => {
 		const startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
 		const endPath = typeof selectionPaths[ 1 ] == 'number' ? [ selectionPaths[ 1 ] ] : selectionPaths[ 1 ];
 
-		const startPos = new ModelPosition( modelRoot, startPath );
-		const endPos = new ModelPosition( modelRoot, endPath );
+		const startPos = model.createPositionFromPath( modelRoot, startPath );
+		const endPos = model.createPositionFromPath( modelRoot, endPath );
 
 		const isBackward = selectionPaths[ 2 ] === 'backward';
 		model.change( writer => {
-			writer.setSelection( new ModelRange( startPos, endPos ), { backward: isBackward } );
+			writer.setSelection( writer.createRange( startPos, endPos ), { backward: isBackward } );
 
 			// And add or remove passed attributes.
 			for ( const key in selectionAttributes ) {
@@ -595,7 +592,7 @@ describe( 'downcast-selection-converters', () => {
 
 		// Convert model to view.
 		view.change( writer => {
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+			dispatcher.convertInsert( model.createRangeIn( modelRoot ), writer );
 			dispatcher.convertSelection( docSelection, model.markers, writer );
 		} );
 

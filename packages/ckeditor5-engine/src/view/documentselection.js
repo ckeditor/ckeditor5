@@ -12,20 +12,14 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
- * Class representing document selection in tree view. It's instance is stored at
- * {@link module:engine/view/document~Document#selection}. It is similar to {@link module:engine/view/selection~Selection} but
- * it has read-only API and can be modified only by writer obtained from {@link module:engine/view/view~View#change} method.
+ * Class representing the document selection in the view.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges}.
- * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstRange getFirstRange}
- * and {@link module:engine/view/documentselection~DocumentSelection#getLastRange getLastRange}
- * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
- * selection's state. Similar situation occurs when getting {@link module:engine/view/documentselection~DocumentSelection#anchor anchor},
- * {@link module:engine/view/documentselection~DocumentSelection#focus focus},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstPosition first} and
- * {@link module:engine/view/documentselection~DocumentSelection#getLastPosition last} positions - all will return
- * copies of requested positions.
+ * Its instance is available in {@link module:engine/view/document~Document#selection `Document#selection`}.
+ *
+ * It is similar to {@link module:engine/view/selection~Selection} but
+ * it has a read-only API and can be modified only by the writer available in
+ * the {@link module:engine/view/view~View#change `View#change()`} block
+ * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
 export default class DocumentSelection {
 	/**
@@ -35,19 +29,19 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		const selection = new DocumentSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
 	 *		const selection = new DocumentSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		const selection = new DocumentSelection( otherSelection );
 	 *
 	 * 		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, offset );
 	 *		const selection = new DocumentSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
@@ -290,19 +284,19 @@ export default class DocumentSelection {
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
 	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		documentSelection._setTo( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, offset );
 	 *		documentSelection._setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
@@ -352,7 +346,8 @@ export default class DocumentSelection {
 	/**
 	 * Moves {@link #focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * parameters.
 	 *
 	 * @protected
 	 * @fires change

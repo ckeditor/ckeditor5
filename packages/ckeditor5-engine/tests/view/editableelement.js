@@ -76,8 +76,8 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should change isFocused when selection changes', () => {
-			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
@@ -91,8 +91,8 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should change isFocused when document.isFocus changes', () => {
-			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			const rangeMain = Range._createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = Range._createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 

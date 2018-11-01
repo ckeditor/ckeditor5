@@ -8,7 +8,6 @@ import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
-import ModelPosition from '../../src/model/position';
 
 import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
@@ -43,8 +42,8 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should call convertInsert for insert change', () => {
 			sinon.stub( dispatcher, 'convertInsert' );
 
-			const position = new ModelPosition( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
@@ -59,7 +58,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should call convertRemove for remove change', () => {
 			sinon.stub( dispatcher, 'convertRemove' );
 
-			const position = new ModelPosition( root, [ 0 ] );
+			const position = model.createPositionFromPath( root, [ 0 ] );
 
 			differStub.getChanges = () => [ { type: 'remove', position, length: 2, name: '$text' } ];
 
@@ -73,8 +72,8 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should call convertAttribute for attribute change', () => {
 			sinon.stub( dispatcher, 'convertAttribute' );
 
-			const position = new ModelPosition( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
@@ -92,8 +91,8 @@ describe( 'DowncastDispatcher', () => {
 			sinon.stub( dispatcher, 'convertRemove' );
 			sinon.stub( dispatcher, 'convertAttribute' );
 
-			const position = new ModelPosition( root, [ 0 ] );
-			const range = ModelRange.createFromPositionAndShift( position, 1 );
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [
 				{ type: 'insert', position, length: 1 },
@@ -114,8 +113,8 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should call convertMarkerAdd when markers are added', () => {
 			sinon.stub( dispatcher, 'convertMarkerAdd' );
 
-			const fooRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
-			const barRange = ModelRange.createFromParentsAndOffsets( root, 3, root, 6 );
+			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
+			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
 
 			differStub.getMarkersToAdd = () => [
 				{ name: 'foo', range: fooRange },
@@ -133,8 +132,8 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should call convertMarkerRemove when markers are removed', () => {
 			sinon.stub( dispatcher, 'convertMarkerRemove' );
 
-			const fooRange = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
-			const barRange = ModelRange.createFromParentsAndOffsets( root, 3, root, 6 );
+			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
+			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
 
 			differStub.getMarkersToRemove = () => [
 				{ name: 'foo', range: fooRange },
@@ -159,7 +158,7 @@ describe( 'DowncastDispatcher', () => {
 				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
 			] );
 
-			const range = ModelRange.createIn( root );
+			const range = model.createRangeIn( root );
 			const loggedEvents = [];
 
 			// We will check everything connected with insert event:
@@ -219,7 +218,7 @@ describe( 'DowncastDispatcher', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:bold' );
 			} );
 
-			const range = ModelRange.createIn( root );
+			const range = model.createRangeIn( root );
 
 			dispatcher.convertInsert( range );
 
@@ -242,7 +241,7 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root, 3 ), 3, '$text' );
+			dispatcher.convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 		} );
@@ -255,8 +254,8 @@ describe( 'DowncastDispatcher', () => {
 			root._appendChild( new ModelText( 'foobar' ) );
 			model.change( writer => {
 				writer.setSelection( [
-					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
-					new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
+					writer.createRange( writer.createPositionFromPath( root, [ 1 ] ), writer.createPositionFromPath( root, [ 3 ] ) ),
+					writer.createRange( writer.createPositionFromPath( root, [ 4 ] ), writer.createPositionFromPath( root, [ 5 ] ) )
 				] );
 			} );
 		} );
@@ -274,8 +273,10 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should prepare correct list of consumable values', () => {
 			model.change( writer => {
-				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+				writer.setAttribute( 'bold', true, writer.createRangeIn( root ) );
+				writer.setAttribute( 'italic', true,
+					writer.createRange( writer.createPositionAt( root, 4 ), writer.createPositionAt( root, 5 ) )
+				);
 			} );
 
 			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
@@ -289,8 +290,10 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
 			model.change( writer => {
-				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+				writer.setAttribute( 'bold', true, writer.createRangeIn( root ) );
+				writer.setAttribute( 'italic', true,
+					writer.createRange( writer.createPositionAt( root, 4 ), writer.createPositionAt( root, 5 ) )
+				);
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -304,12 +307,12 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire attributes events for collapsed selection', () => {
 			model.change( writer => {
 				writer.setSelection(
-					new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+					writer.createRange( writer.createPositionFromPath( root, [ 2 ] ), writer.createPositionFromPath( root, [ 2 ] ) )
 				);
 			} );
 
 			model.change( writer => {
-				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
+				writer.setAttribute( 'bold', true, writer.createRangeIn( root ) );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -322,13 +325,15 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should not fire attributes events if attribute has been consumed', () => {
 			model.change( writer => {
 				writer.setSelection(
-					new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+					writer.createRange( writer.createPositionFromPath( root, [ 2 ] ), writer.createPositionFromPath( root, [ 2 ] ) )
 				);
 			} );
 
 			model.change( writer => {
-				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
-				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
+				writer.setAttribute( 'bold', true, writer.createRangeIn( root ) );
+				writer.setAttribute( 'italic', true,
+					writer.createRange( writer.createPositionAt( root, 4 ), writer.createPositionAt( root, 5 ) )
+				);
 			} );
 
 			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
@@ -345,9 +350,9 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire events for markers for collapsed selection', () => {
 			model.change( writer => {
 				writer.setSelection(
-					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+					writer.createRange( writer.createPositionFromPath( root, [ 1 ] ), writer.createPositionFromPath( root, [ 1 ] ) )
 				);
-				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 2 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
@@ -361,7 +366,7 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not fire events for markers for non-collapsed selection', () => {
 			model.change( writer => {
-				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 2 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
@@ -402,9 +407,9 @@ describe( 'DowncastDispatcher', () => {
 			};
 
 			model.change( writer => {
-				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 1 ) );
 				writer.addMarker( 'name', { range, usingOperation: false } );
-				writer.setSelection( ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) );
+				writer.setSelection( caption, 1 );
 			} );
 			sinon.spy( dispatcher, 'fire' );
 
@@ -418,10 +423,10 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should not fire events if information about marker has been consumed', () => {
 			model.change( writer => {
 				writer.setSelection(
-					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+					writer.createRange( writer.createPositionFromPath( root, [ 1 ] ), writer.createPositionFromPath( root, [ 1 ] ) )
 				);
 
-				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				const range = writer.createRange( writer.createPositionAt( root, 0 ), writer.createPositionAt( root, 2 ) );
 				writer.addMarker( 'foo', { range, usingOperation: false } );
 				writer.addMarker( 'bar', { range, usingOperation: false } );
 			} );
@@ -448,7 +453,7 @@ describe( 'DowncastDispatcher', () => {
 			element = new ModelElement( 'paragraph', null, [ text ] );
 			root._appendChild( [ element ] );
 
-			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
+			range = model.createRange( model.createPositionAt( element, 0 ), model.createPositionAt( element, 4 ) );
 		} );
 
 		it( 'should fire addMarker event', () => {
@@ -460,7 +465,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
-			const gyRange = ModelRange.createFromParentsAndOffsets( doc.graveyard, 0, doc.graveyard, 0 );
+			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerAdd( 'name', gyRange );
@@ -470,7 +475,7 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not convert marker if it is not in model root', () => {
 			const element = new ModelElement( 'element', null, new ModelText( 'foo' ) );
-			const eleRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
+			const eleRange = model.createRange( model.createPositionAt( element, 1 ), model.createPositionAt( element, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerAdd( 'name', eleRange );
@@ -479,7 +484,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should fire conversion for each item in the range', () => {
-			range = ModelRange.createIn( root );
+			range = model.createRangeIn( root );
 
 			const items = [];
 
@@ -498,7 +503,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should be possible to override', () => {
-			range = ModelRange.createIn( root );
+			range = model.createRangeIn( root );
 
 			const addMarkerSpy = sinon.spy();
 			const highAddMarkerSpy = sinon.spy();
@@ -528,7 +533,7 @@ describe( 'DowncastDispatcher', () => {
 			element = new ModelElement( 'paragraph', null, [ text ] );
 			root._appendChild( [ element ] );
 
-			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
+			range = model.createRange( model.createPositionAt( element, 0 ), model.createPositionAt( element, 4 ) );
 		} );
 
 		it( 'should fire removeMarker event', () => {
@@ -540,7 +545,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
-			const gyRange = ModelRange.createFromParentsAndOffsets( doc.graveyard, 0, doc.graveyard, 0 );
+			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerRemove( 'name', gyRange );
@@ -550,7 +555,7 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not convert marker if it is not in model root', () => {
 			const element = new ModelElement( 'element', null, new ModelText( 'foo' ) );
-			const eleRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
+			const eleRange = model.createRange( model.createPositionAt( element, 1 ), model.createPositionAt( element, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
 			dispatcher.convertMarkerRemove( 'name', eleRange );
@@ -559,7 +564,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should fire conversion for the range', () => {
-			range = ModelRange.createIn( root );
+			range = model.createRangeIn( root );
 
 			dispatcher.on( 'addMarker:name', ( evt, data ) => {
 				expect( data.markerName ).to.equal( 'name' );
@@ -570,7 +575,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should be possible to override', () => {
-			range = ModelRange.createIn( root );
+			range = model.createRangeIn( root );
 
 			const removeMarkerSpy = sinon.spy();
 			const highRemoveMarkerSpy = sinon.spy();

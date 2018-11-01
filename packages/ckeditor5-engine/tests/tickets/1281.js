@@ -47,11 +47,11 @@ describe( 'Bug ckeditor5-engine#1281', () => {
 
 		expect( selRanges.length ).to.equal( 2 );
 
-		assertPositions( Position.createAt( thirdParagraph, 0 ), selRanges[ 0 ].start );
-		assertPositions( Position.createAt( thirdParagraph, 'end' ), selRanges[ 0 ].end );
+		assertPositions( Position._createAt( thirdParagraph, 0 ), selRanges[ 0 ].start );
+		assertPositions( Position._createAt( thirdParagraph, 'end' ), selRanges[ 0 ].end );
 
-		assertPositions( Position.createAt( fourthParagraph, 0 ), selRanges[ 1 ].start );
-		assertPositions( Position.createAt( fourthParagraph, 'end' ), selRanges[ 1 ].end );
+		assertPositions( Position._createAt( fourthParagraph, 0 ), selRanges[ 1 ].start );
+		assertPositions( Position._createAt( fourthParagraph, 'end' ), selRanges[ 1 ].end );
 	} );
 
 	it( 'does not throw an error when content before the selection is being removed (last element is selected)', () => {

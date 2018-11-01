@@ -106,7 +106,7 @@ function tryExtendingTo( data, value ) {
 	if ( value.type == ( data.isForward ? 'elementStart' : 'elementEnd' ) ) {
 		// If it's an object, we can select it now.
 		if ( data.schema.isObject( value.item ) ) {
-			return Position.createAt( value.item, data.isForward ? 'after' : 'before' );
+			return Position._createAt( value.item, data.isForward ? 'after' : 'before' );
 		}
 
 		// If text allowed on this position, extend to this place.
@@ -195,7 +195,7 @@ function getCorrectWordBreakPosition( walker, isForward ) {
 
 function getSearchRange( start, isForward ) {
 	const root = start.root;
-	const searchEnd = Position.createAt( root, isForward ? 'end' : 0 );
+	const searchEnd = Position._createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
 		return new Range( start, searchEnd );

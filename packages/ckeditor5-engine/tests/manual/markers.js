@@ -108,7 +108,7 @@ function uid() {
 
 function addHighlight( color ) {
 	model.change( writer => {
-		const range = Range.createFromRange( model.document.selection.getFirstRange() );
+		const range = model.document.selection.getFirstRange();
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );

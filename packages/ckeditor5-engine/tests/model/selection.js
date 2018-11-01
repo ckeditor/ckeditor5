@@ -181,7 +181,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'is false when last range is collapsed', () => {
-			const pos = Position.createAt( root, 0 );
+			const pos = Position._createAt( root, 0 );
 
 			selection.setTo( pos );
 
@@ -193,9 +193,9 @@ describe( 'Selection', () => {
 		let r1, r2, r3;
 
 		beforeEach( () => {
-			r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-			r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
-			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+			r1 = new Range( Position._createAt( root, 2 ), Position._createAt( root, 4 ) );
+			r2 = new Range( Position._createAt( root, 4 ), Position._createAt( root, 6 ) );
+			r3 = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 			selection.setTo( [ r1, r2 ] );
 		} );
 
@@ -398,7 +398,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should set selection at the specified position', () => {
-				const pos = Position.createFromParentAndOffset( root, 3 );
+				const pos = Position._createAt( root, 3 );
 
 				selection.setTo( pos );
 
@@ -430,13 +430,13 @@ describe( 'Selection', () => {
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.setFocus( Position.createAt( root, 'end' ) );
+			selection.setFocus( Position._createAt( root, 'end' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position.createAt( root, 'end' );
+			const endPos = Position._createAt( root, 'end' );
 
 			expect( () => {
 				selection.setFocus( endPos );
@@ -444,8 +444,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
 
 			selection.setTo( startPos );
 
@@ -456,8 +456,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 0 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 0 );
 
 			selection.setTo( startPos );
 
@@ -469,9 +469,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing non-collapsed selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 3 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
+			const newEndPos = Position._createAt( root, 3 );
 
 			selection.setTo( new Range( startPos, endPos ) );
 
@@ -482,9 +482,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 0 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
+			const newEndPos = Position._createAt( root, 0 );
 
 			selection.setTo( new Range( startPos, endPos ) );
 
@@ -496,9 +496,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing backward selection a forward selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 3 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
+			const newEndPos = Position._createAt( root, 3 );
 
 			selection.setTo( new Range( startPos, endPos ), { backward: true } );
 
@@ -510,9 +510,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing backward selection', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 0 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
+			const newEndPos = Position._createAt( root, 0 );
 
 			selection.setTo( new Range( startPos, endPos ), { backward: true } );
 
@@ -525,12 +525,12 @@ describe( 'Selection', () => {
 
 		it( 'modifies only the last range', () => {
 			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
-			const startPos1 = Position.createAt( root, 4 );
-			const endPos1 = Position.createAt( root, 5 );
-			const startPos2 = Position.createAt( root, 1 );
-			const endPos2 = Position.createAt( root, 2 );
+			const startPos1 = Position._createAt( root, 4 );
+			const endPos1 = Position._createAt( root, 5 );
+			const startPos2 = Position._createAt( root, 1 );
+			const endPos2 = Position._createAt( root, 2 );
 
-			const newEndPos = Position.createAt( root, 0 );
+			const newEndPos = Position._createAt( root, 0 );
 
 			selection.setTo( [
 				new Range( startPos1, endPos1 ),
@@ -557,8 +557,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'collapses the selection when extending to the anchor', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
+			const startPos = Position._createAt( root, 1 );
+			const endPos = Position._createAt( root, 2 );
 
 			selection.setTo( new Range( startPos, endPos ) );
 
@@ -566,20 +566,6 @@ describe( 'Selection', () => {
 
 			expect( selection.focus.compareWith( startPos ) ).to.equal( 'same' );
 			expect( selection.isCollapsed ).to.be.true;
-		} );
-
-		it( 'uses Position.createAt', () => {
-			const startPos = Position.createAt( root, 1 );
-			const endPos = Position.createAt( root, 2 );
-			const newEndPos = Position.createAt( root, 4 );
-			const spy = testUtils.sinon.stub( Position, 'createAt' ).returns( newEndPos );
-
-			selection.setTo( new Range( startPos, endPos ) );
-
-			selection.setFocus( root, 'end' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( selection.focus.compareWith( newEndPos ) ).to.equal( 'same' );
 		} );
 	} );
 

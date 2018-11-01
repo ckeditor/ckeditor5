@@ -519,7 +519,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p>foo{}<b></b></p>
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
 
 			renderer.render();
 
@@ -572,7 +572,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>{}foo</b></p>
-			selection._setTo( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange._createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 0, viewP.getChild( 0 ).getChild( 0 ), 0 ) );
 
 			renderer.render();
@@ -623,7 +623,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>foo{}</b></p>
-			selection._setTo( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange._createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 3, viewP.getChild( 0 ).getChild( 0 ), 3 ) );
 
 			renderer.render();
@@ -696,7 +696,7 @@ describe( 'Renderer', () => {
 
 			// Step 2: <p>foo<b></b><i>"FILLER{}"</i></p>
 			const viewI = viewP.getChild( 2 );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.render();
 
@@ -729,7 +729,7 @@ describe( 'Renderer', () => {
 			// Step 2: Add text node.
 			const viewText = new ViewText( 'x' );
 			viewB._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
@@ -765,7 +765,7 @@ describe( 'Renderer', () => {
 			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
 			viewP._removeChildren( 1 );
 
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -802,7 +802,7 @@ describe( 'Renderer', () => {
 
 			viewP2._appendChild( removedChildren );
 
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.markToSync( 'children', viewP2 );
@@ -839,7 +839,7 @@ describe( 'Renderer', () => {
 			const viewI = parse( '<attribute:i></attribute:i>' );
 			viewP._appendChild( viewI );
 
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -869,7 +869,7 @@ describe( 'Renderer', () => {
 			const viewAbc = parse( 'abc' );
 			viewP._appendChild( viewAbc );
 
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -912,7 +912,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewP._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -942,7 +942,7 @@ describe( 'Renderer', () => {
 			// Add text node only in View <p>x{}</p>
 			const viewText = new ViewText( 'x' );
 			viewP._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -989,7 +989,7 @@ describe( 'Renderer', () => {
 
 			viewP._removeChildren( 0 );
 
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1040,7 +1040,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1083,7 +1083,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
@@ -1146,7 +1146,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB._appendChild( viewText );
-			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -3281,7 +3281,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createAfter( textNode ), new ViewAttributeElement( 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -3307,7 +3307,7 @@ describe( 'Renderer', () => {
 			textNode._data = 'foobar';
 
 			view.change( writer => {
-				writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+				writer.insert( ViewPosition._createBefore( textNode ), new ViewAttributeElement( 'img' ) );
 			} );
 
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -3337,7 +3337,7 @@ describe( 'Renderer', () => {
 			const firstElement = container.getChild( 0 );
 
 			view.change( writer => {
-				writer.remove( ViewRange.createOn( firstElement ) );
+				writer.remove( ViewRange._createOn( firstElement ) );
 				writer.insert( new ViewPosition( container, 2 ), firstElement );
 			} );
 
