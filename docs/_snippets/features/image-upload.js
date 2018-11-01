@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image-upload' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
-			viewportTopOffset: 60
+			viewportTopOffset: 100
 		}
 	} )
 	.then( editor => {
