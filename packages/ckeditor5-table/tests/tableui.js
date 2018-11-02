@@ -226,20 +226,20 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
-			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column before', 'Insert column after', 'Delete column' ] );
+			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column left', 'Insert column right', 'Delete column' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
 			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
-			const insertColumnBeforeCommand = editor.commands.get( 'insertTableColumnBefore' );
-			const insertColumnAfterCommand = editor.commands.get( 'insertTableColumnAfter' );
+			const insertColumnLeftCommand = editor.commands.get( 'insertTableColumnLeft' );
+			const insertColumnRightCommand = editor.commands.get( 'insertTableColumnRight' );
 			const removeColumnCommand = editor.commands.get( 'removeTableColumn' );
 
 			setColumnHeaderCommand.isEnabled = true;
-			insertColumnBeforeCommand.isEnabled = true;
-			insertColumnAfterCommand.isEnabled = true;
+			insertColumnLeftCommand.isEnabled = true;
+			insertColumnRightCommand.isEnabled = true;
 			removeColumnCommand.isEnabled = true;
 
 			expect( items.first.children.first.isEnabled ).to.be.true;
@@ -253,12 +253,12 @@ describe( 'TableUI', () => {
 			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertColumnBeforeCommand.isEnabled = false;
+			insertColumnLeftCommand.isEnabled = false;
 
 			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertColumnAfterCommand.isEnabled = false;
+			insertColumnRightCommand.isEnabled = false;
 			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			removeColumnCommand.isEnabled = false;

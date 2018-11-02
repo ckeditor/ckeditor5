@@ -14,16 +14,16 @@ import TableUtils from '../tableutils';
 /**
  * The insert column command.
  *
- * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnBefore'` and
- * `'insertTableColumnAfter'` editor commands.
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnLeft'` and
+ * `'insertTableColumnRight'` editor commands.
  *
- * To insert a column before the selected cell, execute the following command:
+ * To insert a column to the left of the selected cell, execute the following command:
  *
- *		editor.execute( 'insertTableColumnBefore' );
+ *		editor.execute( 'insertTableColumnLeft' );
  *
- * To insert a column after the selected cell, execute the following command:
+ * To insert a column to the right of the selected cell, execute the following command:
  *
- *		editor.execute( 'insertTableColumnAfter' );
+ *		editor.execute( 'insertTableColumnRight' );
  *
  * @extends module:core/command~Command
  */
@@ -33,8 +33,8 @@ export default class InsertColumnCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor on which this command will be used.
 	 * @param {Object} options
-	 * @param {String} [options.order="after"] The order of insertion relative to the column in which the caret is located.
-	 * Possible values: `"after"` and `"before"`.
+	 * @param {String} [options.order="right"] The order of insertion relative to the column in which the caret is located.
+	 * Possible values: `"left"` and `"right"`.
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
@@ -45,7 +45,7 @@ export default class InsertColumnCommand extends Command {
 		 * @readonly
 		 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
 		 */
-		this.order = options.order || 'after';
+		this.order = options.order || 'right';
 	}
 
 	/**
@@ -62,8 +62,8 @@ export default class InsertColumnCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Depending on the command's {@link #order} value, it inserts a column `'before'` or `'after'` the column in which the selection is
-	 * set.
+	 * Depending on the command's {@link #order} value, it inserts a column to the `'left'` or `'right'` of the column
+	 * in which the selection is set.
 	 *
 	 * @fires execute
 	 */
@@ -78,7 +78,7 @@ export default class InsertColumnCommand extends Command {
 		const table = tableCell.parent.parent;
 
 		const { column } = tableUtils.getCellLocation( tableCell );
-		const insertAt = this.order === 'after' ? column + 1 : column;
+		const insertAt = this.order === 'right' ? column + 1 : column;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
 	}
