@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Lisää taulukko"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Otsikkosarake"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Lisää sarake vasemmalle"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Lisää sarake oikealle"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Poista sarake"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Sarake"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Otsikkorivi"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Lisää rivi alle"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Lisää rivi ylle"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Poista rivi"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Rivi"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Yhdistä solu ylös"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Yhdistä solu oikealle"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Yhdistä solu alas"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Yhdistä solu vasemmalle"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Jaa solu pystysuunnassa"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Jaa solu vaakasuunnassa"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Yhdistä tai jaa soluja"
