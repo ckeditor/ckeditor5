@@ -8,20 +8,25 @@ addons:
     packages:
     - google-chrome-stable
 language: node_js
+cache:
+  yarn: true
 node_js:
 - '8'
 cache:
 - node_modules
 branches:
-   except:
-   - stable
+  except:
+  - stable
 before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
-- npm config set package-lock false
-- npm i -g npm@^5.7.1
+- npm i -g yarn
 install:
-- npm install @ckeditor/ckeditor5-dev-tests
+#- npm install @ckeditor/ckeditor5-dev-tests
+- cd .. && git clone https://github.com/ckeditor/ckeditor5-dev.git && cd -
+- cd ../ckeditor5-dev && git checkout ckeditor5/t/1214 && cd packages/ckeditor5-dev-tests && yarn install && cd ../../../ckeditor5-table
+- yarn add file:../ckeditor5-dev/packages/ckeditor5-dev-tests
+#- echo 'Remove commands between comments after testing.'
 - ckeditor5-dev-tests-install-dependencies
 script:
 - ckeditor5-dev-tests-travis
