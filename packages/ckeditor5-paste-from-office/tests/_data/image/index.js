@@ -67,7 +67,8 @@ const genericFixtures = {
 		adjacentGroups: adjacentGroupsModel,
 		onlineOffline: onlineOfflineModel,
 		shapesOnlineOffline: shapesOnlineOfflineModel
-	}
+	},
+	inputBlob: {}
 };
 
 export const fixtures = genericFixtures;
@@ -118,6 +119,16 @@ import adjacentGroupsSafari from './adjacent-groups/input.safari.word2016.html';
 import onlineOfflineSafari from './online-offline/input.safari.word2016.html';
 import shapesOnlineOfflineSafari from './shapes-online-offline/input.safari.word2016.html';
 
+import offlineSafariBlob from './offline/input.safari.word2016.txt';
+import linkedSafariBlob from './linked/input.safari.word2016.txt';
+import rotatedSafariBlob from './rotated/input.safari.word2016.txt';
+import wrappedSafariBlob from './wrapped/input.safari.word2016.txt';
+import alternativeTextSafariBlob from './alternative-text/input.safari.word2016.txt';
+import reflectionSafariBlob from './reflection/input.safari.word2016.txt';
+import adjacentGroupsSafariBlob from './adjacent-groups/input.safari.word2016.txt';
+import onlineOfflineSafariBlob from './online-offline/input.safari.word2016.txt';
+import shapesOnlineOfflineSafariBlob from './shapes-online-offline/input.safari.word2016.txt';
+
 import offlineNormalizedSafari from './offline/normalized.safari.word2016.html';
 import linkedNormalizedSafari from './linked/normalized.safari.word2016.html';
 import rotatedNormalizedSafari from './rotated/normalized.safari.word2016.html';
@@ -127,6 +138,16 @@ import reflectionNormalizedSafari from './reflection/normalized.safari.word2016.
 import adjacentGroupsNormalizedSafari from './adjacent-groups/normalized.safari.word2016.html';
 import onlineOfflineNormalizedSafari from './online-offline/normalized.safari.word2016.html';
 import shapesOnlineOfflineNormalizedSafari from './shapes-online-offline/normalized.safari.word2016.html';
+
+import offlineModelSafari from './offline/model.safari.word2016.html';
+import linkedModelSafari from './linked/model.safari.word2016.html';
+import rotatedModelSafari from './rotated/model.safari.word2016.html';
+import wrappedModelSafari from './wrapped/model.safari.word2016.html';
+import alternativeTextModelSafari from './alternative-text/model.safari.word2016.html';
+import reflectionModelSafari from './reflection/model.safari.word2016.html';
+import adjacentGroupsModelSafari from './adjacent-groups/model.safari.word2016.html';
+import onlineOfflineModelSafari from './online-offline/model.safari.word2016.html';
+import shapesOnlineOfflineModelSafari from './shapes-online-offline/model.safari.word2016.html';
 
 export const browserFixtures = {
 	chrome: {
@@ -204,7 +225,28 @@ export const browserFixtures = {
 			onlineOffline: onlineOfflineNormalizedSafari,
 			shapesOnlineOffline: shapesOnlineOfflineNormalizedSafari
 		},
-		model: {},
-		inputRtf: {}
+		model: {
+			offline: offlineModelSafari,
+			linked: linkedModelSafari,
+			rotated: rotatedModelSafari,
+			wrapped: wrappedModelSafari,
+			alternativeText: alternativeTextModelSafari,
+			reflection: reflectionModelSafari,
+			adjacentGroups: adjacentGroupsModelSafari,
+			onlineOffline: onlineOfflineModelSafari,
+			shapesOnlineOffline: shapesOnlineOfflineModelSafari
+		},
+		inputRtf: {},
+		inputBlob: {
+			offline: offlineSafariBlob,
+			linked: linkedSafariBlob,
+			rotated: rotatedSafariBlob,
+			wrapped: wrappedSafariBlob,
+			alternativeText: alternativeTextSafariBlob,
+			reflection: reflectionSafariBlob,
+			adjacentGroups: adjacentGroupsSafariBlob,
+			onlineOffline: onlineOfflineSafariBlob,
+			shapesOnlineOffline: shapesOnlineOfflineSafariBlob
+		}
 	}
 };
