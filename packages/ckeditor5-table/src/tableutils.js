@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
@@ -212,7 +211,7 @@ export default class TableUtils extends Plugin {
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
-					createCells( columnsToInsert, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
+					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
 				return;
@@ -243,7 +242,7 @@ export default class TableUtils extends Plugin {
 				} else {
 					// It's either cell at this column index or spanned cell by a rowspanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					const insertPosition = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
+					const insertPosition = writer.createPositionAt( table.getChild( row ), cellIndex );
 
 					createCells( columnsToInsert, writer, insertPosition );
 				}
@@ -325,7 +324,7 @@ export default class TableUtils extends Plugin {
 				}
 
 				const cellsToInsert = colspan > numberOfCells ? numberOfCells - 1 : colspan - 1;
-				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 			}
 
 			// Second check - the cell has colspan of 1 or we need to create more cells then the currently one spans over.
@@ -363,7 +362,7 @@ export default class TableUtils extends Plugin {
 					newCellsAttributes.rowspan = rowspan;
 				}
 
-				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 
 				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
@@ -483,7 +482,7 @@ export default class TableUtils extends Plugin {
 					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
+						const position = writer.createPositionAt( table.getChild( row ), cellIndex );
 
 						createCells( 1, writer, position, newCellsAttributes );
 					}
@@ -563,7 +562,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, Position.createAt( tableRow, 'end' ), attributes );
+		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
 	}
 }
 

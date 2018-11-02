@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import upcastTable, { upcastTableCell } from './converters/upcasttable';
 import {
@@ -184,7 +183,7 @@ export default class TableEditing extends Plugin {
 			cancel();
 
 			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
 			} );
 		}
 	}
@@ -252,7 +251,7 @@ export default class TableEditing extends Plugin {
 			}
 
 			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( cellToFocus ) );
+				writer.setSelection( writer.createRangeIn( cellToFocus ) );
 			} );
 		};
 	}

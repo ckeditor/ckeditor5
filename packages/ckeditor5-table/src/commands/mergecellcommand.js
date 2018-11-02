@@ -8,8 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
@@ -105,7 +103,7 @@ export default class MergeCellCommand extends Command {
 
 			// Update table cell span attribute and merge set selection on merged contents.
 			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
-			writer.setSelection( Range.createIn( cellToExpand ) );
+			writer.setSelection( writer.createRangeIn( cellToExpand ) );
 
 			// Remove empty row after merging.
 			if ( !removedTableCellRow.childCount ) {
@@ -263,10 +261,10 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 function mergeTableCells( cellToRemove, cellToExpand, writer ) {
 	if ( !isEmpty( cellToRemove ) ) {
 		if ( isEmpty( cellToExpand ) ) {
-			writer.remove( Range.createIn( cellToExpand ) );
+			writer.remove( writer.createRangeIn( cellToExpand ) );
 		}
 
-		writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
+		writer.move( writer.createRangeIn( cellToRemove ), writer.createPositionAt( cellToExpand, 'end' ) );
 	}
 
 	// Remove merged table cell.

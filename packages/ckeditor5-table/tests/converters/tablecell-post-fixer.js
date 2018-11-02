@@ -9,11 +9,9 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import { defaultConversion, defaultSchema, formatTable, formattedViewTable, viewTable } from '../_utils/utils';
 import injectTableCellPostFixer from '../../src/converters/tablecell-post-fixer';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 describe( 'TableCell post-fixer', () => {
@@ -227,8 +225,8 @@ describe( 'TableCell post-fixer', () => {
 			model.change( writer => {
 				const tableCell = table.getNodeByPath( [ 0, 0 ] );
 
-				writer.insertElement( 'paragraph', null, Position.createAt( tableCell, 'end' ) );
-				writer.setSelection( Range.createIn( tableCell ) );
+				writer.insertElement( 'paragraph', null, writer.createPositionAt( tableCell, 'end' ) );
+				writer.setSelection( writer.createRangeIn( tableCell ) );
 
 				// Do some change in the view while inside model change.
 				editor.editing.view.change( writer => {
@@ -248,7 +246,7 @@ describe( 'TableCell post-fixer', () => {
 		const table = root.getChild( 0 );
 
 		model.change( writer => {
-			writer.remove( Range.createOn( table.getNodeByPath( [ 0, 0, 1 ] ) ) );
+			writer.remove( writer.createRangeOn( table.getNodeByPath( [ 0, 0, 1 ] ) ) );
 		} );
 
 		expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
@@ -263,11 +261,11 @@ describe( 'TableCell post-fixer', () => {
 
 		// Replace table cell contents with paragraph - as model.deleteContent() does.
 		model.change( writer => {
-			writer.remove( Range.createIn( tableCell ) );
+			writer.remove( writer.createRangeIn( tableCell ) );
 
 			const paragraph = writer.createElement( 'paragraph' );
 
-			writer.insert( paragraph, Position.createAt( tableCell, 0 ) );
+			writer.insert( paragraph, writer.createPositionAt( tableCell, 0 ) );
 
 			// Set selection to newly created paragraph.
 			writer.setSelection( paragraph, 0 );
