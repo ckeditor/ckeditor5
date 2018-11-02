@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Label for the media widget."
+msgid "media widget"
+msgstr "Ferramenta de mídia"
+
+msgctxt "Label for the URL input in the Media Embed URL editing balloon."
+msgid "Media URL"
+msgstr "URL da mídia"
+
+msgctxt "An error message that informs about an empty value in the URL input."
+msgid "The URL must not be empty."
+msgstr "A URL não pode ficar em branco."
+
+msgctxt "An error message that informs about unsupported media URL."
+msgid "This media URL is not supported."
+msgstr "A URL desta mídia não é suportada."
+
+msgctxt "Toolbar button tooltip for the Media Embed feature."
+msgid "Insert media"
+msgstr "Inserir mídia"
