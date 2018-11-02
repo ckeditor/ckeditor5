@@ -15,4 +15,4 @@ msgstr "Tekstiredaktor"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr ""
+msgstr "Muuda plokki"
