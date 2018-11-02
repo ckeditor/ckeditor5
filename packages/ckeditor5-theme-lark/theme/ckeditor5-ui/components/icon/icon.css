@@ -29,7 +29,9 @@
 		/* Allows dynamic coloring of the icons. */
 		color: inherit;
 
-		/* Needed by FF. */
-		fill: currentColor;
+		:not([fill]) {
+				/* Needed by FF. */
+				fill: currentColor;
+		}
 	}
 }
