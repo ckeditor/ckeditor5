@@ -43,6 +43,16 @@ generateTests( {
 } );
 
 generateTests( {
+	input: 'image',
+	type: 'integration',
+	browsers: [ 'safari' ],
+	editorConfig: {
+		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
+	},
+	withBlobsHandling: true
+} );
+
+generateTests( {
 	input: 'link',
 	type: 'integration',
 	browsers,
