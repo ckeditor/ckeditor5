@@ -5,8 +5,6 @@
 
 /* globals DOMParser */
 
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-
 import { normalizeEndTagsPrecedingSpace, normalizeSpacerunSpans } from '../../src/filters/space';
 
 describe( 'Filters', () => {
@@ -44,7 +42,6 @@ describe( 'Filters', () => {
 
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
-
 		} );
 	} );
 } );
