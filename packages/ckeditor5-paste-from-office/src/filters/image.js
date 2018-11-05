@@ -10,10 +10,7 @@
 /* globals XMLHttpRequest, FileReader */
 
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import { convertHexToBase64 } from './utils';
 
@@ -31,12 +28,12 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData, model 
 	}
 
 	const upcastWriter = new UpcastWriter();
-	const shapesIds = findAllShapesIds( documentFragment );
+	const shapesIds = findAllShapesIds( documentFragment, upcastWriter );
 
 	removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, upcastWriter );
 	removeAllShapeElements( documentFragment, upcastWriter );
 
-	const images = findAllImageElementsWithLocalSource( documentFragment );
+	const images = findAllImageElementsWithLocalSource( documentFragment, upcastWriter );
 
 	if ( images.file.length ) {
 		replaceImagesFileSourceWithInlineRepresentation( images.file, extractImageDataFromRtf( rtfData ), upcastWriter );
@@ -52,9 +49,10 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData, model 
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment
 // from which to extract shape ids.
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {Array.<String>} Array of shape ids.
-function findAllShapesIds( documentFragment ) {
-	const range = ViewRange.createIn( documentFragment );
+function findAllShapesIds( documentFragment, writer ) {
+	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new ViewMatcher( {
 		name: /v:(.+)/
@@ -81,7 +79,7 @@ function findAllShapesIds( documentFragment ) {
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove `<img>` elements.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, writer ) {
-	const range = ViewRange.createIn( documentFragment );
+	const range = writer.createRangeIn( documentFragment );
 
 	const imageElementsMatcher = new ViewMatcher( {
 		name: 'img'
@@ -113,7 +111,7 @@ function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, wr
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to remove shape elements.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 function removeAllShapeElements( documentFragment, writer ) {
-	const range = ViewRange.createIn( documentFragment );
+	const range = writer.createRangeIn( documentFragment );
 
 	const shapeElementsMatcher = new ViewMatcher( {
 		name: /v:(.+)/
@@ -135,11 +133,12 @@ function removeAllShapeElements( documentFragment, writer ) {
 // Finds all `<img>` elements in a given document fragment which have source pointing to local `file://` or `blob:` resource.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment in which to look for `<img>` elements.
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {Object} result All found images grouped by source type.
 // @returns {Array.<module:engine/view/element~Element>} result.file Array of found `<img>` elements with `file://` source.
 // @returns {Array.<module:engine/view/element~Element>} result.blob Array of found `<img>` elements with `blob:` source.
-function findAllImageElementsWithLocalSource( documentFragment ) {
-	const range = ViewRange.createIn( documentFragment );
+function findAllImageElementsWithLocalSource( documentFragment, writer ) {
+	const range = writer.createRangeIn( documentFragment );
 
 	const imageElementsMatcher = new ViewMatcher( {
 		name: 'img'
@@ -209,15 +208,15 @@ function extractImageDataFromRtf( rtfData ) {
 // @param {Array.<module:engine/view/element~Element>} imageElements Array of image elements which will have its source replaced.
 // @param {Array.<Object>} imagesHexSources Array of images hex sources (usually the result of `extractImageDataFromRtf()` function).
 // The array should be the same length as `imageElements` parameter.
-// @param {module:engine/view/upcastwriter~UpcastWriter} upcastWriter
-function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesHexSources, upcastWriter ) {
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
+function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesHexSources, writer ) {
 	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
 	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
 			// Replace only `file` urls of images (online images are also represented with local `file://` path).
 			if ( imageElements[ i ].getAttribute( 'src' ).indexOf( 'file://' ) === 0 && imagesHexSources[ i ] ) {
 				const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ convertHexToBase64( imagesHexSources[ i ].hex ) }`;
-				upcastWriter.setAttribute( 'src', newSrc, imageElements[ i ] );
+				writer.setAttribute( 'src', newSrc, imageElements[ i ] );
 			}
 		}
 	}
@@ -235,7 +234,7 @@ function replaceImagesBlobSourceWithInlineRepresentation( imageElements, model )
 			.then( data => {
 				model.enqueueChange( 'transparent', writer => {
 					const root = model.document.getRoot();
-					const range = ModelRange.createIn( root );
+					const range = writer.createRangeIn( root );
 
 					for ( const value of range ) {
 						if ( value.item.is( 'element', 'image' ) && value.item.getAttribute( 'src' ) === src ) {

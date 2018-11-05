@@ -21,20 +21,18 @@ import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment The view structure which to transform.
  * @param {String} stylesString Styles from which list-like elements styling will be extracted.
- * @param {module:engine/view/view~View} view
  */
-export function transformListItemLikeElementsIntoLists( documentFragment, stylesString, view ) {
+export function transformListItemLikeElementsIntoLists( documentFragment, stylesString ) {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
 
-	const itemLikeElements = findAllItemLikeElements( documentFragment, view );
+	const writer = new UpcastWriter();
+	const itemLikeElements = findAllItemLikeElements( documentFragment, writer );
 
 	if ( !itemLikeElements.length ) {
 		return;
 	}
-
-	const writer = new UpcastWriter();
 
 	let currentList = null;
 
@@ -45,7 +43,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 			currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
 		}
 
-		const listItem = transformElementIntoListItem( itemLikeElement.element, writer, view );
+		const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
 
 		writer.appendChild( listItem, currentList );
 	} );
@@ -55,15 +53,15 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment
 // in which to look for list-like nodes.
-// @param {module:engine/view/view~View} view
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {Array.<Object>} Array of found list-like items. Each item is an object containing:
 //
 //		* {module:engine/src/view/element~Element} element List-like element.
 //		* {Number} id List item id parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} order List item creation order parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} indent List item indentation level parsed from `mso-list` style (see `getListItemData()` function).
-function findAllItemLikeElements( documentFragment, view ) {
-	const range = view.createRangeIn( documentFragment );
+function findAllItemLikeElements( documentFragment, writer ) {
+	const range = writer.createRangeIn( documentFragment );
 
 	// Matcher for finding list-like elements.
 	const itemLikeElementsMatcher = new Matcher( {
@@ -156,8 +154,8 @@ function insertNewEmptyList( listStyle, element, writer ) {
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} New element to which the given one was transformed. It is
 // inserted in place of the old element (the reference to the old element is lost due to renaming).
-function transformElementIntoListItem( element, writer, view ) {
-	removeBulletElement( element, writer, view );
+function transformElementIntoListItem( element, writer ) {
+	removeBulletElement( element, writer );
 
 	return writer.rename( 'li', element );
 }
@@ -194,8 +192,7 @@ function getListItemData( element ) {
 //
 // @param {module:engine/view/element~Element} element
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
-// @param {module:engine/view/view~View} view
-function removeBulletElement( element, writer, view ) {
+function removeBulletElement( element, writer ) {
 	// Matcher for finding `span` elements holding lists numbering/bullets.
 	const bulletMatcher = new Matcher( {
 		name: 'span',
@@ -204,7 +201,7 @@ function removeBulletElement( element, writer, view ) {
 		}
 	} );
 
-	const range = view.createRangeIn( element );
+	const range = writer.createRangeIn( element );
 
 	for ( const value of range ) {
 		if ( value.type === 'elementStart' && bulletMatcher.match( value.item ) ) {
