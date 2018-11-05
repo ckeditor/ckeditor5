@@ -374,7 +374,7 @@ Now all you need to do is specify `myEditor` in the [`editor`](#editor) directiv
 ## Component configuration
 
 <info-box>
-	You can entirely skip the configuration part if you decide to [configure the component locally](#local-component-registration-and-configuration).
+	You can entirely skip the configuration part if you decide to [configure the component locally](#using-the-component-locally).
 </info-box>
 
 ### `editors`
