@@ -7,8 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import PasteFromOffice from '../../../src/pastefromoffice';
 
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import { expectNormalized } from '../../_utils/utils';
 
 import simple from '../../_data/list/simple/input.word2016.html';
 import styled from '../../_data/list/styled/input.word2016.html';
@@ -75,11 +74,3 @@ describe( 'List – normalization', () => {
 		expectNormalized( pasteFromOfficePlugin._normalizeWordInput( heading7, editor ), heading7Normalized );
 	} );
 } );
-
-function expectNormalized( normalizedInput, expectedInput ) {
-	let expected = expectedInput.replace( /> /g, '>&nbsp;' ).replace( / </g, '&nbsp;<' );
-	expected = normalizeHtml( expected );
-	expected = expected.replace( />\s+</g, '><' );
-
-	expect( stringify( normalizedInput ) ).to.equal( expected );
-}

@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { stringify, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
  * Checks whether for a given editor instance pasting specific content (input) gives expected result (output).
@@ -49,4 +51,43 @@ export function createDataTransfer( data ) {
 			return data[ type ];
 		}
 	};
+}
+
+/**
+ * Compares two HTML strings.
+ *
+ * This function is designed for comparing normalized data so expected input is preprocessed before comparing:
+ *
+ *		* Tabs on the lines beginning are removed.
+ *		* Line breaks and empty lines are removed.
+ *
+ * The expected input should be prepared in the above in mind which means every element containing text nodes must start
+ * and end in the same line. So expected input may be formatted like:
+ *
+ * 		<span lang=PL style='mso-ansi-language:PL'>	03<span style='mso-spacerun:yes'>   </span><o:p></o:p></span>
+ *
+ * 	but not like:
+ *
+ * 		<span lang=PL style='mso-ansi-language:PL'>
+ * 			03<span style='mso-spacerun:yes'>   </span>
+ * 			<o:p></o:p>
+ * 		</span>
+ *
+ * 	because tabulator preceding `03` text will be treated as formatting character and will be removed.
+ *
+ * @param {String} actual
+ * @param {String} expected
+ */
+export function expectNormalized( actual, expected ) {
+	const expectedInlined = expected
+		// Replace tabs on the lines beginning as normalized input files are formatted.
+		.replace( /^\t*</gm, '<' )
+		// Replace line breaks (after closing tags) too.
+		.replace( /[\r\n]/gm, '' );
+
+	// We are ok with both spaces and non-breaking spaces in the actual content.
+	// Replace `&nbsp;` with regular spaces to align with expected content (where regular spaces are only used).
+	const actualNormalized = stringify( actual ).replace( /\u00A0/g, ' ' );
+
+	expect( actualNormalized ).to.equal( normalizeHtml( expectedInlined ) );
 }
