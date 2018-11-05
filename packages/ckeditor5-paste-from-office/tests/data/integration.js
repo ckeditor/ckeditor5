@@ -15,8 +15,9 @@ import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Table from '@ckeditor/ckeditor5-table/src/table';
-import PasteFromOffice from '../../src/pastefromoffice';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
@@ -39,6 +40,11 @@ generateTests( {
 	browsers: [ 'chrome', 'firefox', 'edge' ],
 	editorConfig: {
 		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
+	},
+	skip: {
+		chrome: ( env.isEdge ? [ 'adjacentGroups' ] : [] ),
+		firefox: ( env.isEdge ? [ 'adjacentGroups' ] : [] ),
+		edge: ( env.isEdge ? [] : [ 'adjacentGroups' ] )
 	}
 } );
 

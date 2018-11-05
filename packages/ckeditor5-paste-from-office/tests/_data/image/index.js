@@ -108,6 +108,8 @@ import adjacentGroupsRtfEdge from './adjacent-groups/input.edge.word2016.rtf';
 import onlineOfflineRtfEdge from './online-offline/input.edge.word2016.rtf';
 import shapesOnlineOfflineRtfEdge from './shapes-online-offline/input.edge.word2016.rtf';
 
+import adjacentGroupsModelEdge from './adjacent-groups/model.edge.word2016.html';
+
 // Safari
 import offlineSafari from './offline/input.safari.word2016.html';
 import linkedSafari from './linked/input.safari.word2016.html';
@@ -188,7 +190,9 @@ export const browserFixtures = {
 	edge: {
 		input: Object.assign( {}, genericFixtures.input ),
 		normalized: Object.assign( {}, genericFixtures.normalized ),
-		model: Object.assign( {}, genericFixtures.model ),
+		model: Object.assign( {}, genericFixtures.model, {
+			adjacentGroups: adjacentGroupsModelEdge
+		} ),
 		inputRtf: {
 			offline: offlineRtfEdge,
 			linked: linkedRtfEdge,
