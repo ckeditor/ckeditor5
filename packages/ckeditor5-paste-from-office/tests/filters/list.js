@@ -5,6 +5,7 @@
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
 
 import { transformListItemLikeElementsIntoLists } from '../../src/filters/list';
 
@@ -17,7 +18,7 @@ describe( 'Filters', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '' );
+				transformListItemLikeElementsIntoLists( view, '', new View() );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
@@ -28,7 +29,7 @@ describe( 'Filters', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '@list l0:level1 { mso-level-number-format: bullet; }' );
+				transformListItemLikeElementsIntoLists( view, '@list l0:level1 { mso-level-number-format: bullet; }', new View() );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ul' );
@@ -39,7 +40,7 @@ describe( 'Filters', () => {
 				const html = '<h1>H1</h1><p>Foo Bar</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '' );
+				transformListItemLikeElementsIntoLists( view, '', new View() );
 
 				expect( view.childCount ).to.equal( 2 );
 				expect( stringify( view ) ).to.equal( html );
@@ -49,7 +50,7 @@ describe( 'Filters', () => {
 				const html = '<p style="mso-list:"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
 
-				transformListItemLikeElementsIntoLists( view, '' );
+				transformListItemLikeElementsIntoLists( view, '', new View() );
 
 				expect( view.childCount ).to.equal( 1 );
 				expect( view.getChild( 0 ).name ).to.equal( 'ol' );
@@ -59,7 +60,7 @@ describe( 'Filters', () => {
 			it( 'handles empty body correctly', () => {
 				const view = htmlDataProcessor.toView( '' );
 
-				transformListItemLikeElementsIntoLists( view, '' );
+				transformListItemLikeElementsIntoLists( view, '', new View() );
 
 				expect( view.childCount ).to.equal( 0 );
 				expect( stringify( view ) ).to.equal( '' );
