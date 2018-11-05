@@ -19,7 +19,7 @@ import { convertHexToBase64 } from './utils';
 
 /**
  * Replaces source attribute of all `<img>` elements representing regular
- * images (not the Word shapes) with inlined base64 image representation extracted from RTF data.
+ * images (not the Word shapes) with inlined base64 image representation extracted from RTF or Blob data.
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment on which transform images.
  * @param {String} rtfData The RTF data from which images representation will be used.
@@ -47,9 +47,11 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData, model 
 	}
 }
 
-// Finds all shapes (`<v:*>...</v:*>`) ids. Shapes can represent images (canvas) or Word shapes (which does not have RTF representation).
+// Finds all shapes (`<v:*>...</v:*>`) ids. Shapes can represent images (canvas)
+// or Word shapes (which does not have RTF or Blob representation).
 //
-// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment from which to extract shape ids.
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment
+// from which to extract shape ids.
 // @returns {Array.<String>} Array of shape ids.
 function findAllShapesIds( documentFragment ) {
 	const range = ViewRange.createIn( documentFragment );
@@ -94,6 +96,7 @@ function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, wr
 
 			if ( shapes.length && shapes.every( shape => shapesIds.indexOf( shape ) > -1 ) ) {
 				imgs.push( el );
+			// Shapes may also have empty source while content is paste in some browsers (Safari).
 			} else if ( !el.getAttribute( 'src' ) ) {
 				imgs.push( el );
 			}
