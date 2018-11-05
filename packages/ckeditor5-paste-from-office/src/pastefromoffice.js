@@ -57,7 +57,7 @@ export default class PasteFromOffice extends Plugin {
 	 */
 	_normalizeWordInput( input ) {
 		const { body, stylesString } = parseHtml( input );
-		transformListItemLikeElementsIntoLists( body, stylesString );
+		transformListItemLikeElementsIntoLists( body, stylesString, this.editor.editing.view );
 
 		return body;
 	}
