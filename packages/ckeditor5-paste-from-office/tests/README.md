@@ -1,4 +1,4 @@
-# Normalization and integration testing in `Paste from Office`
+# Testing
 
 In order to test if a content pasted from any external application is transformed correctly by the editor the test itself needs to use data which is put into the native clipboard by that application. For test purposes, such data is stored in a single file called a fixture file.
 
