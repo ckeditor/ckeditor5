@@ -407,22 +407,6 @@ Use the [name of the editor](#editor) in your template to create the editor inst
 	You can skip this configuration and [pass the editor directly](#local-configuration) in the [`editor`](#editor) directive.
 </info-box>
 
-### `componentName`
-
-You can change the name of the CKEditor component using the `componentName` property (by default `<ckeditor>`):
-
-```js
-Vue.use( CKEditor, {
-	componentName: 'myEditor'
-} );
-```
-
-Use the new component name in the template to create editor instances:
-
-```html
-<myEditor editor="classic"></myEditor>
-```
-
 ## Component directives
 
 ### `editor`
