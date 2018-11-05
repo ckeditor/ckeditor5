@@ -5,23 +5,37 @@
 
 /* globals DOMParser */
 
-import { normalizeEndTagsPrecedingSpace, normalizeSpacerunSpans } from '../../src/filters/space';
+import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/space';
 
 describe( 'Filters', () => {
 	describe( 'space', () => {
-		describe( 'normalizeEndTagsPrecedingSpace', () => {
+		describe( 'normalizeSpacing', () => {
 			it( 'should replace last space before closing tag with NBSP', () => {
 				const input = '<p>Foo </p><p><span> Bar  </span> Baz </p>';
 				const expected = '<p>Foo\u00A0</p><p><span> Bar \u00A0</span> Baz\u00A0</p>';
 
-				expect( normalizeEndTagsPrecedingSpace( input ) ).to.equal( expected );
+				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
 			it( 'should replace last space before special "o:p" tag with NBSP', () => {
 				const input = '<p>Foo  <o:p></o:p><span> <o:p></o:p> Bar</span></p>';
 				const expected = '<p>Foo \u00A0<o:p></o:p><span>\u00A0<o:p></o:p> Bar</span></p>';
 
-				expect( normalizeEndTagsPrecedingSpace( input ) ).to.equal( expected );
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should normalize Safari "space spans"', () => {
+				const input = '<p>Foo <span class="Apple-converted-space">   </span> Baz <span>  </span></p>';
+				const expected = '<p>Foo \u00A0 \u00A0 Baz \u00A0\u00A0</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should normalize nested Safari "space spans"', () => {
+				const input = '<p> Foo <span class="Apple-converted-space"> <span class="Apple-converted-space">    </span></span> Baz</p>';
+				const expected = '<p> Foo \u00A0 \u00A0 \u00A0 Baz</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 		} );
 

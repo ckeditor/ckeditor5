@@ -68,5 +68,6 @@ export default class PasteFromOffice extends Plugin {
 // @param {String} html HTML string to test.
 // @returns {Boolean} True if given HTML string is a Word HTML.
 function isWordInput( html ) {
-	return !!( html && html.match( /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/gi ) );
+	return !!( html && ( html.match( /<meta\s*name="?generator"?\s*content="?microsoft\s*word\s*\d+"?\/?>/gi ) ||
+		html.match( /xmlns:o="urn:schemas-microsoft-com/gi ) ) );
 }

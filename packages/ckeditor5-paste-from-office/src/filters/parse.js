@@ -12,7 +12,7 @@
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 import { NBSP_FILLER } from '@ckeditor/ckeditor5-engine/src/view/filler';
 
-import { normalizeEndTagsPrecedingSpace, normalizeSpacerunSpans } from './space';
+import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 
 /**
  * Parses provided HTML extracting contents of `<body>` and `<style>` tags.
@@ -30,7 +30,7 @@ export function parseHtml( htmlString ) {
 	const domParser = new DOMParser();
 
 	// Parse htmlString as native Document object.
-	const htmlDocument = domParser.parseFromString( normalizeEndTagsPrecedingSpace( htmlString ), 'text/html' );
+	const htmlDocument = domParser.parseFromString( normalizeSpacing( htmlString ), 'text/html' );
 
 	normalizeSpacerunSpans( htmlDocument );
 
