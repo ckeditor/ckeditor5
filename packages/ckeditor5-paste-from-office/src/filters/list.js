@@ -9,7 +9,6 @@
 
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 /**
@@ -28,13 +27,12 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 		return;
 	}
 
-	const itemLikeElements = findAllItemLikeElements( documentFragment );
+	const writer = new UpcastWriter();
+	const itemLikeElements = findAllItemLikeElements( documentFragment, writer );
 
 	if ( !itemLikeElements.length ) {
 		return;
 	}
-
-	const writer = new UpcastWriter();
 
 	let currentList = null;
 
@@ -55,14 +53,15 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment
 // in which to look for list-like nodes.
+// @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {Array.<Object>} Array of found list-like items. Each item is an object containing:
 //
 //		* {module:engine/src/view/element~Element} element List-like element.
 //		* {Number} id List item id parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} order List item creation order parsed from `mso-list` style (see `getListItemData()` function).
 //		* {Number} indent List item indentation level parsed from `mso-list` style (see `getListItemData()` function).
-function findAllItemLikeElements( documentFragment ) {
-	const range = Range.createIn( documentFragment );
+function findAllItemLikeElements( documentFragment, writer ) {
+	const range = writer.createRangeIn( documentFragment );
 
 	// Matcher for finding list-like elements.
 	const itemLikeElementsMatcher = new Matcher( {
@@ -202,7 +201,7 @@ function removeBulletElement( element, writer ) {
 		}
 	} );
 
-	const range = Range.createIn( element );
+	const range = writer.createRangeIn( element );
 
 	for ( const value of range ) {
 		if ( value.type === 'elementStart' && bulletMatcher.match( value.item ) ) {
