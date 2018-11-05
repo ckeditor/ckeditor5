@@ -8,9 +8,9 @@ order: 40
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue)
 
-The [easiest way](#quick-start) to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component.
+The [easiest way](#quick-start) to use CKEditor 5 in your Vue.js application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
 
-Advanced integrations can make use of the component working with [custom builds created from source](#using-ckeditor-from-source) after some [configuration](#configuring-vueconfigjs).
+Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
 	The component is compatible with Vue.js 2.x.
@@ -18,13 +18,20 @@ Advanced integrations can make use of the component working with [custom builds 
 
 ## Quick start
 
-Install the [CKEditor 5 rich text editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the build of your choice.
+Install the [CKEditor 5 rich text editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-vue @ckeditor/ckeditor5-build-classic
 ```
+
+Now, you need to enable CKEditor component in your application. There are 2 ways to do so:
+
+* [via a direct script include](#direct-script-include),
+* [by using ES6 module imports](#using-es6-modules).
+
+Optionally, you can [configure the component locally](#using-the-component-locally).
 
 ### Direct script include
 
@@ -76,6 +83,8 @@ const app = new Vue( {
 	}
 } );
 ```
+
+Voila! You should see CKEditor 5 running in your Vue.js app.
 
 <info-box>
 	See the list of supported [directives](#component-directives) and [events](#component-events) that will help you configure the component.
@@ -146,6 +155,8 @@ The following example showcases a single–file component of the application. Us
 If a per–view editor configuration is what suits you best, you can skip the [`editors`](#editors) option in `Vue.use()`:
 
 ```js
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
 Vue.use( CKEditor );
 ```
 
@@ -159,6 +170,8 @@ and then pass the editor of your choice in the [`editor`](#editor) directive:
 </template>
 
 <script>
+	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 	export default {
 		name: 'app',
 		data() {
@@ -184,6 +197,9 @@ If you do not want the CKEditor component to be enabled globally, you can entire
 </template>
 
 <script>
+	import CKEditor from '@ckeditor/ckeditor5-vue';
+	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 	export default {
 		name: 'app',
 		components: {
@@ -274,7 +290,7 @@ module.exports = {
 };
 ```
 
-### Configuring the editor from source
+### Using the editor from source
 
 Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration:
 
@@ -288,57 +304,18 @@ npm install --save \
 	@ckeditor/ckeditor5-paragraph
 ```
 
-You can use more packages, depending on which feature are needed in your application.
-
-Create a separate `ckeditor.js` file that will combine editor features (`BoldPlugin`, `ItalicPlugin`, etc.) with the base editor (`ClassicEditorBase`) and export it as your custom editor (`MyEditor`):
-
-<info-box>
-	You can use the same methodology to integrate multiple CKEditor builds in your application as an optimized {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}, e.g. when you need both `ClassicEditor` and `BalloonEditor`.
-</info-box>
-
-```js
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
-export default class MyEditor extends ClassicEditorBase {}
-
-MyEditor.builtinPlugins = [
-    EssentialsPlugin,
-    BoldPlugin,
-    ItalicPlugin,
-    LinkPlugin,
-    ParagraphPlugin
-];
-
-MyEditor.defaultConfig = {
-    toolbar: {
-        items: [
-            'bold',
-            'italic',
-            'link',
-            'undo',
-            'redo'
-        ]
-    },
-    language: 'en'
-};
-```
-
-### Using the editor from source
+You can use more packages, depending on which features are needed in your application.
 
 Make sure your editor is [available to the component](#editors) (e.g. in `main.js`):
 
 ```js
 import CKEditor from '@ckeditor/ckeditor5-vue';
-import MyEditor from './ckeditor';
+
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 Vue.use( CKEditor, {
 	editors: {
-		myEditor: MyEditor
+		classic: ClassicEditor
 	}
 } );
 ```
@@ -347,27 +324,49 @@ Vue.use( CKEditor, {
 	You can always configure the component locally if you do not want to [specify the editors](#local-configuration) at that point or just to [avoid using `Vue.use()`](#local-component-registration).
 </info-box>
 
-Now all you need to do is specify `myEditor` in the [`editor`](#editor) directive to get your CKEditor instance use `MyEditor`:
+Now all you need to do is specify `classic` in the [`editor`](#editor) directive and the list of editor options (**including plugins**) in the `editorConfig` data property:
 
 ```html
 <template>
 	<div id="app">
-		<ckeditor editor="myEditor" v-model="editorData" :config="editorConfig"></ckeditor>
+		<ckeditor editor="classic" v-model="editorData" :config="editorConfig"></ckeditor>
 	</div>
 </template>
 
 <script>
+	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+	import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+	import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 	export default {
 		name: 'app',
 		data() {
 			return {
 				editorData: '<p>Content of the editor.</p>',
 				editorConfig: {
-					// Configuration of the editor.
+					plugins: [
+						EssentialsPlugin,
+						BoldPlugin,
+						ItalicPlugin,
+						LinkPlugin,
+						ParagraphPlugin
+					],
+
+					toolbar: {
+						items: [
+							'bold',
+							'italic',
+							'link',
+							'undo',
+							'redo'
+						]
+					}
 				}
 			};
 		}
-	}
+	};
 </script>
 ```
 
@@ -430,43 +429,43 @@ Use the new component name in the template to create editor instances:
 This directive specifies the editor to be used by the component. It should either:
 
 * correspond to one of [registered editors](#editors):
-   ```js
-   import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+	```js
+	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-   Vue.use( CKEditor, {
-   	editors: {
-   		classic: ClassicEditor,
+	Vue.use( CKEditor, {
+		editors: {
+			classic: ClassicEditor,
 
-   		// ...
-   	}
-   } );
-   ```
+			// ...
+		}
+	} );
+	```
 
-   ```html
-   <ckeditor editor="classic"></ckeditor>
-   ```
+	```html
+	<ckeditor editor="classic"></ckeditor>
+	```
 
 * [directly reference](#local-configuration) the editor to be used in the template:
-   ```html
-   <template>
-       <div id="app">
-           <ckeditor :editor="editorType" ... ></ckeditor>
-       </div>
-   </template>
+	```html
+	<template>
+		 <div id="app">
+			  <ckeditor :editor="editorType" ... ></ckeditor>
+		 </div>
+	</template>
 
-   <script>
-       export default {
-           name: 'app',
-           data() {
-               return {
-                   editorType: ClassicEditor,
+	<script>
+		export default {
+			name: 'app',
+			data() {
+				return {
+					editorType: ClassicEditor,
 
-                   // ...
-               };
-           }
-       }
-   </script>
-   ```
+					// ...
+				};
+			}
+		}
+	</script>
+	```
 
 <info-box>
 	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link builds/guides/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
@@ -474,7 +473,7 @@ This directive specifies the editor to be used by the component. It should eithe
 
 ### `tag-name`
 
-By default, the editor component creates a `<div>` container which is used as an element passed to  the editor (e.g. {@link module:editor-classic/classiceditor~ClassicEditor#element `ClassicEditor#element`}). The element can be configured, e.g. to create a `<textarea>` use the following directive:
+By default, the editor component creates a `<div>` container which is used as an element passed tothe editor (e.g. {@link module:editor-classic/classiceditor~ClassicEditor#element `ClassicEditor#element`}). The element can be configured, e.g. to create a `<textarea>` use the following directive:
 
 ```html
 <ckeditor editor="classic" tag-name="textarea"></ckeditor>
