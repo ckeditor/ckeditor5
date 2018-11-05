@@ -121,15 +121,15 @@ import adjacentGroupsSafari from './adjacent-groups/input.safari.word2016.html';
 import onlineOfflineSafari from './online-offline/input.safari.word2016.html';
 import shapesOnlineOfflineSafari from './shapes-online-offline/input.safari.word2016.html';
 
-import offlineSafariBlob from './offline/input.safari.word2016.txt';
-import linkedSafariBlob from './linked/input.safari.word2016.txt';
-import rotatedSafariBlob from './rotated/input.safari.word2016.txt';
-import wrappedSafariBlob from './wrapped/input.safari.word2016.txt';
-import alternativeTextSafariBlob from './alternative-text/input.safari.word2016.txt';
-import reflectionSafariBlob from './reflection/input.safari.word2016.txt';
-import adjacentGroupsSafariBlob from './adjacent-groups/input.safari.word2016.txt';
-import onlineOfflineSafariBlob from './online-offline/input.safari.word2016.txt';
-import shapesOnlineOfflineSafariBlob from './shapes-online-offline/input.safari.word2016.txt';
+import offlineBlobSafari from './offline/input.safari.word2016.txt';
+import linkedBlobSafari from './linked/input.safari.word2016.txt';
+import rotatedBlobSafari from './rotated/input.safari.word2016.txt';
+import wrappedBlobSafari from './wrapped/input.safari.word2016.txt';
+import alternativeTextBlobSafari from './alternative-text/input.safari.word2016.txt';
+import reflectionBlobSafari from './reflection/input.safari.word2016.txt';
+import adjacentGroupsBlobSafari from './adjacent-groups/input.safari.word2016.txt';
+import onlineOfflineBlobSafari from './online-offline/input.safari.word2016.txt';
+import shapesOnlineOfflineBlobSafari from './shapes-online-offline/input.safari.word2016.txt';
 
 import offlineNormalizedSafari from './offline/normalized.safari.word2016.html';
 import linkedNormalizedSafari from './linked/normalized.safari.word2016.html';
@@ -242,15 +242,15 @@ export const browserFixtures = {
 		},
 		inputRtf: {},
 		inputBlob: {
-			offline: offlineSafariBlob,
-			linked: linkedSafariBlob,
-			rotated: rotatedSafariBlob,
-			wrapped: wrappedSafariBlob,
-			alternativeText: alternativeTextSafariBlob,
-			reflection: reflectionSafariBlob,
-			adjacentGroups: adjacentGroupsSafariBlob,
-			onlineOffline: onlineOfflineSafariBlob,
-			shapesOnlineOffline: shapesOnlineOfflineSafariBlob
+			offline: offlineBlobSafari,
+			linked: linkedBlobSafari,
+			rotated: rotatedBlobSafari,
+			wrapped: wrappedBlobSafari,
+			alternativeText: alternativeTextBlobSafari,
+			reflection: reflectionBlobSafari,
+			adjacentGroups: adjacentGroupsBlobSafari,
+			onlineOffline: onlineOfflineBlobSafari,
+			shapesOnlineOffline: shapesOnlineOfflineBlobSafari
 		}
 	}
 };
