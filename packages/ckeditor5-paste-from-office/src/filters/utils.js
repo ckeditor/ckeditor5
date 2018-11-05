@@ -124,8 +124,10 @@ function normalizeSafariSpaceSpans( htmlString ) {
 // @param {Document} htmlDocument Native `Document` object in which spacing should be normalized.
 function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
-		const spacesReplacemanet = Array( el.innerText.length + 1 ).join( '\u00A0 ' ).substr( 0, el.innerText.length );
+		// Use `el.childNodes[ 0 ].data.length` instead of `el.innerText.length`. For `el.innerText.length` which
+		// contains spaces mixed with `&nbsp;` Edge browser returns incorrect length.
+		const innerTextLength = el.childNodes[ 0 ].data.length;
 
-		el.innerHTML = spacesReplacemanet;
+		el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
 	} );
 }
