@@ -148,15 +148,17 @@ The following example showcases a single–file component of the application. Us
 	See the list of supported [directives](#component-directives) and [events](#component-events) that will help you configure the component.
 </info-box>
 
-### Using the component locally
+## Using the component locally
 
-#### Local configuration
+### Local configuration
 
-If a per–view editor configuration is what suits you best, you can skip the [`editors`](#editors) option in `Vue.use()`:
+If a per–view editor configuration is what suits you best, you can skip the [`editors`](#editors) option in `Vue.use()` when enabling the component.
+
+<info-box>
+	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as [direct script includes](#direct-script-include) or [ES6 module imports](#using-es6-modules).
+</info-box>
 
 ```js
-import CKEditor from '@ckeditor/ckeditor5-vue';
-
 Vue.use( CKEditor );
 ```
 
@@ -170,8 +172,6 @@ and then pass the editor of your choice in the [`editor`](#editor) directive:
 </template>
 
 <script>
-	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 	export default {
 		name: 'app',
 		data() {
@@ -185,9 +185,13 @@ and then pass the editor of your choice in the [`editor`](#editor) directive:
 </script>
 ```
 
-#### Local component registration
+### Local component registration
 
-If you do not want the CKEditor component to be enabled globally, you can entirely skip the `Vue.use( CKEditor, { ... } )` part. Instead, configure it in the `components` property of your view:
+If you do not want the CKEditor component to be enabled globally, you can entirely skip the `Vue.use( CKEditor, { ... } )` part. Instead, configure it in the `components` property of your view.
+
+<info-box>
+	Make sure `CKEditor` and `ClassicEditor` are accessible depending on the integration scenario: as [direct script includes](#direct-script-include) or [ES6 module imports](#using-es6-modules).
+</info-box>
 
 ```html
 <template>
@@ -197,9 +201,6 @@ If you do not want the CKEditor component to be enabled globally, you can entire
 </template>
 
 <script>
-	import CKEditor from '@ckeditor/ckeditor5-vue';
-	import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 	export default {
 		name: 'app',
 		components: {
