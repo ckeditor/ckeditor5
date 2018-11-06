@@ -16,7 +16,7 @@ import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import PasteFromOffice from '../../src/pastefromoffice';
-import { parseHtml } from '../../src/filters/utils';
+import { parseHtml } from '../../src/filters/parse';
 import { replaceImagesSourceWithBase64 } from '../../src/filters/image';
 import { browserFixtures } from '../_data/image/index';
 
@@ -24,7 +24,7 @@ describe( 'Filters', () => {
 	describe( 'image', () => {
 		let editor;
 
-		describe( 'replaceImagesSourceWithBase64', () => {
+		describe( 'replaceImagesSourceWithBase64()', () => {
 			describe( 'with RTF', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
