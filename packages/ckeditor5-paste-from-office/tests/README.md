@@ -1,20 +1,14 @@
-# Normalization and integration testing in `Paste from Office`
+# Testing
 
-To test if content pasted from any external application is transformed correctly by the editor the test itself needs to
-use data which is put into the native clipboard by the application. For test purpose, such data is stored in the single file
-called `fixture` file.
+In order to test if a content pasted from any external application is transformed correctly by the editor the test itself needs to use data which is put into the native clipboard by that application. For test purposes, such data is stored in a single file called a fixture file.
 
-The `fixture` file is usually a HTML file containing HTML content which was fetched from the native browser `dataTransfer`
-object (`dataTransfer.getData( 'html/text' )`) when content was pasted to the browser. This ensures that `fixture`
-file provides exactly same data as a real use scenario.
+The fixture file is usually an HTML file containing HTML content which was fetched from the native browser `dataTransfer` object (`dataTransfer.getData( 'html/text' )`). This ensures that the fixture file provides exactly same data as a real use scenario.
 
 ## Fixture files
 
 _For example files see `_data/basic-style/bold-within-text/`_.
 
-The `fixture` files are grouped per feature (which usually corresponds to editor plugins, for example `basic-styles`, `list`, etc).
-All fixtures are stored in `_data/feature-name/` directory (for example `_data/basic-style/`). Each feature (which
-will be called **group**) has a separate folder per fixture. Each fixture is used to create one normalization and one integration test.
+Fixture files are grouped per feature (which usually corresponds to editor plugins, for example `basic-styles`, `list`, etc). All fixtures are stored in `_data/feature-name/` directory (for example `_data/basic-style/`). Each feature (which will be called a *group*) has a separate folder per fixture. Each fixture is used to create one normalization and one integration test.
 
 Each fixture folder contains:
 
@@ -23,18 +17,15 @@ Each fixture folder contains:
 - normalized output fixture - `normalized.word2016.html`
 - model output fixture - `model.word2016.html`
 
-In some cases, different browsers produces different input data. For such situations, additional fixtures are stored.
-For example if input data is different for Safari, additional `input.safari.word2016.html` file will be present in fixture directory.
+In some cases, different browsers produces different input data. For such situations, additional fixtures are stored. For example if input data is different for Safari, additional `input.safari.word2016.html` file will be present in the fixture directory.
 
 ## Tests group index
 
 _For example file see `_data/basic-style/index.js`_.
 
-Each group of fixtures contains index file (`index.js` in group folder e.g. `_data/basic-styles/index.js`).
-Its purpose is to simply import all fixture files from the group and expose them for further use. Index file has the following structure:
+Each group of fixtures contains an index file (`index.js` in a group folder – e.g. `_data/basic-styles/index.js`). Its purpose is to import all fixture files from the group and expose them for further use. An index file has the following structure:
 
-
-```
+```js
 // Import default/generic fixtures.
 // Input fixtures.
 import boldWithinText from './bold-within-text/input.word2016.html';
@@ -47,77 +38,73 @@ import boldWithinTextModel from './bold-within-text/model.word2016.html';
 
 // Export imported generic fixtures for future use.
 export const fixtures = {
-    input: {
-        boldWithinText: boldWithinText
-    },
-    normalized: {
-        boldWithinText: boldWithinTextNormalized
-    },
-    model: {
-        boldWithinText: boldWithinTextModel
-    }
-}
+	input: {
+		boldWithinText
+	},
+	normalized: {
+		boldWithinText: boldWithinTextNormalized
+	},
+	model: {
+		boldWithinText: boldWithinTextModel
+	}
+};
 ```
 
-Such structure exports generic fixtures (the ones which are the same for more than one browser and will be used if no browser specific fixtures are present).
+Such a structure exports generic fixtures (the ones which are the same for more than one browser and will be used if no browser specific fixtures are present).
 
-Index files must also export browser specific fixtures. In the simplest case if there are none, it exports empty object:
+Index files must also export browser specific fixtures. In the simplest case if there are none, it exports an empty object:
 
-
-```
+```js
 export browserFixtures = {};
 ```
 
 If there are any browser specific fixtures, they are exported in a similar manner to generic ones (apart from being grouped by a browser):
 
-
-```
+```js
 // Export imported browser-specific fixtures for future use.
 export const browserFixtures = {
-    safari: {
-        input: {
-            boldWithinText: boldWithinTextSafari
-        },
-        normalized: {
-            boldWithinText: boldWithinTextNormalizedSafari
-        },
-        model: {
-            boldWithinText: boldWithinTextModelSafari
-        }
-    }
-}
+	safari: {
+		input: {
+			boldWithinText: boldWithinTextSafari
+		},
+		normalized: {
+			boldWithinText: boldWithinTextNormalizedSafari
+		},
+		model: {
+			boldWithinText: boldWithinTextModelSafari
+		}
+	}
+};
 ```
 
 ### What if only input or one of the expected output fixtures are different for specific browser? Could fixtures be mixed?
 
 There are cases when only some fixtures differ for a given browser. In such cases browser fixtures export reuses generic fixtures:
 
-```
+```js
 // Export imported browser-specific fixtures for future use.
 export const browserFixtures = {
-    safari: {
-        input: {
-            boldWithinText: boldWithinText // generic
-        },
-        normalized: {
-            boldWithinText: boldWithinTextNormalizedSafari // Safari specific
-        },
-        model: {
-            boldWithinText: boldWithinTextModel // generic
-        }
-    }
-}
+	safari: {
+		input: {
+			boldWithinText: boldWithinText // generic
+		},
+		normalized: {
+			boldWithinText: boldWithinTextNormalizedSafari // Safari specific
+		},
+		model: {
+			boldWithinText: boldWithinTextModel // generic
+		}
+	}
+};
 ```
 
 ## Fixtures aggregation
 
 _See `_utils/fixtures.js`_.
 
-All group indexes files are aggregated in the `fixtures` util (`_utils/fixtures.js`) and exposed for tests in a single
-`fixtures` and `browserFixtures` objects:
+All group index files are aggregated in the `fixtures` util (`_utils/fixtures.js`) and exposed for tests in a single `fixtures` and `browserFixtures` objects:
 
-
-```
+```js
 // Import fixtures.
 import { fixtures as basicStyles, browserFixtures as basicStylesBrowser } from '../_data/basic-styles/index.js';
 
@@ -136,12 +123,9 @@ export const browserFixtures = {
 
 _See `data/normalization.js` and `data/integration.js`_.
 
-Tests based on fixture files are generated by the special util function `generateTests()` (see `_utils/utils.js`). This function
-is specifically designed to generate `normalization` (see `data/normalization.js`) or `integration` (see `data/integration.js`)
-tests using provided fixtures group, for example:
+Tests based on fixture files are generated by the special util function `generateTests()` (see `_utils/utils.js`). This function is specifically designed to generate `normalization` (see `data/normalization.js`) or `integration` (see `data/integration.js`) tests using provided fixtures group, for example:
 
-
-```
+```js
 generateTests( {
 	input: 'basic-styles', // Group name.
 	type: 'integration', // Tests type (integration or normalization).
@@ -182,40 +166,37 @@ That's all, added fixtures will be now used to generate normalization and integr
 3. Create group `index.js` file (`_data/new-group/index.js`) importing all necessary fixtures.
 4. Add new group to fixtures util `_utils/fixtures.js`:
 
+	```js
+	// Import fixtures.
+	import { fixtures as newGroup, browserFixtures as newGroupBrowser } from '../_data/new-group/index.js';
 
-```
-// Import fixtures.
-import { fixtures as newGroup, browserFixtures as newGroupBrowser } from '../_data/new-group/index.js';
+	// Generic fixtures.
+	export const fixtures = {
+		'new-group': newGroup
+	};
 
-// Generic fixtures.
-export const fixtures = {
-	'new-group': newGroup
-};
+	// Browser specific fixtures.
+	export const browserFixtures = {
+		'new-group': newGroupBrowser
+	};
+	```
 
-// Browser specific fixtures.
-export const browserFixtures = {
-	'new-group': newGroupBrowser
-};
-```
+5. Add `generateTests()` function call in `data/normalization.js` to generate normalization and in `data/integration.js` to generate integration tests:
 
-5. Add `generateTests()` function call in `data/normalization.js` to generate normalization and in `data/integration.js`
-to generate integration tests:
+	```js
+	// normalization.js
+	generateTests( {
+		input: 'new-group',
+		type: 'normalization',
+		browsers: [ 'chrome', 'firefox', 'safari', 'edge' ]
+		editorConfig: { ... }
+	} );
 
-```
-// normalization.js
-generateTests( {
-	input: 'new-group',
-	type: 'normalization',
-	browsers: [ 'chrome', 'firefox', 'safari', 'edge' ]
-	editorConfig: { ... }
-} );
-
-// integration.js
-generateTests( {
-	input: 'new-group',
-	type: 'integration',
-	browsers: [ 'chrome', 'firefox', 'safari', 'edge' ]
-	editorConfig: { ... }
-} );
-
-```
+	// integration.js
+	generateTests( {
+		input: 'new-group',
+		type: 'integration',
+		browsers: [ 'chrome', 'firefox', 'safari', 'edge' ]
+		editorConfig: { ... }
+	} );
+	```
