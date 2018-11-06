@@ -42,6 +42,6 @@
 
 /* Disable all mouse interaction as long as the editor is not read–only.
    https://github.com/ckeditor/ckeditor5-media-embed/issues/58 */
-*[contenteditable=true] .ck-media__wrapper > *:not(.ck-media__placeholder) {
+.ck-editor__editable:not(.ck-read-only) .ck-media__wrapper > *:not(.ck-media__placeholder) {
 	pointer-events: none;
 }
