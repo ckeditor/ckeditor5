@@ -1,4 +1,4 @@
 Contributing
 ========================================
 
-Information about contributing can be found on the following page: <https://github.com/ckeditor/ckeditor5/blob/master/CONTRIBUTING.md>.
+See the [official contributors' guide to CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html) to learn more.
