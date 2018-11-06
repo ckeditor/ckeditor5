@@ -574,6 +574,7 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#remove
+	 * @protected
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @fires module:engine/view/node~Node#change
@@ -675,6 +676,7 @@ export default class Element extends Node {
 	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeClass
+	 * @protected
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
