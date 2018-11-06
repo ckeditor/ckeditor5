@@ -10,7 +10,7 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import { transformListItemLikeElementsIntoLists } from '../../src/filters/list';
 
 describe( 'Filters', () => {
-	describe( 'List', () => {
+	describe( 'list', () => {
 		const htmlDataProcessor = new HtmlDataProcessor();
 
 		describe( 'transformListItemLikeElementsIntoLists', () => {

@@ -147,6 +147,12 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 				} );
 		} );
 
+		afterEach( () => {
+			editor.destroy();
+
+			pasteFromOfficePlugin = null;
+		} );
+
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
 				const dataTransfer = createDataTransfer( {

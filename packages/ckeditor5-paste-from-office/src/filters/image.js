@@ -181,21 +181,19 @@ function extractImageDataFromRtf( rtfData ) {
 
 	if ( images ) {
 		for ( const image of images ) {
-			if ( regexPictureHeader.test( image ) ) {
-				let imageType = false;
+			let imageType = false;
 
-				if ( image.indexOf( '\\pngblip' ) !== -1 ) {
-					imageType = 'image/png';
-				} else if ( image.indexOf( '\\jpegblip' ) !== -1 ) {
-					imageType = 'image/jpeg';
-				}
+			if ( image.indexOf( '\\pngblip' ) !== -1 ) {
+				imageType = 'image/png';
+			} else if ( image.indexOf( '\\jpegblip' ) !== -1 ) {
+				imageType = 'image/jpeg';
+			}
 
-				if ( imageType ) {
-					result.push( {
-						hex: imageType ? image.replace( regexPictureHeader, '' ).replace( /[^\da-fA-F]/g, '' ) : null,
-						type: imageType
-					} );
-				}
+			if ( imageType ) {
+				result.push( {
+					hex: image.replace( regexPictureHeader, '' ).replace( /[^\da-fA-F]/g, '' ),
+					type: imageType
+				} );
 			}
 		}
 	}
@@ -213,11 +211,8 @@ function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesH
 	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
 	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
-			// Replace only `file` urls of images (online images are also represented with local `file://` path).
-			if ( imageElements[ i ].getAttribute( 'src' ).indexOf( 'file://' ) === 0 && imagesHexSources[ i ] ) {
-				const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ convertHexToBase64( imagesHexSources[ i ].hex ) }`;
-				writer.setAttribute( 'src', newSrc, imageElements[ i ] );
-			}
+			const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ convertHexToBase64( imagesHexSources[ i ].hex ) }`;
+			writer.setAttribute( 'src', newSrc, imageElements[ i ] );
 		}
 	}
 }
