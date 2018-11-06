@@ -31,13 +31,17 @@ export const WIDGET_CLASS_NAME = 'ck-widget';
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link module:engine/view/element~Element} is a widget.
+ * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~Element} and a widget.
  *
- * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/node~Node} node
  * @returns {Boolean}
  */
-export function isWidget( element ) {
-	return !!element.getCustomProperty( widgetSymbol );
+export function isWidget( node ) {
+	if ( !node.is( 'element' ) ) {
+		return false;
+	}
+
+	return !!node.getCustomProperty( widgetSymbol );
 }
 
 /**
@@ -86,7 +90,7 @@ export function isWidget( element ) {
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
 export function toWidget( element, writer, options = {} ) {
-	// The selection on Edge behaves better when the whole editor contents is in a single contentedible element.
+	// The selection on Edge behaves better when the whole editor contents is in a single contenteditable element.
 	// https://github.com/ckeditor/ckeditor5/issues/1079
 	if ( !env.isEdge ) {
 		writer.setAttribute( 'contenteditable', 'false', element );
