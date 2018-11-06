@@ -32,7 +32,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#900912b",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#c376e7f",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#50b31e1",
-    "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#51dbe7b",
+    "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#d2ccc38",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#268f607",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#41d7d1e",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#c659fa9",
