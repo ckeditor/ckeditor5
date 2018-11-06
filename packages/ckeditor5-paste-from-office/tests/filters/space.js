@@ -9,7 +9,7 @@ import { normalizeSpacing, normalizeSpacerunSpans } from '../../src/filters/spac
 
 describe( 'Filters', () => {
 	describe( 'space', () => {
-		describe( 'normalizeSpacing', () => {
+		describe( 'normalizeSpacing()', () => {
 			it( 'should replace last space before closing tag with NBSP', () => {
 				const input = '<p>Foo </p><p><span> Bar  </span> Baz </p>';
 				const expected = '<p>Foo\u00A0</p><p><span> Bar \u00A0</span> Baz\u00A0</p>';
@@ -39,7 +39,7 @@ describe( 'Filters', () => {
 			} );
 		} );
 
-		describe( 'normalizeSpacerunSpans', () => {
+		describe( 'normalizeSpacerunSpans()', () => {
 			it( 'should normalize spaces inside special "span.spacerun" elements', () => {
 				const input = '<p> <span style=\'mso-spacerun:yes\'>   </span>Foo</p>' +
 					'<p> Baz <span style=\'mso-spacerun:yes\'>      </span></p>';

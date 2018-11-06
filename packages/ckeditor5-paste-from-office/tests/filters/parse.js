@@ -11,7 +11,7 @@ import { parseHtml } from '../../src/filters/parse';
 
 describe( 'Filters', () => {
 	describe( 'parse', () => {
-		describe( 'parseHtml', () => {
+		describe( 'parseHtml()', () => {
 			it( 'correctly parses HTML with body and one style tag', () => {
 				const html = '<head><style>p { color: red; } a { font-size: 12px; }</style></head><body><p>Foo Bar</p></body>';
 				const { body, bodyString, styles, stylesString } = parseHtml( html );
