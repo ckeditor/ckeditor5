@@ -12,9 +12,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import PasteFromOffice from '../../src/pastefromoffice';
 import { parseHtml } from '../../src/filters/utils';
