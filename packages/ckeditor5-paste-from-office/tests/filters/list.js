@@ -13,7 +13,7 @@ describe( 'Filters', () => {
 	describe( 'List', () => {
 		const htmlDataProcessor = new HtmlDataProcessor();
 
-		describe( 'transformListItemLikeElementsIntoLists', () => {
+		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );

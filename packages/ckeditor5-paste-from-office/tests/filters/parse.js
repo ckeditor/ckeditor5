@@ -7,11 +7,11 @@
 
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
-import { parseHtml } from '../../src/filters/utils';
+import { parseHtml } from '../../src/filters/parse';
 
 describe( 'Filters', () => {
-	describe( 'Utils', () => {
-		describe( 'parseHtml', () => {
+	describe( 'parse', () => {
+		describe( 'parseHtml()', () => {
 			it( 'correctly parses HTML with body and one style tag', () => {
 				const html = '<head><style>p { color: red; } a { font-size: 12px; }</style></head><body><p>Foo Bar</p></body>';
 				const { body, bodyString, styles, stylesString } = parseHtml( html );
@@ -72,6 +72,20 @@ describe( 'Filters', () => {
 				expect( body.childCount ).to.equal( 0 );
 
 				expect( bodyString ).to.equal( '' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'correctly parses HTML with body contents and empty style tag', () => {
+				const html = '<head><style></style></head><body><p>Foo Bar</p></body>';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 1 );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
 
 				expect( styles.length ).to.equal( 0 );
 
@@ -147,20 +161,6 @@ describe( 'Filters', () => {
 
 				expect( stylesString ).to.equal( '' );
 			} );
-		} );
-
-		it( 'correctly parses HTML with body contents and empty style tag', () => {
-			const html = '<head><style></style></head><body><p>Foo Bar</p></body>';
-			const { body, bodyString, styles, stylesString } = parseHtml( html );
-
-			expect( body ).to.instanceof( DocumentFragment );
-			expect( body.childCount ).to.equal( 1 );
-
-			expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
-
-			expect( styles.length ).to.equal( 0 );
-
-			expect( stylesString ).to.equal( '' );
 		} );
 	} );
 } );
