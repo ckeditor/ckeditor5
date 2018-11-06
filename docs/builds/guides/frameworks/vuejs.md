@@ -102,7 +102,7 @@ Vue.use( CKEditor );
 
 The following example showcases a single–file component of the application. Use the `<ckeditor>` component in your template:
 
-* The [`editor`](#editor) directive specifies the editor build.
+* The [`editor`](#editor) directive specifies the editor build (the editor constructor).
 * The [`v-model`](#v-model) directive enables an out–of–the–box two–way data binding.
 * The [`config`](#config) directive helps you pass the configuration to the editor instance.
 
@@ -278,6 +278,7 @@ Now all you need to do is specify the list of editor options (**including plugin
 
 <script>
 	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
 	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
 	import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 	import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -319,7 +320,7 @@ Now all you need to do is specify the list of editor options (**including plugin
 
 ### `editor`
 
-This directive specifies the editor to be used by the component. It must directly reference the editor to be used in the template:
+This directive specifies the editor to be used by the component. It must directly reference the editor constructor to be used in the template.
 
 ```html
 <template>
