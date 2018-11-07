@@ -4,30 +4,29 @@ addons:
   firefox: latest
   apt:
     sources:
-    - google-chrome
+      - google-chrome
     packages:
-    - google-chrome-stable
+      - google-chrome-stable
 language: node_js
 node_js:
-- '8'
+  - '8'
 cache:
-- node_modules
+  yarn: true
 branches:
-   except:
-   - stable
+  except:
+    - stable
 before_install:
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- npm config set package-lock false
-- npm i -g npm@^5.7.1
+  - 'export DISPLAY=:99.0'
+  - sh -e /etc/init.d/xvfb start
+  - npm i -g yarn
 install:
-- npm install @ckeditor/ckeditor5-dev-tests
-- ckeditor5-dev-tests-install-dependencies
+  - yarn add @ckeditor/ckeditor5-dev-tests
+  - ckeditor5-dev-tests-install-dependencies
 script:
-- ckeditor5-dev-tests-travis
+  - ckeditor5-dev-tests-travis
 after_success:
-- ckeditor5-dev-tests-save-revision
+  - ckeditor5-dev-tests-save-revision
 env:
   global:
-  - secure: aDyXJwto5318DlSE5LBGhouHxTmxLWUvp8gO/GveRGe9EuQYbSkcW9bLZqkWuM03fMIGqbunHSa5bBjCwez8WYI8Oh9cNocPxTiEaJSvBP2/EGgkl8vx6HTSJVzLmJdrS0OefXbommvgky2fYlQSPMojzqNGhNZjIpmAlu6qvh05tI9psu912JbENh28nMOG4icZuESnNAYBYmUQu5XiQeK2U5MLQvc72euS4JgjYM3ROL/k1nr48YjUr61sIirwOzbNXKhh8ddPrTXUO6Je4qKmPZ7KH1tjhgocMCwSPi4g7dUl0KPuM/IfVZ/J5iTABa5/rfCcVzgu2ROjUu9q64HJ2bc3H4XYiD2jWzccPZ3k+jm7ZgImhaFODM6nriU3OHK40JpHo5/jIWvUiMsynjEZpuV88PAe1fYqfYFgI6j+9roX7TBZ8ODcIul5h28rVXudjOO82gPKtyPIyPxDfBeUjDn6geEtg35SwlR9/fSPMw77QpIsYPdGSF/DkzsFRNSszHzetIcu7VINu6OzsBEWCvzQ2jk+cwblmQFlP7HFPhwBXKe1HqdbB8lL05DPcBMOLPWx/gSJfQjI466HQTpjWYvMiKn4xKzzCTAtOdWBo99W2e6tyAEJzMDF0VwEpExvMg0dvZ4lkDmKBEkUIQyyD/Q+etCDUUTVpFqokZ4=
-  - secure: BDkrDIs0SIBH6H+r4rwSKaOGQjAs5olONrXFQsR7TW/68aEhYmsiI13E1X1qBrbynFBmFH2qhbtxMW/Gxqkvj3RhMZi/qbzsk0ywHc30CaG7WGQBgz+1ZMUj8td870KeeZgy+BsWz/y/qerCbCVXzuetJQlHN51FHvH3N5mZTy5BKsZD0r8a/WKQI2PZiQ98hCPZWMzgh7+1HFD9kmMYOBLjFLzkvwJErvyGkn3TKr3U3N0kM66QCDU9SAlJCzTcnH97nKRkJwpRjf1NadeO3gVCmvWig230RdJU1OKXd0ux3HCOr2Nn5bd6Xh9NJInEmTjEYQZNnqY8xTy60Pu0EfA1BeBbMHHtHm1l86t1oeL/9YZeJVi9JqXoD8mE9vYy4L1neEdY38MrAyDZ5s09AYpiOnoAlIzIzuzfdlxuIC7boqoRVpUKep0aVLPup0cCtXB5qHTbKbppjcy6Ki+ZUQDNI4dRbmHY8i+GYWp9VJx1iy+HG6Gs+E9DwzRZyAyf3GMFvx9WQC1mA1V4Wsy6WDrIYHAeYRU28jMb1jwIwsOE7OUFy0UoCa8PDLK9HXquql1dMBzbjVE+XGIw1/jH8p1TPeAPw3qClLhf3uzcLtJy5cE9iUBZltJHfy0ixXnkflL7YkzoKxNZJF7UqoIxHKzk+MZzPqOkvTMNUdheqOA=
+    - secure: aDyXJwto5318DlSE5LBGhouHxTmxLWUvp8gO/GveRGe9EuQYbSkcW9bLZqkWuM03fMIGqbunHSa5bBjCwez8WYI8Oh9cNocPxTiEaJSvBP2/EGgkl8vx6HTSJVzLmJdrS0OefXbommvgky2fYlQSPMojzqNGhNZjIpmAlu6qvh05tI9psu912JbENh28nMOG4icZuESnNAYBYmUQu5XiQeK2U5MLQvc72euS4JgjYM3ROL/k1nr48YjUr61sIirwOzbNXKhh8ddPrTXUO6Je4qKmPZ7KH1tjhgocMCwSPi4g7dUl0KPuM/IfVZ/J5iTABa5/rfCcVzgu2ROjUu9q64HJ2bc3H4XYiD2jWzccPZ3k+jm7ZgImhaFODM6nriU3OHK40JpHo5/jIWvUiMsynjEZpuV88PAe1fYqfYFgI6j+9roX7TBZ8ODcIul5h28rVXudjOO82gPKtyPIyPxDfBeUjDn6geEtg35SwlR9/fSPMw77QpIsYPdGSF/DkzsFRNSszHzetIcu7VINu6OzsBEWCvzQ2jk+cwblmQFlP7HFPhwBXKe1HqdbB8lL05DPcBMOLPWx/gSJfQjI466HQTpjWYvMiKn4xKzzCTAtOdWBo99W2e6tyAEJzMDF0VwEpExvMg0dvZ4lkDmKBEkUIQyyD/Q+etCDUUTVpFqokZ4=
+    - secure: BDkrDIs0SIBH6H+r4rwSKaOGQjAs5olONrXFQsR7TW/68aEhYmsiI13E1X1qBrbynFBmFH2qhbtxMW/Gxqkvj3RhMZi/qbzsk0ywHc30CaG7WGQBgz+1ZMUj8td870KeeZgy+BsWz/y/qerCbCVXzuetJQlHN51FHvH3N5mZTy5BKsZD0r8a/WKQI2PZiQ98hCPZWMzgh7+1HFD9kmMYOBLjFLzkvwJErvyGkn3TKr3U3N0kM66QCDU9SAlJCzTcnH97nKRkJwpRjf1NadeO3gVCmvWig230RdJU1OKXd0ux3HCOr2Nn5bd6Xh9NJInEmTjEYQZNnqY8xTy60Pu0EfA1BeBbMHHtHm1l86t1oeL/9YZeJVi9JqXoD8mE9vYy4L1neEdY38MrAyDZ5s09AYpiOnoAlIzIzuzfdlxuIC7boqoRVpUKep0aVLPup0cCtXB5qHTbKbppjcy6Ki+ZUQDNI4dRbmHY8i+GYWp9VJx1iy+HG6Gs+E9DwzRZyAyf3GMFvx9WQC1mA1V4Wsy6WDrIYHAeYRU28jMb1jwIwsOE7OUFy0UoCa8PDLK9HXquql1dMBzbjVE+XGIw1/jH8p1TPeAPw3qClLhf3uzcLtJy5cE9iUBZltJHfy0ixXnkflL7YkzoKxNZJF7UqoIxHKzk+MZzPqOkvTMNUdheqOA=
