@@ -31,7 +31,7 @@ export default class UpcastWriter {
 	 * @see module:engine/view/documentfragment~DocumentFragment#constructor
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into the created document fragment.
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} Created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
 	 */
 	createDocumentFragment( children ) {
 		return new DocumentFragment( children );
