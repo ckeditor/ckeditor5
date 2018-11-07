@@ -205,10 +205,10 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = new Text( 'foo' );
-	 *		let img = new ContainerElement( 'img' );
-	 *		let bar = new Text( 'bar' );
-	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
+	 *		let foo = downcastWriter.createText( 'foo' );
+	 *		let img = downcastWriter.createContainerElement( 'img' );
+	 *		let bar = downcastWriter.createText( 'bar' );
+	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
 	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
 	 *		let otherRange = view.createRange( // "oo", img, "ba" are in range.
@@ -260,10 +260,10 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = new Text( 'foo' );
-	 *		let img = new ContainerElement( 'img' );
-	 *		let bar = new Text( 'bar' );
-	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
+	 *		let foo = downcastWriter.createText( 'foo' );
+	 *		let img = downcastWriter.createContainerElement( 'img' );
+	 *		let bar = downcastWriter.createText( 'bar' );
+	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
 	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
 	 *		let otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.

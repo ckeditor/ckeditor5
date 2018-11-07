@@ -60,8 +60,8 @@ export default class Text extends Node {
 	/**
 	 * This getter is required when using the addition assignment operator on protected property:
 	 *
-	 *		const foo = new Text( 'foo' );
-	 *		const bar = new Text( 'bar' );
+	 *		const foo = downcastWriter.createText( 'foo' );
+	 *		const bar = downcastWriter.createText( 'bar' );
 	 *
 	 *		foo._data += bar.data;   // executes: `foo._data = foo._data + bar.data`
 	 *		console.log( foo.data ); // prints: 'foobar'

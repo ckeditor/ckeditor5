@@ -75,7 +75,7 @@ export default class UIElement extends Element {
 	 * {@link module:engine/view/domconverter~DomConverter}.
 	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
 	 *
-	 *		const myUIElement = new UIElement( 'span' );
+	 *		const myUIElement = downcastWriter.createUIElement( 'span' );
 	 *		myUIElement.render = function( domDocument ) {
 	 *			const domElement = this.toDomElement( domDocument );
 	 *			domElement.innerHTML = '<b>this is ui element</b>';
