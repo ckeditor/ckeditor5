@@ -141,8 +141,8 @@ export default class DowncastWriter {
 	 *
 	 *		writer.createText( 'foo' );
 	 *
-	 * @param {String} data Text data.
-	 * @returns {module:engine/view/text~Text} Created text node.
+	 * @param {String} data The text's data.
+	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
 		return new Text( data );

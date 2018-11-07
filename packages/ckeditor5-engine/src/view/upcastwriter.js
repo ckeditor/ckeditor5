@@ -28,7 +28,6 @@ export default class UpcastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
 	 *
-	 * @see module:engine/view/documentfragment~DocumentFragment#constructor
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
 	 * A list of nodes to be inserted into the created document fragment.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
@@ -42,15 +41,14 @@ export default class UpcastWriter {
 	 *
 	 * Attributes can be passed in various formats:
 	 *
-	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
-	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
-	 *		new Element( 'div', mapOfAttributes ); // map
+	 *		upcastWriter.createElement( 'div', { class: 'editor', contentEditable: 'true' } ); // object
+	 *		upcastWriter.createElement( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		upcastWriter.createElement( 'div', mapOfAttributes ); // map
 	 *
-	 * @see module:engine/view/element~Element#constructor
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * List of nodes to be inserted into created element.
+	 * A list of nodes to be inserted into created element.
 	 * @returns {module:engine/view/element~Element} Created element.
 	 */
 	createElement( name, attrs, children ) {
@@ -60,7 +58,6 @@ export default class UpcastWriter {
 	/**
 	 * Creates a new {@link module:engine/view/text~Text} instance.
 	 *
-	 * @see module:engine/view/text~Text#constructor
 	 * @param {String} data The text's data.
 	 * @returns {module:engine/view/text~Text} The created text node.
 	 */

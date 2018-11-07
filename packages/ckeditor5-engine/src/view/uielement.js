@@ -15,6 +15,9 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * UIElement class. It is used to represent UI not a content of the document.
  * This element can't be split and selection can't be placed inside this element.
+ *
+ * The constructor of this class shouldn't be used directly. To create new `UIElement` use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
 export default class UIElement extends Element {
 	/**

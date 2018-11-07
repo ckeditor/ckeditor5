@@ -20,6 +20,9 @@ const documentSymbol = Symbol( 'document' );
  *
  * Editable is automatically read-only when its {@link module:engine/view/document~Document Document} is read-only.
  *
+ * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
+ *
  * @extends module:engine/view/containerelement~ContainerElement
  * @mixes module:utils/observablemixin~ObservableMixin
  */

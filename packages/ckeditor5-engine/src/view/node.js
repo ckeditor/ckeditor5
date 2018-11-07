@@ -16,13 +16,15 @@ import { clone } from 'lodash-es';
 /**
  * Abstract tree view node class.
  *
+ * This is an abstract class. Its constructor should not be used directly.
+ * Use the {@link module:engine/view/element~Element} class to create view elements
+ * or {@link module:engine/view/text~Text} class to create view text nodes.
+ *
  * @abstract
  */
 export default class Node {
 	/**
 	 * Creates a tree view node.
-	 *
-	 * This is an abstract class, so this constructor should not be used directly.
 	 */
 	constructor() {
 		/**

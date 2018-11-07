@@ -12,18 +12,20 @@ import Node from './node';
 /**
  * Tree view text node.
  *
+ * The constructor of this class shouldn't be used directly. To create new Text instances
+ * use the {@link module:engine/view/downcastwriter~DowncastWriter#createText `DowncastWriter#createText()`}
+ * method when working on data downcasted from the model or the
+ * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
+ * method when working on non-semantic views.
+ *
  * @extends module:engine/view/node~Node
  */
 export default class Text extends Node {
 	/**
 	 * Creates a tree view text node.
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/view/downcastwriter~DowncastWriter#createText} or
-	 * {@link module:engine/view/upcastwriter~UpcastWriter#createText} method instead.
-	 *
 	 * @protected
-	 * @param {String} data Text.
+	 * @param {String} data The text's data.
 	 */
 	constructor( data ) {
 		super();

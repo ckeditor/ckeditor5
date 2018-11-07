@@ -21,15 +21,18 @@ const DEFAULT_PRIORITY = 10;
  * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
  * class or `AttributeElement`.
  *
+ * The constructor of this class shouldn't be used directly. To create new `AttributeElement` use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`} method.
+ *
  * @extends module:engine/view/element~Element
  */
 export default class AttributeElement extends Element {
 	/**
-	 * Creates a attribute element.
+	 * Creates an attribute element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
-	 * @protected
 	 * @see module:engine/view/element~Element
+	 * @protected
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );

@@ -16,6 +16,10 @@ import Element from './element';
  * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer.
  *
+ * To create new `ContainerElement`
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
+ * method should be used.
+ *
  * Creating an element you should use `ContainerElement` class or {@link module:engine/view/attributeelement~AttributeElement}. This is
  * important to define the type of the element because of two reasons:
  *
@@ -47,8 +51,8 @@ export default class ContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *
-	 * @see module:engine/view/element~Element
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
+	 * @see module:engine/view/element~Element
 	 * @protected
 	 */
 	constructor( name, attrs, children ) {

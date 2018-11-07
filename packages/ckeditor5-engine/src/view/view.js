@@ -314,6 +314,7 @@ export default class View {
 	 * after all changes are applied. It also returns the return value of its callback.
 	 *
 	 *		const text = view.change( writer => {
+	 *
 	 *			const newText = writer.createText( 'foo' );
 	 *			writer.insert( position1, newText );
 	 *

@@ -12,7 +12,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Node from './node';
 
 /**
- * EmptyElement class. It is used to represent elements that cannot contain any child nodes.
+ * EmptyElement class. It is used to represent elements that cannot contain any child nodes (for example `<img>` elements).
+ *
+ * The constructor of this class shouldn't be used directly. To create new `EmptyElement` use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`} method.
  */
 export default class EmptyElement extends Element {
 	/**
