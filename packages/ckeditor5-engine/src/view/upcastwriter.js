@@ -38,7 +38,7 @@ export default class UpcastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/element~Element}.
+	 * Creates a new {@link module:engine/view/element~Element} instance.
 	 *
 	 * Attributes can be passed in various formats:
 	 *
