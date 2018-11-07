@@ -311,7 +311,7 @@ export default class View {
 	 * Change method is the primary way of changing the view. You should use it to modify any node in the view tree.
 	 * It makes sure that after all changes are made view is rendered to DOM. It prevents situations when DOM is updated
 	 * when view state is not yet correct. It allows to nest calls one inside another and still perform single rendering
-	 * after all changes are applied. It also returns the result of its callback.
+	 * after all changes are applied. It also returns the return value of its callback.
 	 *
 	 *		const text = view.change( writer => {
 	 *			const newText = writer.createText( 'foo' );
