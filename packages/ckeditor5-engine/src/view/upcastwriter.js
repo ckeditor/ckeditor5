@@ -26,7 +26,7 @@ import Selection from './selection';
  */
 export default class UpcastWriter {
 	/**
-	 * Creates new {@link module:engine/view/documentfragment~DocumentFragment}.
+	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
 	 *
 	 * @see module:engine/view/documentfragment~DocumentFragment#constructor
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
