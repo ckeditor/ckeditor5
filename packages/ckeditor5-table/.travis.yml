@@ -4,35 +4,29 @@ addons:
   firefox: latest
   apt:
     sources:
-    - google-chrome
+      - google-chrome
     packages:
-    - google-chrome-stable
+      - google-chrome-stable
 language: node_js
 cache:
   yarn: true
 node_js:
-- '8'
-cache:
-- node_modules
+  - '8'
 branches:
   except:
-  - stable
+    - stable
 before_install:
-- export DISPLAY=:99.0
-- sh -e /etc/init.d/xvfb start
-- npm i -g yarn
+  - 'export DISPLAY=:99.0'
+  - sh -e /etc/init.d/xvfb start
+  - npm i -g yarn
 install:
-#- npm install @ckeditor/ckeditor5-dev-tests
-- cd .. && git clone https://github.com/ckeditor/ckeditor5-dev.git && cd -
-- cd ../ckeditor5-dev && git checkout ckeditor5/t/1214 && cd packages/ckeditor5-dev-tests && yarn install && cd ../../../ckeditor5-table
-- yarn add file:../ckeditor5-dev/packages/ckeditor5-dev-tests
-#- echo 'Remove commands between comments after testing.'
-- ckeditor5-dev-tests-install-dependencies
+  - yarn add @ckeditor/ckeditor5-dev-tests
+  - ckeditor5-dev-tests-install-dependencies
 script:
-- ckeditor5-dev-tests-travis
+  - ckeditor5-dev-tests-travis
 after_success:
-- ckeditor5-dev-tests-save-revision
+  - ckeditor5-dev-tests-save-revision
 env:
   global:
-  - secure: BKC/208PtT8ya6P0gNbEczGvd5UCtvIljxjQokFrFESOAUmqtlmdUjES/MRCEyGn3hEi9cYLPFaiAH68qjl+F1uLSwcqvalTnXMPpUPUjGODHKze+P1BGyP6KjvsTO+Lw0exwisYLChkhkQhXN7uUehxg6pdZ85r4uS3XKeCkVdObC/OPnlEgB2IDULDHnR3EApOR+4vqU1+ci8+12/ct62EPgq8bbxirvk6xoelNJeLVBBgySdC2ltPNVmERq9OqWJfl6zv9y+NbgFcbYNNdvMFgm1WSlf1HzATTNYbpmXz3pf2kSRjy4ikoIlq7qZ3igLJpGrWPQFttmnpxh/kuapSEHX74LqlUi9ctHX4/gO9+NdCriXSERYQXkVO4beHfqfR5S1dADBXHfBJGGxEmDjkAdrWA9ATG4sOD8sX/qZOFI86NsVYnglbAbHfdjLhQVPjqQ+596nSi/C2sZEOtvnNFT6ZkEeQ10aLp1lWJOn79226sVkC6eAIlVlypME9M+C1DLyGIdXzxcc0+nunVF7cMwTXhwW0psToLASuHJjYJ0/X4uzpxLIaGVFQ0PJE5ALtO1HDZqUrPrJSOkYXcZnbDk8FYpkeAvqNbHKUOUWUtVfmtrzvBDGoZrSfgnLI7WfNYUtfuZ0FcCaB5RV4H3iHBcjqhbkBJrcUe7TNPdo=
-  - secure: XbRykrpv5bv7Pu7NNRtAvAJr+MZRTBC+/aHGzW06gzu4msi+yifK3AnE0FvOfMsBaiLMXSoxVyUJwRZmSPa7wXt4ZgUna9Ntbx1I7JxjjbbB3K+lUHY+9r+kGFHDpEYQIMqkrSSUeP2kE/rHn6aLAd+bFsrs1/FyxMefSOE4egYAmYYe7V2LfTFX2/M2QfyYa5lJopJYgil/OzTd5kHr3rqQF4h/2Ld2MuVNsjuob0tJLBlIgdAuOm4mKEnPwyIMRWrQDwPs3DBTIiPBtLJO+/Cd/e7i97M8SscFBtFwg+hisUhzj57ixwJb0IANtOZewsqqmtCNt6JJyWFYH4rvqUWQkeCqOI+Gbi0LI/+RLaTBHVzSFIJFdt/zujNiEUDMzR5pCgNqc9ckmmqriwaURw4EuSUqnYoFc0xp95GKOTbAd6+UZOBfub3aNJBmMCuC2VpGv7RYxrzvOmWljWd5S2E0ZePafYFAiPK5rB5725ah1SohgOr6iQh/7yFSEwqLpXIZSBjkKLd2sLyILjywXxk11aUMPlKgLULVoN5jSpiVbw+j+bDZuNuf7AVSHymPGxBzpkkHu6wsXAqzKUZ0XHVpFSxCmAY74vj+3khRgweO8MQYG61GxWV8lWJK5COFUVfHcHeT5sRZCgq06hHQE5NKKHzukBO3cCeola2D6wU=
+    - secure: BKC/208PtT8ya6P0gNbEczGvd5UCtvIljxjQokFrFESOAUmqtlmdUjES/MRCEyGn3hEi9cYLPFaiAH68qjl+F1uLSwcqvalTnXMPpUPUjGODHKze+P1BGyP6KjvsTO+Lw0exwisYLChkhkQhXN7uUehxg6pdZ85r4uS3XKeCkVdObC/OPnlEgB2IDULDHnR3EApOR+4vqU1+ci8+12/ct62EPgq8bbxirvk6xoelNJeLVBBgySdC2ltPNVmERq9OqWJfl6zv9y+NbgFcbYNNdvMFgm1WSlf1HzATTNYbpmXz3pf2kSRjy4ikoIlq7qZ3igLJpGrWPQFttmnpxh/kuapSEHX74LqlUi9ctHX4/gO9+NdCriXSERYQXkVO4beHfqfR5S1dADBXHfBJGGxEmDjkAdrWA9ATG4sOD8sX/qZOFI86NsVYnglbAbHfdjLhQVPjqQ+596nSi/C2sZEOtvnNFT6ZkEeQ10aLp1lWJOn79226sVkC6eAIlVlypME9M+C1DLyGIdXzxcc0+nunVF7cMwTXhwW0psToLASuHJjYJ0/X4uzpxLIaGVFQ0PJE5ALtO1HDZqUrPrJSOkYXcZnbDk8FYpkeAvqNbHKUOUWUtVfmtrzvBDGoZrSfgnLI7WfNYUtfuZ0FcCaB5RV4H3iHBcjqhbkBJrcUe7TNPdo=
+    - secure: XbRykrpv5bv7Pu7NNRtAvAJr+MZRTBC+/aHGzW06gzu4msi+yifK3AnE0FvOfMsBaiLMXSoxVyUJwRZmSPa7wXt4ZgUna9Ntbx1I7JxjjbbB3K+lUHY+9r+kGFHDpEYQIMqkrSSUeP2kE/rHn6aLAd+bFsrs1/FyxMefSOE4egYAmYYe7V2LfTFX2/M2QfyYa5lJopJYgil/OzTd5kHr3rqQF4h/2Ld2MuVNsjuob0tJLBlIgdAuOm4mKEnPwyIMRWrQDwPs3DBTIiPBtLJO+/Cd/e7i97M8SscFBtFwg+hisUhzj57ixwJb0IANtOZewsqqmtCNt6JJyWFYH4rvqUWQkeCqOI+Gbi0LI/+RLaTBHVzSFIJFdt/zujNiEUDMzR5pCgNqc9ckmmqriwaURw4EuSUqnYoFc0xp95GKOTbAd6+UZOBfub3aNJBmMCuC2VpGv7RYxrzvOmWljWd5S2E0ZePafYFAiPK5rB5725ah1SohgOr6iQh/7yFSEwqLpXIZSBjkKLd2sLyILjywXxk11aUMPlKgLULVoN5jSpiVbw+j+bDZuNuf7AVSHymPGxBzpkkHu6wsXAqzKUZ0XHVpFSxCmAY74vj+3khRgweO8MQYG61GxWV8lWJK5COFUVfHcHeT5sRZCgq06hHQE5NKKHzukBO3cCeola2D6wU=
