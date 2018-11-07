@@ -58,7 +58,7 @@ export default class UpcastWriter {
 	}
 
 	/**
-	 * Creates new {@link module:engine/view/text~Text}.
+	 * Creates a new {@link module:engine/view/text~Text} instance.
 	 *
 	 * @see module:engine/view/text~Text#constructor
 	 * @param {String} data Text
