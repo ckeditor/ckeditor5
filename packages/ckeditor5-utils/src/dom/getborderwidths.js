@@ -11,7 +11,7 @@
  * Returns an object containing CSS border widths of a specified HTML element.
  *
  * @param {HTMLElement} element An element which has CSS borders.
- * @param {Object} An object containing `top`, `left`, `right` and `bottom` properties
+ * @returns {Object} An object containing `top`, `left`, `right` and `bottom` properties
  * with numerical values of the `border-[top,left,right,bottom]-width` CSS styles.
  */
 export default function getBorderWidths( element ) {

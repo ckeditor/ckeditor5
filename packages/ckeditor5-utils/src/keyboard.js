@@ -43,7 +43,7 @@ export const keyCodes = generateKnownKeyCodes();
  *
  * Note: Key names are matched with {@link module:utils/keyboard~keyCodes} in a case-insensitive way.
  *
- * @param {String|module:utils/keyboard~KeystrokeInfo} Key name (see {@link module:utils/keyboard~keyCodes})
+ * @param {String|module:utils/keyboard~KeystrokeInfo} key name (see {@link module:utils/keyboard~keyCodes})
  * or a keystroke data object.
  * @returns {Number} Key or keystroke code.
  */

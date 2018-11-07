@@ -67,7 +67,7 @@ import { isFunction } from 'lodash-es';
  *
  *		// The best position which fits into document.body and the viewport. May be useful
  *		// to set proper class on the `element`.
- *		console.log( name ); -> "myNorthEastPosition"
+ *		console.log( name ); // -> "myNorthEastPosition"
  *
  *		// Using the absolute coordinates which has been found to position the element
  *		// as in the diagram depicting the "myNorthEastPosition" position.
