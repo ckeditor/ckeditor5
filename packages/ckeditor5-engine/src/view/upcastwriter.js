@@ -62,7 +62,7 @@ export default class UpcastWriter {
 	 *
 	 * @see module:engine/view/text~Text#constructor
 	 * @param {String} data Text
-	 * @returns {module:engine/view/text~Text} Created text.
+	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
 		return new Text( data );
