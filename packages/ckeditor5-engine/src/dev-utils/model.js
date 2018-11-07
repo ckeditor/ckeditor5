@@ -115,7 +115,7 @@ export function setData( model, data, options = {} ) {
 
 	model.change( writer => {
 		// Replace existing model in document by new one.
-		writer.remove( ModelRange.createIn( modelRoot ) );
+		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
@@ -169,16 +169,16 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
-		range = ModelRange.createIn( node );
+		range = model.createRangeIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new ModelDocumentFragment( node );
-			range = ModelRange.createIn( fragment );
+			range = model.createRangeIn( fragment );
 		} else {
 			range = new ModelRange(
-				ModelPosition.createBefore( node ),
-				ModelPosition.createAfter( node )
+				model.createPositionBefore( node ),
+				model.createPositionAfter( node )
 			);
 		}
 	}
@@ -391,9 +391,9 @@ function convertToModelElement() {
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( element, 0 ) );
 
-		data.modelRange = ModelRange.createOn( element );
+		data.modelRange = ModelRange._createOn( element );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
@@ -420,7 +420,7 @@ function convertToModelText( withAttributes = false ) {
 
 		conversionApi.writer.insert( node, data.modelCursor );
 
-		data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, node.offsetSize );
+		data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, node.offsetSize );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();

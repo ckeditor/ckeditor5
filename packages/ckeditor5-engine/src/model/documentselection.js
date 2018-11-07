@@ -11,7 +11,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import Selection from './selection';
-import Position from './position';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
@@ -332,7 +331,8 @@ export default class DocumentSelection {
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as
+	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @see module:engine/model/writer~Writer#setSelectionFocus
 	 * @protected
@@ -750,7 +750,7 @@ class LiveSelection extends Selection {
 			return;
 		}
 
-		const liveRange = LiveRange.createFromRange( range );
+		const liveRange = LiveRange.fromRange( range );
 
 		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
 			this._hasChangedRange = true;
@@ -1014,7 +1014,7 @@ class LiveSelection extends Selection {
 	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
-		const positionCandidate = Position.createFromPosition( removedRangeStart );
+		const positionCandidate = removedRangeStart.clone();
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
 		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );

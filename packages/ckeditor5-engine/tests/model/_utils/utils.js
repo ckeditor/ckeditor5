@@ -4,6 +4,7 @@
  */
 
 import Range from '../../../src/model/range';
+import Position from '../../../src/model/position';
 import TreeWalker from '../../../src/model/treewalker';
 import Text from '../../../src/model/text';
 import TextProxy from '../../../src/model/textproxy';
@@ -85,5 +86,5 @@ export function getText( element ) {
  * @returns {engine.model.Range}
  */
 export function createRangeOnElementOnly( element ) {
-	return Range.createFromParentsAndOffsets( element.parent, element.startOffset, element, 0 );
+	return new Range( Position._createAt( element.parent, element.startOffset ), Position._createAt( element, 0 ) );
 }

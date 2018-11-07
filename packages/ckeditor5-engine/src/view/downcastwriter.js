@@ -8,11 +8,12 @@
  */
 
 import Position from './position';
+import Range from './range';
+import Selection from './selection';
 import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
-import Range from './range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -21,11 +22,15 @@ import EditableElement from './editableelement';
 import { isPlainObject } from 'lodash-es';
 
 /**
- * View downcast writer class. Provides set of methods used to properly manipulate nodes attached to
- * {@link module:engine/view/document~Document view document}. It is not recommended to use it directly. To get an instance
- * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
- * The `DowncastWriter` is designed to work with semantic view which is the view downcasted from model. For working with
- * ordinary view (e.g. parsed from string) {@link module:engine/view/upcastwriter~UpcastWriter upcast writer} should be used.
+ * View downcast writer.
+ *
+ * It provides a set of methods used to manipulate view nodes.
+ *
+ * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
+ * To work with ordinary views (e.g. parsed from a string) use the {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ *
+ * Do not create an instance of this writer manually. To modify a view structure, use
+ * the {@link module:engine/view/view~View#change View#change()) block.
  */
 export default class DowncastWriter {
 	constructor( document ) {
@@ -52,26 +57,26 @@ export default class DowncastWriter {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 * ### Usage:
+	 * Usage:
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets backward selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		writer.setSelection( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionFromPath( root, path );
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
@@ -120,10 +125,11 @@ export default class DowncastWriter {
 	/**
 	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * parameters.
 	 *
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
@@ -146,7 +152,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
 	 *		writer.createAttributeElement( 'strong' );
-	 *		writer.createAttributeElement( 'strong', { 'alignment': 'center' } );
+	 *		writer.createAttributeElement( 'strong', { alignment: 'center' } );
 	 *
 	 *		// Make `<a>` element contain other attributes element so the `<a>` element is not broken.
 	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
@@ -179,7 +185,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/containerelement~ContainerElement}.
 	 *
 	 *		writer.createContainerElement( 'paragraph' );
-	 *		writer.createContainerElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createContainerElement( 'paragraph', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -193,7 +199,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
 	 *
 	 *		writer.createEditableElement( 'div' );
-	 *		writer.createEditableElement( 'div', { 'alignment': 'center' } );
+	 *		writer.createEditableElement( 'div', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -210,7 +216,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
 	 *		writer.createEmptyElement( 'img' );
-	 *		writer.createEmptyElement( 'img', { 'alignment': 'center' } );
+	 *		writer.createEmptyElement( 'img', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -224,7 +230,7 @@ export default class DowncastWriter {
 	 * Creates new {@link module:engine/view/uielement~UIElement}.
 	 *
 	 *		writer.createUIElement( 'span' );
-	 *		writer.createUIElement( 'span', { 'alignment': 'center' } );
+	 *		writer.createUIElement( 'span', { alignment: 'center' } );
 	 *
 	 * Custom render function can be provided as third parameter:
 	 *
@@ -452,19 +458,19 @@ export default class DowncastWriter {
 		}
 
 		if ( position.isAtStart ) {
-			return Position.createBefore( element );
+			return Position._createBefore( element );
 		} else if ( !position.isAtEnd ) {
 			const newElement = element._clone( false );
 
-			this.insert( Position.createAfter( element ), newElement );
+			this.insert( Position._createAfter( element ), newElement );
 
-			const sourceRange = new Range( position, Position.createAt( element, 'end' ) );
+			const sourceRange = new Range( position, Position._createAt( element, 'end' ) );
 			const targetPosition = new Position( newElement, 0 );
 
 			this.move( sourceRange, targetPosition );
 		}
 
-		return Position.createAfter( element );
+		return Position._createAfter( element );
 	}
 
 	/**
@@ -575,10 +581,10 @@ export default class DowncastWriter {
 		}
 
 		const lastChild = prev.getChild( prev.childCount - 1 );
-		const newPosition = lastChild instanceof Text ? Position.createAt( lastChild, 'end' ) : Position.createAt( prev, 'end' );
+		const newPosition = lastChild instanceof Text ? Position._createAt( lastChild, 'end' ) : Position._createAt( prev, 'end' );
 
-		this.move( Range.createIn( next ), Position.createAt( prev, 'end' ) );
-		this.remove( Range.createOn( next ) );
+		this.move( Range._createIn( next ), Position._createAt( prev, 'end' ) );
+		this.remove( Range._createOn( next ) );
 
 		return newPosition;
 	}
@@ -657,7 +663,7 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
 	 */
 	remove( rangeOrItem ) {
-		const range = rangeOrItem instanceof Range ? rangeOrItem : Range.createOn( rangeOrItem );
+		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
 
 		validateRangeContainer( range );
 
@@ -682,7 +688,7 @@ export default class DowncastWriter {
 		// Merge after removing.
 		const mergePosition = this.mergeAttributes( breakStart );
 		range.start = mergePosition;
-		range.end = Position.createFromPosition( mergePosition );
+		range.end = mergePosition.clone();
 
 		// Return removed nodes.
 		return new DocumentFragment( removed );
@@ -716,7 +722,7 @@ export default class DowncastWriter {
 			// When current item matches to the given element.
 			if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 				// Create range on this element.
-				rangeToRemove = Range.createOn( item );
+				rangeToRemove = Range._createOn( item );
 				// When range starts inside Text or TextProxy element.
 			} else if ( !current.nextPosition.isAfter( range.start ) && item.is( 'textProxy' ) ) {
 				// We need to check if parent of this text matches to given element.
@@ -726,7 +732,7 @@ export default class DowncastWriter {
 
 				// If it is then create range inside this element.
 				if ( parentElement ) {
-					rangeToRemove = Range.createIn( parentElement );
+					rangeToRemove = Range._createIn( parentElement );
 				}
 			}
 
@@ -914,9 +920,9 @@ export default class DowncastWriter {
 	rename( newName, viewElement ) {
 		const newElement = new ContainerElement( newName, viewElement.getAttributes() );
 
-		this.insert( Position.createAfter( viewElement ), newElement );
-		this.move( Range.createIn( viewElement ), Position.createAt( newElement ) );
-		this.remove( Range.createOn( viewElement ) );
+		this.insert( Position._createAfter( viewElement ), newElement );
+		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
+		this.remove( Range._createOn( viewElement ) );
 
 		return newElement;
 	}
@@ -937,6 +943,147 @@ export default class DowncastWriter {
 	 */
 	clearClonedElementsGroup( groupName ) {
 		this._cloneGroups.delete( groupName );
+	}
+
+	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link module:engine/view/position~Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 *
+	 * This method is a shortcut to other constructors such as:
+	 *
+	 * * {@link #createPositionBefore},
+	 * * {@link #createPositionAfter},
+	 *
+	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 */
+	createPositionAt( itemOrPosition, offset ) {
+		return Position._createAt( itemOrPosition, offset );
+	}
+
+	/**
+	 * Creates a new position after given view item.
+	 *
+	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
+	 * @returns {module:engine/view/position~Position}
+	 */
+	createPositionAfter( item ) {
+		return Position._createAfter( item );
+	}
+
+	/**
+	 * Creates a new position before given view item.
+	 *
+	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
+	 * @returns {module:engine/view/position~Position}
+	 */
+	createPositionBefore( item ) {
+		return Position._createBefore( item );
+	}
+
+	/**
+	 * Creates a range spanning from `start` position to `end` position.
+	 *
+	 * **Note:** This factory method creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
+	 *
+	 * @param {module:engine/view/position~Position} start Start position.
+	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @returns {module:engine/view/range~Range}
+	 */
+	createRange( start, end ) {
+		return new Range( start, end );
+	}
+
+	/**
+	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
+	 *
+	 * @param {module:engine/view/item~Item} item
+	 * @returns {module:engine/view/range~Range}
+	 */
+	createRangeOn( item ) {
+		return Range._createOn( item );
+	}
+
+	/**
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/view/range~Range}
+	 */
+	createRangeIn( element ) {
+		return Range._createIn( element );
+	}
+
+	/**
+	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 *
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = writer.createSelection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
+	 *
+	 *		// Creates selection from the document selection.
+	 *		const selection = writer.createSelection( editor.editing.view.document.selection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
+	 *
+	 *		// Creates collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 *		const selection = writer.createSelection( paragraph, offset );
+	 *
+	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
+	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
+	 *
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
+	 * @returns {module:engine/view/selection~Selection}
+	 */
+	createSelection( selectable, placeOrOffset, options ) {
+		return new Selection( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -1002,7 +1149,7 @@ export default class DowncastWriter {
 			}
 		}
 
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1074,7 +1221,7 @@ export default class DowncastWriter {
 			}
 		}
 
-		return Range.createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
+		return Range._createFromParentsAndOffsets( parent, startOffset, parent, endOffset );
 	}
 
 	/**
@@ -1094,8 +1241,8 @@ export default class DowncastWriter {
 		if ( rangeSpansOnAllChildren( range ) && this._wrapAttributeElement( attribute, range.start.parent ) ) {
 			const parent = range.start.parent;
 
-			const end = this.mergeAttributes( Position.createAfter( parent ) );
-			const start = this.mergeAttributes( Position.createBefore( parent ) );
+			const end = this.mergeAttributes( Position._createAfter( parent ) );
+			const start = this.mergeAttributes( Position._createBefore( parent ) );
 
 			return new Range( start, end );
 		}
@@ -1155,7 +1302,7 @@ export default class DowncastWriter {
 	_wrapPosition( position, attribute ) {
 		// Return same position when trying to wrap with attribute similar to position parent.
 		if ( attribute.isSimilar( position.parent ) ) {
-			return movePositionToTextNode( Position.createFromPosition( position ) );
+			return movePositionToTextNode( position.clone() );
 		}
 
 		// When position is inside text node - break it and place new position between two text nodes.
@@ -1399,12 +1546,12 @@ export default class DowncastWriter {
 
 		// There are no attributes to break and text nodes breaking is not forced.
 		if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
-			return Position.createFromPosition( position );
+			return position.clone();
 		}
 
 		// Position's parent is container, so no attributes to break.
 		if ( isContainerOrFragment( positionParent ) ) {
-			return Position.createFromPosition( position );
+			return position.clone();
 		}
 
 		// Break text and start again in new position.

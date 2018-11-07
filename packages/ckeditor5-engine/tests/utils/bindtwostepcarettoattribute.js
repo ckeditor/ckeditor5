@@ -789,7 +789,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 									const nextBlock = position.parent.nextSibling;
 
 									if ( nextBlock ) {
-										writer.setSelection( Position.createAt( nextBlock, 0 ) );
+										writer.setSelection( Position._createAt( nextBlock, 0 ) );
 									}
 								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( 1 ) );
@@ -801,7 +801,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 									const previousBlock = position.parent.previousSibling;
 
 									if ( previousBlock ) {
-										writer.setSelection( Position.createAt( previousBlock, 'end' ) );
+										writer.setSelection( Position._createAt( previousBlock, 'end' ) );
 									}
 								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( -1 ) );

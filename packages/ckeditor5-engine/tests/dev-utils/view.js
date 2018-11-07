@@ -64,7 +64,7 @@ describe( 'view test utils', () => {
 				root._appendChild( new Element( 'p' ) );
 
 				view.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+					writer.setSelection( Range._createFromParentsAndOffsets( root, 0, root, 1 ) );
 				} );
 
 				expect( getData( view, options ) ).to.equal( '[<p></p>]' );
@@ -166,7 +166,7 @@ describe( 'view test utils', () => {
 			const b1 = new Element( 'b', null, text1 );
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
-			const range = Range.createFromParentsAndOffsets( p, 1, p, 2 );
+			const range = Range._createFromParentsAndOffsets( p, 1, p, 2 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
@@ -175,7 +175,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'நிலைக்கு' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, text, 4 );
+			const range = Range._createFromParentsAndOffsets( p, 0, text, 4 );
 			const selection = new DocumentSelection( [ range ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
@@ -184,7 +184,7 @@ describe( 'view test utils', () => {
 		it( 'should write collapsed selection ranges inside elements', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
+			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[]foobar</p>' );
 		} );
@@ -195,7 +195,7 @@ describe( 'view test utils', () => {
 			const b1 = new Element( 'b', null, text1 );
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
-			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
+			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
@@ -206,7 +206,7 @@ describe( 'view test utils', () => {
 			const b1 = new Element( 'b', null, text1 );
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
-			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
+			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection, { sameSelectionCharacters: true } ) )
 				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
@@ -215,7 +215,7 @@ describe( 'view test utils', () => {
 		it( 'should write collapsed selection ranges inside texts', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
-			const range = Range.createFromParentsAndOffsets( text, 0, text, 0 );
+			const range = Range._createFromParentsAndOffsets( text, 0, text, 0 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>{}foobar</p>' );
 		} );
@@ -226,7 +226,7 @@ describe( 'view test utils', () => {
 			const b1 = new Element( 'b', null, text1 );
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
-			const range = Range.createFromParentsAndOffsets( p, 0, text2, 5 );
+			const range = Range._createFromParentsAndOffsets( p, 0, text2, 5 );
 			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
 		} );
@@ -277,7 +277,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, 0, p, 5 );
+			const range = Range._createFromParentsAndOffsets( p, 0, p, 5 );
 
 			expect( stringify( p, range ) ).to.equal( '<p>[<b>foobar</b></p>' );
 		} );
@@ -286,7 +286,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( p, -1, p, 1 );
+			const range = Range._createFromParentsAndOffsets( p, -1, p, 1 );
 
 			expect( stringify( p, range ) ).to.equal( '<p><b>foobar</b>]</p>' );
 		} );
@@ -295,7 +295,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( text, 0, text, 7 );
+			const range = Range._createFromParentsAndOffsets( text, 0, text, 7 );
 
 			expect( stringify( p, range ) ).to.equal( '<p><b>{foobar</b></p>' );
 		} );
@@ -304,7 +304,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
-			const range = Range.createFromParentsAndOffsets( text, -1, text, 2 );
+			const range = Range._createFromParentsAndOffsets( text, -1, text, 2 );
 
 			expect( stringify( p, range ) ).to.equal( '<p><b>fo}obar</b></p>' );
 		} );
@@ -315,8 +315,8 @@ describe( 'view test utils', () => {
 			const b1 = new Element( 'b', null, text1 );
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
-			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const range2 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
+			const range1 = Range._createFromParentsAndOffsets( p, 0, p, 1 );
+			const range2 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new DocumentSelection( [ range2, range1 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
@@ -327,10 +327,10 @@ describe( 'view test utils', () => {
 			const text2 = new Text( 'bazqux' );
 			const b = new Element( 'b', null, text1 );
 			const p = new Element( 'p', null, [ b, text2 ] );
-			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
-			const range2 = Range.createFromParentsAndOffsets( text2, 0, text2, 3 );
-			const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
-			const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
+			const range1 = Range._createFromParentsAndOffsets( p, 0, p, 1 );
+			const range2 = Range._createFromParentsAndOffsets( text2, 0, text2, 3 );
+			const range3 = Range._createFromParentsAndOffsets( text2, 3, text2, 4 );
+			const range4 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new DocumentSelection( [ range1, range2, range3, range4 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
@@ -345,7 +345,7 @@ describe( 'view test utils', () => {
 
 		it( 'should use Range instance instead of Selection', () => {
 			const text = new Text( 'foobar' );
-			const range = Range.createFromParentsAndOffsets( text, 3, text, 4 );
+			const range = Range._createFromParentsAndOffsets( text, 3, text, 4 );
 			const string = stringify( text, range );
 			expect( string ).to.equal( 'foo{b}ar' );
 		} );
@@ -428,7 +428,7 @@ describe( 'view test utils', () => {
 
 			expect( view ).to.be.instanceOf( DocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
-			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( view, 0, view, 0 ) ) ).to.be.true;
+			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( view, 0, view, 0 ) ) ).to.be.true;
 		} );
 
 		it( 'should return Element if range is around single element', () => {
@@ -438,7 +438,7 @@ describe( 'view test utils', () => {
 			expect( view ).to.be.instanceOf( Element );
 			expect( parent ).to.be.instanceOf( DocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
-			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( parent, 0, parent, 1 ) ) ).to.be.true;
+			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( parent, 0, parent, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should create DocumentFragment when multiple elements on root', () => {
@@ -538,8 +538,8 @@ describe( 'view test utils', () => {
 			expect( selection.rangeCount ).to.equal( 2 );
 			const ranges = [ ...selection.getRanges() ];
 
-			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 1, view, 3 ) ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 4, view, 4 ) ) ).to.be.true;
+			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 1, view, 3 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range._createFromParentsAndOffsets( view, 4, view, 4 ) ) ).to.be.true;
 		} );
 
 		it( 'should parse selection range between elements', () => {
@@ -555,8 +555,8 @@ describe( 'view test utils', () => {
 			expect( text.data ).to.equal( 'foobar' );
 			expect( selection.rangeCount ).to.equal( 2 );
 			const ranges = [ ...selection.getRanges() ];
-			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, b, 1 ) ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 1, view, 1 ) ) ).to.be.true;
+			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 0, b, 1 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range._createFromParentsAndOffsets( view, 1, view, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should support unicode', () => {
@@ -590,7 +590,7 @@ describe( 'view test utils', () => {
 			expect( text ).to.be.instanceof( Text );
 			expect( text.data ).to.equal( 'foobar' );
 			expect( selection.rangeCount ).to.equal( 1 );
-			expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( text, 3, view, 1 ) ) ).to.be.true;
+			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( text, 3, view, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should parse ranges #2', () => {
@@ -608,17 +608,17 @@ describe( 'view test utils', () => {
 			expect( text2.data ).to.equal( 'baz' );
 			expect( selection.rangeCount ).to.equal( 2 );
 			const ranges = [ ...selection.getRanges() ];
-			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, text1, 4 ) ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( text2, 0, view, 2 ) ) ).to.be.true;
+			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 0, text1, 4 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range._createFromParentsAndOffsets( text2, 0, view, 2 ) ) ).to.be.true;
 		} );
 
 		it( 'should use ranges order when provided', () => {
 			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ] } );
 			expect( selection.rangeCount ).to.equal( 3 );
 			const ranges = [ ...selection.getRanges() ];
-			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
-			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
+			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range._createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
+			expect( ranges[ 2 ].isEqual( Range._createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 			expect( selection.anchor.isEqual( ranges[ 2 ].start ) ).to.be.true;
 			expect( selection.focus.isEqual( ranges[ 2 ].end ) ).to.be.true;
 		} );
@@ -627,9 +627,9 @@ describe( 'view test utils', () => {
 			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ], lastRangeBackward: true } );
 			expect( selection.rangeCount ).to.equal( 3 );
 			const ranges = [ ...selection.getRanges() ];
-			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
-			expect( ranges[ 2 ].isEqual( Range.createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
+			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
+			expect( ranges[ 1 ].isEqual( Range._createFromParentsAndOffsets( view, 7, view, 8 ) ) ).to.be.true;
+			expect( ranges[ 2 ].isEqual( Range._createFromParentsAndOffsets( view, 0, view, 1 ) ) ).to.be.true;
 			expect( selection.anchor.isEqual( ranges[ 2 ].end ) ).to.be.true;
 			expect( selection.focus.isEqual( ranges[ 2 ].start ) ).to.be.true;
 		} );

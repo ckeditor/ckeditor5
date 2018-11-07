@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals Node */
+
 /**
  * @module engine/view/renderer
  */
@@ -20,6 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
@@ -330,7 +333,7 @@ export default class Renderer {
 		const firstPos = this.selection.getFirstPosition();
 
 		if ( firstPos.parent.is( 'text' ) ) {
-			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
+			return ViewPosition._createBefore( this.selection.getFirstPosition().parent );
 		} else {
 			return firstPos;
 		}
@@ -752,6 +755,11 @@ export default class Renderer {
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
+
+		// Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
+		if ( env.isGecko ) {
+			fixGeckoSelectionAfterBr( focus, domSelection );
+		}
 	}
 
 	/**
@@ -922,4 +930,29 @@ function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
 
 	// Not matching types.
 	return false;
+}
+
+// The following is a Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
+// When the native DOM selection is at the end of the block and preceded by <br /> e.g.
+//
+//		<p>foo<br/>[]</p>
+//
+// which happens a lot when using the soft line break, the browser fails to (visually) move the
+// caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
+function fixGeckoSelectionAfterBr( focus, domSelection ) {
+	const parent = focus.parent;
+
+	// This fix works only when the focus point is at the very end of an element.
+	// There is no point in running it in cases unrelated to the browser bug.
+	if ( parent.nodeType != Node.ELEMENT_NODE || focus.offset != parent.childNodes.length - 1 ) {
+		return;
+	}
+
+	const childAtOffset = parent.childNodes[ focus.offset ];
+
+	// To stay on the safe side, the fix being as specific as possible, it targets only the
+	// selection which is at the very end of the element and preceded by <br />.
+	if ( childAtOffset && childAtOffset.tagName == 'BR' ) {
+		domSelection.addRange( domSelection.getRangeAt( 0 ) );
+	}
 }

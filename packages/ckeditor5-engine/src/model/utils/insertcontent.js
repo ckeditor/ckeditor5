@@ -33,8 +33,9 @@ import Selection from '../selection';
  * module:engine/model/position~Position|module:engine/model/element~Element|
  * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
  */
-export default function insertContent( model, content, selectable ) {
+export default function insertContent( model, content, selectable, placeOrOffset ) {
 	model.change( writer => {
 		let selection;
 
@@ -43,7 +44,7 @@ export default function insertContent( model, content, selectable ) {
 		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
 			selection = selectable;
 		} else {
-			selection = new Selection( selectable );
+			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
 		if ( !selection.isCollapsed ) {
@@ -173,7 +174,7 @@ class Insertion {
 	 */
 	getSelectionRange() {
 		if ( this.nodeToSelect ) {
-			return Range.createOn( this.nodeToSelect );
+			return Range._createOn( this.nodeToSelect );
 		}
 
 		return this.model.schema.getNearestSelectionRange( this.position );
@@ -275,12 +276,11 @@ class Insertion {
 			return;
 		}
 
-		const livePos = LivePosition.createFromPosition( this.position );
-		livePos.stickiness = 'toNext';
+		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
 
 		this.writer.insert( node, this.position );
 
-		this.position = Position.createFromPosition( livePos );
+		this.position = livePos.toPosition();
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
@@ -305,19 +305,19 @@ class Insertion {
 
 		const mergeLeft = this._canMergeLeft( node, context );
 		const mergeRight = this._canMergeRight( node, context );
-		const mergePosLeft = LivePosition.createBefore( node );
+		const mergePosLeft = LivePosition._createBefore( node );
 		mergePosLeft.stickiness = 'toNext';
-		const mergePosRight = LivePosition.createAfter( node );
+		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
 		if ( mergeLeft ) {
-			const position = LivePosition.createFromPosition( this.position );
-			position.stickiness = 'toNext';
+			const livePosition = LivePosition.fromPosition( this.position );
+			livePosition.stickiness = 'toNext';
 
 			this.writer.merge( mergePosLeft );
 
-			this.position = Position.createFromPosition( position );
-			position.detach();
+			this.position = livePosition.toPosition();
+			livePosition.detach();
 		}
 
 		if ( mergeRight ) {
@@ -331,16 +331,16 @@ class Insertion {
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
 			// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
-			this.position = Position.createAt( mergePosRight.nodeBefore, 'end' );
+			this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const position = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
+			const livePosition = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
 
 			this.writer.merge( mergePosRight );
 
-			this.position = Position.createFromPosition( position );
-			position.detach();
+			this.position = livePosition.toPosition();
+			livePosition.detach();
 		}
 
 		if ( mergeLeft || mergeRight ) {
@@ -427,7 +427,7 @@ class Insertion {
 
 			if ( this.position.isAtStart ) {
 				const parent = this.position.parent;
-				this.position = Position.createBefore( parent );
+				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>) so isAtStart == isAtEnd == true.
 				// We can remove the element after moving selection out of it.
@@ -435,9 +435,9 @@ class Insertion {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
-				this.position = Position.createAfter( this.position.parent );
+				this.position = this.writer.createPositionAfter( this.position.parent );
 			} else {
-				const tempPos = Position.createAfter( this.position.parent );
+				const tempPos = this.writer.createPositionAfter( this.position.parent );
 
 				this.writer.split( this.position );
 

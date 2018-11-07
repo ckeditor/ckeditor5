@@ -41,7 +41,7 @@ export default class SplitOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/splitoperation~SplitOperation#splitPosition
 		 */
-		this.splitPosition = Position.createFromPosition( splitPosition );
+		this.splitPosition = splitPosition.clone();
 		// Keep position sticking to the next node. This way any new content added at the place where the element is split
 		// will be left in the original element.
 		this.splitPosition.stickiness = 'toNext';
@@ -69,7 +69,7 @@ export default class SplitOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position|null} #graveyardPosition
 		 */
-		this.graveyardPosition = graveyardPosition ? Position.createFromPosition( graveyardPosition ) : null;
+		this.graveyardPosition = graveyardPosition ? graveyardPosition.clone() : null;
 
 		if ( this.graveyardPosition ) {
 			this.graveyardPosition.stickiness = 'toNext';
@@ -181,15 +181,16 @@ export default class SplitOperation extends Operation {
 		const splitElement = this.splitPosition.parent;
 
 		if ( this.graveyardPosition ) {
-			_move( Range.createFromPositionAndShift( this.graveyardPosition, 1 ), this.insertionPosition );
+			_move( Range._createFromPositionAndShift( this.graveyardPosition, 1 ), this.insertionPosition );
 		} else {
 			const newElement = splitElement._clone();
 
 			_insert( this.insertionPosition, newElement );
 		}
 
-		const sourceRange = Range.createFromParentsAndOffsets(
-			splitElement, this.splitPosition.offset, splitElement, splitElement.maxOffset
+		const sourceRange = new Range(
+			Position._createAt( splitElement, this.splitPosition.offset ),
+			Position._createAt( splitElement, splitElement.maxOffset )
 		);
 
 		_move( sourceRange, this.moveTargetPosition );

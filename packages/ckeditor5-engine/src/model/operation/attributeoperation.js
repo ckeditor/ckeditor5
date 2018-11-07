@@ -49,7 +49,7 @@ export default class AttributeOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/range~Range}
 		 */
-		this.range = Range.createFromRange( range );
+		this.range = range.clone();
 
 		/**
 		 * Key of an attribute to change or remove.

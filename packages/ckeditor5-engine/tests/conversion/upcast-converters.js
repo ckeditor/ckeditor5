@@ -761,7 +761,7 @@ describe( 'upcast-converters', () => {
 				if ( conversionApi.consumable.consume( data.viewItem ) ) {
 					const text = conversionApi.writer.createText( data.viewItem.data.replace( /fuck/gi, '****' ) );
 					conversionApi.writer.insert( text, data.modelCursor );
-					data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+					data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, text.offsetSize );
 					data.modelCursor = data.modelRange.end;
 				}
 			} );
@@ -841,9 +841,9 @@ describe( 'upcast-converters', () => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 					conversionApi.writer.insert( paragraph, data.modelCursor );
-					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
+					conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( paragraph, 0 ) );
 
-					data.modelRange = ModelRange.createOn( paragraph );
+					data.modelRange = ModelRange._createOn( paragraph );
 					data.modelCursor = data.modelRange.end;
 				}
 			} );
@@ -863,7 +863,7 @@ describe( 'upcast-converters', () => {
 				new ViewContainerElement( 'div', null, [ new ViewText( 'abc' ), new ViewContainerElement( 'foo' ) ] ),
 				new ViewContainerElement( 'bar' )
 			] );
-			const position = ModelPosition.createAt( new ModelElement( 'element' ) );
+			const position = ModelPosition._createAt( new ModelElement( 'element' ), 0 );
 
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );

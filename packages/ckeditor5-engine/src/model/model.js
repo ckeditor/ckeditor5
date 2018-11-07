@@ -16,6 +16,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ModelElement from './element';
 import ModelRange from './range';
+import ModelPosition from './position';
+import ModelSelection from './selection';
 
 import insertContent from './utils/insertcontent';
 import deleteContent from './utils/deletecontent';
@@ -222,13 +224,13 @@ export default class Model {
 	}
 
 	/**
-	 * Inserts content into the editor (specified selection) as one would expect the paste
+	 * Inserts content at the position in the editor specified by the selection, as one would expect the paste
 	 * functionality to work.
 	 *
 	 * This is a high-level method. It takes the {@link #schema schema} into consideration when inserting
 	 * the content, clears the given selection's content before inserting nodes and moves the selection
 	 * to its target position at the end of the process.
-	 * It can split elements, merge them, wrap bare text nodes in paragraphs, etc. – just like the
+	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &mdash; just like the
 	 * pasting feature should do.
 	 *
 	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
@@ -244,15 +246,15 @@ export default class Model {
 	 * {@glink framework/guides/architecture/editing-engine#conversion converters} between the model and view
 	 * and define those nodes in the {@glink framework/guides/architecture/editing-engine#schema schema}.
 	 *
-	 * So, while this method may seem similar to CKEditor 4's `editor.insertHtml()` (in fact, both methods
-	 * are used for paste-like content insertion), CKEditor 5's method cannot be use to insert arbitrary HTML
+	 * So, while this method may seem similar to CKEditor 4 `editor.insertHtml()` (in fact, both methods
+	 * are used for paste-like content insertion), the CKEditor 5 method cannot be use to insert arbitrary HTML
 	 * unless converters are defined for all elements and attributes in that HTML.
 	 *
 	 * # Examples
 	 *
 	 * Using `insertContent()` with a manually created model structure:
 	 *
-	 *		// Let's create a document fragment containing such a content:
+	 *		// Let's create a document fragment containing such content as:
 	 *		//
 	 *		// <paragrap>foo</paragraph>
 	 *		// <blockQuote>
@@ -273,26 +275,26 @@ export default class Model {
 	 *			return docFrag;
 	 *		} );
 	 *
-	 *		// insertContent() doesn't have to be used in a change() block. It can, though,
+	 *		// insertContent() does not have to be used in a change() block. It can, though,
 	 *		// so this code could be moved to the callback defined above.
 	 *		editor.model.insertContent( docFrag );
 	 *
-	 * Using `insertContent()` with HTML string converted to a model document fragment (similar to the pasting mechanism):
+	 * Using `insertContent()` with an HTML string converted to a model document fragment (similar to the pasting mechanism):
 	 *
 	 *		// You can create your own HtmlDataProcessor instance or use editor.data.processor
-	 *		// if you haven't overridden the default one (which is HtmlDataProcessor instance).
+	 *		// if you have not overridden the default one (which is the HtmlDataProcessor instance).
 	 *		const htmlDP = new HtmlDataProcessor();
 	 *
-	 *		// Convert an HTML string to a view document fragment.
+	 *		// Convert an HTML string to a view document fragment:
 	 *		const viewFragment = htmlDP.toView( htmlString );
 	 *
-	 *		// Convert a view document fragment to a model document fragment
-	 *		// in the context of $root. This conversion takes schema into
-	 *		// the account so if e.g. the view document fragment contained a bare text node
-	 *		// then that text node cannot be a child of $root, so it will be automatically
-	 *		// wrapped with a <paragraph>. You can define the context yourself (in the 2nd parameter),
+	 *		// Convert the view document fragment to a model document fragment
+	 *		// in the context of $root. This conversion takes the schema into
+	 *		// account so if, for example, the view document fragment contained a bare text node,
+	 *		// this text node cannot be a child of $root, so it will be automatically
+	 *		// wrapped with a <paragraph>. You can define the context yourself (in the second parameter),
 	 *		// and e.g. convert the content like it would happen in a <paragraph>.
-	 *		// Note: the clipboard feature uses a custom context called $clipboardHolder
+	 *		// Note: The clipboard feature uses a custom context called $clipboardHolder
 	 *		// which has a loosened schema.
 	 *		const modelFragment = editor.data.toModel( viewFragment );
 	 *
@@ -305,34 +307,39 @@ export default class Model {
 	 *			editor.model.insertContent( writer.createText( 'x' ) );
 	 *		} );
 	 *
-	 *		// Insert text at given position - document selection will not be modified.
+	 *		// Insert text at a given position - the document selection will not be modified.
 	 *		editor.model.change( writer => {
-	 *			editor.model.insertContent( writer.createText( 'x' ), Position.createAt( doc.getRoot(), 2 ) );
+	 *			editor.model.insertContent( writer.createText( 'x' ), doc.getRoot(), 2 );
+	 *
+	 *			// Which is a shorthand for:
+	 *			editor.model.insertContent( writer.createText( 'x' ), writer.createPositionAt( doc.getRoot(), 2 ) );
 	 *		} );
 	 *
 	 * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable`
 	 * it will be moved to the target position (where the document selection should be moved after the insertion).
 	 *
-	 *		// Insert text replacing given selection instance.
-	 *		const selection = new Selection( paragraph, 'in' );
-	 *
 	 *		editor.model.change( writer => {
+	 *			// Insert text replacing the given selection instance.
+	 *			const selection = writer.createSelection( paragraph, 'in' );
+	 *
 	 *			editor.model.insertContent( writer.createText( 'x' ), selection );
 	 *
 	 *			// insertContent() modifies the passed selection instance so it can be used to set the document selection.
-	 *			// Note: This is not necessary when you passed document selection to insertContent().
+	 *			// Note: This is not necessary when you passed the document selection to insertContent().
 	 *			writer.setSelection( selection );
 	 *		} );
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * module:engine/model/position~Position|module:engine/model/item~Item|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
-	 * Selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
+	 * This param defines a position in relation to that item.
 	 */
-	insertContent( content, selectable ) {
-		insertContent( this, content, selectable );
+	insertContent( content, selectable, placeOrOffset ) {
+		insertContent( this, content, selectable, placeOrOffset );
 	}
 
 	/**
@@ -349,7 +356,6 @@ export default class Model {
 	 * @fires deleteContent
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 	 * Selection of which the content should be deleted.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the operations will be added.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
 	 *
@@ -440,17 +446,18 @@ export default class Model {
 	}
 
 	/**
-	 * Checks whether given {@link module:engine/model/range~Range range} or {@link module:engine/model/element~Element element}
+	 * Checks whether the given {@link module:engine/model/range~Range range} or
+	 * {@link module:engine/model/element~Element element}
 	 * has any content.
 	 *
-	 * Content is any text node or element which is registered in {@link module:engine/model/schema~Schema schema}.
+	 * Content is any text node or element which is registered in the {@link module:engine/model/schema~Schema schema}.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @returns {Boolean}
 	 */
 	hasContent( rangeOrElement ) {
 		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange.createIn( rangeOrElement );
+			rangeOrElement = ModelRange._createIn( rangeOrElement );
 		}
 
 		if ( rangeOrElement.isCollapsed ) {
@@ -465,6 +472,208 @@ export default class Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Creates a position from the given root and path in that root.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionFromPath `Writer#createPositionFromPath()`}.
+	 *
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
+	 * See {@link module:engine/model/position~PositionStickiness}.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionFromPath( root, path, stickiness ) {
+		return new ModelPosition( root, path, stickiness );
+	}
+
+	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link module:engine/model/position~Position position},
+	 * * a parent element and offset in that element,
+	 * * a parent element and `'end'` (the position will be set at the end of that element),
+	 * * a {@link module:engine/model/item~Item model item} and `'before'` or `'after'`
+	 * (the position will be set before or after the given model item).
+	 *
+	 * This method is a shortcut to other factory methods such as:
+	 *
+	 * * {@link module:engine/model/model~Model#createPositionBefore `createPositionBefore()`},
+	 * * {@link module:engine/model/model~Model#createPositionAfter `createPositionAfter()`}.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionAt `Writer#createPositionAt()`},
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	createPositionAt( itemOrPosition, offset ) {
+		return ModelPosition._createAt( itemOrPosition, offset );
+	}
+
+	/**
+	 * Creates a new position after the given {@link module:engine/model/item~Item model item}.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionAfter `Writer#createPositionAfter()`}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionAfter( item ) {
+		return ModelPosition._createAfter( item );
+	}
+
+	/**
+	 * Creates a new position before the given {@link module:engine/model/item~Item model item}.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createPositionBefore `Writer#createPositionBefore()`}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionBefore( item ) {
+		return ModelPosition._createBefore( item );
+	}
+
+	/**
+	 * Creates a range spanning from the `start` position to the `end` position.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createRange `Writer#createRange()`}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRange( start, end );
+	 *		} );
+	 *
+	 * @param {module:engine/model/position~Position} start Start position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, the range will be collapsed
+	 * to the `start` position.
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRange( start, end ) {
+		return new ModelRange( start, end );
+	}
+
+	/**
+	 * Creates a range inside the given element which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createRangeIn `Writer#createRangeIn()`}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRangeIn( paragraph );
+	 *		} );
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRangeIn( element ) {
+		return ModelRange._createIn( element );
+	}
+
+	/**
+	 * Creates a range that starts before the given {@link module:engine/model/item~Item model item} and ends after it.
+	 *
+	 * Note: This method is also available on `writer` instance as
+	 * {@link module:engine/model/writer~Writer#createRangeOn `Writer.createRangeOn()`}:
+	 *
+	 *		model.change( writer => {
+	 *			const range = writer.createRangeOn( paragraph );
+	 *		} );
+	 *
+	 * @param {module:engine/model/item~Item} item
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRangeOn( item ) {
+		return ModelRange._createOn( item );
+	}
+
+	/**
+	 * Creates a new selection instance based on:
+	 *
+	 * * the given {@link module:engine/model/selection~Selection selection},
+	 * * or based on the given {@link module:engine/model/range~Range range},
+	 * * or based on the given iterable collection of {@link module:engine/model/range~Range ranges}
+	 * * or at the given {@link module:engine/model/position~Position position},
+	 * * or on the given {@link module:engine/model/element~Element element},
+	 * * or creates an empty selection if no arguments were passed.
+	 *
+	 * Note: This method is also available as
+	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 *
+	 *		// Creates empty selection without ranges.
+	 *		const selection = writer.createSelection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
+	 *
+	 *		// Creates selection at the given ranges
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
+	 *
+	 *		// Creates selection from the given document selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const documentSelection = model.document.selection;
+	 *		const selection = writer.createSelection( documentSelection );
+	 *
+	 *		// Creates selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
+	 *
+	 *		// Creates selection at the given offset in the given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = writer.createSelection( paragraph, offset );
+	 *
+	 *		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = writer.createSelection( paragraph, 'in' );
+	 *
+	 *		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = writer.createSelection( paragraph, 'on' );
+	 *
+	 *		// Additional options (`'backward'`) can be specified as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @returns {module:engine/model/selection~Selection}
+	 */
+	createSelection( selectable, placeOrOffset, options ) {
+		return new ModelSelection( selectable, placeOrOffset, options );
+	}
+
+	/**
+	 * Creates a {@link module:engine/model/batch~Batch} instance.
+	 *
+	 * **Note:** In most cases creating a batch instance is not necessary as they are created when using:
+	 *
+	 * * {@link #change `change()`},
+	 * * {@link #enqueueChange `enqueueChange()`}.
+	 *
+	 * @returns {module:engine/model/batch~Batch}
+	 */
+	createBatch() {
+		return new Batch();
 	}
 
 	/**

@@ -8,7 +8,6 @@ import insertContent from '../../../src/model/utils/insertcontent';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
-import Selection from '../../../src/model/selection';
 import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
@@ -18,11 +17,13 @@ describe( 'DataController utils', () => {
 	let model, doc;
 
 	describe( 'insertContent', () => {
-		it( 'should use parent batch', () => {
+		beforeEach( () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
+		} );
 
+		it( 'should use parent batch', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[]x' );
 
@@ -33,14 +34,10 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should be able to insert content at custom selection', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
 			model.change( writer => {
 				insertContent( model, writer.createText( 'x' ), selection );
@@ -49,15 +46,11 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should modify passed selection instance', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
-			const selectionCopy = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
+			const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.true;
 
@@ -67,15 +60,11 @@ describe( 'DataController utils', () => {
 
 			expect( selection.isEqual( selectionCopy ) ).to.be.false;
 
-			const insertionSelection = new Selection( new Position( doc.getRoot(), [ 3 ] ) );
+			const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
 			expect( selection.isEqual( insertionSelection ) ).to.be.true;
 		} );
 
 		it( 'should be able to insert content at custom position', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
@@ -88,10 +77,6 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should be able to insert content at custom range', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
@@ -104,10 +89,6 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should be able to insert content at model selection if document selection is passed', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
@@ -118,10 +99,6 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should be able to insert content at model selection if none passed', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
@@ -131,11 +108,72 @@ describe( 'DataController utils', () => {
 			} );
 		} );
 
-		it( 'accepts DocumentFragment', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
+		it( 'should be able to insert content at model element (numeric offset)', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 2 );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baxr</paragraph>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="in")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 'in' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>x</paragraph>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="on")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'foo', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const insertElement = writer.createElement( 'foo' );
+
+				insertContent( model, insertElement, element, 'on' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><foo></foo>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="end")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 'end' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>barx</paragraph>' );
+			} );
+		} );
+
+		it( 'accepts DocumentFragment', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
@@ -146,10 +184,6 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'accepts Text', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
@@ -160,10 +194,6 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should save the reference to the original object', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			const content = new Element( 'image' );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );

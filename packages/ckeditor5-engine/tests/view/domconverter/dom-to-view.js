@@ -871,7 +871,7 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'domRangeToView()', () => {
-		it( 'should converter DOM range', () => {
+		it( 'should convert DOM range', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domBar = document.createTextNode( 'bar' );
 			const domB = createElement( document, 'b', null, domBar );

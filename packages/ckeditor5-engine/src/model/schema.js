@@ -547,7 +547,7 @@ export default class Schema {
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range.createIn( item ), attribute );
+				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
@@ -555,10 +555,10 @@ export default class Schema {
 					yield new Range( start, end );
 				}
 
-				start = Position.createAfter( item );
+				start = Position._createAfter( item );
 			}
 
-			end = Position.createAfter( item );
+			end = Position._createAfter( item );
 		}
 
 		if ( !start.isEqual( end ) ) {
@@ -607,7 +607,7 @@ export default class Schema {
 			const value = data.value;
 
 			if ( value.type == type && this.isObject( value.item ) ) {
-				return Range.createOn( value.item );
+				return Range._createOn( value.item );
 			}
 
 			if ( this.checkChild( value.nextPosition, '$text' ) ) {
@@ -665,6 +665,16 @@ export default class Schema {
 				this.removeDisallowedAttributes( node.getChildren(), writer );
 			}
 		}
+	}
+
+	/**
+	 * Creates an instance of the schema context.
+	 *
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @returns {module:engine/model/schema~SchemaContext}
+	 */
+	createContext( context ) {
+		return new SchemaContext( context );
 	}
 
 	/**
@@ -1162,7 +1172,7 @@ export class SchemaContext {
  *		schema.checkChild( contextDefinition, childToCheck );
  *
  *		// Also check in [ rootElement, blockQuoteElement, paragraphElement ].
- *		schema.checkChild( Position.createAt( paragraphElement ), 'foo' );
+ *		schema.checkChild( model.createPositionAt( paragraphElement, 0 ), 'foo' );
  *
  *		// Check in [ rootElement, paragraphElement ].
  *		schema.checkChild( [ rootElement, paragraphElement ], 'foo' );

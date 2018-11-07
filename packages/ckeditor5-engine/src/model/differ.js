@@ -170,7 +170,7 @@ export default class Differ {
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
 
-				const range = Range.createFromPositionAndShift( operation.position, 1 );
+				const range = Range._createFromPositionAndShift( operation.position, 1 );
 
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerRange = marker.getRange();
@@ -391,10 +391,10 @@ export default class Differ {
 					let range;
 
 					if ( elementChildren[ i ].name == '$text' ) {
-						range = Range.createFromParentsAndOffsets( element, i, element, i + 1 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element, i + 1 ) );
 					} else {
 						const index = element.offsetToIndex( i );
-						range = Range.createFromParentsAndOffsets( element, i, element.getChild( index ), 0 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element.getChild( index ), 0 ) );
 					}
 
 					// Generate diff items for this change (there might be multiple attributes changed and
@@ -423,7 +423,7 @@ export default class Differ {
 			// If change happens at the same position...
 			if ( a.position.isEqual( b.position ) ) {
 				// Keep chronological order of operations.
-				return a.changeCount < b.changeCount ? -1 : 1;
+				return a.changeCount - b.changeCount;
 			}
 
 			// If positions differ, position "on the left" should be earlier in the result.
@@ -826,7 +826,7 @@ export default class Differ {
 	_getInsertDiff( parent, offset, name ) {
 		return {
 			type: 'insert',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++
@@ -845,7 +845,7 @@ export default class Differ {
 	_getRemoveDiff( parent, offset, name ) {
 		return {
 			type: 'remove',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++
@@ -879,7 +879,7 @@ export default class Differ {
 				diffs.push( {
 					type: 'attribute',
 					position: range.start,
-					range: Range.createFromRange( range ),
+					range: range.clone(),
 					length: 1,
 					attributeKey: key,
 					attributeOldValue: oldValue,
@@ -898,7 +898,7 @@ export default class Differ {
 			diffs.push( {
 				type: 'attribute',
 				position: range.start,
-				range: Range.createFromRange( range ),
+				range: range.clone(),
 				length: 1,
 				attributeKey: key,
 				attributeOldValue: null,
@@ -948,7 +948,7 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_removeAllNestedChanges( parent, offset, howMany ) {
-		const range = Range.createFromParentsAndOffsets( parent, offset, parent, offset + howMany );
+		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {

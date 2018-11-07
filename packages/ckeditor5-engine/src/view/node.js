@@ -257,6 +257,7 @@ export default class Node {
 	}
 
 	/**
+	 * @protected
 	 * @param {module:engine/view/document~ChangeType} type Type of the change.
 	 * @param {module:engine/view/node~Node} node Changed node.
 	 * @fires change

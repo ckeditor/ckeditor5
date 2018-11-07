@@ -149,7 +149,7 @@ function tryFixingCollapsedRange( range, schema ) {
 
 	// Check single node selection (happens in tables).
 	if ( fixedPosition.nodeAfter && schema.isLimit( fixedPosition.nodeAfter ) ) {
-		return new Range( fixedPosition, Position.createAfter( fixedPosition.nodeAfter ) );
+		return new Range( fixedPosition, Position._createAfter( fixedPosition.nodeAfter ) );
 	}
 
 	return new Range( fixedPosition );
@@ -199,8 +199,11 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	if ( isStartInLimit || isEndInLimit ) {
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
-		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
-		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
+		const startPosition = Position._createAt( startLimitElement, 0 );
+		const endPosition = Position._createAt( endLimitElement, 0 );
+
+		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( startPosition, schema, 'start' ) : start;
+		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( endPosition, schema, 'end' ) : end;
 
 		return new Range( fixedStart, fixedEnd );
 	}
@@ -226,7 +229,7 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 	}
 
 	// Depending on direction of expanding selection return position before or after found node.
-	return expandToDirection === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
+	return expandToDirection === 'start' ? Position._createBefore( node ) : Position._createAfter( node );
 }
 
 // Checks whether both range ends are placed around non-limit elements.

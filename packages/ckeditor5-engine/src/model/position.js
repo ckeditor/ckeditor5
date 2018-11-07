@@ -16,20 +16,25 @@ import { last } from 'lodash-es';
 /**
  * Represents a position in the model tree.
  *
- * **Note:** Position is based on offsets, not indexes. This means that position in element containing two text nodes
- * with data `foo` and `bar`, position between them has offset `3`, not `1`.
- * See {@link module:engine/model/position~Position#path} for more.
+ * A position is represented by its {@link module:engine/model/position~Position#root} and
+ * a {@link module:engine/model/position~Position#path} in that root.
  *
- * Since position in a model is represented by a {@link module:engine/model/position~Position#root position root} and
- * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing elements.
- * This requirement is important for operational transformation.
+ * You can create position instances via its constructor or the `createPosition*()` factory methods of
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ *
+ * **Note:** Position is based on offsets, not indexes. This means that a position between two text nodes
+ * `foo` and `bar` has offset `3`, not `1`. See {@link module:engine/model/position~Position#path} for more information.
+ *
+ * Since a position in the model is represented by a {@link module:engine/model/position~Position#root position root} and
+ * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing places.
+ * This requirement is important for operational transformation algorithms.
  *
  * Also, {@link module:engine/model/operation/operation~Operation operations}
- * kept in {@link module:engine/model/document~Document#history document history}
+ * kept in the {@link module:engine/model/document~Document#history document history}
  * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
- * after document got changed.
+ * after the document has changed.
  *
- * When changes are applied to model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
+ * When changes are applied to the model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
  * will change even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
  * {@link module:engine/model/position~Position#parent} and some other properties and methods will throw errors.
  *
@@ -360,7 +365,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position.createFromPosition( this );
+		const shifted = this.clone();
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -448,13 +453,13 @@ export default class Position {
 				return true;
 
 			case 'before':
-				left = Position.createFromPosition( this );
-				right = Position.createFromPosition( otherPosition );
+				left = Position._createAt( this );
+				right = Position._createAt( otherPosition );
 				break;
 
 			case 'after':
-				left = Position.createFromPosition( otherPosition );
-				right = Position.createFromPosition( this );
+				left = Position._createAt( otherPosition );
+				right = Position._createAt( this );
 				break;
 
 			default:
@@ -538,7 +543,7 @@ export default class Position {
 				result = this._getTransformedByMergeOperation( operation );
 				break;
 			default:
-				result = Position.createFromPosition( this );
+				result = Position._createAt( this );
 				break;
 		}
 
@@ -612,7 +617,7 @@ export default class Position {
 				pos = pos._getTransformedByDeletion( operation.deletionPosition, 1 );
 			}
 		} else if ( this.isEqual( operation.deletionPosition ) ) {
-			pos = Position.createFromPosition( operation.deletionPosition );
+			pos = Position._createAt( operation.deletionPosition );
 		} else {
 			pos = this._getTransformedByMove( operation.deletionPosition, operation.graveyardPosition, 1 );
 		}
@@ -630,7 +635,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position|null} Transformed position or `null`.
 	 */
 	_getTransformedByDeletion( deletePosition, howMany ) {
-		const transformed = Position.createFromPosition( this );
+		const transformed = Position._createAt( this );
 
 		// This position can't be affected if deletion was in a different root.
 		if ( this.root != deletePosition.root ) {
@@ -678,7 +683,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany ) {
-		const transformed = Position.createFromPosition( this );
+		const transformed = Position._createAt( this );
 
 		// This position can't be affected if insertion was in a different root.
 		if ( this.root != insertPosition.root ) {
@@ -721,7 +726,7 @@ export default class Position {
 
 		if ( sourcePosition.isEqual( targetPosition ) ) {
 			// If `targetPosition` is equal to `sourcePosition` this isn't really any move. Just return position as it is.
-			return Position.createFromPosition( this );
+			return Position._createAt( this );
 		}
 
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
@@ -751,9 +756,9 @@ export default class Position {
 	 *
 	 * Example:
 	 *
-	 *		let original = new Position( root, [ 2, 3, 1 ] );
-	 *		let source = new Position( root, [ 2, 2 ] );
-	 *		let target = new Position( otherRoot, [ 1, 1, 3 ] );
+	 *		let original = model.createPositionFromPath( root, [ 2, 3, 1 ] );
+	 *		let source = model.createPositionFromPath( root, [ 2, 2 ] );
+	 *		let target = model.createPositionFromPath( otherRoot, [ 1, 1, 3 ] );
 	 *		original._getCombined( source, target ); // path is [ 1, 1, 4, 1 ], root is `otherRoot`
 	 *
 	 * Explanation:
@@ -774,7 +779,7 @@ export default class Position {
 		const i = source.path.length - 1;
 
 		// The first part of a path to combined position is a path to the place where nodes were moved.
-		const combined = Position.createFromPosition( target );
+		const combined = Position._createAt( target );
 		combined.stickiness = this.stickiness;
 
 		// Then we have to update the rest of the path.
@@ -801,6 +806,15 @@ export default class Position {
 	}
 
 	/**
+	 * Returns a new position that is equal to current position.
+	 *
+	 * @returns {module:engine/model/position~Position}
+	 */
+	clone() {
+		return new this.constructor( this.root, this.path, this.stickiness );
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/model/position~Position position},
@@ -808,34 +822,54 @@ export default class Position {
 	 * * parent element and `'end'` (sets position at the end of that element),
 	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
-	 * This method is a shortcut to other constructors such as:
+	 * This method is a shortcut to other factory methods such as:
 	 *
-	 * * {@link module:engine/model/position~Position.createBefore},
-	 * * {@link module:engine/model/position~Position.createAfter},
-	 * * {@link module:engine/model/position~Position.createFromParentAndOffset},
-	 * * {@link module:engine/model/position~Position.createFromPosition}.
+	 * * {@link module:engine/model/position~Position._createBefore},
+	 * * {@link module:engine/model/position~Position._createAfter}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @protected
 	 */
-	static createAt( itemOrPosition, offset ) {
+	static _createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
-			return this.createFromPosition( itemOrPosition );
+			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
 			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
 				offset = node.maxOffset;
 			} else if ( offset == 'before' ) {
-				return this.createBefore( node );
+				return this._createBefore( node );
 			} else if ( offset == 'after' ) {
-				return this.createAfter( node );
-			} else if ( !offset ) {
-				offset = 0;
+				return this._createAfter( node );
+			} else if ( offset !== 0 && !offset ) {
+				/**
+				 * {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}
+				 * requires the offset to be specified when the first parameter is a model item.
+				 *
+				 * @error model-createPositionAt-offset-required
+				 */
+				throw new CKEditorError(
+					'model-createPositionAt-offset-required: ' +
+					'Model#createPositionAt() requires the offset when the first parameter is a model item.' );
 			}
 
-			return this.createFromParentAndOffset( node, offset );
+			if ( !node.is( 'element' ) && !node.is( 'documentFragment' ) ) {
+				/**
+				 * Position parent have to be a model element or model document fragment.
+				 *
+				 * @error model-position-parent-incorrect
+				 */
+				throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.' );
+			}
+
+			const path = node.getPath();
+
+			path.push( offset );
+
+			return new this( node.root, path );
 		}
 	}
 
@@ -844,8 +878,9 @@ export default class Position {
 	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
+	 * @protected
 	 */
-	static createAfter( item ) {
+	static _createAfter( item ) {
 		if ( !item.parent ) {
 			/**
 			 * You can not make a position after a root element.
@@ -856,7 +891,7 @@ export default class Position {
 			throw new CKEditorError( 'model-position-after-root: You cannot make a position after root.', { root: item } );
 		}
 
-		return this.createFromParentAndOffset( item.parent, item.endOffset );
+		return this._createAt( item.parent, item.endOffset );
 	}
 
 	/**
@@ -864,8 +899,9 @@ export default class Position {
 	 *
 	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
 	 * @returns {module:engine/model/position~Position}
+	 * @protected
 	 */
-	static createBefore( item ) {
+	static _createBefore( item ) {
 		if ( !item.parent ) {
 			/**
 			 * You can not make a position before a root element.
@@ -876,44 +912,7 @@ export default class Position {
 			throw new CKEditorError( 'model-position-before-root: You cannot make a position before root.', { root: item } );
 		}
 
-		return this.createFromParentAndOffset( item.parent, item.startOffset );
-	}
-
-	/**
-	 * Creates a new position from the parent element and an offset in that element.
-	 *
-	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent Position's parent.
-	 * @param {Number} offset Position's offset.
-	 * @returns {module:engine/model/position~Position}
-	 */
-	static createFromParentAndOffset( parent, offset ) {
-		if ( !parent.is( 'element' ) && !parent.is( 'documentFragment' ) ) {
-			/**
-			 * Position parent have to be a model element or model document fragment.
-			 *
-			 * @error model-position-parent-incorrect
-			 */
-			throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.' );
-		}
-
-		const path = parent.getPath();
-
-		path.push( offset );
-
-		return new this( parent.root, path );
-	}
-
-	/**
-	 * Creates a new position, which is equal to passed position.
-	 *
-	 * @param {module:engine/model/position~Position} position Position to be cloned.
-	 * @returns {module:engine/model/position~Position}
-	 */
-	static createFromPosition( position ) {
-		const newPos = new this( position.root, position.path.slice() );
-		newPos.stickiness = position.stickiness;
-
-		return newPos;
+		return this._createAt( item.parent, item.startOffset );
 	}
 
 	/**

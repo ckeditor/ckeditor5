@@ -534,7 +534,7 @@ export default class DomConverter {
 		const viewElement = this.mapDomToView( domParent );
 
 		if ( viewElement && viewElement.is( 'uiElement' ) ) {
-			return ViewPosition.createBefore( viewElement );
+			return ViewPosition._createBefore( viewElement );
 		}
 
 		if ( isText( domParent ) ) {
@@ -1066,7 +1066,7 @@ export default class DomConverter {
 	 */
 	_getTouchingViewTextNode( node, getNext ) {
 		const treeWalker = new ViewTreeWalker( {
-			startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
+			startPosition: getNext ? ViewPosition._createAfter( node ) : ViewPosition._createBefore( node ),
 			direction: getNext ? 'forward' : 'backward'
 		} );
 

@@ -54,7 +54,7 @@ export class Client {
 
 		model.change( writer => {
 			// Replace existing model in document by new one.
-			writer.remove( Range.createIn( modelRoot ) );
+			writer.remove( writer.createRangeIn( modelRoot ) );
 			writer.insert( modelDocumentFragment, modelRoot );
 		} );
 
@@ -220,11 +220,11 @@ export class Client {
 		switch ( type ) {
 			default:
 			case 'start':
-				return Position.createFromPosition( selRange.start );
+				return selRange.start.clone();
 			case 'end':
-				return Position.createFromPosition( selRange.end );
+				return selRange.end.clone();
 			case 'beforeParent':
-				return Position.createBefore( selRange.start.parent );
+				return Position._createBefore( selRange.start.parent );
 		}
 	}
 

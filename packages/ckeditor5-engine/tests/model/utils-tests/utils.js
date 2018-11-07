@@ -32,7 +32,7 @@ describe( 'getNodesAndText', () => {
 	} );
 
 	it( 'reads two elements with text', () => {
-		expect( getNodesAndText( Range.createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
+		expect( getNodesAndText( Range._createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
 	} );
 } );
 

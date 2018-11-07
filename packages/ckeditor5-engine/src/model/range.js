@@ -13,13 +13,17 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
- * Range class. Range is iterable.
+ * Represents a range in the model tree.
+ *
+ * A range is defined by its {@link module:engine/model/range~Range#start} and {@link module:engine/model/range~Range#end}
+ * positions.
+ *
+ * You can create range instances via its constructor or the `createRange*()` factory methods of
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
  */
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
-	 *
-	 * **Note:** Constructor creates it's own {@link module:engine/model/position~Position Position} instances basing on passed values.
 	 *
 	 * @param {module:engine/model/position~Position} start Start position.
 	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
@@ -31,7 +35,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.start = Position.createFromPosition( start );
+		this.start = Position._createAt( start );
 
 		/**
 		 * End position.
@@ -39,7 +43,7 @@ export default class Range {
 		 * @readonly
 		 * @member {module:engine/model/position~Position}
 		 */
-		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
+		this.end = end ? Position._createAt( end ) : Position._createAt( start );
 
 		// If the range is collapsed, treat in a similar way as a position and set its boundaries stickiness to 'toNone'.
 		// In other case, make the boundaries stick to the "inside" of the range.
@@ -134,7 +138,7 @@ export default class Range {
 	 * @param {module:engine/model/item~Item} item Model item to check.
 	 */
 	containsItem( item ) {
-		const pos = Position.createBefore( item );
+		const pos = Position._createBefore( item );
 
 		return this.containsPosition( pos ) || this.start.isEqual( pos );
 	}
@@ -165,16 +169,19 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 5 ] ) );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 5 ] ) );
 	 *		let transformed = range.getDifference( otherRange );
 	 *		// transformed array has no ranges because `otherRange` contains `range`
 	 *
-	 *		otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 3 ] ) );
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has one range: from [ 3 ] to [ 4, 0, 1 ]
 	 *
-	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 3 ] ), model.createPositionFromPath( root, [ 4 ] ) );
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 	 *
@@ -200,7 +207,7 @@ export default class Range {
 			}
 		} else {
 			// Ranges do not intersect, return the original range.
-			ranges.push( Range.createFromRange( this ) );
+			ranges.push( new Range( this.start, this.end ) );
 		}
 
 		return ranges;
@@ -212,11 +219,14 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let otherRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let otherRange = model.createRange( model.createPositionFromPath( root, [ 1 ] ), model.createPositionFromPath( root, [ 2 ] ) );
 	 *		let transformed = range.getIntersection( otherRange ); // null - ranges have no common part
 	 *
-	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
+	 *		otherRange = model.createRange( model.createPositionFromPath( root, [ 3 ] ), model.createPositionFromPath( root, [ 5 ] ) );
 	 *		transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to check for intersection.
@@ -291,7 +301,7 @@ export default class Range {
 		const ranges = [];
 		const diffAt = this.start.getCommonPath( this.end ).length;
 
-		const pos = Position.createFromPosition( this.start );
+		const pos = Position._createAt( this.start );
 		let posParent = pos.parent;
 
 		// Go up.
@@ -413,7 +423,7 @@ export default class Range {
 				return [ this._getTransformedByMergeOperation( operation ) ];
 		}
 
-		return [ Range.createFromRange( this ) ];
+		return [ new Range( this.start, this.end ) ];
 	}
 
 	/**
@@ -424,7 +434,7 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByOperations( operations ) {
-		const ranges = [ Range.createFromRange( this ) ];
+		const ranges = [ new Range( this.start, this.end ) ];
 
 		for ( const operation of operations ) {
 			for ( let i = 0; i < ranges.length; i++ ) {
@@ -477,6 +487,15 @@ export default class Range {
 	}
 
 	/**
+	 * Returns a new range that is equal to current range.
+	 *
+	 * @returns {module:engine/model/range~Range}
+	 */
+	clone() {
+		return new this.constructor( this.start, this.end );
+	}
+
+	/**
 	 * Returns a result of transforming a copy of this range by insert operation.
 	 *
 	 * One or more ranges may be returned as a result of this transformation.
@@ -517,13 +536,17 @@ export default class Range {
 	 */
 	_getTransformedBySplitOperation( operation ) {
 		const start = this.start._getTransformedBySplitOperation( operation );
-
-		let end;
+		let end = this.end._getTransformedBySplitOperation( operation );
 
 		if ( this.end.isEqual( operation.insertionPosition ) ) {
 			end = this.end.getShiftedBy( 1 );
-		} else {
-			end = this.end._getTransformedBySplitOperation( operation );
+		}
+
+		// Below may happen when range contains graveyard element used by split operation.
+		if ( start.root != end.root ) {
+			// End position was next to the moved graveyard element and was moved with it.
+			// Fix it by using old `end` which has proper `root`.
+			end = this.end.getShiftedBy( -1 );
 		}
 
 		return new Range( start, end );
@@ -578,7 +601,7 @@ export default class Range {
 
 			if ( operation.sourcePosition.isBefore( operation.targetPosition ) ) {
 				// Case 1.
-				start = Position.createFromPosition( end );
+				start = Position._createAt( end );
 				start.offset = 0;
 			} else {
 				if ( !operation.deletionPosition.isEqual( start ) ) {
@@ -603,17 +626,20 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let range = new Range( new Position( root, [ 2, 7 ] ), new Position( root, [ 4, 0, 1 ] ) );
-	 *		let transformed = range._getTransformedByInsertion( new Position( root, [ 1 ] ), 2 );
+	 *		let range = model.createRange(
+	 *			model.createPositionFromPath( root, [ 2, 7 ] ),
+	 *			model.createPositionFromPath( root, [ 4, 0, 1 ] )
+	 *		);
+	 *		let transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 1 ] ), 2 );
 	 *		// transformed array has one range from [ 4, 7 ] to [ 6, 0, 1 ]
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 4, 0, 0 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 4, 0, 0 ] ), 4 );
 	 *		// transformed array has one range from [ 2, 7 ] to [ 4, 0, 5 ]
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4 );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 3, 2 ] ), 4 );
 	 *		// transformed array has one range, which is equal to original range
 	 *
-	 *		transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 4, true );
+	 *		transformed = range._getTransformedByInsertion( model.createPositionFromPath( root, [ 3, 2 ] ), 4, true );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3, 2 ] and from [ 3, 6 ] to [ 4, 0, 1 ]
 	 *
 	 * @protected
@@ -637,7 +663,7 @@ export default class Range {
 				)
 			];
 		} else {
-			const range = Range.createFromRange( this );
+			const range = new Range( this.start, this.end );
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany );
 			range.end = range.end._getTransformedByInsertion( insertPosition, howMany );
@@ -677,7 +703,7 @@ export default class Range {
 		// <div><p>ab</p><p>c[d</p></div><p>e]f</p> --> <div><p>ab</p>{</div>}<p>c[d</p><p>e]f</p>
 		//
 		// This special case is applied only if the range is to be kept together (not spread).
-		const moveRange = Range.createFromPositionAndShift( sourcePosition, howMany );
+		const moveRange = Range._createFromPositionAndShift( sourcePosition, howMany );
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( this.containsPosition( targetPosition ) && !spread ) {
@@ -768,11 +794,12 @@ export default class Range {
 	 * Creates a new range, spreading from specified {@link module:engine/model/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
+	 * @protected
 	 * @param {module:engine/model/position~Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	static createFromPositionAndShift( position, shift ) {
+	static _createFromPositionAndShift( position, shift ) {
 		const start = position;
 		const end = position.getShiftedBy( shift );
 
@@ -780,65 +807,26 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range from given parents and offsets.
-	 *
-	 * @param {module:engine/model/element~Element} startElement Start position parent element.
-	 * @param {Number} startOffset Start position offset.
-	 * @param {module:engine/model/element~Element} endElement End position parent element.
-	 * @param {Number} endOffset End position offset.
-	 * @returns {module:engine/model/range~Range}
-	 */
-	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
-		return new this(
-			Position.createFromParentAndOffset( startElement, startOffset ),
-			Position.createFromParentAndOffset( endElement, endOffset )
-		);
-	}
-
-	/**
-	 * Creates a new instance of `Range` which is equal to passed range.
-	 *
-	 * @param {module:engine/model/range~Range} range Range to clone.
-	 * @returns {module:engine/model/range~Range}
-	 */
-	static createFromRange( range ) {
-		return new this( range.start, range.end );
-	}
-
-	/**
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
+	 * @protected
 	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
 	 * @returns {module:engine/model/range~Range}
 	 */
-	static createIn( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
+	static _createIn( element ) {
+		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
 	}
 
 	/**
 	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
 	 *
+	 * @protected
 	 * @param {module:engine/model/item~Item} item
 	 * @returns {module:engine/model/range~Range}
 	 */
-	static createOn( item ) {
-		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
-	}
-
-	/**
-	 * Creates a collapsed range at given {@link module:engine/model/position~Position position}
-	 * or on the given {@link module:engine/model/item~Item item}.
-	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
-	 */
-	static createCollapsedAt( itemOrPosition, offset ) {
-		const start = Position.createAt( itemOrPosition, offset );
-		const end = Position.createFromPosition( start );
-
-		return new Range( start, end );
+	static _createOn( item ) {
+		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 
 	/**
@@ -856,17 +844,17 @@ export default class Range {
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to combine.
 	 * @returns {module:engine/model/range~Range} Combined range.
 	 */
-	static createFromRanges( ranges ) {
+	static _createFromRanges( ranges ) {
 		if ( ranges.length === 0 ) {
 			/**
 			 * At least one range has to be passed to
-			 * {@link module:engine/model/range~Range.createFromRanges `Range.createFromRanges()`}.
+			 * {@link module:engine/model/range~Range._createFromRanges `Range._createFromRanges()`}.
 			 *
 			 * @error range-create-from-ranges-empty-array
 			 */
 			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
 		} else if ( ranges.length == 1 ) {
-			return this.createFromRange( ranges[ 0 ] );
+			return ranges[ 0 ].clone();
 		}
 
 		// 1. Set the first range in `ranges` array as a reference range.
@@ -892,7 +880,7 @@ export default class Range {
 		if ( refIndex > 0 ) {
 			for ( let i = refIndex - 1; true; i++ ) {
 				if ( ranges[ i ].end.isEqual( result.start ) ) {
-					result.start = Position.createFromPosition( ranges[ i ].start );
+					result.start = Position._createAt( ranges[ i ].start );
 				} else {
 					// If ranges are not starting/ending at the same position there is no point in looking further.
 					break;
@@ -904,7 +892,7 @@ export default class Range {
 		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
 			if ( ranges[ i ].start.isEqual( result.end ) ) {
-				result.end = Position.createFromPosition( ranges[ i ].end );
+				result.end = Position._createAt( ranges[ i ].end );
 			} else {
 				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;

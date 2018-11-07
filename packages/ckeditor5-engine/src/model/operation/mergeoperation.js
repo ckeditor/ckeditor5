@@ -45,7 +45,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#sourcePosition
 		 */
-		this.sourcePosition = Position.createFromPosition( sourcePosition );
+		this.sourcePosition = sourcePosition.clone();
 		// This is, and should always remain, the first position in its parent.
 		this.sourcePosition.stickiness = 'toPrevious';
 
@@ -61,7 +61,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#targetPosition
 		 */
-		this.targetPosition = Position.createFromPosition( targetPosition );
+		this.targetPosition = targetPosition.clone();
 		// Except of a rare scenario in `MergeOperation` x `MergeOperation` transformation,
 		// this is, and should always remain, the last position in its parent.
 		this.targetPosition.stickiness = 'toNext';
@@ -71,7 +71,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#graveyardPosition
 		 */
-		this.graveyardPosition = Position.createFromPosition( graveyardPosition );
+		this.graveyardPosition = graveyardPosition.clone();
 	}
 
 	/**
@@ -170,10 +170,10 @@ export default class MergeOperation extends Operation {
 	 */
 	_execute() {
 		const mergedElement = this.sourcePosition.parent;
-		const sourceRange = Range.createIn( mergedElement );
+		const sourceRange = Range._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );
-		_move( Range.createOn( mergedElement ), this.graveyardPosition );
+		_move( Range._createOn( mergedElement ), this.graveyardPosition );
 	}
 
 	/**

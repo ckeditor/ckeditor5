@@ -138,7 +138,7 @@ setData._parse = parse;
  *		const b = new Element( 'b', null, text );
  *		const p = new Element( 'p', null, b );
  *		const selection = new Selection(
- *			Range.createFromParentsAndOffsets( p, 0, p, 1 )
+ *			Range._createFromParentsAndOffsets( p, 0, p, 1 )
  *		);
  *
  *		stringify( p, selection ); // '<p>[<b>foobar</b>]</p>'
@@ -148,7 +148,7 @@ setData._parse = parse;
  *		const text = new Text( 'foobar' );
  *		const b = new Element( 'b', null, text );
  *		const p = new Element( 'p', null, b );
- *		const selection = new Selection( Range.createFromParentsAndOffsets( text, 1, text, 5 ) );
+ *		const selection = new Selection( Range._createFromParentsAndOffsets( text, 1, text, 5 ) );
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
@@ -161,8 +161,8 @@ setData._parse = parse;
  *
  *		const text = new Text( 'foobar' );
  *		const selection = new Selection( [
- *			Range.createFromParentsAndOffsets( text, 0, text, 1 ) ),
- *			Range.createFromParentsAndOffsets( text, 3, text, 5 ) )
+ *			Range._createFromParentsAndOffsets( text, 0, text, 1 ) ),
+ *			Range._createFromParentsAndOffsets( text, 3, text, 5 ) )
  *		] );
  *
  *		stringify( text, selection ); // '{f}oo{ba}r'
@@ -173,7 +173,7 @@ setData._parse = parse;
  * be converted to a selection containing one range collapsed at this position.
  *
  *		const text = new Text( 'foobar' );
- *		const range = Range.createFromParentsAndOffsets( text, 0, text, 1 );
+ *		const range = Range._createFromParentsAndOffsets( text, 0, text, 1 );
  *		const position = new Position( text, 3 );
  *
  *		stringify( text, range ); // '{f}oobar'

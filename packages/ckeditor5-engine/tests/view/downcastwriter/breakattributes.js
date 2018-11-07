@@ -154,7 +154,7 @@ describe( 'DowncastWriter', () => {
 				const p2 = new ContainerElement( 'p' );
 
 				expect( () => {
-					writer.breakAttributes( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
+					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -162,7 +162,7 @@ describe( 'DowncastWriter', () => {
 				const el = new AttributeElement( 'b' );
 
 				expect( () => {
-					writer.breakAttributes( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
+					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -252,7 +252,7 @@ describe( 'DowncastWriter', () => {
 				const img = new EmptyElement( 'img' );
 				const b = new AttributeElement( 'b' );
 				new ContainerElement( 'p', null, [ img, b ] ); // eslint-disable-line no-new
-				const range = Range.createFromParentsAndOffsets( img, 0, b, 0 );
+				const range = Range._createFromParentsAndOffsets( img, 0, b, 0 );
 
 				expect( () => {
 					writer.breakAttributes( range );
@@ -273,7 +273,7 @@ describe( 'DowncastWriter', () => {
 				const span = new UIElement( 'span' );
 				const b = new AttributeElement( 'b' );
 				new ContainerElement( 'p', null, [ span, b ] ); // eslint-disable-line no-new
-				const range = Range.createFromParentsAndOffsets( span, 0, b, 0 );
+				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expect( () => {
 					writer.breakAttributes( range );

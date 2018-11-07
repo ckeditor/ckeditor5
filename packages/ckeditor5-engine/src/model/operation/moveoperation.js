@@ -40,7 +40,7 @@ export default class MoveOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#sourcePosition
 		 */
-		this.sourcePosition = Position.createFromPosition( sourcePosition );
+		this.sourcePosition = sourcePosition.clone();
 		// `'toNext'` because `sourcePosition` is a bit like a start of the moved range.
 		this.sourcePosition.stickiness = 'toNext';
 
@@ -56,7 +56,7 @@ export default class MoveOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#targetPosition
 		 */
-		this.targetPosition = Position.createFromPosition( targetPosition );
+		this.targetPosition = targetPosition.clone();
 		this.targetPosition.stickiness = 'toNone';
 	}
 
@@ -172,7 +172,7 @@ export default class MoveOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		_move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		_move( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**

@@ -100,7 +100,7 @@ describe( 'transform', () => {
 
 			expected = {
 				type: InsertOperation,
-				position: Position.createFromPosition( position )
+				position: position.clone()
 			};
 		} );
 
@@ -217,7 +217,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
 				const transformBy = new AttributeOperation(
-					Range.createFromPositionAndShift( position, 2 ),
+					Range._createFromPositionAndShift( position, 2 ),
 					'foo',
 					null,
 					'bar',
@@ -914,15 +914,15 @@ describe( 'transform', () => {
 			targetPosition = new Position( root, [ 3, 3, 3 ] );
 			howMany = 2;
 
-			rangeEnd = Position.createFromPosition( sourcePosition );
+			rangeEnd = sourcePosition.clone();
 			rangeEnd.offset += howMany;
 
 			op = new MoveOperation( sourcePosition, howMany, targetPosition, 0 );
 
 			expected = {
 				type: MoveOperation,
-				sourcePosition: Position.createFromPosition( sourcePosition ),
-				targetPosition: Position.createFromPosition( targetPosition ),
+				sourcePosition: sourcePosition.clone(),
+				targetPosition: targetPosition.clone(),
 				howMany
 			};
 		} );
@@ -1957,7 +1957,7 @@ describe( 'transform', () => {
 
 			beforeEach( () => {
 				transformBy = new MoveOperation(
-					Position.createFromPosition( op.sourcePosition ),
+					op.sourcePosition.clone(),
 					op.howMany,
 					new Position( doc.graveyard, [ 0 ] ),
 					0
@@ -2015,11 +2015,11 @@ describe( 'transform', () => {
 			it( 'should force removing content even if was less important', () => {
 				const op = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 
-				const targetPosition = Position.createFromPosition( op.targetPosition );
+				const targetPosition = op.targetPosition.clone();
 
 				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), 0 );
 
-				const sourcePosition = Position.createFromPosition( transformBy.targetPosition );
+				const sourcePosition = transformBy.targetPosition.clone();
 
 				const transOp = transform( op, transformBy );
 
@@ -2426,8 +2426,8 @@ describe( 'transform', () => {
 		let oldRange, newRange;
 
 		beforeEach( () => {
-			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
-			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
+			oldRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 4 ) );
+			newRange = new Range( Position._createAt( root, 10 ), Position._createAt( root, 12 ) );
 			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, false, 0 );
 
 			expected = {
@@ -2441,7 +2441,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting oldRange: update oldRange', () => {
 				// Just CC things.
 				op.newRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 0 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( Position._createAt( root, 0 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2456,7 +2456,7 @@ describe( 'transform', () => {
 			it( 'insert position affecting newRange: update newRange', () => {
 				// Just CC things.
 				op.oldRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 8 ), [ nodeA, nodeB ], 0 );
+				const transformBy = new InsertOperation( Position._createAt( root, 8 ), [ nodeA, nodeB ], 0 );
 
 				const transOp = transform( op, transformBy );
 
@@ -2494,7 +2494,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.newRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 0 ), 1, Position.createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 0 ), 1, Position._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.newRange = null;
@@ -2506,7 +2506,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'moved range contains oldRange and is before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 2 ), 2, Position._createAt( root, 20 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
@@ -2522,7 +2522,7 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.oldRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 2, Position.createAt( root, 11 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 2, Position._createAt( root, 11 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange = null;
@@ -2534,7 +2534,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'target position is inside oldRange and before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), 0 );
+				const transformBy = new MoveOperation( Position._createAt( root, 20 ), 4, Position._createAt( root, 2 ), 0 );
 				const transOp = transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
@@ -2586,7 +2586,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
-				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2598,7 +2598,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
-				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				const anotherRange = new Range( Position._createAt( root, 2 ), Position._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy, strongContext );

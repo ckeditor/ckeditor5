@@ -7,9 +7,6 @@
  * @module engine/model/utils/getselectedcontent
  */
 
-import Range from '../range';
-import Position from '../position';
-
 /**
  * Gets a clone of the selected content.
  *
@@ -63,9 +60,9 @@ export default function getSelectedContent( model, selection ) {
 			// The original range is flat, so take it.
 			flatSubtreeRange = range;
 		} else {
-			flatSubtreeRange = Range.createFromParentsAndOffsets(
-				commonParent, range.start.path[ commonPath.length ],
-				commonParent, range.end.path[ commonPath.length ] + 1
+			flatSubtreeRange = writer.createRange(
+				writer.createPositionAt( commonParent, range.start.path[ commonPath.length ] ),
+				writer.createPositionAt( commonParent, range.end.path[ commonPath.length ] + 1 )
 			);
 		}
 
@@ -97,10 +94,10 @@ export default function getSelectedContent( model, selection ) {
 		// [<quote><p>y</p><h>fir]st</h></quote><p>se[cond</p>]
 		if ( flatSubtreeRange != range ) {
 			// Find the position of the original range in the cloned fragment.
-			const newRange = range._getTransformedByMove( flatSubtreeRange.start, Position.createAt( frag, 0 ), howMany )[ 0 ];
+			const newRange = range._getTransformedByMove( flatSubtreeRange.start, writer.createPositionAt( frag, 0 ), howMany )[ 0 ];
 
-			const leftExcessRange = new Range( Position.createAt( frag ), newRange.start );
-			const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
+			const leftExcessRange = writer.createRange( writer.createPositionAt( frag, 0 ), newRange.start );
+			const rightExcessRange = writer.createRange( newRange.end, writer.createPositionAt( frag, 'end' ) );
 
 			removeRangeContent( rightExcessRange, writer );
 			removeRangeContent( leftExcessRange, writer );
@@ -118,7 +115,7 @@ function removeRangeContent( range, writer ) {
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity
 		// with the text nodes when we'll start removing content.
-		.map( item => Range.createOn( item ) )
+		.map( item => writer.createRangeOn( item ) )
 		// Filter only these items which are fully contained in the passed range.
 		//
 		// E.g. for the following range: [<quote><p>y</p><h>fir]st</h>
@@ -143,7 +140,7 @@ function removeRangeContent( range, writer ) {
 		let parent = parentToCheck;
 
 		while ( parent.parent && parent.isEmpty ) {
-			const removeRange = Range.createOn( parent );
+			const removeRange = writer.createRangeOn( parent );
 
 			parent = parent.parent;
 
