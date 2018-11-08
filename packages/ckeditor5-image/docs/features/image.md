@@ -144,7 +144,7 @@ See the result below:
 {@snippet features/image-style-custom}
 
 <info-box hint>
-	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantical options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
+	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
 </info-box>
 
 ### Defining custom styles
