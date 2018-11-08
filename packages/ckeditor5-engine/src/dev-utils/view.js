@@ -80,7 +80,7 @@ export function getData( view, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the content of the {@link module:engine/view/document~Document document} provided as an HTML-like string.
+ * Sets the content of a view {@link module:engine/view/document~Document document} provided as an HTML-like string.
  *
  * @param {module:engine/view/view~View} view
  * @param {String} data An HTML-like string to write into the document.
@@ -111,6 +111,7 @@ setData._parse = parse;
 
 /**
  * Converts view elements to HTML-like string representation.
+ *
  * A root element can be provided as {@link module:engine/view/text~Text text}:
  *
  *		const text = downcastWriter.createText( 'foobar' );
@@ -131,7 +132,7 @@ setData._parse = parse;
  *		stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  *
  * Additionally, a {@link module:engine/view/documentselection~DocumentSelection selection} instance can be provided.
- * Ranges from the selection will then be included in output data.
+ * Ranges from the selection will then be included in the output data.
  * If a range position is placed inside the element node, it will be represented with `[` and `]`:
  *
  *		const text = downcastWriter.createText( 'foobar' );
@@ -251,7 +252,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 }
 
 /**
- * Parses an HTML-like string and returns view tree nodes.
+ * Parses an HTML-like string and returns a view tree.
  * A simple string will be converted to a {@link module:engine/view/text~Text text} node:
  *
  *		parse( 'foobar' ); // Returns an instance of text.

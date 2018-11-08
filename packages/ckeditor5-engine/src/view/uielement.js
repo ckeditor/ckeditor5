@@ -13,10 +13,21 @@ import Node from './node';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * UIElement class. It is used to represent UI not a content of the document.
- * This element can't be split and selection can't be placed inside this element.
+ * UI element class. It should be used to represent editing UI which needs to be injected into the editing view
+ * If possible, you should keep your UI outside the editing view. However, if that is not possible,
+ * UI elements can be used.
  *
- * The constructor of this class shouldn't be used directly. To create new `UIElement` use the
+ * How a UI element is rendered is in your control (you pass a callback to
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}).
+ * The editor will ignore your UI element – the selection cannot be placed in it, it is skipped (invisible) when
+ * the user modifies the selection by using arrow keys and the editor does not listen to any mutations which
+ * happen inside your UI elements.
+ *
+ * The limitation is that you cannot convert a model element to a UI element. UI elements need to be
+ * created for {@link module:engine/model/markercollection~Marker markers} or as additinal elements
+ * inside normal {@link module:engine/view/containerelement~ContainerElement container elements}.
+ *
+ * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
 export default class UIElement extends Element {

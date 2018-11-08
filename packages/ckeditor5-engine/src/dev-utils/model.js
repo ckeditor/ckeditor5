@@ -38,7 +38,7 @@ import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
- * Writes the content of the {@link module:engine/model/document~Document document} to an HTML-like string.
+ * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
  *
  * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
@@ -72,9 +72,10 @@ export function getData( model, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the content of the {@link module:engine/model/document~Document document} provided as an HTML-like string.
+ * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
- * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before inserting them.
+ * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before
+ * trying to use them.
  *
  * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *

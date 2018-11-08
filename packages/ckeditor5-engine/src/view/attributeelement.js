@@ -14,15 +14,15 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 const DEFAULT_PRIORITY = 10;
 
 /**
- * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}.
+ * Attribute elements are used to represent formatting elements in the view (think – `<b>`, `<span style="font-size: 2em">`, etc.).
+ * Most often they are created when downcasting model text attributes.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
- * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
- * class or `AttributeElement`.
+ * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
+ * types (container element, {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
  *
- * The constructor of this class shouldn't be used directly. To create new `AttributeElement` use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`} method.
+ * To create a new attribute element instance use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  *
  * @extends module:engine/view/element~Element
  */

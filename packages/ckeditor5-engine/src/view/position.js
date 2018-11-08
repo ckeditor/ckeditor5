@@ -14,7 +14,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
 /**
- * Position in the tree. Position is always located before or after a node.
+ * Position in the view tree. Position is represented by its parent node and an offset in this parent.
+ *
+ * In order to create a new position instance use the `createPosition*()` factory methods available in:
+ *
+ * * {@module:engine/view/view~View}
+ * * {@module:engine/view/downcastwriter~DowncastWriter}
+ * * {@module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position {
 	/**

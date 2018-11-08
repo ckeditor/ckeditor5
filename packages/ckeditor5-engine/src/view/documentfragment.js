@@ -14,11 +14,11 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
- * DocumentFragment class.
+ * Document fragment.
  *
- * The constructor of this class shouldn't be used directly. To create new DocumentFragment instance use the
+ * To create a new document fragment instance use the
  * {@link module:engine/view/upcastwriter~UpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
- * method instead.
+ * method.
  */
 export default class DocumentFragment {
 	/**
