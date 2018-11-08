@@ -12,7 +12,19 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import ckfinderIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
 
+/**
+ * The CKFinder UI plugin. It introduces he `'ckfinder'` toolbar button.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class CKFinderUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'CKFinderUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */

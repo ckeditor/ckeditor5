@@ -6,7 +6,7 @@
 /* global window */
 
 /**
- * @module ckfinder/ckfinder
+ * @module ckfinder/ckfindercommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -14,15 +14,24 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * The CKFinder command.
+ * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editng feature}
+ * to open a CKFinder file browser to insert an image or a link to a file into content.
+ *
+ *		editor.execute( 'ckfinder' );
  *
  * @extends module:core/command~Command
  */
 export default class CKFinderCommand extends Command {
+	/**
+	 * @inheritDoc
+	 */
 	refresh() {
 		this.isEnabled = true;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const editor = this.editor;
 		// Execute command.

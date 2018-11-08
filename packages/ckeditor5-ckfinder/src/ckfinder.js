@@ -15,10 +15,8 @@ import CKFinderEditing from './ckfinderediting';
 /**
  * The CKFinder feature.
  *
- *
  * This is a "glue" plugin which enables:
  *
- * * {@link module:ckfinder/ckfinder~CKFinder},
  * * {@link module:ckfinder/ckfinderediting~CKFinderEditing},
  * * {@link module:ckfinder/ckfinderui~CKFinderUI}.
  *
@@ -32,6 +30,9 @@ export default class CKFinder extends Plugin {
 		return 'CKFinder';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ CKFinderEditing, CKFinderUI ];
 	}
