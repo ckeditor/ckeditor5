@@ -27,10 +27,11 @@ import { isPlainObject } from 'lodash-es';
  * It provides a set of methods used to manipulate view nodes.
  *
  * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
- * To work with ordinary views (e.g. parsed from a string) use the {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ * To work with ordinary views (e.g. parsed from a pasted content) use the
+ * {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
  *
  * Do not create an instance of this writer manually. To modify a view structure, use
- * the {@link module:engine/view/view~View#change View#change()) block.
+ * the {@link module:engine/view/view~View#change `View#change()`) block.
  */
 export default class DowncastWriter {
 	constructor( document ) {
@@ -141,8 +142,8 @@ export default class DowncastWriter {
 	 *
 	 *		writer.createText( 'foo' );
 	 *
-	 * @param {String} data Text data.
-	 * @returns {module:engine/view/text~Text} Created text node.
+	 * @param {String} data The text's data.
+	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
 		return new Text( data );

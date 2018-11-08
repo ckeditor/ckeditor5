@@ -602,6 +602,34 @@ describe( 'view', () => {
 
 			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
 		} );
+
+		it( 'should return result of the callback', () => {
+			const result = view.change( () => {
+				return 'FooBar';
+			} );
+
+			expect( result ).to.equal( 'FooBar' );
+		} );
+
+		it( 'should return result of the callback with nested change block', () => {
+			let result2 = false;
+			let result3 = false;
+
+			const result1 = view.change( () => {
+				return view.change( () => {
+					result2 = view.change( () => {
+						return true;
+					} );
+					result3 = view.change( () => {} );
+
+					return 42;
+				} );
+			} );
+
+			expect( result1 ).to.equal( 42 );
+			expect( result2 ).to.equal( true );
+			expect( result3 ).to.undefined;
+		} );
 	} );
 
 	describe( 'createPositionAt()', () => {

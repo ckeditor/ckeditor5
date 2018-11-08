@@ -7,7 +7,9 @@
  * @module module:engine/view/upcastwriter
  */
 
+import DocumentFragment from './documentfragment';
 import Element from './element';
+import Text from './text';
 import { isPlainObject } from 'lodash-es';
 import Position from './position';
 import Range from './range';
@@ -23,6 +25,46 @@ import Selection from './selection';
  * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
  */
 export default class UpcastWriter {
+	/**
+	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 *
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into the created document fragment.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} The created document fragment.
+	 */
+	createDocumentFragment( children ) {
+		return new DocumentFragment( children );
+	}
+
+	/**
+	 * Creates a new {@link module:engine/view/element~Element} instance.
+	 *
+	 * Attributes can be passed in various formats:
+	 *
+	 *		upcastWriter.createElement( 'div', { class: 'editor', contentEditable: 'true' } ); // object
+	 *		upcastWriter.createElement( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
+	 *		upcastWriter.createElement( 'div', mapOfAttributes ); // map
+	 *
+	 * @param {String} name Node name.
+	 * @param {Object|Iterable} [attrs] Collection of attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into created element.
+	 * @returns {module:engine/view/element~Element} Created element.
+	 */
+	createElement( name, attrs, children ) {
+		return new Element( name, attrs, children );
+	}
+
+	/**
+	 * Creates a new {@link module:engine/view/text~Text} instance.
+	 *
+	 * @param {String} data The text's data.
+	 * @returns {module:engine/view/text~Text} The created text node.
+	 */
+	createText( data ) {
+		return new Text( data );
+	}
+
 	/**
 	 * Clones the provided element.
 	 *

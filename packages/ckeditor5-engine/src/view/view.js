@@ -53,10 +53,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
  *
- * This class also {@link module:engine/view/view~View#attachDomRoot bind DOM and View elements}.
+ * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
  *
- * If you do not need full DOM - View management, and want to only transform the tree of view elements to the DOM
- * elements you do not need this controller, you can use the {@link module:engine/view/domconverter~DomConverter DomConverter}.
+ * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
+ * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter DomConverter} instead.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -308,30 +308,32 @@ export default class View {
 	}
 
 	/**
-	 * Change method is the primary way of changing the view. You should use it to modify any node in the view tree.
-	 * It makes sure that after all changes are made view is rendered to DOM. It prevents situations when DOM is updated
-	 * when view state is not yet correct. It allows to nest calls one inside another and still perform single rendering
-	 * after all changes are applied.
+	 * The `change()` method is the primary way of changing the view. You should use it to modify any node in the view tree.
+	 * It makes sure that after all changes are made the view is rendered to the DOM. It prevents situations when the DOM is updated
+	 * when the view state is not yet correct. It allows to nest calls one inside another and still performs a single rendering
+	 * after all those changes are made. It also returns the return value of its callback.
 	 *
-	 *		view.change( writer => {
-	 *			writer.insert( position1, writer.createText( 'foo' ) );
+	 *		const text = view.change( writer => {
+	 *			const newText = writer.createText( 'foo' );
+	 *			writer.insert( position1, newText );
 	 *
 	 *			view.change( writer => {
 	 *				writer.insert( position2, writer.createText( 'bar' ) );
 	 *			} );
 	 *
 	 * 			writer.remove( range );
+	 *
+	 * 			return newText;
 	 *		} );
 	 *
-	 * Change block is executed immediately.
+	 * When the outermost change block is done and rendering to the DOM is over the
+	 * {@link module:engine/view/view~View#event:render `View#render`} event is fired.
 	 *
-	 * When the outermost change block is done and rendering to DOM is over it fires
-	 * {@link module:engine/view/view~View#event:render} event.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
-	 * change block is used after rendering to DOM has started.
+	 * This method throws a `applying-view-changes-on-rendering` error when
+	 * the change block is used after rendering to the DOM has started.
 	 *
 	 * @param {Function} callback Callback function which may modify the view.
+	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
 		if ( this._renderingInProgress || this._postFixersInProgress ) {
@@ -343,25 +345,25 @@ export default class View {
 			 * * calling {@link #change} or {@link #render} during rendering process,
 			 * * calling {@link #change} or {@link #render} inside of
 			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
+			 *
+			 * @error cannot-change-view-tree
 			 */
 			throw new CKEditorError(
 				'cannot-change-view-tree: ' +
-				'Attempting to make changes to the view when it is in incorrect state: rendering or post-fixers are in progress. ' +
-				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
+				'Attempting to make changes to the view when it is in an incorrect state: rendering or post-fixers are in progress. ' +
+				'This may cause some unexpected behavior and inconsistency between the DOM and the view.'
 			);
 		}
 
 		// Recursive call to view.change() method - execute listener immediately.
 		if ( this._ongoingChange ) {
-			callback( this._writer );
-
-			return;
+			return callback( this._writer );
 		}
 
 		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
 		// event for all nested calls.
 		this._ongoingChange = true;
-		callback( this._writer );
+		const callbackResult = callback( this._writer );
 		this._ongoingChange = false;
 
 		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
@@ -373,6 +375,8 @@ export default class View {
 
 			this.fire( 'render' );
 		}
+
+		return callbackResult;
 	}
 
 	/**
