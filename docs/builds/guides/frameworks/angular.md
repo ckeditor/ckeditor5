@@ -248,9 +248,9 @@ Fired with an object containing the editor and the CKEditor 5 `focus` event data
 
 ## Styling
 
-The CKEditor 5 component for Angular can be styled using the component stylesheet or using a global stylesheet. Let's show how to set the CKEditor 5 component's height using these two approaches.
+The CKEditor 5 component for Angular can be styled using the component stylesheet or using a global stylesheet. Let's see how to set the CKEditor 5 component's height using these two approaches.
 
-### Setting the CKEditor 5 component's height via the component stylesheet
+### Setting the height via the component stylesheet
 
 First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors.
 
@@ -258,7 +258,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 /* src/app/app.component.css */
 
 :host ::ng-deep .ck-editor__editable {
-  	min-height: 500px;
+	min-height: 500px;
 }
 ```
 
@@ -268,20 +268,20 @@ Then in the parent component add the relative path to the above stylesheet.
 /* src/app/app.component.ts */
 
 @Component( {
-  // ...
-  styleUrls: [ './app.component.css' ]
+	// ...
+	styleUrls: [ './app.component.css' ]
 } )
 ```
 
-### Setting the CKEditor 5 component's height via a global stylesheet
+### Setting the height via a global stylesheet
 
-To style the component using a global stylesheet, first, create it
+To style the component using a global stylesheet, first, create it:
 
 ```css
 /* src/styles.css */
 
 .ck-editor__editable {
-  	min-height: 500px;
+	min-height: 500px;
 }
 ```
 
@@ -292,8 +292,8 @@ Then, add it in the `angular.json` configuration file.
 	"build": {
 		"options": {
 			"styles": [
-              	{ "input": "src/styles.css" }
-            ]
+				{ "input": "src/styles.css" }
+			]
 		}
 	}
 }
@@ -303,7 +303,7 @@ Then, add it in the `angular.json` configuration file.
 
 CKEditor 5 can be localized in two steps.
 
-### 1. Load translation files
+### 1. Loading translation files
 
 First, you need to add translation files to the bundle. This step can be achieved in two ways:
 
@@ -327,7 +327,7 @@ First, you need to add translation files to the bundle. This step can be achieve
 	}
 	```
 
-### 2. Configure the language
+### 2. Configuring the language
 
 Then, you need to configure the editor to use the given language:
 
