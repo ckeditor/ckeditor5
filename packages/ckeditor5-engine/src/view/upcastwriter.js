@@ -16,13 +16,23 @@ import Range from './range';
 import Selection from './selection';
 
 /**
- * View upcast writer.
+ * View upcast writer. It provides a set of methods used to manipulate non-semantic view trees.
  *
- * It provides a set of methods used to manipulate view nodes.
  * It should be used only while working on a non-semantic view
  * (e.g. a view created from HTML string on paste).
  * To manipulate a view which was or is being downcasted from the the model use the
  * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
+ *
+ * Read more about changing the view in the {@glink framework/guides/architecture/editing-engine#changing-the-view Changing the view}
+ * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
+ *
+ * Unlike `DowncastWriter`, which is available in the {@link module:engine/view/view~View#change `View#change()`} block,
+ * `UpcastWriter` can wherever you need it:
+ *
+ *		const writer = new UpcastWriter();
+ *		const text = writer.createText( 'foo!' );
+ *
+ *		writer.appendChild( text, someViewElement );
  */
 export default class UpcastWriter {
 	/**

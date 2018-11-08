@@ -26,12 +26,15 @@ import { isPlainObject } from 'lodash-es';
  *
  * It provides a set of methods used to manipulate view nodes.
  *
+ * Do not create an instance of this writer manually. To modify a view structure, use
+ * the {@link module:engine/view/view~View#change `View#change()`} block.
+ *
  * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
  * To work with ordinary views (e.g. parsed from a pasted content) use the
  * {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
  *
- * Do not create an instance of this writer manually. To modify a view structure, use
- * the {@link module:engine/view/view~View#change `View#change()`) block.
+ * Read more about changing the view in the {@glink framework/guides/architecture/editing-engine#changing-the-view Changing the view}
+ * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  */
 export default class DowncastWriter {
 	constructor( document ) {
