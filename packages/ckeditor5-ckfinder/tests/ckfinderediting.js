@@ -4,14 +4,17 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import CKFinder from '../src/ckfinder';
-import CKFinderUI from '../src/ckfinderui';
 import CKFinderEditing from '../src/ckfinderediting';
 
-describe( 'CKFinder', () => {
+describe( 'CKFinderEditing', () => {
 	let editorElement, editor;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -20,6 +23,7 @@ describe( 'CKFinder', () => {
 		return ClassicTestEditor
 			.create( editorElement, {
 				plugins: [ CKFinder ]
+
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -33,18 +37,12 @@ describe( 'CKFinder', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CKFinder ) ).to.instanceOf( CKFinder );
+		expect( editor.plugins.get( CKFinderEditing ) ).to.be.instanceOf( CKFinderEditing );
 	} );
 
-	it( 'should load CKFinderUI plugin', () => {
-		expect( editor.plugins.get( CKFinderUI ) ).to.instanceOf( CKFinderUI );
-	} );
+	it( 'should register command', () => {
+		const command = editor.commands.get( 'ckfinder' );
 
-	it( 'should load CKFinderEditing plugin', () => {
-		expect( editor.plugins.get( CKFinderEditing ) ).to.instanceOf( CKFinderEditing );
-	} );
-
-	it( 'has proper name', () => {
-		expect( CKFinder.pluginName ).to.equal( 'CKFinder' );
+		expect( command ).to.be.instanceOf( Command );
 	} );
 } );
