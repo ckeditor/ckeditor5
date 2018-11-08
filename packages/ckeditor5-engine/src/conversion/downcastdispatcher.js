@@ -495,14 +495,17 @@ export default class DowncastDispatcher {
 	 *
 	 * @event remove
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been removed.
-	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard
-	 * graveyard root}).
+	 * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
+	 * @param {Number} data.length Offset size of the removed node.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
-	 * Fired when attribute has been added/changed/removed from a node. Also fired when collapsed model selection attribute is converted.
+	 * Fired in following cases:
+	 *
+	 * * when an attribute has been added, changed, or removed from a node,
+	 * * when a node with an attribute is inserted,
+	 * * when collapsed model selection attribute is converted.
 	 *
 	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
