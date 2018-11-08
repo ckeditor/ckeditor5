@@ -501,7 +501,7 @@ export default class DowncastDispatcher {
 	 */
 
 	/**
-	 * Fired in following cases:
+	 * Fired in the following cases:
 	 *
 	 * * when an attribute has been added, changed, or removed from a node,
 	 * * when a node with an attribute is inserted,
