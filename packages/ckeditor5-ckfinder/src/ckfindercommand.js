@@ -37,9 +37,9 @@ export default class CKFinderCommand extends Command {
 	execute() {
 		const editor = this.editor;
 
-		const method = this.editor.config.get( 'ckfinder.openerMethod' ) || 'modal';
+		const openerMethod = this.editor.config.get( 'ckfinder.openerMethod' ) || 'modal';
 
-		if ( method != 'popup' && method != 'modal' ) {
+		if ( openerMethod != 'popup' && openerMethod != 'modal' ) {
 			throw new CKEditorError( 'ckfinder-unknown-openerMethod: The openerMethod config option must by "popup" or "modal".' );
 		}
 
@@ -50,7 +50,6 @@ export default class CKFinderCommand extends Command {
 		config.onInit = finder => {
 			finder.on( 'files:choose', evt => {
 				for ( const file of evt.data.files.toArray() ) {
-
 					// Use CKFinder file isImage() to insert only image-type files.
 					if ( file.isImage() ) {
 						const url = file.get( 'url' );
@@ -78,7 +77,7 @@ export default class CKFinderCommand extends Command {
 			} );
 		};
 
-		window.CKFinder[ method ]( config );
+		window.CKFinder[ openerMethod ]( config );
 	}
 }
 
