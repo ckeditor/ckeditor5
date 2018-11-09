@@ -51,10 +51,12 @@ export default class CKFinderCommand extends Command {
 			finder.on( 'files:choose', evt => {
 				for ( const file of evt.data.files.toArray() ) {
 					// Use CKFinder file isImage() to insert only image-type files.
-					if ( file.isImage() ) {
-						const url = file.get( 'url' );
+					const url = file.get( 'url' );
 
+					if ( file.isImage() ) {
 						insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
+					} else {
+						editor.execute( 'link', url );
 					}
 				}
 			} );

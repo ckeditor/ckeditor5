@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
@@ -24,7 +25,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, Notification ]
+				plugins: [ Paragraph, ImageEditing, LinkEditing, Notification ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -120,6 +121,17 @@ describe( 'CKFinderCommand', () => {
 
 			expect( getModelData( model ) )
 				.to.equal( `[<image src="${ url }"></image>]<paragraph>foo</paragraph>` );
+		} );
+
+		it( 'should insert link if chosen file is not an image', () => {
+			const url = 'foo/bar.pdf';
+
+			command.execute();
+
+			mockFilesChooseEvent( [ mockFinderFile( url, false ) ] );
+
+			expect( getModelData( model ) )
+				.to.equal( `<paragraph>f[<$text linkHref="${ url }">o</$text>]o</paragraph>` );
 		} );
 
 		it( 'should pass CKFinder config options', () => {

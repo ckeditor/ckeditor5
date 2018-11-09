@@ -14,7 +14,7 @@ import ckfinderIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg'
 
 import CKFinder from '../src/ckfinder';
 
-describe( 'CKFinder', () => {
+describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;
 
 	testUtils.createSinonSandbox();
