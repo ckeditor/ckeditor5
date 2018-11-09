@@ -11,6 +11,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import CKFinderCommand from '../src/ckfindercommand';
 
@@ -22,7 +24,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing ]
+				plugins: [ Paragraph, ImageEditing, Notification ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -32,6 +34,8 @@ describe( 'CKFinderCommand', () => {
 
 				const schema = model.schema;
 				schema.extend( 'image' );
+
+				setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			} );
 	} );
 
@@ -72,7 +76,6 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should register proper listeners on CKFinder instance', () => {
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
 			command.execute();
 
@@ -81,32 +84,24 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert single chosen image as image widget', () => {
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			const url = 'foo/bar.jpg';
 
 			command.execute();
 
-			expect( finderMock ).to.have.property( 'files:choose' );
-			expect( finderMock ).to.have.property( 'file:choose:resizedImage' );
-
-			mockFinderEvent( 'files:choose', [ mockFinderFile( url ) ] );
+			mockFilesChooseEvent( [ mockFinderFile( url ) ] );
 
 			expect( getModelData( model ) )
 				.to.equal( `[<image src="${ url }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert multiple chosen images as image widget', () => {
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			const url1 = 'foo/bar1.jpg';
 			const url2 = 'foo/bar2.jpg';
 			const url3 = 'foo/bar3.jpg';
 
 			command.execute();
 
-			expect( finderMock ).to.have.property( 'files:choose' );
-			expect( finderMock ).to.have.property( 'file:choose:resizedImage' );
-
-			mockFinderEvent( 'files:choose', [ mockFinderFile( url1 ), mockFinderFile( url2 ), mockFinderFile( url3 ) ] );
+			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2 ), mockFinderFile( url3 ) ] );
 
 			expect( getModelData( model ) ).to.equal(
 				`<image src="${ url1 }"></image><image src="${ url2 }"></image>[<image src="${ url3 }"></image>]<paragraph>foo</paragraph>`
@@ -114,21 +109,80 @@ describe( 'CKFinderCommand', () => {
 		} );
 
 		it( 'should insert only images from chosen files', () => {
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			const url1 = 'foo/bar1.jpg';
 			const url2 = 'foo/bar2.pdf';
 			const url3 = 'foo/bar3.jpg';
 
 			command.execute();
 
-			expect( finderMock ).to.have.property( 'files:choose' );
-			expect( finderMock ).to.have.property( 'file:choose:resizedImage' );
-
-			mockFinderEvent( 'files:choose', [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
+			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
 
 			expect( getModelData( model ) ).to.equal(
 				`<image src="${ url1 }"></image>[<image src="${ url3 }"></image>]<paragraph>foo</paragraph>`
 			);
+		} );
+
+		it( 'should use CKFinder Proxy for privately hosted files', () => {
+
+			const proxyUrl = 'bar/foo.jpg';
+
+			finderMock.request = () => proxyUrl;
+
+			command.execute();
+
+			mockFilesChooseEvent( [ mockFinderFile( false ) ] );
+
+			expect( getModelData( model ) ).to.equal(
+				`[<image src="${ proxyUrl }"></image>]<paragraph>foo</paragraph>`
+			);
+		} );
+
+		it( 'should insert resized image as image widget', () => {
+			const url = 'foo/bar.jpg';
+
+			command.execute();
+
+			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: url } );
+
+			expect( getModelData( model ) )
+				.to.equal( `[<image src="${ url }"></image>]<paragraph>foo</paragraph>` );
+		} );
+
+		it( 'should show warning notification if no resized image URL was returned', done => {
+			const notification = editor.plugins.get( Notification );
+
+			notification.on( 'show:warning', ( evt, data ) => {
+				expect( data.message ).to.equal( 'Could not obtain resized image URL. Try different image or folder.' );
+				expect( data.title ).to.equal( 'Selecting resized image failed' );
+				evt.stop();
+
+				done();
+			}, { priority: 'high' } );
+
+			command.execute();
+
+			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
+
+			expect( getModelData( model ) )
+				.to.equal( '<paragraph>f[o]o</paragraph>' );
+		} );
+
+		it( 'should not insert image nor crash when image could not be inserted', () => {
+			model.schema.register( 'other', {
+				allowIn: '$root',
+				isLimit: true
+			} );
+			model.schema.extend( '$text', { allowIn: 'other' } );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
+
+			setModelData( model, '<other>[]</other>' );
+
+			command.execute();
+
+			mockFilesChooseEvent( [ mockFinderFile( 'foo/bar.jpg' ) ] );
+
+			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
 		function mockFinderFile( url = 'foo/bar.jpg', isImage = true ) {
@@ -138,16 +192,18 @@ describe( 'CKFinderCommand', () => {
 			};
 		}
 
-		function mockFinderEvent( eventName, files ) {
-			const evt = {
-				data: {
-					files: {
-						toArray: () => files
-					}
+		function mockFinderEvent( eventName, data ) {
+			finderMock[ eventName ]( { data } );
+		}
+
+		function mockFilesChooseEvent( files ) {
+			const data = {
+				files: {
+					toArray: () => files
 				}
 			};
 
-			finderMock[ eventName ]( evt );
+			mockFinderEvent( 'files:choose', data );
 		}
 	} );
 } );

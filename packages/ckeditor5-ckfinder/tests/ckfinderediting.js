@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+import Command from '@ckeditor/ckeditor5-core/src/command';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import CKFinder from '../src/ckfinder';
 import CKFinderEditing from '../src/ckfinderediting';
@@ -38,6 +39,10 @@ describe( 'CKFinderEditing', () => {
 
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( CKFinderEditing ) ).to.be.instanceOf( CKFinderEditing );
+	} );
+
+	it( 'should load Notification plugin', () => {
+		expect( editor.plugins.get( Notification ) ).to.instanceOf( Notification );
 	} );
 
 	it( 'should register command', () => {

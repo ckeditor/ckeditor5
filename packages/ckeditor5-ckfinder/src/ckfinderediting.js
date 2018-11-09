@@ -8,6 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+
 import CKFinderCommand from './ckfindercommand';
 
 /**
@@ -21,6 +23,13 @@ export default class CKFinderEditing extends Plugin {
 	 */
 	static get pluginName() {
 		return 'CKFinderEditing';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Notification ];
 	}
 
 	/**

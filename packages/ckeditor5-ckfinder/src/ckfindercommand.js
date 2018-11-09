@@ -10,6 +10,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
@@ -42,25 +43,36 @@ export default class CKFinderCommand extends Command {
 			height: 500,
 			// required:
 			chooseFiles: true,
-			connectorPath: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php',
+			// connectorPath: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php',
+			connectorPath: '/build/core/connector/php/connector.php',
 			onInit: finder => {
 				finder.on( 'files:choose', evt => {
 					for ( const file of evt.data.files.toArray() ) {
+
 						// Use CKFinder file isImage() to insert only image-type files.
 						if ( file.isImage() ) {
 							const url = file.get( 'url' );
 
-							if ( !url ) {
-								finder.request( 'file:getUrl', { file } ).then( url => insertImage( editor.model, url ) );
-							} else {
-								insertImage( editor.model, url );
-							}
+							insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
 						}
 					}
 				} );
 
 				finder.on( 'file:choose:resizedImage', evt => {
-					insertImage( editor.model, evt.data.resizedUrl );
+					const resizedUrl = evt.data.resizedUrl;
+
+					if ( !resizedUrl ) {
+						const notification = editor.plugins.get( Notification );
+						const t = editor.locale.t;
+
+						notification.showWarning( t( 'Could not obtain resized image URL. Try different image or folder.' ), {
+							title: t( 'Selecting resized image failed' ),
+							namespace: 'ckfinder'
+						} );
+					}
+
+					// show warning - no resizedUrl returned...
+					insertImage( editor.model, resizedUrl );
 				} );
 			}
 		} );
