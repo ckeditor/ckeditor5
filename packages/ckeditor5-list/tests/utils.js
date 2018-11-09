@@ -69,6 +69,59 @@ describe( 'utils', () => {
 
 				expect( item.getFillerOffset() ).to.be.null;
 			} );
+
+			// Block filler is required after the `<br>` element if the element is the last child in the container.
+			// See: https://github.com/ckeditor/ckeditor5/issues/1312#issuecomment-436669045.
+			describe( 'for <br> elements in container', () => {
+				it( 'returns offset of the last child which is the <br> element (1)', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( item, 0 ), writer.createEmptyElement( 'br' ) );
+
+					expect( item.getFillerOffset() ).to.equal( 1 );
+				} );
+
+				it( 'returns offset of the last child which is the <br> element (2)', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( item, 0 ), writer.createEmptyElement( 'br' ) );
+					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
+
+					expect( item.getFillerOffset() ).to.equal( 2 );
+				} );
+
+				it( 'always returns the last <br> element in the container', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( item, 0 ), writer.createText( 'foo' ) );
+					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
+					writer.insert( writer.createPositionAt( item, 2 ), writer.createEmptyElement( 'br' ) );
+
+					expect( item.getFillerOffset() ).to.equal( 3 );
+				} );
+
+				it( 'works fine with non-empty container with multi <br> elements', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( item, 0 ), writer.createText( 'foo' ) );
+					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
+					writer.insert( writer.createPositionAt( item, 2 ), writer.createText( 'bar' ) );
+					writer.insert( writer.createPositionAt( item, 3 ), writer.createEmptyElement( 'br' ) );
+
+					expect( item.getFillerOffset() ).to.equal( 4 );
+				} );
+
+				it( 'empty element must be the <br> element', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert(
+						writer.createPositionAt( item, 0 ),
+						writer.createEmptyElement( 'img' )
+					);
+
+					expect( item.getFillerOffset() ).to.be.null;
+				} );
+			} );
 		} );
 	} );
 } );

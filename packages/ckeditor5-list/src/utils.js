@@ -26,5 +26,18 @@ export function createViewListItemElement( writer ) {
 function getFillerOffset() {
 	const hasOnlyLists = !this.isEmpty && ( this.getChild( 0 ).name == 'ul' || this.getChild( 0 ).name == 'ol' );
 
-	return this.isEmpty || hasOnlyLists ? 0 : null;
+	if ( this.isEmpty || hasOnlyLists ) {
+		return 0;
+	}
+
+	const children = [ ...this.getChildren() ];
+	const lastChild = children[ this.childCount - 1 ];
+
+	// Block filler is required after a `<br>` if it's the last element in its container.
+	// See: https://github.com/ckeditor/ckeditor5/issues/1312#issuecomment-436669045.
+	if ( lastChild && lastChild.is( 'element', 'br' ) ) {
+		return this.childCount;
+	}
+
+	return null;
 }
