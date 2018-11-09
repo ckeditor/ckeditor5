@@ -37,3 +37,48 @@ export default class CKFinder extends Plugin {
 		return [ CKFinderEditing, CKFinderUI ];
 	}
 }
+
+/**
+ * The configuration of the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature}.
+ *
+ * Read more in {@link module:ckfinder/ckfinder~CKFinderConfig}.
+ *
+ * @member {module:ckfinder/ckfinder~CKFinderConfig} module:core/editor/editorconfig~EditorConfig#ckfinder
+ */
+
+/**
+ * The configuration of the {@link module:ckfinder/ckfinder~CKFinderUploadAdapter CKFinder upload adapter}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				ckfinder: {
+ *					options: {
+ *						resourceType: 'Images'
+ *					}
+ * 				}
+ *			} )
+ *			.then( ... )
+ 			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface CKFinderConfig
+ */
+
+/**
+ * The configuration options to pass to the CKFinder instance.
+ *
+ * @member {Object} module:ckfinder/ckfinder~CKFinderConfig#options
+ */
+
+/**
+ * The type of the CKFinder opener method.
+ *
+ * Supported types are:
+ * * '"modal"' - opens a CKFinder modal
+ * * '"popup"' - opens a CKFinder popup window
+ *
+ * Defaults to "'modal'".
+ *
+ * @member {String} module:ckfinder/ckfinder~CKFinderConfig#openerMethod
+ */

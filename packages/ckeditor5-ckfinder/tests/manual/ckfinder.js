@@ -19,6 +19,9 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'ckfinder' ],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		ckfinder: {
+			openerMethod: 'popup'
 		}
 	} )
 	.then( editor => {

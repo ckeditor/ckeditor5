@@ -11,6 +11,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
 
@@ -35,47 +36,49 @@ export default class CKFinderCommand extends Command {
 	 */
 	execute() {
 		const editor = this.editor;
-		// Execute command.
-		// TODO: options
-		// TODO: modal vs popup - config option
-		window.CKFinder.modal( {
-			width: 800,
-			height: 500,
-			// required:
-			chooseFiles: true,
-			// connectorPath: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php',
-			connectorPath: '/build/core/connector/php/connector.php',
-			onInit: finder => {
-				finder.on( 'files:choose', evt => {
-					for ( const file of evt.data.files.toArray() ) {
 
-						// Use CKFinder file isImage() to insert only image-type files.
-						if ( file.isImage() ) {
-							const url = file.get( 'url' );
+		const method = this.editor.config.get( 'ckfinder.openerMethod' ) || 'modal';
 
-							insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
-						}
+		if ( method != 'popup' && method != 'modal' ) {
+			throw new CKEditorError( 'ckfinder-unknown-openerMethod: The openerMethod config option must by "popup" or "modal".' );
+		}
+
+		const config = this.editor.config.get( 'ckfinder.config' ) || {};
+
+		config.chooseFiles = true;
+
+		config.onInit = finder => {
+			finder.on( 'files:choose', evt => {
+				for ( const file of evt.data.files.toArray() ) {
+
+					// Use CKFinder file isImage() to insert only image-type files.
+					if ( file.isImage() ) {
+						const url = file.get( 'url' );
+
+						insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
 					}
-				} );
+				}
+			} );
 
-				finder.on( 'file:choose:resizedImage', evt => {
-					const resizedUrl = evt.data.resizedUrl;
+			finder.on( 'file:choose:resizedImage', evt => {
+				const resizedUrl = evt.data.resizedUrl;
 
-					if ( !resizedUrl ) {
-						const notification = editor.plugins.get( Notification );
-						const t = editor.locale.t;
+				if ( !resizedUrl ) {
+					const notification = editor.plugins.get( Notification );
+					const t = editor.locale.t;
 
-						notification.showWarning( t( 'Could not obtain resized image URL. Try different image or folder.' ), {
-							title: t( 'Selecting resized image failed' ),
-							namespace: 'ckfinder'
-						} );
-					}
+					notification.showWarning( t( 'Could not obtain resized image URL. Try different image or folder.' ), {
+						title: t( 'Selecting resized image failed' ),
+						namespace: 'ckfinder'
+					} );
+				}
 
-					// show warning - no resizedUrl returned...
-					insertImage( editor.model, resizedUrl );
-				} );
-			}
-		} );
+				// show warning - no resizedUrl returned...
+				insertImage( editor.model, resizedUrl );
+			} );
+		};
+
+		window.CKFinder[ method ]( config );
 	}
 }
 
