@@ -20,6 +20,8 @@ The {@link api/basic-styles basic styles} package provides text formatting featu
 | {@link module:basic-styles/underline~Underline} | `'underline'` | `'underline'` | `<u>underline</u>` |
 | {@link module:basic-styles/strikethrough~Strikethrough} | `'strikethrough'` | `'strikethrough'` | `<s>strikethrough</s>` |
 | {@link module:basic-styles/code~Code} | `'code'` | `'code'` | `<code>code</code>` |
+| {@link module:basic-styles/subscript~Subscript} | `'subscript'` | `'subscript'` | `<sub>subscript</sub>` |
+| {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<super>superscript</super>` |
 
 <info-box info>
 	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link builds/guides/overview editor builds}.
@@ -36,6 +38,8 @@ By default, each feature can upcast more than one type of the content. Here's th
 | {@link module:basic-styles/underline~Underline} | `<u>`, `<* style="text-decoration: underline">` |
 | {@link module:basic-styles/strikethrough~Strikethrough} | `<s>`, `<del>`, `<strike>`, `<* style="text-decoration: line-through">` |
 | {@link module:basic-styles/code~Code} | `<code>`, `<* style="word-wrap: break-word">` |
+| {@link module:basic-styles/subscript~Subscript} | `<sub>`, `<* style="vertical-align:sub">` |
+| {@link module:basic-styles/superscript~Superscript} | `<super>`, `<* style="vertical-align:super">` |
 
 ## Installation
 
@@ -53,12 +57,14 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Bold, Italic, Underline, Strikethrough, Code ],
+		plugins: [ Bold, Italic, Underline, Strikethrough, Code, Subscript, Superscript ],
 		image: {
-			toolbar: [ 'bold', 'italic', 'underline', 'strikethrough', 'code'  ]
+			toolbar: [ 'bold', 'italic', 'underline', 'strikethrough', 'code','subscript', 'superscript'  ]
 		}
 	} )
 	.then( ... )
