@@ -17,7 +17,7 @@ import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerel
  */
 export function createViewListItemElement( writer ) {
 	const viewItem = writer.createContainerElement( 'li' );
-	viewItem.getFillerOffset = _getFillerOffset;
+	viewItem.getFillerOffset = getListItemFillerOffset;
 
 	return viewItem;
 }
