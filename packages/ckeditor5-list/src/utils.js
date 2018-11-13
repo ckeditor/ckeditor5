@@ -25,7 +25,7 @@ export function createViewListItemElement( writer ) {
 // Implementation of getFillerOffset for view list item element.
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-function _getFillerOffset() {
+function getListItemFillerOffset() {
 	const hasOnlyLists = !this.isEmpty && ( this.getChild( 0 ).name == 'ul' || this.getChild( 0 ).name == 'ol' );
 
 	if ( this.isEmpty || hasOnlyLists ) {
