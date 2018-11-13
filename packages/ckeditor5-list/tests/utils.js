@@ -111,6 +111,15 @@ describe( 'utils', () => {
 					expect( item.getFillerOffset() ).to.equal( 4 );
 				} );
 
+				it( 'ignores the ui elements', () => {
+					const item = createViewListItemElement( writer );
+
+					writer.insert( writer.createPositionAt( item, 0 ), writer.createUIElement( 'span' ) );
+					writer.insert( writer.createPositionAt( item, 1 ), writer.createEmptyElement( 'br' ) );
+
+					expect( item.getFillerOffset() ).to.equal( 2 );
+				} );
+
 				it( 'empty element must be the <br> element', () => {
 					const item = createViewListItemElement( writer );
 
