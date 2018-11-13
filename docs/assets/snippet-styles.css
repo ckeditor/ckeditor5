@@ -39,6 +39,17 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: none !important; /* Firefox is very stubborn. */
 }
 
+/* Restore default browser styles for <sub> and <sup>. */
+.ck.ck-content sub {
+	vertical-align: sub;
+	font-size: smaller;
+}
+
+.ck.ck-content sup {
+	vertical-align: super;
+	font-size: smaller;
+}
+
 .ck.ck-list {
 	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
 	margin-left: 0;
