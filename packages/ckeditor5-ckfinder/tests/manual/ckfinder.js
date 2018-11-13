@@ -19,10 +19,27 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'ckfinder' ],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		ckfinder: {
+			// openerMethod: 'popup'
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		const button = document.querySelector( '#opener-method' );
+		const label = document.querySelector( '#opener-method-label' );
+
+		button.addEventListener( 'click', () => {
+			const method = editor.config.get( 'ckfinder.openerMethod' );
+			const isPopup = method === 'popup';
+
+			const newMethod = isPopup ? 'modal' : 'popup';
+			editor.config.set( 'ckfinder.openerMethod', newMethod );
+
+			button.innerText = 'Switch to ' + ( isPopup ? 'popup' : 'modal' );
+			label.innerText = newMethod;
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
