@@ -117,6 +117,7 @@ export default class CKFinderCommand extends Command {
 function insertImages( editor, urls ) {
 	const imageCommand = editor.commands.get( 'imageUpload' );
 
+	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {
 		const notification = editor.plugins.get( Notification );
 		const t = editor.locale.t;
@@ -130,6 +131,8 @@ function insertImages( editor, urls ) {
 	}
 
 	const model = editor.model;
+
+	// The first image will be inserted according to image inserting algorithm. Next one after the previous one.
 	let insertAt = findOptimalInsertionPosition( model.document.selection, model );
 
 	model.change( writer => {
