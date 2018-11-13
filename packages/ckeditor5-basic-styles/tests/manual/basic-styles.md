@@ -5,5 +5,7 @@
   * bold **"editor"**,
   * underline "instance",
   * strikethrough ~~"is"~~,
-  * code `"an"`.
-2. Test the bold, italic, strikethrough, underline and code features live.
+  * code `"an"`,
+  * subscript X<sub>1</sub>,
+  * superscript X<sup>2</sup>.
+2. Test the bold, italic, strikethrough, underline, code, subscript and superscript features live.

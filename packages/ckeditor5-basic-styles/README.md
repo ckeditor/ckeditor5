@@ -10,7 +10,7 @@ CKEditor 5 basic styles feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles?type=dev)
 
-This package contains CKEditor 5 features allowing to apply basic text formatting such as bold, italic, underline and code in CKEditor 5.
+This package contains CKEditor 5 features allowing to apply basic text formatting such as bold, italic, underline, and code in CKEditor 5.
 
 ## Demo
 

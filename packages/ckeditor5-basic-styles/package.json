@@ -11,7 +11,6 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "^11.0.1",
-    "@ckeditor/ckeditor5-theme-lark": "^11.1.0",
     "@ckeditor/ckeditor5-ui": "^11.1.0"
   },
   "devDependencies": {
