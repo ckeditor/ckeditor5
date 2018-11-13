@@ -43,16 +43,17 @@ export default class CKFinderCommand extends Command {
 			throw new CKEditorError( 'ckfinder-unknown-openerMethod: The openerMethod config option must by "popup" or "modal".' );
 		}
 
-		const config = this.editor.config.get( 'ckfinder.config' ) || {};
+		const options = this.editor.config.get( 'ckfinder.options' ) || {};
 
-		config.chooseFiles = true;
+		options.chooseFiles = true;
 
-		config.onInit = finder => {
+		// The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
+		options.onInit = finder => {
 			finder.on( 'files:choose', evt => {
 				for ( const file of evt.data.files.toArray() ) {
-					// Use CKFinder file isImage() to insert only image-type files.
 					const url = file.get( 'url' );
 
+					// Use CKFinder file isImage() to insert only image-type files.
 					if ( file.isImage() ) {
 						insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
 					} else {
@@ -74,12 +75,12 @@ export default class CKFinderCommand extends Command {
 					} );
 				}
 
-				// show warning - no resizedUrl returned...
+				// Show warning - no resizedUrl returned...
 				insertImage( editor.model, resizedUrl );
 			} );
 		};
 
-		window.CKFinder[ openerMethod ]( config );
+		window.CKFinder[ openerMethod ]( options );
 	}
 }
 

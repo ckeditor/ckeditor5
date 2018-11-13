@@ -36,22 +36,22 @@ export default class CKFinderUI extends Plugin {
 		componentFactory.add( 'ckfinder', locale => {
 			const command = editor.commands.get( 'ckfinder' );
 
-			const view = new ButtonView( locale );
+			const button = new ButtonView( locale );
 
-			view.set( {
+			button.set( {
 				label: t( 'CKFinder' ),
 				icon: ckfinderIcon,
 				tooltip: true
 			} );
 
-			view.bind( 'isEnabled' ).to( command );
+			button.bind( 'isEnabled' ).to( command );
 
-			view.on( 'execute', () => {
+			button.on( 'execute', () => {
 				editor.execute( 'ckfinder' );
 				editor.editing.view.focus();
 			} );
 
-			return view;
+			return button;
 		} );
 	}
 }

@@ -75,8 +75,8 @@ export default class CKFinder extends Plugin {
  * The type of the CKFinder opener method.
  *
  * Supported types are:
- * * '"modal"' - opens a CKFinder modal
- * * '"popup"' - opens a CKFinder popup window
+ * * `"modal"` - opens a CKFinder modal
+ * * `"popup"` - opens a CKFinder popup window
  *
  * Defaults to "'modal'".
  *
