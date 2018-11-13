@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-basic-styles-source}
 
-The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough and code.
+The {@link api/basic-styles basic styles} package provides text formatting features such as bold, italic, underline, strikethrough, subscript, superscript, and code.
 
 ## Demo
 
@@ -38,8 +38,8 @@ By default, each feature can upcast more than one type of the content. Here's th
 | {@link module:basic-styles/underline~Underline} | `<u>`, `<* style="text-decoration: underline">` |
 | {@link module:basic-styles/strikethrough~Strikethrough} | `<s>`, `<del>`, `<strike>`, `<* style="text-decoration: line-through">` |
 | {@link module:basic-styles/code~Code} | `<code>`, `<* style="word-wrap: break-word">` |
-| {@link module:basic-styles/subscript~Subscript} | `<sub>`, `<* style="vertical-align:sub">` |
-| {@link module:basic-styles/superscript~Superscript} | `<sup>`, `<* style="vertical-align:super">` |
+| {@link module:basic-styles/subscript~Subscript} | `<sub>`, `<* style="vertical-align: sub">` |
+| {@link module:basic-styles/superscript~Superscript} | `<sup>`, `<* style="vertical-align: super">` |
 
 ## Installation
 
