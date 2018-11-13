@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ContainerElement from '../../src/view/containerelement';
+import { default as ContainerElement, getFillerOffset } from '../../src/view/containerelement';
 import Element from '../../src/view/element';
 import { parse } from '../../src/dev-utils/view';
 
@@ -94,5 +94,11 @@ describe( 'ContainerElement', () => {
 					.to.equals( null );
 			} );
 		} );
+	} );
+} );
+
+describe( 'getFillerOffset()', () => {
+	it( 'should be a function that can be used in other places', () => {
+		expect( getFillerOffset ).is.a( 'function' );
 	} );
 } );
