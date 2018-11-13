@@ -62,10 +62,12 @@ export default class ContainerElement extends Element {
 	}
 }
 
-// Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
-//
-// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-function getFillerOffset() {
+/**
+ * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+ *
+ * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+ */
+export function getFillerOffset() {
 	const children = [ ...this.getChildren() ];
 	const lastChild = children[ this.childCount - 1 ];
 
