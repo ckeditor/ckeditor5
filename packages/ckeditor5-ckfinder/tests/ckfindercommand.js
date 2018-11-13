@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
@@ -25,7 +26,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, LinkEditing, Notification ]
+				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -58,6 +59,53 @@ describe( 'CKFinderCommand', () => {
 			setModelData( model, '<paragraph>[]</paragraph>' );
 
 			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true where only image is allowed', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.extend( 'image', { allowIn: 'block' } );
+
+			// Block link attribute.
+			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true where only link is allowed', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+
+			// Block image in block.
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+					return false;
+				}
+			} );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be false where link & image are not allowed', () => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+
+			// Block link attribute - image is not allowed in 'block'.
+			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 
@@ -112,7 +160,7 @@ describe( 'CKFinderCommand', () => {
 			} ).to.throw( CKEditorError, /ckfinder-unknown-openerMethod/ );
 		} );
 
-		it( 'should insert single chosen image as image widget', () => {
+		it( 'should insert single chosen image', () => {
 			const url = 'foo/bar.jpg';
 
 			command.execute();
@@ -134,11 +182,11 @@ describe( 'CKFinderCommand', () => {
 				.to.equal( `<paragraph>f[<$text linkHref="${ url }">o</$text>]o</paragraph>` );
 		} );
 
-		it( 'should pass CKFinder config options', () => {
+		it( 'should pass CKFinder configuration options', () => {
 			const spy = sinon.spy( window.CKFinder, 'modal' );
 
 			const connectorPath = 'foo/bar.php';
-			editor.config.set( 'ckfinder.config', { connectorPath } );
+			editor.config.set( 'ckfinder.options', { connectorPath } );
 
 			command.execute();
 
@@ -163,7 +211,7 @@ describe( 'CKFinderCommand', () => {
 			);
 		} );
 
-		it( 'should insert only images from chosen files', () => {
+		it( 'should insert images and links to a files from chosen files', () => {
 			const url1 = 'foo/bar1.jpg';
 			const url2 = 'foo/bar2.pdf';
 			const url3 = 'foo/bar3.jpg';
@@ -173,7 +221,9 @@ describe( 'CKFinderCommand', () => {
 			mockFilesChooseEvent( [ mockFinderFile( url1 ), mockFinderFile( url2, false ), mockFinderFile( url3 ) ] );
 
 			expect( getModelData( model ) ).to.equal(
-				`<image src="${ url1 }"></image>[<image src="${ url3 }"></image>]<paragraph>foo</paragraph>`
+				`<image src="${ url1 }"></image>` +
+				`[<image src="${ url3 }"></image>]` +
+				`<paragraph>f<$text linkHref="${ url2 }">o</$text>o</paragraph>`
 			);
 		} );
 
@@ -216,6 +266,39 @@ describe( 'CKFinderCommand', () => {
 			command.execute();
 
 			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: undefined } );
+
+			expect( getModelData( model ) )
+				.to.equal( '<paragraph>f[o]o</paragraph>' );
+		} );
+
+		it( 'should show warning notification if image cannot be inserted', done => {
+			model.schema.register( 'block', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+
+			// Block image in block.
+			model.schema.addChildCheck( ( context, childDefinition ) => {
+				if ( childDefinition.name === 'image' && context.last.name === 'block' ) {
+					return false;
+				}
+			} );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+
+			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
+
+			const notification = editor.plugins.get( Notification );
+
+			notification.on( 'show:warning', ( evt, data ) => {
+				expect( data.message ).to.equal( 'Could not insert image at current selection.' );
+				expect( data.title ).to.equal( 'Inserting image failed' );
+				evt.stop();
+
+				done();
+			}, { priority: 'high' } );
+
+			command.execute();
+
+			mockFinderEvent( 'file:choose:resizedImage', { resizedUrl: 'foo/bar.jpg' } );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>f[o]o</paragraph>' );

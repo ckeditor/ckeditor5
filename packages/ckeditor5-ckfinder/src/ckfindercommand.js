@@ -27,8 +27,26 @@ export default class CKFinderCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		// Remove default document listener to lower its priority.
+		this.stopListening( this.editor.model.document, 'change' );
+
+		// Lower this command listener priority to be sure that refresh() will be called after link & image refresh.
+		this.listenTo( this.editor.model.document, 'change', () => {
+			this.refresh();
+		}, { priority: 'low' } );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	refresh() {
-		this.isEnabled = true;
+		const imageCommand = this.editor.commands.get( 'imageUpload' );
+		const linkCommand = this.editor.commands.get( 'link' );
+
+		this.isEnabled = ( !imageCommand || !linkCommand ) ? false : ( imageCommand.isEnabled || linkCommand.isEnabled );
 	}
 
 	/**
@@ -50,15 +68,26 @@ export default class CKFinderCommand extends Command {
 		// The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
 		options.onInit = finder => {
 			finder.on( 'files:choose', evt => {
-				for ( const file of evt.data.files.toArray() ) {
-					const url = file.get( 'url' );
+				const files = evt.data.files.toArray();
 
-					// Use CKFinder file isImage() to insert only image-type files.
-					if ( file.isImage() ) {
-						insertImage( editor.model, url ? url : finder.request( 'file:getProxyUrl', { file } ) );
-					} else {
-						editor.execute( 'link', url );
-					}
+				// Insert links
+				const links = files.filter( file => !file.isImage() );
+				const images = files.filter( file => file.isImage() );
+
+				for ( const linkFile of links ) {
+					editor.execute( 'link', linkFile.get( 'url' ) );
+				}
+
+				const imagesUrls = [];
+
+				for ( const image of images ) {
+					const url = image.get( 'url' );
+
+					imagesUrls.push( url ? url : finder.request( 'file:getProxyUrl', { file: image } ) );
+				}
+
+				if ( imagesUrls.length ) {
+					insertImages( editor, imagesUrls );
 				}
 			} );
 
@@ -73,10 +102,11 @@ export default class CKFinderCommand extends Command {
 						title: t( 'Selecting resized image failed' ),
 						namespace: 'ckfinder'
 					} );
+
+					return;
 				}
 
-				// Show warning - no resizedUrl returned...
-				insertImage( editor.model, resizedUrl );
+				insertImages( editor, [ resizedUrl ] );
 			} );
 		};
 
@@ -84,17 +114,34 @@ export default class CKFinderCommand extends Command {
 	}
 }
 
-function insertImage( model, url ) {
+function insertImages( editor, urls ) {
+	const imageCommand = editor.commands.get( 'imageUpload' );
+
+	if ( !imageCommand.isEnabled ) {
+		const notification = editor.plugins.get( Notification );
+		const t = editor.locale.t;
+
+		notification.showWarning( t( 'Could not insert image at current selection.' ), {
+			title: t( 'Inserting image failed' ),
+			namespace: 'ckfinder'
+		} );
+
+		return;
+	}
+
+	const model = editor.model;
+	let insertAt = findOptimalInsertionPosition( model.document.selection, model );
+
 	model.change( writer => {
-		const imageElement = writer.createElement( 'image', { src: url } );
+		for ( const url of urls ) {
+			const imageElement = writer.createElement( 'image', { src: url } );
 
-		const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
-
-		model.insertContent( imageElement, insertAtSelection );
-
-		// Inserting an image might've failed due to schema regulations.
-		if ( imageElement.parent ) {
+			// Insert image & update the selection.
+			model.insertContent( imageElement, insertAt );
 			writer.setSelection( imageElement, 'on' );
+
+			// Insert subsequent image after the previous one.
+			insertAt = writer.createPositionAfter( imageElement );
 		}
 	} );
 }

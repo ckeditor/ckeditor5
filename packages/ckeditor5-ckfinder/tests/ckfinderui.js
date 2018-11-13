@@ -48,6 +48,7 @@ describe( 'CKFinderUI', () => {
 		it( 'should bind #isEnabled to the command', () => {
 			const command = editor.commands.get( 'ckfinder' );
 
+			command.isEnabled = true;
 			expect( button.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
