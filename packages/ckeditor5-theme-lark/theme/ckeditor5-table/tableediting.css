@@ -5,7 +5,6 @@
 
 :root {
 	--ck-color-table-focused-cell-background: hsl(208, 90%, 98%);
-	--ck-color-link-selected-inside-table-background: hsl(201, 100%, 92%);
 }
 
 .ck-widget.table {
@@ -22,11 +21,5 @@
 			outline: 1px solid var(--ck-color-focus-border);
 			outline-offset: -1px; /* progressive enhancement - no IE support */
 		}
-	}
-
-	/* Improve visibility of selected link inside table cell.
-	See https://github.com/ckeditor/ckeditor5-link/issues/204. */
-	& .ck-link_selected {
-		background: var(--ck-color-link-selected-inside-table-background);
 	}
 }
