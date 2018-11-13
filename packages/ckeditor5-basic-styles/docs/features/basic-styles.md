@@ -21,7 +21,7 @@ The {@link api/basic-styles basic styles} package provides text formatting featu
 | {@link module:basic-styles/strikethrough~Strikethrough} | `'strikethrough'` | `'strikethrough'` | `<s>strikethrough</s>` |
 | {@link module:basic-styles/code~Code} | `'code'` | `'code'` | `<code>code</code>` |
 | {@link module:basic-styles/subscript~Subscript} | `'subscript'` | `'subscript'` | `<sub>subscript</sub>` |
-| {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<super>superscript</super>` |
+| {@link module:basic-styles/superscript~Superscript} | `'superscript'` | `'superscript'` | `<sup>superscript</sup>` |
 
 <info-box info>
 	{@link module:basic-styles/bold~Bold} and {@link module:basic-styles/italic~Italic} are available out–of–the–box in most of the {@link builds/guides/overview editor builds}.
@@ -39,7 +39,7 @@ By default, each feature can upcast more than one type of the content. Here's th
 | {@link module:basic-styles/strikethrough~Strikethrough} | `<s>`, `<del>`, `<strike>`, `<* style="text-decoration: line-through">` |
 | {@link module:basic-styles/code~Code} | `<code>`, `<* style="word-wrap: break-word">` |
 | {@link module:basic-styles/subscript~Subscript} | `<sub>`, `<* style="vertical-align:sub">` |
-| {@link module:basic-styles/superscript~Superscript} | `<super>`, `<* style="vertical-align:super">` |
+| {@link module:basic-styles/superscript~Superscript} | `<sup>`, `<* style="vertical-align:super">` |
 
 ## Installation
 
