@@ -141,10 +141,12 @@ function insertImages( editor, urls ) {
 
 			// Insert image & update the selection.
 			model.insertContent( imageElement, insertAt );
-			writer.setSelection( imageElement, 'on' );
 
-			// Insert subsequent image after the previous one.
-			insertAt = writer.createPositionAfter( imageElement );
+			// Inserting an image might've failed due to schema regulations.
+			if ( imageElement.parent ) {
+				writer.setSelection( imageElement, 'on' );
+				insertAt = writer.createPositionAfter( imageElement );
+			}
 		}
 	} );
 }
