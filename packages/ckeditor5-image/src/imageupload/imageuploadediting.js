@@ -325,13 +325,13 @@ export function isHtmlIncluded( dataTransfer ) {
 // @param {String} filename Filename used during file creation.
 // @returns {File|null} The `File` instance created from the given blob or `null` if `File API` is not available.
 function createFileFromBlob( blob, filename ) {
-	if ( typeof File === 'function' ) {
+	try {
 		return new File( [ blob ], filename );
-	} else {
+	} catch ( err ) {
 		// Edge does not support `File` constructor ATM, see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/9551546/.
-		// The `Blob` object could be used, however it causes the issue with upload itself where filename is read directly
-		// from a `File` instance. Since `Blob` instance does not provide one, the default "blob" filename is used which
-		// doesn't work well with most upload adapters (same name for every file + checking file type by extension fails).
+		// However, the `File` function is present (so cannot be checked with `!window.File` or `typeof File === 'function'`), but
+		// calling it with `new File( ... )` throws an error. This try-catch prevents that. Also when the function will
+		// be implemented correctly in Edge the code will start working without any changes (see #247).
 		return null;
 	}
 }

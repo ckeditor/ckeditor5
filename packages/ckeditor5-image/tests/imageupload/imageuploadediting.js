@@ -32,12 +32,6 @@ describe( 'ImageUploadEditing', () => {
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock, uploadStartedCallback;
 
-	const windowFilePolyfill = function( parts, filename, properties ) {
-		this.name = filename;
-		this.parts = parts;
-		this.properties = properties;
-	};
-
 	testUtils.createSinonSandbox();
 
 	class UploadAdapterPluginMock extends Plugin {
@@ -57,6 +51,12 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
+		if ( env.isEdge ) {
+			testUtils.sinon.stub( window, 'File' ).callsFake( () => {
+				return { name: 'file.jpg' };
+			} );
+		}
+
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
@@ -65,11 +65,6 @@ describe( 'ImageUploadEditing', () => {
 
 			return nativeReaderMock;
 		} );
-
-		// Use `File` polyfill so test can be run on Edge too (which lacks `File` constructor).
-		if ( !window.File ) {
-			window.File = windowFilePolyfill;
-		}
 
 		return VirtualTestEditor
 			.create( {
@@ -87,10 +82,6 @@ describe( 'ImageUploadEditing', () => {
 	afterEach( () => {
 		adapterMock = null;
 		uploadStartedCallback = null;
-
-		if ( window.File === windowFilePolyfill ) {
-			window.File = null;
-		}
 
 		return editor.destroy();
 	} );
@@ -641,10 +632,44 @@ describe( 'ImageUploadEditing', () => {
 		} );
 	} );
 
-	it( 'should not upload nor change image data when `File` constructor is not supported', done => {
+	it( 'should not upload nor change image data when `File` constructor is not present', done => {
+		// Restore `File` stub.
+		testUtils.sinon.restore();
+
 		const fileFn = window.File;
 
 		window.File = undefined;
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		model.document.once( 'change', () => {
+			setTimeout( () => {
+				window.File = fileFn;
+
+				expect( adapterMock ).to.null;
+				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+
+				done();
+			}, 50 );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should not upload nor change image data when `File` constructor is not supported', done => {
+		// Restore `File` stub.
+		testUtils.sinon.restore();
+
+		const fileFn = window.File;
+
+		window.File = function() {
+			throw new Error( 'Function expected.' ); // Simulating Edge browser behaviour here.
+		};
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -671,7 +696,7 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
-		const uploadSpy = sinon.spy( imageUploadEditing, '_uploadBase64Images' );
+		const uploadSpy = testUtils.sinon.spy( imageUploadEditing, '_uploadBase64Images' );
 
 		model.document.once( 'change', () => {
 			expect( uploadSpy.callCount ).to.equal( 0 );
@@ -692,7 +717,7 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<paragraph src="foo">[]bar</paragraph>' );
 
 		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
-		const uploadSpy = sinon.spy( imageUploadEditing, '_uploadBase64Images' );
+		const uploadSpy = testUtils.sinon.spy( imageUploadEditing, '_uploadBase64Images' );
 
 		model.document.once( 'change', () => {
 			expect( uploadSpy.callCount ).to.equal( 0 );
