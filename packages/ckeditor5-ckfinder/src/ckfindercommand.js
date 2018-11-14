@@ -98,7 +98,7 @@ export default class CKFinderCommand extends Command {
 					const notification = editor.plugins.get( Notification );
 					const t = editor.locale.t;
 
-					notification.showWarning( t( 'Could not obtain resized image URL. Try different image or folder.' ), {
+					notification.showWarning( t( 'Could not obtain resized image URL.' ), {
 						title: t( 'Selecting resized image failed' ),
 						namespace: 'ckfinder'
 					} );
@@ -122,7 +122,7 @@ function insertImages( editor, urls ) {
 		const notification = editor.plugins.get( Notification );
 		const t = editor.locale.t;
 
-		notification.showWarning( t( 'Could not insert image at current selection.' ), {
+		notification.showWarning( t( 'Could not insert image at the current position.' ), {
 			title: t( 'Inserting image failed' ),
 			namespace: 'ckfinder'
 		} );

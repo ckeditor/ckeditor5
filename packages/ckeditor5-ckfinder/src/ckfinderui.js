@@ -39,7 +39,7 @@ export default class CKFinderUI extends Plugin {
 			const button = new ButtonView( locale );
 
 			button.set( {
-				label: t( 'CKFinder' ),
+				label: t( 'Insert image or file' ),
 				icon: ckfinderIcon,
 				tooltip: true
 			} );
