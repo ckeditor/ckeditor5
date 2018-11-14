@@ -325,7 +325,7 @@ describe( 'CKFinderCommand', () => {
 		function mockFinderFile( url = 'foo/bar.jpg', isImage = true ) {
 			return {
 				isImage: () => isImage,
-				get: () => url
+				getUrl: () => url
 			};
 		}
 

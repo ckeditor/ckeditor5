@@ -75,13 +75,13 @@ export default class CKFinderCommand extends Command {
 				const images = files.filter( file => file.isImage() );
 
 				for ( const linkFile of links ) {
-					editor.execute( 'link', linkFile.get( 'url' ) );
+					editor.execute( 'link', linkFile.getUrl() );
 				}
 
 				const imagesUrls = [];
 
 				for ( const image of images ) {
-					const url = image.get( 'url' );
+					const url = image.getUrl();
 
 					imagesUrls.push( url ? url : finder.request( 'file:getProxyUrl', { file: image } ) );
 				}
