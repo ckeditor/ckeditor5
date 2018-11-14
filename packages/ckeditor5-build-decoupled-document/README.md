@@ -59,9 +59,9 @@ import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 DecoupledEditor
 	.create( '<h2>Hello world!</h2>', {
-			toolbarContainer: document.querySelector( '.toolbar-container' ),
-			editableContainer: document.querySelector( '.editable-container' )
-		} )
+		toolbarContainer: document.querySelector( '.toolbar-container' ),
+		editableContainer: document.querySelector( '.editable-container' )
+	} )
 	.then( editor => {
 		window.editor = editor;
 	} )
