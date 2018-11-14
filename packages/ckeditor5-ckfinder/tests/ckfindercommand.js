@@ -34,9 +34,6 @@ describe( 'CKFinderCommand', () => {
 
 				command = new CKFinderCommand( editor );
 
-				const schema = model.schema;
-				schema.extend( 'image' );
-
 				setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			} );
 	} );
@@ -195,6 +192,61 @@ describe( 'CKFinderCommand', () => {
 			expect( openerMethodOptions ).to.have.property( 'chooseFiles', true );
 			expect( openerMethodOptions ).to.have.property( 'onInit' );
 			expect( openerMethodOptions ).to.have.property( 'connectorPath', connectorPath );
+		} );
+
+		it( 'should pass editor default language to the CKFinder instance', () => {
+			const spy = sinon.spy( window.CKFinder, 'modal' );
+			command.execute();
+
+			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+			expect( openerMethodOptions ).to.have.property( 'language', 'en' );
+		} );
+
+		it( 'should pass editor language set by configuration to the CKFinder instance', () => {
+			const finderMock = {
+				on: ( eventName, callback ) => {
+					finderMock[ eventName ] = callback;
+				}
+			};
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification ],
+					language: 'pl'
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					window.CKFinder = {
+						modal: config => {
+							config.onInit( finderMock );
+						}
+					};
+
+					command = new CKFinderCommand( editor );
+
+					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					const spy = sinon.spy( window.CKFinder, 'modal' );
+
+					command.execute();
+
+					const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+					expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
+				} );
+		} );
+
+		it( 'should not pass editor language if it is set in ckfinder.options', () => {
+			const spy = sinon.spy( window.CKFinder, 'modal' );
+
+			editor.config.set( 'ckfinder.options.language', 'pl' );
+
+			command.execute();
+
+			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+			expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
 		} );
 
 		it( 'should insert multiple chosen images as image widget', () => {
