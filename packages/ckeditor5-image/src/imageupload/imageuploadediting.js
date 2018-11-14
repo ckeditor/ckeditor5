@@ -7,6 +7,8 @@
  * @module image/imageupload/imageuploadediting
  */
 
+/* global fetch, File */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
@@ -72,6 +74,41 @@ export default class ImageUploadEditing extends Plugin {
 					} );
 				}
 			} );
+		} );
+
+		// Handle images inserted or modified with base64 source.
+		doc.on( 'change', () => {
+			const changes = doc.differ.getChanges( { includeChangesInGraveyard: false } );
+			const imagesToUpload = [];
+
+			for ( const entry of changes ) {
+				let item = null;
+
+				if ( entry.type == 'insert' && entry.name == 'image' ) {
+					// Process entry item if it was an image insertion.
+					item = entry.position.nodeAfter;
+				} else if ( entry.type == 'attribute' && entry.attributeKey == 'src' ) {
+					// Process entry item if it was modification of `src` attribute of an image element.
+					// Such cases may happen when image with `blob` source is inserted and then have it
+					// converted to base64 data by clipboard pipeline.
+					const el = entry.range.start.nodeAfter;
+
+					// Check if modified element is an image element.
+					if ( el && el.is( 'image' ) ) {
+						item = el;
+					}
+				}
+
+				if ( item && !item.getAttribute( 'uploadId' ) && item.getAttribute( 'src' ) &&
+					item.getAttribute( 'src' ).match( /data:image\/\w+;base64/ ) ) {
+					imagesToUpload.push( item );
+				}
+			}
+
+			// Upload images with base64 sources.
+			if ( imagesToUpload.length ) {
+				this._uploadBase64Images( imagesToUpload, editor );
+			}
 		} );
 
 		// Prevents from the browser redirecting to the dropped image.
@@ -156,33 +193,7 @@ export default class ImageUploadEditing extends Plugin {
 			.then( data => {
 				model.enqueueChange( 'transparent', writer => {
 					writer.setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
-
-					// Srcset attribute for responsive images support.
-					let maxWidth = 0;
-					const srcsetAttribute = Object.keys( data )
-						// Filter out keys that are not integers.
-						.filter( key => {
-							const width = parseInt( key, 10 );
-
-							if ( !isNaN( width ) ) {
-								maxWidth = Math.max( maxWidth, width );
-
-								return true;
-							}
-						} )
-
-						// Convert each key to srcset entry.
-						.map( key => `${ data[ key ] } ${ key }w` )
-
-						// Join all entries.
-						.join( ', ' );
-
-					if ( srcsetAttribute != '' ) {
-						writer.setAttribute( 'srcset', {
-							data: srcsetAttribute,
-							width: maxWidth
-						}, imageElement );
-					}
+					this._parseAndSetSrcsetAttributeOnImage( data, imageElement, writer );
 				} );
 
 				clean();
@@ -219,6 +230,85 @@ export default class ImageUploadEditing extends Plugin {
 			fileRepository.destroyLoader( loader );
 		}
 	}
+
+	/**
+	 * Converts and uploads base64 `src` data of all given images. On successful upload
+	 * the image `src` attribute is replaced with the URL of the remote file.
+	 *
+	 * @protected
+	 * @param {Array.<module:engine/model/element~Element>} images Array of image elements to upload.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 */
+	_uploadBase64Images( images, editor ) {
+		const fileRepository = editor.plugins.get( FileRepository );
+
+		for ( const image of images ) {
+			const src = image.getAttribute( 'src' );
+			const ext = src.match( /data:image\/(\w+);base64/ )[ 1 ];
+
+			// Fetch works asynchronously and so does not block browser UI when processing data.
+			fetch( src )
+				.then( resource => resource.blob() )
+				.then( blob => {
+					const filename = `${ Number( new Date() ) }-image.${ ext }`;
+					const file = createFileFromBlob( blob, filename );
+
+					if ( !file ) {
+						throw new Error( 'File API not supported. Cannot create `File` from `Blob`.' );
+					}
+
+					return fileRepository.createLoader( file ).upload();
+				} )
+				.then( data => {
+					editor.model.enqueueChange( 'transparent', writer => {
+						writer.setAttribute( 'src', data.default, image );
+						this._parseAndSetSrcsetAttributeOnImage( data, image, writer );
+					} );
+				} )
+				.catch( () => {
+					// As upload happens in the background without direct user interaction,
+					// no errors notifications should be shown.
+				} );
+		}
+	}
+
+	/**
+	 * Creates `srcset` attribute based on a given file upload response and sets it as an attribute to a specific image element.
+	 *
+	 * @protected
+	 * @param {Object} data Data object from which `srcset` will be created.
+	 * @param {module:engine/model/element~Element} image The image element on which `srcset` attribute will be set.
+	 * @param {module:engine/model/writer~Writer} writer
+	 */
+	_parseAndSetSrcsetAttributeOnImage( data, image, writer ) {
+		// Srcset attribute for responsive images support.
+		let maxWidth = 0;
+
+		const srcsetAttribute = Object.keys( data )
+			// Filter out keys that are not integers.
+			.filter( key => {
+				const width = parseInt( key, 10 );
+
+				if ( !isNaN( width ) ) {
+					maxWidth = Math.max( maxWidth, width );
+
+					return true;
+				}
+			} )
+
+			// Convert each key to srcset entry.
+			.map( key => `${ data[ key ] } ${ key }w` )
+
+			// Join all entries.
+			.join( ', ' );
+
+		if ( srcsetAttribute != '' ) {
+			writer.setAttribute( 'srcset', {
+				data: srcsetAttribute,
+				width: maxWidth
+			}, image );
+		}
+	}
 }
 
 // Returns `true` if non-empty `text/html` is included in the data transfer.
@@ -227,4 +317,21 @@ export default class ImageUploadEditing extends Plugin {
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
+}
+
+// Creates `File` instance from the given `Blob` instance using specified filename.
+//
+// @param {Blob} blob The `Blob` instance from which file will be created.
+// @param {String} filename Filename used during file creation.
+// @returns {File|null} The `File` instance created from the given blob or `null` if `File API` is not available.
+function createFileFromBlob( blob, filename ) {
+	if ( typeof File === 'function' ) {
+		return new File( [ blob ], filename );
+	} else {
+		// Edge does not support `File` constructor ATM, see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/9551546/.
+		// The `Blob` object could be used, however it causes the issue with upload itself where filename is read directly
+		// from a `File` instance. Since `Blob` instance does not provide one, the default "blob" filename is used which
+		// doesn't work well with most upload adapters (same name for every file + checking file type by extension fails).
+		return null;
+	}
 }
