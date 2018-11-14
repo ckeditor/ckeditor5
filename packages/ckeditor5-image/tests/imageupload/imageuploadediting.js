@@ -30,7 +30,13 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock, uploadStartedCallback;
+
+	const windowFilePolyfill = function( parts, filename, properties ) {
+		this.name = filename;
+		this.parts = parts;
+		this.properties = properties;
+	};
 
 	testUtils.createSinonSandbox();
 
@@ -40,6 +46,10 @@ describe( 'ImageUploadEditing', () => {
 			fileRepository.createUploadAdapter = newLoader => {
 				loader = newLoader;
 				adapterMock = new UploadAdapterMock( loader );
+
+				if ( uploadStartedCallback ) {
+					adapterMock.uploadStartedCallback = uploadStartedCallback;
+				}
 
 				return adapterMock;
 			};
@@ -56,6 +66,11 @@ describe( 'ImageUploadEditing', () => {
 			return nativeReaderMock;
 		} );
 
+		// Use `File` polyfill so test can be run on Edge too (which lacks `File` constructor).
+		if ( !window.File ) {
+			window.File = windowFilePolyfill;
+		}
+
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
@@ -70,6 +85,13 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	afterEach( () => {
+		adapterMock = null;
+		uploadStartedCallback = null;
+
+		if ( window.File === windowFilePolyfill ) {
+			window.File = null;
+		}
+
 		return editor.destroy();
 	} );
 
@@ -548,4 +570,200 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( spy.calledOnce ).to.equal( true );
 	} );
+
+	it( 'should upload image inserted with base64 data', done => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		// Since upload starts asynchronously, success needs to be triggered after upload is started.
+		uploadStartedCallback = function() {
+			adapterMock.mockSuccess( { default: 'image.png' } );
+		};
+
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
+				expectModel( done, model, '<paragraph><image src="image.png"></image>[]foo</paragraph>' );
+			} );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should upload if image src changed to base64 data', done => {
+		setModelData( model, '<paragraph>bar[]</paragraph><image src="blob://image.jpeg"></image>' );
+
+		// Since upload starts asynchronously, success needs to be triggered after upload is started.
+		uploadStartedCallback = function() {
+			adapterMock.mockSuccess( { default: 'image2.jpeg' } );
+		};
+
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
+				expectModel( done, model, '<paragraph>bar[]</paragraph><image src="image2.jpeg"></image>' );
+			} );
+		} );
+
+		model.change( writer => {
+			const range = writer.createRangeIn( model.document.getRoot() );
+
+			for ( const value of range ) {
+				if ( value.item.is( 'element', 'image' ) ) {
+					writer.setAttribute( 'src', base64Sample, value.item );
+				}
+			}
+		} );
+	} );
+
+	it( 'should create responsive image if server return multiple images from base64 image', done => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		// Since upload starts asynchronously, success needs to be triggered after upload is started.
+		uploadStartedCallback = function() {
+			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+		};
+
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
+				expectModel( done, model, '<paragraph><image src="image.png" ' +
+					'srcset="{"data":"image-500.png 500w, image-800.png 800w","width":800}"></image>[]foo</paragraph>' );
+			} );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should not upload nor change image data when `File` constructor is not supported', done => {
+		const fileFn = window.File;
+
+		window.File = undefined;
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		model.document.once( 'change', () => {
+			setTimeout( () => {
+				window.File = fileFn;
+
+				expect( adapterMock ).to.null;
+				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+
+				done();
+			}, 50 );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should not initialize upload if inserted image have uploadId', () => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
+		const uploadSpy = sinon.spy( imageUploadEditing, '_uploadBase64Images' );
+
+		model.document.once( 'change', () => {
+			expect( uploadSpy.callCount ).to.equal( 0 );
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph><image src="${ base64Sample }" uploadId="42"></image>[]foo</paragraph>` );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.setAttribute( 'uploadId', 42, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should not initialize upload if src of different element than image changed', () => {
+		setModelData( model, '<paragraph src="foo">[]bar</paragraph>' );
+
+		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
+		const uploadSpy = sinon.spy( imageUploadEditing, '_uploadBase64Images' );
+
+		model.document.once( 'change', () => {
+			expect( uploadSpy.callCount ).to.equal( 0 );
+			expect( getModelData( model ) ).to.equal( '<paragraph src="bar">[]bar</paragraph>' );
+		} );
+
+		model.change( writer => {
+			const range = writer.createRangeIn( model.document.getRoot() );
+
+			for ( const value of range ) {
+				if ( value.item.is( 'element', 'paragraph' ) ) {
+					writer.setAttribute( 'src', 'bar', value.item );
+				}
+			}
+		} );
+	} );
+
+	it( 'should not change image src if upload aborted', done => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		// Since upload starts asynchronously, success needs to be triggered after upload is started.
+		uploadStartedCallback = function() {
+			adapterMock.abort();
+		};
+
+		model.document.once( 'change', () => {
+			setTimeout( () => {
+				expect( adapterMock.loader.status ).to.equal( 'error' );
+				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+			}, 50 );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
+
+	it( 'should not throw error and not change image src if upload errored', done => {
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		// Since upload starts asynchronously, success needs to be triggered after upload is started.
+		uploadStartedCallback = function() {
+			adapterMock.mockError( 'Upload failed.' );
+		};
+
+		model.document.once( 'change', () => {
+			setTimeout( () => {
+				expect( adapterMock.loader.status ).to.equal( 'error' );
+				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+			}, 50 );
+		} );
+
+		model.change( writer => {
+			const image = writer.createElement( 'image' );
+
+			writer.setAttribute( 'src', base64Sample, image );
+			writer.insert( image, model.document.selection.getFirstPosition() );
+		} );
+	} );
 } );
+
+// Since this function is run inside Promise, all errors needs to be caught
+// and rethrow to be correctly processed by testing framework.
+function expectModel( done, model, expected ) {
+	try {
+		expect( getModelData( model ) ).to.equal( expected );
+		done();
+	} catch ( err ) {
+		done( err );
+	}
+}
