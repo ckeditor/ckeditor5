@@ -19,6 +19,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^10.1.0",
     "@ckeditor/ckeditor5-engine": "^11.0.0",
     "@ckeditor/ckeditor5-image": "^11.0.0",
+    "@ckeditor/ckeditor5-link": "^10.0.4",
     "@ckeditor/ckeditor5-paragraph": "^10.0.3",
     "@ckeditor/ckeditor5-utils": "^11.0.0",
     "eslint": "^5.5.0",
