@@ -40,6 +40,7 @@
     "@ckeditor/ckeditor5-list": "^11.0.2",
     "@ckeditor/ckeditor5-media-embed": "^10.0.0",
     "@ckeditor/ckeditor5-paragraph": "^10.0.3",
+    "@ckeditor/ckeditor5-paste-from-office": "*",
     "@ckeditor/ckeditor5-table": "^11.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^11.1.0",
     "@ckeditor/ckeditor5-upload": "^10.0.3",
