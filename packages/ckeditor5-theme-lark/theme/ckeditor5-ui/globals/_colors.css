@@ -102,5 +102,5 @@
 	/* -- Link -------------------------------------------------------------------------------- */
 
 	--ck-color-link-default:									hsl(240, 100%, 47%);
-	--ck-color-link-selected-background: 						hsl(201, 100%, 96%);
+	--ck-color-link-selected-background: 						hsla(201, 100%, 56%, 0.1);
 }
