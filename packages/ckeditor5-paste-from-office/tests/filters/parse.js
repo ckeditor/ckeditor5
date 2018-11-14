@@ -91,6 +91,76 @@ describe( 'Filters', () => {
 
 				expect( stylesString ).to.equal( '' );
 			} );
+
+			it( 'should remove any content after body closing tag - plain', () => {
+				const html = '<html><head></head><body><p>Foo Bar</p></body>Ba</html>';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'should remove any content after body closing tag - inline', () => {
+				const html = '<html><head></head><body><p>Foo Bar</p></body><span>Fo</span></html>';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'should remove any content after body closing tag - block', () => {
+				const html = '<html><head></head><body><p>Foo Bar</p></body><p>ar</p></html>';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'should remove any content after body closing tag - no html tag', () => {
+				const html = '<head></head><body><p>Foo Bar</p></body>oo';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 1, 'body.childCount' );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
+
+			it( 'should not remove any content if no body tag', () => {
+				const html = '<p>Foo Bar</p>Baz';
+				const { body, bodyString, styles, stylesString } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+				expect( body.childCount ).to.equal( 2, 'body.childCount' );
+
+				expect( bodyString ).to.equal( '<p>Foo Bar</p>Baz' );
+
+				expect( styles.length ).to.equal( 0 );
+
+				expect( stylesString ).to.equal( '' );
+			} );
 		} );
 	} );
 } );

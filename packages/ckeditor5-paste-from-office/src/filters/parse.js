@@ -32,8 +32,10 @@ export function parseHtml( htmlString ) {
 	// Remove Word specific "if comments" so content inside is not omitted by the parser.
 	htmlString = htmlString.replace( /<!--\[if gte vml 1]>/g, '' );
 
+	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
+
 	// Parse htmlString as native Document object.
-	const htmlDocument = domParser.parseFromString( normalizeSpacing( htmlString ), 'text/html' );
+	const htmlDocument = domParser.parseFromString( normalizedHtml, 'text/html' );
 
 	normalizeSpacerunSpans( htmlDocument );
 
@@ -93,4 +95,22 @@ function extractStyles( htmlDocument ) {
 		styles,
 		stylesString: stylesString.join( ' ' )
 	};
+}
+
+// Removes leftover content from between closing </body> and closing </html> tag:
+//
+// 		<html><body><p>Foo Bar</p></body><span>Fo</span></html> -> <html><body><p>Foo Bar</p></body></html>
+//
+// This function is used as specific browsers (Edge) add some random content after `body` tag when pasting from Word.
+// @param {String} htmlString The HTML string to be cleaned.
+// @returns {String} The HTML string with leftover content removed.
+function cleanContentAfterBody( htmlString ) {
+	const regexp = /<\/body>(.*?)(<\/html>|$)/;
+	const match = htmlString.match( regexp );
+
+	if ( match && match[ 1 ] ) {
+		htmlString = htmlString.slice( 0, match.index ) + htmlString.slice( match.index ).replace( match[ 1 ], '' );
+	}
+
+	return htmlString;
 }
