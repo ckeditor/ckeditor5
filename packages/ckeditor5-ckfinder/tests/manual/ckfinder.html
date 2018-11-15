@@ -1,5 +1,13 @@
 <script src="https://ckeditor.com/docs/ckfinder/demo/ckfinder3/ckfinder.js"></script>
 
+<style>
+	/* Override CKFinder's modal z-index (8999) which is lower manual test description z-index (9000).
+	 */
+	#ckf-modal {
+		z-index: 10000 !important;
+	}
+</style>
+
 <div id="editor">
 	<h2>CKFinder sample</h2>
 	<p>Use the toolbar icon to insert an image or link to a file to the content.</p>
