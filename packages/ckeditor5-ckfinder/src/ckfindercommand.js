@@ -34,9 +34,7 @@ export default class CKFinderCommand extends Command {
 		this.stopListening( this.editor.model.document, 'change' );
 
 		// Lower this command listener priority to be sure that refresh() will be called after link & image refresh.
-		this.listenTo( this.editor.model.document, 'change', () => {
-			this.refresh();
-		}, { priority: 'low' } );
+		this.listenTo( this.editor.model.document, 'change', () => this.refresh(), { priority: 'low' } );
 	}
 
 	/**
@@ -46,7 +44,8 @@ export default class CKFinderCommand extends Command {
 		const imageCommand = this.editor.commands.get( 'imageUpload' );
 		const linkCommand = this.editor.commands.get( 'link' );
 
-		this.isEnabled = ( !imageCommand || !linkCommand ) ? false : ( imageCommand.isEnabled || linkCommand.isEnabled );
+		// The CKFinder command is enabled when one of image or link command is enabled.
+		this.isEnabled = imageCommand && linkCommand && ( imageCommand.isEnabled || linkCommand.isEnabled );
 	}
 
 	/**
