@@ -308,7 +308,7 @@ describe( 'CKFinderCommand', () => {
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not obtain resized image URL. Try different image or folder.' );
+				expect( data.message ).to.equal( 'Could not obtain resized image URL.' );
 				expect( data.title ).to.equal( 'Selecting resized image failed' );
 				evt.stop();
 
@@ -341,7 +341,7 @@ describe( 'CKFinderCommand', () => {
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not insert image at current selection.' );
+				expect( data.message ).to.equal( 'Could not insert image at the current position.' );
 				expect( data.title ).to.equal( 'Inserting image failed' );
 				evt.stop();
 
