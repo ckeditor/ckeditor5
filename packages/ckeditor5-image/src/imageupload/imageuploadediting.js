@@ -15,7 +15,7 @@ import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { isImageType } from '../../src/imageupload/utils';
 
 /**
- * The editing part of the image upload feature.
+ * The editing part of the image upload feature. It registers the `'imageUpload'` command.
  *
  * @extends module:core/plugin~Plugin
  */

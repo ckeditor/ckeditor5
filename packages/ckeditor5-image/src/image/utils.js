@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { toWidget, isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const imageSymbol = Symbol( 'isImage' );
 
@@ -64,4 +64,77 @@ export function isImageWidgetSelected( selection ) {
  */
 export function isImage( modelElement ) {
 	return !!modelElement && modelElement.is( 'image' );
+}
+
+/**
+ * Handles inserting single file.
+ *
+ * @param {module:engine/model/writer~writer} writer
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {Object} attributes
+ */
+export function insertImage( writer, editor, attributes ) {
+	const model = editor.model;
+	const doc = model.document;
+
+	const imageElement = writer.createElement( 'image', attributes );
+
+	const insertAtSelection = findOptimalInsertionPosition( doc.selection, model );
+
+	model.insertContent( imageElement, insertAtSelection );
+
+	// Inserting an image might've failed due to schema regulations.
+	if ( imageElement.parent ) {
+		writer.setSelection( imageElement, 'on' );
+	}
+}
+
+/**
+ * Checks if image can be inserted at current model selection.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @returns {Boolean}
+ */
+export function isImageAllowed( model ) {
+	const schema = model.schema;
+	const selection = model.document.selection;
+
+	return isImageAllowedInParent( selection, schema, model ) && checkSelectionWithObject( selection, schema );
+}
+
+// Checks if image is allowed by schema in optimal insertion parent.
+//
+// @returns {Boolean}
+function isImageAllowedInParent( selection, schema, model ) {
+	const parent = getInsertImageParent( selection, model );
+
+	return schema.checkChild( parent, 'image' );
+}
+
+// Check used in image commands for additional cases when the command should be disabled:
+//
+// - selection is on object
+// - selection is inside object
+//
+// @returns {Boolean}
+function checkSelectionWithObject( selection, schema ) {
+	const selectedElement = selection.getSelectedElement();
+
+	const isSelectionOnObject = !!selectedElement && schema.isObject( selectedElement );
+	const isSelectionInObject = !![ ...selection.focus.getAncestors() ].find( ancestor => schema.isObject( ancestor ) );
+
+	return !isSelectionOnObject && !isSelectionInObject;
+}
+
+// Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
+function getInsertImageParent( selection, model ) {
+	const insertAt = findOptimalInsertionPosition( selection, model );
+
+	let parent = insertAt.parent;
+
+	if ( !parent.is( '$root' ) ) {
+		parent = parent.parent;
+	}
+
+	return parent;
 }
