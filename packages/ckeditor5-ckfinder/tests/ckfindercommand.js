@@ -131,7 +131,7 @@ describe( 'CKFinderCommand', () => {
 			expect( finderMock ).to.have.property( 'file:choose:resizedImage' );
 		} );
 
-		it( 'should use "CKFinder.modal" as default CKFinder opener method', () => {
+		it( 'should use CKFinder.modal() as default CKFinder opener method', () => {
 			const spy = sinon.spy( window.CKFinder, 'modal' );
 
 			command.execute();
@@ -139,7 +139,7 @@ describe( 'CKFinderCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should use "CKFinder.modal" as default CKFinder opener method', () => {
+		it( 'should use CKFinder.popup() when ckfinder.openerMethod is set to it', () => {
 			const spy = sinon.spy( window.CKFinder, 'popup' );
 
 			editor.config.set( 'ckfinder.openerMethod', 'popup' );
