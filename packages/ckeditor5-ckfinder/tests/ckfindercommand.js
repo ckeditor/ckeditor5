@@ -194,6 +194,16 @@ describe( 'CKFinderCommand', () => {
 			expect( openerMethodOptions ).to.have.property( 'connectorPath', connectorPath );
 		} );
 
+		it( 'should call user defined config.onInit() function', () => {
+			const spy = sinon.spy();
+
+			editor.config.set( 'ckfinder.options.onInit', spy );
+
+			command.execute();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should pass editor default language to the CKFinder instance', () => {
 			const spy = sinon.spy( window.CKFinder, 'modal' );
 			command.execute();
