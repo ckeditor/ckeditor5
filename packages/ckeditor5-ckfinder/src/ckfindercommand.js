@@ -34,9 +34,7 @@ export default class CKFinderCommand extends Command {
 		this.stopListening( this.editor.model.document, 'change' );
 
 		// Lower this command listener priority to be sure that refresh() will be called after link & image refresh.
-		this.listenTo( this.editor.model.document, 'change', () => {
-			this.refresh();
-		}, { priority: 'low' } );
+		this.listenTo( this.editor.model.document, 'change', () => this.refresh(), { priority: 'low' } );
 	}
 
 	/**
@@ -46,7 +44,8 @@ export default class CKFinderCommand extends Command {
 		const imageCommand = this.editor.commands.get( 'imageUpload' );
 		const linkCommand = this.editor.commands.get( 'link' );
 
-		this.isEnabled = ( !imageCommand || !linkCommand ) ? false : ( imageCommand.isEnabled || linkCommand.isEnabled );
+		// The CKFinder command is enabled when one of image or link command is enabled.
+		this.isEnabled = imageCommand && linkCommand && ( imageCommand.isEnabled || linkCommand.isEnabled );
 	}
 
 	/**
@@ -67,6 +66,11 @@ export default class CKFinderCommand extends Command {
 
 		// Cache the user-defined onInit method
 		const originalOnInit = options.onInit;
+
+		// Pass the lang code to the CKFinder if not defined by user.
+		if ( !options.language ) {
+			options.language = editor.locale.language;
+		}
 
 		// The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
 		options.onInit = finder => {
@@ -106,7 +110,7 @@ export default class CKFinderCommand extends Command {
 					const notification = editor.plugins.get( Notification );
 					const t = editor.locale.t;
 
-					notification.showWarning( t( 'Could not obtain resized image URL. Try different image or folder.' ), {
+					notification.showWarning( t( 'Could not obtain resized image URL.' ), {
 						title: t( 'Selecting resized image failed' ),
 						namespace: 'ckfinder'
 					} );
@@ -130,7 +134,7 @@ function insertImages( editor, urls ) {
 		const notification = editor.plugins.get( Notification );
 		const t = editor.locale.t;
 
-		notification.showWarning( t( 'Could not insert image at current selection.' ), {
+		notification.showWarning( t( 'Could not insert image at the current position.' ), {
 			title: t( 'Inserting image failed' ),
 			namespace: 'ckfinder'
 		} );

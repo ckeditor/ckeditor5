@@ -34,9 +34,6 @@ describe( 'CKFinderCommand', () => {
 
 				command = new CKFinderCommand( editor );
 
-				const schema = model.schema;
-				schema.extend( 'image' );
-
 				setModelData( model, '<paragraph>f[o]o</paragraph>' );
 			} );
 	} );
@@ -134,7 +131,7 @@ describe( 'CKFinderCommand', () => {
 			expect( finderMock ).to.have.property( 'file:choose:resizedImage' );
 		} );
 
-		it( 'should use "CKFinder.modal" as default CKFinder opener method', () => {
+		it( 'should use CKFinder.modal() as default CKFinder opener method', () => {
 			const spy = sinon.spy( window.CKFinder, 'modal' );
 
 			command.execute();
@@ -142,7 +139,7 @@ describe( 'CKFinderCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should use "CKFinder.modal" as default CKFinder opener method', () => {
+		it( 'should use CKFinder.popup() when ckfinder.openerMethod is set to it', () => {
 			const spy = sinon.spy( window.CKFinder, 'popup' );
 
 			editor.config.set( 'ckfinder.openerMethod', 'popup' );
@@ -207,6 +204,61 @@ describe( 'CKFinderCommand', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should pass editor default language to the CKFinder instance', () => {
+			const spy = sinon.spy( window.CKFinder, 'modal' );
+			command.execute();
+
+			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+			expect( openerMethodOptions ).to.have.property( 'language', 'en' );
+		} );
+
+		it( 'should pass editor language set by configuration to the CKFinder instance', () => {
+			const finderMock = {
+				on: ( eventName, callback ) => {
+					finderMock[ eventName ] = callback;
+				}
+			};
+
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification ],
+					language: 'pl'
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					window.CKFinder = {
+						modal: config => {
+							config.onInit( finderMock );
+						}
+					};
+
+					command = new CKFinderCommand( editor );
+
+					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+					const spy = sinon.spy( window.CKFinder, 'modal' );
+
+					command.execute();
+
+					const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+					expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
+				} );
+		} );
+
+		it( 'should not pass editor language if it is set in ckfinder.options', () => {
+			const spy = sinon.spy( window.CKFinder, 'modal' );
+
+			editor.config.set( 'ckfinder.options.language', 'pl' );
+
+			command.execute();
+
+			const openerMethodOptions = spy.args[ 0 ][ 0 ];
+
+			expect( openerMethodOptions ).to.have.property( 'language', 'pl' );
+		} );
+
 		it( 'should insert multiple chosen images as image widget', () => {
 			const url1 = 'foo/bar1.jpg';
 			const url2 = 'foo/bar2.jpg';
@@ -266,7 +318,7 @@ describe( 'CKFinderCommand', () => {
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not obtain resized image URL. Try different image or folder.' );
+				expect( data.message ).to.equal( 'Could not obtain resized image URL.' );
 				expect( data.title ).to.equal( 'Selecting resized image failed' );
 				evt.stop();
 
@@ -299,7 +351,7 @@ describe( 'CKFinderCommand', () => {
 			const notification = editor.plugins.get( Notification );
 
 			notification.on( 'show:warning', ( evt, data ) => {
-				expect( data.message ).to.equal( 'Could not insert image at current selection.' );
+				expect( data.message ).to.equal( 'Could not insert image at the current position.' );
 				expect( data.title ).to.equal( 'Inserting image failed' );
 				evt.stop();
 
