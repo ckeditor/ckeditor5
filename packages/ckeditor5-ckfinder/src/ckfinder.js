@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import CKFinderUI from './ckfinderui';
 import CKFinderEditing from './ckfinderediting';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 /**
  * The CKFinder feature.
@@ -34,7 +35,7 @@ export default class CKFinder extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CKFinderEditing, CKFinderUI ];
+		return [ CKFinderEditing, CKFinderUI, CKFinderUploadAdapter ];
 	}
 }
 
