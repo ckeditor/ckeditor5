@@ -56,7 +56,7 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should set a #label of the #buttonView', () => {
-			expect( button.label ).to.equal( 'CKFinder' );
+			expect( button.label ).to.equal( 'Insert image or file' );
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {

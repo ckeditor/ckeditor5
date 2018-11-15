@@ -1,0 +1,7 @@
+{
+	"Insert image or file": "Toolbar button tooltip for inserting an image or file via a CKFinder file browser.",
+	"Could not obtain resized image URL.": "Error message displayed when inserting a resized version of an image failed.",
+	"Selecting resized image failed": "Title of a notification displayed when inserting a resized version of an image failed.",
+	"Could not insert image at the current position.": "Error message displayed when an image cannot be inserted at the current position.",
+	"Inserting image failed": "Title of a notification displayed when an image cannot be inserted at the current position."
+}
