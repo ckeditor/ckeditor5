@@ -197,6 +197,16 @@ describe( 'CKFinderCommand', () => {
 			expect( openerMethodOptions ).to.have.property( 'connectorPath', connectorPath );
 		} );
 
+		it( 'should call user defined config.onInit() function', () => {
+			const spy = sinon.spy();
+
+			editor.config.set( 'ckfinder.options.onInit', spy );
+
+			command.execute();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'should insert multiple chosen images as image widget', () => {
 			const url1 = 'foo/bar1.jpg';
 			const url2 = 'foo/bar2.jpg';

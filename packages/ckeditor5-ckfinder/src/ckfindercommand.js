@@ -65,8 +65,16 @@ export default class CKFinderCommand extends Command {
 
 		options.chooseFiles = true;
 
+		// Cache the user-defined onInit method
+		const originalOnInit = options.onInit;
+
 		// The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
 		options.onInit = finder => {
+			// Call original options.onInit if it was defined by user.
+			if ( originalOnInit ) {
+				originalOnInit();
+			}
+
 			finder.on( 'files:choose', evt => {
 				const files = evt.data.files.toArray();
 
