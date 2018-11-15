@@ -61,6 +61,7 @@ import TextProxy from '../model/textproxy';
  *			// Maybe it will be "decorated" later.
  *			const viewImage = new ViewElement( 'img' );
  *			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
+ *			const viewWriter = conversionApi.writer;
  *
  *			// Check if the `image` element has children.
  *			if ( data.item.childCount > 0 ) {
