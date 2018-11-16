@@ -7,6 +7,9 @@
 	clear: both;
 	text-align: center;
 
+	/* Make sure there is some space between the content and the image. */
+	margin: 1em 0;
+
 	& > img {
 		/* Prevent unnecessary margins caused by line-height (see #44). */
 		display: block;
