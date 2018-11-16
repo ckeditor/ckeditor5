@@ -33,7 +33,7 @@
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#t/ckeditor5-theme-lark/209",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office",
-    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#t/ckeditor5-theme-lark/209",
+    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#t/209",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui",
