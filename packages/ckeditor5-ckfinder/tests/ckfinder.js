@@ -9,6 +9,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import CKFinder from '../src/ckfinder';
 import CKFinderUI from '../src/ckfinderui';
 import CKFinderEditing from '../src/ckfinderediting';
+import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 describe( 'CKFinder', () => {
 	let editorElement, editor;
@@ -42,6 +43,10 @@ describe( 'CKFinder', () => {
 
 	it( 'should load CKFinderEditing plugin', () => {
 		expect( editor.plugins.get( CKFinderEditing ) ).to.instanceOf( CKFinderEditing );
+	} );
+
+	it( 'should load AdapterCKFinder plugin', () => {
+		expect( editor.plugins.get( CKFinderUploadAdapter ) ).to.instanceOf( CKFinderUploadAdapter );
 	} );
 
 	it( 'has proper name', () => {
