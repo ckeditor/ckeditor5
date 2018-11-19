@@ -13,8 +13,6 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
-
 /**
  * The CKFinder command. It is used by the {@link module:ckfinder/ckfinderediting~CKFinderEditing ckfinder editng feature}
  * to open a CKFinder file browser to insert an image or a link to a file into content.
@@ -142,23 +140,5 @@ function insertImages( editor, urls ) {
 		return;
 	}
 
-	const model = editor.model;
-
-	// The first image will be inserted according to image inserting algorithm. Next one after the previous one.
-	let insertAt = findOptimalInsertionPosition( model.document.selection, model );
-
-	model.change( writer => {
-		for ( const url of urls ) {
-			const imageElement = writer.createElement( 'image', { src: url } );
-
-			// Insert image & update the selection.
-			model.insertContent( imageElement, insertAt );
-
-			// Inserting an image might've failed due to schema regulations.
-			if ( imageElement.parent ) {
-				writer.setSelection( imageElement, 'on' );
-				insertAt = writer.createPositionAfter( imageElement );
-			}
-		}
-	} );
+	editor.execute( 'imageInsert', { sources: urls } );
 }
