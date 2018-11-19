@@ -175,22 +175,22 @@ CloudServices.Token = Token;
  */
 
 /**
- * The URL for web socket communication, used by `CollaborativeEditing` plugin. Every customer (organization in the CKEditor
+ * The URL for web socket communication, used by `RealTimeCollaborativeEditing` plugin. Every customer (organization in the CKEditor
  * Ecosystem dashboard) has its own, unique URLs to communicate with CKEditor Cloud Services. The URL can be found in the
  * CKEditor Ecosystem dashboard.
  *
- * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Note: unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#webSocketUrl
  */
 
 /**
- * Document ID, used by `CollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
+ * Document ID, used by `RealTimeCollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
  * It means that each document needs a different document ID if you do not want to start collaboration between these documents.
  * The ID is usually a primary key of the document in the database, but you are free to provide whatever identifier fits your scenario.
  *
- * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Note: unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
  * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
  *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#documentId
