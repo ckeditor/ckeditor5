@@ -15,7 +15,7 @@ msgstr "Otsikkotyyli"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Valitse tyyli"
+msgstr "Valitse otsikko"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
