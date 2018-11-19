@@ -7,4 +7,7 @@
 	/* Don't allow floated content overlap the media.
 	https://github.com/ckeditor/ckeditor5-media-embed/issues/53 */
 	clear: both;
+
+	/* Make sure there is some space between the content and the media. */
+	margin: 1em 0;
 }
