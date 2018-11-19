@@ -64,6 +64,9 @@ export default class CKFinderCommand extends Command {
 
 		options.chooseFiles = true;
 
+		// Cache the user-defined onInit method
+		const originalOnInit = options.onInit;
+
 		// Pass the lang code to the CKFinder if not defined by user.
 		if ( !options.language ) {
 			options.language = editor.locale.language;
@@ -71,6 +74,11 @@ export default class CKFinderCommand extends Command {
 
 		// The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
 		options.onInit = finder => {
+			// Call original options.onInit if it was defined by user.
+			if ( originalOnInit ) {
+				originalOnInit();
+			}
+
 			finder.on( 'files:choose', evt => {
 				const files = evt.data.files.toArray();
 
