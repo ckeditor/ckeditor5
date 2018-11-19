@@ -47,7 +47,7 @@ ClassicEditor
 					const b = writer.createAttributeElement( 'b' );
 					const div = writer.createContainerElement( 'div' );
 
-					writer.insert( ViewPosition._createAt( div ), b );
+					writer.insert( ViewPosition._createAt( div, 0 ), b );
 
 					return toWidget( div, writer, { label: 'element label' } );
 				}
