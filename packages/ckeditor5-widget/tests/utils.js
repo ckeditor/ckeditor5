@@ -6,6 +6,7 @@
 /* global document */
 
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
+import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -142,6 +143,10 @@ describe( 'widget utils', () => {
 
 		it( 'should return false for non-widgetized elements', () => {
 			expect( isWidget( new ViewElement( 'p' ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for text node', () => {
+			expect( isWidget( new Text( 'p' ) ) ).to.be.false;
 		} );
 	} );
 

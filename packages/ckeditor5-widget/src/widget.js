@@ -63,14 +63,18 @@ export default class Widget extends Plugin {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
 			const selectedElement = viewSelection.getSelectedElement();
+			let lastMarked = null;
 
 			for ( const range of viewSelection.getRanges() ) {
 				for ( const value of range ) {
 					const node = value.item;
 
-					if ( node.is( 'element' ) && isWidget( node ) ) {
+					// Do not mark nested widgets in selected one. See: #57.
+					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
+
 						this._previouslySelected.add( node );
+						lastMarked = node;
 
 						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
@@ -419,4 +423,17 @@ function isInsideNestedEditable( element ) {
 	}
 
 	return false;
+}
+
+// Checks whether the specified `element` is a child of the `parent` element.
+//
+// @param {module:engine/view/element~Element} element An element to check.
+// @param {module:engine/view/element~Element|null} parent A parent for the element.
+// @returns {Boolean}
+function isChild( element, parent ) {
+	if ( !parent ) {
+		return false;
+	}
+
+	return Array.from( element.getAncestors() ).includes( parent );
 }
