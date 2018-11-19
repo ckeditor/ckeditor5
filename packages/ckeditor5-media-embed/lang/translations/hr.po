@@ -13,6 +13,10 @@ msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
 msgstr "URL medija"
 
+msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
+msgid "Paste the URL into the content to embed faster."
+msgstr ""
+
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
 msgstr "URL ne smije biti prazan."
