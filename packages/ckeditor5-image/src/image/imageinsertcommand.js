@@ -31,13 +31,13 @@ export default class ImageInsertCommand extends Command {
 	 * @param {String|Array.<String>} options.sources The image source or an array of image sources to insert.
 	 */
 	execute( options ) {
-		const editor = this.editor;
+		const model = this.editor.model;
 
-		editor.model.change( writer => {
+		model.change( writer => {
 			const sources = Array.isArray( options.sources ) ? options.sources : [ options.sources ];
 
 			for ( const src of sources ) {
-				insertImage( writer, editor, { src } );
+				insertImage( writer, model, { src } );
 			}
 		} );
 	}

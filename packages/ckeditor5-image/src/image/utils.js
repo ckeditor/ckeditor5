@@ -67,19 +67,20 @@ export function isImage( modelElement ) {
 }
 
 /**
- * Handles inserting single file.
+ * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
+ *
+ *		model.change( writer => {
+ *			insertImage( writer, model, { src: 'path/to/image.jpg' } );
+ *		} );
  *
  * @param {module:engine/model/writer~writer} writer
- * @param {module:core/editor/editor~Editor} editor
- * @param {Object} attributes
+ * @param {module:engine/model/model~Model} model
+ * @param {Object} [attributes={}] Attributes of inserted image
  */
-export function insertImage( writer, editor, attributes ) {
-	const model = editor.model;
-	const doc = model.document;
-
+export function insertImage( writer, model, attributes = {} ) {
 	const imageElement = writer.createElement( 'image', attributes );
 
-	const insertAtSelection = findOptimalInsertionPosition( doc.selection, model );
+	const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
 
 	model.insertContent( imageElement, insertAtSelection );
 

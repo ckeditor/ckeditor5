@@ -33,14 +33,15 @@ export default class ImageUploadCommand extends Command {
 	 */
 	execute( options ) {
 		const editor = this.editor;
+		const model = editor.model;
 
 		const fileRepository = editor.plugins.get( FileRepository );
 
-		editor.model.change( writer => {
+		model.change( writer => {
 			const filesToUpload = Array.isArray( options.files ) ? options.files : [ options.files ];
 
 			for ( const file of filesToUpload ) {
-				uploadImage( writer, editor, fileRepository, file );
+				uploadImage( writer, model, fileRepository, file );
 			}
 		} );
 	}
@@ -49,9 +50,9 @@ export default class ImageUploadCommand extends Command {
 // Handles uploading single file.
 //
 // @param {module:engine/model/writer~writer} writer
-// @param {module:core/editor/editor~Editor} editor
+// @param {module:engine/model/model~Model} model
 // @param {File} file
-function uploadImage( writer, editor, fileRepository, file ) {
+function uploadImage( writer, model, fileRepository, file ) {
 	const loader = fileRepository.createLoader( file );
 
 	// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
@@ -59,5 +60,5 @@ function uploadImage( writer, editor, fileRepository, file ) {
 		return;
 	}
 
-	insertImage( writer, editor, { uploadId: loader.id } );
+	insertImage( writer, model, { uploadId: loader.id } );
 }
