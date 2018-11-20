@@ -121,7 +121,7 @@ describe( 'ImageInsertCommand', () => {
 
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { sources: imgSrc } );
+			command.execute( { source: imgSrc } );
 
 			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]<paragraph>foo</paragraph>` );
 		} );
@@ -132,7 +132,7 @@ describe( 'ImageInsertCommand', () => {
 
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { sources: [ imgSrc1, imgSrc2 ] } );
+			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
 			expect( getModelData( model ) )
 				.to.equal( `<image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]<paragraph>foo</paragraph>` );
@@ -151,7 +151,7 @@ describe( 'ImageInsertCommand', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			command.execute( { sources: imgSrc } );
+			command.execute( { source: imgSrc } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
