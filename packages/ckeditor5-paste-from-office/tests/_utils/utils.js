@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, atob, Blob, URL */
+/* globals document */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -49,9 +49,6 @@ export function createDataTransfer( data ) {
  *		{
  *			browserName: [ fixtureName1, fixtureName2 ]
  *		}
- *
- * @param {Boolean} [config.withBlobsHandling = false] If special flow with generating and asserting blob URLs data
- * should be used. This param has effect only for integration tests.
  */
 export function generateTests( config ) {
 	if ( [ 'normalization', 'integration' ].indexOf( config.type ) === -1 ) {
@@ -66,7 +63,6 @@ export function generateTests( config ) {
 		throw new Error( 'No or empty `config.browsers` option provided.' );
 	}
 
-	const withBlobsHandling = config.withBlobsHandling || false;
 	const groups = groupFixturesByBrowsers( config.browsers, config.input, config.skip );
 	const generateSuiteFn = config.type === 'normalization' ? generateNormalizationTests : generateIntegrationTests;
 
@@ -78,7 +74,7 @@ export function generateTests( config ) {
 				const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
 
 				if ( groups[ group ] ) {
-					generateSuiteFn( group, groups[ group ], editorConfig, skip, withBlobsHandling );
+					generateSuiteFn( group, groups[ group ], editorConfig, skip );
 				}
 			}
 		} );
@@ -174,8 +170,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 // @param {Object} fixtures Object containing fixtures.
 // @param {Object} editorConfig Editor config with which test editor will be created.
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
-// @param {Boolean} [withBlobsHandling = false] If special `expectModelWithBlobs()` function should be used to assert model data.
-function generateIntegrationTests( title, fixtures, editorConfig, skip, withBlobsHandling ) {
+function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 	describe( title, () => {
 		let element, editor;
 		let data = {};
@@ -219,19 +214,11 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, withBlob
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			if ( !withBlobsHandling ) {
-				( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
-					data.input = fixtures.input[ name ];
-					data.model = fixtures.model[ name ];
-					expectModel( data, editor, fixtures.inputRtf && fixtures.inputRtf[ name ] );
-				} );
-			} else {
-				( skip.indexOf( name ) !== -1 ? it.skip : it )( name, done => {
-					data.input = fixtures.input[ name ];
-					data.model = fixtures.model[ name ];
-					expectModelWithBlobs( data, editor, fixtures.inputBlob && fixtures.inputBlob[ name ], done );
-				} );
-			}
+			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+				data.input = fixtures.input[ name ];
+				data.model = fixtures.model[ name ];
+				expectModel( data, editor, fixtures.inputRtf && fixtures.inputRtf[ name ] );
+			} );
 		}
 	} );
 }
@@ -292,64 +279,6 @@ function expectModel( data, editor, inputRtf = null ) {
 	compareContentWithBase64Images( data.actual, inlineData( data.model ) );
 }
 
-// Compares two models string representations. The input HTML is processed through paste
-// pipeline where it is transformed into model. This function hooks into {@link module:engine/model/model~Model#insertContent}
-// to get the model representation before it is inserted.
-//
-// @param {Object} data
-// @param {String} data.input Input HTML which will be pasted into the editor.
-// @param {String} data.actual Actual model data.
-// @param {String} data.model Expected model data.
-// @param {module:core/editor/editor~Editor} editor Editor instance.
-// @param {String} inputBlobs Additional data which will be used to generate blobs for a test.
-// @param {Function} done The callback function which should be called when test has finished.
-function expectModelWithBlobs( data, editor, inputBlobs, done ) {
-	// If the browser stores images as blob urls, we need to generate blobs based on a provided images base64 data
-	// and then replace original blob urls with the local ones. This allows Paste from Office to correctly extract
-	// data checking if the transformations flow works in real use cases.
-	const base64 = inputBlobs.split( '------' ).map( item => item.replace( /\s/g, '' ) );
-	const blobUrls = createBlobsFromBase64Data( base64 );
-
-	const input = replaceBlobUrls( data.input, blobUrls );
-	const expected = replaceBlobUrls( inlineData( data.model ), blobUrls );
-
-	let counter = 0;
-	const onChange = function() {
-		counter++;
-
-		// Each blob is fetched asynchronously generating separate `change` event. Also first content insertion
-		// (with blob urls still) generates one `change` event. This means the content is fully transformed when
-		// number of change events is number of blob urls in the content + 1.
-		if ( counter > blobUrls.length ) {
-			editor.editing.model.document.off( 'change', onChange );
-			counter = 0;
-
-			const expectedData = replaceBlobUrls( expected, base64 );
-			const actualData = replaceBlobUrls( data.actual, base64 );
-
-			try {
-				compareContentWithBase64Images( actualData, expectedData );
-				done();
-			} catch ( err ) {
-				done( err );
-			}
-		}
-	};
-
-	editor.editing.model.document.on( 'change', onChange );
-
-	firePasteEvent( editor, {
-		'text/html': input
-	} );
-
-	// In some rare cases there might be `&nbsp;` in a model data
-	// (see https://github.com/ckeditor/ckeditor5-paste-from-office/issues/27).
-	data.actual = data.actual.replace( /\u00A0/g, ' ' );
-
-	// Check if initial data with blob urls is correct.
-	expect( data.actual ).to.equal( expected );
-}
-
 // Compares actual and expected content. Before comparison the base64 images data is extracted so data diff is more readable.
 // If there were any images extracted their base64 data is also compared.
 //
@@ -360,7 +289,9 @@ function compareContentWithBase64Images( actual, expected ) {
 	const { data: actualModel, images: actualImages } = extractBase64Srcs( actual );
 	const { data: expectedModel, images: expectedImages } = extractBase64Srcs( expected );
 
-	expect( actualModel ).to.equal( expectedModel );
+	// In some rare cases there might be `&nbsp;` in a model data
+	// (see https://github.com/ckeditor/ckeditor5-paste-from-office/issues/27).
+	expect( actualModel.replace( /\u00A0/g, ' ' ) ).to.equal( expectedModel );
 
 	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
 		expect( actualImages.length ).to.equal( expectedImages.length );
@@ -412,64 +343,4 @@ function firePasteEvent( editor, data ) {
 		dataTransfer: createDataTransfer( data ),
 		preventDefault() {}
 	} );
-}
-
-// Replaces all blob urls (`blob:`) in the given HTML with given replacements data.
-//
-// @param {String} html The HTML data in which blob urls will be replaced.
-// @param {Array.<String>} replacements Array of string which will replace found blobs in the order of occurrence.
-// @returns {String} The HTML data with all blob urls replaced.
-function replaceBlobUrls( html, replacements ) {
-	const blobRegexp = /src="(blob:[^"]*)"/g;
-	const toReplace = [];
-
-	let match;
-	while ( ( match = blobRegexp.exec( html ) ) !== null ) {
-		toReplace.push( match[ 1 ] );
-	}
-
-	for ( let i = 0; i < toReplace.length; i++ ) {
-		if ( replacements[ i ] ) {
-			html = html.replace( toReplace[ i ], replacements[ i ] );
-		}
-	}
-
-	return html;
-}
-
-// Creates blob urls from the given base64 data.
-//
-// @param {Array.<String>} base64Data Array of base64 strings from which blob urls will be generated.
-// @returns {Array} Array of generated blob urls.
-function createBlobsFromBase64Data( base64Data ) {
-	const blobUrls = [];
-
-	for ( const data of base64Data ) {
-		blobUrls.push( URL.createObjectURL( base64toBlob( data.trim() ) ) );
-	}
-
-	return blobUrls;
-}
-
-// Transforms base64 data into a blob object.
-//
-// @param {String} The base64 data to be transformed.
-// @returns {Blob} Blob object representing given base64 data.
-function base64toBlob( base64Data ) {
-	const [ type, data ] = base64Data.split( ',' );
-	const byteCharacters = atob( data );
-	const byteArrays = [];
-
-	for ( let offset = 0; offset < byteCharacters.length; offset += 512 ) {
-		const slice = byteCharacters.slice( offset, offset + 512 );
-		const byteNumbers = new Array( slice.length );
-
-		for ( let i = 0; i < slice.length; i++ ) {
-			byteNumbers[ i ] = slice.charCodeAt( i );
-		}
-
-		byteArrays.push( new Uint8Array( byteNumbers ) );
-	}
-
-	return new Blob( byteArrays, { type } );
 }

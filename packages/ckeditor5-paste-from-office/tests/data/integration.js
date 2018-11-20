@@ -37,25 +37,16 @@ generateTests( {
 generateTests( {
 	input: 'image',
 	type: 'integration',
-	browsers: [ 'chrome', 'firefox', 'edge' ],
+	browsers,
 	editorConfig: {
 		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
 	},
 	skip: {
 		chrome: ( env.isEdge ? [ 'adjacentGroups' ] : [] ),
 		firefox: ( env.isEdge ? [ 'adjacentGroups' ] : [] ),
+		safari: ( env.isEdge ? [ 'adjacentGroups' ] : [] ),
 		edge: ( env.isEdge ? [] : [ 'adjacentGroups' ] )
 	}
-} );
-
-generateTests( {
-	input: 'image',
-	type: 'integration',
-	browsers: [ 'safari' ],
-	editorConfig: {
-		plugins: [ Clipboard, Paragraph, Image, Table, PasteFromOffice ]
-	},
-	withBlobsHandling: true
 } );
 
 generateTests( {

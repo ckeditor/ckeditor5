@@ -42,7 +42,7 @@ export default class PasteFromOffice extends Plugin {
 			const html = data.dataTransfer.getData( 'text/html' );
 
 			if ( isWordInput( html ) ) {
-				data.content = this._normalizeWordInput( html, data.dataTransfer, editor.editing.model );
+				data.content = this._normalizeWordInput( html, data.dataTransfer );
 			}
 		}, { priority: 'high' } );
 	}
@@ -55,14 +55,13 @@ export default class PasteFromOffice extends Plugin {
 	 * @protected
 	 * @param {String} input Word input.
 	 * @param {module:clipboard/datatransfer~DataTransfer} dataTransfer Data transfer instance.
-	 * @param {module:engine/model/model~Model} model Editor model.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Normalized input.
 	 */
-	_normalizeWordInput( input, dataTransfer, model ) {
+	_normalizeWordInput( input, dataTransfer ) {
 		const { body, stylesString } = parseHtml( input );
 
 		transformListItemLikeElementsIntoLists( body, stylesString );
-		replaceImagesSourceWithBase64( body, dataTransfer.getData( 'text/rtf' ), model );
+		replaceImagesSourceWithBase64( body, dataTransfer.getData( 'text/rtf' ) );
 
 		return body;
 	}

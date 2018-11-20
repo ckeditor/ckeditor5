@@ -7,8 +7,6 @@
  * @module paste-from-office/filters/image
  */
 
-/* globals XMLHttpRequest, FileReader */
-
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
@@ -20,9 +18,8 @@ import { convertHexToBase64 } from './utils';
  *
  * @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment on which transform images.
  * @param {String} rtfData The RTF data from which images representation will be used.
- * @param {module:engine/model/model~Model} model Editor model.
  */
-export function replaceImagesSourceWithBase64( documentFragment, rtfData, model ) {
+export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
 	if ( !documentFragment.childCount ) {
 		return;
 	}
@@ -35,12 +32,8 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData, model 
 
 	const images = findAllImageElementsWithLocalSource( documentFragment, upcastWriter );
 
-	if ( images.file.length ) {
-		replaceImagesFileSourceWithInlineRepresentation( images.file, extractImageDataFromRtf( rtfData ), upcastWriter );
-	}
-
-	if ( images.blob.length ) {
-		replaceImagesBlobSourceWithInlineRepresentation( images.blob, model );
+	if ( images.length ) {
+		replaceImagesFileSourceWithInlineRepresentation( images, extractImageDataFromRtf( rtfData ), upcastWriter );
 	}
 }
 
@@ -130,7 +123,7 @@ function removeAllShapeElements( documentFragment, writer ) {
 	}
 }
 
-// Finds all `<img>` elements in a given document fragment which have source pointing to local `file://` or `blob:` resource.
+// Finds all `<img>` elements in a given document fragment which have source pointing to local `file://` resource.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Document fragment in which to look for `<img>` elements.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
@@ -144,17 +137,12 @@ function findAllImageElementsWithLocalSource( documentFragment, writer ) {
 		name: 'img'
 	} );
 
-	const imgs = {
-		file: [],
-		blob: []
-	};
+	const imgs = [];
 
 	for ( const value of range ) {
 		if ( imageElementsMatcher.match( value.item ) ) {
 			if ( value.item.getAttribute( 'src' ).indexOf( 'file://' ) === 0 ) {
-				imgs.file.push( value.item );
-			} else if ( value.item.getAttribute( 'src' ).indexOf( 'blob:' ) === 0 ) {
-				imgs.blob.push( value.item );
+				imgs.push( value.item );
 			}
 		}
 	}
@@ -215,59 +203,4 @@ function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesH
 			writer.setAttribute( 'src', newSrc, imageElements[ i ] );
 		}
 	}
-}
-
-// Extracts all view images sources data from blob url, converts it to base64 and replaces source in the corresponding model images.
-//
-// @param {Array.<module:engine/view/element~Element>} imageElements Image elements from which sources extract blob data.
-// @param {module:engine/model/model~Model} model Model containing corresponding image elements which sources will be updated.
-function replaceImagesBlobSourceWithInlineRepresentation( imageElements, model ) {
-	for ( const img of imageElements ) {
-		const src = img.getAttribute( 'src' );
-
-		fetchImageDataFromBlobUrlAsBase64( src )
-			.then( data => {
-				model.enqueueChange( 'transparent', writer => {
-					const root = model.document.getRoot();
-					const range = writer.createRangeIn( root );
-
-					for ( const value of range ) {
-						if ( value.item.is( 'element', 'image' ) && value.item.getAttribute( 'src' ) === src ) {
-							writer.setAttribute( 'src', data, value.item );
-						}
-					}
-				} );
-			} )
-			// In case of error we basically can't do nothing. Still images with blob URLs are locally
-			// visible so it is not noticeable until the content will be opened in a new browser tab.
-			.catch();
-	}
-}
-
-// Fetches blob data via XHR and converts it to base64 representation.
-//
-// @param {String} url Blob url from which to fetch blob data.
-// @returns {Promise} A promise which resolves once blob data is successfully fetched and converted to base64.
-function fetchImageDataFromBlobUrlAsBase64( url ) {
-	return new Promise( ( resolve, reject ) => {
-		const xhr = new XMLHttpRequest();
-
-		xhr.open( 'GET', url, true );
-
-		xhr.responseType = 'blob';
-
-		xhr.addEventListener( 'error', () => reject() );
-		xhr.addEventListener( 'abort', () => reject() );
-		xhr.addEventListener( 'load', () => {
-			const reader = new FileReader();
-
-			reader.onloadend = () => {
-				resolve( reader.result );
-			};
-
-			reader.readAsDataURL( xhr.response );
-		} );
-
-		xhr.send();
-	} );
 }
