@@ -30,6 +30,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+	const isEdgeEnv = env.isEdge;
 
 	let adapterMocks = [];
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
@@ -51,7 +52,7 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
-		if ( env.isEdge ) {
+		if ( isEdgeEnv ) {
 			testUtils.sinon.stub( window, 'File' ).callsFake( () => {
 				return { name: 'file.jpg' };
 			} );
@@ -736,7 +737,8 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should get file extension from base64 string', done => {
+	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
+	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
 			try {
 				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'png' );
@@ -766,7 +768,8 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should use fallback file extension', done => {
+	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
+	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
 			try {
 				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
