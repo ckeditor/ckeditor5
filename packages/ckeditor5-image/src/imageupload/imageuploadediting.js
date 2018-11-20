@@ -7,14 +7,13 @@
  * @module image/imageupload/imageuploadediting
  */
 
-/* global fetch, File */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { isImageType } from '../../src/imageupload/utils';
+import { isImageType, isLocalImage, wrapImageToFetch } from '../../src/imageupload/utils';
 
 /**
  * The editing part of the image upload feature.
@@ -36,6 +35,7 @@ export default class ImageUploadEditing extends Plugin {
 		const editor = this.editor;
 		const doc = editor.model.document;
 		const schema = editor.model.schema;
+		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		// Setup schema to allow uploadId and uploadStatus for images.
@@ -45,6 +45,16 @@ export default class ImageUploadEditing extends Plugin {
 
 		// Register imageUpload command.
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
+
+		// Register upcast converter for uploadId.
+		conversion.for( 'upcast' )
+			.add( upcastAttributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'uploadId'
+				},
+				model: 'uploadId'
+			} ) );
 
 		// Handle pasted images.
 		// For every image file, a new file loader is created and a placeholder image is
@@ -76,39 +86,52 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 		} );
 
-		// Handle images inserted or modified with base64 source.
-		doc.on( 'change', () => {
-			const changes = doc.differ.getChanges( { includeChangesInGraveyard: false } );
-			const imagesToUpload = [];
+		// Handle HTML pasted with images with base64 or blob sources.
+		// For every image file, a new file loader is created and a placeholder image is
+		// inserted into the content. Then, those images are uploaded once they appear in the model
+		// (see Document#change listener below).
+		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
+			const view = editor.editing.view;
 
-			for ( const entry of changes ) {
-				let item = null;
+			const fetchableImages = Array.from( view.createRangeIn( data.content ) )
+				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+				.map( ( value, index ) => wrapImageToFetch( value.item, index ) );
 
-				if ( entry.type == 'insert' && entry.name == 'image' ) {
-					// Process entry item if it was an image insertion.
-					item = entry.position.nodeAfter;
-				} else if ( entry.type == 'attribute' && entry.attributeKey == 'src' ) {
-					// Process entry item if it was modification of `src` attribute of an image element.
-					// Such cases may happen when image with `blob` source is inserted and then have it
-					// converted to base64 data by clipboard pipeline.
-					const el = entry.range.start.nodeAfter;
+			if ( !fetchableImages.length ) {
+				return;
+			}
 
-					// Check if modified element is an image element.
-					if ( el && el.is( 'image' ) ) {
-						item = el;
+			evt.stop();
+
+			Promise.all( fetchableImages ).then( items => {
+				for ( const item of items ) {
+					if ( !item.file ) {
+						// Failed to fetch image or create a file instance, remove image element.
+						view.change( writer => {
+							writer.remove( item.image );
+						} );
+					} else {
+						const loader = fileRepository.createLoader( item.file );
+
+						if ( loader ) {
+							view.change( writer => {
+								writer.setAttribute( 'src', '', item.image );
+								writer.setAttribute( 'uploadId', loader.id, item.image );
+							} );
+						} else {
+							view.change( writer => {
+								// Set attribute so the image will not be processed 2nd time.
+								writer.setAttribute( 'uploadProcessed', true, item.image );
+							} );
+						}
 					}
 				}
 
-				if ( item && !item.getAttribute( 'uploadId' ) && item.getAttribute( 'src' ) &&
-					item.getAttribute( 'src' ).match( /data:image\/\w+;base64/ ) ) {
-					imagesToUpload.push( item );
-				}
-			}
-
-			// Upload images with base64 sources.
-			if ( imagesToUpload.length ) {
-				this._uploadBase64Images( imagesToUpload, editor );
-			}
+				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', {
+					content: data.content,
+					dataTransfer: data.dataTransfer
+				} );
+			} );
 		} );
 
 		// Prevents from the browser redirecting to the dropped image.
@@ -232,47 +255,6 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
-	 * Converts and uploads base64 `src` data of all given images. On successful upload
-	 * the image `src` attribute is replaced with the URL of the remote file.
-	 *
-	 * @protected
-	 * @param {Array.<module:engine/model/element~Element>} images Array of image elements to upload.
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 */
-	_uploadBase64Images( images, editor ) {
-		const fileRepository = editor.plugins.get( FileRepository );
-
-		for ( const image of images ) {
-			const src = image.getAttribute( 'src' );
-			const ext = src.match( /data:image\/(\w+);base64/ )[ 1 ];
-
-			// Fetch works asynchronously and so does not block browser UI when processing data.
-			fetch( src )
-				.then( resource => resource.blob() )
-				.then( blob => {
-					const filename = `${ Number( new Date() ) }-image.${ ext }`;
-					const file = createFileFromBlob( blob, filename );
-
-					if ( !file ) {
-						throw new Error( 'File API not supported. Cannot create `File` from `Blob`.' );
-					}
-
-					return fileRepository.createLoader( file ).upload();
-				} )
-				.then( data => {
-					editor.model.enqueueChange( 'transparent', writer => {
-						writer.setAttribute( 'src', data.default, image );
-						this._parseAndSetSrcsetAttributeOnImage( data, image, writer );
-					} );
-				} )
-				.catch( () => {
-					// As upload happens in the background without direct user interaction,
-					// no errors notifications should be shown.
-				} );
-		}
-	}
-
-	/**
 	 * Creates `srcset` attribute based on a given file upload response and sets it as an attribute to a specific image element.
 	 *
 	 * @protected
@@ -317,21 +299,4 @@ export default class ImageUploadEditing extends Plugin {
 // @returns {Boolean}
 export function isHtmlIncluded( dataTransfer ) {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
-}
-
-// Creates `File` instance from the given `Blob` instance using specified filename.
-//
-// @param {Blob} blob The `Blob` instance from which file will be created.
-// @param {String} filename Filename used during file creation.
-// @returns {File|null} The `File` instance created from the given blob or `null` if `File API` is not available.
-function createFileFromBlob( blob, filename ) {
-	try {
-		return new File( [ blob ], filename );
-	} catch ( err ) {
-		// Edge does not support `File` constructor ATM, see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/9551546/.
-		// However, the `File` function is present (so cannot be checked with `!window.File` or `typeof File === 'function'`), but
-		// calling it with `new File( ... )` throws an error. This try-catch prevents that. Also when the function will
-		// be implemented correctly in Edge the code will start working without any changes (see #247).
-		return null;
-	}
 }
