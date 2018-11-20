@@ -69,6 +69,10 @@ module.exports = function snippetAdapter( data ) {
 				html: fs.readFileSync( data.snippetSource.html ),
 				assets: {
 					js: [
+						// Load snippet helpers first.
+						path.join( data.basePath, 'assets', 'snippet.js' ),
+
+						// Then load the actual snippet code.
 						path.join( data.relativeOutputPath, data.snippetPath, 'snippet.js' )
 					],
 					css: cssFiles
