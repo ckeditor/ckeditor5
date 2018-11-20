@@ -29,7 +29,7 @@ export default class ImageUploadCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} options Options for the executed command.
-	 * @param {File|Array.<File>} options.files The image file or an array of image files to upload.
+	 * @param {File|Array.<File>} options.file The image file or an array of image files to upload.
 	 */
 	execute( options ) {
 		const editor = this.editor;
@@ -38,7 +38,7 @@ export default class ImageUploadCommand extends Command {
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		model.change( writer => {
-			const filesToUpload = Array.isArray( options.files ) ? options.files : [ options.files ];
+			const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
 
 			for ( const file of filesToUpload ) {
 				uploadImage( writer, model, fileRepository, file );

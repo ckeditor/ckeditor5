@@ -51,7 +51,7 @@ export default class ImageUploadUI extends Plugin {
 				const imagesToUpload = Array.from( files ).filter( isImageType );
 
 				if ( imagesToUpload.length ) {
-					editor.execute( 'imageUpload', { files: imagesToUpload } );
+					editor.execute( 'imageUpload', { file: imagesToUpload } );
 				}
 			} );
 

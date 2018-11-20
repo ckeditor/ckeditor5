@@ -139,7 +139,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { files: file } );
+			command.execute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
 			expect( getModelData( model ) )
@@ -154,7 +154,7 @@ describe( 'ImageUploadCommand', () => {
 			model.change( writer => {
 				expect( writer.batch.operations ).to.length( 0 );
 
-				command.execute( { files: file } );
+				command.execute( { file } );
 
 				expect( writer.batch.operations ).to.length.above( 0 );
 			} );
@@ -173,7 +173,7 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			command.execute( { files: file } );
+			command.execute( { file } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
@@ -188,7 +188,7 @@ describe( 'ImageUploadCommand', () => {
 			setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
 			expect( () => {
-				command.execute( { files: file } );
+				command.execute( { file } );
 			} ).to.not.throw();
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );

@@ -68,7 +68,7 @@ export default class ImageUploadEditing extends Plugin {
 
 					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
 					editor.model.enqueueChange( 'default', () => {
-						editor.execute( 'imageUpload', { files: images } );
+						editor.execute( 'imageUpload', { file: images } );
 					} );
 				}
 			} );
