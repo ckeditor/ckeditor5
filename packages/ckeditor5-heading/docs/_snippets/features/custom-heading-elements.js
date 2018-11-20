@@ -28,7 +28,7 @@ ClassicEditor
 			]
 		},
 		toolbar: {
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {
