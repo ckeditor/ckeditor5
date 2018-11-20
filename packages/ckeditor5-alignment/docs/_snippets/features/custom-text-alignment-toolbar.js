@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )
