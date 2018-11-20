@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, setTimeout */
+/* globals window, setTimeout, atob, URL, Blob */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -30,7 +30,9 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock, uploadStartedCallback;
+
+	let adapterMocks = [];
+	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
 
 	testUtils.createSinonSandbox();
 
@@ -39,11 +41,9 @@ describe( 'ImageUploadEditing', () => {
 			fileRepository = this.editor.plugins.get( FileRepository );
 			fileRepository.createUploadAdapter = newLoader => {
 				loader = newLoader;
-				adapterMock = new UploadAdapterMock( loader );
+				const adapterMock = new UploadAdapterMock( loader );
 
-				if ( uploadStartedCallback ) {
-					adapterMock.uploadStartedCallback = uploadStartedCallback;
-				}
+				adapterMocks.push( adapterMock );
 
 				return adapterMock;
 			};
@@ -68,7 +68,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -76,12 +76,14 @@ describe( 'ImageUploadEditing', () => {
 				doc = model.document;
 				view = editor.editing.view;
 				viewDocument = view.document;
+
+				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
+				testUtils.sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
 	afterEach( () => {
-		adapterMock = null;
-		uploadStartedCallback = null;
+		adapterMocks = [];
 
 		return editor.destroy();
 	} );
@@ -198,7 +200,11 @@ describe( 'ImageUploadEditing', () => {
 			type: 'media/mp3',
 			size: 1024
 		};
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new DataTransfer( {
+			files: [ fileMock ],
+			types: [ 'Files' ],
+			getData: () => ''
+		} );
 
 		setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -224,7 +230,7 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not insert image nor crash when pasted image could not be inserted', () => {
@@ -288,7 +294,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		// Well, there's no clipboard plugin, so nothing happens.
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
@@ -339,7 +345,7 @@ describe( 'ImageUploadEditing', () => {
 				done();
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png' } );
+			adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -546,7 +552,7 @@ describe( 'ImageUploadEditing', () => {
 				done();
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+			adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -562,233 +568,289 @@ describe( 'ImageUploadEditing', () => {
 		expect( spy.calledOnce ).to.equal( true );
 	} );
 
-	it( 'should upload image inserted with base64 data', done => {
+	it( 'should upload image with base64 src', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const id = adapterMocks[ 0 ].loader.id;
+			const expected = '<paragraph>bar</paragraph>' +
+				`[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		// Since upload starts asynchronously, success needs to be triggered after upload is started.
-		uploadStartedCallback = function() {
-			adapterMock.mockSuccess( { default: 'image.png' } );
-		};
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				expectModel( done, model, '<paragraph><image src="image.png"></image>[]foo</paragraph>' );
-			} );
-		} );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should upload if image src changed to base64 data', done => {
-		setModelData( model, '<paragraph>bar[]</paragraph><image src="blob://image.jpeg"></image>' );
+	it( 'should upload image with blob src', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const id = adapterMocks[ 0 ].loader.id;
+			const expected = `[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
 
-		// Since upload starts asynchronously, success needs to be triggered after upload is started.
-		uploadStartedCallback = function() {
-			adapterMock.mockSuccess( { default: 'image2.jpeg' } );
-		};
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
 
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				expectModel( done, model, '<paragraph>bar[]</paragraph><image src="image2.jpeg"></image>' );
-			} );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload image if no loader available', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = `[<image src="${ base64Sample }"></image>]<paragraph>foo</paragraph>`;
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		testUtils.sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload and remove image if fetch failed', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = '<paragraph>[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` so it can be rejected.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( ( res, rej ) => rej() );
 		} );
 
-		model.change( writer => {
-			const range = writer.createRangeIn( model.document.getRoot() );
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
 
-			for ( const value of range ) {
-				if ( value.item.is( 'element', 'image' ) ) {
-					writer.setAttribute( 'src', base64Sample, value.item );
-				}
+	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = '<paragraph>bar</paragraph>' +
+				`<image src="" uploadId="${ adapterMocks[ 0 ].loader.id }" uploadStatus="reading"></image>` +
+				`[<image src="" uploadId="${ adapterMocks[ 1 ].loader.id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />` +
+			`<img src=${ base64ToBlobUrl( base64Sample ) } /><img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` in a way that 2 first calls are successful and 3rd fails.
+		let counter = 0;
+		const fetch = window.fetch;
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( src => {
+			counter++;
+			if ( counter < 3 ) {
+				return fetch( src );
+			} else {
+				return new Promise( ( res, rej ) => rej() );
 			}
 		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should create responsive image if server return multiple images from base64 image', done => {
-		setModelData( model, '<paragraph>[]foo</paragraph>' );
-
-		// Since upload starts asynchronously, success needs to be triggered after upload is started.
-		uploadStartedCallback = function() {
-			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
-		};
-
-		model.document.once( 'change', () => {
-			model.document.once( 'change', () => {
-				expectModel( done, model, '<paragraph><image src="image.png" ' +
-					'srcset="{"data":"image-500.png 500w, image-800.png 800w","width":800}"></image>[]foo</paragraph>' );
-			} );
-		} );
-
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
-	} );
-
-	it( 'should not upload nor change image data when `File` constructor is not present', done => {
-		// Restore `File` stub.
-		testUtils.sinon.restore();
-
+	it( 'should not upload and remove image when `File` constructor is not present', done => {
 		const fileFn = window.File;
 
 		window.File = undefined;
 
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			window.File = fileFn;
+
+			const expected = '<paragraph>baz[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		model.document.once( 'change', () => {
-			setTimeout( () => {
-				window.File = fileFn;
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } /><p>baz</p>`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-				expect( adapterMock ).to.null;
-				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-				done();
-			}, 50 );
-		} );
-
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should not upload nor change image data when `File` constructor is not supported', done => {
-		// Restore `File` stub.
-		testUtils.sinon.restore();
-
+	it( 'should not upload and remove image when `File` constructor is not supported', done => {
 		const fileFn = window.File;
 
 		window.File = function() {
 			throw new Error( 'Function expected.' ); // Simulating Edge browser behaviour here.
 		};
 
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			window.File = fileFn;
+
+			const expected = '<paragraph>baz[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		model.document.once( 'change', () => {
-			setTimeout( () => {
-				window.File = fileFn;
+		const clipboardHtml = `<p>baz</p><img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-				expect( adapterMock ).to.null;
-				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should get file extension from base64 string', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			try {
+				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'png' );
 				done();
-			}, 50 );
-		} );
-
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
-	} );
-
-	it( 'should not initialize upload if inserted image have uploadId', () => {
-		setModelData( model, '<paragraph>[]foo</paragraph>' );
-
-		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
-		const uploadSpy = testUtils.sinon.spy( imageUploadEditing, '_uploadBase64Images' );
-
-		model.document.once( 'change', () => {
-			expect( uploadSpy.callCount ).to.equal( 0 );
-			expect( getModelData( model ) ).to.equal(
-				`<paragraph><image src="${ base64Sample }" uploadId="42"></image>[]foo</paragraph>` );
-		} );
-
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.setAttribute( 'uploadId', 42, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
-	} );
-
-	it( 'should not initialize upload if src of different element than image changed', () => {
-		setModelData( model, '<paragraph src="foo">[]bar</paragraph>' );
-
-		const imageUploadEditing = editor.plugins.get( ImageUploadEditing );
-		const uploadSpy = testUtils.sinon.spy( imageUploadEditing, '_uploadBase64Images' );
-
-		model.document.once( 'change', () => {
-			expect( uploadSpy.callCount ).to.equal( 0 );
-			expect( getModelData( model ) ).to.equal( '<paragraph src="bar">[]bar</paragraph>' );
-		} );
-
-		model.change( writer => {
-			const range = writer.createRangeIn( model.document.getRoot() );
-
-			for ( const value of range ) {
-				if ( value.item.is( 'element', 'paragraph' ) ) {
-					writer.setAttribute( 'src', 'bar', value.item );
-				}
+			} catch ( err ) {
+				done( err );
 			}
-		} );
-	} );
+		}, { priority: 'low' } );
 
-	it( 'should not change image src if upload aborted', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		// Since upload starts asynchronously, success needs to be triggered after upload is started.
-		uploadStartedCallback = function() {
-			adapterMock.abort();
-		};
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		model.document.once( 'change', () => {
-			setTimeout( () => {
-				expect( adapterMock.loader.status ).to.equal( 'error' );
-				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
-			}, 50 );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` to return custom blob without type.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
 		} );
 
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 
-	it( 'should not throw error and not change image src if upload errored', done => {
+	it( 'should use fallback file extension', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			try {
+				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
+				done();
+			} catch ( err ) {
+				done( err );
+			}
+		}, { priority: 'low' } );
+
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-		// Since upload starts asynchronously, success needs to be triggered after upload is started.
-		uploadStartedCallback = function() {
-			adapterMock.mockError( 'Upload failed.' );
-		};
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
 
-		model.document.once( 'change', () => {
-			setTimeout( () => {
-				expect( adapterMock.loader.status ).to.equal( 'error' );
-				expectModel( done, model, `<paragraph><image src="${ base64Sample }"></image>[]foo</paragraph>` );
-			}, 50 );
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` to return custom blob without type.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
 		} );
 
-		model.change( writer => {
-			const image = writer.createElement( 'image' );
-
-			writer.setAttribute( 'src', base64Sample, image );
-			writer.insert( image, model.document.selection.getFirstPosition() );
-		} );
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
 } );
 
-// Since this function is run inside Promise, all errors needs to be caught
-// and rethrow to be correctly processed by testing framework.
-function expectModel( done, model, expected ) {
+// Asserts actual and expected model data.
+// Note: Since this function is run inside a promise, all errors needs to be caught
+// and rethrow to be correctly processed by a testing framework.
+//
+// @param {function} done Callback function to be called when assertion is done.
+// @param {String} actual Actual model data.
+// @param {String} expected Expected model data.
+function expectModel( done, actual, expected ) {
 	try {
-		expect( getModelData( model ) ).to.equal( expected );
+		expect( actual ).to.equal( expected );
 		done();
 	} catch ( err ) {
 		done( err );
 	}
+}
+
+// Creates data transfer object with predefined data.
+//
+// @param {String} content The content returned as `text/html` when queried.
+// @returns {module:clipboard/datatransfer~DataTransfer} DataTransfer object.
+function mockDataTransfer( content ) {
+	return new DataTransfer( {
+		types: [ 'text/html' ],
+		getData: type => type === 'text/html' ? content : ''
+	} );
+}
+
+// Creates blob url from the given base64 data.
+//
+// @param {String} base64 The base64 string from which blob url will be generated.
+// @returns {String} Blob url.
+function base64ToBlobUrl( base64 ) {
+	return URL.createObjectURL( base64ToBlob( base64.trim() ) );
+}
+
+// Transforms base64 data into a blob object.
+//
+// @param {String} The base64 data to be transformed.
+// @returns {Blob} Blob object representing given base64 data.
+function base64ToBlob( base64Data ) {
+	const [ type, data ] = base64Data.split( ',' );
+	const byteCharacters = atob( data );
+	const byteArrays = [];
+
+	for ( let offset = 0; offset < byteCharacters.length; offset += 512 ) {
+		const slice = byteCharacters.slice( offset, offset + 512 );
+		const byteNumbers = new Array( slice.length );
+
+		for ( let i = 0; i < slice.length; i++ ) {
+			byteNumbers[ i ] = slice.charCodeAt( i );
+		}
+
+		byteArrays.push( new Uint8Array( byteNumbers ) );
+	}
+
+	return new Blob( byteArrays, { type } );
 }
