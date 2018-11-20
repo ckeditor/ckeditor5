@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'fontSize', 'bulletedList', 'numberedList', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		fontSize: {
 			options: [
