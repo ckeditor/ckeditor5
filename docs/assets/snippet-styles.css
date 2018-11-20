@@ -12,7 +12,7 @@
 	:root {
 		/* The mobile layout of Umberto is different and the toolbar offset must be
 		smaller (https://github.com/ckeditor/ckeditor5/issues/1348). */
-		--ck-snippet-viewport-top-offset: 60;
+		--ck-snippet-viewport-top-offset: 55;
 	}
 }
 
