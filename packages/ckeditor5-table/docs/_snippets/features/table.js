@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'insertTable', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
