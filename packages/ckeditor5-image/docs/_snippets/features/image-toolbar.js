@@ -14,7 +14,7 @@ ClassicEditor
 			toolbar: [ 'imageTextAlternative' ]
 		},
 		toolbar: {
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )
