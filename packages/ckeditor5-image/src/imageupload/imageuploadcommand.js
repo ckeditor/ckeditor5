@@ -14,6 +14,28 @@ import { insertImage, isImageAllowed } from '../image/utils';
 /**
  * Image upload command.
  *
+ * The command is registered by the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing} as `'imageUpload'`.
+ *
+ * To upload an image at the current selection (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),
+ * execute the command and pass the native image file instance:
+ *
+ *		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
+ *			// Assuming that only images were pasted:
+ *			const images = Array.from( data.dataTransfer.files );
+ *
+ *			// Upload the first image:
+ *			editor.execute( 'imageUpload', { file: images[ 0 ] } );
+ *		} );
+ *
+ *	It is also possible to insert multiple images at once:
+ *
+ *		editor.execute( 'imageUpload', {
+ *			file: [
+ *				file1,
+ *				file2
+ *			]
+ *		} );
+ *
  * @extends module:core/command~Command
  */
 export default class ImageUploadCommand extends Command {

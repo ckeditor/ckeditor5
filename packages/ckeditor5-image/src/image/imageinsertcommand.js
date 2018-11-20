@@ -13,6 +13,22 @@ import { insertImage, isImageAllowed } from './utils';
 /**
  * Insert image command.
  *
+ * The command is registered by the {@link module:image/image/imageediting~ImageEditing} as `'imageInsert'`.
+ *
+ * To insert image at the current selection (according to the {@link module:widget/utils~findOptimalInsertionPosition} algorithm),
+ * execute the command and specify the image source:
+ *
+ *		editor.execute( 'imageInsert', { source: 'http://url.to.the/image' } );
+ *
+ *	It is also possible to insert multiple images at once:
+ *
+ *		editor.execute( 'imageInsert', {
+ *			source:  [
+ *				'path/to/image.jpg',
+ *				'path/to/other-image.jpg'
+ *			]
+ *		} );
+ *
  * @extends module:core/command~Command
  */
 export default class ImageInsertCommand extends Command {

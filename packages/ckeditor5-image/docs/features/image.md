@@ -40,6 +40,20 @@ You can see the demo of an editor with the base image feature enabled below:
 	The base image feature, unlike in CKEditor 4, does not support any user interface for inserting or managing images. Its sole purpose is to lay ground for other plugins (mentioned above) to build the target user experience. This pattern (composition of atomic features) is common for CKEditor 5 and allows the developers to build their own customized experience by implementing specific subfeatures differently.
 </info-box>
 
+### Image insert command
+
+The Image feature introduces the {@link module:image/image/imageinsertcommand~ImageInsertCommand `'imageInsert'` command. The command accepts one parameter `source` of image to insert:
+
+```js
+editor.execute( 'imageInsert', { source: '/path/to/image.jpg' } );
+```
+
+The command can be also used to insert multiple images at once by passing an array of sources:
+
+```js
+editor.execute( 'imageInsert', { source: [ '/path/to/image1.jpg', '/path/to/image2.jpg' ] } );
+```
+
 ## Image contextual toolbar
 
 The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options such as the text alternative (which is introduced by the base image plugin) button and [image styles buttons](#image-styles).
