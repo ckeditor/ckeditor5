@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )
