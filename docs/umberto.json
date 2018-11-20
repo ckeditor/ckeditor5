@@ -170,7 +170,21 @@
 				{
 					"name": "Collaboration",
 					"id": "features-collaboration",
-					"slug": "collaboration"
+					"slug": "collaboration",
+					"categories": [
+						{
+							"name": "Comments",
+							"id": "features-comments",
+							"slug": "comments",
+							"order": 100
+						},
+						{
+							"name": "Real-Time Collaboration",
+							"id": "features-real-time-collaboration",
+							"slug": "real-time-collaboration",
+							"order": 200
+						}
+					]
 				}
 			]
 		},
