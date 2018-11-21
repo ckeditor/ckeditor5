@@ -15,7 +15,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-ui-language' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {
