@@ -21,6 +21,6 @@ iframe.addEventListener( 'load', () => {
 
 	setData( view,
 		'<container:p>foo</container:p>' +
-		'<container:p>bar</container:p>' 
+		'<container:p>bar</container:p>'
 	);
 } );
