@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, encodeURIComponent */
+/* globals document */
 
 import View from '../../../src/view/view';
 import { setData } from '../../../src/dev-utils/view';
@@ -21,5 +21,6 @@ iframe.addEventListener( 'load', () => {
 
 	setData( view,
 		'<container:p>foo</container:p>' +
-		'<container:p>bar</container:p>' );
+		'<container:p>bar</container:p>' 
+	);
 } );
