@@ -27,5 +27,13 @@ describe( 'upload utils', () => {
 			expect( isImageType( { type: 'audio/mp3' } ) ).to.be.false;
 			expect( isImageType( { type: 'video/mpeg' } ) ).to.be.false;
 		} );
+
+		it( 'should return false for null type', () => {
+			expect( isImageType( { type: null } ) ).to.be.false;
+		} );
+
+		it( 'should return false for null file', () => {
+			expect( isImageType( null ) ).to.be.false;
+		} );
 	} );
 } );
