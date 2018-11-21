@@ -73,7 +73,7 @@ export function isImage( modelElement ) {
  *			insertImage( writer, model, { src: 'path/to/image.jpg' } );
  *		} );
  *
- * @param {module:engine/model/writer~writer} writer
+ * @param {module:engine/model/writer~Writer} writer
  * @param {module:engine/model/model~Model} model
  * @param {Object} [attributes={}] Attributes of inserted image
  */
