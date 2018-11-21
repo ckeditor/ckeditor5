@@ -59,7 +59,7 @@ export default class CKFinder extends Plugin {
  * 				}
  *			} )
  *			.then( ... )
- 			.catch( ... );
+ *			.catch( ... );
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
