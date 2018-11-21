@@ -36,9 +36,10 @@ export function wrapImageToFetch( image, index ) {
 		fetch( image.getAttribute( 'src' ) )
 			.then( resource => resource.blob() )
 			.then( blob => {
-				const ext = getImageFileType( blob, image.getAttribute( 'src' ) );
+				const mimeType = getImageMimeType( blob, image.getAttribute( 'src' ) );
+				const ext = mimeType.replace( 'image/', '' );
 				const filename = `${ Number( new Date() ) }-image${ index }.${ ext }`;
-				const file = createFileFromBlob( blob, filename );
+				const file = createFileFromBlob( blob, filename, mimeType );
 
 				resolve( { image, file } );
 			} )
@@ -66,14 +67,14 @@ export function isLocalImage( node ) {
 // @param {String} src Image src attribute value.
 // @param {Blob} blob Image blob representation.
 // @returns {String}
-function getImageFileType( blob, src ) {
+function getImageMimeType( blob, src ) {
 	if ( blob.type ) {
-		return blob.type.replace( 'image/', '' );
-	} else if ( src.match( /data:image\/(\w+);base64/ ) ) {
-		return src.match( /data:image\/(\w+);base64/ )[ 1 ].toLowerCase();
+		return blob.type;
+	} else if ( src.match( /data:(image\/\w+);base64/ ) ) {
+		return src.match( /data:(image\/\w+);base64/ )[ 1 ].toLowerCase();
 	} else {
 		// Fallback to 'jpeg' as common extension.
-		return 'jpeg';
+		return 'image/jpeg';
 	}
 }
 
@@ -81,10 +82,11 @@ function getImageFileType( blob, src ) {
 //
 // @param {Blob} blob The `Blob` instance from which file will be created.
 // @param {String} filename Filename used during file creation.
+// @param {String} mimeType File mime type.
 // @returns {File|null} The `File` instance created from the given blob or `null` if `File API` is not available.
-function createFileFromBlob( blob, filename ) {
+function createFileFromBlob( blob, filename, mimeType ) {
 	try {
-		return new File( [ blob ], filename );
+		return new File( [ blob ], filename, { type: mimeType } );
 	} catch ( err ) {
 		// Edge does not support `File` constructor ATM, see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/9551546/.
 		// However, the `File` function is present (so cannot be checked with `!window.File` or `typeof File === 'function'`), but
