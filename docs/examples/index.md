@@ -9,7 +9,7 @@ meta-description: Navigate through CKEditor 5 examples to see what you are able 
 # Examples
 
 <info-box>
-	Use the **navigation tree on the left** to navigate through CKEditor 5 examples. Visit the {@link features/index Features} section to see even more examples!
+	Use the <span class="examples-navigation-hint_desktop">**navigation tree on the left**</span><span class="examples-navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 examples. Visit the {@link features/index Features} section to see even more examples!
 </info-box>
 
 ## Related links
