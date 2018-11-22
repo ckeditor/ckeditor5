@@ -56,6 +56,7 @@ export default class ImageUploadEditing extends Plugin {
 			}
 
 			const images = Array.from( data.dataTransfer.files ).filter( file => {
+				// See https://github.com/ckeditor/ckeditor5-image/pull/254.
 				if ( !file ) {
 					return false;
 				}
