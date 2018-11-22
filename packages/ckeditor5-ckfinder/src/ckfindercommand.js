@@ -140,5 +140,5 @@ function insertImages( editor, urls ) {
 		return;
 	}
 
-	editor.execute( 'imageInsert', { sources: urls } );
+	editor.execute( 'imageInsert', { source: urls } );
 }
