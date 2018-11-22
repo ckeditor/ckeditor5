@@ -48,7 +48,7 @@ export default class CKFinder extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:ckfinder/ckfinder~CKFinderUploadAdapter CKFinder upload adapter}.
+ * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
