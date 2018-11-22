@@ -67,12 +67,17 @@
  * The list of additional plugins to load along those already available in the
  * {@glink builds/guides/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
  *
- *		import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
- *		import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+ *		function MyPlugin( editor ) {
+ *			// ...
+ *		}
  *
  *		const config = {
- *			extraPlugins: [ Highlight, Underline ]
+ *			extraPlugins: [ MyPlugin ]
  *		};
+ *
+ * **Note:** This configuration works only for simple plugins which utilize the
+ * {@link module:core/plugin~PluginInterface plugin interface} and have no dependencies. To extend a
+ * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
  * about {@glink builds/guides/integration/configuration#toolbar-setup toolbar setup}.
