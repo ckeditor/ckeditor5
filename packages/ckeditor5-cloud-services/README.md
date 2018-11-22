@@ -1,5 +1,5 @@
-CKEditor 5 Cloud Services
-=========================
+CKEditor 5's Cloud Services integration
+=======================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-cloud-services.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services)
@@ -14,7 +14,7 @@ CKEditor 5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) int
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-cloud-services` package](https://ckeditor.com/docs/ckeditor5/latest/api/cloudservices.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-cloud-services` package](https://ckeditor.com/docs/ckeditor5/latest/api/cloud-services.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
