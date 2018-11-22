@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-build-inline": "^11.1.1",
     "@ckeditor/ckeditor5-clipboard": "^10.0.3",
     "@ckeditor/ckeditor5-cloud-services": "^10.1.0",
+    "@ckeditor/ckeditor5-ckfinder": "^0.0.1",
     "@ckeditor/ckeditor5-core": "^11.0.1",
     "@ckeditor/ckeditor5-easy-image": "^10.0.3",
     "@ckeditor/ckeditor5-editor-balloon": "^11.0.1",
@@ -80,6 +81,7 @@
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.23.0",
+    "svgo": "^1.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "umberto": "^0.12.0",
     "webpack": "^4.15.0"
@@ -114,7 +116,8 @@
     "release:bump-version": "node ./scripts/release/bump-versions.js",
     "release:publish": "node ./scripts/release/publish.js",
     "release:stable-branches": "sh ./scripts/update-stable-branches.sh",
-    "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
+    "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
+    "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh"
   },
   "lint-staged": {
     "**/*.js": [
