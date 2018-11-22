@@ -232,8 +232,9 @@ export default class Editor {
 		function loadPlugins() {
 			const plugins = config.get( 'plugins' ) || [];
 			const removePlugins = config.get( 'removePlugins' ) || [];
+			const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-			return that.plugins.load( plugins, removePlugins );
+			return that.plugins.load( plugins.concat( extraPlugins ), removePlugins );
 		}
 
 		function initPlugins( loadedPlugins, method ) {

@@ -57,7 +57,27 @@
  *			plugins: [ Essentials, Bold ]
  *		};
  *
+ * **Note:** To load additional plugins, you should use the {@link #extraPlugins `extraPlugins`} configuration.
+ * To narrow the list of loaded plugins, use the {@link #removePlugins `removePlugins`} configuration.
+ *
  * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#plugins
+ */
+
+/**
+ * The list of additional plugins to load along those already available in the
+ * {@glink builds/guides/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
+ *
+ *		import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+ *		import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+ *
+ *		const config = {
+ *			extraPlugins: [ Highlight, Underline ]
+ *		};
+ *
+ * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
+ * about {@glink builds/guides/integration/configuration#toolbar-setup toolbar setup}.
+ *
+ * @member {Array.<Function>} module:core/editor/editorconfig~EditorConfig#extraPlugins
  */
 
 /**
