@@ -14,10 +14,6 @@
  * @returns {Boolean}
  */
 export function isImageType( file ) {
-	if ( !file || !file.type ) {
-		return false;
-	}
-
 	const types = /^image\/(jpeg|png|gif|bmp)$/;
 
 	return types.test( file.type );

@@ -197,6 +197,20 @@ describe( 'ImageUploadEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 	} );
 
+	it( 'should not insert image when file is null', () => {
+		const viewDocument = editor.editing.view.document;
+		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ] } );
+
+		setModelData( model, '<paragraph>foo[]</paragraph>' );
+
+		const targetRange = doc.selection.getFirstRange();
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+	} );
+
 	it( 'should not insert image when there is non-empty HTML content pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( {
