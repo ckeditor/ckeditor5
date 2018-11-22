@@ -58,7 +58,6 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 	If you need to get the actual data from CKEditor at any moment using JavaScript, use the {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} method as described in the next section.
 </info-box>
 
-<!-- Hidden due to https://github.com/cksource/umberto/issues/558
 <info-box>
 	When you print the data from the database to a `<textarea>` element in an HTML page, you need to encode it correctly. For instance, if you use PHP then a minimal solution would look like this:
 
@@ -84,7 +83,6 @@ In your HTTP server, you can now read the editor data from the `content` variabl
 
 	While simple content like mentioned above does not itself require to be encoded, encoding the data will prevent losing text like "&lt;" or "&lt;img&gt;".
 </info-box>
--->
 
 ## Manually retrieving the data
 

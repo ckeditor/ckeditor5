@@ -44,3 +44,19 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 		padding-right: 300px;
 	}
 }
+
+/* https://github.com/ckeditor/ckeditor5/issues/1349 */
+.main .navigation-hint_mobile {
+	display: none;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1349 */
+@media only screen and (max-width: 960px) {
+	.main .navigation-hint_desktop {
+		display: none;
+	}
+
+	.main .navigation-hint_mobile {
+		display: inline;
+	}
+}

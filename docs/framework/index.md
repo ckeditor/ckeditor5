@@ -11,7 +11,7 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 CKEditor 5 Framework is a set of components allowing you to create any kind of rich text editing solution.
 
 <info-box>
-    Use the **navigation tree on the left** to navigate through CKEditor 5 Framework documentation.
+    Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 Framework documentation.
 </info-box>
 
 ## Related links
