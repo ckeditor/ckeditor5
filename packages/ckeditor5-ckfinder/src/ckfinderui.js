@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import ckfinderIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
+import browseFilesIcon from '../theme/icons/browse-files.svg';
 
 /**
  * The CKFinder UI plugin. It introduces he `'ckfinder'` toolbar button.
@@ -40,7 +40,7 @@ export default class CKFinderUI extends Plugin {
 
 			button.set( {
 				label: t( 'Insert image or file' ),
-				icon: ckfinderIcon,
+				icon: browseFilesIcon,
 				tooltip: true
 			} );
 
