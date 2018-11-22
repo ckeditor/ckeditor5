@@ -55,7 +55,13 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			const images = Array.from( data.dataTransfer.files ).filter( isImageType );
+			const images = Array.from( data.dataTransfer.files ).filter( file => {
+				if ( !file ) {
+					return false;
+				}
+
+				return isImageType( file );
+			} );
 
 			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
 
