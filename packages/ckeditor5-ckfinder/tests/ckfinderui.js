@@ -10,9 +10,9 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ckfinderIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
 
 import CKFinder from '../src/ckfinder';
+import browseFilesIcon from '../theme/icons/browse-files.svg';
 
 describe( 'CKFinderUI', () => {
 	let editorElement, editor, button;
@@ -60,7 +60,7 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( ckfinderIcon );
+			expect( button.icon ).to.equal( browseFilesIcon );
 		} );
 
 		it( 'should enable tooltips for the #buttonView', () => {
