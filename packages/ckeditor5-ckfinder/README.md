@@ -1,4 +1,4 @@
-CKEditor 5 CKFinder with Cloud Services
+CKEditor 5's CKFinder integration
 =========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -9,6 +9,8 @@ CKEditor 5 CKFinder with Cloud Services
 <br>
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ckfinder/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ckfinder)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ckfinder/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ckfinder?type=dev)
+
+The [CKFinder](https://ckeditor.com/ckfinder/) file browser integration for CKEditor 5.
 
 ## Documentation
 

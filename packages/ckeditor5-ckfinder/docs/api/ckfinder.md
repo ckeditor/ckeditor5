@@ -2,7 +2,7 @@
 category: api-reference
 ---
 
-# CKEditor 5 CKFinder
+# CKEditor 5's CKFinder integration
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ckfinder.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)
 
