@@ -1,0 +1,10 @@
+{
+	"plugins": [
+		"collapseGroups",
+		"removeDimensions",
+		{ "removeAttrs": { "attrs": "(fill|stroke|fill-rule)" } },
+		"removeTitle",
+		"removeComments",
+		"removeMetadata"
+	]
+}

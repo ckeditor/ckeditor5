@@ -242,12 +242,22 @@ Leads to [`ckeditor/ckeditor5-image@02869eb`](https://github.com/ckeditor/ckedit
 
 By default, CKEditor 5 supports SVG icons found in the `ckeditor5-*/theme/icons` folders. Unfortunately, most of the SVG editing software produces the output with comments, obsolete tags, and complex paths, which bloats the DOM and makes the builds heavy for no good reason.
 
-To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **all new icons should be optimized before joining the code base**. The right utility to do this is Node–based [SVGO](https://github.com/svg/svgo) and the usage is as simple as:
+To remove the excess data and prevent [certain issues](https://github.com/ckeditor/ckeditor5-ui/issues/245), **all new icons should be optimized before joining the code base**. To do that, you can use the `clean-up-svg-icons` script in the [root of the project](#setting-up-the-ckeditor-development-environment), a wrapper for the [SVGO](https://github.com/svg/svgo) tool:
 
 ```bash
-npm install -g svgo
-cd ckeditor5-package-name/theme/icons
-svgo --enable removeTitle -i .
+cd path/to/ckeditor5
+
+# Optimize all SVG files in the folder.
+npm run clean-up-svg-icons path/to/icons/*.svg
+
+# Optimize a single SVG file.
+npm run clean-up-svg-icons path/to/icon/icon.svg
 ```
 
-SVGO reduces the icon size up to 70%, depending on the software used to create it and the general complexity of the image.
+The script reduces the icon size up to 70%, depending on the software used to create it and the general complexity of the image.
+
+**Note**: You may still need to tweak the source code of the SVG files manually after using the script:
+
+* The icons should have the `viewBox` attribute (instead of `width` and `height`). The `removeDimensions` SVGO plugin will not remove `width` and `height` if there is no `viewBox` attribute so make sure it is present.
+* Sometimes SVGO leaves empty (transparent) groups `<g>...</g>`. They should be removed from the source.
+* Make sure the number of `<path>` elements is minimal. Merge paths whenever possible in the image processor before saving the file.
