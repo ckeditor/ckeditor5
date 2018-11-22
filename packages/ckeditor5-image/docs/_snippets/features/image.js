@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-image' ), {
 		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle' ],
 		toolbar: {
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )
