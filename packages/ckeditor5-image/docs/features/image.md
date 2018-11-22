@@ -213,7 +213,8 @@ ClassicEditor
 The {@link module:image/image~Image} plugin registers:
 
 * The `'imageTextAlternative'` button.
-* * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
+* The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
+* The {@link module:image/image/imageinsertcommand~ImageInsertCommand `'imageInsert'` command} which accepts a source (e.g. an URL) of an image to insert.
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 

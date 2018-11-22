@@ -308,7 +308,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should use read data once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		model.once( '_change', () => {
 			expect( getViewData( view ) ).to.equal(
@@ -328,7 +328,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should replace read data with server response once it is present', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
@@ -359,7 +359,7 @@ describe( 'ImageUploadEditing', () => {
 		}, { priority: 'high' } );
 
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		nativeReaderMock.mockError( 'Reading error.' );
 	} );
@@ -375,7 +375,7 @@ describe( 'ImageUploadEditing', () => {
 		}, { priority: 'high' } );
 
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 		nativeReaderMock.abort();
 
 		setTimeout( () => {
@@ -399,7 +399,7 @@ describe( 'ImageUploadEditing', () => {
 		} );
 
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		sinon.assert.calledOnce( loadSpy );
 
@@ -436,7 +436,7 @@ describe( 'ImageUploadEditing', () => {
 			evt.stop();
 		}, { priority: 'high' } );
 
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
@@ -453,7 +453,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should abort upload if image is removed', () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
 
@@ -472,7 +472,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should not abort and not restart upload when image is moved', () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
 		const loadSpy = testUtils.sinon.spy( loader, 'read' );
@@ -497,7 +497,7 @@ describe( 'ImageUploadEditing', () => {
 			evt.stop();
 		}, { priority: 'high' } );
 
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		model.document.once( 'change', () => {
 			// This is called after "manual" remove.
@@ -533,7 +533,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should create responsive image if server return multiple images', done => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
-		editor.execute( 'imageUpload', { files: file } );
+		editor.execute( 'imageUpload', { file } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
