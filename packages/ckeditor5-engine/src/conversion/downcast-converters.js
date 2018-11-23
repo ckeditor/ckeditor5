@@ -685,6 +685,12 @@ export function changeAttribute( attributeCreator ) {
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
+		// If model item cannot be mapped to view element, it means item is not an `Element` instance (it is a `TextProxy`).
+		// Only elements can have attributes in a view so do not proceed for anything else (see #1587).
+		if ( !viewElement ) {
+			return;
+		}
+
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
