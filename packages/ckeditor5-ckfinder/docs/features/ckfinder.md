@@ -6,9 +6,7 @@ category: features
 
 # CKFinder
 
-The {@link module:ckfinder/ckfinder~CKFinder} feature brings support 
-
-CKFinder lets you easily insert images and links to files into content by automatically integrating with [CKFinder](https://ckeditor.com/ckfinder/).
+The {@link module:ckfinder/ckfinder~CKFinder} feature lets you easily insert images and links to files into content by automatically integrating with [CKFinder](https://ckeditor.com/ckfinder/).
 
 ## Demo
 
@@ -47,13 +45,9 @@ ClassicEditor
 
 ## CKFinder configuration
 
-This feature integrates with [CKFinder](https://ckeditor.com/ckfinder/) with no additional configuration required. However it is possible to configure behavior of CKFinder by passing {@link module:ckfinder/ckfinder~CKFinderConfig#options configuration options}. Check [CKFinder documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config) for complete list of options. This feature will automatically set `chooseFiles=true` to enable file choosing behavior in CKFinder.
+This feature integrates with [CKFinder](https://ckeditor.com/ckfinder/) file manager. To configure behavior of CKFinder by passing {@link module:ckfinder/ckfinder~CKFinderConfig#options configuration options}. Check {@link @ckfinder ckfinder3/#!/api/CKFinder.Config CKFinder documentation} for complete list of options.
 
-<info-box>
-To enable uploads of pasted images configure the {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl}.
-</info-box> 
-
-Below code will instruct CKFinder to open only one resource type: 
+Below code will instruct CKFinder to browse only one resource type: 
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -63,7 +57,6 @@ ClassicEditor
 		plugins: [ CKFinder, ... ],
 		toolbar: [ 'ckfinder', ... ]
 		ckfinder: {
-			openerMethod: 'popup',
 			options: {
 				resourceType: 'Images'
 			}
@@ -76,8 +69,20 @@ ClassicEditor
 {@snippet features/ckfinder-options}
 
 <info-box>
-The CKFinder featuer will also pass the editor language. This behavior can be changed by setting `ckfinder.options.language` configuration option.
+The CKFinder feature will also pass the editor language. This behavior can be changed by setting `ckfinder.options.language` configuration option.
 </info-box>
+
+### Enabling images uploads
+
+The CKFinder feature will enable CKFinder Upload Adapter. It requires to provide a {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl} path.
+
+As an example let assume that {@link @ckfinder ckfinder3-php/quickstart.html#quickstart_installation_folders CKFinder was installed} in `/ckfinder/` directory. To enable uploads to that instance pass the URL of {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload `QuickUpload`} command:
+
+```js
+ckfinder: {
+	uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+}
+```
 
 ## Common API
 
