@@ -17,14 +17,13 @@ ClassicEditor
 			viewportTopOffset: 100
 		},
 		ckfinder: {
-			openerMethod: 'popup',
-			options: {
-				resourceType: 'Images'
-			},
 			// eslint-disable-next-line max-len
 			uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
-			width: 800,
-			height: 600
+			options: {
+				height: 600,
+				width: 800,
+				resourceType: 'Images'
+			},
 		}
 	} )
 	.then( editor => {
