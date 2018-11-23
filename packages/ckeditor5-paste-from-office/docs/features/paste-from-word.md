@@ -62,7 +62,7 @@ If you think that any of the above needs improvements, please add 👍 in the fo
 
 * [support pasting from Excel](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/23),
 * [support pasting from Google Docs](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/20),
-* [support pasting from Libre Office](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/35)
+* [support pasting from Libre Office](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/35),
 * [support pasting from Pages](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/36).
 
-You may also open [new feature request](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/new) for other office applications.
+You may also open a [new feature request](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/new) for other office applications.
