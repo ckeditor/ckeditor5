@@ -100,7 +100,7 @@ describe( 'ImageUploadUI', () => {
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].files ).to.deep.equal( files );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
 	} );
 
 	it( 'should execute imageUpload command with multiple files', () => {
@@ -111,7 +111,7 @@ describe( 'ImageUploadUI', () => {
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].files ).to.deep.equal( files );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( files );
 	} );
 
 	it( 'should optimize the insertion position', () => {
@@ -172,6 +172,6 @@ describe( 'ImageUploadUI', () => {
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
 		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].files ).to.deep.equal( [ files[ 0 ] ] );
+		expect( executeStub.firstCall.args[ 1 ].file ).to.deep.equal( [ files[ 0 ] ] );
 	} );
 } );

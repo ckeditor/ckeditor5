@@ -56,7 +56,7 @@ ClassicEditor
 		],
 		toolbar: [ 'heading', '|', 'undo', 'redo' ],
 		image: {
-			styles: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight' ],
+			styles: [ 'alignLeft', 'alignCenter', 'alignRight' ],
 			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight' ]
 		}
 	} )

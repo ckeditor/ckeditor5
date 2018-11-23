@@ -16,7 +16,7 @@ import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { isImageType, isLocalImage, wrapImageToFetch } from '../../src/imageupload/utils';
 
 /**
- * The editing part of the image upload feature.
+ * The editing part of the image upload feature. It registers the `'imageUpload'` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -67,7 +67,14 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			const images = Array.from( data.dataTransfer.files ).filter( isImageType );
+			const images = Array.from( data.dataTransfer.files ).filter( file => {
+				// See https://github.com/ckeditor/ckeditor5-image/pull/254.
+				if ( !file ) {
+					return false;
+				}
+
+				return isImageType( file );
+			} );
 
 			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
 
@@ -80,7 +87,7 @@ export default class ImageUploadEditing extends Plugin {
 
 					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
 					editor.model.enqueueChange( 'default', () => {
-						editor.execute( 'imageUpload', { files: images } );
+						editor.execute( 'imageUpload', { file: images } );
 					} );
 				}
 			} );
