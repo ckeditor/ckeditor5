@@ -23,7 +23,7 @@ ClassicEditor
 				height: 600,
 				width: 800,
 				resourceType: 'Images'
-			},
+			}
 		}
 	} )
 	.then( editor => {
