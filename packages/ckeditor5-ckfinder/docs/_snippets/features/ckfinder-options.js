@@ -22,7 +22,9 @@ ClassicEditor
 				resourceType: 'Images'
 			},
 			// eslint-disable-next-line max-len
-			uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+			uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
+			width: 800,
+			height: 600
 		}
 	} )
 	.then( editor => {
