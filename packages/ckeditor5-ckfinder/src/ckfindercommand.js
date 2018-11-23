@@ -58,7 +58,7 @@ export default class CKFinderCommand extends Command {
 			throw new CKEditorError( 'ckfinder-unknown-openerMethod: The openerMethod config option must by "popup" or "modal".' );
 		}
 
-		const options = this.editor.config.get( 'ckfinder.options' ) || {};
+		const options = Object.assign( {}, this.editor.config.get( 'ckfinder.options' ) );
 
 		options.chooseFiles = true;
 
