@@ -11,10 +11,13 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import PasteFromOffice from '../../src/pastefromoffice';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import PasteFromOffice from '../../src/pastefromoffice';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 const htmlDiv = document.querySelector( '#html' );
 const textDiv = document.querySelector( '#text' );
@@ -22,9 +25,10 @@ const dataDiv = document.querySelector( '#data' );
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, PasteFromOffice ],
+		plugins: [ ArticlePluginSet, Strikethrough, Underline, Table, TableToolbar, EasyImage, PasteFromOffice ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'underline', 'link',
-			'bulletedList', 'numberedList', 'blockQuote', 'table', 'undo', 'redo' ]
+			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo' ],
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
