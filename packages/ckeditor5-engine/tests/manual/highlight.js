@@ -48,7 +48,7 @@ class FancyWidget extends Plugin {
 			model: 'fancywidget',
 			view: ( modelItem, viewWriter ) => {
 				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
-				viewWriter.insert( viewWriter.createPositionAt( widgetElement ), viewWriter.createText( 'widget' ) );
+				viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( 'widget' ) );
 
 				return toWidget( widgetElement, viewWriter );
 			}

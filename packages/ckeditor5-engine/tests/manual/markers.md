@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: ticket, 643, iteration5
-
 ### Markers integration [#643](https://github.com/ckeditor/ckeditor5-engine/issues/643)
 
 1. Write before, after and inside marked text.
