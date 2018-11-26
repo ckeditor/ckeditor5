@@ -142,7 +142,7 @@ function tryFixingCollapsedRange( range, schema ) {
 		schema.isLimit( fixedPosition.nodeAfter );
 
 	if ( shouldTryHarderFix ) {
-		nearestSelectionRange = schema.getNearestSelectionRange( Position.createAt( fixedPosition.nodeAfter ) );
+		nearestSelectionRange = schema.getNearestSelectionRange( Position._createAt( fixedPosition.nodeAfter, 0 ) );
 		fixedPosition = nearestSelectionRange.start;
 	}
 
