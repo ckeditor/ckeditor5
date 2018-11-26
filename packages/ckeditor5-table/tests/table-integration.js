@@ -10,6 +10,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
@@ -146,6 +147,30 @@ describe( 'Table feature – integration', () => {
 
 			expect( editor.data.get( 'main' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+		} );
+	} );
+
+	describe( 'other', () => {
+		let editor;
+
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( { plugins: [ Paragraph, TableEditing, ListEditing, BlockQuoteEditing, Widget, Typing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'merges elements without throwing errors', () => {
+			setModelData( editor.model, modelTable( [
+				[ '<blockQuote><paragraph>Foo</paragraph></blockQuote><paragraph>[]Bar</paragraph>' ]
+			] ) );
+
+			editor.execute( 'delete' );
+
+			expect( formatTable( getModelData( editor.model ) ) ).to.equal( formattedModelTable( [
+				[ '<blockQuote><paragraph>Foo[]Bar</paragraph></blockQuote>' ]
+			] ) );
 		} );
 	} );
 } );

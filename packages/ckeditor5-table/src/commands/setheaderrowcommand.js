@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import { createEmptyTableCell, findAncestor, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
@@ -169,7 +168,7 @@ function splitHorizontally( tableCell, headingRows, writer ) {
 
 		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
 			const tableRow = table.getChild( row );
-			const tableCellPosition = Position.createFromParentAndOffset( tableRow, cellIndex );
+			const tableCellPosition = writer.createPositionAt( tableRow, cellIndex );
 
 			createEmptyTableCell( writer, tableCellPosition, attributes );
 		}

@@ -31,7 +31,7 @@ describe( 'InsertColumnCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'order=after', () => {
+	describe( 'order=right', () => {
 		beforeEach( () => {
 			command = new InsertColumnCommand( editor );
 		} );
@@ -49,7 +49,7 @@ describe( 'InsertColumnCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should insert column in given table after selection\'s column', () => {
+			it( 'should insert column in given table to the right of the selection\'s column', () => {
 				setData( model, modelTable( [
 					[ '11[]', '12' ],
 					[ '21', '22' ]
@@ -63,7 +63,7 @@ describe( 'InsertColumnCommand', () => {
 				] ) );
 			} );
 
-			it( 'should insert column in given table after selection\'s column (selection in block content)', () => {
+			it( 'should insert column in given table to the right of the selection\'s column (selection in block content)', () => {
 				setData( model, modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );
@@ -155,9 +155,9 @@ describe( 'InsertColumnCommand', () => {
 		} );
 	} );
 
-	describe( 'order=before', () => {
+	describe( 'order=left', () => {
 		beforeEach( () => {
-			command = new InsertColumnCommand( editor, { order: 'before' } );
+			command = new InsertColumnCommand( editor, { order: 'left' } );
 		} );
 
 		describe( 'isEnabled', () => {
@@ -173,7 +173,7 @@ describe( 'InsertColumnCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should insert column in given table before selection\'s column', () => {
+			it( 'should insert column in given table to the left of the selection\'s column', () => {
 				setData( model, modelTable( [
 					[ '11', '12[]' ],
 					[ '21', '22' ]
@@ -187,7 +187,7 @@ describe( 'InsertColumnCommand', () => {
 				] ) );
 			} );
 
-			it( 'should insert column in given table before selection\'s column (selection in block content)', () => {
+			it( 'should insert column in given table to the left of the selection\'s column (selection in block content)', () => {
 				setData( model, modelTable( [
 					[ '11', '<paragraph>12[]</paragraph>', '13' ]
 				] ) );

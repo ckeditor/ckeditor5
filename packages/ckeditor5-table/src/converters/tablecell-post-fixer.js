@@ -71,7 +71,7 @@
  * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
 export default function injectTableCellPostFixer( model, editing ) {
-	editing.view.document.registerPostFixer( writer => tableCellPostFixer( writer, model, editing.mapper ) );
+	editing.view.document.registerPostFixer( writer => tableCellPostFixer( writer, model, editing.mapper, editing.view ) );
 }
 
 // The table cell post-fixer.
@@ -79,94 +79,101 @@ export default function injectTableCellPostFixer( model, editing ) {
 // @param {module:engine/view/writer~Writer} writer
 // @param {module:engine/model/model~Model} model
 // @param {module:engine/conversion/mapper~Mapper} mapper
-function tableCellPostFixer( writer, model, mapper ) {
-	const changes = model.document.differ.getChanges();
+function tableCellPostFixer( writer, model, mapper, view ) {
 	let wasFixed = false;
 
-	// While this is view post fixer only nodes that changed are worth investigating.
-	for ( const entry of changes ) {
-		// Attribute change - check if it is single paragraph inside table cell that has attributes changed.
-		if ( entry.type == 'attribute' && entry.range.start.parent.name == 'tableCell' ) {
-			const tableCell = entry.range.start.parent;
+	const elementsToCheck = getElementsToCheck( view );
 
-			if ( tableCell.childCount === 1 ) {
-				const singleChild = tableCell.getChild( 0 );
-				const renameTo = Array.from( singleChild.getAttributes() ).length ? 'p' : 'span';
+	for ( const element of elementsToCheck ) {
+		wasFixed = ensureProperElementName( element, mapper, writer ) || wasFixed;
+	}
 
-				wasFixed = renameParagraphIfDifferent( singleChild, renameTo, writer, model, mapper ) || wasFixed;
-			}
-		} else {
-			// Check all nodes inside table cell on insert/remove operations (also other blocks).
-			const parent = entry.position && entry.position.parent;
-
-			if ( parent && parent.is( 'tableCell' ) ) {
-				const renameTo = parent.childCount > 1 ? 'p' : 'span';
-
-				for ( const child of parent.getChildren() ) {
-					wasFixed = renameParagraphIfDifferent( child, renameTo, writer, model, mapper ) || wasFixed;
-				}
-			}
-		}
+	// Selection in the view might not be updated to renamed elements. Happens mostly when other feature inserts paragraph to the table cell
+	// (ie. when deleting table cell contents) and sets selection to it while table-post fixer changes view <p> to <span> element.
+	// The view.selection would have outdated nodes.
+	if ( wasFixed ) {
+		updateRangesInViewSelection( model.document.selection, mapper, writer );
 	}
 
 	return wasFixed;
 }
 
-// Renames associated view element to a desired one. It will only rename if:
-// - model element is a paragraph
-// - view element is converted (mapped)
-// - view element has different name then requested.
+// Returns view elements changed in current view.change() block.
 //
-// @param {module:engine/model/element~Element} modelElement
-// @param {String} desiredElementName
-// @param {module:engine/view/writer~Writer} writer
-// @param {module:engine/model/model~Model} model
-// @param {module:engine/conversion/mapper~Mapper} mapper
-function renameParagraphIfDifferent( modelElement, desiredElementName, writer, model, mapper ) {
-	// Only rename paragraph elements.
-	if ( !modelElement.is( 'paragraph' ) ) {
-		return false;
-	}
+// **Note**: Currently it uses private property of the view: _renderer to get changed view elements to check.
+//
+// @param {module:engine/view/view~View} view
+function getElementsToCheck( view ) {
+	const elementsWithChangedAttributes = Array.from( view._renderer.markedAttributes )
+		.filter( el => !!el.parent )
+		.filter( isSpanOrP )
+		.filter( el => isTdOrTh( el.parent ) );
 
-	const viewElement = mapper.toViewElement( modelElement );
+	const changedChildren = Array.from( view._renderer.markedChildren )
+		.filter( el => !!el.parent )
+		.filter( isTdOrTh )
+		.reduce( ( prev, element ) => {
+			const childrenToCheck = Array.from( element.getChildren() ).filter( isSpanOrP );
 
-	// Only rename converted elements which aren't desired ones.
-	if ( !viewElement || viewElement.name === desiredElementName ) {
-		return false;
-	}
+			return [ ...prev, ...childrenToCheck ];
+		}, [] );
 
-	// After renaming element in the view by a post-fixer the selection would have references to the previous element.
-	const selection = model.document.selection;
-	const shouldFixSelection = checkSelectionForRenamedElement( selection, modelElement );
-
-	// Unbind current view element as it should be cleared from mapper.
-	mapper.unbindViewElement( viewElement );
-	const renamedViewElement = writer.rename( viewElement, desiredElementName );
-	// Bind paragraph inside table cell to the renamed view element.
-	mapper.bindElements( modelElement, renamedViewElement );
-
-	if ( shouldFixSelection ) {
-		// Re-create view selection based on model selection.
-		updateRangesInViewSelection( selection, mapper, writer );
-	}
-
-	return true;
+	return [ ...elementsWithChangedAttributes, ...changedChildren ];
 }
 
-// Checks if model selection contains renamed element.
-//
-// @param {module:engine/model/selection~Selection} selection
-// @param {module:engine/model/element~Element} modelElement
-// @returns {boolean}
-function checkSelectionForRenamedElement( selection, modelElement ) {
-	return !![ ...selection.getSelectedBlocks() ].find( block => block === modelElement );
+// This method checks if view element for model's <paragraph> was properly converter.
+// Paragraph should be either
+// - span: for single paragraph with no attributes.
+// - p   : in other cases.
+function ensureProperElementName( currentViewElement, mapper, writer ) {
+	const modelParagraph = mapper.toModelElement( currentViewElement );
+	const expectedViewElementName = getExpectedElementName( modelParagraph.parent, modelParagraph );
+
+	if ( currentViewElement.name !== expectedViewElementName ) {
+		// Unbind current view element as it should be cleared from mapper.
+		mapper.unbindViewElement( currentViewElement );
+
+		const renamedViewElement = writer.rename( expectedViewElementName, currentViewElement );
+
+		// Bind paragraph inside table cell to the renamed view element.
+		mapper.bindElements( modelParagraph, renamedViewElement );
+
+		return true;
+	}
+
+	return false;
 }
 
-// Re-create view selection from model selection.
+// Expected view element name depends on model elements:
+// - <paragraph> with any attribute set should be rendered as <p>
+// - all <paragraphs> in <tableCell> that has more then one children should be rendered as <p>
+// - an only <paragraph> child with no attributes should be rendered as <span>
 //
-// @param {module:engine/model/selection~Selection} selection
-// @param {module:engine/view/writer~Writer} writer
-// @param {module:engine/conversion/mapper~Mapper} mapper
+// @param {module:engine/model/element~Element} tableCell
+// @param {module:engine/model/element~Element} paragraph
+// @returns {String}
+function getExpectedElementName( tableCell, paragraph ) {
+	const isOnlyChild = tableCell.childCount > 1;
+	const hasAttributes = !![ ...paragraph.getAttributes() ].length;
+
+	return ( isOnlyChild || hasAttributes ) ? 'p' : 'span';
+}
+
+// Method to filter out <span> and <p> elements.
+//
+// @param {module:engine/view/element~Element} element
+function isSpanOrP( element ) {
+	return element.is( 'p' ) || element.is( 'span' );
+}
+
+// Method to filter out <td> and <th> elements.
+//
+// @param {module:engine/view/element~Element} element
+function isTdOrTh( element ) {
+	return element.is( 'td' ) || element.is( 'th' );
+}
+
+// Resets view selections based on model selection.
 function updateRangesInViewSelection( selection, mapper, writer ) {
 	const fixedRanges = Array.from( selection.getRanges() )
 		.map( range => mapper.toViewRange( range ) );

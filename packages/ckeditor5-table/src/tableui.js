@@ -86,15 +86,15 @@ export default class TableUI extends Plugin {
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableColumnBefore',
-						label: t( 'Insert column before' )
+						commandName: 'insertTableColumnLeft',
+						label: t( 'Insert column left' )
 					}
 				},
 				{
 					type: 'button',
 					model: {
-						commandName: 'insertTableColumnAfter',
-						label: t( 'Insert column after' )
+						commandName: 'insertTableColumnRight',
+						label: t( 'Insert column right' )
 					}
 				},
 				{

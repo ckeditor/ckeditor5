@@ -418,6 +418,25 @@ describe( 'upcastTable()', () => {
 			] ) );
 		} );
 
+		it( 'should upcast table inline content to single <paragraph>', () => {
+			editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>foo <strong>bar</strong></td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel( modelTable( [
+				[ 'foo <$text bold="true">bar</$text>' ]
+			] ) );
+		} );
+
 		it( 'should upcast table with multiple <p> in table cell', () => {
 			editor.setData(
 				'<table>' +
@@ -452,6 +471,94 @@ describe( 'upcastTable()', () => {
 			expectModel( modelTable( [
 				[ '' ]
 			] ) );
+		} );
+	} );
+
+	describe( 'handling redundant whitespacing between table elements', () => {
+		it( 'table without thead/tbody/tfoot', () => {
+			editor.setData(
+				'<table> ' +
+					'<tr> <td>1</td></tr>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table>' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with thead only', () => {
+			editor.setData(
+				'<table>' +
+					'<thead>' +
+						'<tr><td>1</td></tr> ' +
+						'<tr><td>2</td></tr>' +
+						' <tr><td>3</td></tr>' +
+					'</thead>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingRows="3">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with thead and tbody', () => {
+			editor.setData(
+				'<table>' +
+					'<thead>   ' +
+						'<tr><td>1</td></tr>' +
+						'<tr><td>2</td></tr>\n\n   ' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr><td>3</td></tr> ' +
+						'\n\n    <tr><td>4</td></tr>' +
+						'<tr>    <td>5</td></tr> ' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingRows="2">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with tbody and tfoot', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'     <tr><td>1</td></tr>' +
+						'<tr><td>2</td></tr>' +
+						'<tr><td>3</td></tr> ' +
+						'<tr><td>4</td></tr>\n\n\n' +
+					'</tbody>\n\n' +
+					'   <tfoot>' +
+						'<tr>  <td>5</td>\n\n\n</tr>   ' +
+					'</tfoot>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table>' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 } );

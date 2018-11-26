@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -12,7 +11,7 @@ import TableEditing from '../../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './../_utils/utils';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-describe( 'Table post-fixer', () => {
+describe( 'Table layout post-fixer', () => {
 	let editor, model, root;
 
 	beforeEach( () => {
@@ -40,7 +39,7 @@ describe( 'Table post-fixer', () => {
 			] ), model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -59,7 +58,7 @@ describe( 'Table post-fixer', () => {
 			] ), model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -78,7 +77,7 @@ describe( 'Table post-fixer', () => {
 			] ), model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -97,7 +96,7 @@ describe( 'Table post-fixer', () => {
 			], { headingRows: 2 } ), model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -116,7 +115,7 @@ describe( 'Table post-fixer', () => {
 			], { headingRows: 1 } ), model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -144,7 +143,7 @@ describe( 'Table post-fixer', () => {
 			const parsed = parse( tableA + tableB + tableC, model.schema );
 
 			model.change( writer => {
-				writer.remove( Range.createIn( root ) );
+				writer.remove( writer.createRangeIn( root ) );
 				writer.insert( parsed, root );
 			} );
 
@@ -173,7 +172,7 @@ describe( 'Table post-fixer', () => {
 
 			expect( () => {
 				model.change( writer => {
-					writer.remove( Range.createIn( root ) );
+					writer.remove( writer.createRangeIn( root ) );
 				} );
 			} ).to.not.throw();
 

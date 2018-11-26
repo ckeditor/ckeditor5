@@ -21,7 +21,7 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellsCommand from '../src/commands/mergecellscommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -29,7 +29,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, ImageEditing ]
+				plugins: [ TableEditing, Paragraph, ImageEditing, MediaEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -90,12 +90,12 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'insertTableRowBelow' ) ).to.be.instanceOf( InsertRowCommand );
 	} );
 
-	it( 'adds insertColumnBefore command', () => {
-		expect( editor.commands.get( 'insertTableColumnBefore' ) ).to.be.instanceOf( InsertColumnCommand );
+	it( 'adds insertColumnLeft command', () => {
+		expect( editor.commands.get( 'insertTableColumnLeft' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
-	it( 'adds insertColumnAfter command', () => {
-		expect( editor.commands.get( 'insertTableColumnAfter' ) ).to.be.instanceOf( InsertColumnCommand );
+	it( 'adds insertColumnRight command', () => {
+		expect( editor.commands.get( 'insertTableColumnRight' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
 	it( 'adds removeRow command', () => {
@@ -170,6 +170,15 @@ describe( 'TableEditing', () => {
 
 			it( 'should convert table with image', () => {
 				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with media', () => {
+				editor.setData(
+					'<table><tbody><tr><td><oembed url="https://www.youtube.com/watch?v=H08tGjXNHO4"></oembed></td></tr></tbody></table>'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );

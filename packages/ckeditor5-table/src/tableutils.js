@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
 import { createEmptyTableCell, updateNumericAttribute } from './commands/utils';
@@ -69,25 +68,28 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Creates an empty table at a given position.
+	 * Creates an empty table with proper structure. The table needs to be inserted into the model,
+	 * ie. using {@link module:engine/model/model~Model#insertContent} function.
 	 *
-	 * @param {module:engine/model/position~Position} position The position where the table will be inserted.
+	 *		model.change( ( writer ) => {
+	 *			// Create a table of 2 rows and 7 columns:
+	 *			const table = tableUtils.createTable( writer, 2, 7);
+	 *
+	 *			// Insert table to the model at the best position taking current selection:
+	 *			model.insertContent( table );
+	 *		}
+	 *
+	 * @param {module:engine/model/writer~Writer} writer The model writer.
 	 * @param {Number} rows The number of rows to create.
 	 * @param {Number} columns The number of columns to create.
 	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
-	createTable( position, rows, columns ) {
-		const model = this.editor.model;
+	createTable( writer, rows, columns ) {
+		const table = writer.createElement( 'table' );
 
-		return model.change( writer => {
-			const table = writer.createElement( 'table' );
+		createEmptyRows( writer, table, 0, rows, columns );
 
-			writer.insert( table, position );
-
-			createEmptyRows( writer, table, 0, rows, columns );
-
-			return table;
-		} );
+		return table;
 	}
 
 	/**
@@ -209,7 +211,7 @@ export default class TableUtils extends Plugin {
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
-					createCells( columnsToInsert, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
+					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
 				return;
@@ -240,7 +242,7 @@ export default class TableUtils extends Plugin {
 				} else {
 					// It's either cell at this column index or spanned cell by a rowspanned cell from row above.
 					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-					const insertPosition = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
+					const insertPosition = writer.createPositionAt( table.getChild( row ), cellIndex );
 
 					createCells( columnsToInsert, writer, insertPosition );
 				}
@@ -322,7 +324,7 @@ export default class TableUtils extends Plugin {
 				}
 
 				const cellsToInsert = colspan > numberOfCells ? numberOfCells - 1 : colspan - 1;
-				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 			}
 
 			// Second check - the cell has colspan of 1 or we need to create more cells then the currently one spans over.
@@ -360,7 +362,7 @@ export default class TableUtils extends Plugin {
 					newCellsAttributes.rowspan = rowspan;
 				}
 
-				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
 
 				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
@@ -480,7 +482,7 @@ export default class TableUtils extends Plugin {
 					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
-						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
+						const position = writer.createPositionAt( table.getChild( row ), cellIndex );
 
 						createCells( 1, writer, position, newCellsAttributes );
 					}
@@ -560,7 +562,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 
 		writer.insert( tableRow, table, insertAt );
 
-		createCells( tableCellToInsert, writer, Position.createAt( tableRow, 'end' ), attributes );
+		createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes );
 	}
 }
 

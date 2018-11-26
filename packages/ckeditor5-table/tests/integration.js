@@ -12,7 +12,7 @@ import Table from '../src/table';
 import TableToolbar from '../src/tabletoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-describe( 'TableToolbar integration', () => {
+describe( 'TableContentToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
 		let balloon, balloonToolbar, newEditor, editorElement;
 

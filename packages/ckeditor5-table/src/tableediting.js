@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import upcastTable, { upcastTableCell } from './converters/upcasttable';
 import {
@@ -33,7 +32,8 @@ import MergeCellsCommand from './commands/mergecellscommand';
 import { findAncestor } from './commands/utils';
 import TableUtils from '../src/tableutils';
 
-import injectTablePostFixer from './converters/table-post-fixer';
+import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
+import injectTableCellContentsPostFixer from './converters/table-cell-content-post-fixer';
 import injectTableCellPostFixer from './converters/tablecell-post-fixer';
 
 import '../theme/tableediting.css';
@@ -81,9 +81,13 @@ export default class TableEditing extends Plugin {
 			}
 		} );
 
-		// Disallow image in table cell.
+		// Disallow image and media in table cell.
 		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
+			if ( !Array.from( context.getNames() ).includes( 'table' ) ) {
+				return;
+			}
+
+			if ( childDefinition.name == 'image' || childDefinition.name == 'media' ) {
 				return false;
 			}
 		} );
@@ -124,8 +128,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
 		editor.commands.add( 'insertTableRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
-		editor.commands.add( 'insertTableColumnBefore', new InsertColumnCommand( editor, { order: 'before' } ) );
-		editor.commands.add( 'insertTableColumnAfter', new InsertColumnCommand( editor, { order: 'after' } ) );
+		editor.commands.add( 'insertTableColumnLeft', new InsertColumnCommand( editor, { order: 'left' } ) );
+		editor.commands.add( 'insertTableColumnRight', new InsertColumnCommand( editor, { order: 'right' } ) );
 
 		editor.commands.add( 'removeTableRow', new RemoveRowCommand( editor ) );
 		editor.commands.add( 'removeTableColumn', new RemoveColumnCommand( editor ) );
@@ -138,7 +142,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
-		injectTablePostFixer( model );
+		injectTableLayoutPostFixer( model );
+		injectTableCellContentsPostFixer( model );
 
 		// Handle tab key navigation.
 		this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
@@ -178,7 +183,7 @@ export default class TableEditing extends Plugin {
 			cancel();
 
 			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
+				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) );
 			} );
 		}
 	}
@@ -246,7 +251,7 @@ export default class TableEditing extends Plugin {
 			}
 
 			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( cellToFocus ) );
+				writer.setSelection( writer.createRangeIn( cellToFocus ) );
 			} );
 		};
 	}

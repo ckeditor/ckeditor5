@@ -25,7 +25,7 @@ function paragraphInTableCell() {
 
 				if ( viewElement && viewElement.name === 'span' ) {
 					conversionApi.mapper.unbindModelElement( tableCell );
-					conversionApi.writer.rename( viewElement, 'p' );
+					conversionApi.writer.rename( 'p', viewElement );
 					conversionApi.mapper.bindElements( child, viewElement );
 				}
 			}

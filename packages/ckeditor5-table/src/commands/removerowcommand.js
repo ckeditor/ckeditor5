@@ -8,8 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
@@ -87,9 +85,11 @@ export default class RemoveRowCommand extends Command {
 			for ( const { row, column, cell } of [ ...tableWalker ] ) {
 				if ( cellsToMove.has( column ) ) {
 					const { cell: cellToMove, rowspanToSet } = cellsToMove.get( column );
-					const targetPosition = previousCell ? Position.createAfter( previousCell ) : Position.createAt( table.getChild( row ) );
+					const targetPosition = previousCell ?
+						writer.createPositionAfter( previousCell ) :
+						writer.createPositionAt( table.getChild( row ), 0 );
 
-					writer.move( Range.createOn( cellToMove ), targetPosition );
+					writer.move( writer.createRangeOn( cellToMove ), targetPosition );
 					updateNumericAttribute( 'rowspan', rowspanToSet, cellToMove, writer );
 
 					previousCell = cellToMove;

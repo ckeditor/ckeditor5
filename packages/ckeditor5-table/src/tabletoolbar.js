@@ -8,20 +8,20 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import { isTableWidgetSelected, isTableContentSelected } from './utils';
-import { repositionContextualBalloon, getBalloonPositionData } from './ui/utils';
-
-const balloonClassName = 'ck-toolbar-container';
+import { isTableContentSelected, isTableWidgetSelected } from './utils';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
- * The table toolbar class. It creates a table toolbar that shows up when the table widget is selected.
+ * The table toolbar class. It creates toolbars for the table feature and its content (for now only for a table cell content).
  *
- * Toolbar components are created using the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
- * based on the {@link module:core/editor/editor~Editor#config configuration} stored under `table.toolbar`.
+ * Table toolbar shows up when a table widget is selected. Its components (e.g. buttons) are created based on the
+ * {@link module:table/table~TableConfig#toolbar `table.tableToolbar` configuration option}.
  *
- * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
+ * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
+ * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
+ *
+ * Note that the old {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option} is deprecated
+ * and will be removed in the next major release.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -30,7 +30,7 @@ export default class TableToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon ];
+		return [ WidgetToolbarRepository ];
 	}
 
 	/**
@@ -43,126 +43,53 @@ export default class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
-		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-
-		// If the `BalloonToolbar` plugin is loaded, it should be disabled for tables
-		// which have their own toolbar to avoid duplication.
-		// https://github.com/ckeditor/ckeditor5-image/issues/110
-		if ( balloonToolbar ) {
-			this.listenTo( balloonToolbar, 'show', evt => {
-				if ( isTableWidgetSelected( editor.editing.view.document.selection ) ) {
-					evt.stop();
-				}
-			}, { priority: 'high' } );
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	afterInit() {
 		const editor = this.editor;
-		const toolbarConfig = editor.config.get( 'table.toolbar' );
+		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
-		// Don't add the toolbar if there is no configuration.
-		if ( !toolbarConfig || !toolbarConfig.length ) {
-			return;
+		const tableContentToolbarItems = editor.config.get( 'table.contentToolbar' );
+		const deprecatedTableContentToolbarItems = editor.config.get( 'table.toolbar' );
+
+		const tableToolbarItems = editor.config.get( 'table.tableToolbar' );
+
+		if ( deprecatedTableContentToolbarItems ) {
+			// eslint-disable-next-line
+			console.warn(
+				'`config.table.toolbar` is deprecated and will be removed in the next major release.' +
+				' Use `config.table.contentToolbar` instead.'
+			);
 		}
 
-		/**
-		 * A contextual balloon plugin instance.
-		 *
-		 * @private
-		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
-		 */
-		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
-
-		/**
-		 * A toolbar view instance used to display the buttons specific for table editing.
-		 *
-		 * @protected
-		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
-		 */
-		this._toolbar = new ToolbarView();
-
-		// Add buttons to the toolbar.
-		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
-
-		// Show balloon panel each time table widget is selected.
-		this.listenTo( editor.ui, 'update', () => {
-			this._checkIsVisible();
-		} );
-
-		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
-			this._checkIsVisible();
-		}, { priority: 'low' } );
-	}
-
-	/**
-	 * Checks whether the toolbar should show up or hide depending on the current selection.
-	 *
-	 * @private
-	 */
-	_checkIsVisible() {
-		const editor = this.editor;
-		const viewSelection = editor.editing.view.document.selection;
-
-		if ( !editor.ui.focusTracker.isFocused || !isTableContentSelected( viewSelection ) ) {
-			this._hideToolbar();
-		} else {
-			this._showToolbar();
-		}
-	}
-
-	/**
-	 * Shows the {@link #_toolbar} in the {@link #_balloon}.
-	 *
-	 * @private
-	 */
-	_showToolbar() {
-		const editor = this.editor;
-
-		if ( this._isVisible ) {
-			repositionContextualBalloon( editor );
-		} else if ( !this._balloon.hasView( this._toolbar ) ) {
-			this._balloon.add( {
-				view: this._toolbar,
-				position: getBalloonPositionData( editor ),
-				balloonClassName
+		if ( tableContentToolbarItems || deprecatedTableContentToolbarItems ) {
+			widgetToolbarRepository.register( 'tableContent', {
+				items: tableContentToolbarItems || deprecatedTableContentToolbarItems,
+				visibleWhen: isTableContentSelected,
 			} );
 		}
-	}
 
-	/**
-	 * Removes the {@link #_toolbar} from the {@link #_balloon}.
-	 *
-	 * @private
-	 */
-	_hideToolbar() {
-		if ( !this._isVisible ) {
-			return;
+		if ( tableToolbarItems ) {
+			widgetToolbarRepository.register( 'table', {
+				items: tableToolbarItems,
+				visibleWhen: isTableWidgetSelected,
+			} );
 		}
-
-		this._balloon.remove( this._toolbar );
-	}
-
-	/**
-	 * Returns `true` when the {@link #_toolbar} is the visible view in the {@link #_balloon}.
-	 *
-	 * @private
-	 * @type {Boolean}
-	 */
-	get _isVisible() {
-		return this._balloon.visibleView == this._toolbar;
 	}
 }
 
 /**
- * Items to be placed in the table toolbar.
- * This option is used by the {@link module:table/tabletoolbar~TableToolbar} feature.
+ * Items to be placed in the table content toolbar.
+ *
+ * **Note:** This configuration option is deprecated! Use {@link module:table/table~TableConfig#contentToolbar} instead.
+ *
+ * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @deprecated
+ * @member {Array.<String>} module:table/table~TableConfig#toolbar
+ */
+
+/**
+ * Items to be placed in the table content toolbar.
+ * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar working.
  *
  * Assuming that you use the {@link module:table/tableui~TableUI} feature, the following toolbar items will be available
  * in {@link module:ui/componentfactory~ComponentFactory}:
@@ -174,7 +101,7 @@ export default class TableToolbar extends Plugin {
  * You can thus configure the toolbar like this:
  *
  *		const tableConfig = {
- *			toolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
+ *			contentToolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
  *		};
  *
  * Of course, the same buttons can also be used in the
@@ -182,5 +109,23 @@ export default class TableToolbar extends Plugin {
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>} module:table/table~TableConfig#toolbar
+ * @member {Array.<String>} module:table/table~TableConfig#contentToolbar
+ */
+
+/**
+ * Items to be placed in the table toolbar.
+ * The {@link module:table/tabletoolbar~TableToolbar} plugin is required to make this toolbar working.
+ *
+ * You can thus configure the toolbar like this:
+ *
+ *		const tableConfig = {
+ *			tableToolbar: [ 'blockQuote' ]
+ *		};
+ *
+ * Of course, the same buttons can also be used in the
+ * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+ *
+ * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>} module:table/table~TableConfig#tableToolbar
  */
