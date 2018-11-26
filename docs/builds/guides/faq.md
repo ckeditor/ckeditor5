@@ -78,7 +78,7 @@ By default, CKEditor 5 has no global registry of editor instances. But if necess
 
 ## How to enable image drag&drop and upload? Where should I start?
 
-The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters ({@link features/image-upload#easy-image Easy Image} or {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig CKFinder adapter}) or {@link module:upload/filerepository~UploadAdapter implement and use your own upload adapter}.
+The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters ({@link features/image-upload#easy-image Easy Image} or {@link module:ckfinder/ckfinder~CKFinderConfig CKFinder adapter}) or {@link module:upload/filerepository~UploadAdapter implement and use your own upload adapter}.
 
 See the {@link features/image Image} and {@link features/image-upload Image upload} feature guides to learn more.
 
