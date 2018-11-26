@@ -27,8 +27,8 @@ ClassicEditor
 		window.editor = editor;
 	} )
 	.catch( err => {
-		output.innerText = err.stack;
-		console.error( err.stack );
+		output.innerText = err.message;
+		console.error( err.message );
 	} );
 
 function handleRequest( xhr, resolve, reject ) {
