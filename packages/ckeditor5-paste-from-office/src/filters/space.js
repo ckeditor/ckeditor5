@@ -11,7 +11,7 @@
  * Replaces last space preceding elements closing tag with `&nbsp;`. Such operation prevents spaces from being removed
  * during further DOM/View processing (see especially {@link module:engine/view/domconverter~DomConverter#_processDataFromDomText}).
  * This method also takes into account Word specific `<o:p></o:p>` empty tags.
- * Additionally multiline sequences of spaces and new lines between tags are removed.
+ * Additionally multiline sequences of spaces and new lines between tags are removed (see #39 and #40).
  *
  * @param {String} htmlString HTML string in which spacing should be normalized.
  * @returns {String} Input HTML with spaces normalized.
