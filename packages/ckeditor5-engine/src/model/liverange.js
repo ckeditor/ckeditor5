@@ -41,38 +41,49 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see module:engine/model/range~Range.createIn
+	 * Creates a {@link module:engine/model/range~Range range instance} that is equal to this live range.
+	 *
+	 * @returns {module:engine/model/range~Range}
+	 */
+	toRange() {
+		return new Range( this.start, this.end );
+	}
+
+	/**
+	 * Creates a `LiveRange` instance that is equal to the given range.
+	 *
+	 * @param {module:engine/model/range~Range} range
+	 * @returns {module:engine/model/liverange~LiveRange}
+	 */
+	static fromRange( range ) {
+		return new LiveRange( range.start, range.end );
+	}
+
+	/**
+	 * @see module:engine/model/range~Range._createIn
 	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createIn
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createIn
 	 * @param {module:engine/model/element~Element} element
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
 	/**
-	 * @see module:engine/model/range~Range.createFromPositionAndShift
+	 * @see module:engine/model/range~Range._createOn
 	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromPositionAndShift
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createOn
+	 * @param {module:engine/model/element~Element} element
+	 * @returns {module:engine/model/liverange~LiveRange}
+	 */
+
+	/**
+	 * @see module:engine/model/range~Range._createFromPositionAndShift
+	 * @static
+	 * @protected
+	 * @method module:engine/model/liverange~LiveRange._createFromPositionAndShift
 	 * @param {module:engine/model/position~Position} position
 	 * @param {Number} shift
-	 * @returns {module:engine/model/liverange~LiveRange}
-	 */
-
-	/**
-	 * @see module:engine/model/range~Range.createFromParentsAndOffsets
-	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromParentsAndOffsets
-	 * @param {module:engine/model/element~Element} startElement
-	 * @param {Number} startOffset
-	 * @param {module:engine/model/element~Element} endElement
-	 * @param {Number} endOffset
-	 * @returns {module:engine/model/liverange~LiveRange}
-	 */
-
-	/**
-	 * @see module:engine/model/range~Range.createFromRange
-	 * @static
-	 * @method module:engine/model/liverange~LiveRange.createFromRange
-	 * @param {module:engine/model/range~Range} range
 	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
@@ -129,7 +140,7 @@ function bindWithDocument() {
 function transform( operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
-	const result = Range.createFromRanges( ranges );
+	const result = Range._createFromRanges( ranges );
 
 	const boundariesChanged = !result.isEqual( this );
 	const contentChanged = doesOperationChangeRangeContent( this, operation );
@@ -149,7 +160,7 @@ function transform( operation ) {
 			}
 		}
 
-		const oldRange = Range.createFromRange( this );
+		const oldRange = this.toRange();
 
 		this.start = result.start;
 		this.end = result.end;
@@ -157,7 +168,7 @@ function transform( operation ) {
 		this.fire( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire( 'change:content', Range.createFromRange( this ), { deletionPosition } );
+		this.fire( 'change:content', this.toRange(), { deletionPosition } );
 	}
 }
 
@@ -170,9 +181,6 @@ function transform( operation ) {
 function doesOperationChangeRangeContent( range, operation ) {
 	switch ( operation.type ) {
 		case 'insert':
-		case 'split':
-		case 'wrap':
-		case 'unwrap':
 			return range.containsPosition( operation.position );
 		case 'move':
 		case 'remove':
@@ -181,6 +189,8 @@ function doesOperationChangeRangeContent( range, operation ) {
 			return range.containsPosition( operation.sourcePosition ) ||
 				range.start.isEqual( operation.sourcePosition ) ||
 				range.containsPosition( operation.targetPosition );
+		case 'split':
+			return range.containsPosition( operation.splitPosition ) || range.containsPosition( operation.insertionPosition );
 	}
 
 	return false;

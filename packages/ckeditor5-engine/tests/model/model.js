@@ -7,8 +7,10 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
+import Batch from '../../src/model/batch';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
 
 describe( 'Model', () => {
@@ -347,7 +349,7 @@ describe( 'Model', () => {
 
 			model.on( 'insertContent', spy );
 
-			model.insertContent( new ModelText( 'a' ), model.document.selection );
+			model.insertContent( new ModelText( 'a' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
@@ -357,7 +359,7 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			model.insertContent( new ModelText( 'ob' ), model.document.selection );
+			model.insertContent( new ModelText( 'ob' ) );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
@@ -367,7 +369,17 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[]ar</paragraph>' );
 
-			model.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ), model.document.selection );
+			model.insertContent( new ModelDocumentFragment( [ new ModelText( 'ob' ) ] ) );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
+		} );
+
+		it( 'should use current model selection if no selectable passed', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			model.insertContent( new ModelText( 'ob' ) );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foob[]ar</paragraph>' );
 		} );
@@ -377,7 +389,7 @@ describe( 'Model', () => {
 			setData( model, '<paragraph>[]</paragraph>' );
 
 			model.change( writer => {
-				model.insertContent( new ModelText( 'abc' ), model.document.selection );
+				model.insertContent( new ModelText( 'abc' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
@@ -529,35 +541,104 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should return true if there is a text node in given range', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 2 );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return true if there is a part of text node in given range', () => {
 			const pFoo = root.getChild( 1 );
-			const range = ModelRange.createFromParentsAndOffsets( pFoo, 1, pFoo, 2 );
+			const range = new ModelRange( ModelPosition._createAt( pFoo, 1 ), ModelPosition._createAt( pFoo, 2 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return true if there is element that is an object in given range', () => {
 			const divImg = root.getChild( 2 );
-			const range = ModelRange.createFromParentsAndOffsets( divImg, 0, divImg, 1 );
+			const range = new ModelRange( ModelPosition._createAt( divImg, 0 ), ModelPosition._createAt( divImg, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.true;
 		} );
 
 		it( 'should return false if range is collapsed', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 1, root, 1 );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
 		} );
 
 		it( 'should return false if range has only elements that are not objects', () => {
-			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'createPositionFromPath()', () => {
+		it( 'should return instance of Position', () => {
+			expect( model.createPositionFromPath( model.document.getRoot(), [ 0 ] ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			expect( model.createPositionAt( model.document.getRoot(), 0 ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createPositionAfter( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createPositionBefore( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRange( model.createPositionAt( model.document.getRoot(), 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRangeIn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph>fo[]ar</paragraph>' );
+
+			expect( model.createRangeOn( model.document.getRoot().getChild( 0 ) ) ).to.be.instanceof( ModelRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			expect( model.createSelection() ).to.be.instanceof( ModelSelection );
+		} );
+	} );
+
+	describe( 'createBatch()', () => {
+		it( 'should return instance of Batch', () => {
+			expect( model.createBatch() ).to.be.instanceof( Batch );
 		} );
 	} );
 

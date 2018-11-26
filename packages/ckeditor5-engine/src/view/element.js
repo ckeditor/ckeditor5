@@ -22,20 +22,21 @@ import { isPlainObject } from 'lodash-es';
  * This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `writer.createContainerElement()`} in order to create
- * a {@link module:engine/view/containerelement~ContainerElement},
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `writer.createAttributeElement()`} in order to create
- * a {@link module:engine/view/attributeelement~AttributeElement},
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `writer.createEmptyElement()`} in order to create
- * a {@link module:engine/view/emptyelement~EmptyElement}.
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `writer.createUIElement()`} in order to create
- * a {@link module:engine/view/uielement~UIElement}.
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `writer.createEditableElement()`} in order to create
- * a {@link module:engine/view/editableelement~EditableElement}.
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
+ * in order to create a {@link module:engine/view/containerelement~ContainerElement},
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
+ * in order to create a {@link module:engine/view/attributeelement~AttributeElement},
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
+ * in order to create a {@link module:engine/view/emptyelement~EmptyElement}.
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}
+ * in order to create a {@link module:engine/view/uielement~UIElement}.
+ * * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}
+ * in order to create a {@link module:engine/view/editableelement~EditableElement}.
  *
  * Note that for view elements which are not created from the model, like elements from mutations, paste or
- * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element, so
- * these will be instances of the {@link module:engine/view/element~Element}.
+ * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element.
+ * In such cases the {@link module:engine/view/upcastwriter~UpcastWriter#createElement `UpcastWriter#createElement()`} method
+ * should be used to create generic view elements.
  *
  * @extends module:engine/view/node~Node
  */
@@ -45,22 +46,15 @@ export default class Element extends Node {
 	 *
 	 * Attributes can be passed in various formats:
 	 *
-	 *		new Element( 'div', { 'class': 'editor', 'contentEditable': 'true' } ); // object
+	 *		new Element( 'div', { class: 'editor', contentEditable: 'true' } ); // object
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
-	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Use the
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement} for inline element,
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} for block element,
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement} for editable element,
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} for empty element or
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} for UI element instead.
 	 *
 	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
-	 * List of nodes to be inserted into created element.
+	 * A list of nodes to be inserted into created element.
 	 */
 	constructor( name, attrs, children ) {
 		super();
@@ -574,6 +568,7 @@ export default class Element extends Node {
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#remove
+	 * @protected
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @fires module:engine/view/node~Node#change
@@ -675,6 +670,7 @@ export default class Element extends Node {
 	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#removeClass
+	 * @protected
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
@@ -840,8 +836,7 @@ function parseInlineStyles( stylesMap, stylesString ) {
 
 					break;
 
-				// eslint-disable-next-line no-case-declarations
-				case ';':
+				case ';': {
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
 					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
@@ -857,6 +852,7 @@ function parseInlineStyles( stylesMap, stylesString ) {
 					propertyNameStart = i + 1;
 
 					break;
+				}
 			}
 		} else if ( char === quoteType ) {
 			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.

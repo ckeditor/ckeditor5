@@ -16,13 +16,15 @@ import { clone } from 'lodash-es';
 /**
  * Abstract tree view node class.
  *
+ * This is an abstract class. Its constructor should not be used directly.
+ * Use the {@link module:engine/view/element~Element} class to create view elements
+ * or {@link module:engine/view/text~Text} class to create view text nodes.
+ *
  * @abstract
  */
 export default class Node {
 	/**
 	 * Creates a tree view node.
-	 *
-	 * This is an abstract class, so this constructor should not be used directly.
 	 */
 	constructor() {
 		/**
@@ -123,11 +125,11 @@ export default class Node {
 	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/view/node~Node#root root}, down to this node's index.
 	 *
-	 *		const abc = new Text( 'abc' );
-	 *		const foo = new Text( 'foo' );
-	 *		const h1 = new Element( 'h1', null, new Text( 'header' ) );
-	 *		const p = new Element( 'p', null, [ abc, foo ] );
-	 *		const div = new Element( 'div', null, [ h1, p ] );
+	 *		const abc = downcastWriter.createText( 'abc' );
+	 *		const foo = downcastWriter.createText( 'foo' );
+	 *		const h1 = downcastWriter.createElement( 'h1', null, downcastWriter.createText( 'header' ) );
+	 *		const p = downcastWriter.createElement( 'p', null, [ abc, foo ] );
+	 *		const div = downcastWriter.createElement( 'div', null, [ h1, p ] );
 	 *		foo.getPath(); // Returns [ 1, 3 ]. `foo` is in `p` which is in `div`. `p` starts at offset 1, while `foo` at 3.
 	 *		h1.getPath(); // Returns [ 0 ].
 	 *		div.getPath(); // Returns [].
@@ -257,6 +259,7 @@ export default class Node {
 	}
 
 	/**
+	 * @protected
 	 * @param {module:engine/view/document~ChangeType} type Type of the change.
 	 * @param {module:engine/view/node~Node} node Changed node.
 	 * @fires change

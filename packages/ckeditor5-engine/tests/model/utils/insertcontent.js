@@ -8,78 +8,192 @@ import insertContent from '../../../src/model/utils/insertcontent';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
-import Selection from '../../../src/model/selection';
 import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
+import Range from '../../../src/model/range';
 
 describe( 'DataController utils', () => {
 	let model, doc;
 
 	describe( 'insertContent', () => {
-		it( 'should use parent batch', () => {
+		beforeEach( () => {
 			model = new Model();
 			doc = model.document;
 			doc.createRoot();
+		} );
 
+		it( 'should use parent batch', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'x[]x' );
 
 			model.change( writer => {
-				insertContent( model, new Text( 'a' ), doc.selection );
+				insertContent( model, writer.createText( 'a' ) );
 				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
 
 		it( 'should be able to insert content at custom selection', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
 
-			model.change( () => {
-				insertContent( model, new Text( 'x' ), selection );
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
 				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
 		} );
 
-		it( 'accepts DocumentFragment', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
+		it( 'should modify passed selection instance', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
 
+			const selection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
+			const selectionCopy = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 2 ] ) );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.true;
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), selection );
+			} );
+
+			expect( selection.isEqual( selectionCopy ) ).to.be.false;
+
+			const insertionSelection = model.createSelection( model.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
+			expect( selection.isEqual( insertionSelection ) ).to.be.true;
+		} );
+
+		it( 'should be able to insert content at custom position', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const position = new Position( doc.getRoot(), [ 2 ] );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), position );
+				expect( getData( model ) ).to.equal( 'a[]bxc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom range', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const range = new Range( new Position( doc.getRoot(), [ 2 ] ), new Position( doc.getRoot(), [ 3 ] ) );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), range );
+				expect( getData( model ) ).to.equal( 'a[]bx' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if document selection is passed', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ), model.document.selection );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model selection if none passed', () => {
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			model.change( writer => {
+				insertContent( model, writer.createText( 'x' ) );
+				expect( getData( model ) ).to.equal( 'ax[]bc' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (numeric offset)', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 2 );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>baxr</paragraph>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="in")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 'in' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>x</paragraph>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="on")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			model.schema.register( 'foo', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const insertElement = writer.createElement( 'foo' );
+
+				insertContent( model, insertElement, element, 'on' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><foo></foo>' );
+			} );
+		} );
+
+		it( 'should be able to insert content at model element (offset="end")', () => {
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			setData( model, '<paragraph>foo[]</paragraph><paragraph>bar</paragraph>' );
+
+			const element = doc.getRoot().getNodeByPath( [ 1 ] );
+
+			model.change( writer => {
+				const text = writer.createText( 'x' );
+
+				insertContent( model, text, element, 'end' );
+
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph>barx</paragraph>' );
+			} );
+		} );
+
+		it( 'accepts DocumentFragment', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection );
+			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
 
 		it( 'accepts Text', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( model, 'x[]x' );
 
-			insertContent( model, new Text( 'a' ), doc.selection );
+			insertContent( model, new Text( 'a' ) );
 
 			expect( getData( model ) ).to.equal( 'xa[]x' );
 		} );
 
 		it( 'should save the reference to the original object', () => {
-			model = new Model();
-			doc = model.document;
-			doc.createRoot();
-
 			const content = new Element( 'image' );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -90,7 +204,7 @@ describe( 'DataController utils', () => {
 
 			setData( model, '<paragraph>foo[]</paragraph>' );
 
-			insertContent( model, content, doc.selection );
+			insertContent( model, content );
 
 			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
@@ -303,7 +417,7 @@ describe( 'DataController utils', () => {
 				] );
 
 				setData( model, '[<heading2>foo</heading2>]' );
-				insertContent( model, content, doc.selection );
+				insertContent( model, content );
 				expect( getData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
 			} );
 
@@ -854,6 +968,6 @@ describe( 'DataController utils', () => {
 			} );
 		}
 
-		insertContent( model, content, doc.selection );
+		insertContent( model, content );
 	}
 } );

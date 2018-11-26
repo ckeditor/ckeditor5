@@ -131,7 +131,7 @@ export default class DowncastDispatcher {
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {
-				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ), writer );
+				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else {
@@ -166,7 +166,7 @@ export default class DowncastDispatcher {
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const value of range ) {
 			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
 				item,
 				range: itemRange
@@ -226,7 +226,7 @@ export default class DowncastDispatcher {
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
 			const item = value.item;
-			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
 				item,
 				range: itemRange,
@@ -343,7 +343,7 @@ export default class DowncastDispatcher {
 				continue;
 			}
 
-			const data = { item, range: Range.createOn( item ), markerName, markerRange };
+			const data = { item, range: Range._createOn( item ), markerName, markerRange };
 
 			this.fire( eventName, data, this.conversionApi );
 		}
@@ -495,14 +495,17 @@ export default class DowncastDispatcher {
 	 *
 	 * @event remove
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been removed.
-	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard
-	 * graveyard root}).
+	 * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
+	 * @param {Number} data.length Offset size of the removed node.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
-	 * Fired when attribute has been added/changed/removed from a node. Also fired when collapsed model selection attribute is converted.
+	 * Fired in the following cases:
+	 *
+	 * * when an attribute has been added, changed, or removed from a node,
+	 * * when a node with an attribute is inserted,
+	 * * when collapsed model selection attribute is converted.
 	 *
 	 * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.

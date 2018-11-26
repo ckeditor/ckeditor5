@@ -91,7 +91,7 @@ describe( 'DowncastWriter', () => {
 				const b = new AttributeElement( 'b' );
 
 				expect( () => {
-					writer.wrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
+					writer.wrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -356,7 +356,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if range is inside EmptyElement', () => {
 				const emptyElement = new EmptyElement( 'img' );
 				const container = new ContainerElement( 'p', null, emptyElement );
-				const range = Range.createFromParentsAndOffsets( emptyElement, 0, container, 1 );
+				const range = Range._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
 				expect( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );
@@ -374,7 +374,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw if range is inside UIElement', () => {
 				const uiElement = new UIElement( 'span' );
 				const container = new ContainerElement( 'p', null, uiElement );
-				const range = Range.createFromParentsAndOffsets( uiElement, 0, container, 1 );
+				const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 1 );
 
 				expect( () => {
 					writer.wrap( range, new AttributeElement( 'b' ) );

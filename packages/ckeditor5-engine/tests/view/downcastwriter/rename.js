@@ -24,7 +24,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should rename given element by inserting a new element in the place of the old one', () => {
 			const text = foo.getChild( 0 );
 
-			writer.rename( foo, 'bar' );
+			writer.rename( 'bar', foo );
 
 			const bar = root.getChild( 0 );
 
@@ -35,7 +35,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should return a reference to the inserted element', () => {
-			const bar = writer.rename( foo, 'bar' );
+			const bar = writer.rename( 'bar', foo );
 
 			expect( bar ).to.equal( root.getChild( 0 ) );
 		} );

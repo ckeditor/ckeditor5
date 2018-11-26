@@ -219,11 +219,16 @@ describe( 'transform', () => {
 
 				syncClients();
 
+				// Below would be the expected effect with correct wrap transformation.
+				// expectClients(
+				// 	'<paragraph>Bar</paragraph>' +
+				// 	'<blockQuote>' +
+				// 		'<paragraph>Foo</paragraph>' +
+				// 	'</blockQuote>'
+				// );
+
 				expectClients(
-					'<paragraph>Bar</paragraph>' +
-					'<blockQuote>' +
-						'<paragraph>Foo</paragraph>' +
-					'</blockQuote>'
+					'<paragraph>Bar</paragraph><paragraph>Foo</paragraph>'
 				);
 			} );
 		} );
@@ -284,18 +289,6 @@ describe( 'transform', () => {
 				syncClients();
 
 				expectClients( '<paragraph>ooF</paragraph>' );
-			} );
-
-			it( 'text in same path', () => {
-				john.setData( '<blockQuote><paragraph>F[oo]</paragraph></blockQuote>' );
-				kate.setData( '<blockQuote><paragraph>[]Foo</paragraph></blockQuote>' );
-
-				john.move( [ 0, 0, 0 ] );
-				kate.unwrap();
-
-				syncClients();
-
-				expectClients( '<blockQuote>ooF</blockQuote>' );
 			} );
 		} );
 

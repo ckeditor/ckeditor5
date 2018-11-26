@@ -6,7 +6,6 @@
 /* globals console, document */
 
 import View from '../../../src/view/view';
-import Position from '../../../src/view/position';
 import createViewRoot from '../_utils/createroot';
 
 const view = new View();
@@ -31,10 +30,10 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 } );
 
 view.change( writer => {
-	writer.insert( Position.createAt( editable1 ), writer.createText( 'First editable.' ) );
-	writer.insert( Position.createAt( editable2 ), writer.createText( 'Second editable.' ) );
+	writer.insert( writer.createPositionAt( editable1, 0 ), writer.createText( 'First editable.' ) );
+	writer.insert( writer.createPositionAt( editable2, 0 ), writer.createText( 'Second editable.' ) );
 
-	writer.setSelection( editable1 );
+	writer.setSelection( editable1, 'end' );
 } );
 
 editable1.on( 'change:isFocused', () => {

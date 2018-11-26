@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals Node */
+
 /**
  * @module engine/view/renderer
  */
@@ -20,6 +22,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
@@ -299,28 +302,23 @@ export default class Renderer {
 	 * @param {Node} domElement The DOM element representing the given view element.
 	 */
 	_updateElementMappings( viewElement, domElement ) {
-		// Because we replace new view element mapping with the existing one, the corresponding DOM element
-		// will not be rerendered. The new view element may have different attributes than the previous one.
-		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
-		// to the DOM, so we need to mark it here to make sure its attributes gets updated.
-		// Such situations may happen if only new view element was added to `this.markedAttributes`
-		// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
-		// also rerenders its attributes). See #1427 for more detailed case study.
-		const newViewChild = this.domConverter.mapDomToView( domElement );
-
-		// It may also happen that 'newViewChild' mapping is not present since its parent mapping
-		// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
-		// mappings) so we also check for '!newViewChild'.
-		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) ) {
-			this.markedAttributes.add( viewElement );
-		}
-
 		// Remap 'DomConverter' bindings.
 		this.domConverter.unbindDomElement( domElement );
 		this.domConverter.bindElements( domElement, viewElement );
 
 		// View element may have children which needs to be updated, but are not marked, mark them to update.
 		this.markedChildren.add( viewElement );
+
+		// Because we replace new view element mapping with the existing one, the corresponding DOM element
+		// will not be rerendered. The new view element may have different attributes than the previous one.
+		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
+		// to the DOM, so we need to mark it here to make sure its attributes gets updated. See #1427 for more
+		// detailed case study.
+		// Also there are cases where replaced element is removed from the view structure and then has
+		// its attributes changed or removed. In such cases the element will not be present in `markedAttributes`
+		// and also may be the same (`element.isSimilar()`) as the reused element not having its attributes updated.
+		// To prevent such situations we always mark reused element to have its attributes rerenderd (#1560).
+		this.markedAttributes.add( viewElement );
 	}
 
 	/**
@@ -340,7 +338,7 @@ export default class Renderer {
 		const firstPos = this.selection.getFirstPosition();
 
 		if ( firstPos.parent.is( 'text' ) ) {
-			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
+			return ViewPosition._createBefore( this.selection.getFirstPosition().parent );
 		} else {
 			return firstPos;
 		}
@@ -762,6 +760,11 @@ export default class Renderer {
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
+
+		// Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
+		if ( env.isGecko ) {
+			fixGeckoSelectionAfterBr( focus, domSelection );
+		}
 	}
 
 	/**
@@ -932,4 +935,29 @@ function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
 
 	// Not matching types.
 	return false;
+}
+
+// The following is a Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
+// When the native DOM selection is at the end of the block and preceded by <br /> e.g.
+//
+//		<p>foo<br/>[]</p>
+//
+// which happens a lot when using the soft line break, the browser fails to (visually) move the
+// caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
+function fixGeckoSelectionAfterBr( focus, domSelection ) {
+	const parent = focus.parent;
+
+	// This fix works only when the focus point is at the very end of an element.
+	// There is no point in running it in cases unrelated to the browser bug.
+	if ( parent.nodeType != Node.ELEMENT_NODE || focus.offset != parent.childNodes.length - 1 ) {
+		return;
+	}
+
+	const childAtOffset = parent.childNodes[ focus.offset ];
+
+	// To stay on the safe side, the fix being as specific as possible, it targets only the
+	// selection which is at the very end of the element and preceded by <br />.
+	if ( childAtOffset && childAtOffset.tagName == 'BR' ) {
+		domSelection.addRange( domSelection.getRangeAt( 0 ) );
+	}
 }

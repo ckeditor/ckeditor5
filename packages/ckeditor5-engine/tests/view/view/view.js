@@ -11,6 +11,7 @@ import CompositionObserver from '../../../src/view/observer/compositionobserver'
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
+import ViewSelection from '../../../src/view/selection';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -250,7 +251,7 @@ describe( 'view', () => {
 		it( 'scrolls to the first range in selection with an offset', () => {
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const stub = testUtils.sinon.stub( global.window, 'scrollTo' );
-			const range = ViewRange.createIn( root );
+			const range = ViewRange._createIn( root );
 
 			view.attachDomRoot( domRoot );
 
@@ -478,8 +479,8 @@ describe( 'view', () => {
 
 					return element;
 				} );
-				writer.insert( ViewPosition.createAt( p ), ui );
-				writer.insert( ViewPosition.createAt( viewRoot ), p );
+				writer.insert( ViewPosition._createAt( p, 0 ), ui );
+				writer.insert( ViewPosition._createAt( viewRoot, 0 ), p );
 			} );
 
 			expect( renderingCalled ).to.be.true;
@@ -600,6 +601,97 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( eventSpy );
 
 			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
+		} );
+
+		it( 'should return result of the callback', () => {
+			const result = view.change( () => {
+				return 'FooBar';
+			} );
+
+			expect( result ).to.equal( 'FooBar' );
+		} );
+
+		it( 'should return result of the callback with nested change block', () => {
+			let result2 = false;
+			let result3 = false;
+
+			const result1 = view.change( () => {
+				return view.change( () => {
+					result2 = view.change( () => {
+						return true;
+					} );
+					result3 = view.change( () => {} );
+
+					return 42;
+				} );
+			} );
+
+			expect( result1 ).to.equal( 42 );
+			expect( result2 ).to.equal( true );
+			expect( result3 ).to.undefined;
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createPositionAt( viewDocument.getRoot(), 0 ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createPositionAfter( viewDocument.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createPositionBefore( viewDocument.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createRange( view.createPositionAt( viewDocument.getRoot(), 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createRangeIn( viewDocument.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createRangeOn( viewDocument.getRoot().getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			createViewRoot( viewDocument, 'div', 'main' );
+			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
+
+			expect( view.createSelection() ).to.be.instanceof( ViewSelection );
 		} );
 	} );
 

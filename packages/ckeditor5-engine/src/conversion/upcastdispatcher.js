@@ -71,10 +71,16 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *  	 				conversionApi.writer.insert( paragraph, splitResult.position );
  *
  *  	 				// Convert children to paragraph.
- *  	 				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph ) );
+ *  	 				const { modelRange } = conversionApi.convertChildren(
+ *  	 					data.viewItem,
+ *  	 					conversionApi.writer.createPositionAt( paragraph, 0 )
+ *  	 				);
  *
  * 						// Set as conversion result, attribute converters may use this property.
- *  	 				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
+ *  	 				data.modelRange = conversionApi.writer.createRange(
+ *  	 					conversionApi.writer.createPositionBefore( paragraph ),
+ *  	 					modelRange.end
+ *  	 				);
  *
  *  	 				// Continue conversion inside paragraph.
  *  	 				data.modelCursor = data.modelRange.end;
@@ -372,7 +378,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	const markers = new Map();
 
 	// Create ModelTreeWalker.
-	const range = ModelRange.createIn( modelItem ).getItems();
+	const range = ModelRange._createIn( modelItem ).getItems();
 
 	// Walk through DocumentFragment and collect marker elements.
 	for ( const item of range ) {
@@ -385,14 +391,14 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
 	for ( const markerElement of markerElements ) {
 		const markerName = markerElement.getAttribute( 'data-name' );
-		const currentPosition = ModelPosition.createBefore( markerElement );
+		const currentPosition = writer.createPositionBefore( markerElement );
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
 		if ( !markers.has( markerName ) ) {
-			markers.set( markerName, new ModelRange( ModelPosition.createFromPosition( currentPosition ) ) );
+			markers.set( markerName, new ModelRange( currentPosition.clone() ) );
 		// Otherwise is means that we have found end of the marker range.
 		} else {
-			markers.get( markerName ).end = ModelPosition.createFromPosition( currentPosition );
+			markers.get( markerName ).end = currentPosition.clone();
 		}
 
 		// Remove marker element from DocumentFragment.
@@ -419,7 +425,7 @@ function createContextTree( contextDefinition, writer ) {
 			writer.append( current, position );
 		}
 
-		position = ModelPosition.createAt( current );
+		position = ModelPosition._createAt( current, 0 );
 	}
 
 	return position;

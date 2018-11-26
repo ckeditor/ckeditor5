@@ -39,7 +39,8 @@ export default class InsertOperation extends Operation {
 		 * @readonly
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~InsertOperation#position
 		 */
-		this.position = Position.createFromPosition( position );
+		this.position = position.clone();
+		this.position.stickiness = 'toNone';
 
 		/**
 		 * List of nodes to insert.

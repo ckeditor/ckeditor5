@@ -568,7 +568,7 @@ describe( 'TreeWalker', () => {
 		describe( 'forward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 0 )
+					startPosition: Position._createAt( paragraph, 0 )
 				} );
 
 				walker.skip( value => value.type == 'text' );
@@ -579,7 +579,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should do not move if the condition is false', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 1 )
+					startPosition: Position._createAt( paragraph, 1 )
 				} );
 
 				walker.skip( () => false );
@@ -590,7 +590,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should move to the end if the condition is true', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 1 )
+					startPosition: Position._createAt( paragraph, 1 )
 				} );
 
 				walker.skip( () => true );
@@ -603,7 +603,7 @@ describe( 'TreeWalker', () => {
 		describe( 'backward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 3 ),
+					startPosition: Position._createAt( paragraph, 3 ),
 					direction: 'backward'
 				} );
 
@@ -615,7 +615,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should do not move if the condition is false', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 1 ),
+					startPosition: Position._createAt( paragraph, 1 ),
 					direction: 'backward'
 				} );
 
@@ -627,7 +627,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should move to the end if the condition is true', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position.createFromParentAndOffset( paragraph, 1 ),
+					startPosition: Position._createAt( paragraph, 1 ),
 					direction: 'backward'
 				} );
 
@@ -660,11 +660,11 @@ function expectText( value, expected, options = {} ) {
 	expect( value.length ).to.equal( value.item.data.length );
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createBefore( value.item );
+		previousPosition = Position._createAfter( value.item );
+		nextPosition = Position._createBefore( value.item );
 	} else {
-		previousPosition = Position.createBefore( value.item );
-		nextPosition = Position.createAfter( value.item );
+		previousPosition = Position._createBefore( value.item );
+		nextPosition = Position._createAfter( value.item );
 	}
 
 	expect( value.previousPosition ).to.deep.equal( previousPosition );
@@ -678,11 +678,11 @@ function expectStart( value, expected, options = {} ) {
 	expect( value.length ).to.equal( 1 );
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createBefore( value.item );
+		previousPosition = Position._createAfter( value.item );
+		nextPosition = Position._createBefore( value.item );
 	} else {
-		previousPosition = Position.createBefore( value.item );
-		nextPosition = Position.createFromParentAndOffset( value.item, 0 );
+		previousPosition = Position._createBefore( value.item );
+		nextPosition = Position._createAt( value.item, 0 );
 	}
 
 	if ( options.shallow ) {
@@ -699,11 +699,11 @@ function expectEnd( value, expected, options = {} ) {
 	expect( value.length ).to.be.undefined;
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createFromParentAndOffset( value.item, value.item.maxOffset );
+		previousPosition = Position._createAfter( value.item );
+		nextPosition = Position._createAt( value.item, value.item.maxOffset );
 	} else {
-		previousPosition = Position.createFromParentAndOffset( value.item, value.item.maxOffset );
-		nextPosition = Position.createAfter( value.item );
+		previousPosition = Position._createAt( value.item, value.item.maxOffset );
+		nextPosition = Position._createAfter( value.item );
 	}
 
 	expect( value.previousPosition ).to.deep.equal( previousPosition );

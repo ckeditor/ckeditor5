@@ -13,24 +13,40 @@ import Element from '../element';
 import Range from '../range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import DocumentSelection from '../documentselection';
+import Selection from '../selection';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
+ * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+ * to the insertion selection (equal to a range to be selected after insertion).
+ *
  * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
- * This function is only exposed to be reusable in algorithms
- * which change the {@link module:engine/model/model~Model#insertContent}
+ * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
  *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+ * module:engine/model/position~Position|module:engine/model/element~Element|
+ * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
+ * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
  */
-export default function insertContent( model, content, selection ) {
+export default function insertContent( model, content, selectable, placeOrOffset ) {
 	model.change( writer => {
+		let selection;
+
+		if ( !selectable ) {
+			selection = model.document.selection;
+		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
+			selection = selectable;
+		} else {
+			selection = writer.createSelection( selectable, placeOrOffset );
+		}
+
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection );
 		}
@@ -158,7 +174,7 @@ class Insertion {
 	 */
 	getSelectionRange() {
 		if ( this.nodeToSelect ) {
-			return Range.createOn( this.nodeToSelect );
+			return Range._createOn( this.nodeToSelect );
 		}
 
 		return this.model.schema.getNearestSelectionRange( this.position );
@@ -260,12 +276,11 @@ class Insertion {
 			return;
 		}
 
-		const livePos = LivePosition.createFromPosition( this.position );
-		livePos.stickiness = 'toNext';
+		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
 
 		this.writer.insert( node, this.position );
 
-		this.position = Position.createFromPosition( livePos );
+		this.position = livePos.toPosition();
 		livePos.detach();
 
 		// The last inserted object should be selected because we can't put a collapsed selection after it.
@@ -290,19 +305,19 @@ class Insertion {
 
 		const mergeLeft = this._canMergeLeft( node, context );
 		const mergeRight = this._canMergeRight( node, context );
-		const mergePosLeft = LivePosition.createBefore( node );
+		const mergePosLeft = LivePosition._createBefore( node );
 		mergePosLeft.stickiness = 'toNext';
-		const mergePosRight = LivePosition.createAfter( node );
+		const mergePosRight = LivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
 		if ( mergeLeft ) {
-			const position = LivePosition.createFromPosition( this.position );
-			position.stickiness = 'toNext';
+			const livePosition = LivePosition.fromPosition( this.position );
+			livePosition.stickiness = 'toNext';
 
 			this.writer.merge( mergePosLeft );
 
-			this.position = Position.createFromPosition( position );
-			position.detach();
+			this.position = livePosition.toPosition();
+			livePosition.detach();
 		}
 
 		if ( mergeRight ) {
@@ -316,16 +331,16 @@ class Insertion {
 
 			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
 			// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
-			this.position = Position.createAt( mergePosRight.nodeBefore, 'end' );
+			this.position = Position._createAt( mergePosRight.nodeBefore, 'end' );
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const position = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
+			const livePosition = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
 
 			this.writer.merge( mergePosRight );
 
-			this.position = Position.createFromPosition( position );
-			position.detach();
+			this.position = livePosition.toPosition();
+			livePosition.detach();
 		}
 
 		if ( mergeLeft || mergeRight ) {
@@ -412,7 +427,7 @@ class Insertion {
 
 			if ( this.position.isAtStart ) {
 				const parent = this.position.parent;
-				this.position = Position.createBefore( parent );
+				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>) so isAtStart == isAtEnd == true.
 				// We can remove the element after moving selection out of it.
@@ -420,9 +435,9 @@ class Insertion {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
-				this.position = Position.createAfter( this.position.parent );
+				this.position = this.writer.createPositionAfter( this.position.parent );
 			} else {
-				const tempPos = Position.createAfter( this.position.parent );
+				const tempPos = this.writer.createPositionAfter( this.position.parent );
 
 				this.writer.split( this.position );
 

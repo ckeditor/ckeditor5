@@ -14,7 +14,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
 /**
- * Position in the tree. Position is always located before or after a node.
+ * Position in the view tree. Position is represented by its parent node and an offset in this parent.
+ *
+ * In order to create a new position instance use the `createPosition*()` factory methods available in:
+ *
+ * * {@module:engine/view/view~View}
+ * * {@module:engine/view/downcastwriter~DowncastWriter}
+ * * {@module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position {
 	/**
@@ -131,7 +137,7 @@ export default class Position {
 	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		const shifted = Position.createFromPosition( this );
+		const shifted = Position._createAt( this );
 
 		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
@@ -275,6 +281,25 @@ export default class Position {
 	}
 
 	/**
+	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this positions as a start position.
+	 *
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}
+	 * @param {module:engine/view/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
+	 * @param {Boolean} [options.singleCharacters=false]
+	 * @param {Boolean} [options.shallow=false]
+	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 */
+	getWalker( options = {} ) {
+		options.startPosition = this;
+
+		return new TreeWalker( options );
+	}
+
+	clone() {
+		return new Position( this.parent, this.offset );
+	}
+
+	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
 	 * * a {@link module:engine/view/position~Position position},
@@ -284,28 +309,36 @@ export default class Position {
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
-	 * * {@link module:engine/view/position~Position.createBefore},
-	 * * {@link module:engine/view/position~Position.createAfter},
-	 * * {@link module:engine/view/position~Position.createFromPosition}.
+	 * * {@link module:engine/view/position~Position._createBefore},
+	 * * {@link module:engine/view/position~Position._createAfter}.
 	 *
-	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @protected
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	static createAt( itemOrPosition, offset ) {
+	static _createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
-			return this.createFromPosition( itemOrPosition );
+			return new this( itemOrPosition.parent, itemOrPosition.offset );
 		} else {
 			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
 				offset = node.is( 'text' ) ? node.data.length : node.childCount;
 			} else if ( offset == 'before' ) {
-				return this.createBefore( node );
+				return this._createBefore( node );
 			} else if ( offset == 'after' ) {
-				return this.createAfter( node );
-			} else if ( !offset ) {
-				offset = 0;
+				return this._createAfter( node );
+			} else if ( offset !== 0 && !offset ) {
+				/**
+				 * {@link module:engine/view/view~View#createPositionAt `View#createPositionAt()`}
+				 * requires the offset to be specified when the first parameter is a view item.
+				 *
+				 * @error view-createPositionAt-offset-required
+				 */
+				throw new CKEditorError(
+					'view-createPositionAt-offset-required: ' +
+					'View#createPositionAt() requires the offset when the first parameter is a view item.' );
 			}
 
 			return new Position( node, offset );
@@ -315,10 +348,11 @@ export default class Position {
 	/**
 	 * Creates a new position after given view item.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	static createAfter( item ) {
+	static _createAfter( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText + item.data.length );
@@ -340,10 +374,11 @@ export default class Position {
 	/**
 	 * Creates a new position before given view item.
 	 *
+	 * @protected
 	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
 	 * @returns {module:engine/view/position~Position}
 	 */
-	static createBefore( item ) {
+	static _createBefore( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText );
@@ -360,16 +395,6 @@ export default class Position {
 		}
 
 		return new Position( item.parent, item.index );
-	}
-
-	/**
-	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
-	 *
-	 * @param {module:engine/view/position~Position} position Position to be cloned.
-	 * @returns {module:engine/view/position~Position}
-	 */
-	static createFromPosition( position ) {
-		return new this( position.parent, position.offset );
 	}
 }
 

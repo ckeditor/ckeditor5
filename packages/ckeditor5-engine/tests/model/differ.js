@@ -15,8 +15,6 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 
 describe( 'Differ', () => {
 	let doc, differ, root, model;
@@ -141,9 +139,9 @@ describe( 'Differ', () => {
 				insert( image, position );
 
 				const caption = new Element( 'caption' );
-				insert( caption, Position.createAt( image, 0 ) );
+				insert( caption, Position._createAt( image, 0 ) );
 
-				insert( new Text( 'foo' ), Position.createAt( caption, 0 ) );
+				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: 'image', length: 1, position }
@@ -170,13 +168,13 @@ describe( 'Differ', () => {
 		it( 'node in a element with changed attribute', () => {
 			const text = new Text( 'xyz', { bold: true } );
 			const position = new Position( root, [ 0, 3 ] );
-			const range = Range.createFromParentsAndOffsets( root, 0, root, 1 );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
 
 			model.change( () => {
 				insert( text, position );
 				attribute( range, 'align', null, 'center' );
 
-				const diffRange = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+				const diffRange = new Range( Position._createAt( root, 0 ), Position._createAt( root.getChild( 0 ), 0 ) );
 
 				// Compare to scenario above, this time there is only an attribute change on parent element,
 				// so there is also a diff for text.
@@ -200,14 +198,14 @@ describe( 'Differ', () => {
 
 		it( 'nodes before nodes with changed attributes', () => {
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 1, p1, 3 );
+			const range = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 3 ) );
 			const position = new Position( root, [ 0, 0 ] );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				insert( new Text( 'xx' ), position );
 
-				const rangeAfter = Range.createFromParentsAndOffsets( p1, 3, p1, 5 );
+				const rangeAfter = new Range( Position._createAt( p1, 3 ), Position._createAt( p1, 5 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 2, position },
@@ -218,15 +216,15 @@ describe( 'Differ', () => {
 
 		it( 'nodes between nodes with changed attributes', () => {
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 1, p1, 3 );
+			const range = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 3 ) );
 			const position = new Position( root, [ 0, 2 ] );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				insert( new Text( 'xx' ), position );
 
-				const rangeBefore = Range.createFromParentsAndOffsets( p1, 1, p1, 2 );
-				const rangeAfter = Range.createFromParentsAndOffsets( p1, 4, p1, 5 );
+				const rangeBefore = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 2 ) );
+				const rangeAfter = new Range( Position._createAt( p1, 4 ), Position._createAt( p1, 5 ) );
 
 				expectChanges( [
 					{
@@ -250,7 +248,7 @@ describe( 'Differ', () => {
 
 		it( 'nodes after nodes with changed attributes', () => {
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 1, p1, 3 );
+			const range = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 3 ) );
 			const position = new Position( root, [ 0, 3 ] );
 
 			model.change( () => {
@@ -442,13 +440,13 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 0 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 2, p1, 3 );
+			const range = new Range( Position._createAt( p1, 2 ), Position._createAt( p1, 3 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				remove( position, 1 );
 
-				const newRange = Range.createFromParentsAndOffsets( p1, 1, p1, 2 );
+				const newRange = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 2 ) );
 
 				expectChanges( [
 					{ type: 'remove', name: '$text', length: 1, position },
@@ -467,13 +465,13 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 0 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 1, p1, 3 );
+			const range = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 3 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				remove( position, 2 );
 
-				const newRange = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
+				const newRange = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
 
 				expectChanges( [
 					{ type: 'remove', name: '$text', length: 2, position },
@@ -492,14 +490,14 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 0, p1, 3 );
+			const range = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 3 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				remove( position, 1 );
 
-				const rangeBefore = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
-				const rangeAfter = Range.createFromParentsAndOffsets( p1, 1, p1, 2 );
+				const rangeBefore = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
+				const rangeAfter = new Range( Position._createAt( p1, 1 ), Position._createAt( p1, 2 ) );
 
 				expectChanges( [
 					{
@@ -525,13 +523,13 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 0, p1, 2 );
+			const range = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 2 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
 				remove( position, 2 );
 
-				const newRange = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
+				const newRange = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
 
 				expectChanges( [
 					{
@@ -550,7 +548,7 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 2 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
+			const range = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', null, true );
@@ -700,12 +698,12 @@ describe( 'Differ', () => {
 		const attributeNewValue = 'foo';
 
 		it( 'on an element', () => {
-			const range = Range.createFromParentsAndOffsets( root, 0, root, 1 );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
 
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const diffRange = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+				const diffRange = new Range( Position._createAt( root, 0 ), Position._createAt( root.getChild( 0 ), 0 ) );
 
 				expectChanges( [
 					{ type: 'attribute', range: diffRange, attributeKey, attributeOldValue, attributeNewValue }
@@ -714,7 +712,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'on an element - only one of many attributes changes', () => {
-			const range = Range.createFromParentsAndOffsets( root, 0, root, 1 );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
 
 			model.change( () => {
 				// Set an attribute on an element. It won't change afterwards.
@@ -724,7 +722,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const diffRange = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+				const diffRange = new Range( Position._createAt( root, 0 ), Position._createAt( root.getChild( 0 ), 0 ) );
 
 				expectChanges( [
 					{ type: 'attribute', range: diffRange, attributeKey, attributeOldValue, attributeNewValue }
@@ -734,7 +732,7 @@ describe( 'Differ', () => {
 
 		it( 'on a character', () => {
 			const parent = root.getChild( 1 );
-			const range = Range.createFromParentsAndOffsets( parent, 1, parent, 2 );
+			const range = new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 2 ) );
 
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
@@ -747,7 +745,7 @@ describe( 'Differ', () => {
 
 		it( 'on a character - case with same characters next to each other', () => {
 			const parent = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( parent, 1, parent, 2 );
+			const range = new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 2 ) );
 
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
@@ -760,7 +758,7 @@ describe( 'Differ', () => {
 
 		it( 'on multiple characters', () => {
 			const parent = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( parent, 0, parent, 3 );
+			const range = new Range( Position._createAt( parent, 0 ), Position._createAt( parent, 3 ) );
 
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
@@ -774,14 +772,14 @@ describe( 'Differ', () => {
 		it( 'on multiple consecutive characters in multiple operations', () => {
 			const parent = root.getChild( 0 );
 
-			const range1 = Range.createFromParentsAndOffsets( parent, 1, parent, 2 );
-			const range2 = Range.createFromParentsAndOffsets( parent, 2, parent, 3 );
+			const range1 = new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 2 ) );
+			const range2 = new Range( Position._createAt( parent, 2 ), Position._createAt( parent, 3 ) );
 
 			model.change( () => {
 				attribute( range1, attributeKey, attributeOldValue, attributeNewValue );
 				attribute( range2, attributeKey, attributeOldValue, attributeNewValue );
 
-				const range = Range.createFromParentsAndOffsets( parent, 1, parent, 3 );
+				const range = new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 3 ) );
 
 				expectChanges( [
 					{ type: 'attribute', range, attributeKey, attributeOldValue, attributeNewValue }
@@ -801,7 +799,7 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				for ( const item of ranges ) {
-					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+					const range = new Range( Position._createAt( parent, item[ 0 ] ), Position._createAt( parent, item[ 1 ] ) );
 
 					attribute( range, item[ 4 ], item[ 2 ], item[ 3 ] );
 				}
@@ -809,14 +807,14 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 0, parent, 2 ),
+						range: new Range( Position._createAt( parent, 0 ), Position._createAt( parent, 2 ) ),
 						attributeKey: 'foo',
 						attributeOldValue: null,
 						attributeNewValue: true
 					},
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 1, parent, 3 ),
+						range: new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 3 ) ),
 						attributeKey: 'bar',
 						attributeOldValue: null,
 						attributeNewValue: true
@@ -837,7 +835,7 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				for ( const item of ranges ) {
-					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+					const range = new Range( Position._createAt( parent, item[ 0 ] ), Position._createAt( parent, item[ 1 ] ) );
 
 					attribute( range, item[ 4 ], item[ 2 ], item[ 3 ] );
 				}
@@ -845,28 +843,28 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 0, parent, 1 ),
+						range: new Range( Position._createAt( parent, 0 ), Position._createAt( parent, 1 ) ),
 						attributeKey: 'bar',
 						attributeOldValue: null,
 						attributeNewValue: true
 					},
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 1, parent, 2 ),
+						range: new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 2 ) ),
 						attributeKey: 'foo',
 						attributeOldValue: null,
 						attributeNewValue: true
 					},
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 1, parent, 2 ),
+						range: new Range( Position._createAt( parent, 1 ), Position._createAt( parent, 2 ) ),
 						attributeKey: 'bar',
 						attributeOldValue: null,
 						attributeNewValue: true
 					},
 					{
 						type: 'attribute',
-						range: Range.createFromParentsAndOffsets( parent, 2, parent, 3 ),
+						range: new Range( Position._createAt( parent, 2 ), Position._createAt( parent, 3 ) ),
 						attributeKey: 'foo',
 						attributeOldValue: null,
 						attributeNewValue: true
@@ -886,7 +884,7 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				for ( const item of ranges ) {
-					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+					const range = new Range( Position._createAt( parent, item[ 0 ] ), Position._createAt( parent, item[ 1 ] ) );
 
 					attribute( range, attributeKey, item[ 2 ], item[ 3 ] );
 				}
@@ -908,14 +906,14 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				for ( const item of ranges ) {
-					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+					const range = new Range( Position._createAt( parent, item[ 0 ] ), Position._createAt( parent, item[ 1 ] ) );
 
 					attribute( range, attributeKey, item[ 2 ], item[ 3 ] );
 				}
 
 				expectChanges( [ {
 					type: 'attribute',
-					range: Range.createFromParentsAndOffsets( parent, 0, parent, 2 ),
+					range: new Range( Position._createAt( parent, 0 ), Position._createAt( parent, 2 ) ),
 					attributeKey,
 					attributeOldValue: null,
 					attributeNewValue: true
@@ -926,8 +924,8 @@ describe( 'Differ', () => {
 		it( 'on multiple non-consecutive characters in multiple operations', () => {
 			const parent = root.getChild( 0 );
 
-			const range1 = Range.createFromParentsAndOffsets( parent, 0, parent, 1 );
-			const range2 = Range.createFromParentsAndOffsets( parent, 2, parent, 3 );
+			const range1 = new Range( Position._createAt( parent, 0 ), Position._createAt( parent, 1 ) );
+			const range2 = new Range( Position._createAt( parent, 2 ), Position._createAt( parent, 3 ) );
 
 			model.change( () => {
 				// Note "reversed" order of ranges. Further range is changed first.
@@ -943,7 +941,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'on range containing various nodes', () => {
-			const range = Range.createFromParentsAndOffsets( root, 0, root, 2 );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 2 ) );
 
 			model.change( () => {
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
@@ -955,14 +953,14 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( root, 0, p1, 0 ),
+						range: new Range( Position._createAt( root, 0 ), Position._createAt( p1, 0 ) ),
 						attributeKey,
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( root, 1, p2, 0 ),
+						range: new Range( Position._createAt( root, 1 ), Position._createAt( p2, 0 ) ),
 						attributeKey,
 						attributeOldValue,
 						attributeNewValue
@@ -976,14 +974,14 @@ describe( 'Differ', () => {
 
 			p.getChild( 0 )._setAttribute( 'bold', true );
 
-			const range = Range.createFromParentsAndOffsets( p, 1, p, 3 );
+			const range = new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) );
 
 			model.change( () => {
 				attribute( range, 'bold', true, null );
 				attribute( range, 'italic', null, true );
 
-				const range1 = Range.createFromParentsAndOffsets( p, 1, p, 2 );
-				const range2 = Range.createFromParentsAndOffsets( p, 2, p, 3 );
+				const range1 = new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) );
+				const range2 = new Range( Position._createAt( p, 2 ), Position._createAt( p, 3 ) );
 
 				// Attribute change glueing does not work 100% correct.
 				expectChanges( [
@@ -1023,13 +1021,13 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 0, p1, 2 );
+			const range = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 2 ) );
 
 			model.change( () => {
 				insert( new Text( 'xx' ), position );
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const rangeBefore = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
+				const rangeBefore = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
 
 				expectChanges( [
 					{ type: 'attribute', range: rangeBefore, attributeKey, attributeOldValue, attributeNewValue },
@@ -1042,7 +1040,7 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 2, p1, 3 );
+			const range = new Range( Position._createAt( p1, 2 ), Position._createAt( p1, 3 ) );
 
 			model.change( () => {
 				insert( new Text( 'xxx' ), position );
@@ -1058,13 +1056,13 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 2, p1, 4 );
+			const range = new Range( Position._createAt( p1, 2 ), Position._createAt( p1, 4 ) );
 
 			model.change( () => {
 				insert( new Text( 'xx' ), position );
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const rangeAfter = Range.createFromParentsAndOffsets( p1, 3, p1, 4 );
+				const rangeAfter = new Range( Position._createAt( p1, 3 ), Position._createAt( p1, 4 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 2, position },
@@ -1077,14 +1075,14 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
 			const p1 = root.getChild( 0 );
-			const range = Range.createFromParentsAndOffsets( p1, 0, p1, 4 );
+			const range = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 4 ) );
 
 			model.change( () => {
 				insert( new Text( 'xx' ), position );
 				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 
-				const rangeBefore = Range.createFromParentsAndOffsets( p1, 0, p1, 1 );
-				const rangeAfter = Range.createFromParentsAndOffsets( p1, 3, p1, 4 );
+				const rangeBefore = new Range( Position._createAt( p1, 0 ), Position._createAt( p1, 1 ) );
+				const rangeAfter = new Range( Position._createAt( p1, 3 ), Position._createAt( p1, 4 ) );
 
 				expectChanges( [
 					{ type: 'attribute', range: rangeBefore, attributeKey, attributeOldValue, attributeNewValue },
@@ -1097,8 +1095,8 @@ describe( 'Differ', () => {
 		it( 'on some not changed and some changed nodes', () => {
 			const p = root.getChild( 0 );
 
-			const rangeA = Range.createFromParentsAndOffsets( p, 1, p, 3 );
-			const rangeB = Range.createFromParentsAndOffsets( p, 0, p, 2 );
+			const rangeA = new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) );
+			const rangeB = new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) );
 
 			model.change( () => {
 				attribute( rangeA, 'a', null, true );
@@ -1112,28 +1110,28 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 0, p, 1 ),
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 1 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 2 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 2 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 2, p, 3 ),
+						range: new Range( Position._createAt( p, 2 ), Position._createAt( p, 3 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
@@ -1145,8 +1143,8 @@ describe( 'Differ', () => {
 		it( 'on already changed nodes', () => {
 			const p = root.getChild( 1 );
 
-			const rangeA = Range.createFromParentsAndOffsets( p, 0, p, 3 );
-			const rangeB = Range.createFromParentsAndOffsets( p, 1, p, 2 );
+			const rangeA = new Range( Position._createAt( p, 0 ), Position._createAt( p, 3 ) );
+			const rangeB = new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) );
 
 			model.change( () => {
 				attribute( rangeA, 'a', null, true );
@@ -1160,21 +1158,21 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 0, p, 2 ),
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 2 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 2, p, 3 ),
+						range: new Range( Position._createAt( p, 2 ), Position._createAt( p, 3 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
@@ -1186,8 +1184,8 @@ describe( 'Differ', () => {
 		it( 'on some changed and some not changed nodes', () => {
 			const p = root.getChild( 1 );
 
-			const rangeA = Range.createFromParentsAndOffsets( p, 0, p, 2 );
-			const rangeB = Range.createFromParentsAndOffsets( p, 1, p, 3 );
+			const rangeA = new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) );
+			const rangeB = new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) );
 
 			model.change( () => {
 				attribute( rangeA, 'a', null, true );
@@ -1200,14 +1198,14 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 0, p, 2 ),
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 3 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
@@ -1219,8 +1217,8 @@ describe( 'Differ', () => {
 		it( 'over all changed nodes and some not changed nodes', () => {
 			const p = root.getChild( 0 );
 
-			const rangeA = Range.createFromParentsAndOffsets( p, 1, p, 2 );
-			const rangeB = Range.createFromParentsAndOffsets( p, 0, p, 3 );
+			const rangeA = new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) );
+			const rangeB = new Range( Position._createAt( p, 0 ), Position._createAt( p, 3 ) );
 
 			model.change( () => {
 				attribute( rangeA, 'a', null, true );
@@ -1234,21 +1232,21 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 0, p, 1 ),
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 1 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 2 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
 						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
 					},
 					{
 						type,
-						range: Range.createFromParentsAndOffsets( p, 1, p, 3 ),
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) ),
 						attributeKey: 'b',
 						attributeOldValue,
 						attributeNewValue
@@ -1300,6 +1298,25 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
+			} );
+		} );
+
+		it( 'should correctly mark a change in graveyard', () => {
+			model.change( () => {
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
+			} );
+
+			model.change( () => {
+				const position = new Position( root, [ 0, 3 ] );
+				const operation = new SplitOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
+
+				model.applyOperation( operation );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'remove', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				], true );
 			} );
 		} );
 	} );
@@ -1356,100 +1373,16 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
-	} );
 
-	describe( 'wrap', () => {
-		it( 'wrap elements', () => {
+		it( 'should correctly mark a change in graveyard', () => {
 			model.change( () => {
-				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
+				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'wrap old and new elements', () => {
-			model.change( () => {
-				insert( new Element( 'paragraph' ), new Position( root, [ 0 ] ) );
-				wrap( new Position( root, [ 0 ] ), 2, new Element( 'blockQuote' ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'wrap inside a new element', () => {
-			model.change( () => {
-				insert(
-					new Element( 'div', null, [
-						new Element( 'paragraph' ),
-						new Element( 'paragraph' )
-					] ),
-					new Position( root, [ 0 ] )
-				);
-				wrap( new Position( root, [ 0, 0 ] ), 2, new Element( 'blockQuote' ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-	} );
-
-	describe( 'unwrap', () => {
-		it( 'unwrap elements', () => {
-			model.change( () => {
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap a new element', () => {
-			model.change( () => {
-				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 0 ] ) );
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap element with new nodes', () => {
-			model.change( () => {
-				insert( new Text( 'Ab' ), new Position( root, [ 0, 1 ] ) );
-				unwrap( new Position( root, [ 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
-					{ type: 'insert', name: '$text', length: 5, position: new Position( root, [ 0 ] ) }
-				] );
-			} );
-		} );
-
-		it( 'unwrap element inside a new element', () => {
-			model.change( () => {
-				insert(
-					new Element( 'blockQuote', null, [
-						new Element( 'paragraph', null, new Text( 'Ab' ) )
-					] ),
-					new Position( root, [ 0 ] )
-				);
-
-				unwrap( new Position( root, [ 0, 0, 0 ] ) );
-
-				expectChanges( [
-					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
-				] );
+					{ type: 'insert', name: 'paragraph', length: 1, position: new Position( doc.graveyard, [ 0 ] ) },
+					{ type: 'insert', name: '$text', length: 3, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) }
+				], true );
 			} );
 		} );
 	} );
@@ -1458,8 +1391,8 @@ describe( 'Differ', () => {
 		let range, rangeB;
 
 		beforeEach( () => {
-			range = Range.createFromParentsAndOffsets( root, 0, root, 1 );
-			rangeB = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+			range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+			rangeB = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		} );
 
 		it( 'add marker', () => {
@@ -1670,10 +1603,10 @@ describe( 'Differ', () => {
 		it( 'remove is correctly transformed by multiple affecting changes', () => {
 			root._appendChild( new Element( 'paragraph', null, new Text( 'xyz' ) ) );
 
-			model.change( () => {
+			model.change( writer => {
 				rename( root.getChild( 1 ), 'heading' );
 				rename( root.getChild( 2 ), 'heading' );
-				remove( Position.createAt( root, 0 ), 3 );
+				remove( writer.createPositionAt( root, 0 ), 3 );
 
 				expectChanges( [
 					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
@@ -1691,8 +1624,8 @@ describe( 'Differ', () => {
 			position = new Position( root, [ 0, 1 ] );
 			p1 = root.getChild( 0 );
 
-			range = Range.createFromParentsAndOffsets( p1, 2, p1, 4 );
-			rangeAttrChange = Range.createFromParentsAndOffsets( p1, 3, p1, 4 );
+			range = new Range( Position._createAt( p1, 2 ), Position._createAt( p1, 4 ) );
+			rangeAttrChange = new Range( Position._createAt( p1, 3 ), Position._createAt( p1, 4 ) );
 		} );
 
 		it( 'should return changes in graveyard if a flag was set up', () => {
@@ -1828,21 +1761,8 @@ describe( 'Differ', () => {
 		model.applyOperation( operation );
 	}
 
-	function wrap( position, howMany, element ) {
-		const operation = new WrapOperation( position, howMany, element, doc.version );
-
-		model.applyOperation( operation );
-	}
-
-	function unwrap( position ) {
-		const howMany = position.parent.maxOffset;
-		const operation = new UnwrapOperation( position, howMany, new Position( doc.graveyard, [ 0 ] ), doc.version );
-
-		model.applyOperation( operation );
-	}
-
 	function remove( sourcePosition, howMany ) {
-		const targetPosition = Position.createAt( doc.graveyard, doc.graveyard.maxOffset );
+		const targetPosition = Position._createAt( doc.graveyard, doc.graveyard.maxOffset );
 		const operation = new MoveOperation( sourcePosition, howMany, targetPosition, doc.version );
 
 		model.applyOperation( operation );
@@ -1855,7 +1775,7 @@ describe( 'Differ', () => {
 	}
 
 	function rename( element, newName ) {
-		const operation = new RenameOperation( Position.createBefore( element ), element.name, newName, doc.version );
+		const operation = new RenameOperation( Position._createBefore( element ), element.name, newName, doc.version );
 
 		model.applyOperation( operation );
 	}

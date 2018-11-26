@@ -14,6 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import Range from './range';
 import Position from './position';
 import Element from './element';
+import Text from './text';
 import TreeWalker from './treewalker';
 
 /**
@@ -23,163 +24,11 @@ import TreeWalker from './treewalker';
  *
  * The instance of schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}.
  *
- * # Schema definitions
+ * Read more about the schema in:
  *
- * Schema defines allowed model structures and allowed attributes separately. They are also checked separately
- * by using the {@link ~Schema#checkChild} and {@link ~Schema#checkAttribute} methods.
- *
- * ## Defining allowed structures
- *
- * When a feature introduces a model element it should register it in the schema. Besides
- * defining that such an element may exist in the model, the feature also needs to define where
- * this element may be placed:
- *
- *		schema.register( 'myElement', {
- *			allowIn: '$root'
- *		} );
- *
- * This lets the schema know that `<myElement>` may be a child of the `<$root>` element. `$root` is one of generic
- * nodes defined by the editing framework. By default, the editor names the main root element a `<$root>`,
- * so the above definition allows `<myElement>` in the main editor element.
- *
- * In other words, this would be correct:
- *
- *		<$root><myElement></myElement></$root>
- *
- * While this would not be correct:
- *
- *		<$root><foo><myElement></myElement></foo></$root>
- *
- * ## Generic items
- *
- * There are three basic generic items: `$root`, `$block` and `$text`.
- * They are defined as follows:
- *
- *		this.schema.register( '$root', {
- *			isLimit: true
- *		} );
- *		this.schema.register( '$block', {
- *			allowIn: '$root',
- *			isBlock: true
- *		} );
- *		this.schema.register( '$text', {
- *			allowIn: '$block'
- *		} );
- *
- * These definitions can then be reused by features to create their own definitions in a more extensible way.
- * For example, the {@link module:paragraph/paragraph~Paragraph} feature will define its item as:
- *
- *		schema.register( 'paragraph', {
- *			inheritAllFrom: '$block'
- *		} );
- *
- * Which translates to:
- *
- *		schema.register( 'paragraph', {
- *			allowWhere: '$block',
- *			allowContentOf: '$block',
- *			allowAttributesOf: '$block',
- *			inheritTypesFrom: '$block'
- *		} );
- *
- * Which can be read as:
- *
- * * The `<paragraph>` element will be allowed in elements in which `<$block>` is allowed (e.g. in `<$root>`).
- * * The `<paragraph>` element will allow all nodes which are allowed in `<$block>` (e.g. `$text`).
- * * The `<paragraph>` element will allow all attributes allowed on `<$block>`.
- * * The `<paragraph>` element will inherit all `is*` properties of `<$block>` (e.g. `isBlock`).
- *
- * Thanks to the fact that `<paragraph>`'s definition is inherited from `<$block>` other features can use the `<$block>`
- * type to indirectly extend `<paragraph>`'s definition. For example, the {@link module:block-quote/blockquote~BlockQuote}
- * feature does this:
- *
- *		schema.register( 'blockQuote', {
- *			allowWhere: '$block',
- *			allowContentOf: '$root'
- *		} );
- *
- * Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs
- * will be allowed in block quotes and block quotes will be allowed in all places where blocks are. So if anyone will
- * register a `<section>` element (with `allowContentOf: '$root'` rule), that `<section>` elements will allow
- * block quotes too.
- *
- * The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be
- * resolved by a callback which will disallow this specific structure.
- *
- * You can read more about the format of an item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
- *
- * ## Defining advanced rules in `checkChild()`'s callbacks
- *
- * The {@link ~Schema#checkChild} method which is the base method used to check whether some element is allowed in a given structure
- * is {@link module:utils/observablemixin~ObservableMixin#decorate a decorated method}.
- * It means that you can add listeners to implement your specific rules which are not limited by the declarative
- * {@link module:engine/model/schema~SchemaItemDefinition API}.
- *
- * Those listeners can be added either by listening directly to the {@link ~Schema#event:checkChild} event or
- * by using the handy {@link ~Schema#addChildCheck} method.
- *
- * For instance, the block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
- *
- *		schema.addChildCheck( context, childDefinition ) => {
- *			// Note that context is automatically normalized to SchemaContext instance and
- *			// child to its definition (SchemaCompiledItemDefinition).
- *
- *			// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
- *			// to check, make the checkChild() method return false.
- *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
- *				return false;
- *			}
- *		} );
- *
- * ## Defining attributes
- *
- * TODO
- *
- * ## Implementing additional constraints
- *
- * Schema's capabilities were limited to simple (and atomic) {@link ~Schema#checkChild} and
- * {@link ~Schema#checkAttribute} checks on purpose.
- * One may imagine that schema should support defining more complex rules such as
- * "element `<x>` must be always followed by `<y>`".
- * While it is feasible to create an API which would enable feeding the schema with such definitions,
- * it is unfortunately unrealistic to then expect that every editing feature will consider those rules when processing the model.
- * It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
- *
- * For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
- *
- *		<$root>
- *			<x>foo</x>
- *			<y>bar[bom</y>
- *			<z>bom]bar</z>
- *		</$root>
- *
- * Now, imagine that the user presses the "block quote" button. Usually it would wrap the two selected blocks
- * (`<y>` and `<z>`) with a `<blockQuote>` element:
- *
- *		<$root>
- *			<x>foo</x>
- *			<blockQuote>
- *				<y>bar[bom</y>
- *				<z>bom]bar</z>
- *			</blockQuote>
- *		</$root>
- *
- * But it turns out that this creates an incorrect structure – `<x>` is not followed by `<y>` anymore.
- *
- * What should happen instead? There are at least 4 possible solutions: the block quote feature should not be
- * applicable in such a context, someone should create a new `<y>` right after `<x>`, `<x>` should be moved
- * inside `<blockQuote>` together with `<y>` or vice versa.
- *
- * While this is a relatively simple scenario (unlike most real-time collaboration scenarios),
- * it turns out that it's already hard to say what should happen and who should react to fix this content.
- *
- * Therefore, if your editor needs to implement such rules, you should do that through model's post-fixers
- * fixing incorrect content or actively prevent such situations (e.g. by disabling certain features).
- * It means that those constraints will be defined specifically for your scenario by your code which
- * makes their implementation much easier.
- *
- * So the answer for who and how should implement additional constraints is your features or your editor
- * through CKEditor 5's rich and open API.
+ * * {@glink framework/guides/architecture/editing-engine#schema "Schema"} section of the
+ * {@glink framework/guides/architecture/editing-engine Introduction to the "Editing engine architecture"}.
+ * * {@glink framework/guides/deep-dive/schema "Schema" deep dive} guide.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -640,8 +489,14 @@ export default class Schema {
 	 */
 	checkAttributeInSelection( selection, attribute ) {
 		if ( selection.isCollapsed ) {
+			const firstPosition = selection.getFirstPosition();
+			const context = [
+				...firstPosition.getAncestors(),
+				new Text( '', selection.getAttributes() )
+			];
+
 			// Check whether schema allows for a text with the attribute in the selection.
-			return this.checkAttribute( [ ...selection.getFirstPosition().getAncestors(), '$text' ], attribute );
+			return this.checkAttribute( context, attribute );
 		} else {
 			const ranges = selection.getRanges();
 
@@ -692,7 +547,7 @@ export default class Schema {
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range.createIn( item ), attribute );
+				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
@@ -700,10 +555,10 @@ export default class Schema {
 					yield new Range( start, end );
 				}
 
-				start = Position.createAfter( item );
+				start = Position._createAfter( item );
 			}
 
-			end = Position.createAfter( item );
+			end = Position._createAfter( item );
 		}
 
 		if ( !start.isEqual( end ) ) {
@@ -752,7 +607,7 @@ export default class Schema {
 			const value = data.value;
 
 			if ( value.type == type && this.isObject( value.item ) ) {
-				return Range.createOn( value.item );
+				return Range._createOn( value.item );
 			}
 
 			if ( this.checkChild( value.nextPosition, '$text' ) ) {
@@ -810,6 +665,16 @@ export default class Schema {
 				this.removeDisallowedAttributes( node.getChildren(), writer );
 			}
 		}
+	}
+
+	/**
+	 * Creates an instance of the schema context.
+	 *
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @returns {module:engine/model/schema~SchemaContext}
+	 */
+	createContext( context ) {
+		return new SchemaContext( context );
 	}
 
 	/**
@@ -1229,7 +1094,8 @@ export class SchemaContext {
 	 * 		// A string (element name).
 	 * 		const newContext = context.push( 'barElement' ); // [ '$root', 'barElement' ]
 	 *
-	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
+	 * **Note** {@link module:engine/model/node~Node} that is already in the model tree will be added as the only item
+	 * (without ancestors).
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item An item that will be added
 	 * to the current context.
@@ -1306,7 +1172,7 @@ export class SchemaContext {
  *		schema.checkChild( contextDefinition, childToCheck );
  *
  *		// Also check in [ rootElement, blockQuoteElement, paragraphElement ].
- *		schema.checkChild( Position.createAt( paragraphElement ), 'foo' );
+ *		schema.checkChild( model.createPositionAt( paragraphElement, 0 ), 'foo' );
  *
  *		// Check in [ rootElement, paragraphElement ].
  *		schema.checkChild( [ rootElement, paragraphElement ], 'foo' );

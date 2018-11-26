@@ -23,8 +23,6 @@ import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -185,9 +183,9 @@ describe( 'debug tools', () => {
 		} );
 
 		it( 'for ModelRange', () => {
-			const rangeInRoot = ModelRange.createIn( modelRoot );
-			const rangeInElement = ModelRange.createIn( modelElement );
-			const rangeInDocFrag = ModelRange.createIn( modelDocFrag );
+			const rangeInRoot = ModelRange._createIn( modelRoot );
+			const rangeInElement = ModelRange._createIn( modelElement );
+			const rangeInDocFrag = ModelRange._createIn( modelDocFrag );
 
 			expect( rangeInRoot.toString() ).to.equal( 'main [ 0 ] - [ 0 ]' );
 			expect( rangeInElement.toString() ).to.equal( '<paragraph> [ 0 ] - [ 3 ]' );
@@ -228,7 +226,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'AttributeOperation', () => {
-				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
+				const op = new AttributeOperation( ModelRange._createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
 				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
 
@@ -237,7 +235,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'DetachOperation (text node)', () => {
-				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3 );
+				const op = new DetachOperation( ModelPosition._createAt( modelRoot, 0 ), 3 );
 
 				expect( op.toString() ).to.equal( 'DetachOperation( null ): #foo -> main [ 0 ] - [ 3 ]' );
 
@@ -249,7 +247,7 @@ describe( 'debug tools', () => {
 				const element = new ModelElement( 'element' );
 				modelRoot._insertChild( 0, element );
 
-				const op = new DetachOperation( ModelPosition.createBefore( element ), 1 );
+				const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
 				expect( op.toString() ).to.equal( 'DetachOperation( null ): <element> -> main [ 0 ] - [ 1 ]' );
 
@@ -261,7 +259,7 @@ describe( 'debug tools', () => {
 				const element = new ModelElement( 'element' );
 				modelRoot._insertChild( 0, element );
 
-				const op = new DetachOperation( ModelPosition.createBefore( element ), 2 );
+				const op = new DetachOperation( ModelPosition._createBefore( element ), 2 );
 
 				expect( op.toString() ).to.equal( 'DetachOperation( null ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
 
@@ -270,7 +268,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'InsertOperation (text node)', () => {
-				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
+				const op = new InsertOperation( ModelPosition._createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
 
 				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): #abc -> main [ 3 ]' );
 
@@ -279,7 +277,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'InsertOperation (element)', () => {
-				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelElement( 'paragraph' ) ], 0 );
+				const op = new InsertOperation( ModelPosition._createAt( modelRoot, 3 ), [ new ModelElement( 'paragraph' ) ], 0 );
 
 				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): <paragraph> -> main [ 3 ]' );
 
@@ -289,7 +287,7 @@ describe( 'debug tools', () => {
 
 			it( 'InsertOperation (multiple nodes)', () => {
 				const nodes = [ new ModelText( 'x' ), new ModelElement( 'y' ), new ModelText( 'z' ) ];
-				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), nodes, 0 );
+				const op = new InsertOperation( ModelPosition._createAt( modelRoot, 3 ), nodes, 0 );
 
 				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): [ 3 ] -> main [ 3 ]' );
 
@@ -298,7 +296,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MarkerOperation', () => {
-				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, false, 0 );
+				const op = new MarkerOperation( 'marker', null, ModelRange._createIn( modelRoot ), modelDoc.markers, false, 0 );
 
 				expect( op.toString() ).to.equal( 'MarkerOperation( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 
@@ -307,7 +305,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MoveOperation', () => {
-				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
+				const op = new MoveOperation( ModelPosition._createAt( modelRoot, 1 ), 2, ModelPosition._createAt( modelRoot, 6 ), 0 );
 
 				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ]' );
 
@@ -325,7 +323,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'RenameOperation', () => {
-				const op = new RenameOperation( ModelPosition.createAt( modelRoot, 1 ), 'old', 'new', 0 );
+				const op = new RenameOperation( ModelPosition._createAt( modelRoot, 1 ), 'old', 'new', 0 );
 
 				expect( op.toString() ).to.equal( 'RenameOperation( 0 ): main [ 1 ]: "old" -> "new"' );
 
@@ -360,15 +358,11 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'SplitOperation without graveyard position', () => {
-				const op = new SplitOperation(
-					new ModelPosition( modelRoot, [ 1, 4 ] ),
-					6,
-					null,
-					0
-				);
+				const position = new ModelPosition( modelRoot, [ 1, 4 ] );
+				const op = new SplitOperation( position, 6, null, 0 );
 
 				expect( op.toString() ).to.equal(
-					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 )'
+					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ) -> main [ 2 ]'
 				);
 
 				op.log();
@@ -376,63 +370,11 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'SplitOperation with graveyard position', () => {
-				const op = new SplitOperation(
-					new ModelPosition( modelRoot, [ 1, 4 ] ),
-					6,
-					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
-					0
-				);
+				const position = new ModelPosition( modelRoot, [ 1, 4 ] );
+				const op = new SplitOperation( position, 6, new ModelPosition( modelDoc.graveyard, [ 0 ] ), 0 );
 
 				expect( op.toString() ).to.equal(
-					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ), $graveyard [ 0 ]'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'WrapOperation with element', () => {
-				const op = new WrapOperation(
-					new ModelPosition( modelRoot, [ 3 ] ),
-					2,
-					new ModelElement( 'blockQuote' ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with <blockQuote>'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'WrapOperation with graveyard position', () => {
-				const op = new WrapOperation(
-					new ModelPosition( modelRoot, [ 3 ] ),
-					2,
-					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'WrapOperation( 0 ): main [ 3 ] - [ 5 ] with $graveyard [ 0 ]'
-				);
-
-				op.log();
-				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
-			} );
-
-			it( 'UnwrapOperation', () => {
-				const op = new UnwrapOperation(
-					new ModelPosition( modelRoot, [ 1, 0 ] ),
-					2,
-					new ModelPosition( modelDoc.graveyard, [ 0 ] ),
-					0
-				);
-
-				expect( op.toString() ).to.equal(
-					'UnwrapOperation( 0 ): main [ 1, 0 ] ( 2 ), $graveyard [ 0 ]'
+					'SplitOperation( 0 ): main [ 1, 4 ] ( 6 ) -> main [ 2 ] with $graveyard [ 0 ]'
 				);
 
 				op.log();
@@ -441,7 +383,7 @@ describe( 'debug tools', () => {
 		} );
 
 		it( 'for applied operations', () => {
-			const op = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), [ new ModelText( 'foo' ) ], 0 );
+			const op = new InsertOperation( ModelPosition._createAt( modelRoot, 0 ), [ new ModelText( 'foo' ) ], 0 );
 
 			model.applyOperation( op );
 
@@ -617,11 +559,11 @@ describe( 'debug tools', () => {
 			const viewDoc = view.document;
 
 			model.change( () => {
-				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
+				const insert = new InsertOperation( ModelPosition._createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
 				model.applyOperation( insert );
 
 				const graveyard = modelDoc.graveyard;
-				const move = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
+				const move = new MoveOperation( ModelPosition._createAt( modelRoot, 1 ), 2, ModelPosition._createAt( graveyard, 0 ), 1 );
 				model.applyOperation( move );
 			} );
 
@@ -709,7 +651,7 @@ describe( 'debug tools', () => {
 			const modelRoot = model.document.getRoot();
 
 			for ( let i = 0; i < 25; i++ ) {
-				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), modelDoc.version );
+				const insert = new InsertOperation( ModelPosition._createAt( modelRoot, 0 ), new ModelText( 'foobar' ), modelDoc.version );
 				model.applyOperation( insert );
 			}
 
@@ -730,7 +672,7 @@ describe( 'debug tools', () => {
 
 			otherRoot._appendChild( element );
 
-			const insert = new InsertOperation( ModelPosition.createAt( element, 0 ), new ModelText( 'foo' ), 0 );
+			const insert = new InsertOperation( ModelPosition._createAt( element, 0 ), new ModelText( 'foo' ), 0 );
 			model.applyOperation( insert );
 
 			const stringifiedOperations = model.getAppliedOperations();
@@ -747,7 +689,7 @@ describe( 'debug tools', () => {
 
 			otherRoot._appendChild( element );
 
-			const insert = new InsertOperation( ModelPosition.createAt( element, 0 ), new ModelText( 'foo' ), 0 );
+			const insert = new InsertOperation( ModelPosition._createAt( element, 0 ), new ModelText( 'foo' ), 0 );
 			model.applyOperation( insert );
 
 			const stringifiedOperations = model.getAppliedOperations();

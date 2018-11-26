@@ -407,7 +407,7 @@ describe( 'DataController', () => {
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
-				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+				const range = writer.createRange( writer.createPositionAt( modelRoot, 0 ), writer.createPositionAt( modelRoot, 1 ) );
 				writer.addMarker( 'marker:a', { range, usingOperation: true } );
 			} );
 
@@ -430,8 +430,8 @@ describe( 'DataController', () => {
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
 
-				const rangeA = ModelRange.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 );
-				const rangeB = ModelRange.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 );
+				const rangeA = writer.createRange( writer.createPositionAt( modelP1, 1 ), writer.createPositionAt( modelP1, 3 ) );
+				const rangeB = writer.createRange( writer.createPositionAt( modelP2, 0 ), writer.createPositionAt( modelP2, 2 ) );
 
 				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
 				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
@@ -463,8 +463,8 @@ describe( 'DataController', () => {
 			const firstModelElement = modelDocumentFragment.getChild( 0 );
 			const firstViewElement = viewDocumentFragment.getChild( 0 );
 
-			const modelRange = ModelRange.createOn( firstModelElement );
-			const viewRange = ViewRange.createOn( firstViewElement );
+			const modelRange = ModelRange._createOn( firstModelElement );
+			const viewRange = ViewRange._createOn( firstViewElement );
 
 			const mappedModelRange = data.mapper.toModelRange( viewRange );
 			const mappedViewRange = data.mapper.toViewRange( modelRange );

@@ -45,7 +45,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#sourcePosition
 		 */
-		this.sourcePosition = Position.createFromPosition( sourcePosition );
+		this.sourcePosition = sourcePosition.clone();
 		// This is, and should always remain, the first position in its parent.
 		this.sourcePosition.stickiness = 'toPrevious';
 
@@ -61,7 +61,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#targetPosition
 		 */
-		this.targetPosition = Position.createFromPosition( targetPosition );
+		this.targetPosition = targetPosition.clone();
 		// Except of a rare scenario in `MergeOperation` x `MergeOperation` transformation,
 		// this is, and should always remain, the last position in its parent.
 		this.targetPosition.stickiness = 'toNext';
@@ -71,7 +71,7 @@ export default class MergeOperation extends Operation {
 		 *
 		 * @member {module:engine/model/position~Position} module:engine/model/operation/mergeoperation~MergeOperation#graveyardPosition
 		 */
-		this.graveyardPosition = Position.createFromPosition( graveyardPosition );
+		this.graveyardPosition = graveyardPosition.clone();
 	}
 
 	/**
@@ -119,7 +119,18 @@ export default class MergeOperation extends Operation {
 	 * @returns {module:engine/model/operation/splitoperation~SplitOperation}
 	 */
 	getReversed() {
-		return new SplitOperation( this.targetPosition, this.howMany, this.graveyardPosition, this.baseVersion + 1 );
+		// Positions in this method are transformed by this merge operation because the split operation bases on
+		// the context after this merge operation happened (because split operation reverses it).
+		// So we need to acknowledge that the merge operation happened and those positions changed a little.
+		const targetPosition = this.targetPosition._getTransformedByMergeOperation( this );
+
+		const path = this.sourcePosition.path.slice( 0, -1 );
+		const insertionPosition = new Position( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
+
+		const split = new SplitOperation( targetPosition, this.howMany, this.graveyardPosition, this.baseVersion + 1 );
+		split.insertionPosition = insertionPosition;
+
+		return split;
 	}
 
 	/**
@@ -159,10 +170,10 @@ export default class MergeOperation extends Operation {
 	 */
 	_execute() {
 		const mergedElement = this.sourcePosition.parent;
-		const sourceRange = Range.createIn( mergedElement );
+		const sourceRange = Range._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );
-		_move( Range.createOn( mergedElement ), this.graveyardPosition );
+		_move( Range._createOn( mergedElement ), this.graveyardPosition );
 	}
 
 	/**

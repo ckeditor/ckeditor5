@@ -16,8 +16,6 @@ import RenameOperation from './operation/renameoperation';
 import RootAttributeOperation from './operation/rootattributeoperation';
 import SplitOperation from './operation/splitoperation';
 import MergeOperation from './operation/mergeoperation';
-import WrapOperation from './operation/wrapoperation';
-import UnwrapOperation from './operation/unwrapoperation';
 
 import DocumentFragment from './documentfragment';
 import Text from './text';
@@ -44,6 +42,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.
+ *
+ * Note that writer's methods do not check the {@link module:engine/model/schema~Schema}. It is possible
+ * to create incorrect model structures by using the writer. Read more about in
+ * {@glink framework/guides/deep-dive/schema#who-checks-the-schema "Who checks the schema?"}.
  *
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange
@@ -135,7 +137,7 @@ export default class Writer {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.insert( paragraph, anotherParagraph, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
@@ -145,23 +147,26 @@ export default class Writer {
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
 	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
+	 * **Note:** For a paste-like content insertion mechanism see
+	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`}.
+	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment} item Item or document
 	 * fragment to insert.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	insert( item, itemOrPosition, offset ) {
+	insert( item, itemOrPosition, offset = 0 ) {
 		this._assertWriterUsedCorrectly();
 
-		const position = Position.createAt( itemOrPosition, offset );
+		const position = Position._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
 		if ( item.parent ) {
 			// We need to check if item is going to be inserted within the same document.
 			if ( isSameTree( item.root, position.root ) ) {
 				// If it's we just need to move it.
-				this.move( Range.createOn( item ), position );
+				this.move( Range._createOn( item ), position );
 
 				return;
 			}
@@ -193,13 +198,13 @@ export default class Writer {
 		if ( item instanceof DocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from DocumentFragment to Document.
-				const rangeRootPosition = Position.createAt( markerRange.root );
+				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
 				const range = new Range(
 					markerRange.start._getCombined( rangeRootPosition, position ),
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.addMarker( markerName, { range, usingOperation: true } );
+				this.addMarker( markerName, { range, usingOperation: true, affectsData: true } );
 			}
 		}
 	}
@@ -220,12 +225,12 @@ export default class Writer {
 	 *		// Inserts 'foo' after an image:
 	 *		writer.insertText( 'foo', image, 'after' );
 	 *
-	 * These parameters work in the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters work in the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * third parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insertText( text, attributes, itemOrPosition, offset ) {
@@ -252,12 +257,12 @@ export default class Writer {
 	 *		// Inserts after an image:
 	 *		writer.insertElement( 'paragraph', image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * third parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insertElement( name, attributes, itemOrPosition, offset ) {
@@ -426,7 +431,7 @@ export default class Writer {
 	 *		// Moves all items in the range to a position after an image:
 	 *		writer.move( sourceRange, image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
+	 * These parameters works the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -435,7 +440,7 @@ export default class Writer {
 	 *
 	 * @param {module:engine/model/range~Range} range Source range.
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	move( range, itemOrPosition, offset ) {
@@ -459,7 +464,7 @@ export default class Writer {
 			throw new CKEditorError( 'writer-move-range-not-flat: Range to move is not flat.' );
 		}
 
-		const position = Position.createAt( itemOrPosition, offset );
+		const position = Position._createAt( itemOrPosition, offset );
 
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
@@ -496,7 +501,7 @@ export default class Writer {
 		} else {
 			const howMany = itemOrRange.is( 'text' ) ? itemOrRange.offsetSize : 1;
 
-			applyRemoveOperation( Position.createBefore( itemOrRange ), howMany, this.batch, this.model );
+			applyRemoveOperation( Position._createBefore( itemOrRange ), howMany, this.batch, this.model );
 		}
 	}
 
@@ -540,6 +545,97 @@ export default class Writer {
 	}
 
 	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath `Model#createPositionFromPath()`}.
+	 *
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
+	 * See {@link module:engine/model/position~PositionStickiness}.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionFromPath( root, path, stickiness ) {
+		return this.model.createPositionFromPath( root, path, stickiness );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionAt( itemOrPosition, offset ) {
+		return this.model.createPositionAt( itemOrPosition, offset );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionAfter `Model#createPositionAfter()`}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionAfter( item ) {
+		return this.model.createPositionAfter( item );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createPositionBefore `Model#createPositionBefore()`}.
+	 *
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
+	 */
+	createPositionBefore( item ) {
+		return this.model.createPositionBefore( item );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRange `Model#createRange()`}.
+	 *
+	 * @param {module:engine/model/position~Position} start Start position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRange( start, end ) {
+		return this.model.createRange( start, end );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeIn `Model#createRangeIn()`}.
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRangeIn( element ) {
+		return this.model.createRangeIn( element );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createRangeOn `Model#createRangeOn()`}.
+	 *
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
+	 */
+	createRangeOn( element ) {
+		return this.model.createRangeOn( element );
+	}
+
+	/**
+	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @returns {module:engine/model/selection~Selection}
+	 */
+	createSelection( selectable, placeOrOffset, options ) {
+		return this.model.createSelection( selectable, placeOrOffset, options );
+	}
+
+	/**
 	 * Performs merge action in a detached tree.
 	 *
 	 * @private
@@ -549,7 +645,7 @@ export default class Writer {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range.createIn( nodeAfter ), Position.createAt( nodeBefore, 'end' ) );
+		this.move( Range._createIn( nodeAfter ), Position._createAt( nodeBefore, 'end' ) );
 		this.remove( nodeAfter );
 	}
 
@@ -560,8 +656,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position between merged elements.
 	 */
 	_merge( position ) {
-		const targetPosition = Position.createAt( position.nodeBefore, 'end' );
-		const sourcePosition = Position.createAt( position.nodeAfter, 0 );
+		const targetPosition = Position._createAt( position.nodeBefore, 'end' );
+		const sourcePosition = Position._createAt( position.nodeAfter, 0 );
 
 		const graveyard = position.root.document.graveyard;
 		const graveyardPosition = new Position( graveyard, [ 0 ] );
@@ -595,7 +691,7 @@ export default class Writer {
 		}
 
 		const version = element.root.document ? element.root.document.version : null;
-		const renameOperation = new RenameOperation( Position.createBefore( element ), element.name, newName, version );
+		const renameOperation = new RenameOperation( Position._createBefore( element ), element.name, newName, version );
 
 		this.batch.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
@@ -657,13 +753,13 @@ export default class Writer {
 				firstCopyElement = position.parent.nextSibling;
 			}
 
-			position = Position.createAfter( position.parent );
+			position = this.createPositionAfter( position.parent );
 			splitElement = position.parent;
 		} while ( splitElement !== limitElement );
 
 		return {
 			position,
-			range: new Range( Position.createAt( firstSplitElement, 'end' ), Position.createAt( firstCopyElement ) )
+			range: new Range( Position._createAt( firstSplitElement, 'end' ), Position._createAt( firstCopyElement, 0 ) )
 		};
 	}
 
@@ -709,10 +805,21 @@ export default class Writer {
 		}
 
 		const version = range.root.document ? range.root.document.version : null;
-		const wrap = new WrapOperation( range.start, range.end.offset - range.start.offset, element, version );
 
-		this.batch.addOperation( wrap );
-		this.model.applyOperation( wrap );
+		// Has to be `range.start` not `range.end` for better transformations.
+		const insert = new InsertOperation( range.start, element, version );
+		this.batch.addOperation( insert );
+		this.model.applyOperation( insert );
+
+		const move = new MoveOperation(
+			range.start.getShiftedBy( 1 ),
+			range.end.offset - range.start.offset,
+			Position._createAt( element, 0 ),
+			version === null ? null : version + 1
+		);
+
+		this.batch.addOperation( move );
+		this.model.applyOperation( move );
 	}
 
 	/**
@@ -733,41 +840,8 @@ export default class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 		}
 
-		if ( !element.root.document ) {
-			this._unwrapDetached( element );
-		} else {
-			this._unwrap( element );
-		}
-	}
-
-	/**
-	 * Performs unwrap action in a detached tree.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element Element to unwrap.
-	 */
-	_unwrapDetached( element ) {
-		this.move( Range.createIn( element ), Position.createAfter( element ) );
+		this.move( Range._createIn( element ), this.createPositionAfter( element ) );
 		this.remove( element );
-	}
-
-	/**
-	 * Performs unwrap action in a non-detached tree.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element Element to unwrap.
-	 */
-	_unwrap( element ) {
-		const position = Position.createAt( element, 0 );
-		const version = position.root.document.version;
-
-		const graveyard = position.root.document.graveyard;
-		const graveyardPosition = new Position( graveyard, [ 0 ] );
-
-		const unwrap = new UnwrapOperation( position, element.maxOffset, graveyardPosition, version );
-
-		this.batch.addOperation( unwrap );
-		this.model.applyOperation( unwrap );
 	}
 
 	/**
@@ -993,29 +1067,33 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * Sets the document's selection (ranges and direction) to the specified location based on:
+	 *
+	 * * the given {@link module:engine/model/selection~Selection selection},
+	 * * or the given {@link module:engine/model/position~Position position},
+	 * * or the given {@link module:engine/model/range~Range range},
+	 * * or the given iterable of {@link module:engine/model/range~Range ranges},
+	 * * or the given {@link module:engine/model/node~Node node},
+	 * * or `null`.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		writer.setSelection( otherSelection );
 	 *
 	 *		// Sets selection to the given document selection.
-	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const documentSelection = model.document.selection;
 	 *		writer.setSelection( documentSelection );
 	 *
 	 *		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPosition( root, path );
 	 *		writer.setSelection( position );
 	 *
 	 *		// Sets collapsed selection at the position of the given node and an offset.
@@ -1057,7 +1135,7 @@ export default class Writer {
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/position~Position.createAt `Position.createAt()`} parameters.
+	 * {@link #createPositionAt `writer.createPositionAt()`} parameters.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
@@ -1303,7 +1381,7 @@ function setAttributeOnItem( writer, key, value, item ) {
 
 			operation = new RootAttributeOperation( item, key, previousValue, value, version );
 		} else {
-			range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
+			range = new Range( Position._createBefore( item ), writer.createPositionAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 

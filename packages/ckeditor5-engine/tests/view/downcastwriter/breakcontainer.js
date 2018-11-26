@@ -73,7 +73,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if position parent is root', () => {
 			const element = new ContainerElement( 'div' );
-			const position = Position.createAt( element, 0 );
+			const position = Position._createAt( element, 0 );
 
 			expect( () => {
 				writer.breakContainer( position );

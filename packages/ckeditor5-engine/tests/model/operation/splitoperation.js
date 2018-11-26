@@ -133,7 +133,8 @@ describe( 'SplitOperation', () => {
 
 			root._insertChild( 0, [ p1 ] );
 
-			const operation = new SplitOperation( new Position( root, [ 1 ] ), 3, null, doc.version );
+			const operation = new SplitOperation( new Position( root, [ 0, 0 ] ), 3, null, doc.version );
+			operation.splitPosition = new Position( root, [ 1 ] );
 
 			expect( () => operation._validate() ).to.throw( CKEditorError, /split-operation-split-in-root/ );
 		} );
@@ -172,8 +173,9 @@ describe( 'SplitOperation', () => {
 		expect( clone ).not.to.be.equal( op );
 
 		expect( clone ).to.be.instanceof( SplitOperation );
-		expect( clone.position.isEqual( position ) ).to.be.true;
+		expect( clone.splitPosition.isEqual( position ) ).to.be.true;
 		expect( clone.howMany ).to.equal( howMany );
+		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
 		expect( clone.graveyardPosition ).to.be.null;
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
@@ -191,8 +193,9 @@ describe( 'SplitOperation', () => {
 		expect( clone ).not.to.be.equal( op );
 
 		expect( clone ).to.be.instanceof( SplitOperation );
-		expect( clone.position.isEqual( position ) ).to.be.true;
+		expect( clone.splitPosition.isEqual( position ) ).to.be.true;
 		expect( clone.howMany ).to.equal( howMany );
+		expect( clone.insertionPosition.isEqual( op.insertionPosition ) );
 		expect( clone.graveyardPosition.isEqual( gyPos ) ).to.be.true;
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
@@ -208,7 +211,8 @@ describe( 'SplitOperation', () => {
 				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
-				position: op.position.toJSON(),
+				splitPosition: op.splitPosition.toJSON(),
+				insertionPosition: op.insertionPosition.toJSON(),
 				graveyardPosition: null
 			} );
 		} );
@@ -223,7 +227,8 @@ describe( 'SplitOperation', () => {
 				__className: 'SplitOperation',
 				baseVersion: 0,
 				howMany: 2,
-				position: op.position.toJSON(),
+				splitPosition: op.splitPosition.toJSON(),
+				insertionPosition: op.insertionPosition.toJSON(),
 				graveyardPosition: op.graveyardPosition.toJSON()
 			} );
 		} );

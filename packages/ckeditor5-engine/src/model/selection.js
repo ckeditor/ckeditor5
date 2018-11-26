@@ -17,61 +17,65 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
- * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
- * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}.
- * Additionally, `Selection` may have it's own attributes.
+ * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
+ * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}
+ * (it can be {@link module:engine/model/selection~Selection#isBackward forward or backward}).
+ * Additionally, selection may have its own attributes (think – whether text typed in in this selection
+ * should have those attributes – e.g. whether you type a bolded text).
  *
- * @mixes {module:utils/emittermixin~EmitterMixin}
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Selection {
 	/**
-	 * Creates new selection instance on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges}
-	 * or creates an empty selection if no arguments passed.
+	 * Creates a new selection instance
+	 * based on the given {@link module:engine/model/selection~Selection selection},
+	 * or based on the given {@link module:engine/model/range~Range range},
+	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
+	 * or at the given {@link module:engine/model/position~Position position},
+	 * or on the given {@link module:engine/model/element~Element element},
+	 * or creates an empty selection if no arguments were passed.
 	 *
-	 * 		// Creates empty selection without ranges.
-	 *		const selection = new Selection();
+	 *		// Creates empty selection without ranges.
+	 *		const selection = writer.createSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range );
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges );
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const otherSelection = new Selection();
-	 *		const selection = new Selection( otherSelection );
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
 	 *
-	 * 		// Creates selection from the given document selection.
+	 *		// Creates selection from the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const documentSelection = new DocumentSelection( doc );
-	 *		const selection = new Selection( documentSelection );
+	 *		const documentSelection = model.document.selection;
+	 *		const selection = writer.createSelection( documentSelection );
 	 *
-	 * 		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		// Creates selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
 	 *
-	 * 		// Creates selection at the start position of the given element.
+	 *		// Creates selection at the given offset in the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * 		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
-	 * 		// first child of that element and ends after the last child of that element.
-	 *		const selection = new Selection( paragraph, 'in' );
+	 *		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * 		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
-	 * 		// just after the item.
-	 *		const selection = new Selection( paragraph, 'on' );
+	 *		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = writer.createSelection( paragraph, 'on' );
 	 *
-	 * `Selection`'s constructor allow passing additional options (`backward`) as the last argument.
+	 * Selection's constructor allow passing additional options (`'backward'`) as the last argument.
 	 *
-	 * 		// Creates backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		// Creates backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
@@ -111,12 +115,17 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
-	 * Together with {@link #focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 * Selection anchor. Anchor is the position from which the selection was started. If a user is making a selection
+	 * by dragging the mouse, the anchor is where the user pressed the mouse button (the beggining of the selection).
 	 *
-	 * Is set to `null` if there are no ranges in selection.
+	 * Anchor and {@link #focus} define the direction of the selection, which is important
+	 * when expanding/shrinking selection. The focus moves, while the anchor should remain in the same place.
+	 *
+	 * Anchor is always set to the {@link module:engine/model/range~Range#start start} or
+	 * {@link module:engine/model/range~Range#end end} position of the last of selection's ranges. Whether it is
+	 * the `start` or `end` depends on the specified `options.backward`. See the {@link #setTo `setTo()`} method.
+	 *
+	 * May be set to `null` if there are no ranges in the selection.
 	 *
 	 * @see #focus
 	 * @readonly
@@ -133,9 +142,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection focus. Focus is a position where the selection ends.
+	 * Selection focus. Focus is the position where the selection ends. If a user is making a selection
+	 * by dragging the mouse, the focus is where the mouse cursor is.
 	 *
-	 * Is set to `null` if there are no ranges in selection.
+	 * May be set to `null` if there are no ranges in the selection.
 	 *
 	 * @see #anchor
 	 * @readonly
@@ -152,8 +162,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
-	 * collapsed.
+	 * Whether the selection is collapsed. Selection is collapsed when there is exactly one range in it
+	 * and it is collapsed.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -169,7 +179,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns number of ranges in selection.
+	 * Returns the number of ranges in the selection.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -179,8 +189,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the {@link #focus}
-	 * precedes {@link #anchor}.
+	 * Specifies whether the selection's {@link #focus} precedes the selection's {@link #anchor}.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -190,8 +199,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether this selection is equal to given selection. Selections are equal if they have same directions,
-	 * same number of ranges and all ranges from one selection equal to a range from other selection.
+	 * Checks whether this selection is equal to the given selection. Selections are equal if they have the same directions,
+	 * the same number of ranges and all ranges from one selection equal to ranges from the another selection.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} otherSelection
 	 * Selection to compare with.
@@ -227,13 +236,13 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterable that iterates over copies of selection ranges.
+	 * Returns an iterable object that iterates over copies of selection ranges.
 	 *
 	 * @returns {Iterable.<module:engine/model/range~Range>}
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
+			yield new Range( range.start, range.end );
 		}
 	}
 
@@ -256,7 +265,7 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first ? new Range( first.start, first.end ) : null;
 	}
 
 	/**
@@ -278,7 +287,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last ? new Range( last.start, last.end ) : null;
 	}
 
 	/**
@@ -293,7 +302,7 @@ export default class Selection {
 	getFirstPosition() {
 		const first = this.getFirstRange();
 
-		return first ? Position.createFromPosition( first.start ) : null;
+		return first ? first.start.clone() : null;
 	}
 
 	/**
@@ -308,7 +317,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? lastRange.end.clone() : null;
 	}
 
 	/**
@@ -317,32 +326,32 @@ export default class Selection {
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 * 		// Removes all selection's ranges.
+	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		selection.setTo( ranges );
 	 *
 	 *		// Sets selection to other selection.
 	 *		// Note: It doesn't copies selection attributes.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets selection to the given document selection.
+	 *		// Sets selection to the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
 	 *
-	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		// Sets collapsed selection at the given position.
+	 *		const position = writer.createPositionFromPath( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets collapsed selection at the position of the given node and an offset.
+	 *		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
@@ -356,8 +365,8 @@ export default class Selection {
 	 *
 	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
 	 *
-	 * 		// Sets backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		// Sets backward selection.
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/node~Node|
@@ -384,11 +393,11 @@ export default class Selection {
 			let range;
 
 			if ( placeOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
+				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
+				range = Range._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
-				range = Range.createCollapsedAt( selectable, placeOrOffset );
+				range = new Range( Position._createAt( selectable, placeOrOffset ) );
 			} else {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
@@ -472,11 +481,12 @@ export default class Selection {
 	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as
+	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	setFocus( itemOrPosition, offset ) {
@@ -491,7 +501,7 @@ export default class Selection {
 			);
 		}
 
-		const newFocus = Position.createAt( itemOrPosition, offset );
+		const newFocus = Position._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
@@ -656,7 +666,7 @@ export default class Selection {
 			const endBlock = getParentBlock( range.end, visited );
 
 			// #984. Don't return the end block if the range ends right at its beginning.
-			if ( endBlock && !range.end.isTouching( Position.createAt( endBlock ) ) ) {
+			if ( endBlock && !range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
 				yield endBlock;
 			}
 		}
@@ -674,8 +684,8 @@ export default class Selection {
 	 * @returns {Boolean}
 	 */
 	containsEntireContent( element = this.anchor.root ) {
-		const limitStartPosition = Position.createAt( element );
-		const limitEndPosition = Position.createAt( element, 'end' );
+		const limitStartPosition = Position._createAt( element, 0 );
+		const limitEndPosition = Position._createAt( element, 'end' );
 
 		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
 			limitEndPosition.isTouching( this.getLastPosition() );
@@ -690,7 +700,7 @@ export default class Selection {
 	 */
 	_pushRange( range ) {
 		this._checkRange( range );
-		this._ranges.push( Range.createFromRange( range ) );
+		this._ranges.push( new Range( range.start, range.end ) );
 	}
 
 	/**
@@ -703,14 +713,14 @@ export default class Selection {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**
-				 * Trying to add a range that intersects with another range from selection.
+				 * Trying to add a range that intersects with another range in the selection.
 				 *
 				 * @error model-selection-range-intersects
 				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/model/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'model-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					'model-selection-range-intersects: Trying to add a range that intersects with another range in the selection.',
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}

@@ -38,7 +38,7 @@ import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
- * Writes the content of the {@link module:engine/model/document~Document document} to an HTML-like string.
+ * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
  *
  * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
@@ -72,9 +72,10 @@ export function getData( model, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the content of the {@link module:engine/model/document~Document document} provided as an HTML-like string.
+ * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
- * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before inserting them.
+ * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before
+ * trying to use them.
  *
  * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
@@ -115,7 +116,7 @@ export function setData( model, data, options = {} ) {
 
 	model.change( writer => {
 		// Replace existing model in document by new one.
-		writer.remove( ModelRange.createIn( modelRoot ) );
+		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
@@ -169,16 +170,16 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
-		range = ModelRange.createIn( node );
+		range = model.createRangeIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new ModelDocumentFragment( node );
-			range = ModelRange.createIn( fragment );
+			range = model.createRangeIn( fragment );
 		} else {
 			range = new ModelRange(
-				ModelPosition.createBefore( node ),
-				ModelPosition.createAfter( node )
+				model.createPositionBefore( node ),
+				model.createPositionAfter( node )
 			);
 		}
 	}
@@ -391,9 +392,9 @@ function convertToModelElement() {
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition._createAt( element, 0 ) );
 
-		data.modelRange = ModelRange.createOn( element );
+		data.modelRange = ModelRange._createOn( element );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
@@ -420,7 +421,7 @@ function convertToModelText( withAttributes = false ) {
 
 		conversionApi.writer.insert( node, data.modelCursor );
 
-		data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, node.offsetSize );
+		data.modelRange = ModelRange._createFromPositionAndShift( data.modelCursor, node.offsetSize );
 		data.modelCursor = data.modelRange.end;
 
 		evt.stop();

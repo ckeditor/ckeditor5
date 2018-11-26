@@ -11,35 +11,22 @@ import Element from './element';
 
 /**
  * Containers are elements which define document structure. They define boundaries for
- * {@link module:engine/view/attributeelement~AttributeElement attributes}. They are mostly use for block elements like `<p>` or `<div>`.
+ * {@link module:engine/view/attributeelement~AttributeElement attributes}. They are mostly used for block elements like `<p>` or `<div>`.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
- * be defined by the feature developer.
+ * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
+ * types (container element, {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
  *
- * Creating an element you should use `ContainerElement` class or {@link module:engine/view/attributeelement~AttributeElement}. This is
- * important to define the type of the element because of two reasons:
+ * The container element should be your default choice when writing a converter, unless:
  *
- * Firstly, {@link module:engine/view/domconverter~DomConverter} needs the information what is an editable block to convert elements to
- * DOM properly. {@link module:engine/view/domconverter~DomConverter} will ensure that `ContainerElement` is editable and it is possible
- * to put caret inside it, even if the container is empty.
+ * * this element represents a model text attribute (then use {@link module:engine/view/attributeelement~AttributeElement}),
+ * * this is an empty element like `<img>` (then use {@link module:engine/view/emptyelement~EmptyElement}),
+ * * this is a root element,
+ * * this is a nested editable element (then use  {@link module:engine/view/editableelement~EditableElement}).
  *
- * Secondly, {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} uses this information.
- * Nodes {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breaking} and
- * {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes merging} is performed only in a bounds of a container nodes.
- *
- * For instance if `<p>` is an container and `<b>` is attribute:
- *
- *		<p><b>fo^o</b></p>
- *
- * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes} will create:
- *
- *		<p><b>fo</b><b>o</b></p>
- *
- * There might be a need to mark `<span>` element as a container node, for example in situation when it will be a
- * container of an inline widget:
- *
- *		<span color="red">foobar</span>		// attribute
- *		<span data-widget>foobar</span>		// container
+ * To create a new container element instance use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
+ * method.
  *
  * @extends module:engine/view/element~Element
  */
@@ -47,8 +34,8 @@ export default class ContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *
-	 * @see module:engine/view/element~Element
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
+	 * @see module:engine/view/element~Element
 	 * @protected
 	 */
 	constructor( name, attrs, children ) {
@@ -75,10 +62,12 @@ export default class ContainerElement extends Element {
 	}
 }
 
-// Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
-//
-// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-function getFillerOffset() {
+/**
+ * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+ *
+ * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+ */
+export function getFillerOffset() {
 	const children = [ ...this.getChildren() ];
 	const lastChild = children[ this.childCount - 1 ];
 

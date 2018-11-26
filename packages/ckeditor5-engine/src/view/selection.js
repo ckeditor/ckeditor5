@@ -19,63 +19,64 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import DocumentSelection from './documentselection';
 
 /**
- * Class representing selection in tree view.
+ * Class representing an arbirtary selection in the view.
+ * See also {@link module:engine/view/documentselection~DocumentSelection}.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/selection~Selection#setTo setTo} method.
- * That method create copies of provided ranges and store those copies internally. Further modifications to passed
- * ranges will not change selection's state.
- * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
- * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange} and
- * {@link module:engine/view/selection~Selection#getLastRange getLastRange} methods, which return copies of ranges
- * stored inside selection. Modifications made on these copies will not change selection's state. Similar situation
- * occurs when getting {@link module:engine/view/selection~Selection#anchor anchor},
- * {@link module:engine/view/selection~Selection#focus focus}, {@link module:engine/view/selection~Selection#getFirstPosition first}
- * and {@link module:engine/view/selection~Selection#getLastPosition last} positions - all will return
- * copies of requested positions.
+ * New selection instances can be created via the constructor or one these methods:
+ *
+ * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+ * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
+ *
+ * A selection can consist of {@link module:engine/view/range~Range ranges} that can be set by using
+ * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
 export default class Selection {
 	/**
 	 * Creates new selection instance.
 	 *
+	 * **Note**: The selection constructor is available as a factory method:
+	 *
+	 * * {@link module:engine/view/view~View#createSelection `View#createSelection()`},
+	 * * {@link module:engine/view/upcastwriter~UpcastWriter#createSelection `UpcastWriter#createSelection()`}.
+	 *
 	 * 		// Creates empty selection without ranges.
-	 *		const selection = new Selection();
+	 *		const selection = writer.createSelection();
 	 *
 	 *		// Creates selection at the given range.
-	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range );
+	 *		const range = writer.createRange( start, end );
+	 *		const selection = writer.createSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges );
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
+	 *		const selection = writer.createSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
-	 *		const otherSelection = new Selection();
-	 *		const selection = new Selection( otherSelection );
+	 *		const otherSelection = writer.createSelection();
+	 *		const selection = writer.createSelection( otherSelection );
 	 *
 	 *		// Creates selection from the document selection.
-	 *		const selection = new Selection( editor.editing.view.document.selection );
+	 *		const selection = writer.createSelection( editor.editing.view.document.selection );
 	 *
 	 * 		// Creates selection at the given position.
-	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		const position = writer.createPositionFromPath( root, path );
+	 *		const selection = writer.createSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createContainerElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		const selection = writer.createSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
 	 *		// first child of that element and ends after the last child of that element.
-	 *		const selection = new Selection( paragraph, 'in' );
+	 *		const selection = writer.createSelection( paragraph, 'in' );
 	 *
 	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
 	 *		// just after the item.
-	 *		const selection = new Selection( paragraph, 'on' );
+	 *		const selection = writer.createSelection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Creates backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -85,7 +86,7 @@ export default class Selection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
+	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
 	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
@@ -168,7 +169,7 @@ export default class Selection {
 		const range = this._ranges[ this._ranges.length - 1 ];
 		const anchor = this._lastRangeBackward ? range.end : range.start;
 
-		return Position.createFromPosition( anchor );
+		return anchor.clone();
 	}
 
 	/**
@@ -184,7 +185,7 @@ export default class Selection {
 		const range = this._ranges[ this._ranges.length - 1 ];
 		const focus = this._lastRangeBackward ? range.start : range.end;
 
-		return Position.createFromPosition( focus );
+		return focus.clone();
 	}
 
 	/**
@@ -236,7 +237,7 @@ export default class Selection {
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
+			yield range.clone();
 		}
 	}
 
@@ -257,7 +258,7 @@ export default class Selection {
 			}
 		}
 
-		return first ? Range.createFromRange( first ) : null;
+		return first ? first.clone() : null;
 	}
 
 	/**
@@ -276,7 +277,7 @@ export default class Selection {
 			}
 		}
 
-		return last ? Range.createFromRange( last ) : null;
+		return last ? last.clone() : null;
 	}
 
 	/**
@@ -289,7 +290,7 @@ export default class Selection {
 	getFirstPosition() {
 		const firstRange = this.getFirstRange();
 
-		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
+		return firstRange ? firstRange.start.clone() : null;
 	}
 
 	/**
@@ -302,7 +303,7 @@ export default class Selection {
 	getLastPosition() {
 		const lastRange = this.getLastRange();
 
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+		return lastRange ? lastRange.end.clone() : null;
 	}
 
 	/**
@@ -429,22 +430,22 @@ export default class Selection {
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
-	 *		const range = new Range( start, end );
+	 *		const range = writer.createRange( start, end );
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 * 		const ranges = [ writer.createRange( start1, end2 ), writer.createRange( star2, end2 ) ];
 	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
-	 *		const otherSelection = new Selection();
+	 *		const otherSelection = writer.createSelection();
 	 *		selection.setTo( otherSelection );
 	 *
 	 *	 	// Sets selection to contents of DocumentSelection.
 	 *		selection.setTo( editor.editing.view.document.selection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
-	 *		const position = new Position( root, path );
+	 *		const position = writer.createPositionAt( root, path );
 	 *		selection.setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
@@ -515,11 +516,11 @@ export default class Selection {
 					'selection.setTo requires the second parameter when the first parameter is a node.'
 				);
 			} else if ( placeOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
+				range = Range._createIn( selectable );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
+				range = Range._createOn( selectable );
 			} else {
-				range = Range.createCollapsedAt( selectable, placeOrOffset );
+				range = new Range( Position._createAt( selectable, placeOrOffset ) );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -544,11 +545,12 @@ export default class Selection {
 	/**
 	 * Moves {@link #focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
+	 * parameters.
 	 *
 	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setFocus( itemOrPosition, offset ) {
@@ -563,7 +565,7 @@ export default class Selection {
 			);
 		}
 
-		const newFocus = Position.createAt( itemOrPosition, offset );
+		const newFocus = Position._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
@@ -684,7 +686,7 @@ export default class Selection {
 			}
 		}
 
-		this._ranges.push( Range.createFromRange( range ) );
+		this._ranges.push( new Range( range.start, range.end ) );
 	}
 
 	/**

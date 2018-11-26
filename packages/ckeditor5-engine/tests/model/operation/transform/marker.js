@@ -82,6 +82,26 @@ describe( 'transform', () => {
 				);
 			} );
 
+			it( 'change marker vs remove marker', () => {
+				john.setData( '<paragraph>F[o]o</paragraph>' );
+				kate.setData( '<paragraph>[]Foo</paragraph>' );
+
+				john.setMarker( 'm1' );
+
+				syncClients();
+
+				john.setSelection( [ 0, 0 ], [ 0, 1 ] );
+				john.setMarker( 'm1' );
+				kate.removeMarker( 'm1' );
+
+				syncClients();
+				expectClients(
+					'<paragraph>' +
+						'<m1:start></m1:start>F<m1:end></m1:end>oo' +
+					'</paragraph>'
+				);
+			} );
+
 			it( 'then wrap and split', () => {
 				john.setData( '<paragraph>[Foo] Bar</paragraph>' );
 				kate.setData( '<paragraph>Fo[o Bar]</paragraph>' );

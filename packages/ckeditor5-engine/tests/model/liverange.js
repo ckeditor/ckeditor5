@@ -67,33 +67,21 @@ describe( 'LiveRange', () => {
 		LiveRange.prototype.stopListening.restore();
 	} );
 
-	it( 'createIn should return LiveRange', () => {
-		const range = LiveRange.createIn( p );
+	it( '_createIn should return LiveRange', () => {
+		const range = LiveRange._createIn( p );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
 
-	it( 'createFromParentsAndOffsets should return LiveRange', () => {
-		const range = LiveRange.createFromParentsAndOffsets( root, 0, p, 2 );
-		expect( range ).to.be.instanceof( LiveRange );
-		range.detach();
-	} );
-
-	it( 'createFromPositionAndShift should return LiveRange', () => {
-		const range = LiveRange.createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
-		expect( range ).to.be.instanceof( LiveRange );
-		range.detach();
-	} );
-
-	it( 'createFromRange should return LiveRange', () => {
-		const range = LiveRange.createFromRange( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ) );
+	it( '_createFromPositionAndShift should return LiveRange', () => {
+		const range = LiveRange._createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
 
 	it( 'should fire change:range event with when its boundaries are changed', () => {
 		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-		const copy = Range.createFromRange( live );
+		const copy = live.toRange();
 
 		const spy = sinon.spy();
 		live.on( 'change:range', spy );
@@ -102,7 +90,7 @@ describe( 'LiveRange', () => {
 		const targetPosition = new Position( root, [ 0 ] );
 
 		model.change( writer => {
-			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+			const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 
 			writer.move( sourceRange, targetPosition );
 		} );
@@ -126,7 +114,7 @@ describe( 'LiveRange', () => {
 		const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 		model.change( writer => {
-			const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+			const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 
 			writer.move( sourceRange, targetPosition );
 		} );
@@ -149,7 +137,7 @@ describe( 'LiveRange', () => {
 		const sourcePosition = new Position( root, [ 0, 0 ] );
 
 		model.change( writer => {
-			writer.remove( Range.createFromPositionAndShift( sourcePosition, 6 ) );
+			writer.remove( Range._createFromPositionAndShift( sourcePosition, 6 ) );
 		} );
 
 		// Second parameter is deletion position.
@@ -267,7 +255,7 @@ describe( 'LiveRange', () => {
 			it( 'is to the same parent as range start and before it', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 4 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 4 );
 					const targetPosition = new Position( root, [ 0, 1, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -281,7 +269,7 @@ describe( 'LiveRange', () => {
 			it( 'is to the same parent as range end and before it', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 4 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 4 );
 					const targetPosition = new Position( root, [ 0, 2, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -295,7 +283,7 @@ describe( 'LiveRange', () => {
 			it( 'is to a position before a node from range start path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 0, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -309,7 +297,7 @@ describe( 'LiveRange', () => {
 			it( 'is to a position before a node from range end path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 2 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -323,7 +311,7 @@ describe( 'LiveRange', () => {
 			it( 'is from the same parent as range start and before it', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -337,7 +325,7 @@ describe( 'LiveRange', () => {
 			it( 'is from the same parent as range end and before it - #1', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 2, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -351,7 +339,7 @@ describe( 'LiveRange', () => {
 			it( 'is from the same parent as range end and before it - #2', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 2, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -365,7 +353,7 @@ describe( 'LiveRange', () => {
 			it( 'is from a position before a node from range start path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 4 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -379,7 +367,7 @@ describe( 'LiveRange', () => {
 			it( 'intersects on live range left side', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 2 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 4 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 4 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -393,7 +381,7 @@ describe( 'LiveRange', () => {
 			it( 'intersects on live range right side', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 2, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 4 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 4 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -409,7 +397,7 @@ describe( 'LiveRange', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -425,7 +413,7 @@ describe( 'LiveRange', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 3 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 5 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 5 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -441,7 +429,7 @@ describe( 'LiveRange', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 2 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 1, 8 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -455,7 +443,7 @@ describe( 'LiveRange', () => {
 			it( 'is intersecting with live range on right and is moved into live range', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 2, 1 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 5 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 5 );
 					const targetPosition = new Position( root, [ 0, 2, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -507,7 +495,8 @@ describe( 'LiveRange', () => {
 					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ), 'w' );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p></w><p>x</p><p>c]d</p>' );
+				// Should be '<w><p>a[b</p></w><p>x</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<w><p>ab</p></w>[<p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range', () => {
@@ -533,7 +522,8 @@ describe( 'LiveRange', () => {
 					writer.wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ), 'w' );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
+				// Should be '<w><p>a[b</p><p>x</p></w><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<w><p>ab</p><p>x</p></w>[<p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
@@ -613,7 +603,8 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>c]d</p>' );
+				// Should be '<p>a[b</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p>]<p>cd</p>' );
 			} );
 
 			it( 'its start is intersecting with the wrapper to remove (multiple elements)', () => {
@@ -637,7 +628,8 @@ describe( 'LiveRange', () => {
 					writer.unwrap( root.getChild( 1 ) );
 				} );
 
-				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
+				// Should be '<p>a[b</p><p>x</p><p>c]d</p>' but the range is trimmed.
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p>]<p>x</p><p>cd</p>' );
 			} );
 
 			it( 'contains wrapped element', () => {
@@ -659,7 +651,7 @@ describe( 'LiveRange', () => {
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-			clone = Range.createFromRange( live );
+			clone = live.toRange();
 
 			spy = sinon.spy();
 			live.on( 'change:content', spy );
@@ -684,7 +676,7 @@ describe( 'LiveRange', () => {
 			it( 'inside the range', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 1, 5 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -697,7 +689,7 @@ describe( 'LiveRange', () => {
 			it( 'from the range', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 5 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -710,7 +702,7 @@ describe( 'LiveRange', () => {
 			it( 'from the beginning of range', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 2 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 2 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -725,7 +717,7 @@ describe( 'LiveRange', () => {
 
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 1, 5 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 1, 7 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -744,7 +736,7 @@ describe( 'LiveRange', () => {
 		beforeEach( () => {
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
-			clone = Range.createFromRange( live );
+			clone = live.toRange();
 
 			spy = sinon.spy();
 			live.on( 'change', spy );
@@ -787,7 +779,7 @@ describe( 'LiveRange', () => {
 			it( 'is to the same parent as range end and after it', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4, 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 2, 4 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -800,7 +792,7 @@ describe( 'LiveRange', () => {
 			it( 'is to a position after a node from range end path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 5 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 4 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -813,7 +805,7 @@ describe( 'LiveRange', () => {
 			it( 'is from the same parent as range end and after it', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 2, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 3 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 3 );
 					const targetPosition = new Position( root, [ 0, 4, 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -826,7 +818,7 @@ describe( 'LiveRange', () => {
 			it( 'is from a position after a node from range end path', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 5 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -839,7 +831,7 @@ describe( 'LiveRange', () => {
 			it( 'is to different root', () => {
 				model.change( writer => {
 					const sourcePosition = new Position( root, [ 0, 4 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( otherRoot, [ 0 ] );
 
 					writer.move( sourceRange, targetPosition );
@@ -854,7 +846,7 @@ describe( 'LiveRange', () => {
 					writer.insertText( 'foo', new Position( otherRoot, [ 0 ] ) );
 
 					const sourcePosition = new Position( otherRoot, [ 0 ] );
-					const sourceRange = Range.createFromPositionAndShift( sourcePosition, 1 );
+					const sourceRange = Range._createFromPositionAndShift( sourcePosition, 1 );
 					const targetPosition = new Position( root, [ 0, 4 ] );
 
 					writer.move( sourceRange, targetPosition );

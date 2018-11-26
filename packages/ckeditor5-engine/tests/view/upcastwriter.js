@@ -3,9 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+import DocumentFragment from '../../src/view/documentfragment';
 import Element from '../../src/view/element';
+import Text from '../../src/view/text';
 import UpcastWriter from '../../src/view/upcastwriter';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import ViewPosition from '../../src/view/position';
+import ViewRange from '../../src/view/range';
+import ViewSelection from '../../src/view/selection';
 
 describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor;
@@ -27,6 +32,71 @@ describe( 'UpcastWriter', () => {
 			'</ul>';
 
 		view = dataprocessor.toView( html );
+	} );
+
+	describe( 'createDocumentFragment', () => {
+		it( 'should create empty document fragment', () => {
+			const df = writer.createDocumentFragment();
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create document fragment with children', () => {
+			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
+
+			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df.childCount ).to.equal( 2 );
+		} );
+	} );
+
+	describe( 'createElement', () => {
+		it( 'should create empty element', () => {
+			const el = writer.createElement( 'p' );
+
+			expect( el ).to.instanceOf( Element );
+			expect( el.name ).to.equal( 'p' );
+			expect( Array.from( el.getAttributes() ).length ).to.equal( 0 );
+			expect( el.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create element with attributes', () => {
+			const el = writer.createElement( 'a', { 'class': 'editor', 'contentEditable': 'true' } );
+
+			expect( el ).to.instanceOf( Element );
+			expect( el.name ).to.equal( 'a' );
+			expect( Array.from( el.getAttributes() ).length ).to.equal( 2 );
+			expect( el.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should create element with children', () => {
+			const el = writer.createElement( 'div', null, [ view.getChild( 0 ) ] );
+
+			expect( el ).to.instanceOf( Element );
+			expect( el.name ).to.equal( 'div' );
+			expect( Array.from( el.getAttributes() ).length ).to.equal( 0 );
+			expect( el.childCount ).to.equal( 1 );
+		} );
+
+		it( 'should create element with attributes and children', () => {
+			const el = writer.createElement( 'blockquote',
+				{ 'class': 'editor', 'contentEditable': 'true' },
+				view.getChild( 2 ) );
+
+			expect( el ).to.instanceOf( Element );
+			expect( el.name ).to.equal( 'blockquote' );
+			expect( Array.from( el.getAttributes() ).length ).to.equal( 2 );
+			expect( el.childCount ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'createText', () => {
+		it( 'should create text', () => {
+			const text = writer.createText( 'FooBar' );
+
+			expect( text ).to.instanceOf( Text );
+			expect( text.data ).to.equal( 'FooBar' );
+		} );
 	} );
 
 	describe( 'clone', () => {
@@ -476,6 +546,53 @@ describe( 'UpcastWriter', () => {
 
 			expect( el.getCustomProperty( 'prop1' ) ).to.undefined;
 			expect( Array.from( el.getCustomProperties() ).length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'createPositionAt()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span' );
+			expect( writer.createPositionAt( span, 0 ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionAfter()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createPositionAfter( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createPositionBefore()', () => {
+		it( 'should return instance of Position', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createPositionBefore( span.getChild( 0 ) ) ).to.be.instanceof( ViewPosition );
+		} );
+	} );
+
+	describe( 'createRange()', () => {
+		it( 'should return instance of Range', () => {
+			expect( writer.createRange( writer.createPositionAt( new Element( 'span' ), 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeIn()', () => {
+		it( 'should return instance of Range', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createRangeIn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createRangeOn()', () => {
+		it( 'should return instance of Range', () => {
+			const span = new Element( 'span', undefined, new Element( 'span' ) );
+			expect( writer.createRangeOn( span.getChild( 0 ) ) ).to.be.instanceof( ViewRange );
+		} );
+	} );
+
+	describe( 'createSelection()', () => {
+		it( 'should return instance of Selection', () => {
+			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
 		} );
 	} );
 } );

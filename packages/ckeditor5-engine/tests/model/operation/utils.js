@@ -39,19 +39,19 @@ describe( 'Operation utils', () => {
 
 	describe( 'insert', () => {
 		it( 'should insert nodes between nodes', () => {
-			utils._insert( Position.createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
+			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
 
 			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
-			utils._insert( Position.createAt( root, 5 ), new Element( 'p' ) );
+			utils._insert( Position._createAt( root, 5 ), new Element( 'p' ) );
 
 			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			utils._insert( Position.createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
+			utils._insert( Position._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
 		} );
@@ -59,21 +59,21 @@ describe( 'Operation utils', () => {
 
 	describe( 'remove', () => {
 		it( 'should remove nodes in given range', () => {
-			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
+			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
 			utils._remove( range );
 
 			expectData( 'foo<image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should split text node if range starts or ends inside text node', () => {
-			const range = Range.createFromParentsAndOffsets( root, 1, root, 5 );
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 5 ) );
 			utils._remove( range );
 
 			expectData( 'f<$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			const range = Range.createFromParentsAndOffsets( root, 3, root, 7 );
+			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 7 ) );
 			utils._remove( range );
 
 			expectData( 'fooxyz' );
@@ -89,15 +89,15 @@ describe( 'Operation utils', () => {
 
 	describe( 'move', () => {
 		it( 'should move a range of nodes', () => {
-			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
-			utils._move( range, Position.createAt( root, 0 ) );
+			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
+			utils._move( range, Position._createAt( root, 0 ) );
 
 			expectData( '<$text bold="true">bar</$text>foo<image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should correctly move if target position is in same element as moved range, but after range', () => {
-			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
-			utils._move( range, Position.createAt( root, 10 ) );
+			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
+			utils._move( range, Position._createAt( root, 10 ) );
 
 			expectData( 'foo<image src="img.jpg"></image>xyz<$text bold="true">bar</$text>' );
 		} );
@@ -111,21 +111,21 @@ describe( 'Operation utils', () => {
 
 	describe( 'setAttribute', () => {
 		it( 'should set attribute on given range of nodes', () => {
-			const range = Range.createFromParentsAndOffsets( root, 6, root, 8 );
+			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 8 ) );
 			utils._setAttribute( range, 'newAttr', true );
 
 			expectData( 'foo<$text bold="true">bar</$text><image newAttr="true" src="img.jpg"></image><$text newAttr="true">x</$text>yz' );
 		} );
 
 		it( 'should remove attribute if null was passed as a value', () => {
-			const range = Range.createFromParentsAndOffsets( root, 6, root, 7 );
+			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 7 ) );
 			utils._setAttribute( range, 'src', null );
 
 			expectData( 'foo<$text bold="true">bar</$text><image></image>xyz' );
 		} );
 
 		it( 'should merge nodes if possible', () => {
-			const range = Range.createFromParentsAndOffsets( root, 0, root, 3 );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 3 ) );
 			utils._setAttribute( range, 'bold', true );
 
 			expectData( '<$text bold="true">foobar</$text><image src="img.jpg"></image>xyz' );

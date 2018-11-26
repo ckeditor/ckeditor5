@@ -170,7 +170,7 @@ export default class Differ {
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
 
-				const range = Range.createFromPositionAndShift( operation.position, 1 );
+				const range = Range._createFromPositionAndShift( operation.position, 1 );
 
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerRange = marker.getRange();
@@ -181,49 +181,43 @@ export default class Differ {
 				break;
 			}
 			case 'split': {
-				const splitElement = operation.position.parent;
-				const howManyMoved = splitElement.maxOffset - operation.position.offset;
+				const splitElement = operation.splitPosition.parent;
 
+				// Mark that children of the split element were removed.
 				if ( !this._isInInsertedElement( splitElement ) ) {
-					this._markRemove( splitElement, operation.position.offset, howManyMoved );
+					this._markRemove( splitElement, operation.splitPosition.offset, operation.howMany );
 				}
 
-				if ( !this._isInInsertedElement( splitElement.parent ) ) {
-					this._markInsert( splitElement.parent, splitElement.startOffset + 1, 1 );
+				// Mark that the new element (split copy) was inserted.
+				if ( !this._isInInsertedElement( operation.insertionPosition.parent ) ) {
+					this._markInsert( operation.insertionPosition.parent, operation.insertionPosition.offset, 1 );
+				}
+
+				// If the split took the element from the graveyard, mark that the element from the graveyard was removed.
+				if ( operation.graveyardPosition ) {
+					this._markRemove( operation.graveyardPosition.parent, operation.graveyardPosition.offset, 1 );
 				}
 
 				break;
 			}
 			case 'merge': {
+				// Mark that the merged element was removed.
 				const mergedElement = operation.sourcePosition.parent;
-				const mergedIntoElement = operation.targetPosition.parent;
 
 				if ( !this._isInInsertedElement( mergedElement.parent ) ) {
 					this._markRemove( mergedElement.parent, mergedElement.startOffset, 1 );
 				}
 
+				// Mark that the merged element was inserted into graveyard.
+				const graveyardParent = operation.graveyardPosition.parent;
+
+				this._markInsert( graveyardParent, operation.graveyardPosition.offset, 1 );
+
+				// Mark that children of merged element were inserted at new parent.
+				const mergedIntoElement = operation.targetPosition.parent;
+
 				if ( !this._isInInsertedElement( mergedIntoElement ) ) {
 					this._markInsert( mergedIntoElement, operation.targetPosition.offset, mergedElement.maxOffset );
-				}
-
-				break;
-			}
-			case 'wrap': {
-				if ( !this._isInInsertedElement( operation.position.parent ) ) {
-					this._markRemove( operation.position.parent, operation.position.offset, operation.howMany );
-					this._markInsert( operation.position.parent, operation.position.offset, 1 );
-				}
-
-				break;
-			}
-			case 'unwrap': {
-				const elementToUnwrap = operation.position.parent;
-				const offset = elementToUnwrap.startOffset;
-				const parent = elementToUnwrap.parent;
-
-				if ( !this._isInInsertedElement( parent ) ) {
-					this._markRemove( parent, offset, 1 );
-					this._markInsert( parent, offset, elementToUnwrap.maxOffset );
 				}
 
 				break;
@@ -397,10 +391,10 @@ export default class Differ {
 					let range;
 
 					if ( elementChildren[ i ].name == '$text' ) {
-						range = Range.createFromParentsAndOffsets( element, i, element, i + 1 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element, i + 1 ) );
 					} else {
 						const index = element.offsetToIndex( i );
-						range = Range.createFromParentsAndOffsets( element, i, element.getChild( index ), 0 );
+						range = new Range( Position._createAt( element, i ), Position._createAt( element.getChild( index ), 0 ) );
 					}
 
 					// Generate diff items for this change (there might be multiple attributes changed and
@@ -429,7 +423,7 @@ export default class Differ {
 			// If change happens at the same position...
 			if ( a.position.isEqual( b.position ) ) {
 				// Keep chronological order of operations.
-				return a.changeCount < b.changeCount ? -1 : 1;
+				return a.changeCount - b.changeCount;
 			}
 
 			// If positions differ, position "on the left" should be earlier in the result.
@@ -832,7 +826,7 @@ export default class Differ {
 	_getInsertDiff( parent, offset, name ) {
 		return {
 			type: 'insert',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++
@@ -851,7 +845,7 @@ export default class Differ {
 	_getRemoveDiff( parent, offset, name ) {
 		return {
 			type: 'remove',
-			position: Position.createFromParentAndOffset( parent, offset ),
+			position: Position._createAt( parent, offset ),
 			name,
 			length: 1,
 			changeCount: this._changeCount++
@@ -885,7 +879,7 @@ export default class Differ {
 				diffs.push( {
 					type: 'attribute',
 					position: range.start,
-					range: Range.createFromRange( range ),
+					range: range.clone(),
 					length: 1,
 					attributeKey: key,
 					attributeOldValue: oldValue,
@@ -904,7 +898,7 @@ export default class Differ {
 			diffs.push( {
 				type: 'attribute',
 				position: range.start,
-				range: Range.createFromRange( range ),
+				range: range.clone(),
 				length: 1,
 				attributeKey: key,
 				attributeOldValue: null,
@@ -954,7 +948,7 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_removeAllNestedChanges( parent, offset, howMany ) {
-		const range = Range.createFromParentsAndOffsets( parent, offset, parent, offset + howMany );
+		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {

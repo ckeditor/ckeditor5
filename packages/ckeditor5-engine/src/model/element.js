@@ -146,7 +146,7 @@ export default class Element extends Node {
 
 	/**
 	 * Returns the starting offset of given child. Starting offset is equal to the sum of
-	 * {module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
 	 * given node is not a child of this element.
 	 *
 	 * @param {module:engine/model/node~Node} node Child node to look for.

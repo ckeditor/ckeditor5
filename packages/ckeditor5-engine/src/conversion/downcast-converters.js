@@ -8,7 +8,6 @@ import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
 
 import ViewAttributeElement from '../view/attributeelement';
-import ViewRange from '../view/range';
 import DocumentSelection from '../model/documentselection';
 
 import { cloneDeep } from 'lodash-es';
@@ -47,7 +46,8 @@ import { cloneDeep } from 'lodash-es';
  * @param {Object} config Conversion configuration.
  * @param {String} config.model The name of the model element to convert.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
- * that takes the model element and view writer as parameters and returns a view container element.
+ * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+ * as parameters and returns a view container element.
  * @returns {Function} Conversion helper.
  */
 export function downcastElementToElement( config ) {
@@ -123,7 +123,8 @@ export function downcastElementToElement( config ) {
  * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
  * of `String`s with possible values if the model attribute is an enumerable.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
- * that takes the model attribute value and view writer as parameters and returns a view attribute element. If `config.model.values` is
+ * that takes the model attribute value and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+ * as parameters and returns a view attribute element. If `config.model.values` is
  * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
@@ -533,14 +534,14 @@ export function remove() {
 		const modelEnd = data.position.getShiftedBy( data.length );
 		const viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
 
-		const viewRange = new ViewRange( viewStart, viewEnd );
+		const viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
 		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
 
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
-		for ( const child of ViewRange.createIn( removed ).getItems() ) {
+		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
 			conversionApi.mapper.unbindViewElement( child );
 		}
 	};
@@ -625,11 +626,11 @@ export function removeUIElement() {
 
 		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
 
-		const viewWriter = conversionApi.writer;
-
 		for ( const element of elements ) {
-			viewWriter.clear( ViewRange.createOn( element ), element );
+			conversionApi.writer.clear( conversionApi.writer.createRangeOn( element ), element );
 		}
+
+		conversionApi.writer.clearClonedElementsGroup( data.markerName );
 
 		evt.stop();
 	};
@@ -901,7 +902,7 @@ export function highlightElement( highlightDescriptor ) {
 			conversionApi.consumable.consume( data.item, evt.name );
 
 			// Consume all children nodes.
-			for ( const value of ModelRange.createIn( data.item ) ) {
+			for ( const value of ModelRange._createIn( data.item ) ) {
 				conversionApi.consumable.consume( value.item, evt.name );
 			}
 
@@ -963,12 +964,14 @@ export function removeHighlight( highlightDescriptor ) {
 
 		for ( const element of elements ) {
 			if ( element.is( 'attributeElement' ) ) {
-				conversionApi.writer.unwrap( ViewRange.createOn( element ), viewHighlightElement );
+				conversionApi.writer.unwrap( conversionApi.writer.createRangeOn( element ), viewHighlightElement );
 			} else {
 				// if element.is( 'containerElement' ).
 				element.getCustomProperty( 'removeHighlight' )( element, descriptor.id, conversionApi.writer );
 			}
 		}
+
+		conversionApi.writer.clearClonedElementsGroup( data.markerName );
 
 		evt.stop();
 	};

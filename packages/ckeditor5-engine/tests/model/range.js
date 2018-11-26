@@ -16,8 +16,6 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import MergeOperation from '../../src/model/operation/mergeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
-import WrapOperation from '../../src/model/operation/wrapoperation';
-import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Range', () => {
@@ -70,8 +68,8 @@ describe( 'Range', () => {
 
 	describe( 'isEqual()', () => {
 		it( 'should return true if the ranges are the same', () => {
-			const sameStart = Position.createFromPosition( start );
-			const sameEnd = Position.createFromPosition( end );
+			const sameStart = Position._createAt( start );
+			const sameEnd = Position._createAt( end );
 
 			const sameRange = new Range( sameStart, sameEnd );
 
@@ -82,7 +80,7 @@ describe( 'Range', () => {
 			const range = new Range( start, end );
 
 			const diffStart = new Position( root, [ 0 ] );
-			const sameEnd = Position.createFromPosition( end );
+			const sameEnd = Position._createAt( end );
 
 			const diffRange = new Range( diffStart, sameEnd );
 
@@ -110,7 +108,7 @@ describe( 'Range', () => {
 
 	describe( 'isIntersecting()', () => {
 		it( 'should return true if given range is equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = range.clone();
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
@@ -157,59 +155,28 @@ describe( 'Range', () => {
 			root._insertChild( 0, [ p ] );
 		} );
 
-		describe( 'createIn()', () => {
+		describe( '_createIn()', () => {
 			it( 'should return range', () => {
-				const range = Range.createIn( p );
+				const range = Range._createIn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
 			} );
 		} );
 
-		describe( 'createOn()', () => {
+		describe( '_createOn()', () => {
 			it( 'should return range', () => {
-				const range = Range.createOn( p );
+				const range = Range._createOn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1 ] );
 			} );
 		} );
 
-		describe( 'createCollapsedAt()', () => {
-			it( 'should return new collapsed range at the given item position', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 0 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-
-			it( 'should return new collapse range at the given item position and offset', () => {
-				const item = new Element( 'p', null, new Text( 'foo' ) );
-				const range = Range.createCollapsedAt( item, 1 );
-
-				expect( range.start.parent ).to.equal( item );
-				expect( range.start.offset ).to.equal( 1 );
-
-				expect( range.isCollapsed ).to.be.true;
-			} );
-		} );
-
-		describe( 'createFromParentsAndOffsets()', () => {
-			it( 'should return range', () => {
-				const range = Range.createFromParentsAndOffsets( root, 0, p, 2 );
-
-				expect( range.start.path ).to.deep.equal( [ 0 ] );
-				expect( range.end.path ).to.deep.equal( [ 0, 2 ] );
-			} );
-		} );
-
-		describe( 'createFromPositionAndShift()', () => {
+		describe( '_createFromPositionAndShift()', () => {
 			it( 'should make range from start position and offset', () => {
 				const position = new Position( root, [ 1, 2, 3 ] );
-				const range = Range.createFromPositionAndShift( position, 4 );
+				const range = Range._createFromPositionAndShift( position, 4 );
 
 				expect( range ).to.be.instanceof( Range );
 				expect( range.start.isEqual( position ) ).to.be.true;
@@ -218,21 +185,21 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'createFromRange()', () => {
+		describe( 'clone()', () => {
 			it( 'should create a new instance of Range that is equal to passed range', () => {
-				const clone = Range.createFromRange( range );
+				const clone = range.clone();
 
 				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
 			} );
 		} );
 
-		describe( 'createFromRanges()', () => {
+		describe( '_createFromRanges()', () => {
 			function makeRanges( root, ...points ) {
 				const ranges = [];
 
 				for ( let i = 0; i < points.length; i += 2 ) {
-					ranges.push( Range.createFromParentsAndOffsets( root, points[ i ], root, points[ i + 1 ] ) );
+					ranges.push( new Range( Position._createAt( root, points[ i ] ), Position._createAt( root, points[ i + 1 ] ) ) );
 				}
 
 				return ranges;
@@ -244,20 +211,20 @@ describe( 'Range', () => {
 
 			it( 'should throw if empty array is passed', () => {
 				expect( () => {
-					Range.createFromRanges( [] );
+					Range._createFromRanges( [] );
 				} ).to.throw( CKEditorError, /^range-create-from-ranges-empty-array/ );
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {
-				const original = Range.createFromParentsAndOffsets( root, 2, root, 3 );
-				const range = Range.createFromRanges( [ original ] );
+				const original = new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) );
+				const range = Range._createFromRanges( [ original ] );
 
 				expect( range.isEqual( original ) ).to.be.true;
 				expect( range ).not.to.be.equal( original );
 			} );
 
 			it( 'should combine ranges with reference range', () => {
-				const range = Range.createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
+				const range = Range._createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
 
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.offset ).to.equal( 9 );
@@ -419,7 +386,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = range.clone();
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
@@ -462,7 +429,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if element is inside range and false when it is not inside range', () => {
-			const range = Range.createFromParentsAndOffsets( root, 1, root, 3 ); // Range over `b` and `c`.
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 3 ) ); // Range over `b` and `c`.
 
 			expect( range.containsItem( a ) ).to.be.false;
 			expect( range.containsItem( b ) ).to.be.true;
@@ -793,7 +760,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a range equal to both ranges if both ranges are equal', () => {
-			const otherRange = Range.createFromRange( range );
+			const otherRange = range.clone();
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;
@@ -806,7 +773,7 @@ describe( 'Range', () => {
 		let gyPos;
 
 		beforeEach( () => {
-			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
 			gyPos = new Position( gy, [ 0 ] );
 		} );
 
@@ -817,7 +784,8 @@ describe( 'Range', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const op = new AttributeOperation( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const opRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) );
+				const op = new AttributeOperation( opRange, 'key', true, false, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -850,7 +818,7 @@ describe( 'Range', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
-					'marker', null, Range.createFromParentsAndOffsets( root, 1, root, 6 ), model.markers, true, 1
+					'marker', null, new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) ), model.markers, true, 1
 				);
 
 				const transformed = range.getTransformedByOperation( op );
@@ -1040,6 +1008,17 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 3 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 3 ] );
 			} );
+
+			it( 'split element which is the last element in the range', () => {
+				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+
+				const op = new SplitOperation( new Position( root, [ 2, 0 ] ), 6, gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4 ] );
+			} );
 		} );
 
 		describe( 'by MergeOperation', () => {
@@ -1201,113 +1180,12 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2 ] );
 			} );
 		} );
-
-		describe( 'by WrapOperation', () => {
-			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				// <p>f[o]o</p><p>bar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 0, 2 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <w><p>f[o]o</p></w><p>bar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 0, 2 ] );
-			} );
-
-			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
-				// <p>f[oo</p><p>b]ar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <w><p>f[oo</p></w><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-			} );
-
-			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
-				// <p>f[oo</p><p>b]ar</p>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const wrapElement = new Element( 'w' );
-				const op = new WrapOperation( new Position( root, [ 1 ] ), 1, wrapElement, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><w><p>b]ar</p></w>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 0, 1 ] );
-			} );
-		} );
-
-		describe( 'by UnwrapOperation', () => {
-			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
-				// <w><p>f[o]o</p></w><p>bar</p>
-				range.start = new Position( root, [ 0, 0, 1 ] );
-				range.end = new Position( root, [ 0, 0, 2 ] );
-
-				const unwrapPosition = new Position( root, [ 0, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[o]o</p><p>bar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 2 ] );
-			} );
-
-			it( 'maintans start position when unwrapping element in which the range starts but not ends', () => {
-				// <w><p>f[oo</p></w><p>b]ar</p>
-				range.start = new Position( root, [ 0, 0, 1 ] );
-				range.end = new Position( root, [ 1, 1 ] );
-
-				const unwrapPosition = new Position( root, [ 0, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-			} );
-
-			it( 'maintans end position when unwrapping element in which the range ends but not starts', () => {
-				// <p>f[oo</p><w><p>b]ar</p></w>
-				range.start = new Position( root, [ 0, 1 ] );
-				range.end = new Position( root, [ 1, 0, 1 ] );
-
-				const unwrapPosition = new Position( root, [ 1, 0 ] );
-				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
-
-				const transformed = range.getTransformedByOperation( op );
-
-				// <p>f[oo</p><p>b]ar</p>
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-			} );
-		} );
 	} );
 
 	describe( 'getTransformedByOperations()', () => {
 		beforeEach( () => {
 			root._appendChild( new Text( 'foobar' ) );
-			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
 		} );
 
 		function expectRange( range, startOffset, endOffset ) {

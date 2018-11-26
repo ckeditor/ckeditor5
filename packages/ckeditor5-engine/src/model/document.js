@@ -8,8 +8,6 @@
  */
 
 import Differ from './differ';
-import Range from './range';
-import Position from './position';
 import RootElement from './rootelement';
 import History from './history';
 import DocumentSelection from './documentselection';
@@ -334,14 +332,15 @@ export default class Document {
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._getDefaultRoot();
-		const schema = this.model.schema;
+		const model = this.model;
+		const schema = model.schema;
 
 		// Find the first position where the selection can be put.
-		const position = new Position( defaultRoot, [ 0 ] );
+		const position = model.createPositionFromPath( defaultRoot, [ 0 ] );
 		const nearestRange = schema.getNearestSelectionRange( position );
 
 		// If valid selection range is not found - return range collapsed at the beginning of the root.
-		return nearestRange || new Range( position );
+		return nearestRange || model.createRange( position );
 	}
 
 	/**
