@@ -7,13 +7,10 @@
  * @module table/tableselection
  */
 
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
 import TableWalker from './tablewalker';
 import { findAncestor } from './commands/utils';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import ObservableMixin from '../../ckeditor5-utils/src/observablemixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 // TODO: refactor to an Observer
 export default class TableSelection {
@@ -38,7 +35,7 @@ export default class TableSelection {
 
 				editor.model.change( writer => {
 					// Select the contents of table cell.
-					writer.setSelection( Range.createIn( tableCell ) );
+					writer.setSelection( tableCell, 'in' );
 				} );
 			}
 		} );
@@ -186,7 +183,7 @@ export default class TableSelection {
 
 		for ( const tableCell of selected ) {
 			const viewElement = mapper.toViewElement( tableCell );
-			modelRanges.push( Range.createOn( tableCell ) );
+			modelRanges.push( model.createRangeOn( tableCell ) );
 
 			this._highlighted.add( viewElement );
 		}
@@ -228,7 +225,7 @@ function getTableCell( domEventData, editor ) {
 		return;
 	}
 
-	return findAncestor( 'tableCell', Position.createAt( modelElement ) );
+	return findAncestor( 'tableCell', editor.model.createPositionAt( modelElement, 0 ) );
 }
 
 mix( TableSelection, ObservableMixin );

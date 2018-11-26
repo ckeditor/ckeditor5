@@ -104,7 +104,7 @@ export default class RemoveRowCommand extends Command {
 				return isCellToFocusAfterRemoving( row, rowToFocus, rowspan, column, columnToFocus, colspan );
 			} );
 
-			writer.setSelection( Range.createCollapsedAt( cellToFocus ) );
+			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
 	}
 }

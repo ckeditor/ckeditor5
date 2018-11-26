@@ -8,8 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
 import TableUtils from '../tableutils';
@@ -58,7 +56,7 @@ export default class MergeCellsCommand extends Command {
 			const firstTableCell = selectedTableCells.shift();
 
 			// TODO: this shouldn't be necessary (right now the selection could overlap existing.
-			writer.setSelection( Range.createIn( firstTableCell ) );
+			writer.setSelection( firstTableCell, 'in' );
 
 			const { row, column } = tableUtils.getCellLocation( firstTableCell );
 
@@ -94,7 +92,7 @@ export default class MergeCellsCommand extends Command {
 			updateNumericAttribute( 'colspan', rightMax - column, firstTableCell, writer );
 			updateNumericAttribute( 'rowspan', bottomMax - row, firstTableCell, writer );
 
-			writer.setSelection( Range.createIn( firstTableCell ) );
+			writer.setSelection( firstTableCell, 'in' );
 
 			// Remove empty rows after merging table cells.
 			for ( const row of rowsToCheck ) {
@@ -136,10 +134,10 @@ function removeEmptyRow( removedTableCellRow, writer ) {
 function mergeTableCells( cellToRemove, cellToExpand, writer ) {
 	if ( !isEmpty( cellToRemove ) ) {
 		if ( isEmpty( cellToExpand ) ) {
-			writer.remove( Range.createIn( cellToExpand ) );
+			writer.remove( writer.createRangeIn( cellToExpand ) );
 		}
 
-		writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
+		writer.move( writer.createRangeIn( cellToRemove ), writer.createPositionAt( cellToExpand, 'end' ) );
 	}
 
 	// Remove merged table cell.

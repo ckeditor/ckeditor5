@@ -9,7 +9,6 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import MergeCellsCommand from '../../src/commands/mergecellscommand';
 import { defaultConversion, defaultSchema, formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 import TableUtils from '../../src/tableutils';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'MergeCellsCommand', () => {
 	let editor, model, command, root;
@@ -411,9 +410,9 @@ describe( 'MergeCellsCommand', () => {
 	} );
 
 	function selectNodes( paths ) {
-		const ranges = paths.map( path => Range.createOn( root.getNodeByPath( path ) ) );
-
 		model.change( writer => {
+			const ranges = paths.map( path => writer.createRangeOn( root.getNodeByPath( path ) ) );
+
 			writer.setSelection( ranges );
 		} );
 	}

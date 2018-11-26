@@ -812,7 +812,7 @@ describe( 'TableEditing', () => {
 
 			// The click in the DOM would trigger selection change and it will set the selection:
 			model.change( writer => {
-				writer.setSelection( Range.createCollapsedAt( model.document.getRoot().getChild( 1 ) ) );
+				writer.setSelection( writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 1 ), 0 ) ) );
 			} );
 
 			expect( formatTable( getViewData( view ) ) ).to.equal( formattedViewTable( [
