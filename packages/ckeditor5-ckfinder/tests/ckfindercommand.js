@@ -384,6 +384,14 @@ describe( 'CKFinderCommand', () => {
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
 		} );
 
+		it( 'does not alter the original config', () => {
+			editor.config.set( 'ckfinder', { options: { foo: 'bar' } } );
+
+			command.execute();
+
+			expect( editor.config.get( 'ckfinder.options' ) ).to.deep.equal( { foo: 'bar' } );
+		} );
+
 		function mockFinderFile( url = 'foo/bar.jpg', isImage = true ) {
 			return {
 				isImage: () => isImage,
