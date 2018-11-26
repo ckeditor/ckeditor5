@@ -219,7 +219,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not insert image when file is null', () => {
 		const viewDocument = editor.editing.view.document;
-		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ] } );
+		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );
 
 		setModelData( model, '<paragraph>foo[]</paragraph>' );
 
