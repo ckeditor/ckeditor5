@@ -48,7 +48,8 @@ export default class CKFinder extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
+ * The configuration of the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature}
+ * and its {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter upload adapter}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -59,7 +60,7 @@ export default class CKFinder extends Plugin {
  * 				}
  *			} )
  *			.then( ... )
- 			.catch( ... );
+ *			.catch( ... );
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
@@ -67,7 +68,9 @@ export default class CKFinder extends Plugin {
  */
 
 /**
- * The configuration options to pass to the CKFinder instance.
+ * The configuration options passed to the CKFinder file manager instance.
+ *
+ * Check the file manager {@link @ckfinder ckfinder3/#!/api/CKFinder.Config documentation} for the complete list of options.
  *
  * @member {Object} module:ckfinder/ckfinder~CKFinderConfig#options
  */
@@ -76,10 +79,31 @@ export default class CKFinder extends Plugin {
  * The type of the CKFinder opener method.
  *
  * Supported types are:
- * * `"modal"` - opens a CKFinder modal
- * * `"popup"` - opens a CKFinder popup window
+ * * `"modal"` - opens a CKFinder in a modal,
+ * * `"popup"` - opens a CKFinder in a new "pop-up" window.
  *
- * Defaults to "'modal'".
+ * Defaults to `'modal'`.
  *
  * @member {String} module:ckfinder/ckfinder~CKFinderConfig#openerMethod
+ */
+
+/**
+ * The path (URL) to the connector which handles the file upload in the CKFinder file manager.
+ * When specified, enables the automatic upload of resources such as images inserted into the content.
+ *
+ * For instance, to use CKFinder's {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload}
+ * command, your can use the following (or similar) path:
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				ckfinder: {
+ *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+ * 				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Used by the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter upload adapter}.
+ *
+ * @member {String} module:ckfinder/ckfinder~CKFinderConfig#uploadUrl
  */
