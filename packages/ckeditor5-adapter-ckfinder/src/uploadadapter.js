@@ -16,8 +16,11 @@ import { getCsrfToken } from './utils';
 /**
  * A plugin that enables CKFinder uploads in CKEditor 5.
  *
- * Configure the upload URL in
- * {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl `ckfinder.uploadUrl`}.
+ * You can configure it using
+ * {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `ckfinder.uploadUrl`}.
+ *
+ * Check out the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature} to learn more about
+ * the full integration with the file manager.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -180,34 +183,3 @@ class UploadAdapter {
 		this.xhr.send( data );
 	}
 }
-
-/**
- * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
- *
- * Read more in {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig}.
- *
- * @member {module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig} module:core/editor/editorconfig~EditorConfig#ckfinder
- */
-
-/**
- * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- * 				ckfinder: {
- *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
- * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface CKFinderAdapterConfig
- */
-
-/**
- * The URL to which files should be uploaded.
- *
- * @member {String} module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl
- */
