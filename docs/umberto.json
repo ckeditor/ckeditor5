@@ -6,6 +6,7 @@
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"redirects": {
+		"api/module_adapter-ckfinder_uploadadapter-CKFinderAdapterConfig.html": "api/module_ckfinder_ckfinder-CKFinderConfig.html",
 		"builds/guides/license-and-legal.html": "builds/guides/support/license-and-legal.html",
 		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
 		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",

@@ -567,7 +567,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></td>
 			<td>
-				<p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with support for responsive images. To configure it, provide the {@link module:cloud-services/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available, too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p>
+				<p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with support for responsive images. To configure it, provide the {@link module:cloud-services/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available, too, see {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p>
 				<p>Writing your own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p>
 			</td>
 		</tr>
