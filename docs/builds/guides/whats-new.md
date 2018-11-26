@@ -90,7 +90,7 @@ Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentati
 
 With [collaboration services provided by CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) it is now extremely easy to provide collaboration features inside your application.
 
-Check the {@link @ckeditor5 features/overview collaboration demo} and read how to enable features such as comments, user presence list or showing the selection of other users in your editor.
+Check the {@link @ckeditor5 features/real-time-collaboration collaboration demo} and read how to enable features such as comments, user presence list or showing the selection of other users in your editor.
 
 [Letters](https://ckeditor.com/letters/) is an example of an application using the power of CKEditor 5 for collaboration.
 
