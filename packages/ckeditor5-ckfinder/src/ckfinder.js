@@ -57,7 +57,7 @@ export default class CKFinder extends Plugin {
  *					options: {
  *						resourceType: 'Images'
  *					}
- * 				}
+ *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -79,8 +79,9 @@ export default class CKFinder extends Plugin {
  * The type of the CKFinder opener method.
  *
  * Supported types are:
- * * `"modal"` - opens a CKFinder in a modal,
- * * `"popup"` - opens a CKFinder in a new "pop-up" window.
+ *
+ * * `'modal'` - opens a CKFinder in a modal,
+ * * `'popup'` - opens a CKFinder in a new "pop-up" window.
  *
  * Defaults to `'modal'`.
  *
@@ -96,9 +97,9 @@ export default class CKFinder extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				ckfinder: {
+ *				ckfinder: {
  *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
- * 				}
+ *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
