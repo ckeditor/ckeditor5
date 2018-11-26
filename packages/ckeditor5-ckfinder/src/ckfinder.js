@@ -70,7 +70,7 @@ export default class CKFinder extends Plugin {
 /**
  * The configuration options passed to the CKFinder file manager instance.
  *
- * Check the file manager {@link @ckfinder ckfinder3/#!/api/CKFinder.Config documentation} for the complete list of options.
+ * Check the file manager {@glink @ckfinder ckfinder3/#!/api/CKFinder.Config documentation} for the complete list of options.
  *
  * @member {Object} module:ckfinder/ckfinder~CKFinderConfig#options
  */
@@ -92,7 +92,7 @@ export default class CKFinder extends Plugin {
  * The path (URL) to the connector which handles the file upload in the CKFinder file manager.
  * When specified, enables the automatic upload of resources such as images inserted into the content.
  *
- * For instance, to use CKFinder's {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload}
+ * For instance, to use CKFinder's {@glink @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload}
  * command, your can use the following (or similar) path:
  *
  *		ClassicEditor
