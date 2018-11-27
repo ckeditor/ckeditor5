@@ -12,6 +12,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/parse';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
+import { replaceImagesSourceWithBase64 } from './filters/image';
 
 /**
  * The Paste from Office plugin.
@@ -41,7 +42,7 @@ export default class PasteFromOffice extends Plugin {
 			const html = data.dataTransfer.getData( 'text/html' );
 
 			if ( isWordInput( html ) ) {
-				data.content = this._normalizeWordInput( html );
+				data.content = this._normalizeWordInput( html, data.dataTransfer );
 			}
 		}, { priority: 'high' } );
 	}
@@ -53,11 +54,14 @@ export default class PasteFromOffice extends Plugin {
 	 *
 	 * @protected
 	 * @param {String} input Word input.
+	 * @param {module:clipboard/datatransfer~DataTransfer} dataTransfer Data transfer instance.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Normalized input.
 	 */
-	_normalizeWordInput( input ) {
+	_normalizeWordInput( input, dataTransfer ) {
 		const { body, stylesString } = parseHtml( input );
-		transformListItemLikeElementsIntoLists( body, stylesString, this.editor.editing.view );
+
+		transformListItemLikeElementsIntoLists( body, stylesString );
+		replaceImagesSourceWithBase64( body, dataTransfer.getData( 'text/rtf' ) );
 
 		return body;
 	}

@@ -143,10 +143,20 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 				} );
 		} );
 
+		afterEach( () => {
+			editor.destroy();
+
+			pasteFromOfficePlugin = null;
+		} );
+
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
+				const dataTransfer = createDataTransfer( {
+					'text/rtf': fixtures.inputRtf && fixtures.inputRtf[ name ]
+				} );
+
 				expectNormalized(
-					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], editor ),
+					pasteFromOfficePlugin._normalizeWordInput( fixtures.input[ name ], dataTransfer ),
 					fixtures.normalized[ name ]
 				);
 			} );
@@ -163,6 +173,7 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 	describe( title, () => {
 		let element, editor;
+		let data = {};
 
 		before( () => {
 			element = document.createElement( 'div' );
@@ -178,6 +189,22 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 
 		beforeEach( () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
+
+			const editorModel = editor.model;
+			const insertContent = editorModel.insertContent;
+
+			data = {};
+
+			sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
+				// Save model string representation now as it may change after `insertContent()` function call
+				// so accessing it later may not work as it may have emptied/changed structure.
+				data.actual = stringifyModel( content );
+				insertContent.call( editorModel, content, selection );
+			} );
+		} );
+
+		afterEach( () => {
+			sinon.restore();
 		} );
 
 		after( () => {
@@ -188,14 +215,19 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 
 		for ( const name of Object.keys( fixtures.input ) ) {
 			( skip.indexOf( name ) !== -1 ? it.skip : it )( name, () => {
-				expectModel( editor, fixtures.input[ name ], fixtures.model[ name ] );
+				data.input = fixtures.input[ name ];
+				data.model = fixtures.model[ name ];
+				expectModel( data, editor, fixtures.inputRtf && fixtures.inputRtf[ name ] );
 			} );
 		}
 	} );
 }
 
 // Checks if provided view element instance equals expected HTML. The element is stringified
-// by before comparing so its entire structure can be compared.
+// before comparing so its entire structure can be compared.
+// If the given `actual` or `expected` structure contains base64 encoded images,
+// these images are extracted (so HTML diff is readable) and compared
+// one by one separately (so it is visible if base64 representation is malformed).
 //
 // This function is designed for comparing normalized data so expected input is preprocessed before comparing:
 //
@@ -217,43 +249,54 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 // 	because tab preceding `03` text will be treated as formatting character and will be removed.
 //
 // @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
-// actual Actual HTML.
-// @param {String} expected Expected HTML.
-function expectNormalized( actual, expected ) {
-	const expectedInlined = inlineData( expected );
-
+// actualView Actual HTML.
+// @param {String} expectedHtml Expected HTML.
+function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
-	const actualNormalized = stringifyView( actual ).replace( /\u00A0/g, ' ' );
+	const actualNormalized = stringifyView( actualView ).replace( /\u00A0/g, ' ' );
+	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ) );
 
-	expect( actualNormalized ).to.equal( normalizeHtml( expectedInlined ) );
+	compareContentWithBase64Images( actualNormalized, expectedNormalized );
 }
 
 // Compares two models string representations. The input HTML is processed through paste
 // pipeline where it is transformed into model. This function hooks into {@link module:engine/model/model~Model#insertContent}
 // to get the model representation before it is inserted.
 //
+// @param {Object} data
+// @param {String} data.input Input HTML which will be pasted into the editor.
+// @param {String} data.actual Actual model data.
+// @param {String} data.model Expected model data.
 // @param {module:core/editor/editor~Editor} editor Editor instance.
-// @param {String} input Input HTML which will be pasted into the editor.
-// @param {String} expected Expected model.
-function expectModel( editor, input, expected ) {
-	const editorModel = editor.model;
-	const insertContent = editorModel.insertContent;
-
-	let actual = '';
-
-	sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
-		// Save model string representation now as it may change after `insertContent()` function call
-		// so accessing it later may not work as it may have emptied/changed structure.
-		actual = stringifyModel( content );
-		insertContent.call( editorModel, content, selection );
+// @param {String} [inputRtf] Additional RTF input data which will be pasted into the editor as `text/rtf` together with regular input data.
+function expectModel( data, editor, inputRtf = null ) {
+	firePasteEvent( editor, {
+		'text/html': data.input,
+		'text/rtf': inputRtf
 	} );
 
-	firePasteEvent( editor, input );
+	compareContentWithBase64Images( data.actual, inlineData( data.model ) );
+}
 
-	sinon.restore();
+// Compares actual and expected content. Before comparison the base64 images data is extracted so data diff is more readable.
+// If there were any images extracted their base64 data is also compared.
+//
+// @param {String} actual Actual content.
+// @param {String} expected Expected content.
+function compareContentWithBase64Images( actual, expected ) {
+	// Extract base64 images so they do not pollute model diff and can be compared separately.
+	const { data: actualModel, images: actualImages } = extractBase64Srcs( actual );
+	const { data: expectedModel, images: expectedImages } = extractBase64Srcs( expected );
 
-	expect( actual ).to.equal( inlineData( expected ) );
+	// In some rare cases there might be `&nbsp;` in a model data
+	// (see https://github.com/ckeditor/ckeditor5-paste-from-office/issues/27).
+	expect( actualModel.replace( /\u00A0/g, ' ' ) ).to.equal( expectedModel );
+
+	if ( actualImages.length > 0 && expectedImages.length > 0 ) {
+		expect( actualImages.length ).to.equal( expectedImages.length );
+		expect( actualImages ).to.deep.equal( expectedImages );
+	}
 }
 
 // Inlines given HTML / model representation string by removing preceding tabs and line breaks.
@@ -267,13 +310,37 @@ function inlineData( data ) {
 		.replace( /[\r\n]/gm, '' );
 }
 
+// Extracts base64 part representing an image from the given HTML / model representation.
+//
+// @param {String} data Data from which bas64 strings will be extracted.
+// @returns {Object} result
+// @returns {String} result.data Data without bas64 strings.
+// @returns {Array.<String>} result.images Array of extracted base64 strings.
+function extractBase64Srcs( data ) {
+	const regexp = /src="data:image\/(png|jpe?g);base64,([^"]*)"/gm;
+	const images = [];
+	const replacements = [];
+
+	let match;
+	while ( ( match = regexp.exec( data ) ) !== null ) {
+		images.push( match[ 2 ].toLowerCase() );
+		replacements.push( match[ 2 ] );
+	}
+
+	for ( const replacement of replacements ) {
+		data = data.replace( replacement, '' );
+	}
+
+	return { data, images };
+}
+
 // Fires paste event on a given editor instance with a specific HTML data.
 //
 // @param {module:core/editor/editor~Editor} editor Editor instance on which paste event will be fired.
-// @param {String} html The HTML data with which paste event will be fired.
-function firePasteEvent( editor, html ) {
+// @param {Object} data Object with `type: content` pairs used as data transfer data in the fired paste event.
+function firePasteEvent( editor, data ) {
 	editor.editing.view.document.fire( 'paste', {
-		dataTransfer: createDataTransfer( { 'text/html': html } ),
+		dataTransfer: createDataTransfer( data ),
 		preventDefault() {}
 	} );
 }

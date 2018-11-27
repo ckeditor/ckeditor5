@@ -29,6 +29,9 @@ import { normalizeSpacing, normalizeSpacerunSpans } from './space';
 export function parseHtml( htmlString ) {
 	const domParser = new DOMParser();
 
+	// Remove Word specific "if comments" so content inside is not omitted by the parser.
+	htmlString = htmlString.replace( /<!--\[if gte vml 1]>/g, '' );
+
 	const normalizedHtml = normalizeSpacing( cleanContentAfterBody( htmlString ) );
 
 	// Parse htmlString as native Document object.

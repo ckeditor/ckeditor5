@@ -24,6 +24,13 @@ describe( 'Filters', () => {
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
+			it( 'should remove multiline sequences of whitespaces', () => {
+				const input = '<p>Foo</p> \n\n   \n<p>Bar</p>   \r\n\r\n  <p>Baz</p>';
+				const expected = '<p>Foo</p><p>Bar</p><p>Baz</p>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
 			it( 'should normalize Safari "space spans"', () => {
 				const input = '<p>Foo <span class="Apple-converted-space">   </span> Baz <span>  </span></p>';
 				const expected = '<p>Foo \u00A0 \u00A0 Baz \u00A0\u00A0</p>';
