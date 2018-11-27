@@ -419,6 +419,9 @@ export default class Conversion {
 	/**
 	 * Sets up converters between the model and the view that convert a model attribute to a view attribute (and vice versa).
 	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (the same attribute key and value).
+	 * This type of converters is intended to be used with {@link module:engine/model/element~Element model element} nodes.
+	 * To convert text attributes {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement converter`}
+	 * should be set up.
 	 *
 	 *		// A simple conversion from the `source` model attribute to the `src` view attribute (and vice versa).
 	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
