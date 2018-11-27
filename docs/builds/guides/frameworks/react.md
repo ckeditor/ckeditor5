@@ -55,6 +55,12 @@ class App extends Component {
                         const data = editor.getData();
                         console.log( { event, editor, data } );
                     } }
+                    onBlur={ editor => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ editor => {
+                        console.log( 'Focus.', editor );
+                    } }
                 />
             </div>
         );
@@ -78,6 +84,9 @@ The `<CKEditor>` component supports the following properties:
 	1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object,
 	2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 * `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `onBlur` &ndash; A function called when the editor was blurred. It receives the blurred {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `onFocus` &ndash; A function called when the editor was focused. It receives the focused {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `disabled` &ndash; A boolean. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 
 ### Customizing the builds
 
