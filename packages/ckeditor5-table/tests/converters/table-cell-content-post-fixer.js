@@ -122,7 +122,7 @@ describe( 'Table cell content post-fixer', () => {
 		) );
 	} );
 
-	it( 'should wrap in paragraph $text nodes placed directly in tableCell ', () => {
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on table cell modification) ', () => {
 		setModelData( model,
 			'<table>' +
 				'<tableRow>' +
@@ -134,12 +134,13 @@ describe( 'Table cell content post-fixer', () => {
 		// Remove paragraph from table cell & insert: $text<paragraph>$text</paragraph>$text.
 		model.change( writer => {
 			writer.remove( writer.createRangeIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
-			writer.insertText( 'foo', writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 
 			const paragraph = writer.createElement( 'paragraph' );
-			writer.insertText( 'bar', writer.createPositionAt( paragraph, 0 ) );
-			writer.insert( paragraph, writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 'end' ) );
-			writer.insertText( 'baz', writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 'end' ) );
+
+			writer.insertText( 'foo', root.getNodeByPath( [ 0, 0, 0 ] ) );
+			writer.insert( paragraph, root.getNodeByPath( [ 0, 0, 0 ] ), 'end' );
+			writer.insertText( 'bar', paragraph );
+			writer.insertText( 'baz', root.getNodeByPath( [ 0, 0, 0 ] ), 'end' );
 		} );
 
 		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
@@ -149,6 +150,72 @@ describe( 'Table cell content post-fixer', () => {
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<paragraph>baz</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		) );
+	} );
+
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on inserting table cell)', () => {
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph></paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		// Insert new tableCell with $text.
+		model.change( writer => {
+			const tableCell = writer.createElement( 'tableCell' );
+
+			writer.insertText( 'foo', tableCell );
+			writer.insert( tableCell, writer.createPositionAt( root.getNodeByPath( [ 0, 0 ] ), 'end' ) );
+		} );
+
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph></paragraph>' +
+					'</tableCell>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		) );
+	} );
+
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell (on inserting table rows)', () => {
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph></paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		// Insert new tableRow with tableCell with $text.
+		model.change( writer => {
+			const tableRow = writer.createElement( 'tableRow' );
+			const tableCell = writer.createElement( 'tableCell' );
+
+			writer.insertText( 'foo', tableCell );
+			writer.insert( tableCell, tableRow );
+			writer.insert( tableRow, writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 'end' ) );
+		} );
+
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph></paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
 					'</tableCell>' +
 				'</tableRow>' +
 			'</table>'
