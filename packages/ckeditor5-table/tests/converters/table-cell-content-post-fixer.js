@@ -121,4 +121,37 @@ describe( 'Table cell content post-fixer', () => {
 			'</table>'
 		) );
 	} );
+
+	it( 'should wrap in paragraph $text nodes placed directly in tableCell ', () => {
+		setModelData( model,
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell><paragraph></paragraph></tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		// Remove paragraph from table cell & insert: $text<paragraph>$text</paragraph>$text.
+		model.change( writer => {
+			writer.remove( writer.createRangeIn( root.getNodeByPath( [ 0, 0, 0 ] ) ) );
+			writer.insertText( 'foo', writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
+
+			const paragraph = writer.createElement( 'paragraph' );
+			writer.insertText( 'bar', writer.createPositionAt( paragraph, 0 ) );
+			writer.insert( paragraph, writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 'end' ) );
+			writer.insertText( 'baz', writer.createPositionAt( root.getNodeByPath( [ 0, 0, 0 ] ), 'end' ) );
+		} );
+
+		expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formatTable(
+			'<table>' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo</paragraph>' +
+						'<paragraph>bar</paragraph>' +
+						'<paragraph>baz</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		) );
+	} );
 } );
