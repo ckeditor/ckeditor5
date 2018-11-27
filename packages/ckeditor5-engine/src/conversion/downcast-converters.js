@@ -10,6 +10,7 @@ import ModelElement from '../model/element';
 import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { cloneDeep } from 'lodash-es';
 
 /**
@@ -685,9 +686,44 @@ export function changeAttribute( attributeCreator ) {
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
-		// If model item cannot be mapped to view element, it means item is not an `Element` instance (it is a `TextProxy`).
-		// Only elements can have attributes in a view so do not proceed for anything else (see #1587).
+		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `TextProxy` node.
+		// Only elements can have attributes in a view so do not proceed for anything else (#1587).
 		if ( !viewElement ) {
+			/**
+			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node} is to be downcasted
+			 * by {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
+			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
+			 *
+			 *		editor.conversion.for( 'downcast' ).add( downcastAttributeToAttribute( {
+			 *			model: 'attribute-name',
+			 *			view: 'attribute-name'
+			 *		} ) );
+			 *
+			 * and given attribute is used on text node, for example:
+			 *
+			 *		model.change( writer => {
+			 *			writer.insertText( 'Foo', { 'attribute-name': 'bar' }, parent, 0 );
+			 *		} );
+			 *
+			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~Element}
+			 * and {@link module:engine/model/textproxy~TextProxy `Text`} nodes, text specific
+			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
+			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
+			 *
+			 *		conversion.for( 'downcast' ).add( downcastAttributeToElement( {
+			 *			model: {
+			 *				key: 'attribute-name',
+			 *				name: '$text'
+			 *			},
+			 *			view: ( value, writer ) => {
+			 *				return writer.createAttributeElement( 'span', { 'attribute-name': value } );
+			 *			}
+			 *		} ), { priority: 'high' } );
+			 *
+			 * @error conversion-attribute-to-attribute-on-text
+			 */
+			log.warn( 'conversion-attribute-to-attribute-on-text: Trying to convert text node with attribute to attribute converter.' );
+
 			return;
 		}
 
