@@ -717,8 +717,9 @@ export function changeAttribute( attributeCreator ) {
 			 *			},
 			 *			view: ( value, writer ) => {
 			 *				return writer.createAttributeElement( 'span', { 'attribute-name': value } );
-			 *			}
-			 *		} ), { priority: 'high' } );
+			 *			},
+			 *			converterPriority: 'high'
+			 *		} ) );
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
