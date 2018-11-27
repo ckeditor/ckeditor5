@@ -86,6 +86,7 @@ The `<CKEditor>` component supports the following properties:
 * `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
 * `onBlur` &ndash; A function called when the editor was blurred. It receives the blurred {@link module:core/editor/editor~Editor `editor`} as a parameter.
 * `onFocus` &ndash; A function called when the editor was focused. It receives the focused {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `disabled` &ndash; A string or boolean. The {@link module:core/editor/editor~Editor `editor`} switches to read-only mode if the property is set to `true` or `"true"`.
 
 ### Customizing the builds
 
