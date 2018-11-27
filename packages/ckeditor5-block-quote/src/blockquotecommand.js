@@ -44,7 +44,15 @@ export default class BlockQuoteCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 		const schema = model.schema;
-		const blocks = Array.from( doc.selection.getSelectedBlocks() );
+
+		const selectedBlocks = Array.from( doc.selection.getSelectedBlocks() );
+
+		const blocks = selectedBlocks.filter( block => {
+			const parentBlock = findAncestorBlock( model.createPositionBefore( block ), schema );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			return !parentBlock || !selectedBlocks.includes( parentBlock );
+		} );
 
 		model.change( writer => {
 			if ( this.value ) {
@@ -222,4 +230,16 @@ function checkCanBeQuoted( schema, block ) {
 	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
 
 	return isBQAllowed && isBlockAllowedInBQ;
+}
+
+export function findAncestorBlock( position, schema ) {
+	let parent = position.parent;
+
+	while ( parent ) {
+		if ( schema.isBlock( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
 }

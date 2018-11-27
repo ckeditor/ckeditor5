@@ -20,6 +20,7 @@ import {
 	getData as getModelData,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;
@@ -30,7 +31,7 @@ describe( 'BlockQuote integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading ]
+				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -415,6 +416,20 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>xxx</paragraph>' +
 				'</blockQuote>' +
 				'<heading1>yyy[]o</heading1>'
+			);
+		} );
+	} );
+
+	describe( 'compatibility with tables', () => {
+		it( 'wraps whole table in paragraph', () => {
+			setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<blockQuote>' +
+				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' +
+				'</blockQuote>'
 			);
 		} );
 	} );
