@@ -319,7 +319,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
-			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:bold:$text' ) ).to.be.true;
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
