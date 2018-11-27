@@ -25,12 +25,11 @@ export function isImageType( file ) {
  * Creates a promise which fetches the image local source (base64 or blob) and returns as a `File` object.
  *
  * @param {module:engine/view/element~Element} image Image which source to fetch.
- * @param {Number} index Image index used as image name suffix.
  * @returns {Promise} A promise which resolves when image source is fetched and converted to `File` instance.
  * It resolves with object holding initial image element (as `image`) and its file source (as `file`). If
  * the `file` attribute is null, it means fetching failed.
  */
-export function wrapImageToFetch( image, index ) {
+export function fetchLocalImage( image ) {
 	return new Promise( resolve => {
 		// Fetch works asynchronously and so does not block browser UI when processing data.
 		fetch( image.getAttribute( 'src' ) )
@@ -38,7 +37,7 @@ export function wrapImageToFetch( image, index ) {
 			.then( blob => {
 				const mimeType = getImageMimeType( blob, image.getAttribute( 'src' ) );
 				const ext = mimeType.replace( 'image/', '' );
-				const filename = `${ Number( new Date() ) }-image${ index }.${ ext }`;
+				const filename = `image.${ ext }`;
 				const file = createFileFromBlob( blob, filename, mimeType );
 
 				resolve( { image, file } );
@@ -57,14 +56,12 @@ export function wrapImageToFetch( image, index ) {
  * @returns {Boolean}
  */
 export function isLocalImage( node ) {
-	return node.is( 'element', 'img' ) && node.getAttribute( 'src' ) &&
-		( node.getAttribute( 'src' ).match( /data:image\/\w+;base64,/g ) ||
-			if ( !node.is( 'element', 'img' ) || node.getAttribute( 'src' ) ) {
-				return false;
-			}
-			
-			return ( node.getAttribute( 'src' ).match( /data:image\/\w+;base64,/g ) ||
-		node.getAttribute( 'src' ).match( /blob:/g ) );
+	if ( !node.is( 'element', 'img' ) || !node.getAttribute( 'src' ) ) {
+		return false;
+	}
+
+	return node.getAttribute( 'src' ).match( /^data:image\/\w+;base64,/g ) ||
+		node.getAttribute( 'src' ).match( /^blob:/g );
 }
 
 // Extracts image type based on its blob representation or its source.

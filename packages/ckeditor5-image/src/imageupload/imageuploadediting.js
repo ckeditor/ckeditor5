@@ -10,10 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { isImageType, isLocalImage, wrapImageToFetch } from '../../src/imageupload/utils';
+import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
 
 /**
  * The editing part of the image upload feature. It registers the `'imageUpload'` command.
@@ -98,11 +99,9 @@ export default class ImageUploadEditing extends Plugin {
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
 		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
-			const view = editor.editing.view;
-
-			const fetchableImages = Array.from( view.createRangeIn( data.content ) )
+			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-				.map( ( value, index ) => wrapImageToFetch( value.item, index ) );
+				.map( value => fetchLocalImage( value.item ) );
 
 			if ( !fetchableImages.length ) {
 				return;
@@ -111,25 +110,21 @@ export default class ImageUploadEditing extends Plugin {
 			evt.stop();
 
 			Promise.all( fetchableImages ).then( items => {
+				const writer = new UpcastWriter();
+
 				for ( const item of items ) {
 					if ( !item.file ) {
 						// Failed to fetch image or create a file instance, remove image element.
-						view.change( writer => {
-							writer.remove( item.image );
-						} );
+						writer.remove( item.image );
 					} else {
+						// Set attribute marking the image as processed.
+						writer.setAttribute( 'uploadProcessed', true, item.image );
+
 						const loader = fileRepository.createLoader( item.file );
 
 						if ( loader ) {
-							view.change( writer => {
-								writer.setAttribute( 'src', '', item.image );
-								writer.setAttribute( 'uploadId', loader.id, item.image );
-							} );
-						} else {
-							view.change( writer => {
-								// Set attribute so the image will not be processed 2nd time.
-								writer.setAttribute( 'uploadProcessed', true, item.image );
-							} );
+							writer.setAttribute( 'src', '', item.image );
+							writer.setAttribute( 'uploadId', loader.id, item.image );
 						}
 					}
 				}
