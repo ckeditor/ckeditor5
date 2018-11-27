@@ -17,7 +17,7 @@
 		"features/collaboration/overview.html": "features/collaboration/real-time-collaboration/real-time-collaboration.html",
 		"features/collaboration/collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaborative-editing.html",
 		"features/collaboration/collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaborative-comments.html",
-		"features/collaboration/presence-list.html": "features/collaboration/real-time-collaboration/presence-list.html",
+		"features/collaboration/presence-list.html": "features/collaboration/real-time-collaboration/users-in-real-time-collaboration.html",
 		"features/collaboration/comment-only-mode.html": "features/collaboration/comments/comment-only-mode.html"
 	},
 	"scripts": {
