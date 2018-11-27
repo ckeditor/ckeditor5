@@ -29,7 +29,7 @@ The {@link module:image/image~Image} feature adds support for plain images with 
 ```
 
 <info-box hint>
-	This feature follows the markup proposed by the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/images.html) project.
+	This feature follows the markup proposed by the [Editor Recommendations](https://ckeditor.github.io/editor-recommendations/features/image.html) project.
 </info-box>
 
 You can see the demo of an editor with the base image feature enabled below:
