@@ -7,10 +7,10 @@
  * @module paste-from-office/filters/image
  */
 
+/* globals btoa */
+
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-
-import { convertHexToBase64 } from './utils';
 
 /**
  * Replaces source attribute of all `<img>` elements representing regular
@@ -35,6 +35,19 @@ export function replaceImagesSourceWithBase64( documentFragment, rtfData ) {
 	if ( images.length ) {
 		replaceImagesFileSourceWithInlineRepresentation( images, extractImageDataFromRtf( rtfData ), upcastWriter );
 	}
+}
+
+/**
+ * Converts given HEX string to base64 representation.
+ *
+ * @protected
+ * @param {String} hexString The HEX string to be converted.
+ * @returns {String} Base64 representation of a given HEX string.
+ */
+export function _convertHexToBase64( hexString ) {
+	return btoa( hexString.match( /\w{2}/g ).map( char => {
+		return String.fromCharCode( parseInt( char, 16 ) );
+	} ).join( '' ) );
 }
 
 // Finds all shapes (`<v:*>...</v:*>`) ids. Shapes can represent images (canvas)
@@ -141,7 +154,7 @@ function findAllImageElementsWithLocalSource( documentFragment, writer ) {
 
 	for ( const value of range ) {
 		if ( imageElementsMatcher.match( value.item ) ) {
-			if ( value.item.getAttribute( 'src' ).indexOf( 'file://' ) === 0 ) {
+			if ( value.item.getAttribute( 'src' ).startsWith( 'file://' ) ) {
 				imgs.push( value.item );
 			}
 		}
@@ -171,9 +184,9 @@ function extractImageDataFromRtf( rtfData ) {
 		for ( const image of images ) {
 			let imageType = false;
 
-			if ( image.indexOf( '\\pngblip' ) !== -1 ) {
+			if ( image.includes( '\\pngblip' ) ) {
 				imageType = 'image/png';
-			} else if ( image.indexOf( '\\jpegblip' ) !== -1 ) {
+			} else if ( image.includes( '\\jpegblip' ) ) {
 				imageType = 'image/jpeg';
 			}
 
@@ -199,7 +212,7 @@ function replaceImagesFileSourceWithInlineRepresentation( imageElements, imagesH
 	// Assume there is an equal amount of image elements and images HEX sources so they can be matched accordingly based on existing order.
 	if ( imageElements.length === imagesHexSources.length ) {
 		for ( let i = 0; i < imageElements.length; i++ ) {
-			const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ convertHexToBase64( imagesHexSources[ i ].hex ) }`;
+			const newSrc = `data:${ imagesHexSources[ i ].type };base64,${ _convertHexToBase64( imagesHexSources[ i ].hex ) }`;
 			writer.setAttribute( 'src', newSrc, imageElements[ i ] );
 		}
 	}
