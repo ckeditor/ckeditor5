@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, setTimeout */
+/* globals window, setTimeout, atob, URL, Blob */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -30,7 +30,10 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	const isEdgeEnv = env.isEdge;
+
+	let adapterMocks = [];
+	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader;
 
 	testUtils.createSinonSandbox();
 
@@ -39,7 +42,9 @@ describe( 'ImageUploadEditing', () => {
 			fileRepository = this.editor.plugins.get( FileRepository );
 			fileRepository.createUploadAdapter = newLoader => {
 				loader = newLoader;
-				adapterMock = new UploadAdapterMock( loader );
+				const adapterMock = new UploadAdapterMock( loader );
+
+				adapterMocks.push( adapterMock );
 
 				return adapterMock;
 			};
@@ -47,6 +52,12 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
+		if ( isEdgeEnv ) {
+			testUtils.sinon.stub( window, 'File' ).callsFake( () => {
+				return { name: 'file.jpg' };
+			} );
+		}
+
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
@@ -58,7 +69,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -66,10 +77,15 @@ describe( 'ImageUploadEditing', () => {
 				doc = model.document;
 				view = editor.editing.view;
 				viewDocument = view.document;
+
+				// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
+				testUtils.sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
 			} );
 	} );
 
 	afterEach( () => {
+		adapterMocks = [];
+
 		return editor.destroy();
 	} );
 
@@ -185,7 +201,11 @@ describe( 'ImageUploadEditing', () => {
 			type: 'media/mp3',
 			size: 1024
 		};
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new DataTransfer( {
+			files: [ fileMock ],
+			types: [ 'Files' ],
+			getData: () => ''
+		} );
 
 		setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -199,7 +219,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not insert image when file is null', () => {
 		const viewDocument = editor.editing.view.document;
-		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ] } );
+		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );
 
 		setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -225,7 +245,7 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not insert image nor crash when pasted image could not be inserted', () => {
@@ -289,7 +309,7 @@ describe( 'ImageUploadEditing', () => {
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		// Well, there's no clipboard plugin, so nothing happens.
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		expect( getModelData( model ) ).to.equal( '<paragraph>SomeData[]foo</paragraph>' );
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
@@ -340,7 +360,7 @@ describe( 'ImageUploadEditing', () => {
 				done();
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png' } );
+			adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -547,7 +567,7 @@ describe( 'ImageUploadEditing', () => {
 				done();
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+			adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
 		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -562,4 +582,292 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( spy.calledOnce ).to.equal( true );
 	} );
+
+	it( 'should upload image with base64 src', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const id = adapterMocks[ 0 ].loader.id;
+			const expected = '<paragraph>bar</paragraph>' +
+				`[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should upload image with blob src', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const id = adapterMocks[ 0 ].loader.id;
+			const expected = `[<image src="" uploadId="${ id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload image if no loader available', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = `[<image src="${ base64Sample }"></image>]<paragraph>foo</paragraph>`;
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		testUtils.sinon.stub( fileRepository, 'createLoader' ).callsFake( () => null );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload and remove image if fetch failed', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = '<paragraph>[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` so it can be rejected.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( ( res, rej ) => rej() );
+		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			const expected = '<paragraph>bar</paragraph>' +
+				`<image src="" uploadId="${ adapterMocks[ 0 ].loader.id }" uploadStatus="reading"></image>` +
+				`[<image src="" uploadId="${ adapterMocks[ 1 ].loader.id }" uploadStatus="reading"></image>]` +
+				'<paragraph>foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<p>bar</p><img src=${ base64Sample } />` +
+			`<img src=${ base64ToBlobUrl( base64Sample ) } /><img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` in a way that 2 first calls are successful and 3rd fails.
+		let counter = 0;
+		const fetch = window.fetch;
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( src => {
+			counter++;
+			if ( counter < 3 ) {
+				return fetch( src );
+			} else {
+				return new Promise( ( res, rej ) => rej() );
+			}
+		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload and remove image when `File` constructor is not present', done => {
+		const fileFn = window.File;
+
+		window.File = undefined;
+
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			window.File = fileFn;
+
+			const expected = '<paragraph>baz[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } /><p>baz</p>`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not upload and remove image when `File` constructor is not supported', done => {
+		const fileFn = window.File;
+
+		window.File = function() {
+			throw new Error( 'Function expected.' ); // Simulating Edge browser behaviour here.
+		};
+
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			window.File = fileFn;
+
+			const expected = '<paragraph>baz[]foo</paragraph>';
+
+			expectModel( done, getModelData( model ), expected );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<p>baz</p><img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
+	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			try {
+				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'png' );
+				done();
+			} catch ( err ) {
+				done( err );
+			}
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` to return custom blob without type.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
+		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
+	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			try {
+				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
+				done();
+			} catch ( err ) {
+				done( err );
+			}
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64ToBlobUrl( base64Sample ) } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` to return custom blob without type.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => {
+			return new Promise( res => res( {
+				blob() {
+					return new Promise( res => res( new Blob( [ 'foo', 'bar' ] ) ) );
+				}
+			} ) );
+		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
 } );
+
+// Asserts actual and expected model data.
+// Note: Since this function is run inside a promise, all errors needs to be caught
+// and rethrow to be correctly processed by a testing framework.
+//
+// @param {function} done Callback function to be called when assertion is done.
+// @param {String} actual Actual model data.
+// @param {String} expected Expected model data.
+function expectModel( done, actual, expected ) {
+	try {
+		expect( actual ).to.equal( expected );
+		done();
+	} catch ( err ) {
+		done( err );
+	}
+}
+
+// Creates data transfer object with predefined data.
+//
+// @param {String} content The content returned as `text/html` when queried.
+// @returns {module:clipboard/datatransfer~DataTransfer} DataTransfer object.
+function mockDataTransfer( content ) {
+	return new DataTransfer( {
+		types: [ 'text/html' ],
+		getData: type => type === 'text/html' ? content : ''
+	} );
+}
+
+// Creates blob url from the given base64 data.
+//
+// @param {String} base64 The base64 string from which blob url will be generated.
+// @returns {String} Blob url.
+function base64ToBlobUrl( base64 ) {
+	return URL.createObjectURL( base64ToBlob( base64.trim() ) );
+}
+
+// Transforms base64 data into a blob object.
+//
+// @param {String} The base64 data to be transformed.
+// @returns {Blob} Blob object representing given base64 data.
+function base64ToBlob( base64Data ) {
+	const [ type, data ] = base64Data.split( ',' );
+	const byteCharacters = atob( data );
+	const byteArrays = [];
+
+	for ( let offset = 0; offset < byteCharacters.length; offset += 512 ) {
+		const slice = byteCharacters.slice( offset, offset + 512 );
+		const byteNumbers = new Array( slice.length );
+
+		for ( let i = 0; i < slice.length; i++ ) {
+			byteNumbers[ i ] = slice.charCodeAt( i );
+		}
+
+		byteArrays.push( new Uint8Array( byteNumbers ) );
+	}
+
+	return new Blob( byteArrays, { type } );
+}
