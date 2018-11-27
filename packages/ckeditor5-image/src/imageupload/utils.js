@@ -59,6 +59,11 @@ export function wrapImageToFetch( image, index ) {
 export function isLocalImage( node ) {
 	return node.is( 'element', 'img' ) && node.getAttribute( 'src' ) &&
 		( node.getAttribute( 'src' ).match( /data:image\/\w+;base64,/g ) ||
+			if ( !node.is( 'element', 'img' ) || node.getAttribute( 'src' ) ) {
+				return false;
+			}
+			
+			return ( node.getAttribute( 'src' ).match( /data:image\/\w+;base64,/g ) ||
 		node.getAttribute( 'src' ).match( /blob:/g ) );
 }
 
