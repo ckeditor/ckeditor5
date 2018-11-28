@@ -223,7 +223,7 @@ describe( 'CKFinderCommand', () => {
 
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification ],
+					plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ],
 					language: 'pl'
 				} )
 				.then( newEditor => {
