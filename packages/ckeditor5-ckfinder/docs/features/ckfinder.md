@@ -76,7 +76,7 @@ ClassicEditor
 
 ### Configuring image upload
 
-This feature allows you to not only browse images, but also upload them automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
+This feature allows you to not only browse images, but also upload them automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 
 Assuming that the CKFinder file manager is {@link @ckfinder ckfinder3-php/quickstart.html#quickstart_installation_folders installed} (accessible) under `https://example.com/ckfinder/`, use the following {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload} command URL to enable the image upload:
 
