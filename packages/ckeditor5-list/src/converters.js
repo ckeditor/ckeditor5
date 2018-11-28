@@ -93,7 +93,7 @@ export function modelViewRemove( model ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewChangeType( evt, data, conversionApi ) {
 	if ( !conversionApi.consumable.consume( data.item, 'attribute:listType' ) ) {
@@ -190,7 +190,7 @@ export function modelViewChangeIndent( model ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 	if ( data.item.name != 'listItem' ) {
@@ -311,7 +311,7 @@ export function modelViewSplitOnInsert( evt, data, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {Object} conversionApi Conversion interface.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewMergeAfter( evt, data, conversionApi ) {
 	const viewPosition = conversionApi.mapper.toViewPosition( data.position );
@@ -334,7 +334,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {Object} conversionApi Conversion interface to be used by the callback.
+ * @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
 export function viewModelConverter( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
@@ -392,7 +392,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {Object} conversionApi Conversion interface to be used by the callback.
+ * @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
 export function cleanList( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
@@ -413,7 +413,7 @@ export function cleanList( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {Object} conversionApi Conversion interface to be used by the callback.
+ * @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
  */
 export function cleanListItem( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
@@ -806,7 +806,7 @@ function generateLiInUl( modelItem, conversionApi ) {
 //
 // @param {module:engine/model/element~Element} listItemModel List item model element to which converted children will be inserted.
 // @param {Iterable.<module:engine/view/node~Node>} viewChildren View elements which will be converted.
-// @param {Object} conversionApi Conversion interface to be used by the callback.
+// @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
 // @returns {module:engine/model/position~Position} Position on which next elements should be inserted after children conversion.
 function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi ) {
 	const writer = conversionApi.writer;
