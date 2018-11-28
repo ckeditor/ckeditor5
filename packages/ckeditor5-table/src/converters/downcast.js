@@ -313,7 +313,7 @@ export function downcastRemoveRow() {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Boolean} asWidget
 function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
 	const viewWriter = conversionApi.writer;
@@ -344,7 +344,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {{headingColumns, headingRows}} tableAttributes
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Boolean} asWidget
 function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget ) {
 	const { cell } = tableWalkerValue;
@@ -365,7 +365,7 @@ function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conve
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {module:engine/view/position~Position} insertPosition
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options ) {
 	const asWidget = options && options.asWidget;
 	const cellElementName = getCellElementName( tableWalkerValue, tableAttributes );
@@ -409,7 +409,7 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 // @param {module:engine/view/element~Element} tableRow
 // @param {Number} rowIndex
 // @param {module:engine/view/element~Element} tableSection
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/element~Element}
 function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	let trElement = conversionApi.mapper.toViewElement( tableRow );
@@ -467,7 +467,7 @@ function getSectionName( row, tableAttributes ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} viewTable
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Object} cachedTableSection An object that stores cached elements.
 // @returns {module:engine/view/containerelement~ContainerElement}
 function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
@@ -480,7 +480,7 @@ function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function getExistingTableSectionElement( sectionName, tableElement ) {
 	for ( const tableSection of tableElement.getChildren() ) {
 		if ( tableSection.name == sectionName ) {
@@ -493,7 +493,7 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/containerelement~ContainerElement}
 function createTableSection( sectionName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
@@ -509,7 +509,7 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
 
@@ -524,7 +524,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 //
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Number|'end'|'before'|'after'} offset Offset or one of the flags.
 function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi, offset ) {
 	for ( const tableRow of rowsToMove ) {
