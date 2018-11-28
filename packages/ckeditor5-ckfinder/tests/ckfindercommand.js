@@ -14,6 +14,7 @@ import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import CKFinderCommand from '../src/ckfindercommand';
@@ -26,7 +27,7 @@ describe( 'CKFinderCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification ]
+				plugins: [ Paragraph, ImageEditing, ImageUploadEditing, LinkEditing, Notification, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
