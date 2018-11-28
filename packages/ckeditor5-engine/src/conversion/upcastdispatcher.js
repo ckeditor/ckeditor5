@@ -102,7 +102,7 @@ export default class UpcastDispatcher {
 	/**
 	 * Creates a `UpcastDispatcher` that operates using passed API.
 	 *
-	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi
 	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
 	 * by `UpcastDispatcher`.
 	 */
@@ -131,7 +131,7 @@ export default class UpcastDispatcher {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {module:engine/conversion/upcastdispatcher~ViewConversionApi}
+		 * @member {module:engine/conversion/upcastdispatcher~UpcastConversionApi}
 		 */
 		this.conversionApi = Object.assign( {}, conversionApi );
 
@@ -209,7 +209,7 @@ export default class UpcastDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#convertItem
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#convertItem
 	 */
 	_convertItem( viewItem, modelCursor ) {
 		const data = Object.assign( { viewItem, modelCursor, modelRange: null } );
@@ -239,7 +239,7 @@ export default class UpcastDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#convertChildren
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#convertChildren
 	 */
 	_convertChildren( viewItem, modelCursor ) {
 		const modelRange = new ModelRange( modelCursor );
@@ -259,7 +259,7 @@ export default class UpcastDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#splitToAllowedParent
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#splitToAllowedParent
 	 */
 	_splitToAllowedParent( node, modelCursor ) {
 		// Try to find allowed parent.
@@ -348,7 +348,7 @@ export default class UpcastDispatcher {
 	 * Change this value for the next converter to tell where the conversion should continue.
 	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
 	 * converted element should be reflected by setting or modifying this property.
-	 * @param {ViewConversionApi} conversionApi Conversion utilities to be used by callback.
+	 * @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion utilities to be used by callback.
 	 */
 
 	/**
@@ -436,7 +436,7 @@ function createContextTree( contextDefinition, writer ) {
  * and is passed as one of parameters when {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher dispatcher}
  * fires it's events.
  *
- * @interface ViewConversionApi
+ * @interface UpcastConversionApi
  */
 
 /**
@@ -505,11 +505,10 @@ function createContextTree( contextDefinition, writer ) {
  */
 
 /**
- * Instance of {@link module:engine/conversion/viewconsumable~ViewConsumable}. It stores
- * information about what parts of processed view item are still waiting to be handled. After a piece of view item
+ * Stores information about what parts of processed view item are still waiting to be handled. After a piece of view item
  * was converted, appropriate consumable value should be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}.
  *
- * @param {Object} #consumable
+ * @member {module:engine/conversion/viewconsumable~ViewConsumable} #consumable
  */
 
 /**
@@ -520,5 +519,17 @@ function createContextTree( contextDefinition, writer ) {
  * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element} is that `data` parameters allows you
  * to pass parameters within a single event and `store` within the whole conversion.
  *
- * @param {Object} #store
+ * @member {Object} #store
+ */
+
+/**
+ * The model's schema instance.
+ *
+ * @member {module:engine/model/schema~Schema} #schema
+ */
+
+/**
+ * The {@link module:engine/model/writer~Writer} instance used to manipulate data during conversion.
+ *
+ * @member {module:engine/model/writer~Writer} #writer
  */

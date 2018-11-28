@@ -528,7 +528,7 @@ function _onlyViewNameIsDefined( config ) {
 //
 // @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
 // @param {Object} modelAttribute Model attribute to set.
-// @param {Object} conversionApi Conversion API.
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
 // @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
