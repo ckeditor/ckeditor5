@@ -6,7 +6,7 @@ category: framework-deep-dive
 
 ## How does the image upload work?
 
-Before you can implement your own custom upload adapter, you should learn a little bit about the image upload process in CKEditor 5. The process more or less boils down to the following steps:
+Before you can implement your own custom upload adapter, you should learn a little bit about the image upload process in CKEditor 5. The whole process boils down to the following steps:
 
 1. First, an image (or images) need to get into the editor content. There are many ways to do that, for instance:
 
