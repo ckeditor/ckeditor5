@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
+msgid "Insert image or file"
+msgstr "Insert image or file"
+
+msgctxt "Error message displayed when inserting a resized version of an image failed."
+msgid "Could not obtain resized image URL."
+msgstr "Could not obtain resized image URL."
+
+msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
+msgid "Selecting resized image failed"
+msgstr "Selecting resized image failed"
+
+msgctxt "Error message displayed when an image cannot be inserted at the current position."
+msgid "Could not insert image at the current position."
+msgstr "Could not insert image at the current position."
+
+msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
+msgid "Inserting image failed"
+msgstr "Inserting image failed"

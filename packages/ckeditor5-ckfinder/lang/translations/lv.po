@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
+msgid "Insert image or file"
+msgstr "Ievietot attēlu vai failu"
+
+msgctxt "Error message displayed when inserting a resized version of an image failed."
+msgid "Could not obtain resized image URL."
+msgstr "Nevarēja iegūt mērogotā attēla adresi."
+
+msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
+msgid "Selecting resized image failed"
+msgstr "Nevarēja izvēlēties mērogoto attēlu."
+
+msgctxt "Error message displayed when an image cannot be inserted at the current position."
+msgid "Could not insert image at the current position."
+msgstr "Pašreizējā pozīcijā attēlu nevarēja ievietot."
+
+msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
+msgid "Inserting image failed"
+msgstr "Nevarēja ievietot attēlu"
