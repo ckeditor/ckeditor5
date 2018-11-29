@@ -690,7 +690,7 @@ export function changeAttribute( attributeCreator ) {
 		// Only elements can have attributes in a view so do not proceed for anything else (#1587).
 		if ( !viewElement ) {
 			/**
-			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node} is to be downcasted
+			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node's} attribute is to be downcasted
 			 * by {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
@@ -723,7 +723,8 @@ export function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			log.warn( 'conversion-attribute-to-attribute-on-text: Trying to convert text node with attribute to attribute converter.' );
+			log.warn( 'conversion-attribute-to-attribute-on-text: ' +
+				'Trying to convert text node\'s attribute with attribute-to-attribute converter.' );
 
 			return;
 		}
