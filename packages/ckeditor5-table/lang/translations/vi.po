@@ -1,78 +1,78 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Tablo Ekle"
+msgstr "Tạo bảng"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Başlık kolonu"
+msgstr "Tiêu đề cột"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Sola kolon ekle"
+msgstr "Thêm cột vào bên trái"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Sağa kolon ekle"
+msgstr "Thêm cột vào bên phải"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Kolonu sil"
+msgstr "Xoá cột"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Kolon"
+msgstr "Cột"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Başlık satırı"
+msgstr "Tiêu đề hàng"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Alta satır ekle"
+msgstr "Thêm hàng ở dưới"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Üste satır ekle"
+msgstr "Thêm hàng phía trên"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Satırı sil"
+msgstr "Xoá hàng"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Satır"
+msgstr "Hàng"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Yukarı doğru birleştir"
+msgstr ""
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Sağa doğru birleştir"
+msgstr ""
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Aşağıya doğru birleştir"
+msgstr ""
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Sola doğru birleştir"
+msgstr ""
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Hücreyi dikey böl"
+msgstr ""
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Hücreyi yatay böl"
+msgstr ""
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Hücreleri birleştir"
+msgstr ""
