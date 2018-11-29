@@ -24,3 +24,11 @@ msgstr "Forráskód"
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
 msgstr "Áthúzott"
+
+msgctxt "Toolbar button tooltip for the Subscript feature."
+msgid "Subscript"
+msgstr "Alsó index"
+
+msgctxt "Toolbar button tooltip for the Superscript feature."
+msgid "Superscript"
+msgstr "Felső index"

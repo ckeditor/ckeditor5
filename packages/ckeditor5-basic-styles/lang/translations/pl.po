@@ -24,3 +24,11 @@ msgstr "Kod"
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
 msgstr "Przekreślenie"
+
+msgctxt "Toolbar button tooltip for the Subscript feature."
+msgid "Subscript"
+msgstr "Indeks dolny"
+
+msgctxt "Toolbar button tooltip for the Superscript feature."
+msgid "Superscript"
+msgstr "Indeks górny"
