@@ -11,11 +11,8 @@ import CKFinder from '../../src/ckfinder';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, ImageUpload, CKFinder ],
 		toolbar: [ 'heading', '|', 'undo', 'redo', 'ckfinder' ],
 		image: {
