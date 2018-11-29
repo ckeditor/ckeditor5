@@ -34,7 +34,7 @@ There are three official integrations so far:
 
 Refer to their documentation to learn how to use them.
 
-We plan to provide more integrations with time. The next in the queue is [Vue.js](https://vuejs.org/) and we would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) what we should work on after that.
+We plan to provide more integrations with time. We would like to [hear your ideas](https://github.com/ckeditor/ckeditor5/issues/1002) what we should work on next.
 
 ## Compatibility with Electron
 

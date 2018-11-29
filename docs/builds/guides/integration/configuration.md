@@ -64,7 +64,58 @@ ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 
 ## Adding features
 
+### Adding complex features
+
 As CKEditor builds do not include all possible features, the only way to add more features to them is to {@link builds/guides/development/custom-builds create a custom build}.
+
+### Adding simple (standalone) features
+
+There is an exception to every rule. Although it is impossible to add plugins that have dependencies to {@link api/core `@ckeditor/ckeditor5-core`} or {@link api/engine `@ckeditor/ckeditor5-engine`} (that includes nearly all existing official plugins) without rebuilding the build, it is still possible to add simple, **dependency-free** plugins.
+
+You can do that using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} configuration. The {@link module:core/plugin~PluginInterface plugin interface} allows plugins to be simple functions and you can define them in just a few lines, for instance:
+
+```js
+function MyPlugin( editor ) {
+	// ...
+}
+```
+
+or
+
+```js
+class MyPlugin {
+	constructor( editor ) {
+		// ...
+	}
+
+	init() {
+		// ...
+	}
+}
+```
+
+An example plugin that you may want to add this way is a {@link module:upload/filerepository~UploadAdapter custom upload adapter}.
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+function MyUploadAdapterPlugin( editor ) {
+	editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
+		// ...
+	};
+}
+
+// Load the custom upload adapter as a plugin of the editor.
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ MyUploadAdapterPlugin ],
+
+		// ...
+	} )
+	.catch( error => {
+		console.log( error );
+	} );
+```
 
 ## Toolbar setup
 
