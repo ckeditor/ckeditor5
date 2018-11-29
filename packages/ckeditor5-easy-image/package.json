@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-upload": "^10.0.3"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-clipboard": "^10.0.3",
     "@ckeditor/ckeditor5-editor-classic": "^11.0.1",
     "@ckeditor/ckeditor5-paragraph": "^10.0.3",
     "@ckeditor/ckeditor5-utils": "^11.0.0",
