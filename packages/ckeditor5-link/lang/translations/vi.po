@@ -1,0 +1,30 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for the Unlink feature."
+msgid "Unlink"
+msgstr "Bỏ liên kết"
+
+msgctxt "Toolbar button tooltip for the Link feature."
+msgid "Link"
+msgstr "Chèn liên kết"
+
+msgctxt "Label for the URL input in the Link URL editing balloon."
+msgid "Link URL"
+msgstr "Đường dẫn liên kết"
+
+msgctxt "Button opening the Link URL editing balloon."
+msgid "Edit link"
+msgstr "Sửa liên kết"
+
+msgctxt "Button opening the link in new browser tab."
+msgid "Open link in new tab"
+msgstr "Mở liên kết"
+
+msgctxt "Label explaining that a link has no URL set (the URL is empty)."
+msgid "This link has no URL"
+msgstr "Liên kết không có đường dẫn"
