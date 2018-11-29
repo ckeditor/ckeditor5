@@ -17,6 +17,9 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 import {
 	downcastElementToElement, downcastAttributeToElement, downcastAttributeToAttribute, downcastMarkerToElement, downcastMarkerToHighlight,
 	insertElement, insertUIElement, changeAttribute, wrap, removeUIElement,
@@ -264,6 +267,8 @@ describe( 'downcast-helpers', () => {
 	} );
 
 	describe( 'downcastAttributeToAttribute', () => {
+		testUtils.createSinonSandbox();
+
 		beforeEach( () => {
 			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'image', view: 'img' } ) );
 		} );
@@ -459,6 +464,56 @@ describe( 'downcast-helpers', () => {
 			} );
 
 			expectResult( '<img class="styled-pull-out"></img>' );
+		} );
+
+		// #1587
+		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
+			const logSpy = testUtils.sinon.spy( log, 'warn' );
+
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			conversion.for( 'downcast' ).add( downcastAttributeToAttribute( { model: 'test', view: 'test' } ) );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 0 );
+				writer.insertElement( 'paragraph', { test: '2' }, modelRoot, 1 );
+			} );
+
+			expectResult( '<p test="1"></p><p test="2"></p>' );
+			expect( logSpy.callCount ).to.equal( 0 );
+
+			model.change( writer => {
+				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
+			} );
+
+			expectResult( '<p test="1"></p><p></p>' );
+		} );
+
+		// #1587
+		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
+			const logSpy = testUtils.sinon.spy( log, 'warn' );
+
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			conversion.for( 'downcast' ).add( downcastAttributeToAttribute( { model: 'test', view: 'test' } ) );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot, 0 );
+				writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 1 );
+
+				writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
+				writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
+			} );
+
+			expectResult( '<p>Foo</p><p test="1">Bar</p>' );
+			expect( logSpy.callCount ).to.equal( 2 );
+			expect( logSpy.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
+
+			model.change( writer => {
+				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
+			} );
+
+			expectResult( '<p>Foo</p><p>Bar</p>' );
 		} );
 	} );
 
