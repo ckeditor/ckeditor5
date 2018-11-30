@@ -58,7 +58,9 @@ export function downcastInsertTable( options = {} ) {
 			const tableRow = table.getChild( row );
 
 			// Check if row was converted
-			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+			// TODO: Smarter row management is needed.
+			const forceCreate = !cell.index;
+			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi, forceCreate );
 
 			// Consume table cell - it will be always consumed as we convert whole table at once.
 			conversionApi.consumable.consume( cell, 'insert' );
@@ -411,10 +413,10 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 // @param {module:engine/view/element~Element} tableSection
 // @param {Object} conversionApi
 // @returns {module:engine/view/element~Element}
-function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
+function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi, force = false ) {
 	let trElement = conversionApi.mapper.toViewElement( tableRow );
 
-	if ( !trElement ) {
+	if ( !trElement || force ) {
 		// Will always consume since we're converting <tableRow> element from a parent <table>.
 		conversionApi.consumable.consume( tableRow, 'insert' );
 
