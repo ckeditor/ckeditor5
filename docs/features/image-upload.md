@@ -45,7 +45,14 @@ The {@link features/ckfinder CKFinder feature} provides a bridge between the edi
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 * **With the server-side connector only**: In this scenario, images which are dropped or pasted into the editor are uploaded to a CKFinder server-side connector running on your server.
-* **With both the server and client-side file manager**: This also allows uploading the images via dropping and pasting them directly into the editor like in the first option. Additionally, it allows uploading images via the CKFinder UI, choosing previously uploaded images, editing images (cropping, resizing, etc.), organizing or deleting images.
+* **With both the server and client-side file manager** (recommended): Images dropped and pasted directly into the editor are uploaded to the server (just like in the first option).
+
+	But there are more cool features available, for instance:
+
+	* **uploading** using the full user interface,
+	* **browsing** previously uploaded images,
+	* **editing** images (cropping, resizing, etc.),
+	* **organizing** or deleting images.
 
 {@link features/ckfinder **Learn how to integrate CKEditor 5 with CKFinder in your project**}.
 
