@@ -564,10 +564,6 @@ export function remove() {
  */
 export function insertUIElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
-		if ( !data.markerRange ) {
-			return;
-		}
-
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
 		data.isOpening = true;
