@@ -16,7 +16,7 @@ import { getCsrfToken } from './utils';
 /**
  * A plugin that enables CKFinder uploads in CKEditor 5.
  *
- * You can configure it using
+ * You can configure it by using
  * {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `ckfinder.uploadUrl`}.
  *
  * Check out the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature} to learn more about
