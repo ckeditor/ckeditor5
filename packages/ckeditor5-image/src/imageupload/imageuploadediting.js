@@ -129,10 +129,7 @@ export default class ImageUploadEditing extends Plugin {
 					}
 				}
 
-				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', {
-					content: data.content,
-					dataTransfer: data.dataTransfer
-				} );
+				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', data );
 			} );
 		} );
 
