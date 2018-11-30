@@ -562,6 +562,21 @@ export default class Range {
 	 * @returns {module:engine/model/range~Range}
 	 */
 	_getTransformedByMergeOperation( operation ) {
+		// Special case when the marker is set on "the closing tag" of an element. Marker can be set like that during
+		// transformations, especially when a content of a few block elements were removed. For example:
+		//
+		// {} is the transformed range, [] is the removed range.
+		// <p>F[o{o</p><p>B}ar</p><p>Xy]z</p>
+		//
+		// <p>Fo{o</p><p>B}ar</p><p>z</p>
+		// <p>F{</p><p>B}ar</p><p>z</p>
+		// <p>F{</p>}<p>z</p>
+		// <p>F{}z</p>
+		//
+		if ( this.start.isEqual( operation.targetPosition ) && this.end.isEqual( operation.deletionPosition ) ) {
+			return new Range( this.start );
+		}
+
 		let start = this.start._getTransformedByMergeOperation( operation );
 		let end = this.end._getTransformedByMergeOperation( operation );
 
