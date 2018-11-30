@@ -41,8 +41,11 @@ export default class PasteFromOffice extends Plugin {
 		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
 			const html = data.dataTransfer.getData( 'text/html' );
 
-			if ( isWordInput( html ) ) {
+			if ( data.pasteFromOfficeProcessed !== true && isWordInput( html ) ) {
 				data.content = this._normalizeWordInput( html, data.dataTransfer );
+
+				// Set the flag so if `inputTransformation` is re-fired, PFO will not process it again (#44).
+				data.pasteFromOfficeProcessed = true;
 			}
 		}, { priority: 'high' } );
 	}

@@ -60,4 +60,30 @@ describe( 'Paste from Office plugin', () => {
 
 		expect( normalizeSpy.called ).to.false;
 	} );
+
+	it( 'does not process content many times for the same `inputTransformation` event', () => {
+		const clipboard = editor.plugins.get( 'Clipboard' );
+
+		const dataTransfer = createDataTransfer( {
+			'text/html': '<html><head><meta name="Generator"  content=Microsoft Word 15></head></html>'
+		} );
+
+		let eventRefired = false;
+		clipboard.on( 'inputTransformation', ( evt, data ) => {
+			if ( !eventRefired ) {
+				eventRefired = true;
+
+				evt.stop();
+
+				clipboard.fire( 'inputTransformation', data );
+			}
+
+			expect( data.pasteFromOfficeProcessed ).to.true;
+			expect( normalizeSpy.calledOnce ).to.true;
+		}, { priority: 'low' } );
+
+		editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', { content, dataTransfer } );
+
+		expect( normalizeSpy.calledOnce ).to.true;
+	} );
 } );
