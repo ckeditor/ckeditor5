@@ -7,7 +7,7 @@ menu-title: CKFinder
 
 # CKFinder integration
 
-This {@link module:ckfinder/ckfinder~CKFinder feature} allows you to easily {@link features/image-upload insert images} as well as links to files into the editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader.
+This feature allows you to easily insert images as well as links to files into the editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader.
 
 <info-box>
 	Check out the {@link features/image-upload general image upload guide} to learn about other ways to upload images into CKEditor 5.
@@ -31,12 +31,18 @@ This feature can be used in the editor in two different ways:
 
 ## Demo
 
+### Full integration
+
 This demo shows the [full integration](#configuring-the-full-integration) with the CKFinder file manager:
 
 * You can also paste the image directly into the editor content and it will be automatically uploaded to the server.
 * You can use the "Insert image or file" button in the toolbar to insert an image or a link to any other file.
 
 {@snippet features/ckfinder}
+
+### Image upload only
+
+**TODO**: Demo of CKE5 with imageUpload button.
 
 ## Installation
 
@@ -50,7 +56,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`]
 npm install --save @ckeditor/ckeditor5-ckfinder
 ```
 
-Then add `CKFinder` to your plugin list and [configure](#configuration) the feature (when necessary), for instance:
+Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary), for instance:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -67,21 +73,17 @@ ClassicEditor
 	.catch( ... );
 ```
 
+**TODO**: Mention that CKFinder must be loaded too if you're using the full integration.
+
 ## Configuration
 
 The feature can be configured using the {@link module:ckfinder/ckfinder~CKFinderConfig `config.ckfinder`} object.
-
-The file manager configuration can be passed through the {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} object. Check the {@link @ckfinder ckfinder3/#!/api/CKFinder.Config file manager documentation} for the complete list of options.
-
-<info-box>
-	By default, the editor language is automatically passed to the file manager — the file manager "inherits" the language of the editor. This behavior can be changed by setting the `ckfinder.options.language` configuration option.
-</info-box>
 
 ### Configuring the image upload only
 
 This feature can upload images automatically to the server (e.g. when the image is dropped into the content) thanks to the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}. All it requires is the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
 
-Assuming that the CKFinder file manager is {@link @ckfinder ckfinder3-php/quickstart.html#quickstart_installation_folders installed} (available) under `https://example.com/ckfinder/`, use the following {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload} command URL to enable the image upload:
+Assuming that the CKFinder server-side connector is {@link @ckfinder ckfinder3-php/quickstart.html#quickstart_installation_folders installed} (available) under `https://example.com/ckfinder/`, use the following {@link @ckfinder ckfinder3-php/commands.html#command_quick_upload quick upload} command URL to enable the image upload:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -102,8 +104,14 @@ Drop an image into the content — it should be uploaded automatically to the se
 
 ### Configuring the full integration
 
+The file manager configuration can be passed through the {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} object. Check the {@link @ckfinder ckfinder3/#!/api/CKFinder.Config file manager documentation} for the complete list of options.
+
 <info-box>
-	To enable the automatic image upload to the server, follow the [instructions in the previous section](#configuring-the-image-upload-only).
+	By default, the editor language is automatically passed to the file manager — the file manager "inherits" the language of the editor. This behavior can be changed by setting the `ckfinder.options.language` configuration option.
+</info-box>
+
+<info-box>
+	**TODO** To enable the automatic image upload to the server, follow the [instructions in the previous section](#configuring-the-image-upload-only).
 </info-box>
 
 To display the toolbar button that opens the CKFinder file manager UI allowing users to choose files on the server, make sure `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
@@ -126,7 +134,9 @@ ClassicEditor
 				resourceType: 'Images'
 			},
 
-			// ...
+			// Upload the images to the server using the CKFinder's QuickUpload command.
+			// See the "Configuring the image upload only" section.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
 		}
 	} )
 	.then( ... )
@@ -135,7 +145,7 @@ ClassicEditor
 
 {@snippet features/ckfinder-options}
 
-### Configuring the opener
+#### Configuring the opener
 
 You can change the way the CKFinder file manager opens using the {@link module:ckfinder/ckfinder~CKFinderConfig#openerMethod `config.ckfinder.openerMethod`} option.
 
@@ -169,6 +179,11 @@ The {@link module:ckfinder/ckfinder~CKFinder} plugin registers:
 	```js
 	editor.execute( 'ckfinder' );
 	```
+
+Additionally, in the "image upload only" integration, you can use the following button and command registered by the {@link module:image/imageupload~ImageUpload} plugin:
+
+* the `'imageUpload'` UI button component,
+* the `'imageUpload'` command implemented by the {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand}.
 
 ## Contribute
 
