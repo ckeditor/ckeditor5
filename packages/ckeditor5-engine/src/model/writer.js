@@ -1332,7 +1332,6 @@ export default class Writer {
 
 				isAffected = intersecting && !positionOrRange.containsRange( markerRange );
 			} else {
-				debugger;
 				// if type == 'merge'.
 				const elementBefore = positionOrRange.nodeBefore;
 				const elementAfter = positionOrRange.nodeAfter;
