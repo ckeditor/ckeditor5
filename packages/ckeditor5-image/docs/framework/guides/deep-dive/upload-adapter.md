@@ -1,8 +1,13 @@
 ---
 category: framework-deep-dive
+menu-title: Custom upload adapter
 ---
 
-# Custom upload adapter
+# Custom image upload adapter
+
+<info-box>
+	Check out the {@link features/image-upload general image upload guide} to learn about other ways to upload images into CKEditor 5.
+</info-box>
 
 ## How does the image upload work?
 
