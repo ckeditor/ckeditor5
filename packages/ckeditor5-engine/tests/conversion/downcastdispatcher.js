@@ -551,18 +551,50 @@ describe( 'DowncastDispatcher', () => {
 			expect( spyItems.called ).to.be.false;
 		} );
 
-		it( 'should be possible to override', () => {
+		it( 'should be possible to override #1', () => {
 			const range = model.createRangeIn( root );
 
 			const addMarkerSpy = sinon.spy();
 			const highAddMarkerSpy = sinon.spy();
 
-			dispatcher.on( 'addMarker:marker', addMarkerSpy );
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( !data.item ) {
+					addMarkerSpy();
+				}
+			} );
 
-			dispatcher.on( 'addMarker:marker', evt => {
-				highAddMarkerSpy();
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( !data.item ) {
+					highAddMarkerSpy();
 
-				evt.stop();
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+
+			dispatcher.convertMarkerAdd( 'marker', range );
+
+			expect( addMarkerSpy.called ).to.be.false;
+			expect( highAddMarkerSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should be possible to override #2', () => {
+			const range = model.createRangeIn( root );
+
+			const addMarkerSpy = sinon.spy();
+			const highAddMarkerSpy = sinon.spy();
+
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( data.item ) {
+					addMarkerSpy();
+				}
+			} );
+
+			dispatcher.on( 'addMarker:marker', ( evt, data ) => {
+				if ( data.item ) {
+					highAddMarkerSpy();
+
+					evt.stop();
+				}
 			}, { priority: 'high' } );
 
 			dispatcher.convertMarkerAdd( 'marker', range );
