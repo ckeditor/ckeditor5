@@ -76,8 +76,22 @@ export default class BlockQuoteCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue() {
-		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const model = this.editor.model;
+		const schema = model.schema;
 
+		// TODO: Unify this with execute().
+		const selectedBlocks = Array.from( this.editor.model.document.selection.getSelectedBlocks() );
+
+		const blocks = selectedBlocks.filter( block => {
+			const parentBlock = findAncestorBlock( model.createPositionBefore( block ), schema );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			return !parentBlock || !selectedBlocks.includes( parentBlock );
+		} );
+
+		const firstBlock = blocks.shift();
+
+		// console.log( firstBlock );
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		return !!( firstBlock && findQuote( firstBlock ) );
 	}

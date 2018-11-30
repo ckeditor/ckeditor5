@@ -421,15 +421,26 @@ describe( 'BlockQuote integration', () => {
 	} );
 
 	describe( 'compatibility with tables', () => {
-		it( 'wraps whole table in paragraph', () => {
+		it( 'wraps whole table', () => {
 			setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
 
 			editor.execute( 'blockQuote' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote>' +
-				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' +
-				'</blockQuote>'
+				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
+			);
+		} );
+
+		it( 'unwraps whole table', () => {
+			setModelData(
+				model,
+				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
 			);
 		} );
 	} );
