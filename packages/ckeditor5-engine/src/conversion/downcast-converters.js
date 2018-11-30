@@ -564,6 +564,10 @@ export function remove() {
  */
 export function insertUIElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !data.markerRange ) {
+			return;
+		}
+
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
 		data.isOpening = true;
@@ -858,7 +862,7 @@ export function wrap( elementCreator ) {
  */
 export function highlightText( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 
@@ -921,7 +925,7 @@ export function highlightText( highlightDescriptor ) {
  */
 export function highlightElement( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 
