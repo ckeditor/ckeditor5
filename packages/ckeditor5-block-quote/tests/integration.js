@@ -13,6 +13,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import {
@@ -20,7 +21,6 @@ import {
 	getData as getModelData,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element, viewDocument;
