@@ -11,13 +11,13 @@ Inserting images into content created with CKEditor is a very common task. In a 
 * Selecting it through a file system dialog.
 * Selecting it from a media management tool in your application.
 
-Excluding the last option, all other ways require the image to be uploaded to a server, which will be the one responsible for providing the image URL used by CKEditor to display the image in the document.
+Excluding the last option, all other ways require the image to be uploaded to a server which will be the one responsible for providing the image URL used by CKEditor to display the image in the document.
 
 <info-box>
-	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter deep dive guide} covering that topic.
+	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom upload adpter" deep dive guide} covering that topic.
 </info-box>
 
-The software that makes the image upload possible is called an **upload adapter**. And there are two main strategies of getting the image upload work you can adopt in your project:
+The software that makes the image upload possible is called an **upload adapter**. It is a callback which tells the editor how to send the file to the server. There are two main strategies of getting the image upload work you can adopt in your project:
 
 * [**Official upload adapters**](#official-upload-adapters): There are several features providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter): Create your own upload adapter from scratch using the open API architecture CKEditor 5 provides.
@@ -45,7 +45,7 @@ The {@link features/ckfinder CKFinder feature} provides a bridge between the edi
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 * **With the server-side connector only**: In this scenario, images which are dropped or pasted into the editor are uploaded to a CKFinder server-side connector running on your server.
-* **With both the server and client-side file manager** (recommended): Images dropped and pasted directly into the editor are uploaded to the server (just like in the first option).
+* **With both the server-side connector and client-side file manager** (recommended): Images dropped and pasted directly into the editor are uploaded to the server (just like in the first option).
 
 	But there are more cool features available, for instance:
 
