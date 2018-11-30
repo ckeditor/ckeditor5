@@ -1,5 +1,6 @@
 ---
 category: features
+menu-title: CKFinder
 ---
 
 {@snippet features/build-ckfinder-source}
@@ -7,6 +8,10 @@ category: features
 # CKFinder integration
 
 This {@link module:ckfinder/ckfinder~CKFinder feature} allows you to easily {@link features/image-upload insert images} as well as links to files into the editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader.
+
+<info-box>
+	Check out the {@link features/image-upload general image upload guide} to learn about other ways to upload images into CKEditor 5.
+</info-box>
 
 This feature can be used in the editor in two different ways:
 
