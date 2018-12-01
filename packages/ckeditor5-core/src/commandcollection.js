@@ -50,6 +50,7 @@ export default class CommandCollection {
 	 * Executes a command.
 	 *
 	 * @param {String} commandName The name of the command.
+	 * @param {*} [...commandParams] Command parameters.
 	 */
 	execute( commandName, ...args ) {
 		const command = this.get( commandName );
