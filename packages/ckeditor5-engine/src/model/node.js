@@ -99,7 +99,7 @@ export default class Node {
 	 * This means that model tree got broken.
 	 *
 	 * @readonly
-	 * @type {Number|Null}
+	 * @type {Number|null}
 	 */
 	get startOffset() {
 		let pos;

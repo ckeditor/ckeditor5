@@ -106,7 +106,7 @@ export default class Element extends Node {
 		 * Map of styles.
 		 *
 		 * @protected
-		 * @member {Set} module:engine/view/element~Element#_styles
+		 * @member {Map} module:engine/view/element~Element#_styles
 		 */
 		this._styles = new Map();
 
@@ -121,7 +121,7 @@ export default class Element extends Node {
 		 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
 		 *
 		 * @protected
-		 * @memeber {Map}
+		 * @member {Map}
 		 */
 		this._customProperties = new Map();
 	}
