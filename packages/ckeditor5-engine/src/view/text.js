@@ -51,7 +51,8 @@ export default class Text extends Node {
 	/**
 	 * The text content.
 	 *
-	 * @returns {String}
+	 * @readonly
+	 * @type {String}
 	 */
 	get data() {
 		return this._textData;
@@ -69,7 +70,7 @@ export default class Text extends Node {
 	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
 	 *
 	 * @protected
-	 * @returns {String}
+	 * @type {String}
 	 */
 	get _data() {
 		return this.data;

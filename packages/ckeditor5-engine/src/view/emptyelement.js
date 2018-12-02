@@ -16,6 +16,8 @@ import Node from './node';
  *
  * To create a new empty element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`} method.
+ *
+ * @extends module:engine/view/element~Element
  */
 export default class EmptyElement extends Element {
 	/**
