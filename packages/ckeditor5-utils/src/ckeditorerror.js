@@ -53,7 +53,7 @@ export default class CKEditorError extends Error {
 		/**
 		 * The additional error data passed to the constructor. Undefined if none was passed.
 		 *
-		 * @member {Object | undefined}
+		 * @member {Object|undefined}
 		 */
 		this.data = data;
 	}

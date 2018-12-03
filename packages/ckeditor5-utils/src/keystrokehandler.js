@@ -81,8 +81,8 @@ export default class KeystrokeHandler {
 	 * @param {String|Array.<String|Number>} keystroke Keystroke defined in a format accepted by
 	 * the {@link module:utils/keyboard~parseKeystroke} function.
 	 * @param {Function} callback A function called with the
-	 * {@link module:utils/keyboard~KeystrokeInfo keystroke info} object and
-	 * a helper to both `preventDefault` and `stopPropagation` of the event.
+	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object and
+	 * a helper funcion to call both `preventDefault()` and `stopPropagation()` on the underlying event.
 	 * @param {Object} [options={}] Additional options.
 	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of the keystroke
 	 * callback. The higher the priority value the sooner the callback will be executed. Keystrokes having the same priority
@@ -114,7 +114,7 @@ export default class KeystrokeHandler {
 	/**
 	 * Triggers a keystroke handler for a specified key combination, if such a keystroke was {@link #set defined}.
 	 *
-	 * @param {module:utils/keyboard~KeystrokeInfo} keyEvtData Key event data.
+	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEvtData Key event data.
 	 * @returns {Boolean} Whether the keystroke was handled.
 	 */
 	press( keyEvtData ) {

@@ -20,7 +20,7 @@ import { isString } from 'lodash-es';
  *
  * @param {Document} doc Document used to create element.
  * @param {String} name Name of the element.
- * @param {Object|null} [attributes] Object keys will become attributes keys and object values will became attributes values.
+ * @param {Object} [attributes] Object keys will become attributes keys and object values will became attributes values.
  * @param {Node|String|Array.<Node|String>} [children] Child or array of children. Strings will be automatically turned
  * into Text nodes.
  * @returns {Element} Created element.
