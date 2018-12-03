@@ -21,7 +21,7 @@ The software that makes the image upload possible is called an **upload adapter*
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter): Create your own upload adapter from scratch using the open API architecture CKEditor 5 provides.
 
 <info-box>
-	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter deep dive guide} covering that topic.
+	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom upload adpter" deep dive guide} covering that topic.
 </info-box>
 
 ## Demo
