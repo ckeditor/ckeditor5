@@ -7,7 +7,7 @@
  * @module utils/config
  */
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject, cloneDeep } from 'lodash-es';
 
 /**
  * Handles a configuration dictionary.
@@ -198,7 +198,7 @@ export default class Config {
 		}
 
 		// Always returns undefined for non existing configuration
-		return source ? source[ name ] : undefined;
+		return source ? cloneDeep( source[ name ] ) : undefined;
 	}
 
 	/**
