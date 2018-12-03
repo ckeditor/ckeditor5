@@ -24,6 +24,14 @@ The software that makes the image upload possible is called an **upload adapter*
 	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter deep dive guide} covering that topic.
 </info-box>
 
+## Demo
+
+The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services):
+
+{@snippet build-classic-source}
+
+{@snippet features/easy-image}
+
 ## Official upload adapters
 
 ### Easy Image
