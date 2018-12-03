@@ -6,7 +6,7 @@ menu-title: Custom upload adapter
 # Custom image upload adapter
 
 <info-box>
-	Check out the {@link features/image-upload general image upload guide} to learn about other ways to upload images into CKEditor 5.
+	Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
 ## How does the image upload work?
@@ -276,3 +276,8 @@ ClassicEditor
 ```
 
 Run the editor and see if your implementation works. Drop an image into editor content and it should be uploaded to the server, handled by the `MyUploadAdapter`.
+
+## What's next?
+
+Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more about different ways of uploading images in CKEditor 5. See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+
