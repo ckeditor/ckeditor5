@@ -122,9 +122,9 @@ export default class PendingActions extends Plugin {
 	}
 
 	/**
-	 * Returns the first action from the list.
+	 * Returns the first action from the list or null when list is empty
 	 *
-	 * returns {Object} The pending action object.
+	 * returns {Object|null} The pending action object.
 	 */
 	get first() {
 		return this._actions.get( 0 );

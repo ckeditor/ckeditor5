@@ -116,6 +116,8 @@ describe( 'PendingActions', () => {
 
 	describe( 'first', () => {
 		it( 'should return first pending action from the list', () => {
+			expect( pendingActions.first ).to.be.null;
+
 			const action = pendingActions.add( 'Action 1' );
 
 			pendingActions.add( 'Action 2' );

@@ -48,7 +48,7 @@ export default class Editor {
 	 *
 	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
-	 * @param {Object} config The editor config.
+	 * @param {Object} [config] The editor config.
 	 */
 	constructor( config ) {
 		const availablePlugins = this.constructor.builtinPlugins;
