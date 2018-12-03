@@ -40,7 +40,7 @@
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#611bd04",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#b2fe351",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#f435630",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#7fdf409",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#93cedb6",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#5b7a457"
   }
 }
