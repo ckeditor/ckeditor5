@@ -443,5 +443,28 @@ describe( 'BlockQuote integration', () => {
 				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
 			);
 		} );
+
+		it( 'wraps table cell paragraph', () => {
+			setModelData( model, '<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>' );
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'unwraps table cell paragraph', () => {
+			setModelData(
+				model,
+				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>'
+			);
+		} );
 	} );
 } );
