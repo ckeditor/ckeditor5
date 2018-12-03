@@ -156,25 +156,17 @@ export default class FileRepository extends Plugin {
 			 *
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
-			 * See:
 			 *
-			 * * {@link module:core/editor/editorconfig~EditorConfig#cloudServices `config.cloudServices`} for
-			 * Easy Image with Cloud Services integration,
-			 * * {@link module:core/editor/editorconfig~EditorConfig#ckfinder `config.ckfinder`} for CKFinder
-			 * file upload integration.
+			 * See the {@glink features/image-upload comprehensive "Image upload" guide} to learn which upload
+			 * adapters are available in the builds and how to configure them.
 			 *
 			 * **If you see this warning when using a custom build** there is a chance that you enabled
 			 * a feature like {@link module:image/imageupload~ImageUpload},
 			 * or {@link module:image/imageupload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
-			 * You can choose one of the existing upload adapters:
+			 * You can choose one of the existing upload adapters listed in the
+			 * {@glink features/image-upload "Image upload" guide}.
 			 *
-			 * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}
-			 * (remember to {@link module:core/editor/editorconfig~EditorConfig#cloudServices configure it})
-			 * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}
-			 * (remember to {@link module:core/editor/editorconfig~EditorConfig#ckfinder configure it})
-			 *
-			 * You can also implement your own upload adapter (in which case, please refer
-			 * to the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} documentation).
+			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own upload adapter}.
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
