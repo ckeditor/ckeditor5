@@ -16,7 +16,7 @@ Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckedito
 All that, with virtually zero server setup so you do not have to worry about anything.
 
 <info-box>
-	Check out the {@link features/image-upload comprehensive image upload guide} to learn about other ways to upload images into CKEditor 5.
+	Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
 ### Demo
@@ -92,5 +92,5 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 
 ## What's next?
 
-Check out the {@link features/image-upload comprehensive image upload guide} to learn more about different ways of uploading images in CKEditor 5. See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more about different ways of uploading images in CKEditor 5. See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
 
