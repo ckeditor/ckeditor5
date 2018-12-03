@@ -34,7 +34,7 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. When the command {@link #value is on}, all block quotes within
+	 * Executes the command. When the command {@link #value is on}, all top-most block quotes within
 	 * the selection will be removed. If it is off, all selected blocks will be wrapped with
 	 * a block quote.
 	 *
@@ -42,17 +42,10 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const doc = model.document;
 		const schema = model.schema;
+		const selection = model.document.selection;
 
-		const selectedBlocks = Array.from( doc.selection.getSelectedBlocks() );
-
-		const blocks = selectedBlocks.filter( block => {
-			const parentBlock = findAncestorBlock( model.createPositionBefore( block ), schema );
-
-			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			return !parentBlock || !selectedBlocks.includes( parentBlock );
-		} );
+		const blocks = getTopMostBlocks( selection, schema );
 
 		model.change( writer => {
 			if ( this.value ) {
@@ -76,22 +69,11 @@ export default class BlockQuoteCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue() {
-		const model = this.editor.model;
-		const schema = model.schema;
+		const schema = this.editor.model.schema;
+		const selection = this.editor.model.document.selection;
 
-		// TODO: Unify this with execute().
-		const selectedBlocks = Array.from( this.editor.model.document.selection.getSelectedBlocks() );
+		const firstBlock = getTopMostBlocks( selection, schema ).shift();
 
-		const blocks = selectedBlocks.filter( block => {
-			const parentBlock = findAncestorBlock( model.createPositionBefore( block ), schema );
-
-			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			return !parentBlock || !selectedBlocks.includes( parentBlock );
-		} );
-
-		const firstBlock = blocks.shift();
-
-		// console.log( firstBlock );
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		return !!( firstBlock && findQuote( firstBlock ) );
 	}
@@ -246,8 +228,41 @@ function checkCanBeQuoted( schema, block ) {
 	return isBQAllowed && isBlockAllowedInBQ;
 }
 
-export function findAncestorBlock( position, schema ) {
-	let parent = position.parent;
+// Returns top-level block elements from selected blocks.
+//
+// For given selection:
+//
+//		[<blockA></blockA>
+//		<blockB>
+//			<blockC></blockC>
+//			<blockD></blockD>
+//		</blockB>
+//		<blockE></blockE>]
+//
+// This method will only return blocks: A, B & E.
+//
+// @param {module:engine/model/selection~Selection} selection
+// @param {module:engine/model/schema~Schema} schema
+// @returns {module:engine/model/element~Element[]}
+function getTopMostBlocks( selection, schema ) {
+	const topMostBlocks = Array.from( selection.getSelectedBlocks() )
+		.filter( block => {
+			const parentBlock = findAncestorBlock( block, schema );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			return !parentBlock || !Array.from( selection.getSelectedBlocks() ).includes( parentBlock );
+		} );
+
+	return topMostBlocks;
+}
+
+// Returns first ancestor block of a node.
+//
+// @param {module:engine/model/node~Node} node
+// @param {module:engine/model/schema~Schema} schema
+// @returns {module:engine/model/node~Node|undefined}
+function findAncestorBlock( node, schema ) {
+	let parent = node.parent;
 
 	while ( parent ) {
 		if ( schema.isBlock( parent ) ) {
