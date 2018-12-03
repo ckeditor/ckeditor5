@@ -290,7 +290,7 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
-	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Array} The result of mapping.
 	 */
 	map( callback, ctx ) {
@@ -303,8 +303,8 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Object} The item for which `callback` returned a true value.
-	 * @params {Object} ctx Context in which the `callback` will be called.
 	 */
 	find( callback, ctx ) {
 		return this._items.find( callback, ctx );
@@ -316,7 +316,7 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
-	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Object[]} The array with matching items.
 	 */
 	filter( callback, ctx ) {

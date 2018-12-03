@@ -44,7 +44,7 @@ export default class Locale {
 		 *
 		 * @method #t
 		 * @param {String} str The string to translate.
-		 * @param {String[]} values Values that should be used to interpolate the string.
+		 * @param {String[]} [values] Values that should be used to interpolate the string.
 		 */
 		this.t = ( ...args ) => this._t( ...args );
 	}
