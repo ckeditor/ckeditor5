@@ -65,7 +65,7 @@ Responsive images have two main advantages over the "traditional" image delivery
 	Using Easy Image guarantees only the particular size variant corresponding to the user's screen size is served, minimizing the amount of data transferred to the client. For large images, this can save up to 90% of the transferred data — [see it yourself!](https://ckeditor.com/ckeditor-cloud-services/easy-image/)
 * **They load a way faster**: because only the image matching the size of the screen is transferred, in most of the cases, it can be loaded and displayed a way faster than a "regular" full–scale image. And the faster it loads, the sooner the users can see it, which greatly improves the user experience of your application. You no longer need to wait ages for a high–resolution photos to load on a tiny smartphone screen.
 
-### What does it all look like in the markup?
+### Responsive images in the markup
 
 Responsive images delivered by the Easy Image service are transparent to your application. Once uploaded, the image appears in the editor content as a "regular" image but with some additional attributes like the `srcset`.
 
