@@ -85,7 +85,12 @@ export default class TextProxy {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Offset size of this node.
+	 *
+	 * Read more in {@link module:engine/view/node~Node#offsetSize}.
+	 *
+	 * @readonly
+	 * @type {Number}
 	 */
 	get offsetSize() {
 		return this.data.length;
