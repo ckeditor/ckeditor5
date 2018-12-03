@@ -334,7 +334,7 @@ describe( 'Config', () => {
 			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 		} );
 
-		it( 'should retrieve a object of the configuration', () => {
+		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
 			expect( resize ).to.be.an( 'object' );
