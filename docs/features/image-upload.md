@@ -6,21 +6,23 @@ category: features
 
 Inserting images into content created with CKEditor is a very common task. In a properly configured editor, there are several ways for the end user to insert images:
 
-* Pasting it from the clipboard.
-* Dragging a file from the file system.
-* Selecting it through a file system dialog.
-* Selecting it from a media management tool in your application.
+* **Pasting** it from the clipboard.
+* **Dragging** a file from the file system.
+* Selecting it through a **file system dialog**.
+* Selecting it from a **media management tool** in your application.
 
 Excluding the last option, all other ways require the image to be uploaded to a server which will be the one responsible for providing the image URL used by CKEditor to display the image in the document.
 
-<info-box>
-	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom upload adpter" deep dive guide} covering that topic.
-</info-box>
+{@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process.}
 
 The software that makes the image upload possible is called an **upload adapter**. It is a callback which tells the editor how to send the file to the server. There are two main strategies of getting the image upload work you can adopt in your project:
 
 * [**Official upload adapters**](#official-upload-adapters): There are several features providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
 * [**Custom upload adapters**](#implementing-your-own-upload-adapter): Create your own upload adapter from scratch using the open API architecture CKEditor 5 provides.
+
+<info-box>
+	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter deep dive guide} covering that topic.
+</info-box>
 
 ## Official upload adapters
 
