@@ -35,7 +35,7 @@ CKEditor 5 was designed with focus on creating quality content. There are thus g
 
 ## Image upload
 
-CKEditor 5 supports several different image upload strategies. Check out the {@link features/image-upload comprehensive image upload guide} to find out the best option for your project.
+CKEditor 5 supports several different image upload strategies. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best option for your project.
 
 ## Plugins
 
@@ -565,7 +565,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></td>
 			<td>
-				<p>There are several image upload strategies supported by CKEditor 5. Check out the {@link features/image-upload comprehensive image upload guide} to learn more.</p>
+				<p>There are several image upload strategies supported by CKEditor 5. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</p>
 			</td>
 		</tr>
 		<tr>
