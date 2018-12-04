@@ -72,7 +72,7 @@ Responsive images delivered by the Easy Image service are transparent to your ap
 The `srcset` attribute specifies the image variants dedicated for the various screen sizes for the web browser to choose from (360px, 720px, 1080px, 1440px, etc.), for instance the `image.jpg` file  uploaded by the user will have the following markup:
 
 ```html
-<figure ...>
+<figure class="image">
 	<img
 		src="https://cdn.cke-cs.com/images/image.jpg"
 		srcset="https://cdn.cke-cs.com/images/image.jpg/w_360 360w,
@@ -84,7 +84,7 @@ The `srcset` attribute specifies the image variants dedicated for the various sc
 			https://cdn.cke-cs.com/images/image.jpg/w_3543 3543w"
 		sizes="100vw"
 		width="...">
-	<figcaption ...>...</figcaption>
+	<figcaption>...</figcaption>
 </figure>
 ```
 
