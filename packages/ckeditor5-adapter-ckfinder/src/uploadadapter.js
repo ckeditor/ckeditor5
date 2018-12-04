@@ -14,13 +14,14 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { getCsrfToken } from './utils';
 
 /**
- * A plugin that enables CKFinder uploads in CKEditor 5.
+ * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
  *
- * You can configure it by using
- * {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `ckfinder.uploadUrl`}.
+ * See the {@glink features/ckfinder "CKFinder integration" guide} to learn how to configure
+ * and use this feature as well as find out more about the full integration with the file manager
+ * provided by the {@link module:ckfinder/ckfinder~CKFinder} plugin.
  *
- * Check out the {@link module:ckfinder/ckfinder~CKFinder CKFinder feature} to learn more about
- * the full integration with the file manager.
+ * Check out the {@glink features/image-upload comprehensive "Image upload" guide} to learn about
+ * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
  */
