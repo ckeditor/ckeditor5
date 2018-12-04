@@ -26,6 +26,8 @@ The outdated concept of image alignment was dropped in favor of {@link features/
 
 {@img assets/img/builds-image-styles.png 736 Image styles toolbar.}
 
+CKEditor 5 supports several different image upload strategies. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best option for your project.
+
 ### Simple linking
 
 No more complex dialogs for links. When you click a link, first you will see a balloon with an option to either edit the link or open it in a new tab.

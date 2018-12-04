@@ -94,7 +94,7 @@ class MyPlugin {
 }
 ```
 
-An example plugin that you may want to add this way is a {@link module:upload/filerepository~UploadAdapter custom upload adapter}.
+An example plugin that you may want to add this way is a {@link framework/guides/deep-dive/upload-adapter custom upload adapter}.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
