@@ -68,12 +68,12 @@ class MyUploadAdapter {
 }
 ```
 
-Your custom upload adapter must implement the {@link module:upload/filerepository~UploadAdapter adapter interface} in order to work, i.e. bring own `upload` and `abort` methods.
+Your custom upload adapter must implement the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} in order to work, i.e. bring own `upload()` and `abort()` methods.
 
-* The {@link module:upload/filerepository~UploadAdapter#upload `upload`} method must return a promise:
+* The {@link module:upload/filerepository~UploadAdapter#upload `upload()`} method must return a promise:
 	* resolved by a successful image upload (with an object containing information about uploaded file),
 	* rejected because of an error, in which case no image is inserted into the content.
-* The {@link module:upload/filerepository~UploadAdapter#abort `abort`} must allow the editor to abort the upload process. It is necessary, for instance, when the image was removed from the content by the user before the upload finished.
+* The {@link module:upload/filerepository~UploadAdapter#abort `abort()`} must allow the editor to abort the upload process. It is necessary, for instance, when the image was removed from the content by the user before the upload finished.
 
 ```js
 class MyUploadAdapter {
@@ -103,7 +103,7 @@ class MyUploadAdapter {
 
 ### Using `XMLHttpRequest` in an adapter
 
-Let's see what the `_initRequest` method looks like in your custom upload adapter. It should prepare the `XMLHttpRequest` object before it can be used to upload an image.
+Let's see what the `_initRequest()` method looks like in your custom upload adapter. It should prepare the `XMLHttpRequest` object before it can be used to upload an image.
 
 ```js
 class MyUploadAdapter {
@@ -133,9 +133,9 @@ class MyUploadAdapter {
 }
 ```
 
-Now let's focus on the `_initListeners` method which attaches `error`, `abort`, `load`, and `progress` event listeners to the `XMLHttpRequest` object created in the last step.
+Now let's focus on the `_initListeners()` method which attaches `error`, `abort`, `load`, and `progress` event listeners to the `XMLHttpRequest` object created in the last step.
 
-A successful image upload will finish when the upload promise is resolved upon the `load` event fired by the `XMLHttpRequest` request. The promise must be resolved with an object containing information about the image. See the documentation of the {@link module:upload/filerepository~UploadAdapter#upload `upload`} method to learn more.
+A successful image upload will finish when the upload promise is resolved upon the `load` event fired by the `XMLHttpRequest` request. The promise must be resolved with an object containing information about the image. See the documentation of the {@link module:upload/filerepository~UploadAdapter#upload `upload()`} method to learn more.
 
 ```js
 class MyUploadAdapter {
@@ -200,7 +200,7 @@ class MyUploadAdapter {
 }
 ```
 
-Last but not least, the `_sendRequest` method well... sends the `XMLHttpRequest`. In this example, the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface is used to pass the file provided by the {@link module:upload/filerepository~FileRepository#createLoader file loader}.
+Last but not least, the `_sendRequest()` method well... sends the `XMLHttpRequest`. In this example, the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) interface is used to pass the file provided by the {@link module:upload/filerepository~FileRepository#createLoader file loader}.
 
 ```js
 class MyUploadAdapter {
@@ -254,14 +254,14 @@ class MyUploadAdapter {
 }
 
 function MyCustomUploadAdapterPlugin( editor ) {
-	editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
+	editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
 		// Configure the URL to the upload script in your back-end here!
 		return new MyUploadAdapter( loader, 'http://example.com/image/upload/path' );
 	};
 }
 ```
 
-Enable the `MyCustomUploadAdapterPlugin` in the editor using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} configuration:
+Enable the `MyCustomUploadAdapterPlugin` in the editor by using the {@link module:core/editor/editorconfig~EditorConfig#extraPlugins `config.extraPlugins`} option:
 
 ```js
 ClassicEditor
