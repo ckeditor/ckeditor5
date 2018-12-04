@@ -6,15 +6,17 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ckfinder.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)
 
-This package implements the {@link features/ckfinder CKFinder integration} feature for CKEditor 5. It lets you easily insert images & links to files. It integrates automatically with [CKFinder](https://ckeditor.com/ckfinder/).
+This package implements the {@link features/ckfinder CKFinder feature}. This feature allows you to easily insert images as well as links to files into the editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder file manager and uploader](https://ckeditor.com/ckfinder).
 
 ## Demo
 
-Check out the {@link features/ckfinder#demo demo in the CKFinder feature} guide.
+Check out the {@link features/ckfinder#demo demos} in the integration guide.
 
 ## Documentation
 
-See the {@link features/ckfinder CKFinder feature} guide and the {@link module:ckfinder/ckfinder~CKFinder} plugin documentation.
+See the {@link features/ckfinder "CKFinder integration" guide} and the {@link module:ckfinder/ckfinder~CKFinder plugin documentation} to learn more about the integration.
+
+Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
 
 ## Installation
 
