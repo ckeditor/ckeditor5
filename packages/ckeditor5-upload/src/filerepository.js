@@ -26,9 +26,8 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * To use it, first you need an upload adapter. Upload adapter's job is to handle communication with the server
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
- * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one
- * (which boils down to setting the {@link ~FileRepository#createUploadAdapter} factory function – see
- * {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} documentation).
+ * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
+ * the {@glink framework/guides/deep-dive/upload-adapter "Custom image upload adpter" deep dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
@@ -479,44 +478,12 @@ class FileLoader {
 mix( FileLoader, ObservableMixin );
 
 /**
- * Upload adapter interface used by FileRepository to handle file upload. Upload adapter is a bridge between the editor and server that
- * handles file uploads. It should contain logic necessary to initiate upload process and monitor its progress.
+ * Upload adapter interface used by the {@link module:upload/filerepository~FileRepository file repository}
+ * to handle file upload. An upload adapter is a bridge between the editor and server that handles file uploads.
+ * It should contain a logic necessary to initiate an upload process and monitor its progress.
  *
- * It should implement two methods:
- *
- * * {@link module:upload/filerepository~UploadAdapter#upload `upload()`},
- * * {@link module:upload/filerepository~UploadAdapter#abort `abort()`}.
- *
- * Example upload adapter implementation:
- *
- *		class UploadAdapter {
- *			constructor( loader ) {
- *				// Save Loader instance to update upload progress.
- *				this.loader = loader;
- *			}
- *
- *			upload() {
- *				// Update loader's progress.
- *				server.onUploadProgress( data => {
- *					loader.uploadTotal = data.total;
- *					loader.uploaded = data.uploaded;
- *				} ):
- *
- *				// Return promise that will be resolved when file is uploaded.
- *				return server.upload( loader.file );
- *			}
- *
- *			abort() {
- *				// Reject promise returned from upload() method.
- *				server.abortUpload();
- *			}
- *		}
- *
- * Then upload adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
- *
- *		editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
- *			return new UploadAdapter( loader );
- *		};
+ * Learn how to develop your own upload adapter for CKEditor 5 in the
+ * {@glink framework/guides/deep-dive/upload-adapter "Custom upload adapter" guide}.
  *
  * @interface UploadAdapter
  */
