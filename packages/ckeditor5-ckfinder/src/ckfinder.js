@@ -14,12 +14,20 @@ import CKFinderEditing from './ckfinderediting';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 
 /**
- * The CKFinder feature.
+ * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the
+ * [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader.
  *
  * This is a "glue" plugin which enables:
  *
  * * {@link module:ckfinder/ckfinderediting~CKFinderEditing},
- * * {@link module:ckfinder/ckfinderui~CKFinderUI}.
+ * * {@link module:ckfinder/ckfinderui~CKFinderUI},
+ * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}.
+ *
+ * See the {@glink features/ckfinder "CKFinder integration" guide} to learn how to configure
+ * and use this feature.
+ *
+ * Check out the {@glink features/image-upload comprehensive "Image upload" guide} to learn about
+ * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
  */
