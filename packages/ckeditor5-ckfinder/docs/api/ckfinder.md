@@ -16,7 +16,7 @@ Check out the {@link features/ckfinder#demo demos} in the integration guide.
 
 See the {@link features/ckfinder "CKFinder integration" guide} and the {@link module:ckfinder/ckfinder~CKFinder plugin documentation} to learn more about the integration.
 
-Check out the {@glink features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
+Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
 
 ## Installation
 
