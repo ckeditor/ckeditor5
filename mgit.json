@@ -2,7 +2,7 @@
   "packages": "packages/",
   "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#t/upload-docs",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave",
@@ -14,9 +14,9 @@
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
     "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services",
-    "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#t/upload-docs",
+    "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
-    "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image#t/upload-docs",
+    "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled",
@@ -27,7 +27,7 @@
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#t/upload-docs",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
@@ -39,7 +39,7 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#t/upload-docs",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget"
   }
