@@ -163,7 +163,8 @@ export function defaultSchema( schema, registerParagraph = true ) {
 		allowWhere: '$block',
 		allowAttributes: [ 'headingRows', 'headingColumns' ],
 		isLimit: true,
-		isObject: true
+		isObject: true,
+		isBlock: true
 	} );
 
 	schema.register( 'tableRow', {
