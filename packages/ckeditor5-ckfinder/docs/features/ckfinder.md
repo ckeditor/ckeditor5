@@ -25,7 +25,7 @@ This feature can be used in the editor in two different ways:
 	* **editing** images (cropping, resizing, etc.),
 	* **organizing** or deleting images.
 
-	Check out the [CKFinder file manager website](https://ckeditor.com/ckeditor-4/ckfinder/) to learn more about features you can use in your project.
+	Check out the [CKFinder file manager website](https://ckeditor.com/ckfinder/) to learn more about features you can use in your project.
 
 ## Demo
 
@@ -47,7 +47,7 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 
 {@snippet features/ckfinder}
 
-## Installation in a custom editor build
+## Installation
 
 <info-box info>
 	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
@@ -59,7 +59,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`]
 npm install --save @ckeditor/ckeditor5-ckfinder
 ```
 
-Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary), for instance:
+Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary). For instance:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -67,7 +67,7 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ CKFinder, ... ],
-		toolbar: [ 'ckfinder', ... ]
+		toolbar: [ 'ckfinder', 'imageUpload' ... ], // Depending on your preference.
 		ckfinder: {
 			// Feature configuration.
 		}
@@ -78,7 +78,7 @@ ClassicEditor
 
 ## Configuration
 
-The feature is configurable using the {@link module:ckfinder/ckfinder~CKFinderConfig `config.ckfinder`} object.
+The feature is configurable by using the {@link module:ckfinder/ckfinder~CKFinderConfig `config.ckfinder`} object.
 
 ### Configuring the image upload only
 
@@ -92,6 +92,10 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ CKFinder, ... ],
+
+		// Enable the "Insert image" button in the toolbar.
+		toolbar: [ 'imageUpload', ... ],
+
 		ckfinder: {
 			// Upload the images to the server using the CKFinder's QuickUpload command.
 			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
@@ -101,19 +105,26 @@ ClassicEditor
 	.catch( ... );
 ```
 
-**See the [demo](#image-upload-only)**.
+See the **[demo of the image upload only](#image-upload-only)**.
 
 ### Configuring the full integration
 
-To use both the image upload functionality and the CKFinder user interface in your application, you must include the `<script>` tag loading the `ckfinder.js` file first:
+To use both the image upload functionality and the CKFinder file manager user interface in your application, you must first load the CKFinder JavaScript library and then enable CKFinder integration in your editor instance.
+
+The easiest way to load CKFinder library include the `<script>` tag loading the `ckfinder.js` file first:
 
 ```html
 <script src="https://example.com/ckfinder/ckfinder.js"></script>
 ```
 
-* To enable the automatic file upload to the server when an image is pasted or dropped into the editor content, remember to set the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
-* To display the toolbar button that opens the CKFinder file manager UI allowing users to choose files on the server, make sure `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
-* Additionally, you can specify {@link @ckfinder ckfinder3/#!/api/CKFinder.Config-cfg-resourceType `config.ckfinder.options.resourceTypes`} to tell the file manager that only the specified resource type (in this case: the images) can be browsed when the user uses the button.
+Then:
+
+* Make sure that the {@link module:ckfinder/ckfinder~CKFinder CKFinder plugin} for CKEditor 5 is enabled. See the [Installation](#installation) section.
+* In order to enable the automatic file upload to the server when an image is pasted or dropped into the editor content, remember to set the correct {@link module:ckfinder/ckfinder~CKFinderConfig#uploadUrl `config.ckfinder.uploadUrl`} path.
+* In order to display the toolbar button that opens the CKFinder file manager UI allowing users to choose files on the server, make sure `'ckfinder'` is present in your {@link module:core/editor/editorconfig~EditorConfig#toolbar `config.toolbar`}.
+* Additionally, you can use {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} to define {@link @ckfinder ckfinder3/#!/api/CKFinder.Config CKFinder's options}. For instance:
+	* You can define {@link @ckfinder ckfinder3/#!/api/CKFinder.Config-cfg-resourceType `options.resourceType`} to tell CKFinder the specified resource type can be browsed when the user uses the button.
+	* You can define {@link @ckfinder ckfinder3/#!/api/CKFinder.Config-cfg-resourceType `options.language`} to set the UI language of CKFinder. By default it will be set to the UI language of the editor.
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
@@ -126,28 +137,20 @@ ClassicEditor
 		toolbar: [ 'ckfinder', ... ]
 
 		ckfinder: {
-			// Narrow the list of files that can be browsed.
+			// Upload the images to the server using the CKFinder's QuickUpload command.
+			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
+
+			// Define CKFinder's configuration (if necessary).
 			options: {
 				resourceType: 'Images'
-			},
-
-			// Upload the images to the server using the CKFinder's QuickUpload command.
-			uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+			}
 		}
 	} )
 	.then( ... )
 	.catch( ... );
 ```
 
-**See the [demo](#full-integration)**.
-
-<info-box>
-	The file manager configuration can be passed through the {@link module:ckfinder/ckfinder~CKFinderConfig#options `config.ckfinder.options`} object. Check the {@link @ckfinder ckfinder3/#!/api/CKFinder.Config file manager documentation} for the complete list of options.
-</info-box>
-
-<info-box>
-	By default, the editor language is automatically passed to the file manager — the file manager "inherits" the language of the editor. This behavior can be changed by setting the `ckfinder.options.language` configuration option.
-</info-box>
+See the **[demo of the full integration](#full-integration)**.
 
 #### Configuring the opener
 
