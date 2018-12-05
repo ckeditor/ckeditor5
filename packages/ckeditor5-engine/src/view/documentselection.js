@@ -71,9 +71,7 @@ export default class DocumentSelection {
 	 *		// Creates fake selection with label.
 	 *		const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -331,8 +329,7 @@ export default class DocumentSelection {
 	 *
 	 * @protected
 	 * @fires change
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
