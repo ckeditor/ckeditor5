@@ -6,12 +6,12 @@ Changelog
 ### Features
 
 * Implemented the `.ck-labeled-input__status` for labeled input's tips and errors. Replaced the `.ck-labeled-input__error` class with `.ck-labeled-input__status_error`. Fixed breaking layout when the status is longer than the labeled input (see [ckeditor/ckeditor5-media-embed#35](https://github.com/ckeditor/ckeditor5-media-embed/issues/35)). ([26215d5](https://github.com/ckeditor/ckeditor5-theme-lark/commit/26215d5))
-* Introduced the ck-media-phone RWD mixin that outputs a [@media](https://github.com/media) query. Improved responsiveness of media embed, link, and image form views in narrow viewports (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([305a745](https://github.com/ckeditor/ckeditor5-theme-lark/commit/305a745))
+* Introduced the `ck-media-phone` RWD mixin that outputs a `@media` query. Improved responsiveness of media embed, link, and image form views in narrow viewports (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([305a745](https://github.com/ckeditor/ckeditor5-theme-lark/commit/305a745))
 
 ### Bug fixes
 
 * Improved visibility of selected link inside table cells. Closes [ckeditor/ckeditor5-link#204](https://github.com/ckeditor/ckeditor5-link/issues/204). ([3a89e1a](https://github.com/ckeditor/ckeditor5-theme-lark/commit/3a89e1a))
-* Only override the `fill` for icons that don't declare one. Closes [#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([6c690a9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6c690a9))
+* Only override the `fill` for icons that do not declare one. Closes [#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([6c690a9](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6c690a9))
 
   Thanks to [@michaeldjeffrey](https://github.com/michaeldjeffrey)!
 * The visual effects should be disabled on a widget when the editor is in the read-only mode. Closes https://github.com/ckeditor/ckeditor5/issues/1261. ([41d7d1e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/41d7d1e))
