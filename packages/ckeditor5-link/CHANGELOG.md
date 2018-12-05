@@ -10,8 +10,7 @@ Changelog
 ### Other changes
 
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([5b12f81](https://github.com/ckeditor/ckeditor5-link/commit/5b12f81))
-* Updated translations. ([9d7b042](https://github.com/ckeditor/ckeditor5-link/commit/9d7b042))
-* Updated translations. ([6ac7e41](https://github.com/ckeditor/ckeditor5-link/commit/6ac7e41))
+* Updated translations. ([9d7b042](https://github.com/ckeditor/ckeditor5-link/commit/9d7b042)) ([6ac7e41](https://github.com/ckeditor/ckeditor5-link/commit/6ac7e41))
 
 
 ## [10.0.4](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.3...v10.0.4) (2018-10-08)
