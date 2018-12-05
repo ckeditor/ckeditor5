@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Enter command will use `writer.split()` also at the beginning and at the end of a block. ([c159958](https://github.com/ckeditor/ckeditor5-enter/commit/c159958))
+* `EnterCommand` will use `writer.split()` also at the beginning and at the end of a block. ([c159958](https://github.com/ckeditor/ckeditor5-enter/commit/c159958))
 
 
 ## [10.1.2](https://github.com/ckeditor/ckeditor5-enter/compare/v10.1.1...v10.1.2) (2018-10-08)
