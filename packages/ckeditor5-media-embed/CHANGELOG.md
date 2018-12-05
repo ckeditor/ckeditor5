@@ -17,11 +17,8 @@ Changelog
 ### Other changes
 
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([b95fc42](https://github.com/ckeditor/ckeditor5-media-embed/commit/b95fc42))
-* Moved widget spacing styles from ckeditor5-theme-lark to the feature content styles sheet (see [ckeditor/ckeditor5-theme-lark#209](https://github.com/ckeditor/ckeditor5-theme-lark/issues/209)). ([501a567](https://github.com/ckeditor/ckeditor5-media-embed/commit/501a567))
-* Updated translations. ([58614b0](https://github.com/ckeditor/ckeditor5-media-embed/commit/58614b0))
-* Updated translations. ([120912c](https://github.com/ckeditor/ckeditor5-media-embed/commit/120912c))
-* Updated translations. ([e1b4206](https://github.com/ckeditor/ckeditor5-media-embed/commit/e1b4206))
-* Updated translations. ([c376e7f](https://github.com/ckeditor/ckeditor5-media-embed/commit/c376e7f))
+* Moved widget spacing styles from `@ckeditor/ckeditor5-theme-lark` to the feature content styles sheet (see [ckeditor/ckeditor5-theme-lark#209](https://github.com/ckeditor/ckeditor5-theme-lark/issues/209)). ([501a567](https://github.com/ckeditor/ckeditor5-media-embed/commit/501a567))
+* Updated translations. ([58614b0](https://github.com/ckeditor/ckeditor5-media-embed/commit/58614b0)) ([120912c](https://github.com/ckeditor/ckeditor5-media-embed/commit/120912c)) ([e1b4206](https://github.com/ckeditor/ckeditor5-media-embed/commit/e1b4206)) ([c376e7f](https://github.com/ckeditor/ckeditor5-media-embed/commit/c376e7f))
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-media-embed/tree/v10.0.0) (2018-10-08)
