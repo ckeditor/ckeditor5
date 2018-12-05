@@ -15,7 +15,7 @@ msgstr "Italique"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Souligner"
+msgstr "Souligné"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
@@ -27,8 +27,8 @@ msgstr "Barré"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "Indice"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "Exposant"
