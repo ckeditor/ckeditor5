@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.2](https://github.com/ckeditor/ckeditor5-typing/compare/v11.0.1...v11.0.2) (2018-12-05)
+
+### Bug fixes
+
+* Non-printable keys like volume up or the win key will not remove the content anymore. Closes [#136](https://github.com/ckeditor/ckeditor5-typing/issues/136). ([0ea9fbd](https://github.com/ckeditor/ckeditor5-typing/commit/0ea9fbd))
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v11.0.0...v11.0.1) (2018-10-08)
 
 ### Bug fixes
