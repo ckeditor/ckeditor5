@@ -77,9 +77,7 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -368,9 +366,7 @@ export default class Selection {
 	 *		// Sets backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -802,3 +798,19 @@ function getParentBlock( position, visited ) {
 
 	return block;
 }
+
+/**
+ * An entity that is used to set selection.
+ *
+ * See also {@link module:engine/model/selection~Selection#setTo}
+ *
+ * @typedef {
+ *     module:engine/model/selection~Selection|
+ *     module:engine/model/documentselection~DocumentSelection|
+ *     module:engine/model/position~Position|
+ *     module:engine/model/node~Node|
+ *     Iterable.<module:engine/model/range~Range>|
+ *     module:engine/model/range~Range|
+ *     null
+ * } module:engine/model/selection~Selectable
+ */
