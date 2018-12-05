@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.0.0...v11.1.0) (2018-12-05)
+
+### Features
+
+* Implemented `env#isGecko()`. See [ckeditor/ckeditor5-engine#1439](https://github.com/ckeditor/ckeditor5-engine/issues/1439). ([53b7c94](https://github.com/ckeditor/ckeditor5-utils/commit/53b7c94))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (2018-10-08)
 
 ### Other changes
