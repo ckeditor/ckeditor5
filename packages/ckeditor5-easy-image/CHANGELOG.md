@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [10.0.4](https://github.com/ckeditor/ckeditor5-easy-image/compare/v10.0.3...v10.0.4) (2018-12-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-easy-image/compare/v10.0.2...v10.0.3) (2018-10-08)
 
 Internal changes only (updated dependencies, documentation, etc.).
