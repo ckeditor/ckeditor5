@@ -7,8 +7,7 @@ Changelog
 
 * Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([3362715](https://github.com/ckeditor/ckeditor5-heading/commit/3362715))
 * The `<h1>` elements are now converted to `<heading1>` elements instead of being converted to `<paragraph>`s by default. Closes [#98](https://github.com/ckeditor/ckeditor5-heading/issues/98). Closes [ckeditor/ckeditor5-paste-from-office#2](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/2). ([c49b573](https://github.com/ckeditor/ckeditor5-heading/commit/c49b573))
-* Updated translations. ([91778ab](https://github.com/ckeditor/ckeditor5-heading/commit/91778ab))
-* Updated translations. ([6435579](https://github.com/ckeditor/ckeditor5-heading/commit/6435579))
+* Updated translations. ([91778ab](https://github.com/ckeditor/ckeditor5-heading/commit/91778ab)) ([6435579](https://github.com/ckeditor/ckeditor5-heading/commit/6435579))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.0.2...v10.1.0) (2018-10-08)
