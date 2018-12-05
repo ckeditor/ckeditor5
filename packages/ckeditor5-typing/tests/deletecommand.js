@@ -3,8 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
+import Delete from '../src/delete';
+import ChangeBuffer from '../src/utils/changebuffer';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -36,6 +39,29 @@ describe( 'DeleteCommand', () => {
 		const command = new DeleteCommand( editor, 'forward' );
 
 		expect( command ).to.have.property( 'direction', 'forward' );
+	} );
+
+	describe( 'buffer', () => {
+		it( 'has buffer getter', () => {
+			expect( editor.commands.get( 'delete' ).buffer ).to.be.an.instanceof( ChangeBuffer );
+		} );
+
+		it( 'has a buffer limit configured to default value of 20', () => {
+			expect( editor.commands.get( 'delete' ).buffer ).to.have.property( 'limit', 20 );
+		} );
+
+		it( 'has a buffer configured to config.typing.undoStep', () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Delete ],
+					typing: {
+						undoStep: 5
+					}
+				} )
+				.then( editor => {
+					expect( editor.commands.get( 'delete' ).buffer ).to.have.property( 'limit', 5 );
+				} );
+		} );
 	} );
 
 	describe( 'execute()', () => {
