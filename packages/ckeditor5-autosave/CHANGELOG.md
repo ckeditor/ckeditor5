@@ -5,8 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([5a423f6](https://github.com/ckeditor/ckeditor5-autosave/commit/5a423f6))
-* Updated translations. ([c5bb743](https://github.com/ckeditor/ckeditor5-autosave/commit/c5bb743))
+* Updated translations. ([5a423f6](https://github.com/ckeditor/ckeditor5-autosave/commit/5a423f6)) ([c5bb743](https://github.com/ckeditor/ckeditor5-autosave/commit/c5bb743))
 
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5-autosave/compare/v10.0.0...v10.0.1) (2018-10-08)
