@@ -6,7 +6,7 @@ Changelog
 ### Bug fixes
 
 * Block filler will be inserted into the list item if its last child is a `<br>` element. Closes [ckeditor/ckeditor5#1312](https://github.com/ckeditor/ckeditor5/issues/1312). ([cb6708e](https://github.com/ckeditor/ckeditor5-list/commit/cb6708e))
-* Preserve correct order of block elements inside list items during view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
+* Preserve correct order of block elements inside list items during the view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
 
 ### Other changes
 
