@@ -27,4 +27,4 @@ msgstr "Ouvrir le lien dans un nouvel onglet"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr "Ce lien ne contient pas d'URL"
+msgstr "Ce lien n'a pas d'URL"
