@@ -5,8 +5,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([489b6fa](https://github.com/ckeditor/ckeditor5-upload/commit/489b6fa))
-* Updated translations. ([f435630](https://github.com/ckeditor/ckeditor5-upload/commit/f435630))
+* Updated translations. ([489b6fa](https://github.com/ckeditor/ckeditor5-upload/commit/489b6fa)) ([f435630](https://github.com/ckeditor/ckeditor5-upload/commit/f435630))
 
 
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.2...v10.0.3) (2018-10-08)
