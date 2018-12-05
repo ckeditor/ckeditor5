@@ -11,7 +11,7 @@ msgstr "Paragraphe"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "En-tête"
+msgstr "Titre"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
