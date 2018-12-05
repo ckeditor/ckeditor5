@@ -65,6 +65,8 @@ export default class FileRepository extends Plugin {
 		this.loaders.on( 'add', () => this._updatePendingAction() );
 		this.loaders.on( 'remove', () => this._updatePendingAction() );
 
+		this.loadersMap = new Map();
+
 		/**
 		 * Reference to a pending action registered in a {@link module:core/pendingactions~PendingActions} plugin
 		 * while upload is in progress. When there is no upload then value is `null`.
@@ -121,21 +123,29 @@ export default class FileRepository extends Plugin {
 	}
 
 	/**
-	 * Returns the loader associated with specified file.
+	 * Returns the loader associated with specified file or promise.
 	 *
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
-	 * @param {File} file Native file handle.
+	 * @param {File|Promise} fileOrPromise Native file or promise handle.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
-	getLoader( file ) {
-		for ( const loader of this.loaders ) {
-			if ( loader.file == file ) {
-				return loader;
+	getLoader( fileOrPromise ) {
+		// When `createLoader()` is called with `File` instance, the file is used in a map. When it is called with `Promise`
+		// instance, the promise is used in a map. So here it retrieves loader based on the same object it was initialized with.
+		const loaderInstance = this.loadersMap.get( fileOrPromise );
+
+		// If `createLoader()` is called with `Promise` instance, once the promise is resolved, the `loader.file` returns
+		// a file instance which can be also used here (and is not in the `loadersMap`). The code below covers this case.
+		if ( !loaderInstance && !( fileOrPromise instanceof Promise ) ) {
+			for ( const loader of this.loaders ) {
+				if ( loader.file === fileOrPromise ) {
+					return loader;
+				}
 			}
 		}
 
-		return null;
+		return loaderInstance || null;
 	}
 
 	/**
@@ -143,10 +153,10 @@ export default class FileRepository extends Plugin {
 	 *
 	 * Requires {@link #createUploadAdapter} factory to be defined.
 	 *
-	 * @param {File} file Native File object.
+	 * @param {File|Promise} fileOrPromise Native File object or native Promise object which resolves to a File.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
-	createLoader( file ) {
+	createLoader( fileOrPromise ) {
 		if ( !this.createUploadAdapter ) {
 			/**
 			 * You need to enable an upload adapter in order to be able to upload files.
@@ -183,10 +193,13 @@ export default class FileRepository extends Plugin {
 			return null;
 		}
 
-		const loader = new FileLoader( file );
+		const filePromise = fileOrPromise instanceof Promise ? fileOrPromise : new Promise( resolve => resolve( fileOrPromise ) );
+		const loader = new FileLoader( filePromise );
+
 		loader._adapter = this.createUploadAdapter( loader );
 
 		this.loaders.add( loader );
+		this.loadersMap.set( fileOrPromise, loader );
 
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
@@ -216,15 +229,27 @@ export default class FileRepository extends Plugin {
 	/**
 	 * Destroys the given loader.
 	 *
-	 * @param {File|module:upload/filerepository~FileLoader} fileOrLoader File associated with that loader or loader
-	 * itself.
+	 * @param {File|Promise|module:upload/filerepository~FileLoader} fileOrPromiseOrLoader File or Promise associated
+	 * with that loader or loader itself.
 	 */
-	destroyLoader( fileOrLoader ) {
-		const loader = fileOrLoader instanceof FileLoader ? fileOrLoader : this.getLoader( fileOrLoader );
+	destroyLoader( fileOrPromiseOrLoader ) {
+		const loader = fileOrPromiseOrLoader instanceof FileLoader ? fileOrPromiseOrLoader : this.getLoader( fileOrPromiseOrLoader );
 
 		loader._destroy();
 
 		this.loaders.remove( loader );
+
+		if ( !( fileOrPromiseOrLoader instanceof FileLoader ) ) {
+			// If File or Promise instance is passed, it is the key in map and can be simply use to remove map entry.
+			this.loadersMap.delete( fileOrPromiseOrLoader );
+		} else {
+			// If FileLoader instance is passed, iterate over map entries to find its key and remove whole entry.
+			this.loadersMap.forEach( ( value, key ) => {
+				if ( value === fileOrPromiseOrLoader ) {
+					this.loadersMap.delete( key );
+				}
+			} );
+		}
 	}
 
 	/**
@@ -276,10 +301,19 @@ class FileLoader {
 		/**
 		 * A `File` instance associated with this file loader.
 		 *
-		 * @readonly
+		 * @private
 		 * @member {File}
 		 */
-		this.file = file;
+		this._file = null;
+
+		/**
+		 * Additional wrapper over a file promise passed to this loader.
+		 *
+		 * @see #_createFilePromiseWrapper
+		 * @private
+		 * @member {Object} wrapper
+		 */
+		this._filePromiseWrapper = this._createFilePromiseWrapper( file );
 
 		/**
 		 * Adapter instance associated with this file loader.
@@ -364,6 +398,15 @@ class FileLoader {
 	}
 
 	/**
+	 * Returns a `File` instance associated with this file loader.
+	 *
+	 * @type {File|null}
+	 */
+	get file() {
+		return this._file;
+	}
+
+	/**
 	 * Reads file using {@link module:upload/filereader~FileReader}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-read-wrong-status` when status
@@ -391,7 +434,8 @@ class FileLoader {
 
 		this.status = 'reading';
 
-		return this._reader.read( this.file )
+		return this._filePromiseWrapper.promise
+			.then( file => this._reader.read( file ) )
 			.then( data => {
 				this.status = 'idle';
 
@@ -404,7 +448,7 @@ class FileLoader {
 				}
 
 				this.status = 'error';
-				throw this._reader.error;
+				throw this._reader.error ? this._reader.error : err;
 			} );
 	}
 
@@ -435,7 +479,8 @@ class FileLoader {
 
 		this.status = 'uploading';
 
-		return this._adapter.upload()
+		return this._filePromiseWrapper.promise
+			.then( () => this._adapter.upload() )
 			.then( data => {
 				this.uploadResponse = data;
 				this.status = 'idle';
@@ -459,11 +504,11 @@ class FileLoader {
 		const status = this.status;
 		this.status = 'aborted';
 
-		if ( status == 'reading' ) {
+		if ( !this._filePromiseWrapper.isFulfilled ) {
+			this._filePromiseWrapper.rejecter( 'aborted' );
+		} else if ( status == 'reading' ) {
 			this._reader.abort();
-		}
-
-		if ( status == 'uploading' && this._adapter.abort ) {
+		} else if ( status == 'uploading' && this._adapter.abort ) {
 			this._adapter.abort();
 		}
 
@@ -476,11 +521,47 @@ class FileLoader {
 	 * @private
 	 */
 	_destroy() {
+		this._file = undefined;
+		this._filePromiseWrapper = undefined;
 		this._reader = undefined;
 		this._adapter = undefined;
 		this.data = undefined;
 		this.uploadResponse = undefined;
-		this.file = undefined;
+	}
+
+	/**
+	 * Wraps a given file promise into another promise giving additional control (resolving, rejecting, checking if fulfilled)
+	 * over it. Additionally when file promise is resolved, its result (File instance) is assigned to this loader instance.
+	 *
+	 * @private
+	 * @param filePromise The file promise to be wrapped.
+	 * @returns {Object}
+	 * @returns {Promise} wrapper.promise Wrapper promise.
+	 * @returns {Function} wrapper.resolver Resolves the promise when called.
+	 * @returns {Function} wrapper.rejecter Rejects the promise when called.
+	 * @returns {Boolean} wrapper.isFulfilled Whether original promise is already fulfilled.
+	 */
+	_createFilePromiseWrapper( filePromise ) {
+		const wrapper = {};
+
+		wrapper.promise = new Promise( ( resolve, reject ) => {
+			wrapper.resolver = resolve;
+			wrapper.rejecter = reject;
+			wrapper.isFulfilled = false;
+
+			filePromise
+				.then( file => {
+					wrapper.isFulfilled = true;
+					this._file = file;
+					resolve( file );
+				} )
+				.catch( err => {
+					wrapper.isFulfilled = true;
+					reject( err );
+				} );
+		} );
+
+		return wrapper;
 	}
 }
 
