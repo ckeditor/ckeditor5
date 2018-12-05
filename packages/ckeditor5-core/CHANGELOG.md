@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Implemented the `extraPlugins` editor configuration. Closes [#146](https://github.com/ckeditor/ckeditor5-core/issues/146). ([4b5c3d4](https://github.com/ckeditor/ckeditor5-core/commit/4b5c3d4))
+* Implemented the `config.extraPlugins` option. Closes [#146](https://github.com/ckeditor/ckeditor5-core/issues/146). ([4b5c3d4](https://github.com/ckeditor/ckeditor5-core/commit/4b5c3d4))
 
 ### Other changes
 
