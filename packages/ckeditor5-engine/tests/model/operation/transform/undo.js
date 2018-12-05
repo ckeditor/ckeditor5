@@ -388,4 +388,74 @@ describe( 'transform', () => {
 		john.undo();
 		expectClients( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 	} );
+
+	it( 'collapsed marker at the beginning of merged element then undo', () => {
+		john.setData( '<paragraph>Foo</paragraph><paragraph>[]Bar</paragraph>' );
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 1 ] );
+		john.merge();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo</paragraph><paragraph><m1:start></m1:start>Bar</paragraph>' );
+	} );
+
+	it( 'collapsed marker at the end of merge-target element then undo', () => {
+		john.setData( '<paragraph>Foo[]</paragraph><paragraph>Bar</paragraph>' );
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 1 ] );
+		john.merge();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph>Bar</paragraph>' );
+	} );
+
+	it( 'empty marker between merged elements then undo', () => {
+		john.setData( '<paragraph>Foo[</paragraph><paragraph>]Bar</paragraph>' );
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 1 ] );
+		john.merge();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph><m1:end></m1:end>Bar</paragraph>' );
+	} );
+
+	it( 'left side of marker moved then undo', () => {
+		john.setData( '<paragraph>Foo[bar]</paragraph><paragraph></paragraph>' );
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 0, 2 ], [ 0, 4 ] );
+		john.move( [ 1, 0 ] );
+
+		expectClients( '<paragraph>Fo<m1:start></m1:start>ar<m1:end></m1:end></paragraph><paragraph>ob</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Foo<m1:start></m1:start>bar<m1:end></m1:end></paragraph><paragraph></paragraph>' );
+	} );
+
+	it( 'right side of marker moved then undo', () => {
+		john.setData( '<paragraph>[Foo]bar</paragraph><paragraph></paragraph>' );
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 0, 2 ], [ 0, 4 ] );
+		john.move( [ 1, 0 ] );
+
+		expectClients( '<paragraph><m1:start></m1:start>Fo<m1:end></m1:end>ar</paragraph><paragraph>ob</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end>bar</paragraph><paragraph></paragraph>' );
+	} );
 } );
