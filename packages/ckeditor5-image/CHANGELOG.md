@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v11.0.0...v12.0.0) (2018-12-05)
+
+### Features
+
+* Improved responsiveness of the text alternative view in narrow viewports (see [ckeditor/ckeditor5#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([ff5394a](https://github.com/ckeditor/ckeditor5-image/commit/ff5394a))
+* Introduced the `'imageInsert'` command. Closes [#245](https://github.com/ckeditor/ckeditor5-image/issues/245). Closes [#251](https://github.com/ckeditor/ckeditor5-image/issues/251). ([cc1e7a3](https://github.com/ckeditor/ckeditor5-image/commit/cc1e7a3))
+* Support for uploading images with base64 source. Closes [#246](https://github.com/ckeditor/ckeditor5-image/issues/246). Closes [ckeditor/ckeditor5-paste-from-office#24](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/24). ([89ab27e](https://github.com/ckeditor/ckeditor5-image/commit/89ab27e))
+
+### Bug fixes
+
+* Prevent errors when (for unclear reasons) the native `DataTransfer#files` contains `null` values when drag&dropping files into the editor in Chrome. ([2a45481](https://github.com/ckeditor/ckeditor5-image/commit/2a45481))
+
+  Thanks to [@code-chris](https://github.com/code-chris)!
+
+### Other changes
+
+* Moved widget spacing styles from ckeditor5-theme-lark to the feature content styles sheet (see [ckeditor/ckeditor5-theme-lark#209](https://github.com/ckeditor/ckeditor5-theme-lark/issues/209)). ([671e1b8](https://github.com/ckeditor/ckeditor5-image/commit/671e1b8))
+* Removed obsolete fill attributes in SVG icons. ([0f9dad3](https://github.com/ckeditor/ckeditor5-image/commit/0f9dad3))
+* Removed obsolete width and height attributes in SVG icons. ([57bd34c](https://github.com/ckeditor/ckeditor5-image/commit/57bd34c))
+* Removed useless fill-rule attributes in SVG icons. ([ebc27e6](https://github.com/ckeditor/ckeditor5-image/commit/ebc27e6))
+* Squashed useless groups in SVG icons. ([6192cf3](https://github.com/ckeditor/ckeditor5-image/commit/6192cf3))
+* Updated translations. ([3c85c37](https://github.com/ckeditor/ckeditor5-image/commit/3c85c37))
+
+### BREAKING CHANGES
+
+* The `'imageUpload'` command's `files` parameter was renamed to `file`. It still can accept an array of files.
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.2.0...v11.0.0) (2018-10-08)
 
 ### Other changes
