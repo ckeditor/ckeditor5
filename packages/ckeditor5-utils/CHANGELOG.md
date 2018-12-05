@@ -7,6 +7,10 @@ Changelog
 
 * Implemented `env#isGecko()`. See [ckeditor/ckeditor5-engine#1439](https://github.com/ckeditor/ckeditor5-engine/issues/1439). ([53b7c94](https://github.com/ckeditor/ckeditor5-utils/commit/53b7c94))
 
+### Other changes
+
+* Vairous fixes in the API docs. Thanks to [@denisname](https://github.com/denisname)!
+
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v10.2.1...v11.0.0) (2018-10-08)
 
