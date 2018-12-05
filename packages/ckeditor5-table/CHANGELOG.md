@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.0...v11.0.1) (2018-12-05)
+
+### Bug fixes
+
+* Skip text nodes between `tr` elements during table upcast. Closes [#145](https://github.com/ckeditor/ckeditor5-table/issues/145). ([2ecf448](https://github.com/ckeditor/ckeditor5-table/commit/2ecf448))
+
+### Other changes
+
+* Changed labels and command names for the insert column functionality for better UX and translatability. Closes [#138](https://github.com/ckeditor/ckeditor5-table/issues/138). ([fd2221f](https://github.com/ckeditor/ckeditor5-table/commit/fd2221f))
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([23d6803](https://github.com/ckeditor/ckeditor5-table/commit/23d6803))
+* Updated translations. ([47475b2](https://github.com/ckeditor/ckeditor5-table/commit/47475b2))
+* Updated translations. ([5d39d35](https://github.com/ckeditor/ckeditor5-table/commit/5d39d35))
+* Updated translations. ([7ce6d5b](https://github.com/ckeditor/ckeditor5-table/commit/7ce6d5b))
+* Updated translations. ([268f607](https://github.com/ckeditor/ckeditor5-table/commit/268f607))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.1.0...v11.0.0) (2018-10-08)
 
 ### Features
