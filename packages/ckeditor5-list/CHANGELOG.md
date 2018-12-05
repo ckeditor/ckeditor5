@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.3](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.2...v11.0.3) (2018-12-05)
+
+### Bug fixes
+
+* Block filler will be inserted into the list item if its last child is a `<br>` element. Closes [ckeditor/ckeditor5#1312](https://github.com/ckeditor/ckeditor5/issues/1312). ([cb6708e](https://github.com/ckeditor/ckeditor5-list/commit/cb6708e))
+* Preserve correct order of block elements inside list items during view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([d424329](https://github.com/ckeditor/ckeditor5-list/commit/d424329))
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.1...v11.0.2) (2018-10-08)
 
 ### Other changes
