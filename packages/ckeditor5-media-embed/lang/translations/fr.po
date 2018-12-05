@@ -15,7 +15,7 @@ msgstr "URL média"
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Paste the URL into the content to embed faster."
-msgstr ""
+msgstr "Coller l'URL dans le contenu pour l'insérer plus rapidement"
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
@@ -23,7 +23,7 @@ msgstr "L'URL ne peut être vide."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "Cet URL média n'est pas supporté."
+msgstr "Cette URL média n'est pas supportée."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
