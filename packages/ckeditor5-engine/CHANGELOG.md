@@ -1,6 +1,81 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (2018-12-05)
+
+### Features
+
+* Introduced `createDocumentFragment()`, `createElement()` and `createText()` methods in `UpcastWriter`. Additionally, the `View.change()` method now returns the return value of its callback. Closes [#1549](https://github.com/ckeditor/ckeditor5-engine/issues/1549). ([ec13c85](https://github.com/ckeditor/ckeditor5-engine/commit/ec13c85))
+* The `model.insertContent()` method will accept offset parameter. Made `Position.createAt()` require the `offset` when the first parameter is an model/view item. See breaking changes. Closes [#1554](https://github.com/ckeditor/ckeditor5-engine/issues/1554). ([00dd70c](https://github.com/ckeditor/ckeditor5-engine/commit/00dd70c))
+
+  * `model.Position.createAt()`
+  * `model.Range.createCollapsedAt()`
+  * `model.Selection#setFocus()`
+  * `model.Writer#insert()`
+  * `model.Writer#insertText()`
+  * `model.Writer#insertElement()`
+  * `model.Writer#move()`
+  * `model.Writer#setSelectionFocus()`
+  * `view.Writer#setSelectionFocus()`
+  * `view.Position.createAt()`
+  * `view.Range.createCollapsedAt()`
+  * `view.Selection#setFocus()`
+
+### Bug fixes
+
+* `model#deleteContent()` will proper merge elements inside limit element. Closes [ckeditor/ckeditor5#1265](https://github.com/ckeditor/ckeditor5/issues/1265). ([5d26bc3](https://github.com/ckeditor/ckeditor5-engine/commit/5d26bc3))
+* `MoveOperation` x `SplitOperation` transformation for a case when graveyard element is moved. Closes [#1580](https://github.com/ckeditor/ckeditor5-engine/issues/1580). ([f88c918](https://github.com/ckeditor/ckeditor5-engine/commit/f88c918))
+* Better handling for `MoveOperation` x `SplitOperation` transformation special case. Closes [ckeditor/ckeditor5#1288](https://github.com/ckeditor/ckeditor5/issues/1288). ([b92a800](https://github.com/ckeditor/ckeditor5-engine/commit/b92a800))
+* Corrected transformations for pasting and undo scenarios. Closes [ckeditor/ckeditor5#1287](https://github.com/ckeditor/ckeditor5/issues/1287). ([b1e8975](https://github.com/ckeditor/ckeditor5-engine/commit/b1e8975))
+* Do not run attribute-to-attribute downcast conversion on text node attributes. Closes [#1587](https://github.com/ckeditor/ckeditor5-engine/issues/1587). ([6659582](https://github.com/ckeditor/ckeditor5-engine/commit/6659582))
+* Firefox should visually move the caret to the new line after a soft break. Closes [#1439](https://github.com/ckeditor/ckeditor5-engine/issues/1439). ([80392ad](https://github.com/ckeditor/ckeditor5-engine/commit/80392ad))
+* Made markers created by `Writer#insert()` affect data. Closes [#1583](https://github.com/ckeditor/ckeditor5-engine/issues/1583). ([72aaaf0](https://github.com/ckeditor/ckeditor5-engine/commit/72aaaf0))
+
+### Other changes
+
+* `ContainerElement#getFillerOffset` can be now re-used in other places in the code (it was exported from the module). See [ckeditor/ckeditor5-list#117](https://github.com/ckeditor/ckeditor5-list/issues/117). ([12f28bb](https://github.com/ckeditor/ckeditor5-engine/commit/12f28bb))
+* Moved `Position`, `Range` and `Selection` factories from those classes to the model/view writers and `Model`/`View` instances. Previously, those factories were available as static methods of the `Position`, `Range` and `Selection` classes which meant that you needed to import those classes to your plugin's code to create new instances. That required your package to depend on `@ckeditor/ckeditor5-engine` and was not very useful in general. After this change, you can create instances of those classes without importing anything. See the "Breaking changes" section for more details. Closes [#1555](https://github.com/ckeditor/ckeditor5-engine/issues/1555). ([e7f8467](https://github.com/ckeditor/ckeditor5-engine/commit/e7f8467))
+
+### BREAKING CHANGES
+
+* The model `Position.createAt()` method was removed from the public API. Use `writer.createPositionAt()` instead. This method is also available on the `Model` instance.
+* The `offset` parameter of the following methods does not default to `0` and hence is no longer optional when `itemOrPosition` is a model/view item:
+
+* `model.Position.createAt()`
+* `model.Range.createCollapsedAt()`
+* `model.Selection#setFocus()`
+* `model.Writer#insert()`
+* `model.Writer#insertText()`
+* `model.Writer#insertElement()`
+* `model.Writer#move()`
+* `model.Writer#setSelectionFocus()`
+* `view.Writer#setSelectionFocus()`
+* `view.Position.createAt()`
+* `view.Range.createCollapsedAt()`
+* `view.Selection#setFocus()`
+* The model `Position.createBefore()` method was removed from the public API. Use `writer.createPositionBefore()` instead. This method is also available on the `Model` instance.
+* The model `Position.createFromPosition()` method was removed. Use `writer.createPositionAt( position )` to create a new position instance. This method is also available on the `Model` instance.
+* The model `Position.createFromParentAndOffset()` method was removed. Use `writer.createPositionAt( parent, offset )` instead. This method is also available on the `Model` instance.
+* The model `Range.createIn()` method was removed from the public API. Use `writer.createRangeIn()` instead. This method is also available on the `Model` instance.
+* The model `Range.createOn()` method was removed from the public API. Use `writer.createRangeOn()` instead. This method is also available on the `Model` instance.
+* The model `Range.createFromRange()` method was removed from the public API.
+* The model `Range.createFromParentsAndOffsets()` method was removed from the public API.
+* The model `Range.createFromPositionAndShift()` method was removed from the public API.
+* The model `Range.createCollapsedAt()` method removed method was removed. Use `writer.createRange( position )` to create collapsed range. This method is also available on the `Model` instance.
+* The model `Position.createAfter()` method was removed from the public API. Use `writer.createPositionAfter()` instead. This method is also available on the `Model` instance.
+* The view `Position.createAt()` method was removed from the public API. Use `writer.createPositionAt()` instead. This method is also available on the `View` instance.
+* The view `Position.createAfter()` method was removed from the public API. Use `writer.createPositionAfter()` instead. This method is also available on the `View` instance.
+* The view `Position.createBefore()` method was removed from the public API. Use `writer.createPositionBefore()` instead. This method is also available on the `View` instance.
+* The view `Position.createFromPosition()` method was removed. Use `writer.createPositionAt( position )` to create a new position instance. This method is also available on the `View` instance.
+* The view `Range.createIn()` method was removed from the public API. Use `writer.createRangeIn()` instead. This method is also available on the `View` instance.
+* The view `Range.createOn()` method was removed from the public API. Use `writer.createRangeOn()` instead. This method is also available on the `View` instance.
+* The view `Range.createFromRange()` method was removed from the public API.
+* The view `Range.createFromPositionAndShift()` method was removed from the public API.
+* The view `Range.createFromParentsAndOffsets()` method was removed from the public API.
+* The view `Range.createCollapsedAt()` method removed method was removed. Use `writer.createRange( position )` to create a collapsed range. This method is also available on the `View` instance.
+* The model `Range.createFromRanges()` method was removed from the public API.
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.2.0...v11.0.0) (2018-10-08)
 
 ### Bug fixes
