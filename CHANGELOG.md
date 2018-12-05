@@ -3,6 +3,12 @@ Changelog
 
 ## [11.2.0](https://github.com/ckeditor/ckeditor5/compare/v11.1.1...v11.2.0) (2018-12-05)
 
+We are happy to report the release of CKEditor 5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
+
+Blog post is comming soon...
+
+**Important information for plugin developers:** We would like to let you know about imporant breaking changes in the `@ckeditor/ckeditor5-engine` package. Read more about them in the [`@ckeditor/ckeditor5-engine@v12.0.0` release notes](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v12.0.0).
+
 ### Dependencies
 
 New packages:
@@ -57,14 +63,6 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v10.0.3 => [v10.0.4](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v10.0.4)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v10.3.0 => [v10.3.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v10.3.1)
 
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Improved responsiveness of the forms in narrow viewports (see [#416](https://github.com/ckeditor/ckeditor5/issues/416)). ([7e73ec2](https://github.com/ckeditor/ckeditor5/commit/7e73ec2))
-* Introduced @ckeditor/ckeditor5-ckfinder package. ([32a4143](https://github.com/ckeditor/ckeditor5/commit/32a4143))
-* Introduced Paste from Office feature. ([b9b1053](https://github.com/ckeditor/ckeditor5/commit/b9b1053))
-
 
 ## [11.1.1](https://github.com/ckeditor/ckeditor5/compare/v11.1.0...v11.1.1) (2018-10-11)
 
@@ -84,7 +82,7 @@ Patch releases (bug fixes, internal changes):
 
 We are happy to report the release of CKEditor 5 v11.1.0. This editor version brings the long-awaited [media embed](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html) feature, [support for block content in tables](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#block-vs-inline-content-in-table-cells), tables available in real-time collaboration, as well as many smaller features and improvements.
 
-Blog post is comming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.1.0-released/
 
 ### Dependencies
 
