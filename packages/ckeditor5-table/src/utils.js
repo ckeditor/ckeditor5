@@ -57,7 +57,10 @@ export function isTableWidgetSelected( selection ) {
  * @returns {Boolean}
  */
 export function isTableContentSelected( selection ) {
+	const selectedElement = selection.getSelectedElement();
+	const isInnerWidgetSelected = selectedElement && isWidget( selectedElement );
+
 	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
 
-	return !!( parentTable && isTableWidget( parentTable.parent ) );
+	return !isInnerWidgetSelected && !!( parentTable && isTableWidget( parentTable.parent ) );
 }
