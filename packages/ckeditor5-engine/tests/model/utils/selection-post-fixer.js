@@ -351,6 +351,34 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should not fix #2 - selection over image in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const image = model.document.getRoot().getNodeByPath( [ 1, 0, 0, 1 ] );
+
+					writer.setSelection( writer.createRangeOn( image ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph>[<image></image>]</tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should fix multiple ranges #1', () => {
 				model.change( writer => {
 					const ranges = [
