@@ -1349,5 +1349,31 @@ describe( 'Widget', () => {
 				'</div>'
 			);
 		} );
+
+		it( 'should select widget in editable', () => {
+			model.schema.extend( 'widget', { allowIn: 'nested' } );
+
+			setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
+
+			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			const domEventDataMock = {
+				target: widgetInEditable,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+					'<figcaption contenteditable="true">' +
+						'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handler"></div>' +
+						'</div>]' +
+					'</figcaption>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>'
+			);
+		} );
 	} );
 } );
