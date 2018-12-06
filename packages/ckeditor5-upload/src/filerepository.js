@@ -65,7 +65,13 @@ export default class FileRepository extends Plugin {
 		this.loaders.on( 'add', () => this._updatePendingAction() );
 		this.loaders.on( 'remove', () => this._updatePendingAction() );
 
-		this.loadersMap = new Map();
+		/**
+		 * Loaders mappings used to retrieve loaders references.
+		 *
+		 * @private
+		 * @member {Map<File|Promise, FileLoader>} #_loadersMap
+		 */
+		this._loadersMap = new Map();
 
 		/**
 		 * Reference to a pending action registered in a {@link module:core/pendingactions~PendingActions} plugin
@@ -131,21 +137,7 @@ export default class FileRepository extends Plugin {
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	getLoader( fileOrPromise ) {
-		// When `createLoader()` is called with `File` instance, the file is used in a map. When it is called with `Promise`
-		// instance, the promise is used in a map. So here it retrieves loader based on the same object it was initialized with.
-		const loaderInstance = this.loadersMap.get( fileOrPromise );
-
-		// If `createLoader()` is called with `Promise` instance, once the promise is resolved, the `loader.file` returns
-		// a file instance which can be also used here (and is not in the `loadersMap`). The code below covers this case.
-		if ( !loaderInstance && !( fileOrPromise instanceof Promise ) ) {
-			for ( const loader of this.loaders ) {
-				if ( loader.file === fileOrPromise ) {
-					return loader;
-				}
-			}
-		}
-
-		return loaderInstance || null;
+		return this._loadersMap.get( fileOrPromise ) || null;
 	}
 
 	/**
@@ -199,7 +191,14 @@ export default class FileRepository extends Plugin {
 		loader._adapter = this.createUploadAdapter( loader );
 
 		this.loaders.add( loader );
-		this.loadersMap.set( fileOrPromise, loader );
+		this._loadersMap.set( fileOrPromise, loader );
+
+		// Store also file => loader mapping so loader can be retrieved by file instance returned upon Promise resolution.
+		if ( fileOrPromise instanceof Promise ) {
+			loader.file.then( file => {
+				this._loadersMap.set( file, loader );
+			} );
+		}
 
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
@@ -239,17 +238,11 @@ export default class FileRepository extends Plugin {
 
 		this.loaders.remove( loader );
 
-		if ( !( fileOrPromiseOrLoader instanceof FileLoader ) ) {
-			// If File or Promise instance is passed, it is the key in map and can be simply use to remove map entry.
-			this.loadersMap.delete( fileOrPromiseOrLoader );
-		} else {
-			// If FileLoader instance is passed, iterate over map entries to find its key and remove whole entry.
-			this.loadersMap.forEach( ( value, key ) => {
-				if ( value === fileOrPromiseOrLoader ) {
-					this.loadersMap.delete( key );
-				}
-			} );
-		}
+		this._loadersMap.forEach( ( value, key ) => {
+			if ( value === loader ) {
+				this._loadersMap.delete( key );
+			}
+		} );
 	}
 
 	/**
@@ -297,14 +290,6 @@ class FileLoader {
 		 * @member {Number}
 		 */
 		this.id = uid();
-
-		/**
-		 * A `File` instance associated with this file loader.
-		 *
-		 * @private
-		 * @member {File}
-		 */
-		this._file = null;
 
 		/**
 		 * Additional wrapper over a file promise passed to this loader.
@@ -398,12 +383,22 @@ class FileLoader {
 	}
 
 	/**
-	 * Returns a `File` instance associated with this file loader.
+	 * Returns a `Promise` which resolves to a `File` instance associated with this file loader.
 	 *
-	 * @type {File|null}
+	 * @type {Promise}
 	 */
 	get file() {
-		return this._file;
+		if ( !this._filePromiseWrapper ) {
+			// Loader was destroyed, return promise which resolves to null.
+			return new Promise( resolve => resolve( null ) );
+		} else {
+			// The `loader.file.then( ... )` can be called, then `loader._destroy()` (which is sync) and then
+			// `loader.file.then( ... )` will be resolved. In such case, even after `destroy` call the promise will
+			// return `File` instance so we use nested promises which handles this case.
+			return this._filePromiseWrapper.promise.then( file => {
+				return new Promise( resolve => resolve( this._filePromiseWrapper ? file : null ) );
+			} );
+		}
 	}
 
 	/**
@@ -521,7 +516,6 @@ class FileLoader {
 	 * @private
 	 */
 	_destroy() {
-		this._file = undefined;
 		this._filePromiseWrapper = undefined;
 		this._reader = undefined;
 		this._adapter = undefined;
@@ -530,8 +524,8 @@ class FileLoader {
 	}
 
 	/**
-	 * Wraps a given file promise into another promise giving additional control (resolving, rejecting, checking if fulfilled)
-	 * over it. Additionally when file promise is resolved, its result (File instance) is assigned to this loader instance.
+	 * Wraps a given file promise into another promise giving additional
+	 * control (resolving, rejecting, checking if fulfilled) over it.
 	 *
 	 * @private
 	 * @param filePromise The file promise to be wrapped.
@@ -552,7 +546,6 @@ class FileLoader {
 			filePromise
 				.then( file => {
 					wrapper.isFulfilled = true;
-					this._file = file;
 					resolve( file );
 				} )
 				.catch( err => {
