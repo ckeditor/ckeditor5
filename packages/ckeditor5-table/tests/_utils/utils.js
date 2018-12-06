@@ -187,13 +187,6 @@ export function defaultSchema( schema, registerParagraph = true ) {
 		}
 	} );
 
-	// Disallow image in table.
-	schema.addChildCheck( ( context, childDefinition ) => {
-		if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
-			return false;
-		}
-	} );
-
 	if ( registerParagraph ) {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 	}

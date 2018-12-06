@@ -74,7 +74,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.false;
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'image' ) ).to.be.false;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'image' ) ).to.be.true;
 	} );
 
 	it( 'adds insertTable command', () => {
@@ -183,7 +183,7 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><image src="sample.png"></image></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with media', () => {
