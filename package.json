@@ -63,8 +63,8 @@
     "@ckeditor/ckeditor5-widget": "^10.3.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-real-time-collaboration": "^12.0.0",
-    "@ckeditor/ckeditor5-comments": "^1.0.0",
+    "@ckeditor/ckeditor5-real-time-collaboration": "^12.0.1",
+    "@ckeditor/ckeditor5-comments": "^1.0.1",
     "@ckeditor/ckeditor5-dev-docs": "^10.0.3",
     "@ckeditor/ckeditor5-dev-env": "^13.0.1",
     "@ckeditor/ckeditor5-dev-tests": "^13.1.0",
