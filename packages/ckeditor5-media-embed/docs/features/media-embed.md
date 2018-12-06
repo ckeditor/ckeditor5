@@ -304,7 +304,7 @@ using this code snippet:
 		// to discover the media.
 		const anchor = document.createElement( 'a' );
 
-		anchor.setAttribute( 'href', element.getAttribute( 'url') );
+		anchor.setAttribute( 'href', element.getAttribute( 'url' ) );
 		anchor.className = 'embedly-card';
 
 		element.appendChild( anchor );
