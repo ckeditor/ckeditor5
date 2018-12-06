@@ -379,6 +379,62 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should not fix #3 - selection over paragraph & image in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[foo</paragraph><image></image>]</tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix #3 - selection over image & paragraph in table', () => {
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><image></image><paragraph>foo</paragraph></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>[<image></image><paragraph>foo]</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should fix multiple ranges #1', () => {
 				model.change( writer => {
 					const ranges = [
