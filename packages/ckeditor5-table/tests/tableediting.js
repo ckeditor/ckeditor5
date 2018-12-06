@@ -312,6 +312,20 @@ describe( 'TableEditing', () => {
 				] ) );
 			} );
 
+			it( 'should move to next cell with an image', () => {
+				setModelData( model, modelTable( [
+					[ '11[]', '<paragraph>foo</paragraph><image></image>' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '[<paragraph></paragraph><image></image>]' ]
+				] ) );
+			} );
+
 			it( 'should listen with lower priority then its children', () => {
 				// Cancel TAB event.
 				editor.keystrokes.set( 'Tab', ( data, cancel ) => cancel() );
