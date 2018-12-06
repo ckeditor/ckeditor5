@@ -415,7 +415,7 @@ function isSelectAllKeyCode( domEventData ) {
 // @returns {Boolean}
 function isInsideNestedEditable( element ) {
 	while ( element ) {
-		if ( !!element && element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
+		if ( element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
 			return true;
 		}
 
