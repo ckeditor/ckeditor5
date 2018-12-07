@@ -11,17 +11,17 @@ Inserting images into content created with CKEditor 5 is a very common task. In 
 * Selecting it through a **file system dialog**.
 * Selecting it from a **media management tool** in your application.
 
-Excluding the last option, all other ways require the image to be uploaded to a server which will be the one responsible for providing the image URL used by CKEditor 5 to display the image in the document.
+Excluding the last option, all other ways require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
 
 {@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process in a WYSIWYG editor.}
 
 The software that makes the image upload possible is called an **upload adapter**. It is a callback which tells the editor how to send the file to the server. There are two main strategies of getting the image upload work you can adopt in your project:
 
 * [**Official upload adapters**](#official-upload-adapters) &ndash; There are several features providing upload adapters developed and maintained by the CKEditor team. Pick the best one for your integration and let it handle the image upload in your project.
-* [**Custom upload adapters**](#implementing-your-own-upload-adapter) &ndash; Create your own upload adapter from scratch using the open API architecture CKEditor 5 provides.
+* [**Custom upload adapters**](#implementing-your-own-upload-adapter) &ndash; Create your own upload adapter from scratch using the open API architecture of CKEditor 5.
 
 <info-box>
-	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom upload adpter" deep dive guide} covering this topic.
+	If you want to get a better look under the hood and learn more about the upload process, you can check out the {@link framework/guides/deep-dive/upload-adapter "Custom upload adapter" deep dive guide}.
 </info-box>
 
 ## Demo
@@ -36,7 +36,7 @@ The demo below uses the {@link builds/guides/overview#classic-editor Classic edi
 
 ### Easy Image
 
-CKEditor 5 introduces a totally new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
+CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
 
 Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
 
@@ -50,12 +50,12 @@ All that with virtually zero server setup.
 
 ### CKFinder
 
-The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file manager with its server-side connectors (PHP and ASP.NET).
+The {@link features/ckfinder CKFinder feature} provides a bridge between the rich-text editor and [CKFinder](https://ckeditor.com/ckfinder/), a browser-based file uploader with its server-side connectors (PHP and ASP.NET).
 
 There are two ways you can integrate CKEditor 5 with the CKFinder file manager:
 
 * **With the server-side connector only** &ndash; In this scenario, images dropped or pasted into the editor are uploaded to the CKFinder server-side connector running on your server.
-* **With both the server-side connector and the client-side file manager** (recommended) &ndash; Images dropped and pasted directly into the editor are uploaded to the server (just like in the first option).
+* **With both the server-side connector and the client-side file manager** (recommended) &ndash; Images dropped and pasted into the editor are uploaded to the server (like in the first option).
 
 	But there are more cool features available, for instance:
 
