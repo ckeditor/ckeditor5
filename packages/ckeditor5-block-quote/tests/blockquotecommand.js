@@ -33,7 +33,8 @@ describe( 'BlockQuoteCommand', () => {
 
 				model.schema.extend( 'widget', {
 					allowIn: '$root',
-					isLimit: true
+					isLimit: true,
+					isObject: true
 				} );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
