@@ -407,7 +407,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #3 - selection over image & paragraph in table', () => {
+			it( 'should not fix #4 - selection over image & paragraph in table', () => {
 				setModelData( model,
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
@@ -429,6 +429,39 @@ describe( 'Selection post-fixer', () => {
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>[<image></image><paragraph>foo]</paragraph></tableCell>' +
+							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not fix #4 - selection over blockQuote in table', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setModelData( model,
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><blockQuote><paragraph>foo</paragraph></blockQuote></tableCell>' +
+							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				model.change( writer => {
+					const tableCell = model.document.getRoot().getNodeByPath( [ 1, 0, 0 ] );
+
+					writer.setSelection( writer.createRangeIn( tableCell ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><blockQuote><paragraph>[foo]</paragraph></blockQuote></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
