@@ -329,9 +329,7 @@ describe( 'TableEditing', () => {
 			it( 'should move to next cell with an blockQuote', () => {
 				model.schema.register( 'blockQuote', {
 					allowWhere: '$block',
-					allowContentOf: '$root',
-					isObject: true,
-					isBlock: true
+					allowContentOf: '$root'
 				} );
 				editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 
