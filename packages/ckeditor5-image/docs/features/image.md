@@ -173,9 +173,7 @@ See the {@link features/image-upload Image upload} guide.
 
 ## Responsive images
 
-Coming soon...
-
-<!-- TODO 6 when finished, link here from the image-upload guide. -->
+Responsive images support in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images "Easy Image integration"} guide.
 
 ## Installation
 
