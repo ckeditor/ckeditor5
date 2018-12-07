@@ -201,13 +201,13 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
 	} );
 
-	it( 'should add selected class when no only a widget is selected', () => {
+	it( 'should add selected class when other content is selected with widget', () => {
 		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
 
 		expect( viewDocument.selection.isFake ).to.be.false;
 		expect( getViewData( view ) ).to.equal(
-			'[' +
-			'<p>foo</p>' +
+
+			'<p>{foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
 			']'
