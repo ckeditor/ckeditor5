@@ -184,8 +184,7 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		// - [<block>foo</block>]    ->    <block>[foo]</block>
 		// - [<block>foo]</block>    ->    <block>[foo]</block>
 		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
-		// TODO: make it nicer
-		// - [<block>foo</block><object></object>]    ->    [<block>foo</block><object></object>]
+		// - [<block>foo</block><object></object>]    ->    <block>[foo</block><object></object>]
 		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
 			const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
 			const fixedStart = isStartObject ? null : schema.getNearestSelectionRange( start, 'forward' );
@@ -247,17 +246,18 @@ function findOuterMostIsLimitAncestor( startingNode, schema ) {
 	return isLimitNode;
 }
 
-// Checks whether both range ends are placed around non-limit elements.
+// Checks whether one of range ends is placed around non-limit elements.
 //
 // @param {module:engine/model/position~Position} start
 // @param {module:engine/model/position~Position} end
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
 function checkSelectionOnNonLimitElements( start, end, schema ) {
-	const startIsOnBlock = ( start.nodeAfter && schema.isBlock( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
-	const endIsOnBlock = ( end.nodeBefore && schema.isBlock( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
+	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
+	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
-	return startIsOnBlock && endIsOnBlock;
+	// We should fix such selection when one of those nodes needs fixing.
+	return startIsOnBlock || endIsOnBlock;
 }
 
 // Checks if node exists and if it's an object.
