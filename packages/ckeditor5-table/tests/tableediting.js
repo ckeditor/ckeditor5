@@ -326,6 +326,28 @@ describe( 'TableEditing', () => {
 				] ) );
 			} );
 
+			it( 'should move to next cell with an blockQuote', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root',
+					isObject: true,
+					isBlock: true
+				} );
+				editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
+
+				setModelData( model, modelTable( [
+					[ '11[]', '<blockQuote><paragraph>foo</paragraph></blockQuote>' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '<blockQuote><paragraph>[foo]</paragraph></blockQuote>' ]
+				] ) );
+			} );
+
 			it( 'should listen with lower priority then its children', () => {
 				// Cancel TAB event.
 				editor.keystrokes.set( 'Tab', ( data, cancel ) => cancel() );
@@ -473,6 +495,20 @@ describe( 'TableEditing', () => {
 						'<paragraph>12</paragraph><paragraph>foo</paragraph><paragraph>bar</paragraph>',
 						'13'
 					],
+				] ) );
+			} );
+
+			it( 'should move to previous cell with an image', () => {
+				setModelData( model, modelTable( [
+					[ '<paragraph>foo</paragraph><image></image>', 'bar[]' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '<paragraph>[foo</paragraph><image></image>]', 'bar' ]
 				] ) );
 			} );
 		} );
