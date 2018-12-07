@@ -435,7 +435,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should not fix #4 - selection over blockQuote in table', () => {
+			it( 'should not fix #5 - selection over blockQuote in table', () => {
 				model.schema.register( 'blockQuote', {
 					allowWhere: '$block',
 					allowContentOf: '$root'
@@ -925,6 +925,25 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
 				);
+			} );
+
+			it( 'should not fix #4 - object in object', () => {
+				model.schema.register( 'div', {
+					allowWhere: '$block',
+					isObject: true
+				} );
+
+				model.schema.extend( 'div', { allowIn: 'div' } );
+
+				setModelData( model, '<div>[<div></div>]</div>' );
+
+				model.change( writer => {
+					const innerDiv = model.document.getRoot().getNodeByPath( [ 0, 0 ] );
+
+					writer.setSelection( writer.createRangeOn( innerDiv ) );
+				} );
+
+				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
 			} );
 		} );
 
