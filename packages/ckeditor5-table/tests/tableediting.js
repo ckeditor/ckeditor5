@@ -322,7 +322,7 @@ describe( 'TableEditing', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
-					[ '11', '[<paragraph></paragraph><image></image>]' ]
+					[ '11', '<paragraph>[foo</paragraph><image></image>]' ]
 				] ) );
 			} );
 
