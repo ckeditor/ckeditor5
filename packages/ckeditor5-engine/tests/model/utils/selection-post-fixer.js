@@ -929,11 +929,9 @@ describe( 'Selection post-fixer', () => {
 
 			it( 'should not fix #4 - object in object', () => {
 				model.schema.register( 'div', {
-					allowWhere: '$block',
+					allowIn: [ '$root', 'div' ],
 					isObject: true
 				} );
-
-				model.schema.extend( 'div', { allowIn: 'div' } );
 
 				setModelData( model, '<div>[<div></div>]</div>' );
 
