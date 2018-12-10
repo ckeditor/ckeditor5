@@ -28,6 +28,10 @@ This feature can be used in the rich-text editor in two different ways:
 
 	Check out the [CKFinder file manager website](https://ckeditor.com/ckfinder/) to learn more about the features you can use in your project.
 
+<info-box info>
+	This feature is enabled by default in all builds.
+</info-box>
+
 ## Demo
 
 ### Image upload only
@@ -48,34 +52,6 @@ This demo shows the [full integration](#configuring-the-full-integration) with t
 
 {@snippet features/ckfinder}
 
-## Installation
-
-<info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-ckfinder
-```
-
-Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary). For instance:
-
-```js
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ CKFinder, ... ],
-		toolbar: [ 'ckfinder', 'imageUpload' ... ], // Depending on your preference.
-		ckfinder: {
-			// Feature configuration.
-		}
-	} )
-	.then( ... )
-	.catch( ... );
-```
 
 ## Configuration
 
@@ -169,6 +145,35 @@ ClassicEditor
 		ckfinder: {
 			// Open the file manager in the pop-up window.
 			openerMethod: 'popup'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+## Installation
+
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-ckfinder`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-ckfinder
+```
+
+Then add {@link module:ckfinder/ckfinder~CKFinder} to your plugin list and [configure](#configuration) the feature (when necessary). For instance:
+
+```js
+import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ CKFinder, ... ],
+		toolbar: [ 'ckfinder', 'imageUpload' ... ], // Depending on your preference.
+		ckfinder: {
+			// Feature configuration.
 		}
 	} )
 	.then( ... )
