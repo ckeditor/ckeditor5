@@ -1,6 +1,7 @@
 ---
-category: features
+category: features-image-upload
 menu-title: Easy Image
+order: 20
 ---
 
 # Easy Image integration
@@ -100,3 +101,29 @@ Check out the {@link features/image-upload comprehensive "Image upload" guide} t
 
 See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
 
+## Installation
+
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom WYSIWYG editor.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-easy-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-easy-image
+```
+
+Then add {@link module:easy-image/easyimage~EasyImage} to your plugin list and [configure](#configuration) the feature. For instance:
+
+```js
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ EasyImage, ... ],
+		toolbar: [ 'imageUpload' ... ], // Depending on your preference.
+		cloudServices: // feature configuration
+	} )
+	.then( ... )
+	.catch( ... );
+```
