@@ -5,7 +5,11 @@ menu-title: Easy Image
 
 # Easy Image integration
 
-CKEditor 5 introduces a new way of handling images, with strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
+CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
+
+<info-box info>
+	This feature is enabled by default in all builds.
+</info-box>
 
 Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
 
