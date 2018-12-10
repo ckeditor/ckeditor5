@@ -107,32 +107,53 @@ describe( 'CloudServicesUploadAdapter', () => {
 					} )
 					.catch( err => done( err ) );
 
-				// Wait for the promise from the mock.getUploader()
+				// Wait for the promise from the mock.getUploader().
 				setTimeout( () => {
 					upload._uploadGateway.resolveLastUpload();
 				} );
 			} );
 
-			it( 'should update the progress', () => {
+			it( 'should update the progress', done => {
 				const loader = fileRepository.createLoader( createNativeFileMock() );
 				loader.upload();
 
-				upload._uploadGateway.lastFileUploader.fire( 'progress', { uploaded: 50, total: 100 } );
+				// Wait for the `loader.file` promise.
+				setTimeout( () => {
+					upload._uploadGateway.lastFileUploader.fire( 'progress', { uploaded: 50, total: 100 } );
 
-				// expect( loader.uploaded ).to.equal( 50 );
-				expect( loader.uploadTotal ).to.equal( 100 );
+					expect( loader.uploaded ).to.equal( 50 );
+					expect( loader.uploadTotal ).to.equal( 100 );
+
+					done();
+				} );
 			} );
 		} );
 
 		describe( 'abort()', () => {
-			it( 'should call abort on the CSS uploader', () => {
+			it( 'should not call abort on the non-existing CSS uploader (`loader.file` not resolved)', () => {
+				const loader = fileRepository.createLoader( createNativeFileMock() );
+
+				expect( () => {
+					loader.upload();
+					loader.abort();
+				} ).to.not.throw();
+
+				expect( upload._uploadGateway.lastFileUploader ).to.be.undefined;
+			} );
+
+			it( 'should call abort on the CSS uploader (`loader.file` resolved)', done => {
 				const loader = fileRepository.createLoader( createNativeFileMock() );
 
 				loader.upload();
 
-				loader.abort();
+				// Wait for the `loader.file` promise.
+				setTimeout( () => {
+					loader.abort();
 
-				expect( upload._uploadGateway.lastFileUploader.aborted ).to.be.true;
+					expect( upload._uploadGateway.lastFileUploader.aborted ).to.be.true;
+
+					done();
+				} );
 			} );
 		} );
 	} );
