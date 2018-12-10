@@ -1,6 +1,7 @@
 ---
-category: features
+category: features-image-upload
 menu-title: CKFinder file manager
+order: 30
 ---
 
 {@snippet features/build-ckfinder-source}
