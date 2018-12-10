@@ -140,7 +140,7 @@ export default class PluginCollection {
 			}
 
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
+			if ( that._plugins.has( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
 			}
 
