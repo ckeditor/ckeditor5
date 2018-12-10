@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from './_utils/virtualtesteditor';
+import VirtaulTestEditor from './_utils/virtualtesteditor';
 import PendingActions from '../src/pendingactions';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -11,7 +11,7 @@ let editor, pendingActions;
 
 describe( 'PendingActions', () => {
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
+		return VirtaulTestEditor.create( {
 			plugins: [ PendingActions ],
 		} ).then( newEditor => {
 			editor = newEditor;
