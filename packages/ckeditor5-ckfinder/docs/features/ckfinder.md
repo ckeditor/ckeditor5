@@ -1,6 +1,7 @@
 ---
-category: features
+category: features-image-upload
 menu-title: CKFinder file manager
+order: 30
 ---
 
 {@snippet features/build-ckfinder-source}
@@ -10,7 +11,7 @@ menu-title: CKFinder file manager
 This feature allows you to insert images as well as links to files into the rich-text editor content. It is a bridge between the CKEditor 5 WYSIWYG editor and the [CKFinder](https://ckeditor.com/ckfinder) file manager and uploader.
 
 <info-box>
-	Check out the comprehensive {@link features/image-upload Image upload guide} to learn about other ways to upload images into CKEditor 5.
+	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
 This feature can be used in the rich-text editor in two different ways:

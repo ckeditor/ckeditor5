@@ -23,10 +23,10 @@ import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uplo
  * * {@link module:ckfinder/ckfinderui~CKFinderUI},
  * * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}.
  *
- * See the {@glink features/ckfinder "CKFinder integration" guide} to learn how to configure
+ * See the {@glink features/image-upload/ckfinder "CKFinder integration" guide} to learn how to configure
  * and use this feature.
  *
- * Check out the {@glink features/image-upload comprehensive "Image upload" guide} to learn about
+ * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload" guide} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
