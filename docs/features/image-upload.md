@@ -1,8 +1,9 @@
 ---
-category: features
+category: features-image-upload
+order: 10
 ---
 
-# Image upload
+# Image upload overview
 
 Inserting images into content created with CKEditor is a very common task. In a properly configured editor, there are several ways for the end user to insert images:
 
