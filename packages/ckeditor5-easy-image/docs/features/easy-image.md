@@ -6,7 +6,7 @@ order: 20
 
 # Easy Image integration
 
-CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called {@link features/easy-image Easy Image} and its goal is to make the image upload as effortless and intuitive as possible.
+CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) and its goal is to make the image upload as effortless and intuitive as possible.
 
 <info-box info>
 	This feature is enabled by default in all builds.
@@ -21,7 +21,7 @@ Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckedito
 All that with virtually zero server setup.
 
 <info-box>
-	Check out the comprehensive {@link features/image-upload Image upload guide} to learn about other ways to upload images in CKEditor 5.
+	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images in CKEditor 5.
 </info-box>
 
 ### Demo
@@ -97,7 +97,7 @@ The variety of the image sizes in the `srcset` attribute allows the web browser 
 
 ## What's next?
 
-Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more about different ways of uploading images in CKEditor 5.
+Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
 See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
 
