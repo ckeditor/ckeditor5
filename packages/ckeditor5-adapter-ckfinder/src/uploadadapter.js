@@ -20,7 +20,7 @@ import { getCsrfToken } from './utils';
  * and use this feature as well as find out more about the full integration with the file manager
  * provided by the {@link module:ckfinder/ckfinder~CKFinder} plugin.
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload" guide} to learn about
+ * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
