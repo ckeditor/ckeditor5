@@ -76,7 +76,32 @@ export default class PluginCollection {
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
 	get( key ) {
-		return this._plugins.get( key );
+		const plugin = this._plugins.get( key );
+
+		if ( !plugin ) {
+			/**
+			 * The plugin is not loaded and could not be obtained.
+			 *
+			 * Plugin classes (constructors) need to be provided to the editor and must be loaded before they can be obtained from
+			 * the plugin collection.
+			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
+			 * property.
+			 *
+			 * @error plugincollection-plugin-not-loaded
+			 * @param {String} plugin The name of the plugin which is not loaded.
+			 */
+			const warnMessage = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
+
+			let pluginName = key;
+
+			if ( typeof key == 'function' ) {
+				pluginName = key.pluginName || key.name;
+			}
+
+			log.warn( warnMessage, { plugin: pluginName } );
+		}
+
+		return plugin;
 	}
 
 	/**
