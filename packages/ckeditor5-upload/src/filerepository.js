@@ -165,7 +165,7 @@ export default class FileRepository extends Plugin {
 			 * You can choose one of the existing upload adapters listed in the
 			 * {@glink features/image-upload/image-upload "Image upload" guide}.
 			 *
-			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own upload adapter}.
+			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own image upload adapter}.
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
