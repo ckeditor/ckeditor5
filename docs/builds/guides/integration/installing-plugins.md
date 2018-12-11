@@ -189,7 +189,7 @@ The first method builds the plugin into the editor class. This means that you ca
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 ClassicEditor
-	.create( document.querySelector( 'editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		// Look, ma! No plugins!
 	} )
 	.then( editor => {
