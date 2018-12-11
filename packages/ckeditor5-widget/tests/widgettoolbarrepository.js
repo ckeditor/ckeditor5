@@ -56,6 +56,17 @@ describe( 'WidgetToolbarRepository', () => {
 		expect( editor.plugins.get( WidgetToolbarRepository ) ).to.be.instanceOf( WidgetToolbarRepository );
 	} );
 
+	it( 'should work if balloon toolbar is not available', () => {
+		editorElement.remove();
+		editor.destroy();
+
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		expect( editor.plugins.has( 'BalloonToolbar' ) ).to.be.false;
+		expect( editor.plugins.has( WidgetToolbarRepository ) ).to.be.true;
+	} );
+
 	describe( 'register()', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {

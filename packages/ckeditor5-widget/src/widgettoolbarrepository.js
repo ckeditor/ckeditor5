@@ -58,10 +58,11 @@ export default class WidgetToolbarRepository extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
 		// Disables the default balloon toolbar for all widgets.
-		if ( balloonToolbar ) {
+		if ( editor.plugins.has( 'BalloonToolbar' ) ) {
+			const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+
 			this.listenTo( balloonToolbar, 'show', evt => {
 				if ( isWidgetSelected( editor.editing.view.document.selection ) ) {
 					evt.stop();
