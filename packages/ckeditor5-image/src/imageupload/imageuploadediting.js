@@ -98,40 +98,42 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
-			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
-				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-				.map( value => fetchLocalImage( value.item ) );
+		if ( editor.plugins.has( 'Clipboard' ) ) {
+			this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
+				const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
+					.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+					.map( value => fetchLocalImage( value.item ) );
 
-			if ( !fetchableImages.length ) {
-				return;
-			}
-
-			evt.stop();
-
-			Promise.all( fetchableImages ).then( items => {
-				const writer = new UpcastWriter();
-
-				for ( const item of items ) {
-					if ( !item.file ) {
-						// Failed to fetch image or create a file instance, remove image element.
-						writer.remove( item.image );
-					} else {
-						// Set attribute marking the image as processed.
-						writer.setAttribute( 'uploadProcessed', true, item.image );
-
-						const loader = fileRepository.createLoader( item.file );
-
-						if ( loader ) {
-							writer.setAttribute( 'src', '', item.image );
-							writer.setAttribute( 'uploadId', loader.id, item.image );
-						}
-					}
+				if ( !fetchableImages.length ) {
+					return;
 				}
 
-				editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', data );
+				evt.stop();
+
+				Promise.all( fetchableImages ).then( items => {
+					const writer = new UpcastWriter();
+
+					for ( const item of items ) {
+						if ( !item.file ) {
+							// Failed to fetch image or create a file instance, remove image element.
+							writer.remove( item.image );
+						} else {
+							// Set attribute marking the image as processed.
+							writer.setAttribute( 'uploadProcessed', true, item.image );
+
+							const loader = fileRepository.createLoader( item.file );
+
+							if ( loader ) {
+								writer.setAttribute( 'src', '', item.image );
+								writer.setAttribute( 'uploadId', loader.id, item.image );
+							}
+						}
+					}
+
+					editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', data );
+				} );
 			} );
-		} );
+		}
 
 		// Prevents from the browser redirecting to the dropped image.
 		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
@@ -266,7 +268,7 @@ export default class ImageUploadEditing extends Plugin {
 		let maxWidth = 0;
 
 		const srcsetAttribute = Object.keys( data )
-			// Filter out keys that are not integers.
+		// Filter out keys that are not integers.
 			.filter( key => {
 				const width = parseInt( key, 10 );
 

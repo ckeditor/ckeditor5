@@ -97,6 +97,13 @@ describe( 'ImageUploadEditing', () => {
 		expect( editor.commands.get( 'imageUpload' ) ).to.be.instanceOf( ImageUploadCommand );
 	} );
 
+	it( 'should not crash when Clipboard plugin is not available', () => {
+		return VirtualTestEditor
+			.create( {
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
+			} );
+	} );
+
 	it( 'should insert image when is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
