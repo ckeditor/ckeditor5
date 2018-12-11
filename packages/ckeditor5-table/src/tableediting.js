@@ -228,7 +228,7 @@ export default class TableEditing extends Plugin {
 			const isLastRow = currentRowIndex === table.childCount - 1;
 
 			if ( isForward && isLastRow && isLastCellInRow ) {
-				editor.plugins.get( TableUtils ).insertRows( table, { at: table.childCount } );
+				editor.plugins.get( 'TableUtils' ).insertRows( table, { at: table.childCount } );
 			}
 
 			let cellToFocus;
