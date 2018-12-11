@@ -72,7 +72,18 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
-	 * **Note**: This method will throw error if plugin is not loaded. Use {@link #has} to check if plugin is available.
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Get clipboard plugin instance
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
+	 *				// Do something on clipboard input.
+	 *			} );
+	 *		}
+	 *
+	 * **Note**: This method will throw error if plugin is not loaded. Use `{@link #has editor.plugins.has()}`
+	 * to check if plugin is available.
 	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
@@ -88,6 +99,9 @@ export default class PluginCollection {
 			 * the plugin collection.
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
+			 *
+			 * **Note**: You can use `{@link module:core/plugincollection~PluginCollection#has editor.plugins.has()}`
+			 * to check if plugin was loaded.
 			 *
 			 * @error plugincollection-plugin-not-loaded
 			 * @param {String} plugin The name of the plugin which is not loaded.
@@ -108,6 +122,14 @@ export default class PluginCollection {
 
 	/**
 	 * Checks if plugin is loaded.
+	 *
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Now use clipboard plugin instance:
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			// ...
+	 *		}
 	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {Boolean}
