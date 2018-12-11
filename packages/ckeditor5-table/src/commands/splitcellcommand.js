@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableUtils from '../tableutils';
 import { findAncestor } from './utils';
 
 /**
@@ -68,7 +67,7 @@ export default class SplitCellCommand extends Command {
 
 		const isHorizontally = this.direction === 'horizontally';
 
-		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		if ( isHorizontally ) {
 			tableUtils.splitCellHorizontally( tableCell, 2 );
