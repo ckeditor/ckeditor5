@@ -72,11 +72,70 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Get clipboard plugin instance
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			this.listenTo( clipboard, 'inputTransformation', ( evt, data ) => {
+	 *				// Do something on clipboard input.
+	 *			} );
+	 *		}
+	 *
+	 * **Note**: This method will throw error if plugin is not loaded. Use `{@link #has editor.plugins.has()}`
+	 * to check if plugin is available.
+	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
 	get( key ) {
-		return this._plugins.get( key );
+		const plugin = this._plugins.get( key );
+
+		if ( !plugin ) {
+			/**
+			 * The plugin is not loaded and could not be obtained.
+			 *
+			 * Plugin classes (constructors) need to be provided to the editor and must be loaded before they can be obtained from
+			 * the plugin collection.
+			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
+			 * property.
+			 *
+			 * **Note**: You can use `{@link module:core/plugincollection~PluginCollection#has editor.plugins.has()}`
+			 * to check if plugin was loaded.
+			 *
+			 * @error plugincollection-plugin-not-loaded
+			 * @param {String} plugin The name of the plugin which is not loaded.
+			 */
+			const errorMsg = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
+
+			let pluginName = key;
+
+			if ( typeof key == 'function' ) {
+				pluginName = key.pluginName || key.name;
+			}
+
+			throw new CKEditorError( errorMsg, { plugin: pluginName } );
+		}
+
+		return plugin;
+	}
+
+	/**
+	 * Checks if plugin is loaded.
+	 *
+	 *		// Check if 'Clipboard' plugin was loaded.
+	 *		if ( editor.plugins.has( 'Clipboard' ) ) {
+	 *			// Now use clipboard plugin instance:
+	 *			const clipboard = editor.plugins.get( 'Clipboard' );
+	 *
+	 *			// ...
+	 *		}
+	 *
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @returns {Boolean}
+	 */
+	has( key ) {
+		return this._plugins.has( key );
 	}
 
 	/**
@@ -140,7 +199,7 @@ export default class PluginCollection {
 			}
 
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
+			if ( that._plugins.has( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
 			}
 
