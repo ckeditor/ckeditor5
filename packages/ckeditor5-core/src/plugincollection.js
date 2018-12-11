@@ -72,6 +72,8 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
+	 * **Note**: This method will throw error if plugin is not loaded. Use {@link #has} to check if plugin is available.
+	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
 	 * @returns {module:core/plugin~PluginInterface}
 	 */
@@ -102,6 +104,16 @@ export default class PluginCollection {
 		}
 
 		return plugin;
+	}
+
+	/**
+	 * Checks if plugin is loaded.
+	 *
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
+	 * @returns {Boolean}
+	 */
+	has( key ) {
+		return this._plugins.has( key );
 	}
 
 	/**

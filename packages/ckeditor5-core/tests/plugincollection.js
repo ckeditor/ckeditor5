@@ -485,6 +485,37 @@ describe( 'PluginCollection', () => {
 		} );
 	} );
 
+	describe( 'has()', () => {
+		let plugins;
+
+		beforeEach( () => {
+			plugins = new PluginCollection( editor, availablePlugins );
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by name)', () => {
+			expect( plugins.has( 'foobar' ) ).to.be.false;
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by class)', () => {
+			class SomePlugin extends Plugin {
+			}
+
+			expect( plugins.has( SomePlugin ) ).to.be.false;
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by name)', () => {
+			return plugins.load( [ PluginA ] ).then( () => {
+				expect( plugins.has( 'A' ) ).to.be.true;
+			} );
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by class)', () => {
+			return plugins.load( [ PluginA ] ).then( () => {
+				expect( plugins.has( PluginA ) ).to.be.true;
+			} );
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'calls Plugin#destroy() method on every loaded plugin', () => {
 			let destroySpyForPluginA, destroySpyForPluginB;
