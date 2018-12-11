@@ -449,56 +449,38 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'warns if plugin cannot be retrieved by name', () => {
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
-
+		it( 'throws if plugin cannot be retrieved by name', () => {
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [] ).then( () => {
-				const plugin = plugins.get( 'foo' );
-
-				expect( plugin ).to.be.undefined;
-
-				expect( logSpy.calledOnce ).to.equal( true );
-				expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-not-loaded:/ );
-				expect( logSpy.firstCall.args[ 1 ] ).to.deep.equal( { plugin: 'foo' } );
+				expect( () => plugins.get( 'foo' ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'foo' } );
 			} );
 		} );
 
-		it( 'warns if plugin cannot be retrieved by class', () => {
+		it( 'throws if plugin cannot be retrieved by class', () => {
 			class SomePlugin extends Plugin {}
 			SomePlugin.pluginName = 'foo';
 
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
-
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [] ).then( () => {
-				const plugin = plugins.get( SomePlugin );
-
-				expect( plugin ).to.be.undefined;
-
-				expect( logSpy.calledOnce ).to.equal( true );
-				expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-not-loaded:/ );
-				expect( logSpy.firstCall.args[ 1 ] ).to.deep.equal( { plugin: 'foo' } );
+				expect( () => plugins.get( SomePlugin ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'foo' } );
 			} );
 		} );
 
-		it( 'logs function (class) name if plugin cannot be retrieved by class', () => {
+		it( 'throws if plugin cannot be retrieved by class (class name in error)', () => {
 			class SomePlugin extends Plugin {}
-
-			const logSpy = testUtils.sinon.stub( log, 'warn' );
 
 			const plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [] ).then( () => {
-				const plugin = plugins.get( SomePlugin );
-
-				expect( plugin ).to.be.undefined;
-
-				expect( logSpy.calledOnce ).to.equal( true );
-				expect( logSpy.firstCall.args[ 0 ] ).to.match( /^plugincollection-plugin-not-loaded:/ );
-				expect( logSpy.firstCall.args[ 1 ] ).to.deep.equal( { plugin: 'SomePlugin' } );
+				expect( () => plugins.get( SomePlugin ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'SomePlugin' } );
 			} );
 		} );
 	} );

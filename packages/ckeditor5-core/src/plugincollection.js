@@ -90,7 +90,7 @@ export default class PluginCollection {
 			 * @error plugincollection-plugin-not-loaded
 			 * @param {String} plugin The name of the plugin which is not loaded.
 			 */
-			const warnMessage = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
+			const errorMsg = 'plugincollection-plugin-not-loaded: The requested plugin is not loaded.';
 
 			let pluginName = key;
 
@@ -98,7 +98,7 @@ export default class PluginCollection {
 				pluginName = key.pluginName || key.name;
 			}
 
-			log.warn( warnMessage, { plugin: pluginName } );
+			throw new CKEditorError( errorMsg, { plugin: pluginName } );
 		}
 
 		return plugin;
