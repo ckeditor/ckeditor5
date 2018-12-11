@@ -121,7 +121,7 @@ for ( const i in icons ) {
 	toolbar.items.add( button );
 }
 
-toolbar.className = 'ck-editor-toolbar ck-reset_all';
+toolbar.class = 'ck-editor-toolbar ck-reset_all';
 toolbar.render();
 
 document.body.appendChild( toolbar.element );
