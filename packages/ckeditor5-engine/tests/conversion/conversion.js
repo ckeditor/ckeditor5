@@ -645,6 +645,20 @@ describe( 'Conversion', () => {
 					testDowncast( '<paragraph><$text bold="true">Foo</$text> bar</paragraph>', '<p><strong>Foo</strong> bar</p>' );
 				} );
 			} );
+
+			describe( 'attributeToAttribute()', () => {
+				it( 'adds downcast converter', () => {
+					schema.register( 'image', {
+						inheritAllFrom: '$block',
+						allowAttributes: [ 'source' ]
+					} );
+
+					conversion.for( 'downcast' ).elementToElement( { model: 'image', view: 'img' } );
+					conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
+
+					testDowncast( '<image source="foo.jpg"></image>', '<img src="foo.jpg"></img>' );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {

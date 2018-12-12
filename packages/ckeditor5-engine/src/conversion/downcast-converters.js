@@ -1204,6 +1204,7 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
+	 * @method #attributeToElement
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 * @method #attributeToAttribute
@@ -1218,5 +1219,64 @@ export const helpers = {
 	 */
 	attributeToElement( config ) {
 		return this.add( downcastAttributeToElement( config ) );
+	},
+
+	/**
+	 * Model attribute to view attribute conversion helper.
+	 *
+	 * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
+	 * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
+	 *
+	 *		conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
+	 *
+	 *		conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
+	 *
+	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: {
+	 *				name: 'image',
+	 *				key: 'source'
+	 *			},
+	 *			view: 'src'
+	 *		} );
+	 *
+	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: {
+	 *				name: 'styled',
+	 *				values: [ 'dark', 'light' ]
+	 *			},
+	 *			view: {
+	 *				dark: {
+	 *					key: 'class',
+	 *					value: [ 'styled', 'styled-dark' ]
+	 *				},
+	 *				light: {
+	 *					key: 'class',
+	 *					value: [ 'styled', 'styled-light' ]
+	 *				}
+	 *			}
+	 *		} );
+	 *
+	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: 'styled',
+	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 *
+	 * @method #attributeToAttribute
+	 * @param {Object} config Conversion configuration.
+	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
+	 * the attribute key, possible values and, optionally, an element name to convert from.
+	 * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
+	 * the model attribute value and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
+	 * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
+	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
+	 * `{ key, value }` objects or a functions.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	attributeToAttribute( config ) {
+		return this.add( downcastAttributeToAttribute( config ) );
 	}
 };
