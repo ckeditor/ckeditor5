@@ -8,7 +8,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import { helpers as upcastHelpers, convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
 
 import EditingController from '../../src/controller/editingcontroller';
 
@@ -114,7 +114,7 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 			conversion = new Conversion();
-			conversion.register( { name: 'upcast', dispatcher: [ viewDispatcher ] } );
+			conversion.register( { name: 'upcast', dispatcher: [ viewDispatcher ], helpers: upcastHelpers } );
 			conversion.register( { name: 'downcast', dispatcher: [ controller.downcastDispatcher ], helpers: downcastHelpers } );
 		} );
 
@@ -698,10 +698,28 @@ describe( 'Conversion', () => {
 			} );
 		} );
 
+		describe( 'for( \'upcast\' )', () => {
+			describe( 'elementToElement()', () => {
+				it( 'adds downcast converter', () => {
+					conversion.for( 'upcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+					// TODO this shouldn't be required
+					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+
+					testUpcast( '<p>foo</p>', '<paragraph>foo</paragraph>' );
+				} );
+			} );
+		} );
+
 		function testDowncast( input, expectedView ) {
 			setData( model, input );
 
 			expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView );
+		}
+
+		function testUpcast( input, expectedModel ) {
+			loadData( input );
+
+			expect( modelStringify( model.document.getRoot() ) ).to.equal( expectedModel );
 		}
 
 		function test( input, expectedModel, expectedView = null ) {

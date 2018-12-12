@@ -87,7 +87,8 @@ export default class Conversion {
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatcher Dispatcher or array of dispatchers to register
 	 * under the given name.
-	 * @param {module:engine/conversion/downcast-converters~DowncastHelpers} helpers
+	 * @param {module:engine/conversion/downcast-converters~DowncastHelpers|
+	 * module:engine/conversion/upcast-converters~UpcastHelpers} helpers
 	 */
 	register( options ) {
 		if ( this._dispatchersGroups.has( options.name ) ) {
@@ -151,7 +152,8 @@ export default class Conversion {
 	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
-	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
+	 * module:engine/conversion/upcast-converters~UpcastHelpers}
 	 * An object with the `.add()` method, providing a way to add converters.
 	 */
 	for( groupName ) {
@@ -599,7 +601,7 @@ export default class Conversion {
  * @property {String} name Group name
  * @property {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
  * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
- * @property {module:engine/conversion/downcast-converters~DowncastHelpers} helpers
+ * @property {module:engine/conversion/downcast-converters~DowncastHelpers|module:engine/conversion/upcast-converters~UpcastHelpers} helpers
  */
 
 /**

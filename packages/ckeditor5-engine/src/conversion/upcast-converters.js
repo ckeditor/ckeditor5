@@ -607,3 +607,56 @@ export function convertText() {
 		}
 	};
 }
+
+/**
+ * Upcast conversion helper functions.
+ *
+ * @interface module:engine/conversion/upcast-converters~UpcastHelpers
+ * @extends module:engine/conversion/conversion~ConversionHelpers
+ */
+export const helpers = {
+	/**
+	 * View element to model element conversion helper.
+	 *
+	 * This conversion results in creating a model element. For example,
+	 * view `<p>Foo</p>` becomes `<paragraph>Foo</paragraph>` in the model.
+	 *
+	 * Keep in mind that the element will be inserted only if it is allowed
+	 * by {@link module:engine/model/schema~Schema schema} configuration.
+	 *
+	 *		conversion.for( 'upcast' ).elementToElement( { view: 'p', model: 'paragraph' } );
+	 *
+	 *		conversion.for( 'upcast' ).elementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
+	 *
+	 *		conversion.for( 'upcast' ).elementToElement( {
+	 *			view: {
+	 *				name: 'p',
+	 *				classes: 'fancy'
+	 *			},
+	 *			model: 'fancyParagraph'
+	 *		} );
+	 *
+	 *		conversion.for( 'upcast' ).elementToElement( {
+	 * 			view: {
+	 *				name: 'p',
+	 *				classes: 'heading'
+	 * 			},
+	 * 			model: ( viewElement, modelWriter ) => {
+	 * 				return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+	 * 			}
+	 * 		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 *
+	 * @method #elementToElement
+	 * @param {Object} config Conversion configuration.
+	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
+	 * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
+	 * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	elementToElement( config ) {
+		return this.add( upcastElementToElement( config ) );
+	}
+};
