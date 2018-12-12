@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window, document, console */
+
 import DecoupledEditor from '../../build/ckeditor';
 
 DecoupledEditor.create( document.querySelector( '#editor' ) )

@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+/* eslint-env commonjs */
+/* globals window, document, console */
+
 const DecoupledEditor = require( '../../build/ckeditor' );
 
 DecoupledEditor.create( document.querySelector( '#editor' ) )
