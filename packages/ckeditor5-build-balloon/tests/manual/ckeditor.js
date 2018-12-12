@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window, document, console */
+
 import BalloonEditor from '../../build/ckeditor';
 
 BalloonEditor.create( document.querySelector( '#editor' ) )
