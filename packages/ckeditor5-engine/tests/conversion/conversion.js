@@ -14,8 +14,9 @@ import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
 
-import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
-import { stringify as modelStringify } from '../../src/dev-utils/model';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
+import { setData, stringify as modelStringify } from '../../src/dev-utils/model';
+import { helpers as downcastHelpers } from '../../src/conversion/downcast-converters';
 
 describe( 'Conversion', () => {
 	let conversion, dispA, dispB;
@@ -114,7 +115,7 @@ describe( 'Conversion', () => {
 
 			conversion = new Conversion();
 			conversion.register( { name: 'upcast', dispatcher: [ viewDispatcher ] } );
-			conversion.register( { name: 'downcast', dispatcher: [ controller.downcastDispatcher ] } );
+			conversion.register( { name: 'downcast', dispatcher: [ controller.downcastDispatcher ], helpers: downcastHelpers } );
 		} );
 
 		describe( 'elementToElement', () => {
@@ -626,6 +627,22 @@ describe( 'Conversion', () => {
 				);
 			} );
 		} );
+
+		describe( 'for( \'downcast\' )', () => {
+			describe( 'elementToElement()', () => {
+				it( 'adds downcast converter', () => {
+					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+
+					testDowncast( '<paragraph>foo</paragraph>', '<p>foo</p>' );
+				} );
+			} );
+		} );
+
+		function testDowncast( input, expectedView ) {
+			setData( model, input );
+
+			expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView );
+		}
 
 		function test( input, expectedModel, expectedView = null ) {
 			loadData( input );

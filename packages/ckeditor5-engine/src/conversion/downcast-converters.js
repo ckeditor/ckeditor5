@@ -36,10 +36,10 @@ import { cloneDeep } from 'lodash-es';
  *			}
  *		} );
  *
- * 		downcastElementToElement( {
- * 			model: 'heading',
- * 			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
- * 		} );
+ *		downcastElementToElement( {
+ *			model: 'heading',
+ *			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+ *		} );
  *
  * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
  * to the conversion process.
@@ -100,12 +100,12 @@ export function downcastElementToElement( config ) {
  *			}
  *		} );
  *
- * 		downcastAttributeToElement( {
- * 			model: 'bold',
- * 			view: ( modelAttributeValue, viewWriter ) => {
- * 				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
- * 			}
- * 		} );
+ *		downcastAttributeToElement( {
+ *			model: 'bold',
+ *				view: ( modelAttributeValue, viewWriter ) => {
+ *				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+ *			}
+ *		} );
  *
  *		downcastAttributeToElement( {
  *			model: {
@@ -255,12 +255,12 @@ export function downcastAttributeToAttribute( config ) {
  *			}
  *		} );
  *
- * 		downcastMarkerToElement( {
- * 			model: 'search',
- * 			view: ( markerData, viewWriter ) => {
- *	 			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
- * 			}
- * 		} );
+ *		downcastMarkerToElement( {
+ *			model: 'search',
+ *			view: ( markerData, viewWriter ) => {
+ *			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
+ *			}
+ *		} );
  *
  * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
  * receives the `data` object as a parameter and should return an instance of the
@@ -314,17 +314,17 @@ export function downcastMarkerToElement( config ) {
  *
  *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
  *
- * 		downcastMarkerToHighlight( {
- * 			model: 'comment',
- * 			view: data => {
- * 				// Assuming that the marker name is in a form of comment:commentType.
- *	 			const commentType = data.markerName.split( ':' )[ 1 ];
+ *		downcastMarkerToHighlight( {
+ *			model: 'comment',
+ *			view: data => {
+ *				// Assuming that the marker name is in a form of comment:commentType.
+ *				const commentType = data.markerName.split( ':' )[ 1 ];
  *
- *	 			return {
- *	 				classes: [ 'comment', 'comment-' + commentType ]
- *	 			};
- * 			}
- * 		} );
+ *				return {
+ *					classes: [ 'comment', 'comment-' + commentType ]
+ *				};
+ *			}
+ *		} );
  *
  * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
  * receives the `data` object as a parameter and should return a
@@ -1107,13 +1107,42 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 /**
  * Downcast conversion helper functions.
  *
- * @typedef {Object} DowncastHelpers
+ * @interface module:engine/conversion/downcast-converters~DowncastHelpers
  */
 export const helpers = {
-	elementToElement: downcastElementToElement,
-	attributeToElement: downcastAttributeToElement,
-	attributeToAttribute: downcastAttributeToAttribute,
-	markerToElement: downcastMarkerToElement,
-	markerToHighlight: downcastMarkerToHighlight,
-	createViewElementFromHighlightDescriptor
+	/**
+	 * Model element to view element conversion helper.
+	 *
+	 * This conversion results in creating a view element. For example, model `<paragraph>Foo</paragraph>` becomes `<p>Foo</p>` in the view.
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'fancyParagraph',
+	 *			view: {
+	 *				name: 'p',
+	 *				classes: 'fancy'
+	 *			}
+	 *		} );
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'heading',
+	 *			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 *
+	 * @method #elementToElement
+	 * @param {Object} config Conversion configuration.
+	 * @param {String} config.model The name of the model element to convert.
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
+	 * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+	 * as parameters and returns a view container element.
+	 */
+	elementToElement( config ) {
+		return this.add( downcastElementToElement( config ) );
+	}
 };

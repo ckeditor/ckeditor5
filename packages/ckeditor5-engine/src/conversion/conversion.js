@@ -100,7 +100,8 @@ export default class Conversion {
 
 		const group = {
 			name: options.name,
-			dispatchers: Array.isArray( options.dispatcher ) ? options.dispatcher : [ options.dispatcher ]
+			dispatchers: Array.isArray( options.dispatcher ) ? options.dispatcher : [ options.dispatcher ],
+			helpers: options.helpers
 		};
 
 		this._dispatchersGroups.set( options.name, group );
