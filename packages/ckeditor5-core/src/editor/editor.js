@@ -178,11 +178,11 @@ export default class Editor {
 		 */
 		this.conversion = new Conversion();
 
-		this.conversion.register( 'downcast', [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] );
-		this.conversion.register( 'editingDowncast', [ this.editing.downcastDispatcher ] );
-		this.conversion.register( 'dataDowncast', [ this.data.downcastDispatcher ] );
+		this.conversion.register( { name: 'downcast', dispatcher: [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] } );
+		this.conversion.register( { name: 'editingDowncast', dispatcher: [ this.editing.downcastDispatcher ] } );
+		this.conversion.register( { name: 'dataDowncast', dispatcher: [ this.data.downcastDispatcher ] } );
 
-		this.conversion.register( 'upcast', [ this.data.upcastDispatcher ] );
+		this.conversion.register( { name: 'upcast', dispatcher: [ this.data.upcastDispatcher ] } );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
