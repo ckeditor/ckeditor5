@@ -96,7 +96,12 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
 		}
 
-		this._dispatchersGroups.set( groupName, dispatchers );
+		const group = {
+			name: groupName,
+			dispatchers
+		};
+
+		this._dispatchersGroups.set( groupName, group );
 	}
 
 	/**
@@ -553,9 +558,7 @@ export default class Conversion {
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
 	 */
 	_getDispatchers( groupName ) {
-		const dispatchers = this._dispatchersGroups.get( groupName );
-
-		if ( !dispatchers ) {
+		if ( !this._dispatchersGroups.has( groupName ) ) {
 			/**
 			 * Trying to add a converter to an unknown dispatchers group.
 			 *
@@ -563,6 +566,8 @@ export default class Conversion {
 			 */
 			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
 		}
+
+		const { dispatchers } = this._dispatchersGroups.get( groupName );
 
 		return dispatchers;
 	}
