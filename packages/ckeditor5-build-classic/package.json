@@ -80,6 +80,7 @@
     ]
   },
   "eslintIgnore": [
-    "build/**"
+    "build/**",
+    "packages/**"
   ]
 }
