@@ -27,15 +27,15 @@ describe( 'Conversion', () => {
 		dispA = Symbol( 'dispA' );
 		dispB = Symbol( 'dispB' );
 
-		conversion.register( 'ab', [ dispA, dispB ] );
-		conversion.register( 'a', [ dispA ] );
-		conversion.register( 'b', [ dispB ] );
+		conversion.register( { name: 'ab', dispatcher: [ dispA, dispB ] } );
+		conversion.register( { name: 'a', dispatcher: dispA } );
+		conversion.register( { name: 'b', dispatcher: dispB } );
 	} );
 
 	describe( 'register()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
 			expect( () => {
-				conversion.register( 'ab' );
+				conversion.register( { name: 'ab' } );
 			} ).to.throw( CKEditorError, /conversion-register-group-exists/ );
 		} );
 	} );
@@ -113,8 +113,8 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 			conversion = new Conversion();
-			conversion.register( 'upcast', [ viewDispatcher ] );
-			conversion.register( 'downcast', [ controller.downcastDispatcher ] );
+			conversion.register( { name: 'upcast', dispatcher: [ viewDispatcher ] } );
+			conversion.register( { name: 'downcast', dispatcher: [ controller.downcastDispatcher ] } );
 		} );
 
 		describe( 'elementToElement', () => {

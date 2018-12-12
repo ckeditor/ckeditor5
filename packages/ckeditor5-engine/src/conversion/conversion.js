@@ -81,13 +81,15 @@ export default class Conversion {
 	 * If a given group name is used for the second time, the
 	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
 	 *
-	 * @param {String} groupName The name for dispatchers group.
-	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers Dispatchers to register
+	 * @param {Object} options
+	 * @param {String} options.name The name for dispatchers group.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatcher Dispatcher or array of dispatchers to register
 	 * under the given name.
 	 */
-	register( groupName, dispatchers ) {
-		if ( this._dispatchersGroups.has( groupName ) ) {
+	register( options ) {
+		if ( this._dispatchersGroups.has( options.name ) ) {
 			/**
 			 * Trying to register a group name that was already registered.
 			 *
@@ -97,11 +99,11 @@ export default class Conversion {
 		}
 
 		const group = {
-			name: groupName,
-			dispatchers
+			name: options.name,
+			dispatchers: Array.isArray( options.dispatcher ) ? options.dispatcher : [ options.dispatcher ]
 		};
 
-		this._dispatchersGroups.set( groupName, group );
+		this._dispatchersGroups.set( options.name, group );
 	}
 
 	/**

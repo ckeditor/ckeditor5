@@ -49,7 +49,7 @@ describe( 'upcast-helpers', () => {
 		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'upcast', [ upcastDispatcher ] );
+		conversion.register( { name: 'upcast', dispatcher: upcastDispatcher } );
 	} );
 
 	describe( 'upcastElementToElement', () => {
