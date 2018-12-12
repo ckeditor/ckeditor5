@@ -1204,10 +1204,10 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 * @method #attributeToElement
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
-	 * @method #attributeToAttribute
+	 *
+	 * @method #attributeToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
 	 * of `String`s with possible values if the model attribute is an enumerable.
