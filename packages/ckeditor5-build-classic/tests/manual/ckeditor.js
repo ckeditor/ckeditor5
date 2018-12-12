@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window, document, console */
+
 import ClassicEditor from '../../build/ckeditor';
 
 ClassicEditor.create( document.querySelector( '#editor' ) )
