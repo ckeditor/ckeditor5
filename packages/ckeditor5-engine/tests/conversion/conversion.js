@@ -659,6 +659,25 @@ describe( 'Conversion', () => {
 					testDowncast( '<image source="foo.jpg"></image>', '<img src="foo.jpg"></img>' );
 				} );
 			} );
+
+			describe( 'markerToElement()', () => {
+				it( 'adds downcast converter', () => {
+					conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
+
+					model.change( writer => {
+						writer.insertText( 'foo', modelRoot, 0 );
+
+						const range = writer.createRange(
+							writer.createPositionAt( modelRoot, 1 ),
+							writer.createPositionAt( modelRoot, 2 )
+						);
+						writer.addMarker( 'search', { range, usingOperation: false } );
+					} );
+
+					expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) )
+						.to.equal( 'f<marker-search></marker-search>o<marker-search></marker-search>o' );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {

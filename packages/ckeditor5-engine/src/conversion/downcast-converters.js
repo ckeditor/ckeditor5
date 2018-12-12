@@ -1278,5 +1278,56 @@ export const helpers = {
 	 */
 	attributeToAttribute( config ) {
 		return this.add( downcastAttributeToAttribute( config ) );
+	},
+
+	/**
+	 * Model marker to view element conversion helper.
+	 *
+	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
+	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
+	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
+	 *
+	 *		conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
+	 *
+	 *		conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
+	 *
+	 *		conversion.for( 'downcast' ).markerToElement( {
+	 *			model: 'search',
+	 *			view: {
+	 *				name: 'span',
+	 *				attributes: {
+	 *					'data-marker': 'search'
+	 *				}
+	 *			}
+	 *		} );
+	 *
+	 *		conversion.for( 'downcast' ).markerToElement( {
+	 *			model: 'search',
+	 *			view: ( markerData, viewWriter ) => {
+	 *			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
+	 *			}
+	 *		} );
+	 *
+	 * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
+	 * receives the `data` object as a parameter and should return an instance of the
+	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` and `conversionApi` objects are passed from
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
+	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
+	 * the marker end boundary element.
+	 *
+	 * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+	 *
+	 * @method #markerToElement
+	 * @param {Object} config Conversion configuration.
+	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
+	 * that takes the model marker data as a parameter and returns a view UI element.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	markerToElement( config ) {
+		return this.add( downcastMarkerToElement( config ) );
 	}
 };
