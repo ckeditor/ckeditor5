@@ -1103,3 +1103,17 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  * attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
  * this depends on how the element converts the descriptor.
  */
+
+/**
+ * Downcast conversion helper functions.
+ *
+ * @typedef {Object} DowncastHelpers
+ */
+export const helpers = {
+	elementToElement: downcastElementToElement,
+	attributeToElement: downcastAttributeToElement,
+	attributeToAttribute: downcastAttributeToAttribute,
+	markerToElement: downcastMarkerToElement,
+	markerToHighlight: downcastMarkerToHighlight,
+	createViewElementFromHighlightDescriptor
+};

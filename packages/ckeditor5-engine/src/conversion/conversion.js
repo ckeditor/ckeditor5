@@ -149,18 +149,21 @@ export default class Conversion {
 	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
-	 * @returns {Object} An object with the `.add()` method, providing a way to add converters.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * An object with the `.add()` method, providing a way to add converters.
 	 */
 	for( groupName ) {
-		const dispatchers = this._getDispatchers( groupName );
+		const { dispatchers, helpers } = this._getDispatchersGroup( groupName );
 
-		return {
+		const baseRetVal = {
 			add( conversionHelper ) {
 				_addToDispatchers( dispatchers, conversionHelper );
 
 				return this;
 			}
 		};
+
+		return Object.assign( {}, baseRetVal, helpers );
 	}
 
 	/**
@@ -549,17 +552,16 @@ export default class Conversion {
 	}
 
 	/**
-	 * Returns dispatchers registered under a given group name.
+	 * Returns dispatchers group registered under a given group name.
 	 *
 	 * If the given group name has not been registered, the
 	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
 	 * @private
 	 * @param {String} groupName
-	 * @returns {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
+	 * @returns {module:engine/conversion/conversion~DispatchersGroup}
 	 */
-	_getDispatchers( groupName ) {
+	_getDispatchersGroup( groupName ) {
 		if ( !this._dispatchersGroups.has( groupName ) ) {
 			/**
 			 * Trying to add a converter to an unknown dispatchers group.
@@ -569,9 +571,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
 		}
 
-		const { dispatchers } = this._dispatchersGroups.get( groupName );
-
-		return dispatchers;
+		return this._dispatchersGroups.get( groupName );
 	}
 }
 
@@ -590,6 +590,30 @@ export default class Conversion {
  * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
  * (`upcastAlso` object values).
  * @property {module:utils/priorities~PriorityString} [converterPriority] The converter priority.
+ */
+
+/**
+ * @typedef {Object} module:engine/conversion/conversion~DispatchersGroup
+ * @property {String} name Group name
+ * @property {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+ * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
+ * @property {module:engine/conversion/downcast-converters~DowncastHelpers} helpers
+ */
+
+/**
+ * Base class for conversion utilises.
+ *
+ * @interface ConversionHelpers
+ */
+
+/**
+ * Registers a conversion helper.
+ *
+ * **Note**: See full usage example in the `{@link module:engine/conversion/conversion~Conversion#for conversion.for()}` method description
+ *
+ * @method module:engine/conversion/conversion~ConversionHelpers#add
+ * @param {Function} conversionHelper The function to be called on event.
+ * @returns {module:engine/conversion/conversion~Conversion}
  */
 
 // Helper function for the `Conversion` `.add()` method.
