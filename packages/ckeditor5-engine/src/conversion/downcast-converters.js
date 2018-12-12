@@ -1329,5 +1329,63 @@ export const helpers = {
 	 */
 	markerToElement( config ) {
 		return this.add( downcastMarkerToElement( config ) );
+	},
+
+	/**
+	 * Model marker to highlight conversion helper.
+	 *
+	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
+	 * {@link module:engine/conversion/downcast-converters~HighlightDescriptor} should be provided.
+	 *
+	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
+	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
+	 * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
+	 *
+	 * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
+	 * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
+	 * For example, a model marker set like this: `[<image src="foo.jpg"></image>]` becomes `<img src="foo.jpg" class="comment"></img>`
+	 * in the view.
+	 *
+	 * For container elements, the conversion is two-step. While the converter processes the highlight descriptor and passes it
+	 * to a container element, it is the container element instance itself that applies values from the highlight descriptor.
+	 * So, in a sense, the converter takes care of stating what should be applied on what, while the element decides how to apply that.
+	 *
+	 *		conversion.for( 'downcast' ).markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
+	 *
+	 *		conversion.for( 'downcast' ).markerToHighlight( {
+	 *			model: 'comment',
+	 *			view: { classes: 'new-comment' },
+	 *			converterPriority: 'high'
+	 *		} );
+	 *
+	 *		conversion.for( 'downcast' ).markerToHighlight( {
+	 *			model: 'comment',
+	 *			view: data => {
+	 *				// Assuming that the marker name is in a form of comment:commentType.
+	 *				const commentType = data.markerName.split( ':' )[ 1 ];
+	 *
+	 *				return {
+	 *					classes: [ 'comment', 'comment-' + commentType ]
+	 *				};
+	 *			}
+	 *		} );
+	 *
+	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
+	 * receives the `data` object as a parameter and should return a
+	 * {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor}.
+	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+	 *
+	 * @method #markerToHighlight
+	 * @param {Object} config Conversion configuration.
+	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
+	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
+	 * that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	markerToHighlight( config ) {
+		return this.add( downcastMarkerToHighlight( config ) );
 	}
 };

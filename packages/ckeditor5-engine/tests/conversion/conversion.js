@@ -678,6 +678,24 @@ describe( 'Conversion', () => {
 						.to.equal( 'f<marker-search></marker-search>o<marker-search></marker-search>o' );
 				} );
 			} );
+
+			describe( 'markerToHighlight()', () => {
+				it( 'adds downcast converter', () => {
+					conversion.for( 'downcast' ).markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
+
+					model.change( writer => {
+						writer.insertText( 'foo', modelRoot, 0 );
+						const range = writer.createRange(
+							writer.createPositionAt( modelRoot, 0 ),
+							writer.createPositionAt( modelRoot, 3 )
+						);
+						writer.addMarker( 'comment', { range, usingOperation: false } );
+					} );
+
+					expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) )
+						.to.equal( '<span class="comment">foo</span>' );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {
