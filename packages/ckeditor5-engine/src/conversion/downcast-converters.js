@@ -1108,6 +1108,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  * Downcast conversion helper functions.
  *
  * @interface module:engine/conversion/downcast-converters~DowncastHelpers
+ * @extends module:engine/conversion/conversion~ConversionHelpers
  */
 export const helpers = {
 	/**
