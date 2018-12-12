@@ -1145,5 +1145,78 @@ export const helpers = {
 	 */
 	elementToElement( config ) {
 		return this.add( downcastElementToElement( config ) );
+	},
+
+	/**
+	 * Model attribute to view element conversion helper.
+	 *
+	 *
+	 * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
+	 * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: 'invert',
+	 *			view: {
+	 *				name: 'span',
+	 *				classes: [ 'font-light', 'bg-dark' ]
+	 *			}
+	 *		} );
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: {
+	 *				key: 'fontSize',
+	 *				values: [ 'big', 'small' ]
+	 *			},
+	 *			view: {
+	 *				big: {
+	 *					name: 'span',
+	 *					styles: {
+	 *						'font-size': '1.2em'
+	 *					}
+	 *				},
+	 *				small: {
+	 *					name: 'span',
+	 *					styles: {
+	 *						'font-size': '0.8em'
+	 *					}
+	 *				}
+	 *			}
+	 *		} );
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: 'bold',
+	 *			view: ( modelAttributeValue, viewWriter ) => {
+	 *				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+	 *			}
+	 *		} );
+	 *
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: {
+	 *				key: 'color',
+	 *				name: '$text'
+	 *			},
+	 *			view: ( modelAttributeValue, viewWriter ) => {
+	 *				return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+	 *			}
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 * @method #attributeToAttribute
+	 * @param {Object} config Conversion configuration.
+	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
+	 * of `String`s with possible values if the model attribute is an enumerable.
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
+	 * that takes the model attribute value and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+	 * as parameters and returns a view attribute element. If `config.model.values` is
+	 * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 */
+	attributeToElement( config ) {
+		return this.add( downcastAttributeToElement( config ) );
 	}
 };

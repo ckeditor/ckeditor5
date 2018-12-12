@@ -636,6 +636,15 @@ describe( 'Conversion', () => {
 					testDowncast( '<paragraph>foo</paragraph>', '<p>foo</p>' );
 				} );
 			} );
+
+			describe( 'attributeToElement()', () => {
+				it( 'adds downcast converter', () => {
+					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+					conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
+
+					testDowncast( '<paragraph><$text bold="true">Foo</$text> bar</paragraph>', '<p><strong>Foo</strong> bar</p>' );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {
