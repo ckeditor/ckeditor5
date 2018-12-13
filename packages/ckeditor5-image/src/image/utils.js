@@ -100,7 +100,7 @@ export function isImageAllowed( model ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isImageAllowedInParent( selection, schema, model ) && checkSelectionWithObject( selection, schema );
+	return isImageAllowedInParent( selection, schema, model ) && checkSelectionOnObject( selection, schema ) && isInOtherImage( selection );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
@@ -112,29 +112,28 @@ function isImageAllowedInParent( selection, schema, model ) {
 	return schema.checkChild( parent, 'image' );
 }
 
-// Check used in image commands for additional cases when the command should be disabled:
-//
-// - selection is on object
-// - selection is inside object
+// Check if selection is on object.
 //
 // @returns {Boolean}
-function checkSelectionWithObject( selection, schema ) {
+function checkSelectionOnObject( selection, schema ) {
 	const selectedElement = selection.getSelectedElement();
 
-	const isSelectionOnObject = !!selectedElement && schema.isObject( selectedElement );
-	const isSelectionInObject = !![ ...selection.focus.getAncestors() ].find( ancestor => schema.isObject( ancestor ) );
+	return !( !!selectedElement && schema.isObject( selectedElement ) );
+}
 
-	return !isSelectionOnObject && !isSelectionInObject;
+// Checks if selection is placed in other image (ie. in caption).
+function isInOtherImage( selection ) {
+	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'image' ) );
 }
 
 // Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
 function getInsertImageParent( selection, model ) {
 	const insertAt = findOptimalInsertionPosition( selection, model );
 
-	let parent = insertAt.parent;
+	const parent = insertAt.parent;
 
-	if ( !parent.is( '$root' ) ) {
-		parent = parent.parent;
+	if ( parent.isEmpty && !parent.is( '$root' ) ) {
+		return parent.parent;
 	}
 
 	return parent;
