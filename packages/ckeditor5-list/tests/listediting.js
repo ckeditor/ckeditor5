@@ -345,6 +345,10 @@ describe( 'ListEditing', () => {
 				'<p>foo</p><ul><li>xxx</li><li>yyy</li></ul>'
 			);
 
+			// #ckeditor5/1399
+			test( 'single item with `font-weight` style',
+				'<ol><li style="font-weight: bold">foo</li></ol>', '<ol><li><strong>foo</strong></li></ol>' );
+
 			it( 'model test for mixed content', () => {
 				editor.setData( '<ol><li>a</li></ol><p>xxx</p><ul><li>b</li><li>c</li></ul><p>yyy</p><ul><li>d</li></ul>' );
 
