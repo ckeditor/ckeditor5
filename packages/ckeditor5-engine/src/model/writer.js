@@ -499,7 +499,7 @@ export default class Writer {
 	remove( itemOrRange ) {
 		this._assertWriterUsedCorrectly();
 
-		let rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
+		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
 
 		// If part of the marker is removed, create additional marker operation for undo purposes.
 		this._addOperationForAffectedMarkers( 'move', rangeToRemove );

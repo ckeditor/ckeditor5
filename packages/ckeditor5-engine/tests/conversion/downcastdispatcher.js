@@ -538,7 +538,6 @@ describe( 'DowncastDispatcher', () => {
 			}, { priority: 'high' } );
 
 			const spyItems = sinon.spy();
-			const items = [];
 
 			dispatcher.on( 'addMarker:name', ( evt, data ) => {
 				if ( data.item ) {
