@@ -816,5 +816,45 @@ export const helpers = {
 	 */
 	attributeToAttribute( config ) {
 		return this.add( upcastAttributeToAttribute( config ) );
+	},
+
+	/**
+	 * View element to model marker conversion helper.
+	 *
+	 * This conversion results in creating a model marker. For example, if the marker was stored in a view as an element:
+	 * `<p>Fo<span data-marker="comment" data-comment-id="7"></span>o</p><p>B<span data-marker="comment" data-comment-id="7"></span>ar</p>`,
+	 * after the conversion is done, the marker will be available in
+	 * {@link module:engine/model/model~Model#markers model document markers}.
+	 *
+	 *        conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search' } );
+	 *
+	 *        conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
+	 *
+	 *        conversion.for( 'upcast' ).elementToMarker( {
+	 *			view: 'marker-search',
+	 *			model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
+	 *		} );
+	 *
+	 *        conversion.for( 'upcast' ).elementToMarker( {
+	 *			view: {
+	 *				name: 'span',
+	 *				attributes: {
+	 *					'data-marker': 'search'
+	 *				}
+	 *			},
+	 *			model: 'search'
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 *
+	 * @param {Object} config Conversion configuration.
+	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
+	 * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
+	 * a model marker name.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	elementToMarker( config ) {
+		return this.add( upcastElementToMarker( config ) );
 	}
 };

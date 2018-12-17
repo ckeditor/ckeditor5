@@ -17,6 +17,9 @@ import Model from '../../src/model/model';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { setData, stringify as modelStringify } from '../../src/dev-utils/model';
 import { helpers as downcastHelpers } from '../../src/conversion/downcast-converters';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewText from '../../src/view/text';
+import ViewUIElement from '../../src/view/uielement';
 
 describe( 'Conversion', () => {
 	let conversion, dispA, dispB;
@@ -101,6 +104,7 @@ describe( 'Conversion', () => {
 			schema = model.schema;
 
 			schema.extend( '$text', {
+				allowIn: '$root',
 				allowAttributes: [ 'bold' ]
 			} );
 
@@ -737,6 +741,25 @@ describe( 'Conversion', () => {
 					testUpcast( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 				} );
 			} );
+
+			describe( 'markerToElement()', () => {
+				it( 'adds upcast converter', () => {
+					conversion.for( 'upcast' ).elementToMarker( { model: 'search', view: 'marker-search' } );
+					conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
+
+					const frag = new ViewDocumentFragment( [
+						new ViewText( 'fo' ),
+						new ViewUIElement( 'marker-search' ),
+						new ViewText( 'oba' ),
+						new ViewUIElement( 'marker-search' ),
+						new ViewText( 'r' )
+					] );
+
+					const marker = { name: 'search', start: [ 2 ], end: [ 5 ] };
+
+					testUpcastMarker( frag, 'foobar', marker );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {
@@ -773,6 +796,21 @@ describe( 'Conversion', () => {
 				);
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
+		}
+
+		function testUpcastMarker( viewToConvert, modelString, marker ) {
+			const conversionResult = model.change( writer => viewDispatcher.convert( viewToConvert, writer ) );
+
+			if ( marker ) {
+				expect( conversionResult.markers.has( marker.name ) ).to.be.true;
+
+				const convertedMarker = conversionResult.markers.get( marker.name );
+
+				expect( convertedMarker.start.path ).to.deep.equal( marker.start );
+				expect( convertedMarker.end.path ).to.deep.equal( marker.end );
+			}
+
+			expect( viewStringify( conversionResult ) ).to.equal( modelString );
 		}
 	} );
 } );
