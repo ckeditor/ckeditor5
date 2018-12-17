@@ -418,7 +418,7 @@ export default class Conversion {
 				upcastElementToAttribute( {
 					view,
 					model,
-					priority: definition.priority
+					converterPriority: definition.priority
 				} )
 			);
 		}
