@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import {
 	downcastInsertCell,
 	downcastInsertRow,
@@ -207,7 +205,7 @@ export function defaultConversion( conversion, asWidget = false ) {
 	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
 
 	// Table row conversion.
-	conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+	conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
 	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
 
