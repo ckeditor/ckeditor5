@@ -826,16 +826,16 @@ export const helpers = {
 	 * after the conversion is done, the marker will be available in
 	 * {@link module:engine/model/model~Model#markers model document markers}.
 	 *
-	 *        conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search' } );
+	 *		conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search' } );
 	 *
-	 *        conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
+	 *		conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
 	 *
-	 *        conversion.for( 'upcast' ).elementToMarker( {
+	 *		conversion.for( 'upcast' ).elementToMarker( {
 	 *			view: 'marker-search',
 	 *			model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
 	 *		} );
 	 *
-	 *        conversion.for( 'upcast' ).elementToMarker( {
+	 *		conversion.for( 'upcast' ).elementToMarker( {
 	 *			view: {
 	 *				name: 'span',
 	 *				attributes: {
