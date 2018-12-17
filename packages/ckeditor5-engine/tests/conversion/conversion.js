@@ -83,7 +83,7 @@ describe( 'Conversion', () => {
 		} );
 	} );
 
-	describe.only( 'converters', () => {
+	describe( 'converters', () => {
 		let viewDispatcher, model, schema, conversion, modelRoot, viewRoot;
 
 		beforeEach( () => {
