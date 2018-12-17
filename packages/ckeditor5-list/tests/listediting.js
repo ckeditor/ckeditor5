@@ -18,7 +18,6 @@ import { getData as getModelData, parse as parseModel, setData as setModelData }
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ListEditing', () => {
@@ -4026,7 +4025,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -4047,7 +4046,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the end', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -4066,7 +4065,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the beginning', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
