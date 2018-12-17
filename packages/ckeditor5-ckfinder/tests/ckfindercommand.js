@@ -15,7 +15,6 @@ import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageu
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import CKFinderCommand from '../src/ckfindercommand';
 
