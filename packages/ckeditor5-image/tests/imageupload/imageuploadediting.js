@@ -20,7 +20,7 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -656,11 +656,13 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not upload and remove image if fetch failed', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			const expected = '<paragraph>[]foo</paragraph>';
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
+		expectData(
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+			'<paragraph>[]foo</paragraph>',
+			done,
+			false
+		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -679,14 +681,22 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			const expected = '<paragraph>bar</paragraph>' +
-				`<image src="" uploadId="${ adapterMocks[ 0 ].loader.id }" uploadStatus="reading"></image>` +
-				`[<image src="" uploadId="${ adapterMocks[ 1 ].loader.id }" uploadStatus="reading"></image>]` +
-				'<paragraph>foo</paragraph>';
+		const expectedModel = '<paragraph>bar</paragraph>' +
+			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>' +
+			'<image src="" uploadId="#loader2_id" uploadStatus="reading"></image>' +
+			'[<image src="" uploadId="#loader3_id" uploadStatus="reading"></image>]' +
+			'<paragraph>foo</paragraph>';
+		const expectedFinalModel = '<paragraph>bar</paragraph>' +
+			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>' +
+			'[<image src="" uploadId="#loader2_id" uploadStatus="reading"></image>]' +
+			'<paragraph>foo</paragraph>';
 
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
+		expectData(
+			'',
+			expectedModel,
+			expectedFinalModel,
+			done
+		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -717,13 +727,16 @@ describe( 'ImageUploadEditing', () => {
 
 		window.File = undefined;
 
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			window.File = fileFn;
-
-			const expected = '<paragraph>baz[]foo</paragraph>';
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
+		expectData(
+			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
+			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
+			'<paragraph>baz[]foo</paragraph>',
+			err => {
+				window.File = fileFn;
+				done( err );
+			},
+			false
+		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -737,19 +750,15 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
-		const fileFn = window.File;
+		testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
 
-		window.File = function() {
-			throw new Error( 'Function expected.' ); // Simulating Edge browser behaviour here.
-		};
-
-		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			window.File = fileFn;
-
-			const expected = '<paragraph>baz[]foo</paragraph>';
-
-			expectModel( done, getModelData( model ), expected );
-		}, { priority: 'low' } );
+		expectData(
+			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
+			'<paragraph>baz</paragraph>[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
+			'<paragraph>baz[]</paragraph><paragraph>foo</paragraph>',
+			done,
+			false
+		);
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 
@@ -765,8 +774,10 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			tryExpect( done, () => {
-				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
+			loader.file.then( file => {
+				tryExpect( done, () => {
+					expect( file.name.split( '.' ).pop() ).to.equal( 'png' );
+				} );
 			} );
 		}, { priority: 'low' } );
 
@@ -793,8 +804,10 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			tryExpect( done, () => {
-				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
+			loader.file.then( file => {
+				tryExpect( done, () => {
+					expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
+				} );
 			} );
 		}, { priority: 'low' } );
 
@@ -817,7 +830,71 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
+
+	// Helper for validating clipboard and model data as a result of a paste operation. This function checks both clipboard
+	// data and model data synchronously (`expectedClipboardData`, `expectedModel`) and then the model data after `loader.file`
+	// promise is resolved (so model state after successful/failed file fetch attempt).
+	//
+	// @param {String} expectedClipboardData Expected clipboard data on `inputTransformation` event.
+	// @param {String} expectedModel Expected model data on `inputTransformation` event.
+	// @param {String} expectedModelOnFile Expected model data after all `file.loader` promises are fetched.
+	// @param {Function} doneFn Callback function to be called when all assertions are done or error occures.
+	// @param {Boolean} [onSuccess=true] If `expectedModelOnFile` data should be validated
+	// on `loader.file` a promise successful resolution or promise rejection.
+	function expectData( expectedClipboardData, expectedModel, expectedModelOnFile, doneFn, onSuccess ) {
+		// Check data after paste.
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', ( evt, data ) => {
+			const clipboardData = injectLoaderId( expectedClipboardData || '', adapterMocks );
+			const modelData = injectLoaderId( expectedModel, adapterMocks );
+			const finalModelData = injectLoaderId( expectedModelOnFile, adapterMocks );
+
+			if ( clipboardData.length ) {
+				expect( stringifyView( data.content ) ).to.equal( clipboardData );
+			}
+			expect( getModelData( model ) ).to.equal( modelData );
+
+			if ( onSuccess !== false ) {
+				adapterMocks[ 0 ].loader.file.then( () => {
+					// Deffer so the promise could be resolved.
+					setTimeout( () => {
+						expectModel( doneFn, getModelData( model ), finalModelData );
+					} );
+				} );
+			} else {
+				adapterMocks[ 0 ].loader.file.then( () => {
+					expect.fail( 'The `loader.file` should be rejected.' );
+				} ).catch( () => {
+					// Deffer so the promise could be resolved.
+					setTimeout( () => {
+						expectModel( doneFn, getModelData( model ), finalModelData );
+					} );
+				} );
+			}
+		}, { priority: 'low' } );
+	}
 } );
+
+// Replaces '#loaderX_id' parameter in the given string with a loader id. It is used
+// so data string could be created before loader is initialized.
+//
+// @param {String} data String which have 'loader params' replaced.
+// @param {Array.<UploadAdapterMock>} adapters Adapters list. Each adapter holds a reference to a loader which id is used.
+// @returns {String} Data string with 'loader params' replaced.
+function injectLoaderId( data, adapters ) {
+	let newData = data;
+
+	if ( newData.includes( '#loader1_id' ) ) {
+		newData = newData.replace( '#loader1_id', adapters[ 0 ].loader.id );
+	}
+	if ( newData.includes( '#loader2_id' ) ) {
+		newData = newData.replace( '#loader2_id', adapters[ 1 ].loader.id );
+	}
+	if ( newData.includes( '#loader3_id' ) ) {
+		newData = newData.replace( '#loader3_id', adapters[ 2 ].loader.id );
+	}
+
+	return newData;
+}
 
 // Asserts actual and expected model data.
 //
@@ -831,7 +908,8 @@ function expectModel( done, actual, expected ) {
 }
 
 // Runs given expect function in a try-catch. It should be used only when `expect` is called as a result of a `Promise`
-// resolution as all errors may be caught by tested code and needs to be rethrow to be correctly processed by a testing framework.
+// resolution. In such cases all errors may be caught by tested code and needs to be rethrow to be correctly processed
+// by a testing framework.
 //
 // @param {Function} doneFn Function to run when assertion is done.
 // @param {Function} expectFn Function containing all assertions.
