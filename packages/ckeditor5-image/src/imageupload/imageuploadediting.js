@@ -98,29 +98,31 @@ export default class ImageUploadEditing extends Plugin {
 		// For every image file, a new file loader is created and a placeholder image is
 		// inserted into the content. Then, those images are uploaded once they appear in the model
 		// (see Document#change listener below).
-		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
-			const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
-				.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-				.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
+		if ( editor.plugins.has( 'Clipboard' ) ) {
+			this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
+				const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
+					.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+					.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
 
-			if ( !fetchableImages.length ) {
-				return;
-			}
-
-			const writer = new UpcastWriter();
-
-			for ( const fetchableImage of fetchableImages ) {
-				// Set attribute marking that the image was processed already.
-				writer.setAttribute( 'uploadProcessed', true, fetchableImage.imageElement );
-
-				const loader = fileRepository.createLoader( fetchableImage.promise );
-
-				if ( loader ) {
-					writer.setAttribute( 'src', '', fetchableImage.imageElement );
-					writer.setAttribute( 'uploadId', loader.id, fetchableImage.imageElement );
+				if ( !fetchableImages.length ) {
+					return;
 				}
-			}
-		} );
+
+				const writer = new UpcastWriter();
+
+				for ( const fetchableImage of fetchableImages ) {
+					// Set attribute marking that the image was processed already.
+					writer.setAttribute( 'uploadProcessed', true, fetchableImage.imageElement );
+
+					const loader = fileRepository.createLoader( fetchableImage.promise );
+
+					if ( loader ) {
+						writer.setAttribute( 'src', '', fetchableImage.imageElement );
+						writer.setAttribute( 'uploadId', loader.id, fetchableImage.imageElement );
+					}
+				}
+			} );
+		}
 
 		// Prevents from the browser redirecting to the dropped image.
 		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
@@ -255,7 +257,7 @@ export default class ImageUploadEditing extends Plugin {
 		let maxWidth = 0;
 
 		const srcsetAttribute = Object.keys( data )
-			// Filter out keys that are not integers.
+		// Filter out keys that are not integers.
 			.filter( key => {
 				const width = parseInt( key, 10 );
 
