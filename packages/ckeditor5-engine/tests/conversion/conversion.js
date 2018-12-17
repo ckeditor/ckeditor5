@@ -720,6 +720,23 @@ describe( 'Conversion', () => {
 					testUpcast( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 				} );
 			} );
+
+			describe( 'attributeToAttribute()', () => {
+				it( 'adds upcast converter', () => {
+					schema.register( 'image', {
+						inheritAllFrom: '$block',
+						allowAttributes: [ 'source' ]
+					} );
+
+					conversion.for( 'downcast' ).elementToElement( { model: 'image', view: 'img' } );
+					conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
+
+					conversion.for( 'upcast' ).elementToElement( { model: 'image', view: 'img' } );
+					conversion.for( 'upcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
+
+					testUpcast( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+				} );
+			} );
 		} );
 
 		function testDowncast( input, expectedView ) {

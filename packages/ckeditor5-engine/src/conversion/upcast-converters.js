@@ -735,5 +735,86 @@ export const helpers = {
 	 */
 	elementToAttribute( config ) {
 		return this.add( upcastElementToAttribute( config ) );
+	},
+
+	/**
+	 * View attribute to model attribute conversion helper.
+	 *
+	 * This conversion results in setting an attribute on a model node. For example, view `<img src="foo.jpg"></img>` becomes
+	 * `<image source="foo.jpg"></image>` in the model.
+	 *
+	 * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
+	 * is set only on the corresponding model node:
+	 *
+	 *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
+	 *
+	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
+	 * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute} which sets attributes for all the children in the model:
+	 *
+	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 *
+	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
+	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
+	 *
+	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: 'src', model: 'source' } );
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				key: 'data-style',
+	 *				value: /[\s\S]+/
+	 *			},
+	 *			model: 'styled'
+	 *		} );
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				name: 'img',
+	 *				key: 'class',
+	 *				value: 'styled-dark'
+	 *			},
+	 *			model: {
+	 *				key: 'styled',
+	 *				value: 'dark'
+	 *			}
+	 *		} );
+	 *
+	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: {
+	 *				key: 'class',
+	 *				value: /styled-[\S]+/
+	 *			},
+	 *			model: {
+	 *				key: 'styled'
+	 *				value: viewElement => {
+	 *					const regexp = /styled-([\S]+)/;
+	 *					const match = viewElement.getAttribute( 'class' ).match( regexp );
+	 *
+	 *					return match[ 1 ];
+	 *				}
+	 *			}
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 *
+	 * @param {Object} config Conversion configuration.
+	 * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
+	 * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
+	 * specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
+	 * property specifying a view element name from/on which the attribute should be converted. `value` can be given as a `String`,
+	 * a `RegExp` or a function callback, that takes view attribute value as the only parameter and returns `Boolean`.
+	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
+	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
+	 * If `String` is given, the model attribute value will be same as view attribute value.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
+	 * @returns {Function} Conversion helper.
+	 */
+	attributeToAttribute( config ) {
+		return this.add( upcastAttributeToAttribute( config ) );
 	}
 };
