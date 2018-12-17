@@ -24,9 +24,9 @@ import {
 } from '../../src/conversion/upcast-converters';
 
 import {
-	downcastElementToElement,
-	downcastAttributeToElement,
-	downcastMarkerToHighlight
+	_downcastElementToElement,
+	_downcastAttributeToElement,
+	_downcastMarkerToHighlight
 } from '../../src/conversion/downcast-converters';
 
 describe( 'DataController', () => {
@@ -285,7 +285,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -294,7 +294,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -303,7 +303,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -319,7 +319,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -328,8 +328,8 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
@@ -341,8 +341,8 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
@@ -358,7 +358,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should stringify a content of an element', () => {
@@ -382,7 +382,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should convert a content of an element', () => {
@@ -403,7 +403,7 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
+			_downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
@@ -421,8 +421,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
-			downcastMarkerToHighlight( { model: 'marker:b', view: { classes: 'b' } } )( data.downcastDispatcher );
+			_downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
+			_downcastMarkerToHighlight( { model: 'marker:b', view: { classes: 'b' } } )( data.downcastDispatcher );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );

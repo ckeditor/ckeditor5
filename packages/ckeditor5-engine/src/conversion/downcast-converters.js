@@ -24,11 +24,11 @@ import { cloneDeep } from 'lodash-es';
  *
  * This conversion results in creating a view element. For example, model `<paragraph>Foo</paragraph>` becomes `<p>Foo</p>` in the view.
  *
- *		downcastElementToElement( { model: 'paragraph', view: 'p' } );
+ *		_downcastElementToElement( { model: 'paragraph', view: 'p' } );
  *
- *		downcastElementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
+ *		_downcastElementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
  *
- *		downcastElementToElement( {
+ *		_downcastElementToElement( {
  *			model: 'fancyParagraph',
  *			view: {
  *				name: 'p',
@@ -36,7 +36,7 @@ import { cloneDeep } from 'lodash-es';
  *			}
  *		} );
  *
- *		downcastElementToElement( {
+ *		_downcastElementToElement( {
  *			model: 'heading',
  *			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
  *		} );
@@ -44,6 +44,7 @@ import { cloneDeep } from 'lodash-es';
  * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
  * to the conversion process.
  *
+ * @protected
  * @param {Object} config Conversion configuration.
  * @param {String} config.model The name of the model element to convert.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
@@ -51,7 +52,7 @@ import { cloneDeep } from 'lodash-es';
  * as parameters and returns a view container element.
  * @returns {Function} Conversion helper.
  */
-export function downcastElementToElement( config ) {
+export function _downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
 	config.view = _normalizeToElementConfig( config.view, 'container' );
@@ -67,11 +68,11 @@ export function downcastElementToElement( config ) {
  * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
  * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
  *
- *		downcastAttributeToElement( { model: 'bold', view: 'strong' } );
+ *		_downcastAttributeToElement( { model: 'bold', view: 'strong' } );
  *
- *		downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
+ *		_downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
  *
- *		downcastAttributeToElement( {
+ *		_downcastAttributeToElement( {
  *			model: 'invert',
  *			view: {
  *				name: 'span',
@@ -79,7 +80,7 @@ export function downcastElementToElement( config ) {
  *			}
  *		} );
  *
- *		downcastAttributeToElement( {
+ *		_downcastAttributeToElement( {
  *			model: {
  *				key: 'fontSize',
  *				values: [ 'big', 'small' ]
@@ -100,14 +101,14 @@ export function downcastElementToElement( config ) {
  *			}
  *		} );
  *
- *		downcastAttributeToElement( {
+ *		_downcastAttributeToElement( {
  *			model: 'bold',
  *				view: ( modelAttributeValue, viewWriter ) => {
  *				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
  *			}
  *		} );
  *
- *		downcastAttributeToElement( {
+ *		_downcastAttributeToElement( {
  *			model: {
  *				key: 'color',
  *				name: '$text'
@@ -120,6 +121,7 @@ export function downcastElementToElement( config ) {
  * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
  * to the conversion process.
  *
+ * @protected
  * @param {Object} config Conversion configuration.
  * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
  * of `String`s with possible values if the model attribute is an enumerable.
@@ -130,7 +132,7 @@ export function downcastElementToElement( config ) {
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function downcastAttributeToElement( config ) {
+export function _downcastAttributeToElement( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
@@ -161,11 +163,11 @@ export function downcastAttributeToElement( config ) {
  * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
  * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
  *
- *		downcastAttributeToAttribute( { model: 'source', view: 'src' } );
+ *		_downcastAttributeToAttribute( { model: 'source', view: 'src' } );
  *
- *		downcastAttributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
+ *		_downcastAttributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
  *
- *		downcastAttributeToAttribute( {
+ *		_downcastAttributeToAttribute( {
  *			model: {
  *				name: 'image',
  *				key: 'source'
@@ -173,7 +175,7 @@ export function downcastAttributeToElement( config ) {
  *			view: 'src'
  *		} );
  *
- *		downcastAttributeToAttribute( {
+ *		_downcastAttributeToAttribute( {
  *			model: {
  *				name: 'styled',
  *				values: [ 'dark', 'light' ]
@@ -190,7 +192,7 @@ export function downcastAttributeToElement( config ) {
  *			}
  *		} );
  *
- *		downcastAttributeToAttribute( {
+ *		_downcastAttributeToAttribute( {
  *			model: 'styled',
  *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
  *		} );
@@ -198,6 +200,7 @@ export function downcastAttributeToElement( config ) {
  * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
  * to the conversion process.
  *
+ * @protected
  * @param {Object} config Conversion configuration.
  * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
  * the attribute key, possible values and, optionally, an element name to convert from.
@@ -209,7 +212,7 @@ export function downcastAttributeToElement( config ) {
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function downcastAttributeToAttribute( config ) {
+export function _downcastAttributeToAttribute( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
@@ -241,11 +244,11 @@ export function downcastAttributeToAttribute( config ) {
  * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
  * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
  *
- *		downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
+ *		_downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
  *
- *		downcastMarkerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
+ *		_downcastMarkerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
  *
- *		downcastMarkerToElement( {
+ *		_downcastMarkerToElement( {
  *			model: 'search',
  *			view: {
  *				name: 'span',
@@ -255,7 +258,7 @@ export function downcastAttributeToAttribute( config ) {
  *			}
  *		} );
  *
- *		downcastMarkerToElement( {
+ *		_downcastMarkerToElement( {
  *			model: 'search',
  *			view: ( markerData, viewWriter ) => {
  *			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
@@ -273,6 +276,7 @@ export function downcastAttributeToAttribute( config ) {
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
+ * @protected
  * @param {Object} config Conversion configuration.
  * @param {String} config.model The name of the model marker (or model marker group) to convert.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
@@ -280,7 +284,7 @@ export function downcastAttributeToAttribute( config ) {
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function downcastMarkerToElement( config ) {
+export function _downcastMarkerToElement( config ) {
 	config = cloneDeep( config );
 
 	config.view = _normalizeToElementConfig( config.view, 'ui' );
@@ -333,6 +337,7 @@ export function downcastMarkerToElement( config ) {
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
+ * @protected
  * @param {Object} config Conversion configuration.
  * @param {String} config.model The name of the model marker (or model marker group) to convert.
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
@@ -340,7 +345,7 @@ export function downcastMarkerToElement( config ) {
  * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function downcastMarkerToHighlight( config ) {
+export function _downcastMarkerToHighlight( config ) {
 	return dispatcher => {
 		dispatcher.on( 'addMarker:' + config.model, highlightText( config.view ), { priority: config.converterPriority || 'normal' } );
 		dispatcher.on( 'addMarker:' + config.model, highlightElement( config.view ), { priority: config.converterPriority || 'normal' } );
@@ -694,7 +699,7 @@ export function changeAttribute( attributeCreator ) {
 			 * by {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
-			 *		editor.conversion.for( 'downcast' ).add( downcastAttributeToAttribute( {
+			 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 			 *			model: 'attribute-name',
 			 *			view: 'attribute-name'
 			 *		} ) );
@@ -710,7 +715,7 @@ export function changeAttribute( attributeCreator ) {
 			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
 			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
 			 *
-			 *		conversion.for( 'downcast' ).add( downcastAttributeToElement( {
+			 *		conversion.for( 'downcast' ).attributeToElement( {
 			 *			model: {
 			 *				key: 'attribute-name',
 			 *				name: '$text'
@@ -1144,7 +1149,7 @@ export const helpers = {
 	 * as parameters and returns a view container element.
 	 */
 	elementToElement( config ) {
-		return this.add( downcastElementToElement( config ) );
+		return this.add( _downcastElementToElement( config ) );
 	},
 
 	/**
@@ -1218,7 +1223,7 @@ export const helpers = {
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 */
 	attributeToElement( config ) {
-		return this.add( downcastAttributeToElement( config ) );
+		return this.add( _downcastAttributeToElement( config ) );
 	},
 
 	/**
@@ -1277,7 +1282,7 @@ export const helpers = {
 	 * @returns {Function} Conversion helper.
 	 */
 	attributeToAttribute( config ) {
-		return this.add( downcastAttributeToAttribute( config ) );
+		return this.add( _downcastAttributeToAttribute( config ) );
 	},
 
 	/**
@@ -1328,7 +1333,7 @@ export const helpers = {
 	 * @returns {Function} Conversion helper.
 	 */
 	markerToElement( config ) {
-		return this.add( downcastMarkerToElement( config ) );
+		return this.add( _downcastMarkerToElement( config ) );
 	},
 
 	/**
@@ -1386,6 +1391,6 @@ export const helpers = {
 	 * @returns {Function} Conversion helper.
 	 */
 	markerToHighlight( config ) {
-		return this.add( downcastMarkerToHighlight( config ) );
+		return this.add( _downcastMarkerToHighlight( config ) );
 	}
 };

@@ -12,10 +12,6 @@ import {
 	upcastElementToElement
 } from '../../src/conversion/upcast-converters';
 
-import {
-	downcastElementToElement
-} from '../../src/conversion/downcast-converters';
-
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
@@ -54,10 +50,10 @@ function WidgetPlugin( editor ) {
 	} );
 	schema.extend( 'widget', { allowIn: '$root' } );
 
-	editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'widget',
 		view: 'widget'
-	} ) );
+	} );
 
 	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
 		model: 'widget',

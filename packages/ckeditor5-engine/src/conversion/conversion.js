@@ -10,12 +10,6 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import {
-	downcastElementToElement,
-	downcastAttributeToElement,
-	downcastAttributeToAttribute
-} from './downcast-converters';
-
-import {
 	upcastElementToElement,
 	upcastElementToAttribute,
 	upcastAttributeToAttribute
@@ -40,12 +34,12 @@ import {
  * method:
  *
  *		// Add a converter to editing downcast and data downcast.
- *		editor.conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
+ *		editor.conversion.for( 'downcast' ).for( 'downcast' ).elementToElement( config ) );
  *
  *		// Add a converter to the data pipepline only:
- *		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( dataConversionConfig ) );
+ *		editor.conversion.for( 'dataDowncast' ).for( 'downcast' ).elementToElement( dataConversionConfig ) );
  *		// And a slightly different one for the editing pipeline:
- *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( editingConversionConfig ) );
+ *		editor.conversion.for( 'editingDowncast' ).for( 'downcast' ).elementToElement( editingConversionConfig ) );
  *
  * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
  * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
@@ -127,9 +121,9 @@ export default class Conversion {
 	 *
 	 * For downcast (model-to-view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-converters~downcastElementToElement Downcast element-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToElement Downcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToAttribute Downcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/downcast-converters~_downcastElementToElement Downcast element-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~_downcastAttributeToElement Downcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~_downcastAttributeToAttribute Downcast attribute-to-attribute converter}.
 	 *
 	 * For upcast (view-to-model conversion), these are:
 	 *
@@ -143,7 +137,7 @@ export default class Conversion {
 	 *		const config = { model: 'paragraph', view: 'p' };
 	 *
 	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
+	 *		conversion.for( 'downcast' ).for( 'downcast' ).elementToElement( config ) );
 	 *		conversion.for( 'upcast' ).add( upcastElementToElement( config ) );
 	 *
 	 * An example of providing a custom conversion helper that uses a custom converter function:
@@ -243,7 +237,7 @@ export default class Conversion {
 	 */
 	elementToElement( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastElementToElement( definition ) );
+		this.for( 'downcast' ).elementToElement( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
@@ -416,7 +410,7 @@ export default class Conversion {
 	 */
 	attributeToElement( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastAttributeToElement( definition ) );
+		this.for( 'downcast' ).attributeToElement( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
@@ -542,7 +536,7 @@ export default class Conversion {
 	 */
 	attributeToAttribute( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastAttributeToAttribute( definition ) );
+		this.for( 'downcast' ).attributeToAttribute( definition );
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
