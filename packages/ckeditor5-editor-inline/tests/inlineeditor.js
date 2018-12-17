@@ -10,9 +10,6 @@ import InlineEditorUIView from '../src/inlineeditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import InlineEditor from '../src/inlineeditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -270,12 +267,12 @@ describe( 'InlineEditor', () => {
 					schema.extend( 'heading', { allowIn: '$root' } );
 					schema.extend( '$text', { allowIn: 'heading' } );
 
-					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading', view: 'heading' } ) );
-					editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( { model: 'heading', view: 'heading' } ) );
-					editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
+					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
+					editor.conversion.for( 'editingDowncast' ).elementToElement( {
 						model: 'heading',
 						view: 'heading-editing-representation'
-					} ) );
+					} );
 				} );
 		} );
 
