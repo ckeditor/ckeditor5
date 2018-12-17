@@ -658,5 +658,82 @@ export const helpers = {
 	 */
 	elementToElement( config ) {
 		return this.add( upcastElementToElement( config ) );
+	},
+
+	/**
+	 * View element to model attribute conversion helper.
+	 *
+	 * This conversion results in setting an attribute on a model node. For example, view `<strong>Foo</strong>` becomes
+	 * `Foo` {@link module:engine/model/text~Text model text node} with `bold` attribute set to `true`.
+	 *
+	 * This helper is meant to set a model attribute on all the elements that are inside the converted element:
+	 *
+	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+	 *
+	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
+	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
+	 * {@link module:engine/conversion/upcast-converters~UpcastHelpers#attributeToAttribute} for comparison.
+	 *
+	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 *
+	 *		conversion.for( 'upcast' ).elementToAttribute( { view: 'strong', model: 'bold' } );
+	 *
+	 *		conversion.for( 'upcast' ).elementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
+	 *
+	 *		conversion.for( 'upcast' ).elementToAttribute( {
+	 *			view: {
+	 *				name: 'span',
+	 *				classes: 'bold'
+	 *			},
+	 *			model: 'bold'
+	 *		} );
+	 *
+	 *		conversion.for( 'upcast' ).elementToAttribute( {
+	 *			view: {
+	 *				name: 'span',
+	 *				classes: [ 'styled', 'styled-dark' ]
+	 *			},
+	 *			model: {
+	 *				key: 'styled',
+	 *				value: 'dark'
+	 *			}
+	 *		} );
+	 *
+	 * 		conversion.for( 'upcast' ).elementToAttribute( {
+	 *			view: {
+	 *				name: 'span',
+	 *				styles: {
+	 *					'font-size': /[\s\S]+/
+	 *				}
+	 *			},
+	 *			model: {
+	 *				key: 'fontSize',
+	 *				value: viewElement => {
+	 *					const fontSize = viewElement.getStyle( 'font-size' );
+	 *					const value = fontSize.substr( 0, fontSize.length - 2 );
+	 *
+	 *					if ( value <= 10 ) {
+	 *						return 'small';
+	 *					} else if ( value > 12 ) {
+	 *						return 'big';
+	 *					}
+	 *
+	 *					return null;
+	 *				}
+	 *			}
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 *
+	 * @param {Object} config Conversion configuration.
+	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
+	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
+	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
+	 * If `String` is given, the model attribute value will be set to `true`.
+	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {module:engine/conversion/conversion~Conversion} Conversion helper.
+	 */
+	elementToAttribute( config ) {
+		return this.add( upcastElementToAttribute( config ) );
 	}
 };

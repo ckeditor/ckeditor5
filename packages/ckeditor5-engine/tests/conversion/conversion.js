@@ -83,7 +83,7 @@ describe( 'Conversion', () => {
 		} );
 	} );
 
-	describe( 'converters', () => {
+	describe.only( 'converters', () => {
 		let viewDispatcher, model, schema, conversion, modelRoot, viewRoot;
 
 		beforeEach( () => {
@@ -700,12 +700,24 @@ describe( 'Conversion', () => {
 
 		describe( 'for( \'upcast\' )', () => {
 			describe( 'elementToElement()', () => {
-				it( 'adds downcast converter', () => {
+				it( 'adds upcast converter', () => {
 					conversion.for( 'upcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 					// TODO this shouldn't be required
 					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
 
 					testUpcast( '<p>foo</p>', '<paragraph>foo</paragraph>' );
+				} );
+			} );
+
+			describe( 'elementToAttribute()', () => {
+				it( 'adds upcast converter', () => {
+					conversion.for( 'upcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+
+					conversion.for( 'upcast' ).elementToAttribute( { model: 'bold', view: 'strong' } );
+					conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
+
+					testUpcast( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 				} );
 			} );
 		} );
