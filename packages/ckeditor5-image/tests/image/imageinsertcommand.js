@@ -9,7 +9,6 @@ import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import Image from '../../src/image/imageediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageInsertCommand', () => {
@@ -59,7 +58,7 @@ describe( 'ImageInsertCommand', () => {
 		it( 'should be true when the selection directly in a block', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			model.schema.extend( '$text', { allowIn: 'block' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
@@ -76,14 +75,14 @@ describe( 'ImageInsertCommand', () => {
 				allowContentOf: '$block',
 				isLimit: true
 			} );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'caption', view: 'figcaption' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
 			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'should be false when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
 			expect( command.isEnabled ).to.be.false;
@@ -92,7 +91,7 @@ describe( 'ImageInsertCommand', () => {
 		it( 'should be false when the selection is inside other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			model.schema.extend( '$text', { allowIn: 'object' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '<object>[]</object>' );
 
 			expect( command.isEnabled ).to.be.false;
@@ -107,7 +106,7 @@ describe( 'ImageInsertCommand', () => {
 					return false;
 				}
 			} );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -147,7 +146,7 @@ describe( 'ImageInsertCommand', () => {
 			} );
 			model.schema.extend( '$text', { allowIn: 'other' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
 			setModelData( model, '<other>[]</other>' );
 

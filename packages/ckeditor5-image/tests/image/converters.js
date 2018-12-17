@@ -11,9 +11,6 @@ import { toImageWidget } from '../../src/image/utils';
 import { createImageViewElement } from '../../src/image/imageediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -47,10 +44,10 @@ describe( 'Image converters', () => {
 				const editingElementCreator = ( modelElement, viewWriter ) =>
 					toImageWidget( createImageViewElement( viewWriter ), viewWriter, '' );
 
-				editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+				editor.conversion.for( 'editingDowncast' ).elementToElement( {
 					model: 'image',
 					view: editingElementCreator
-				} ) );
+				} );
 
 				editor.conversion.for( 'downcast' )
 					.add( modelToViewAttributeConverter( 'src' ) )
@@ -75,7 +72,7 @@ describe( 'Image converters', () => {
 
 			editor.conversion.for( 'upcast' )
 				.add( viewFigureToModel() )
-				.add( upcastElementToElement( {
+				.elementToElement( {
 					view: {
 						name: 'img',
 						attributes: {
@@ -87,7 +84,7 @@ describe( 'Image converters', () => {
 
 						return writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
 					}
-				} ) );
+				} );
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
@@ -98,8 +95,8 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert children allowed by schema and omit disallowed', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'foo', model: 'foo' } ) );
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'bar', model: 'bar' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'foo', model: 'foo' } );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'bar', model: 'bar' } );
 
 			schema.register( 'foo', { allowIn: 'image' } );
 			// Is allowed in root, but should not try to split image element.
@@ -112,7 +109,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );

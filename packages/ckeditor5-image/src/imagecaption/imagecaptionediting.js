@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { isImage } from '../image/utils';
 import {
 	captionElementCreator,
@@ -55,10 +54,10 @@ export default class ImageCaptionEditing extends Plugin {
 		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
 
 		// View to model converter for the data pipeline.
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: matchImageCaption,
 			model: 'caption'
-		} ) );
+		} );
 
 		// Model to view converter for the data pipeline.
 		const createCaptionForData = writer => writer.createContainerElement( 'figcaption' );
