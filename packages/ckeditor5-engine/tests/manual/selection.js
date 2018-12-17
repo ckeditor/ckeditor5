@@ -5,8 +5,6 @@
 
 /* global console */
 
-import { downcastElementToElement } from '../../src/conversion/downcast-converters';
-
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -48,20 +46,20 @@ class SelectionTest extends Plugin {
 		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'table',
 			view: ( modelItem, viewWriter ) => {
 				return toWidget( viewWriter.createContainerElement( 'table' ), viewWriter );
 			}
-		} ) );
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+		} );
+		editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'tableCell',
 			view: ( modelItem, viewWriter ) => {
 				return toWidgetEditable( viewWriter.createEditableElement( 'td' ), viewWriter );
 			}
-		} ) );
+		} );
 	}
 }
 

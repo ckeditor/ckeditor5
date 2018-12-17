@@ -15,10 +15,6 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import {
-	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-converters';
-
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
@@ -35,7 +31,7 @@ ClassicEditor
 		window.editor = editor;
 		model = editor.model;
 
-		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'highlight',
 			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
@@ -45,9 +41,9 @@ ClassicEditor
 					priority: 1
 				};
 			}
-		} ) );
+		} );
 
-		editor.conversion.for( 'dataDowncast' ).add( downcastMarkerToHighlight( {
+		editor.conversion.for( 'dataDowncast' ).markerToHighlight( {
 			model: 'highlight',
 			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
@@ -57,7 +53,7 @@ ClassicEditor
 					priority: 1
 				};
 			}
-		} ) );
+		} );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();

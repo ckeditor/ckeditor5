@@ -15,10 +15,6 @@ import {
 	upcastElementToAttribute
 } from '../../../../src/conversion/upcast-converters';
 
-import {
-	downcastAttributeToElement,
-} from '../../../../src/conversion/downcast-converters';
-
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -31,12 +27,12 @@ class Link extends Plugin {
 		// Allow bold attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( {
+		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'link',
 			view: ( modelAttributeValue, viewWriter ) => {
 				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
 			}
-		} ) );
+		} );
 
 		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
 			view: 'a',
