@@ -5,10 +5,6 @@
 
 /* global console, window, document */
 
-import {
-	upcastElementToElement,
-} from '../../src/conversion/upcast-converters';
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -49,11 +45,10 @@ class FancyWidget extends Plugin {
 			}
 		} );
 
-		conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
-				view: 'figure',
-				model: 'fancywidget'
-			} ) );
+		conversion.for( 'upcast' ).elementToElement( {
+			view: 'figure',
+			model: 'fancywidget'
+		} );
 	}
 }
 

@@ -5,10 +5,6 @@
 
 /* global console */
 
-import {
-	upcastElementToElement
-} from '../../src/conversion/upcast-converters';
-
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -47,10 +43,10 @@ class NestedEditable extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'figure',
 			view: 'figure'
-		} ) );
+		} );
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'figcaption',
@@ -69,10 +65,10 @@ class NestedEditable extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'figcaption',
 			view: 'figcaption'
-		} ) );
+		} );
 	}
 }
 

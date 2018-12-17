@@ -14,7 +14,6 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import { upcastElementToElement } from '../../src/conversion/upcast-converters';
 
 import './selection.css';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -42,9 +41,9 @@ class SelectionTest extends Plugin {
 			isLimit: true
 		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'table', view: 'table' } ) );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'table', view: 'table' } );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'table',

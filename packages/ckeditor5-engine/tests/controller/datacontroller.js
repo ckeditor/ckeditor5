@@ -19,8 +19,8 @@ import { parse as parseView, stringify as stringifyView } from '../../src/dev-ut
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 import {
-	upcastElementToElement,
-	upcastElementToAttribute
+	_upcastElementToElement,
+	_upcastElementToAttribute
 } from '../../src/conversion/upcast-converters';
 
 import {
@@ -68,7 +68,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			_upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -79,7 +79,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			_upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -93,8 +93,8 @@ describe( 'DataController', () => {
 				allowAttributes: [ 'bold' ]
 			} );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
-			upcastElementToAttribute( { view: 'strong', model: 'bold' } )( data.upcastDispatcher );
+			_upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			_upcastElementToAttribute( { view: 'strong', model: 'bold' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
@@ -119,7 +119,7 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			_upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 		} );
 
 		it( 'should convert content of an element #1', () => {

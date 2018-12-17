@@ -8,10 +8,6 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import {
-	upcastElementToElement
-} from '../../src/conversion/upcast-converters';
-
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
@@ -55,8 +51,8 @@ function WidgetPlugin( editor ) {
 		view: 'widget'
 	} );
 
-	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+	editor.conversion.for( 'upcast' ).elementToElement( {
 		model: 'widget',
 		view: 'widget'
-	} ) );
+	} );
 }

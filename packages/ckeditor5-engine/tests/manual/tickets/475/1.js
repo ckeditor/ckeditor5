@@ -11,10 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Range from '../../../../src/model/range';
 import LivePosition from '../../../../src/model/liveposition';
 
-import {
-	upcastElementToAttribute
-} from '../../../../src/conversion/upcast-converters';
-
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -34,13 +30,13 @@ class Link extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: 'a',
 			model: {
 				key: 'link',
 				value: viewElement => viewElement.getAttribute( 'href' )
 			}
-		} ) );
+		} );
 	}
 }
 

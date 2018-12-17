@@ -9,12 +9,6 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import {
-	upcastElementToElement,
-	upcastElementToAttribute,
-	upcastAttributeToAttribute
-} from './upcast-converters';
-
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
  *
@@ -34,12 +28,12 @@ import {
  * method:
  *
  *		// Add a converter to editing downcast and data downcast.
- *		editor.conversion.for( 'downcast' ).for( 'downcast' ).elementToElement( config ) );
+ *		editor.conversion.for( 'downcast' ).elementToElement( config ) );
  *
  *		// Add a converter to the data pipepline only:
- *		editor.conversion.for( 'dataDowncast' ).for( 'downcast' ).elementToElement( dataConversionConfig ) );
+ *		editor.conversion.for( 'dataDowncast' ).elementToElement( dataConversionConfig ) );
  *		// And a slightly different one for the editing pipeline:
- *		editor.conversion.for( 'editingDowncast' ).for( 'downcast' ).elementToElement( editingConversionConfig ) );
+ *		editor.conversion.for( 'editingDowncast' ).elementToElement( editingConversionConfig ) );
  *
  * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
  * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
@@ -127,9 +121,9 @@ export default class Conversion {
 	 *
 	 * For upcast (view-to-model conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToElement Upcast element-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute Upcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute Upcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/upcast-converters~_upcastElementToElement Upcast element-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~_upcastElementToAttribute Upcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~_upcastAttributeToAttribute Upcast attribute-to-attribute converter}.
 	 *
 	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
 	 *
@@ -137,8 +131,8 @@ export default class Conversion {
 	 *		const config = { model: 'paragraph', view: 'p' };
 	 *
 	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'downcast' ).for( 'downcast' ).elementToElement( config ) );
-	 *		conversion.for( 'upcast' ).add( upcastElementToElement( config ) );
+	 *		conversion.for( 'downcast' ).elementToElement( config ) );
+	 *		conversion.for( 'upcast' ).elementToElement( config ) );
 	 *
 	 * An example of providing a custom conversion helper that uses a custom converter function:
 	 *
@@ -241,13 +235,12 @@ export default class Conversion {
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastElementToElement( {
+			this.for( 'upcast' )
+				.elementToElement( {
 					model,
 					view,
 					converterPriority: definition.converterPriority
-				} )
-			);
+				} );
 		}
 	}
 
@@ -414,13 +407,12 @@ export default class Conversion {
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastElementToAttribute( {
+			this.for( 'upcast' )
+				.elementToAttribute( {
 					view,
 					model,
 					converterPriority: definition.priority
-				} )
-			);
+				} );
 		}
 	}
 
@@ -540,12 +532,11 @@ export default class Conversion {
 
 		// Set up upcast converter.
 		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
-			this.for( 'upcast' ).add(
-				upcastAttributeToAttribute( {
+			this.for( 'upcast' )
+				.attributeToAttribute( {
 					view,
 					model
-				} )
-			);
+				} );
 		}
 	}
 
