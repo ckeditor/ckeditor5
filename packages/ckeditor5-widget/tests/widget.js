@@ -7,7 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Widget from '../src/widget';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -76,12 +75,12 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
-					.add( downcastElementToElement( { model: 'inline', view: 'figure' } ) )
-					.add( downcastElementToElement( { model: 'image', view: 'img' } ) )
-					.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) )
-					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
-					.add( downcastElementToElement( {
+					.elementToElement( { model: 'paragraph', view: 'p' } )
+					.elementToElement( { model: 'inline', view: 'figure' } )
+					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
+					.elementToElement( { model: 'div', view: 'div' } )
+					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, viewWriter ) => {
 							const b = viewWriter.createAttributeElement( 'b' );
@@ -90,15 +89,15 @@ describe( 'Widget', () => {
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
-					} ) )
-					.add( downcastElementToElement( {
+					} )
+					.elementToElement( {
 						model: 'nested',
 						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
-					} ) )
-					.add( downcastElementToElement( {
+					} )
+					.elementToElement( {
 						model: 'editable',
 						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
-					} ) );
+					} );
 			} );
 	} );
 
@@ -1192,19 +1191,19 @@ describe( 'Widget', () => {
 					} );
 
 					editor.conversion.for( 'downcast' )
-						.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
-						.add( downcastElementToElement( {
+						.elementToElement( { model: 'paragraph', view: 'p' } )
+						.elementToElement( {
 							model: 'widget',
 							view: ( modelItem, viewWriter ) => {
 								const widget = viewWriter.createContainerElement( 'div' );
 
 								return toWidget( widget, viewWriter, { hasSelectionHandler: true } );
 							}
-						} ) )
-						.add( downcastElementToElement( {
+						} )
+						.elementToElement( {
 							model: 'nested',
 							view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
-						} ) );
+						} );
 				} );
 		} );
 

@@ -9,8 +9,6 @@ import Widget from '../../src/widget';
 import { toWidget } from '../../src/utils';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -24,17 +22,17 @@ function MyPlugin( editor ) {
 		allowIn: 'div'
 	} );
 
-	editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: 'div',
 		view: ( modelElement, writer ) => {
 			return toWidget( writer.createContainerElement( 'div', { class: 'widget' } ), writer );
 		}
-	} ) );
+	} );
 
-	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+	editor.conversion.for( 'upcast' ).elementToElement( {
 		model: 'div',
 		view: 'div'
-	} ) );
+	} );
 }
 
 ClassicEditor

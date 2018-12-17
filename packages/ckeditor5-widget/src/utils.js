@@ -61,22 +61,22 @@ export function isWidget( node ) {
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			.add( downcastElementToElement( {
+ *			elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
  *
  *					return toWidget( div, writer, { label: 'some widget' } );
  *				}
- *			} ) );
+ *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			.add( downcastElementToElement( {
+ *			elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'widget' } );
  *				}
- *			} ) );
+ *			} );
  *
  * See the full source code of the widget (with a nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
@@ -193,22 +193,22 @@ export function getLabel( element ) {
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			.add( downcastElementToElement( {
+ *			elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
  *					return toWidgetEditable( nested, writer );
  *				}
- *			} ) );
+ *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			.add( downcastElementToElement( {
+ *			elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'nested' } );
  *				}
- *			} ) );
+ *			} );
  *
  * See the full source code of the widget (with nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).

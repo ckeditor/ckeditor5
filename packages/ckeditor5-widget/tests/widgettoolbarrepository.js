@@ -13,8 +13,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
 import { isWidget, toWidget } from '../src/utils';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -326,14 +324,14 @@ class FakeWidget extends Plugin {
 
 		const conversion = editor.conversion;
 
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'fake-widget',
 			view: ( modelElement, viewWriter ) => {
 				return viewWriter.createContainerElement( 'div' );
 			}
-		} ) );
+		} );
 
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fake-widget',
 			view: ( modelElement, viewWriter ) => {
 				const fakeWidget = viewWriter.createContainerElement( 'div' );
@@ -341,15 +339,15 @@ class FakeWidget extends Plugin {
 
 				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
 			}
-		} ) );
+		} );
 
-		conversion.for( 'upcast' ).add( upcastElementToElement( {
+		conversion.for( 'upcast' ).elementToElement( {
 			view: {
 				name: 'div'
 			},
 			model: ( view, modelWriter ) => {
 				return modelWriter.createElement( 'fake-widget' );
 			}
-		} ) );
+		} );
 	}
 }
