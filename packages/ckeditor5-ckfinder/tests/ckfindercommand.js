@@ -67,7 +67,7 @@ describe( 'CKFinderCommand', () => {
 			// Block link attribute.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -85,7 +85,7 @@ describe( 'CKFinderCommand', () => {
 				}
 			} );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -99,7 +99,7 @@ describe( 'CKFinderCommand', () => {
 			// Block link attribute - image is not allowed in 'block'.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -345,7 +345,7 @@ describe( 'CKFinderCommand', () => {
 				}
 			} );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -374,7 +374,7 @@ describe( 'CKFinderCommand', () => {
 			} );
 			model.schema.extend( '$text', { allowIn: 'other' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
 			setModelData( model, '<other>[]</other>' );
 
