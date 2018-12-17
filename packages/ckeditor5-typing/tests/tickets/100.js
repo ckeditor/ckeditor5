@@ -10,9 +10,6 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Input from '../../src/input';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
@@ -50,15 +47,15 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+				editor.conversion.for( 'downcast' ).elementToElement( {
 					model: 'image',
 					view: 'img'
-				} ) );
+				} );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+				editor.conversion.for( 'upcast' ).elementToElement( {
 					view: 'img',
 					model: 'image'
-				} ) );
+				} );
 
 				// Disable MO completely and in a way it won't be reenabled on some Document#render() call.
 				const mutationObserver = view.getObserver( MutationObserver );
