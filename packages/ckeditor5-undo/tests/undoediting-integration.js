@@ -16,9 +16,6 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEditing integration', () => {
@@ -853,8 +850,8 @@ describe( 'UndoEditing integration', () => {
 				allowContentOf: '$root'
 			} );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'div', view: 'div' } );
+			editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
