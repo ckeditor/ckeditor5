@@ -14,8 +14,8 @@ import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
-import { helpers as downcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { helpers as upcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { downcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
