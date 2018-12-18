@@ -10,4 +10,8 @@
 
 	/* Make sure there is some space between the content and the media. */
 	margin: 1em 0;
+
+	/* Make sure media is not overriden with Bootstrap default `flex` value.
+	See: https://github.com/ckeditor/ckeditor5/issues/1373. */
+	display: block;
 }
