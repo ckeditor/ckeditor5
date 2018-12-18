@@ -8,7 +8,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { helpers as upcastHelpers, convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import { upcastHelpers, convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import { downcastHelpers } from '../../src/conversion/downcast-converters';
 
 import EditingController from '../../src/controller/editingcontroller';
 
@@ -16,7 +17,6 @@ import Model from '../../src/model/model';
 
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { setData, stringify as modelStringify } from '../../src/dev-utils/model';
-import { helpers as downcastHelpers } from '../../src/conversion/downcast-converters';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 import ViewUIElement from '../../src/view/uielement';

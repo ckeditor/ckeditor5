@@ -468,7 +468,7 @@ export function convertText() {
  * @interface module:engine/conversion/upcast-converters~UpcastHelpers
  * @extends module:engine/conversion/conversion~ConversionHelpers
  */
-export const helpers = {
+export const upcastHelpers = {
 	/**
 	 * View element to model element conversion helper.
 	 *

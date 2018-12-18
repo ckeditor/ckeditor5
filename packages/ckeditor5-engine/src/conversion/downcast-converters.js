@@ -962,7 +962,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  * @interface module:engine/conversion/downcast-converters~DowncastHelpers
  * @extends module:engine/conversion/conversion~ConversionHelpers
  */
-export const helpers = {
+export const downcastHelpers = {
 	/**
 	 * Model element to view element conversion helper.
 	 *
