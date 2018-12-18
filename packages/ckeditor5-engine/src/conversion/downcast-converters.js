@@ -22,27 +22,13 @@ import { cloneDeep } from 'lodash-es';
 /**
  * Model element to view element conversion helper.
  *
- * This conversion results in creating a view element. For example, model `<paragraph>Foo</paragraph>` becomes `<p>Foo</p>` in the view.
+ *		editor.conversion.for( 'downcast' )
+ *			.add( _downcastElementToElement( {
+ *				model: 'paragraph',
+ *				view: 'p'
+ *			} ) );
  *
- *		_downcastElementToElement( { model: 'paragraph', view: 'p' } );
- *
- *		_downcastElementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
- *
- *		_downcastElementToElement( {
- *			model: 'fancyParagraph',
- *			view: {
- *				name: 'p',
- *				classes: 'fancy'
- *			}
- *		} );
- *
- *		_downcastElementToElement( {
- *			model: 'heading',
- *			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
- * to the conversion process.
+ * The method is publicly available as {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper}.
  *
  * @protected
  * @param {Object} config Conversion configuration.
@@ -65,61 +51,13 @@ export function _downcastElementToElement( config ) {
 /**
  * Model attribute to view element conversion helper.
  *
- * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
- * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
+ *		editor.conversion.for( 'downcast' )
+ *			.add( _downcastAttributeToElement( {
+ *				model: 'bold',
+ *				view: 'strong'
+ *			} ) );
  *
- *		_downcastAttributeToElement( { model: 'bold', view: 'strong' } );
- *
- *		_downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
- *
- *		_downcastAttributeToElement( {
- *			model: 'invert',
- *			view: {
- *				name: 'span',
- *				classes: [ 'font-light', 'bg-dark' ]
- *			}
- *		} );
- *
- *		_downcastAttributeToElement( {
- *			model: {
- *				key: 'fontSize',
- *				values: [ 'big', 'small' ]
- *			},
- *			view: {
- *				big: {
- *					name: 'span',
- *					styles: {
- *						'font-size': '1.2em'
- *					}
- *				},
- *				small: {
- *					name: 'span',
- *					styles: {
- *						'font-size': '0.8em'
- *					}
- *				}
- *			}
- *		} );
- *
- *		_downcastAttributeToElement( {
- *			model: 'bold',
- *				view: ( modelAttributeValue, viewWriter ) => {
- *				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
- *			}
- *		} );
- *
- *		_downcastAttributeToElement( {
- *			model: {
- *				key: 'color',
- *				name: '$text'
- *			},
- *			view: ( modelAttributeValue, viewWriter ) => {
- *				return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
- *			}
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
- * to the conversion process.
+ * The method is publicly available as {@link ~DowncastHelpers#attributeToElement `.attributeToElement()` downcast helper}.
  *
  * @protected
  * @param {Object} config Conversion configuration.
@@ -160,45 +98,13 @@ export function _downcastAttributeToElement( config ) {
 /**
  * Model attribute to view attribute conversion helper.
  *
- * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
- * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
+ *		editor.conversion.for( 'downcast' )
+ *			.add( _downcastAttributeToAttribute( {
+ *				model: 'source',
+ *				view: 'src'
+ *			} ) );
  *
- *		_downcastAttributeToAttribute( { model: 'source', view: 'src' } );
- *
- *		_downcastAttributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
- *
- *		_downcastAttributeToAttribute( {
- *			model: {
- *				name: 'image',
- *				key: 'source'
- *			},
- *			view: 'src'
- *		} );
- *
- *		_downcastAttributeToAttribute( {
- *			model: {
- *				name: 'styled',
- *				values: [ 'dark', 'light' ]
- *			},
- *			view: {
- *				dark: {
- *					key: 'class',
- *					value: [ 'styled', 'styled-dark' ]
- *				},
- *				light: {
- *					key: 'class',
- *					value: [ 'styled', 'styled-light' ]
- *				}
- *			}
- *		} );
- *
- *		_downcastAttributeToAttribute( {
- *			model: 'styled',
- *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
- * to the conversion process.
+ * The method is publicly available as {@link ~DowncastHelpers#attributeToAttribute `.attributeToAttribute()` downcast helper}.
  *
  * @protected
  * @param {Object} config Conversion configuration.
@@ -240,41 +146,13 @@ export function _downcastAttributeToAttribute( config ) {
 /**
  * Model marker to view element conversion helper.
  *
- * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
- * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
- * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
+ *		editor.conversion.for( 'downcast' )
+ *			.add( _downcastMarkerToElement( {
+ *				model: 'search',
+ *				view: 'marker-search'
+ *			} ) );
  *
- *		_downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
- *
- *		_downcastMarkerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
- *
- *		_downcastMarkerToElement( {
- *			model: 'search',
- *			view: {
- *				name: 'span',
- *				attributes: {
- *					'data-marker': 'search'
- *				}
- *			}
- *		} );
- *
- *		_downcastMarkerToElement( {
- *			model: 'search',
- *			view: ( markerData, viewWriter ) => {
- *			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
- *			}
- *		} );
- *
- * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
- * receives the `data` object as a parameter and should return an instance of the
- * {@link module:engine/view/uielement~UIElement view UI element}. The `data` and `conversionApi` objects are passed from
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
- * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
- * the marker end boundary element.
- *
- * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+ * The method is publicly available as {@link ~DowncastHelpers#markerToElement `.markerToElement()` downcast helper}.
  *
  * @protected
  * @param {Object} config Conversion configuration.
@@ -298,44 +176,13 @@ export function _downcastMarkerToElement( config ) {
 /**
  * Model marker to highlight conversion helper.
  *
- * This conversion results in creating a highlight on view nodes. For this kind of conversion,
- * {@link module:engine/conversion/downcast-converters~HighlightDescriptor} should be provided.
+ *		editor.conversion.for( 'downcast' )
+ *			.add( _downcastMarkerToHighlight( {
+ *				model: 'comment',
+ *				view: { classes: 'comment' }
+ *			} ) );
  *
- * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
- * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
- * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
- *
- * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
- * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
- * For example, a model marker set like this: `[<image src="foo.jpg"></image>]` becomes `<img src="foo.jpg" class="comment"></img>`
- * in the view.
- *
- * For container elements, the conversion is two-step. While the converter processes the highlight descriptor and passes it
- * to a container element, it is the container element instance itself that applies values from the highlight descriptor.
- * So, in a sense, the converter takes care of stating what should be applied on what, while the element decides how to apply that.
- *
- *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
- *
- *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
- *
- *		downcastMarkerToHighlight( {
- *			model: 'comment',
- *			view: data => {
- *				// Assuming that the marker name is in a form of comment:commentType.
- *				const commentType = data.markerName.split( ':' )[ 1 ];
- *
- *				return {
- *					classes: [ 'comment', 'comment-' + commentType ]
- *				};
- *			}
- *		} );
- *
- * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
- * receives the `data` object as a parameter and should return a
- * {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor}.
- * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+ * The method is publicly available as {@link ~DowncastHelpers#markerToElement `.markerToElement()` downcast helper}.
  *
  * @protected
  * @param {Object} config Conversion configuration.
@@ -715,7 +562,7 @@ export function changeAttribute( attributeCreator ) {
 			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
 			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
 			 *
-			 *		conversion.for( 'downcast' ).attributeToElement( {
+			 *		editor.conversion.for( 'downcast' ).attributeToElement( {
 			 *			model: {
 			 *				key: 'attribute-name',
 			 *				name: '$text'
@@ -1121,9 +968,16 @@ export const helpers = {
 	 *
 	 * This conversion results in creating a view element. For example, model `<paragraph>Foo</paragraph>` becomes `<p>Foo</p>` in the view.
 	 *
-	 *		editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'paragraph',
+	 *			view: 'p'
+	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'paragraph',
+	 *			view: 'div',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'fancyParagraph',
@@ -1135,7 +989,9 @@ export const helpers = {
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'heading',
-	 *			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+	 *			view: ( modelElement, viewWriter ) => {
+	 *				return viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+	 *			}
 	 *		} );
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -1159,9 +1015,16 @@ export const helpers = {
 	 * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
 	 * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
 	 *
-	 *		editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: 'bold',
+	 *			view: 'strong'
+	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
+	 *			model: 'bold',
+	 *			view: 'b',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
 	 *			model: 'invert',
@@ -1195,7 +1058,9 @@ export const helpers = {
 	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
 	 *			model: 'bold',
 	 *			view: ( modelAttributeValue, viewWriter ) => {
-	 *				return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+	 *				return viewWriter.createAttributeElement( 'span', {
+	 *					style: 'font-weight:' + modelAttributeValue
+	 *				} );
 	 *			}
 	 *		} );
 	 *
@@ -1205,7 +1070,9 @@ export const helpers = {
 	 *				name: '$text'
 	 *			},
 	 *			view: ( modelAttributeValue, viewWriter ) => {
-	 *				return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+	 *				return viewWriter.createAttributeElement( 'span', {
+	 *					style: 'color:' + modelAttributeValue
+	 *				} );
 	 *			}
 	 *		} );
 	 *
@@ -1232,11 +1099,18 @@ export const helpers = {
 	 * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
 	 * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
 	 *
-	 *		conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: 'source',
+	 *			view: 'src'
+	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
+	 *			model: 'source',
+	 *			view: 'href',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
 	 *				key: 'source'
@@ -1244,7 +1118,7 @@ export const helpers = {
 	 *			view: 'src'
 	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: {
 	 *				name: 'styled',
 	 *				values: [ 'dark', 'light' ]
@@ -1261,7 +1135,7 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'styled',
 	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
 	 *		} );
@@ -1292,11 +1166,18 @@ export const helpers = {
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
 	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
 	 *
-	 *		conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
+	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *			model: 'search',
+	 *			view: 'marker-search'
+	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'downcast' ).markerToElement( {
+	 *			model: 'search',
+	 *			view: 'search-result',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'downcast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: {
 	 *				name: 'span',
@@ -1306,10 +1187,13 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).markerToElement( {
+	 *		editor.conversion.for( 'downcast' ).markerToElement( {
 	 *			model: 'search',
 	 *			view: ( markerData, viewWriter ) => {
-	 *			return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': markerData.isOpening } );
+	 *				return viewWriter.createUIElement( 'span', {
+	 *					'data-marker': 'search',
+	 *					'data-start': markerData.isOpening
+	 *				} );
 	 *			}
 	 *		} );
 	 *
@@ -1322,7 +1206,8 @@ export const helpers = {
 	 *
 	 * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
 	 * @method #markerToElement
 	 * @param {Object} config Conversion configuration.
@@ -1355,15 +1240,15 @@ export const helpers = {
 	 * to a container element, it is the container element instance itself that applies values from the highlight descriptor.
 	 * So, in a sense, the converter takes care of stating what should be applied on what, while the element decides how to apply that.
 	 *
-	 *		conversion.for( 'downcast' ).markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
+	 *		editor.conversion.for( 'downcast' ).markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
 	 *
-	 *		conversion.for( 'downcast' ).markerToHighlight( {
+	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
 	 *			view: { classes: 'new-comment' },
 	 *			converterPriority: 'high'
 	 *		} );
 	 *
-	 *		conversion.for( 'downcast' ).markerToHighlight( {
+	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
 	 *			view: data => {
 	 *				// Assuming that the marker name is in a form of comment:commentType.
@@ -1380,7 +1265,8 @@ export const helpers = {
 	 * {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
 	 * @method #markerToHighlight
 	 * @param {Object} config Conversion configuration.

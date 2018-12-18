@@ -19,33 +19,13 @@ import { cloneDeep } from 'lodash-es';
 /**
  * View element to model element conversion helper.
  *
- * This conversion results in creating a model element. For example, view `<p>Foo</p>` becomes `<paragraph>Foo</paragraph>` in the model.
+ *		editor.conversion.for( 'upcast' )
+ *			.add( _upcastElementToElement( {
+ *				view: 'p',
+ *				model: 'paragraph'
+ *			} ) );
  *
- * Keep in mind that the element will be inserted only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
- *
- *		_upcastElementToElement( { view: 'p', model: 'paragraph' } );
- *
- *		_upcastElementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
- *
- *		_upcastElementToElement( {
- *			view: {
- *				name: 'p',
- *				classes: 'fancy'
- *			},
- *			model: 'fancyParagraph'
- *		} );
- *
- *		_upcastElementToElement( {
- * 			view: {
- *				name: 'p',
- *				classes: 'heading'
- * 			},
- * 			model: ( viewElement, modelWriter ) => {
- * 				return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
- * 			}
- * 		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * The method is publicly available as {@link ~UpcastHelpers#elementToElement `.elementToElement()` upcast helper}.
  *
  * @param {Object} config Conversion configuration.
  * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
@@ -70,67 +50,13 @@ export function _upcastElementToElement( config ) {
 /**
  * View element to model attribute conversion helper.
  *
- * This conversion results in setting an attribute on a model node. For example, view `<strong>Foo</strong>` becomes
- * `Foo` {@link module:engine/model/text~Text model text node} with `bold` attribute set to `true`.
+ *		editor.conversion.for( 'upcast' )
+ *			.add( _upcastElementToAttribute( {
+ *				view: 'strong',
+ *				model: 'bold'
+ *			} ) );
  *
- * This helper is meant to set a model attribute on all the elements that are inside the converted element:
- *
- *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
- *
- * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
- * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
- * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute} for comparison.
- *
- * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
- *
- *		_upcastElementToAttribute( { view: 'strong', model: 'bold' } );
- *
- *		_upcastElementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
- *
- *		_upcastElementToAttribute( {
- *			view: {
- *				name: 'span',
- *				classes: 'bold'
- *			},
- *			model: 'bold'
- *		} );
- *
- *		_upcastElementToAttribute( {
- *			view: {
- *				name: 'span',
- *				classes: [ 'styled', 'styled-dark' ]
- *			},
- *			model: {
- *				key: 'styled',
- *				value: 'dark'
- *			}
- *		} );
- *
- * 		_upcastElementToAttribute( {
- *			view: {
- *				name: 'span',
- *				styles: {
- *					'font-size': /[\s\S]+/
- *				}
- *			},
- *			model: {
- *				key: 'fontSize',
- *				value: viewElement => {
- *					const fontSize = viewElement.getStyle( 'font-size' );
- *					const value = fontSize.substr( 0, fontSize.length - 2 );
- *
- *					if ( value <= 10 ) {
- *						return 'small';
- *					} else if ( value > 12 ) {
- *						return 'big';
- *					}
- *
- *					return null;
- *				}
- *			}
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * The method is publicly available as {@link ~UpcastHelpers#elementToAttribute `.elementToAttribute()` upcast helper}.
  *
  * @param {Object} config Conversion configuration.
  * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
@@ -158,67 +84,13 @@ export function _upcastElementToAttribute( config ) {
 /**
  * View attribute to model attribute conversion helper.
  *
- * This conversion results in setting an attribute on a model node. For example, view `<img src="foo.jpg"></img>` becomes
- * `<image source="foo.jpg"></image>` in the model.
+ *		editor.conversion.for( 'upcast' )
+ *			.add( _upcastAttributeToAttribute( {
+ *				view: 'src',
+ *				model: 'source'
+ *			} ) );
  *
- * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
- * is set only on the corresponding model node:
- *
- *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
- *
- * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
- * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute} which sets attributes for all the children in the model:
- *
- *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
- *
- * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
- * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
- *
- * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
- *
- *		_upcastAttributeToAttribute( { view: 'src', model: 'source' } );
- *
- *		_upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' } );
- *
- *		_upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
- *
- *		_upcastAttributeToAttribute( {
- *			view: {
- *				key: 'data-style',
- *				value: /[\s\S]+/
- *			},
- *			model: 'styled'
- *		} );
- *
- *		_upcastAttributeToAttribute( {
- *			view: {
- *				name: 'img',
- *				key: 'class',
- *				value: 'styled-dark'
- *			},
- *			model: {
- *				key: 'styled',
- *				value: 'dark'
- *			}
- *		} );
- *
- *		_upcastAttributeToAttribute( {
- *			view: {
- *				key: 'class',
- *				value: /styled-[\S]+/
- *			},
- *			model: {
- *				key: 'styled'
- *				value: viewElement => {
- *					const regexp = /styled-([\S]+)/;
- *					const match = viewElement.getAttribute( 'class' ).match( regexp );
- *
- *					return match[ 1 ];
- *				}
- *			}
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * The method is publicly available as {@link ~UpcastHelpers#attributeToAttribute `.attributeToAttribute()` upcast helper}.
  *
  * @param {Object} config Conversion configuration.
  * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
@@ -253,31 +125,13 @@ export function _upcastAttributeToAttribute( config ) {
 /**
  * View element to model marker conversion helper.
  *
- * This conversion results in creating a model marker. For example, if the marker was stored in a view as an element:
- * `<p>Fo<span data-marker="comment" data-comment-id="7"></span>o</p><p>B<span data-marker="comment" data-comment-id="7"></span>ar</p>`,
- * after the conversion is done, the marker will be available in
- * {@link module:engine/model/model~Model#markers model document markers}.
+ *		editor.conversion.for( 'upcast' )
+ *			.add( _upcastElementToMarker( {
+ *				view: 'marker-search',
+ *				model: 'search'
+ *			} ) );
  *
- *		_upcastElementToMarker( { view: 'marker-search', model: 'search' } );
- *
- *		_upcastElementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
- *
- *		_upcastElementToMarker( {
- *			view: 'marker-search',
- *			model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
- *		} );
- *
- *		_upcastElementToMarker( {
- *			view: {
- *				name: 'span',
- *				attributes: {
- *					'data-marker': 'search'
- *				}
- *			},
- *			model: 'search'
- *		} );
- *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * The method is publicly available as {@link ~UpcastHelpers#elementToMarker `.elementToMarker()` upcast helper}.
  *
  * @param {Object} config Conversion configuration.
  * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
@@ -624,11 +478,18 @@ export const helpers = {
 	 * Keep in mind that the element will be inserted only if it is allowed
 	 * by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		conversion.for( 'upcast' ).elementToElement( { view: 'p', model: 'paragraph' } );
+	 *		editor.conversion.for( 'upcast' ).elementToElement( {
+	 *			view: 'p',
+	 *			model: 'paragraph'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'upcast' ).elementToElement( {
+	 *			view: 'p',
+	 *			model: 'paragraph',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToElement( {
+	 *		editor.conversion.for( 'upcast' ).elementToElement( {
 	 *			view: {
 	 *				name: 'p',
 	 *				classes: 'fancy'
@@ -636,7 +497,7 @@ export const helpers = {
 	 *			model: 'fancyParagraph'
 	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToElement( {
+	 *		editor.conversion.for( 'upcast' ).elementToElement( {
 	 * 			view: {
 	 *				name: 'p',
 	 *				classes: 'heading'
@@ -646,7 +507,8 @@ export const helpers = {
 	 * 			}
 	 * 		} );
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
@@ -676,11 +538,18 @@ export const helpers = {
 	 *
 	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		conversion.for( 'upcast' ).elementToAttribute( { view: 'strong', model: 'bold' } );
+	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 *			view: 'strong',
+	 *			model: 'bold'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
+	 *			view: 'strong',
+	 *			model: 'bold',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToAttribute( {
+	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
 	 *			view: {
 	 *				name: 'span',
 	 *				classes: 'bold'
@@ -688,7 +557,7 @@ export const helpers = {
 	 *			model: 'bold'
 	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToAttribute( {
+	 *		editor.conversion.for( 'upcast' ).elementToAttribute( {
 	 *			view: {
 	 *				name: 'span',
 	 *				classes: [ 'styled', 'styled-dark' ]
@@ -699,7 +568,7 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 * 		conversion.for( 'upcast' ).elementToAttribute( {
+	 * 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 	 *			view: {
 	 *				name: 'span',
 	 *				styles: {
@@ -723,8 +592,10 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
+	 * @method #elementToAttribute
 	 * @param {Object} config Conversion configuration.
 	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
 	 * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
@@ -749,7 +620,8 @@ export const helpers = {
 	 *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
 	 *
 	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
-	 * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute} which sets attributes for all the children in the model:
+	 * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToAttribute} which sets attributes for
+	 * all the children in the model:
 	 *
 	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
 	 *
@@ -758,13 +630,23 @@ export const helpers = {
 	 *
 	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: 'src', model: 'source' } );
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: 'src',
+	 *			model: 'source'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: { key: 'src' },
+	 *			model: 'source'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+	 *			view: { key: 'src' },
+	 *			model: 'source',
+	 *			converterPriority: 'normal'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 	 *			view: {
 	 *				key: 'data-style',
 	 *				value: /[\s\S]+/
@@ -772,7 +654,7 @@ export const helpers = {
 	 *			model: 'styled'
 	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 	 *			view: {
 	 *				name: 'img',
 	 *				key: 'class',
@@ -784,7 +666,7 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).attributeToAttribute( {
+	 *		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 	 *			view: {
 	 *				key: 'class',
 	 *				value: /styled-[\S]+/
@@ -800,8 +682,10 @@ export const helpers = {
 	 *			}
 	 *		} );
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
+	 * @method #attributeToAttribute
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
 	 * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
@@ -826,16 +710,23 @@ export const helpers = {
 	 * after the conversion is done, the marker will be available in
 	 * {@link module:engine/model/model~Model#markers model document markers}.
 	 *
-	 *		conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search' } );
+	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
+	 *			view: 'marker-search',
+	 *			model: 'search'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
+	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
+	 *			view: 'marker-search',
+	 *			model: 'search',
+	 *			converterPriority: 'high'
+	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToMarker( {
+	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
 	 *			view: 'marker-search',
 	 *			model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
 	 *		} );
 	 *
-	 *		conversion.for( 'upcast' ).elementToMarker( {
+	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
 	 *			view: {
 	 *				name: 'span',
 	 *				attributes: {
@@ -845,8 +736,10 @@ export const helpers = {
 	 *			model: 'search'
 	 *		} );
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
 	 *
+	 * @method #elementToMarker
 	 * @param {Object} config Conversion configuration.
 	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
 	 * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns

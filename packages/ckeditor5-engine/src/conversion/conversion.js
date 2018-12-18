@@ -97,13 +97,16 @@ export default class Conversion {
 		this._dispatchersGroups.set( options.name, group );
 	}
 
+	/* eslint-disable max-len */
 	/**
 	 * Provides chainable API to assign converters to dispatchers registered under a given group name. Converters are added
-	 * by calling the `.add()` method of an object returned by this function.
+	 * by calling the {@link module:engine/conversion/conversion~ConversionHelpers#add `.add()`} method of an
+	 * {@link module:engine/conversion/conversion~ConversionHelpers conversion helpers} returned by this function.
 	 *
-	 *		conversion.for( 'downcast' )
+	 *		editor.conversion.for( 'downcast' )
 	 *			.add( conversionHelperA )
-	 *			.add( conversionHelperB );
+	 *			.add( conversionHelperB )
+	 *			.elementToElement( config );
 	 *
 	 * In this example `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from the `'model'` group.
 	 *
@@ -115,15 +118,17 @@ export default class Conversion {
 	 *
 	 * For downcast (model-to-view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-converters~_downcastElementToElement Downcast element-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~_downcastAttributeToElement Downcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~_downcastAttributeToAttribute Downcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement Downcast element-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#attributeToElement Downcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#attributeToAttribute Downcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#markerToElement Downcast marker-to-element converter}.
+	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#markerToHighlight Downcast marker-to-highlight converter}.
 	 *
 	 * For upcast (view-to-model conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/upcast-converters~_upcastElementToElement Upcast element-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~_upcastElementToAttribute Upcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~_upcastAttributeToAttribute Upcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToElement Upcast element-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToAttribute Upcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#attributeToAttribute Upcast attribute-to-attribute converter}.
 	 *
 	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
 	 *
@@ -131,19 +136,15 @@ export default class Conversion {
 	 *		const config = { model: 'paragraph', view: 'p' };
 	 *
 	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'downcast' ).elementToElement( config ) );
-	 *		conversion.for( 'upcast' ).elementToElement( config ) );
-	 *
-	 * An example of providing a custom conversion helper that uses a custom converter function:
-	 *
-	 *		// Adding a custom `myConverter` converter for 'paragraph' element insertion, with the default priority ('normal').
-	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
+	 *		editor.conversion.for( 'downcast' ).elementToElement( config ) );
+	 *		editor.conversion.for( 'upcast' ).elementToElement( config ) );
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
 	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
 	 * module:engine/conversion/upcast-converters~UpcastHelpers}
 	 * An object with the `.add()` method, providing a way to add converters.
 	 */
+	/* eslint-enable max-len */
 	for( groupName ) {
 		const { dispatchers, helpers } = this._getDispatchersGroup( groupName );
 
