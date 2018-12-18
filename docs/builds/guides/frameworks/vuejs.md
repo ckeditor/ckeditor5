@@ -189,10 +189,11 @@ First, install the necessary dependencies:
 
 ```bash
 npm install --save \
+    @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
     postcss-loader \
-    raw-loader
+    raw-loader@0.5.1
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
