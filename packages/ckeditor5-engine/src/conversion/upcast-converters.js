@@ -516,7 +516,7 @@ export const helpers = {
 	 * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
 	 * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
 	 */
 	elementToElement( config ) {
 		return this.add( _upcastElementToElement( config ) );
@@ -602,7 +602,7 @@ export const helpers = {
 	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 	 * If `String` is given, the model attribute value will be set to `true`.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/conversion~Conversion} Conversion helper.
+	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
 	 */
 	elementToAttribute( config ) {
 		return this.add( _upcastElementToAttribute( config ) );
@@ -696,7 +696,7 @@ export const helpers = {
 	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 	 * If `String` is given, the model attribute value will be same as view attribute value.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
 	 */
 	attributeToAttribute( config ) {
 		return this.add( _upcastAttributeToAttribute( config ) );
@@ -745,7 +745,7 @@ export const helpers = {
 	 * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
 	 * a model marker name.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
 	 */
 	elementToMarker( config ) {
 		return this.add( _upcastElementToMarker( config ) );

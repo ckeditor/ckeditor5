@@ -1003,6 +1003,7 @@ export const helpers = {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
 	 * as parameters and returns a view container element.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
 	 */
 	elementToElement( config ) {
 		return this.add( _downcastElementToElement( config ) );
@@ -1010,7 +1011,6 @@ export const helpers = {
 
 	/**
 	 * Model attribute to view element conversion helper.
-	 *
 	 *
 	 * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
 	 * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
@@ -1088,6 +1088,7 @@ export const helpers = {
 	 * as parameters and returns a view attribute element. If `config.model.values` is
 	 * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
 	 */
 	attributeToElement( config ) {
 		return this.add( _downcastAttributeToElement( config ) );
@@ -1153,7 +1154,7 @@ export const helpers = {
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 	 * `{ key, value }` objects or a functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
 	 */
 	attributeToAttribute( config ) {
 		return this.add( _downcastAttributeToAttribute( config ) );
@@ -1215,7 +1216,7 @@ export const helpers = {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model marker data as a parameter and returns a view UI element.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
 	 */
 	markerToElement( config ) {
 		return this.add( _downcastMarkerToElement( config ) );
@@ -1274,7 +1275,7 @@ export const helpers = {
 	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
 	 * that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {Function} Conversion helper.
+	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
 	 */
 	markerToHighlight( config ) {
 		return this.add( _downcastMarkerToHighlight( config ) );

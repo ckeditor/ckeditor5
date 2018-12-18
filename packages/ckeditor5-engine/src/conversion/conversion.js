@@ -104,9 +104,9 @@ export default class Conversion {
 	 * {@link module:engine/conversion/conversion~ConversionHelpers conversion helpers} returned by this function.
 	 *
 	 *		editor.conversion.for( 'downcast' )
-	 *			.add( conversionHelperA )
-	 *			.add( conversionHelperB )
-	 *			.elementToElement( config );
+	 *			.add( conversionHelperA ) // Adds a custom converter A.
+	 *			.add( conversionHelperB ) // Adds a custom converter B.
+	 *			.elementToElement( config ); // Adds a custom element-to-element downcast converter.
 	 *
 	 * In this example `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from the `'model'` group.
 	 *
@@ -129,6 +129,7 @@ export default class Conversion {
 	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToElement Upcast element-to-element converter},
 	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToAttribute Upcast attribute-to-element converter},
 	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#attributeToAttribute Upcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToMarker Upcast element-to-marker converter}.
 	 *
 	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
 	 *
@@ -142,7 +143,6 @@ export default class Conversion {
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
 	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
 	 * module:engine/conversion/upcast-converters~UpcastHelpers}
-	 * An object with the `.add()` method, providing a way to add converters.
 	 */
 	/* eslint-enable max-len */
 	for( groupName ) {
@@ -593,7 +593,7 @@ export default class Conversion {
 /**
  * Base class for conversion utilises.
  *
- * @interface ConversionHelpers
+ * @interface module:engine/conversion/conversion~ConversionHelpers
  */
 
 /**
@@ -603,7 +603,8 @@ export default class Conversion {
  *
  * @method module:engine/conversion/conversion~ConversionHelpers#add
  * @param {Function} conversionHelper The function to be called on event.
- * @returns {module:engine/conversion/conversion~Conversion}
+ * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
+ * module:engine/conversion/upcast-converters~UpcastHelpers}
  */
 
 // Helper function for the `Conversion` `.add()` method.
