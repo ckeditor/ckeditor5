@@ -32,6 +32,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *		// Add a converter to the data pipepline only:
  *		editor.conversion.for( 'dataDowncast' ).elementToElement( dataConversionConfig ) );
+ *
  *		// And a slightly different one for the editing pipeline:
  *		editor.conversion.for( 'editingDowncast' ).elementToElement( editingConversionConfig ) );
  *
