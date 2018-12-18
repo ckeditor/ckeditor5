@@ -44,6 +44,7 @@ export function isWidget( node ) {
 	return !!node.getCustomProperty( widgetSymbol );
 }
 
+/* eslint-disable max-len */
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
@@ -53,15 +54,16 @@ export function isWidget( node ) {
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
  * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *
- * This function needs to be used in conjuction with {@link module:engine/conversion/downcast-converters downcast converters}
- * like {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
+ * This function needs to be used in conjunction with
+ * {@link module:engine/conversion/downcast-converters~DowncastHelpers downcast conversion helpers}
+ * like {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement `elementToElement()`}.
  * Moreover, typically you will want to use `toWidget()` only for `editingDowncast`, while keeping the `dataDowncast` clean.
  *
  * For example, in order to convert a `<widget>` model element to `<div class="widget">` in the view, you can define
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			elementToElement( {
+ *			.elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
@@ -71,7 +73,7 @@ export function isWidget( node ) {
  *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			elementToElement( {
+ *			.elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'widget' } );
@@ -89,6 +91,7 @@ export function isWidget( node ) {
  * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
+/* eslint-enable max-len */
 export function toWidget( element, writer, options = {} ) {
 	// The selection on Edge behaves better when the whole editor contents is in a single contenteditable element.
 	// https://github.com/ckeditor/ckeditor5/issues/1079
@@ -187,13 +190,13 @@ export function getLabel( element ) {
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
- * used together with {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
+ * used together with {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement `elementToElement()`}.
  *
  * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			elementToElement( {
+ *			.elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
@@ -203,7 +206,7 @@ export function getLabel( element ) {
  *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			elementToElement( {
+ *			.elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'nested' } );
