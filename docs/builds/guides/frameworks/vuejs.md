@@ -236,10 +236,27 @@ module.exports = {
 	chainWebpack: config => {
 		// Vue CLI would normally use its own loader to load .svg files. The icons used by
 		// CKEditor should be loaded using raw-loader instead.
+
+		// 1. First get default rule for .svg files.
+		const svgRule = config.module.rule( 'svg' );
+
+		// 2. then you can either:
+		//  a ) clear all loaders for existing 'svg' rule:
+		// svgRule.uses.clear();
+
+		//  b) or exclude ckeditor directory from node_modules:
+		svgRule.exclude.add(__dirname + "/node_modules/@ckeditor");
+
+		// 3. Add entry for CKEditor's only .svg files, by either:
+
+		// a) by modifying existing 'svg' rule:
+		// svgRule.use('raw-loader' ).loader( 'raw-loader' );
+
+		// b) or by adding a new rule.
 		config.module
-			.rule( 'svg' )
+			.rule('cke-svg')
 			.test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
-			.use( 'file-loader' )
+			.use( 'raw-loader' )
 			.loader( 'raw-loader' );
 	}
 };
