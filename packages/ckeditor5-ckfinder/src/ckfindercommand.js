@@ -10,7 +10,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -105,7 +104,7 @@ export default class CKFinderCommand extends Command {
 				const resizedUrl = evt.data.resizedUrl;
 
 				if ( !resizedUrl ) {
-					const notification = editor.plugins.get( Notification );
+					const notification = editor.plugins.get( 'Notification' );
 					const t = editor.locale.t;
 
 					notification.showWarning( t( 'Could not obtain resized image URL.' ), {
@@ -129,7 +128,7 @@ function insertImages( editor, urls ) {
 
 	// Check if inserting an image is actually possible - it might be possible to only insert a link.
 	if ( !imageCommand.isEnabled ) {
-		const notification = editor.plugins.get( Notification );
+		const notification = editor.plugins.get( 'Notification' );
 		const t = editor.locale.t;
 
 		notification.showWarning( t( 'Could not insert image at the current position.' ), {
