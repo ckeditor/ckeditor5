@@ -39,7 +39,7 @@
     "@ckeditor/ckeditor5-undo": "^10.0.4",
     "@ckeditor/ckeditor5-widget": "^10.3.1",
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.7",
+    "eslint-config-ckeditor5": "^1.0.9",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0"
   },
