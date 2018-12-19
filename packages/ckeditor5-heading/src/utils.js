@@ -22,8 +22,7 @@ export function getLocalizedOptions( editor ) {
 		const title = localizedTitles[ option.title ];
 
 		if ( title && title != option.title ) {
-			// Clone the option to avoid altering the original `config.heading.options`.
-			option = Object.assign( {}, option, { title } );
+			option.title = title;
 		}
 
 		return option;
