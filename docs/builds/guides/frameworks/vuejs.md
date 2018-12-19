@@ -245,7 +245,7 @@ module.exports = {
 		// svgRule.uses.clear();
 
 		//  b) or exclude ckeditor directory from node_modules:
-		svgRule.exclude.add(__dirname + "/node_modules/@ckeditor");
+		svgRule.exclude.add( __dirname + '/node_modules/@ckeditor' );
 
 		// 3. Add entry for CKEditor's only .svg files, by either:
 
@@ -254,7 +254,7 @@ module.exports = {
 
 		// b) or by adding a new rule.
 		config.module
-			.rule('cke-svg')
+			.rule( 'cke-svg' )
 			.test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
 			.use( 'raw-loader' )
 			.loader( 'raw-loader' );
