@@ -8,10 +8,10 @@
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#e839361",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#51244ec",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#edaa155",
-    "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#ca55026",
-    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#da6397a",
-    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#86abb81",
-    "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#1cbb171",
+    "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#1657e74",
+    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#d862a1b",
+    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#a366827",
+    "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#fc6aad7",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#edbc444",
     "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services#b3412c8",
     "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#2748ccf",
@@ -40,7 +40,7 @@
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#b9b68c6",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#158e93a",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#0c5340d",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#7981d4e",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#1b96052",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#148391f"
   }
 }
