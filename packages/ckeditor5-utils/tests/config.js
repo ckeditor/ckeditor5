@@ -406,5 +406,33 @@ describe( 'Config', () => {
 
 			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
 		} );
+
+		it( 'should return class & functions references from config array', () => {
+			class Foo {}
+
+			function bar() {
+				return 'bar';
+			}
+
+			const baz = () => 'baz';
+
+			config.set( 'plugins', [ Foo, bar, baz ] );
+
+			expect( config.get( 'plugins' ) ).to.deep.equal( [ Foo, bar, baz ] );
+
+			const plugins = config.get( 'plugins' );
+
+			expect( plugins[ 0 ] ).to.equal( Foo );
+			expect( plugins[ 1 ] ).to.equal( bar );
+			expect( plugins[ 2 ] ).to.equal( baz );
+
+			const pluginsAgain = config.get( 'plugins' );
+
+			// The returned array should be a new instance:
+			expect( pluginsAgain ).to.not.equal( plugins );
+
+			// But array members should remain the same contents should be equal:
+			expect( pluginsAgain ).to.deep.equal( plugins );
+		} );
 	} );
 } );
