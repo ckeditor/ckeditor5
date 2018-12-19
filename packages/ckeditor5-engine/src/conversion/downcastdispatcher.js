@@ -294,7 +294,7 @@ export default class DowncastDispatcher {
 
 			// Do not fire event if the attribute has been consumed.
 			if ( this.conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire( 'attribute:' + data.attributeKey, data, this.conversionApi );
+				this.fire( 'attribute:' + data.attributeKey + ':$text', data, this.conversionApi );
 			}
 		}
 

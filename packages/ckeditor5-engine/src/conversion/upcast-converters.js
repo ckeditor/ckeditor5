@@ -151,7 +151,7 @@ export function upcastElementToAttribute( config ) {
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( eventName, converter, { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( eventName, converter, { priority: config.converterPriority || 'low' } );
 	};
 }
 
