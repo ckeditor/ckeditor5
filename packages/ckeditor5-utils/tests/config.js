@@ -19,7 +19,14 @@ describe( 'Config', () => {
 					path: 'xyz'
 				}
 			},
-			toolbar: 'top'
+			toolbar: 'top',
+			options: {
+				foo: [
+					{ bar: 'b' },
+					{ bar: 'a' },
+					{ bar: 'z' }
+				]
+			}
 		} );
 	} );
 
@@ -334,7 +341,7 @@ describe( 'Config', () => {
 			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 		} );
 
-		it( 'should retrieve a object of the configuration', () => {
+		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
 			expect( resize ).to.be.an( 'object' );
@@ -370,6 +377,34 @@ describe( 'Config', () => {
 			expect( () => {
 				config.resize.maxHeight;
 			} ).to.throw();
+		} );
+
+		it( 'should not be possible to alter config object by altering returned value', () => {
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+
+			const icon = config.get( 'resize.icon' );
+			icon.path = 'foo/bar';
+
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+
+			const resize = config.get( 'resize' );
+			resize.icon.path = 'foo/baz';
+
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+		} );
+
+		it( 'should not be possible to alter array in config by altering returned value', () => {
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+
+			const fooOptions = config.get( 'options.foo' );
+			fooOptions.pop();
+
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+
+			const options = config.get( 'options' );
+			options.foo.pop();
+
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
 		} );
 	} );
 } );
