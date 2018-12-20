@@ -192,7 +192,11 @@ function tryFixingNonCollapsedRage( range, schema ) {
 			const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
 			const fixedEnd = isEndObject ? null : schema.getNearestSelectionRange( end, 'backward' );
 
-			return new Range( fixedStart ? fixedStart.start : start, fixedEnd ? fixedEnd.start : end );
+			// The schema.getNearestSelectionRange might return null - if that happens use original position.
+			const rangeStart = fixedStart ? fixedStart.start : start;
+			const rangeEnd = fixedEnd ? fixedEnd.start : end;
+
+			return new Range( rangeStart, rangeEnd );
 		}
 	}
 
