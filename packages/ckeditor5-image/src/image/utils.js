@@ -100,7 +100,9 @@ export function isImageAllowed( model ) {
 	const schema = model.schema;
 	const selection = model.document.selection;
 
-	return isImageAllowedInParent( selection, schema, model ) && checkSelectionOnObject( selection, schema ) && isInOtherImage( selection );
+	return isImageAllowedInParent( selection, schema, model ) &&
+		!checkSelectionOnObject( selection, schema ) &&
+		isInOtherImage( selection );
 }
 
 // Checks if image is allowed by schema in optimal insertion parent.
@@ -118,7 +120,7 @@ function isImageAllowedInParent( selection, schema, model ) {
 function checkSelectionOnObject( selection, schema ) {
 	const selectedElement = selection.getSelectedElement();
 
-	return !( !!selectedElement && schema.isObject( selectedElement ) );
+	return selectedElement && schema.isObject( selectedElement );
 }
 
 // Checks if selection is placed in other image (ie. in caption).
