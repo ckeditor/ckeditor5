@@ -205,7 +205,7 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	// At this point we eliminated valid positions on text nodes so if one of range positions is placed inside a limit element
 	// then the range crossed limit element boundaries and needs to be fixed.
 	if ( isStartInLimit || isEndInLimit ) {
-		const bothInSameParent = ( !!start.nodeAfter && !!end.nodeBefore ) && start.nodeAfter === end.nodeBefore;
+		const bothInSameParent = ( start.nodeAfter && end.nodeBefore ) && start.nodeAfter.parent === end.nodeBefore.parent;
 
 		const expandStart = isStartInLimit && ( !bothInSameParent || !isInObject( start.nodeAfter, schema ) );
 		const expandEnd = isEndInLimit && ( !bothInSameParent || !isInObject( end.nodeBefore, schema ) );
