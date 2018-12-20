@@ -95,9 +95,7 @@ const defaultIcons = {
  * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
  */
 export function normalizeImageStyles( configuredStyles = [] ) {
-	return configuredStyles
-		.map( _normalizeStyle )
-		.map( style => Object.assign( {}, style ) );
+	return configuredStyles.map( _normalizeStyle );
 }
 
 // Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
