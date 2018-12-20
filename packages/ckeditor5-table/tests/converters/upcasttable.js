@@ -456,7 +456,7 @@ describe( 'upcastTable()', () => {
 			] ) );
 		} );
 
-		it( 'should upcast table with <img> in table cell to empty table cell', () => {
+		it( 'should upcast table with <img> in table cell', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -468,7 +468,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '' ]
+				[ '<image src="sample.png"></image>' ]
 			] ) );
 		} );
 	} );

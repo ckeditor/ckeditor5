@@ -7,17 +7,18 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Table from '../../src/table';
-import TableToolbar from '../../src/tabletoolbar';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table, TableToolbar, Alignment ],
+		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote',
 			'alignment', '|', 'undo', 'redo'
 		],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
