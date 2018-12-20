@@ -278,7 +278,6 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {module:engine/model/schema~Schema} schema A schema instance used by converters for element validation.
- * @param {module:engine/model/batch~Batch} batch A batch used for conversion.
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
