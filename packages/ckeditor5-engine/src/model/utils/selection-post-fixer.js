@@ -187,7 +187,7 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		// - [<block>foo</block><object></object>]    ->    <block>[foo</block><object></object>]
 		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
 			const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
-			const fixedStart = isStartObject ? null : schema.getNearestSelectionRange( start, 'forward' );
+ 			const fixedStart = isStartObject ? start : schema.getNearestSelectionRange( start, 'forward' ).start;
 
 			const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
 			const fixedEnd = isEndObject ? null : schema.getNearestSelectionRange( end, 'backward' );
