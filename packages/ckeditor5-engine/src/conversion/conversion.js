@@ -79,8 +79,8 @@ export default class Conversion {
 	 * @param {module:engine/conversion/downcast-converters~DowncastHelpers|
 	 * module:engine/conversion/upcast-converters~UpcastHelpers} helpers
 	 */
-	register( options ) {
-		if ( this._dispatchersGroups.has( options.name ) ) {
+	register( name, group ) {
+		if ( this._dispatchersGroups.has( name ) ) {
 			/**
 			 * Trying to register a group name that was already registered.
 			 *
@@ -89,13 +89,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
 		}
 
-		const group = {
-			name: options.name,
-			dispatchers: Array.isArray( options.dispatcher ) ? options.dispatcher : [ options.dispatcher ],
-			helpers: options.helpers
-		};
-
-		this._dispatchersGroups.set( options.name, group );
+		this._dispatchersGroups.set( name, group );
 	}
 
 	/* eslint-disable max-len */
@@ -147,17 +141,9 @@ export default class Conversion {
 	 */
 	/* eslint-enable max-len */
 	for( groupName ) {
-		const { dispatchers, helpers } = this._getDispatchersGroup( groupName );
+		const group = this._getDispatchersGroup( groupName );
 
-		const baseRetVal = {
-			add( conversionHelper ) {
-				_addToDispatchers( dispatchers, conversionHelper );
-
-				return this;
-			}
-		};
-
-		return Object.assign( {}, baseRetVal, helpers );
+		return group;
 	}
 
 	/**
@@ -591,38 +577,6 @@ export default class Conversion {
  * @property {module:engine/conversion/downcast-converters~DowncastHelpers|module:engine/conversion/upcast-converters~UpcastHelpers} helpers
  */
 
-/**
- * Base class for conversion utilises.
- *
- * @interface module:engine/conversion/conversion~ConversionHelpers
- */
-
-/**
- * Registers a conversion helper.
- *
- * **Note**: See full usage example in the `{@link module:engine/conversion/conversion~Conversion#for conversion.for()}` method description
- *
- * @method module:engine/conversion/conversion~ConversionHelpers#add
- * @param {Function} conversionHelper The function to be called on event.
- * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
- * module:engine/conversion/upcast-converters~UpcastHelpers}
- */
-
-// Helper function for the `Conversion` `.add()` method.
-//
-// Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
-// adding converters to all specified dispatchers.
-//
-// @private
-// @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-// module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
-// @param {Function} conversionHelper
-function _addToDispatchers( dispatchers, conversionHelper ) {
-	for ( const dispatcher of dispatchers ) {
-		conversionHelper( dispatcher );
-	}
-}
-
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
 // `definition.upcastAlso`.
 //
@@ -650,6 +604,53 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
 
 		for ( const upcastAlsoItem of upcastAlso ) {
 			yield { model, view: upcastAlsoItem };
+		}
+	}
+}
+
+/**
+ * Base class for conversion utilises.
+ *
+ */
+export class ConversionHelpers {
+	/**
+	 * Creates ConversionHelpers instance.
+	 *
+	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
+	 */
+	constructor( dispatcher ) {
+		this._dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
+	}
+
+	/**
+	 * Registers a conversion helper.
+	 *
+	 * **Note**: See full usage example in the `{@link module:engine/conversion/conversion~Conversion#for conversion.for()}`
+	 * method description
+	 *
+	 * @param {Function} conversionHelper The function to be called on event.
+	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
+	 * module:engine/conversion/upcast-converters~UpcastHelpers}
+	 */
+	add( conversionHelper ) {
+		this._addToDispatchers( conversionHelper );
+
+		return this;
+	}
+
+	/**
+	 * Helper function for the `Conversion` `.add()` method.
+	 *
+	 * Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
+	 * adding converters to all specified dispatchers.
+	 *
+	 * @private
+	 * @param {Function} conversionHelper
+	 */
+	_addToDispatchers( conversionHelper ) {
+		for ( const dispatcher of this._dispatchers ) {
+			conversionHelper( dispatcher );
 		}
 	}
 }

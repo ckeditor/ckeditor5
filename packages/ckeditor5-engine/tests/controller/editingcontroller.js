@@ -14,7 +14,7 @@ import View from '../../src/view/view';
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 
-import { _downcastElementToElement, _downcastMarkerToHighlight } from '../../src/conversion/downcast-converters';
+import DowncastHelpers from '../../src/conversion/downcast-converters';
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
@@ -90,9 +90,11 @@ describe( 'EditingController', () => {
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-			_downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
-			_downcastElementToElement( { model: 'div', view: 'div' } )( editing.downcastDispatcher );
-			_downcastMarkerToHighlight( { model: 'marker', view: {} } )( editing.downcastDispatcher );
+			const downcastHelpers = new DowncastHelpers( editing.downcastDispatcher );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
+			downcastHelpers.markerToHighlight( { model: 'marker', view: {} } );
 
 			// Note: The below code is highly overcomplicated due to #455.
 			model.change( writer => {

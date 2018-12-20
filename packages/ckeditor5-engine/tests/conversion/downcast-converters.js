@@ -20,12 +20,7 @@ import ViewText from '../../src/view/text';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import {
-	_downcastElementToElement,
-	_downcastAttributeToElement,
-	_downcastAttributeToAttribute,
-	_downcastMarkerToElement,
-	_downcastMarkerToHighlight,
+import DowncastHelpers, {
 	insertElement, insertUIElement, changeAttribute, wrap, removeUIElement,
 	highlightElement, highlightText, removeHighlight, createViewElementFromHighlightDescriptor
 } from '../../src/conversion/downcast-converters';
@@ -33,7 +28,7 @@ import {
 import { stringify } from '../../src/dev-utils/view';
 
 describe( 'downcast-helpers', () => {
-	let conversion, model, modelRoot, viewRoot;
+	let conversion, model, modelRoot, viewRoot, downcastHelpers;
 
 	beforeEach( () => {
 		model = new Model();
@@ -48,15 +43,15 @@ describe( 'downcast-helpers', () => {
 
 		viewRoot = controller.view.document.getRoot();
 
+		downcastHelpers = new DowncastHelpers( controller.downcastDispatcher );
+
 		conversion = new Conversion();
-		conversion.register( { name: 'downcast', dispatcher: controller.downcastDispatcher } );
+		conversion.register( 'downcast', downcastHelpers );
 	} );
 
 	describe( '_downcastElementToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = _downcastElementToElement( { model: 'paragraph', view: 'p' } );
-
-			conversion.for( 'downcast' ).add( helper );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -66,10 +61,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = _downcastElementToElement( { model: 'paragraph', view: 'p' } );
-			const helperB = _downcastElementToElement( { model: 'paragraph', view: 'foo', converterPriority: 'high' } );
-
-			conversion.for( 'downcast' ).add( helperA ).add( helperB );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'foo', converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -79,15 +72,13 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = _downcastElementToElement( {
+			downcastHelpers.elementToElement( {
 				model: 'fancyParagraph',
 				view: {
 					name: 'p',
 					classes: 'fancy'
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'fancyParagraph', modelRoot, 0 );
@@ -97,12 +88,10 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = _downcastElementToElement( {
+			downcastHelpers.elementToElement( {
 				model: 'heading',
 				view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'heading', { level: 2 }, modelRoot, 0 );
@@ -114,9 +103,7 @@ describe( 'downcast-helpers', () => {
 
 	describe( '_downcastAttributeToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = _downcastAttributeToElement( { model: 'bold', view: 'strong' } );
-
-			conversion.for( 'downcast' ).add( helper );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -126,10 +113,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = _downcastAttributeToElement( { model: 'bold', view: 'strong' } );
-			const helperB = _downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
-
-			conversion.for( 'downcast' ).add( helperA ).add( helperB );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -139,15 +124,13 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = _downcastAttributeToElement( {
+			downcastHelpers.attributeToElement( {
 				model: 'invert',
 				view: {
 					name: 'span',
 					classes: [ 'font-light', 'bg-dark' ]
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { invert: true }, modelRoot, 0 );
@@ -158,15 +141,13 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view allows specifying the element\'s priority', () => {
-			const helper = _downcastAttributeToElement( {
+			downcastHelpers.attributeToElement( {
 				model: 'invert',
 				view: {
 					name: 'span',
 					priority: 5
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { invert: true }, modelRoot, 0 );
@@ -176,7 +157,7 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'model attribute value is enum', () => {
-			const helper = _downcastAttributeToElement( {
+			downcastHelpers.attributeToElement( {
 				model: {
 					key: 'fontSize',
 					values: [ 'big', 'small' ]
@@ -197,8 +178,6 @@ describe( 'downcast-helpers', () => {
 					}
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { fontSize: 'big' }, modelRoot, 0 );
@@ -222,14 +201,12 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = _downcastAttributeToElement( {
+			downcastHelpers.attributeToElement( {
 				model: 'bold',
 				view: ( modelAttributeValue, viewWriter ) => {
 					return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: '500' }, modelRoot, 0 );
@@ -239,7 +216,7 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.model.name is given', () => {
-			const helper = _downcastAttributeToElement( {
+			downcastHelpers.attributeToElement( {
 				model: {
 					key: 'color',
 					name: '$text'
@@ -249,17 +226,15 @@ describe( 'downcast-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'downcast' )
-				.add( helper )
-				.add( _downcastElementToElement( {
-					model: 'smiley',
-					view: ( modelElement, viewWriter ) => {
-						return viewWriter.createEmptyElement( 'img', {
-							src: 'smile.jpg',
-							class: 'smiley'
-						} );
-					}
-				} ) );
+			downcastHelpers.elementToElement( {
+				model: 'smiley',
+				view: ( modelElement, viewWriter ) => {
+					return viewWriter.createEmptyElement( 'img', {
+						src: 'smile.jpg',
+						class: 'smiley'
+					} );
+				}
+			} );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { color: '#FF0000' }, modelRoot, 0 );
@@ -274,13 +249,11 @@ describe( 'downcast-helpers', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'image', view: 'img' } ) );
+			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
 		} );
 
 		it( 'config.view is a string', () => {
-			const helper = _downcastAttributeToAttribute( { model: 'source', view: 'src' } );
-
-			conversion.for( 'downcast' ).add( helper );
+			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
@@ -296,10 +269,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = _downcastAttributeToAttribute( { model: 'source', view: 'href' } );
-			const helperB = _downcastAttributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
-
-			conversion.for( 'downcast' ).add( helperA ).add( helperB );
+			downcastHelpers.attributeToAttribute( { model: 'source', view: 'href' } );
+			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
@@ -309,17 +280,15 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'model element name specified', () => {
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			const helper = _downcastAttributeToAttribute( {
+			downcastHelpers.attributeToAttribute( {
 				model: {
 					name: 'image',
 					key: 'source'
 				},
 				view: 'src'
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
@@ -335,9 +304,9 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is an object, model attribute value is enum', () => {
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			const helper = _downcastAttributeToAttribute( {
+			downcastHelpers.attributeToAttribute( {
 				model: {
 					key: 'styled',
 					values: [ 'dark', 'light' ]
@@ -353,8 +322,6 @@ describe( 'downcast-helpers', () => {
 					}
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', { styled: 'dark' }, modelRoot, 0 );
@@ -376,9 +343,9 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is an object, model attribute value is enum, view has style', () => {
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			const helper = _downcastAttributeToAttribute( {
+			downcastHelpers.attributeToAttribute( {
 				model: {
 					key: 'align',
 					values: [ 'right', 'center' ]
@@ -398,8 +365,6 @@ describe( 'downcast-helpers', () => {
 					}
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', { align: 'right' }, modelRoot, 0 );
@@ -421,9 +386,9 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is an object, only name and key are provided', () => {
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			const helper = _downcastAttributeToAttribute( {
+			downcastHelpers.attributeToAttribute( {
 				model: {
 					name: 'paragraph',
 					key: 'class'
@@ -433,8 +398,6 @@ describe( 'downcast-helpers', () => {
 					key: 'class'
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', { class: 'dark' }, modelRoot, 0 );
@@ -456,12 +419,10 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = _downcastAttributeToAttribute( {
+			downcastHelpers.attributeToAttribute( {
 				model: 'styled',
 				view: attributeValue => ( { key: 'class', value: 'styled-' + attributeValue } )
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { styled: 'pull-out' }, modelRoot, 0 );
@@ -474,9 +435,9 @@ describe( 'downcast-helpers', () => {
 		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
 			const logSpy = testUtils.sinon.spy( log, 'warn' );
 
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			conversion.for( 'downcast' ).add( _downcastAttributeToAttribute( { model: 'test', view: 'test' } ) );
+			downcastHelpers.attributeToAttribute( { model: 'test', view: 'test' } );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', { test: '1' }, modelRoot, 0 );
@@ -497,9 +458,9 @@ describe( 'downcast-helpers', () => {
 		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
 			const logSpy = testUtils.sinon.spy( log, 'warn' );
 
-			conversion.for( 'downcast' ).add( _downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			conversion.for( 'downcast' ).add( _downcastAttributeToAttribute( { model: 'test', view: 'test' } ) );
+			downcastHelpers.attributeToAttribute( { model: 'test', view: 'test' } );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -523,9 +484,7 @@ describe( 'downcast-helpers', () => {
 
 	describe( '_downcastMarkerToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = _downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
-
-			conversion.for( 'downcast' ).add( helper );
+			downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -538,10 +497,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = _downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
-			const helperB = _downcastMarkerToElement( { model: 'search', view: 'search', converterPriority: 'high' } );
-
-			conversion.for( 'downcast' ).add( helperA ).add( helperB );
+			downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } );
+			downcastHelpers.markerToElement( { model: 'search', view: 'search', converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -553,7 +510,7 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = _downcastMarkerToElement( {
+			downcastHelpers.markerToElement( {
 				model: 'search',
 				view: {
 					name: 'span',
@@ -562,8 +519,6 @@ describe( 'downcast-helpers', () => {
 					}
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -575,14 +530,12 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = _downcastMarkerToElement( {
+			downcastHelpers.markerToElement( {
 				model: 'search',
 				view: ( data, viewWriter ) => {
 					return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -596,9 +549,7 @@ describe( 'downcast-helpers', () => {
 
 	describe( '_downcastMarkerToHighlight', () => {
 		it( 'config.view is a highlight descriptor', () => {
-			const helper = _downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
-
-			conversion.for( 'downcast' ).add( helper );
+			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -610,10 +561,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = _downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
-			const helperB = _downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
-
-			conversion.for( 'downcast' ).add( helperA ).add( helperB );
+			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
+			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -625,7 +574,7 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = _downcastMarkerToHighlight( {
+			downcastHelpers.markerToHighlight( {
 				model: 'comment',
 				view: data => {
 					const commentType = data.markerName.split( ':' )[ 1 ];
@@ -635,8 +584,6 @@ describe( 'downcast-helpers', () => {
 					};
 				}
 			} );
-
-			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -1373,12 +1320,12 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="highlight-class" title="title">foo</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="highlight-class" title="title">bar</span>' +
-						'</p>' +
+					'<p>' +
+					'<span class="highlight-class" title="title">foo</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="highlight-class" title="title">bar</span>' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1406,12 +1353,12 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="override-class">foo</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="override-class">bar</span>' +
-						'</p>' +
+					'<p>' +
+					'<span class="override-class">foo</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="override-class">bar</span>' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1485,10 +1432,10 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="foo">foo</span>' +
-						'</p>' +
-						'<p>bar</p>' +
+					'<p>' +
+					'<span class="foo">foo</span>' +
+					'</p>' +
+					'<p>bar</p>' +
 					'</div>'
 				);
 
@@ -1499,16 +1446,16 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="foo">f</span>' +
-							'<span class="bar">' +
-								'<span class="foo">oo</span>' +
-							'</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="bar">ba</span>' +
-							'r' +
-						'</p>' +
+					'<p>' +
+					'<span class="foo">f</span>' +
+					'<span class="bar">' +
+					'<span class="foo">oo</span>' +
+					'</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="bar">ba</span>' +
+					'r' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1519,21 +1466,21 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="foo">f</span>' +
-							'<span class="bar">' +
-								'<span class="foo">' +
-									'o' +
-									'<span class="xyz">o</span>' +
-								'</span>' +
-							'</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="bar">' +
-								'<span class="xyz">ba</span>' +
-							'</span>' +
-							'<span class="xyz">r</span>' +
-						'</p>' +
+					'<p>' +
+					'<span class="foo">f</span>' +
+					'<span class="bar">' +
+					'<span class="foo">' +
+					'o' +
+					'<span class="xyz">o</span>' +
+					'</span>' +
+					'</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="bar">' +
+					'<span class="xyz">ba</span>' +
+					'</span>' +
+					'<span class="xyz">r</span>' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1543,15 +1490,15 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'<span class="foo">' +
-								'fo' +
-								'<span class="xyz">o</span>' +
-							'</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="xyz">bar</span>' +
-						'</p>' +
+					'<p>' +
+					'<span class="foo">' +
+					'fo' +
+					'<span class="xyz">o</span>' +
+					'</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="xyz">bar</span>' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1561,13 +1508,13 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<p>' +
-							'fo' +
-							'<span class="xyz">o</span>' +
-						'</p>' +
-						'<p>' +
-							'<span class="xyz">bar</span>' +
-						'</p>' +
+					'<p>' +
+					'fo' +
+					'<span class="xyz">o</span>' +
+					'</p>' +
+					'<p>' +
+					'<span class="xyz">bar</span>' +
+					'</p>' +
 					'</div>'
 				);
 
@@ -1647,9 +1594,9 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<div class="highlight-class">' +
-							'foo' +
-						'</div>' +
+					'<div class="highlight-class">' +
+					'foo' +
+					'</div>' +
 					'</div>'
 				);
 
@@ -1673,9 +1620,9 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div>' +
-						'<div class="override-class">' +
-							'foo' +
-						'</div>' +
+					'<div class="override-class">' +
+					'foo' +
+					'</div>' +
 					'</div>'
 				);
 
@@ -1732,7 +1679,7 @@ describe( 'downcast-converters', () => {
 			const descriptor = {
 				classes: 'foo-class',
 				attributes: { one: '1', two: '2' },
-				priority: 7,
+				priority: 7
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
 
@@ -1750,7 +1697,7 @@ describe( 'downcast-converters', () => {
 			const descriptor = {
 				classes: [ 'foo-class', 'bar-class' ],
 				attributes: { one: '1', two: '2' },
-				priority: 7,
+				priority: 7
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
 
@@ -1768,7 +1715,7 @@ describe( 'downcast-converters', () => {
 		it( 'should create element without class', () => {
 			const descriptor = {
 				attributes: { one: '1', two: '2' },
-				priority: 7,
+				priority: 7
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
 
@@ -1784,7 +1731,7 @@ describe( 'downcast-converters', () => {
 		it( 'should create element without priority', () => {
 			const descriptor = {
 				classes: 'foo-class',
-				attributes: { one: '1', two: '2' },
+				attributes: { one: '1', two: '2' }
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
 
