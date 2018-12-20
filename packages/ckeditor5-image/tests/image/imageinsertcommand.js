@@ -89,13 +89,30 @@ describe( 'ImageInsertCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be false when the selection is inside other object', () => {
-			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
-			model.schema.extend( '$text', { allowIn: 'object' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
-			setModelData( model, '<object>[]</object>' );
+		it( 'should be true when the selection is inside isLimit element which allows image', () => {
+			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
+			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
+			model.schema.extend( '$block', { allowIn: 'limit' } );
 
-			expect( command.isEnabled ).to.be.false;
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'outerObject', view: 'outerObject' } ) );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'limit', view: 'limit' } ) );
+
+			setModelData( model, '<outerObject><limit>[]</limit></outerObject>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true when the selection is inside isLimit element which allows image', () => {
+			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
+			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
+			model.schema.extend( '$block', { allowIn: 'limit' } );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'outerObject', view: 'outerObject' } ) );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'limit', view: 'limit' } ) );
+
+			setModelData( model, '<outerObject><limit><paragraph>foo[]</paragraph></limit></outerObject>' );
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false when schema disallows image', () => {
