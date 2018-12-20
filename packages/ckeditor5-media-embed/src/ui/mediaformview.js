@@ -245,7 +245,7 @@ export default class MediaFormView extends View {
 		const t = this.locale.t;
 
 		this.urlInputView.errorText = null;
-		this.urlInputView.infoText = t( 'Paste the URL here or into the content to embed faster.' );
+		this.urlInputView.infoText = t( 'Paste the URL into the content to embed faster.' );
 	}
 
 	/**
