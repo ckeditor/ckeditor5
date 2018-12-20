@@ -14,8 +14,8 @@ import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
-import { downcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastHelpers } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import DowncastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import UpcastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
@@ -180,15 +180,11 @@ export default class Editor {
 		 */
 		this.conversion = new Conversion();
 
-		this.conversion.register( {
-			name: 'downcast',
-			dispatcher: [ this.editing.downcastDispatcher, this.data.downcastDispatcher ],
-			helpers: downcastHelpers
-		} );
-		this.conversion.register( { name: 'editingDowncast', dispatcher: this.editing.downcastDispatcher, helpers: downcastHelpers } );
-		this.conversion.register( { name: 'dataDowncast', dispatcher: this.data.downcastDispatcher, helpers: downcastHelpers } );
+		this.conversion.register( 'downcast', new DowncastHelpers( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] ) );
+		this.conversion.register( 'editingDowncast', new DowncastHelpers( this.editing.downcastDispatcher ) );
+		this.conversion.register( 'dataDowncast', new DowncastHelpers( this.data.downcastDispatcher ) );
 
-		this.conversion.register( { name: 'upcast', dispatcher: this.data.upcastDispatcher, helpers: upcastHelpers } );
+		this.conversion.register( 'upcast', new UpcastHelpers( this.data.upcastDispatcher ) );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
