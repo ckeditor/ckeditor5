@@ -242,8 +242,10 @@ export default class MediaFormView extends View {
 	 * See {@link #isValid}.
 	 */
 	resetFormStatus() {
+		const t = this.locale.t;
+
 		this.urlInputView.errorText = null;
-		this.urlInputView.infoText = null;
+		this.urlInputView.infoText = t( 'Paste the URL here or into the content to embed faster.' );
 	}
 
 	/**
@@ -260,13 +262,6 @@ export default class MediaFormView extends View {
 
 		labeledInput.label = t( 'Media URL' );
 		inputView.placeholder = 'https://example.com';
-
-		inputView.on( 'input', () => {
-			// Display the #infoText only when there's some value to hide it when the input
-			// is empty, e.g. user used backspace to clean it up.
-			labeledInput.infoText = inputView.element.value ?
-				t( 'Paste the URL into the content to embed faster.' ) : null;
-		} );
 
 		return labeledInput;
 	}
