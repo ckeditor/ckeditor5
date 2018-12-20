@@ -135,7 +135,7 @@ export default class Conversion {
 	 *		editor.conversion.for( 'upcast' ).elementToElement( config ) );
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
-	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers| module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
 		const group = this._getDispatchersGroup( groupName );
@@ -626,7 +626,7 @@ export class ConversionHelpers {
 	 * method description
 	 *
 	 * @param {Function} conversionHelper The function to be called on event.
-	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers| module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	add( conversionHelper ) {
 		this._addToDispatchers( conversionHelper );
