@@ -249,7 +249,7 @@ function findOutermostLimitAncestor( startingNode, schema ) {
 	return isLimitNode;
 }
 
-// Checks whether one of range ends is placed around non-limit elements.
+// Checks whether any of range boundaries is placed around non-limit elements.
 //
 // @param {module:engine/model/position~Position} start
 // @param {module:engine/model/position~Position} end
