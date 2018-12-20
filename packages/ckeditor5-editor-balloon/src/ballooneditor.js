@@ -67,7 +67,10 @@ export default class BalloonEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.config.get( 'plugins' ).push( BalloonToolbar );
+		const plugins = this.config.get( 'plugins' );
+		plugins.push( BalloonToolbar );
+		this.config.set( 'plugins', plugins );
+
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
 		this.data.processor = new HtmlDataProcessor();
