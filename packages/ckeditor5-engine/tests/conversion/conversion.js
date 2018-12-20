@@ -8,8 +8,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { upcastHelpers, convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
-import { downcastHelpers } from '../../src/conversion/downcast-converters';
+import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 import EditingController from '../../src/controller/editingcontroller';
 
@@ -31,15 +31,15 @@ describe( 'Conversion', () => {
 		dispA = Symbol( 'dispA' );
 		dispB = Symbol( 'dispB' );
 
-		conversion.register( { name: 'ab', dispatcher: [ dispA, dispB ] } );
-		conversion.register( { name: 'a', dispatcher: dispA } );
-		conversion.register( { name: 'b', dispatcher: dispB } );
+		conversion.register( 'ab', new UpcastHelpers( [ dispA, dispB ] ) );
+		conversion.register( 'a', new UpcastHelpers( dispA ) );
+		conversion.register( 'b', new UpcastHelpers( dispB ) );
 	} );
 
 	describe( 'register()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
 			expect( () => {
-				conversion.register( { name: 'ab' } );
+				conversion.register( 'ab' );
 			} ).to.throw( CKEditorError, /conversion-register-group-exists/ );
 		} );
 	} );
@@ -118,8 +118,8 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 			conversion = new Conversion();
-			conversion.register( { name: 'upcast', dispatcher: [ viewDispatcher ], helpers: upcastHelpers } );
-			conversion.register( { name: 'downcast', dispatcher: [ controller.downcastDispatcher ], helpers: downcastHelpers } );
+			conversion.register( 'upcast', new UpcastHelpers( [ viewDispatcher ] ) );
+			conversion.register( 'downcast', new DowncastHelpers( controller.downcastDispatcher ) );
 		} );
 
 		describe( 'elementToElement', () => {

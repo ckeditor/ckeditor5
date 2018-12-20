@@ -18,8 +18,8 @@ import { parse as parseView, stringify as stringifyView } from '../../src/dev-ut
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
-import UpcastHelpers from '../../src/conversion/upcast-converters';
-import DowncastHelpers from '../../src/conversion/downcast-converters';
+import UpcastHelpers from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema, upcastHelpers, downcastHelpers;

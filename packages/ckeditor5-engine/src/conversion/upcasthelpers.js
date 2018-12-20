@@ -13,7 +13,7 @@ import { cloneDeep } from 'lodash-es';
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
  *
- * @module engine/conversion/upcast-converters
+ * @module engine/conversion/upcasthelpers
  */
 
 /**
@@ -69,7 +69,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
 	 * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToElement( config ) {
 		return this.add( _upcastElementToElement( config ) );
@@ -87,7 +87,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
-	 * {@link module:engine/conversion/upcast-converters~UpcastHelpers#attributeToAttribute} for comparison.
+	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute} for comparison.
 	 *
 	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
 	 *
@@ -155,7 +155,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 	 * If `String` is given, the model attribute value will be set to `true`.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToAttribute( config ) {
 		return this.add( _upcastElementToAttribute( config ) );
@@ -173,7 +173,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
 	 *
 	 * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
-	 * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToAttribute} which sets attributes for
+	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute} which sets attributes for
 	 * all the children in the model:
 	 *
 	 *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
@@ -249,7 +249,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
 	 * If `String` is given, the model attribute value will be same as view attribute value.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
-	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	attributeToAttribute( config ) {
 		return this.add( _upcastAttributeToAttribute( config ) );
@@ -298,7 +298,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
 	 * a model marker name.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToMarker( config ) {
 		return this.add( _upcastElementToMarker( config ) );

@@ -38,8 +38,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
  * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
- * You can find a set of them in the {@link module:engine/conversion/downcast-converters} and
- * {@link module:engine/conversion/upcast-converters} modules.
+ * You can find a set of them in the {@link module:engine/conversion/downcasthelpers} and
+ * {@link module:engine/conversion/upcasthelpers} modules.
  *
  * Besides allowing to register converters to specific dispatchers, you can also use methods available in this
  * class to add two-way converters (upcast and downcast):
@@ -76,8 +76,8 @@ export default class Conversion {
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatcher Dispatcher or array of dispatchers to register
 	 * under the given name.
-	 * @param {module:engine/conversion/downcast-converters~DowncastHelpers|
-	 * module:engine/conversion/upcast-converters~UpcastHelpers} helpers
+	 * @param {module:engine/conversion/downcasthelpers~DowncastHelpers|
+	 * module:engine/conversion/upcasthelpers~UpcastHelpers} helpers
 	 */
 	register( name, group ) {
 		if ( this._dispatchersGroups.has( name ) ) {
@@ -92,7 +92,6 @@ export default class Conversion {
 		this._dispatchersGroups.set( name, group );
 	}
 
-	/* eslint-disable max-len */
 	/**
 	 * Provides chainable API to assign converters to dispatchers registered under a given group name. Converters are added
 	 * by calling the {@link module:engine/conversion/conversion~ConversionHelpers#add `.add()`} method of an
@@ -113,18 +112,18 @@ export default class Conversion {
 	 *
 	 * For downcast (model-to-view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement Downcast element-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#attributeToElement Downcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#attributeToAttribute Downcast attribute-to-attribute converter}.
-	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#markerToElement Downcast marker-to-element converter}.
-	 * * {@link module:engine/conversion/downcast-converters~DowncastHelpers#markerToHighlight Downcast marker-to-highlight converter}.
+	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement Downcast element-to-element converter},
+	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement Downcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute Downcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement Downcast marker-to-element converter}.
+	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight Downcast marker-to-highlight converter}.
 	 *
 	 * For upcast (view-to-model conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToElement Upcast element-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToAttribute Upcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#attributeToAttribute Upcast attribute-to-attribute converter}.
-	 * * {@link module:engine/conversion/upcast-converters~UpcastHelpers#elementToMarker Upcast element-to-marker converter}.
+	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement Upcast element-to-element converter},
+	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute Upcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute Upcast attribute-to-attribute converter}.
+	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker Upcast element-to-marker converter}.
 	 *
 	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
 	 *
@@ -136,10 +135,8 @@ export default class Conversion {
 	 *		editor.conversion.for( 'upcast' ).elementToElement( config ) );
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
-	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
-	 * module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers| module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
-	/* eslint-enable max-len */
 	for( groupName ) {
 		const group = this._getDispatchersGroup( groupName );
 
@@ -574,7 +571,7 @@ export default class Conversion {
  * @property {String} name Group name
  * @property {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
  * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
- * @property {module:engine/conversion/downcast-converters~DowncastHelpers|module:engine/conversion/upcast-converters~UpcastHelpers} helpers
+ * @property {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers} helpers
  */
 
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
@@ -609,8 +606,7 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
 }
 
 /**
- * Base class for conversion utilises.
- *
+ * Base class for conversion helpers.
  */
 export class ConversionHelpers {
 	/**
@@ -630,8 +626,7 @@ export class ConversionHelpers {
 	 * method description
 	 *
 	 * @param {Function} conversionHelper The function to be called on event.
-	 * @returns {module:engine/conversion/conversion~ConversionHelpers|module:engine/conversion/downcast-converters~DowncastHelpers|
-	 * module:engine/conversion/upcast-converters~UpcastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers| module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	add( conversionHelper ) {
 		this._addToDispatchers( conversionHelper );

@@ -32,7 +32,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 } from '../conversion/downcast-selection-converters';
-import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcast-converters';
+import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';

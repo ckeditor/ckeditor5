@@ -17,7 +17,7 @@ import { cloneDeep } from 'lodash-es';
 /**
  * Contains downcast (model-to-view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
  *
- * @module engine/conversion/downcast-converters
+ * @module engine/conversion/downcasthelpers
  */
 
 /**
@@ -66,7 +66,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
 	 * as parameters and returns a view container element.
-	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
 		return this.add( _downcastElementToElement( config ) );
@@ -151,7 +151,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * as parameters and returns a view attribute element. If `config.model.values` is
 	 * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	attributeToElement( config ) {
 		return this.add( _downcastAttributeToElement( config ) );
@@ -217,7 +217,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 	 * `{ key, value }` objects or a functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	attributeToAttribute( config ) {
 		return this.add( _downcastAttributeToAttribute( config ) );
@@ -279,7 +279,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model marker data as a parameter and returns a view UI element.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToElement( config ) {
 		return this.add( _downcastMarkerToElement( config ) );
@@ -289,7 +289,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * Model marker to highlight conversion helper.
 	 *
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
-	 * {@link module:engine/conversion/downcast-converters~HighlightDescriptor} should be provided.
+	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
 	 *
 	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
@@ -326,7 +326,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
 	 * receives the `data` object as a parameter and should return a
-	 * {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor}.
+	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -335,10 +335,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @method #markerToHighlight
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
-	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
+	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} config.view A highlight descriptor
 	 * that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
-	 * @returns {module:engine/conversion/downcast-converters~DowncastHelpers}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToHighlight( config ) {
 		return this.add( _downcastMarkerToHighlight( config ) );
@@ -734,7 +734,7 @@ export function wrap( elementCreator ) {
 /**
  * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
- * See {link module:engine/conversion/downcast-converters~createViewElementFromHighlightDescriptor}.
+ * See {link module:engine/conversion/downcasthelpers~createViewElementFromHighlightDescriptor}.
  *
  * It can also be used to convert the selection that is inside a marker. In that case, an empty attribute element will be
  * created and the selection will be put inside it.
@@ -746,7 +746,7 @@ export function wrap( elementCreator ) {
  * This converter binds the created {@link module:engine/view/attributeelement~AttributeElement attribute elemens} with the marker name
  * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
 export function highlightText( highlightDescriptor ) {
@@ -809,7 +809,7 @@ export function highlightText( highlightDescriptor ) {
  * This converter binds altered {@link module:engine/view/containerelement~ContainerElement container elements} with the marker name using
  * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
 export function highlightElement( highlightDescriptor ) {
@@ -856,7 +856,7 @@ export function highlightElement( highlightDescriptor ) {
  * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
  * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~AttributeElement attribute element} created from the
- * provided highlight descriptor. See {link module:engine/conversion/downcast-converters~HighlightDescriptor}.
+ * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~HighlightDescriptor}.
  *
  * For elements, the converter checks if an element has the `removeHighlight` function stored as a
  * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
@@ -871,7 +871,7 @@ export function highlightElement( highlightDescriptor ) {
  *
  * This converter unbinds elements from the marker name.
  *
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
 export function removeHighlight( highlightDescriptor ) {
@@ -916,10 +916,10 @@ export function removeHighlight( highlightDescriptor ) {
 
 /**
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor} object. If a priority
+ * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
  * is not provided in the descriptor, the default priority will be used.
  *
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
  * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createViewElementFromHighlightDescriptor( descriptor ) {
@@ -1062,7 +1062,7 @@ function _downcastMarkerToElement( config ) {
 //
 // @param {Object} config Conversion configuration.
 // @param {String} config.model The name of the model marker (or model marker group) to convert.
-// @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} config.view A highlight descriptor
 // that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
@@ -1217,7 +1217,7 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
  *  * The descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight with the
  *  given ID from the element.
  *
- * @typedef {Object} module:engine/conversion/downcast-converters~HighlightDescriptor
+ * @typedef {Object} module:engine/conversion/downcasthelpers~HighlightDescriptor
  *
  * @property {String|Array.<String>} classes A CSS class or an array of classes to set. If the descriptor is used to
  * create an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these classes will be set

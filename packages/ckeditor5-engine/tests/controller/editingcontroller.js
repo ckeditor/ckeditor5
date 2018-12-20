@@ -14,7 +14,7 @@ import View from '../../src/view/view';
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 
-import DowncastHelpers from '../../src/conversion/downcast-converters';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';

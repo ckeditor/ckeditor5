@@ -23,7 +23,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DowncastHelpers, {
 	insertElement, insertUIElement, changeAttribute, wrap, removeUIElement,
 	highlightElement, highlightText, removeHighlight, createViewElementFromHighlightDescriptor
-} from '../../src/conversion/downcast-converters';
+} from '../../src/conversion/downcasthelpers';
 
 import { stringify } from '../../src/dev-utils/view';
 

@@ -19,7 +19,7 @@ import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import UpcastHelpers, { convertToModelFragment, convertText } from '../../src/conversion/upcast-converters';
+import UpcastHelpers, { convertToModelFragment, convertText } from '../../src/conversion/upcasthelpers';
 
 import { stringify } from '../../src/dev-utils/model';
 

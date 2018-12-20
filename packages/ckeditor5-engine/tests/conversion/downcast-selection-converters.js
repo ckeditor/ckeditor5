@@ -23,7 +23,7 @@ import {
 	highlightElement,
 	highlightText,
 	removeHighlight
-} from '../../src/conversion/downcast-converters';
+} from '../../src/conversion/downcasthelpers';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
