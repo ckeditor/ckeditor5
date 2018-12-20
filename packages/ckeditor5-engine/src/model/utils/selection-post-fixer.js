@@ -216,11 +216,11 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		let fixedEnd = end;
 
 		if ( expandStart ) {
-			fixedStart = Position._createBefore( findOuterMostIsLimitAncestor( startLimitElement, schema ) );
+			fixedStart = Position._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
 		}
 
 		if ( expandEnd ) {
-			fixedEnd = Position._createAfter( findOuterMostIsLimitAncestor( endLimitElement, schema ) );
+			fixedEnd = Position._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
 		}
 
 		return new Range( fixedStart, fixedEnd );
@@ -236,7 +236,7 @@ function tryFixingNonCollapsedRage( range, schema ) {
 // @param {module:engine/model/schema~Schema} schema
 // @param {String} expandToDirection Direction of expansion - either 'start' or 'end' of the range.
 // @returns {module:engine/model/node~Node}
-function findOuterMostIsLimitAncestor( startingNode, schema ) {
+function findOutermostLimitAncestor( startingNode, schema ) {
 	let isLimitNode = startingNode;
 	let parent = isLimitNode;
 
