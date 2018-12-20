@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Conversion from '../../src/conversion/conversion';
+import Conversion, { ConversionHelpers } from '../../src/conversion/conversion';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
@@ -16,13 +16,10 @@ import EditingController from '../../src/controller/editingcontroller';
 import Model from '../../src/model/model';
 
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
-import { setData, stringify as modelStringify } from '../../src/dev-utils/model';
-import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewText from '../../src/view/text';
-import ViewUIElement from '../../src/view/uielement';
+import { stringify as modelStringify } from '../../src/dev-utils/model';
 
 describe( 'Conversion', () => {
-	let conversion, dispA, dispB;
+	let conversion, dispA, dispB, dispC;
 
 	beforeEach( () => {
 		conversion = new Conversion();
@@ -30,10 +27,12 @@ describe( 'Conversion', () => {
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
 		dispA = Symbol( 'dispA' );
 		dispB = Symbol( 'dispB' );
+		dispC = Symbol( 'dispC' );
 
 		conversion.register( 'ab', new UpcastHelpers( [ dispA, dispB ] ) );
 		conversion.register( 'a', new UpcastHelpers( dispA ) );
 		conversion.register( 'b', new UpcastHelpers( dispB ) );
+		conversion.register( 'c', new DowncastHelpers( dispC ) );
 	} );
 
 	describe( 'register()', () => {
@@ -45,16 +44,21 @@ describe( 'Conversion', () => {
 	} );
 
 	describe( 'for()', () => {
-		it( 'should return object with .add() method', () => {
-			const forResult = conversion.for( 'ab' );
-
-			expect( forResult.add ).to.be.instanceof( Function );
+		it( 'should return ConversionHelpers', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
 			expect( () => {
 				conversion.for( 'foo' );
 			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+		} );
+
+		it( 'should return proper helpers for group', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'a' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'b' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'c' ) ).to.be.instanceof( DowncastHelpers );
 		} );
 	} );
 
@@ -632,148 +636,6 @@ describe( 'Conversion', () => {
 			} );
 		} );
 
-		describe( 'for( \'downcast\' )', () => {
-			describe( 'elementToElement()', () => {
-				it( 'adds downcast converter', () => {
-					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-
-					testDowncast( '<paragraph>foo</paragraph>', '<p>foo</p>' );
-				} );
-			} );
-
-			describe( 'attributeToElement()', () => {
-				it( 'adds downcast converter', () => {
-					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-					conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
-
-					testDowncast( '<paragraph><$text bold="true">Foo</$text> bar</paragraph>', '<p><strong>Foo</strong> bar</p>' );
-				} );
-			} );
-
-			describe( 'attributeToAttribute()', () => {
-				it( 'adds downcast converter', () => {
-					schema.register( 'image', {
-						inheritAllFrom: '$block',
-						allowAttributes: [ 'source' ]
-					} );
-
-					conversion.for( 'downcast' ).elementToElement( { model: 'image', view: 'img' } );
-					conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
-
-					testDowncast( '<image source="foo.jpg"></image>', '<img src="foo.jpg"></img>' );
-				} );
-			} );
-
-			describe( 'markerToElement()', () => {
-				it( 'adds downcast converter', () => {
-					conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
-
-					model.change( writer => {
-						writer.insertText( 'foo', modelRoot, 0 );
-
-						const range = writer.createRange(
-							writer.createPositionAt( modelRoot, 1 ),
-							writer.createPositionAt( modelRoot, 2 )
-						);
-						writer.addMarker( 'search', { range, usingOperation: false } );
-					} );
-
-					expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) )
-						.to.equal( 'f<marker-search></marker-search>o<marker-search></marker-search>o' );
-				} );
-			} );
-
-			describe( 'markerToHighlight()', () => {
-				it( 'adds downcast converter', () => {
-					conversion.for( 'downcast' ).markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
-
-					model.change( writer => {
-						writer.insertText( 'foo', modelRoot, 0 );
-						const range = writer.createRange(
-							writer.createPositionAt( modelRoot, 0 ),
-							writer.createPositionAt( modelRoot, 3 )
-						);
-						writer.addMarker( 'comment', { range, usingOperation: false } );
-					} );
-
-					expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) )
-						.to.equal( '<span class="comment">foo</span>' );
-				} );
-			} );
-		} );
-
-		describe( 'for( \'upcast\' )', () => {
-			describe( 'elementToElement()', () => {
-				it( 'adds upcast converter', () => {
-					conversion.for( 'upcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-					// TODO this shouldn't be required
-					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-
-					testUpcast( '<p>foo</p>', '<paragraph>foo</paragraph>' );
-				} );
-			} );
-
-			describe( 'elementToAttribute()', () => {
-				it( 'adds upcast converter', () => {
-					conversion.for( 'upcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-					conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
-
-					conversion.for( 'upcast' ).elementToAttribute( { model: 'bold', view: 'strong' } );
-					conversion.for( 'downcast' ).attributeToElement( { model: 'bold', view: 'strong' } );
-
-					testUpcast( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
-				} );
-			} );
-
-			describe( 'attributeToAttribute()', () => {
-				it( 'adds upcast converter', () => {
-					schema.register( 'image', {
-						inheritAllFrom: '$block',
-						allowAttributes: [ 'source' ]
-					} );
-
-					conversion.for( 'downcast' ).elementToElement( { model: 'image', view: 'img' } );
-					conversion.for( 'downcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
-
-					conversion.for( 'upcast' ).elementToElement( { model: 'image', view: 'img' } );
-					conversion.for( 'upcast' ).attributeToAttribute( { model: 'source', view: 'src' } );
-
-					testUpcast( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
-				} );
-			} );
-
-			describe( 'markerToElement()', () => {
-				it( 'adds upcast converter', () => {
-					conversion.for( 'upcast' ).elementToMarker( { model: 'search', view: 'marker-search' } );
-					conversion.for( 'downcast' ).markerToElement( { model: 'search', view: 'marker-search' } );
-
-					const frag = new ViewDocumentFragment( [
-						new ViewText( 'fo' ),
-						new ViewUIElement( 'marker-search' ),
-						new ViewText( 'oba' ),
-						new ViewUIElement( 'marker-search' ),
-						new ViewText( 'r' )
-					] );
-
-					const marker = { name: 'search', start: [ 2 ], end: [ 5 ] };
-
-					testUpcastMarker( frag, 'foobar', marker );
-				} );
-			} );
-		} );
-
-		function testDowncast( input, expectedView ) {
-			setData( model, input );
-
-			expect( viewStringify( viewRoot, null, { ignoreRoot: true } ) ).to.equal( expectedView );
-		}
-
-		function testUpcast( input, expectedModel ) {
-			loadData( input );
-
-			expect( modelStringify( model.document.getRoot() ) ).to.equal( expectedModel );
-		}
-
 		function test( input, expectedModel, expectedView = null ) {
 			loadData( input );
 
@@ -797,20 +659,40 @@ describe( 'Conversion', () => {
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
 		}
+	} );
+} );
 
-		function testUpcastMarker( viewToConvert, modelString, marker ) {
-			const conversionResult = model.change( writer => viewDispatcher.convert( viewToConvert, writer ) );
+describe( 'ConversionHelpers', () => {
+	describe( 'add()', () => {
+		const dispA = Symbol( 'dispA' );
+		const dispB = Symbol( 'dispB' );
 
-			if ( marker ) {
-				expect( conversionResult.markers.has( marker.name ) ).to.be.true;
+		it( 'should call a helper for one defined dispatcher', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
 
-				const convertedMarker = conversionResult.markers.get( marker.name );
+			helpers.add( spy );
 
-				expect( convertedMarker.start.path ).to.deep.equal( marker.start );
-				expect( convertedMarker.end.path ).to.deep.equal( marker.end );
-			}
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+		} );
 
-			expect( viewStringify( conversionResult ) ).to.equal( modelString );
-		}
+		it( 'should call helper for all defined dispatcherers', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( [ dispA, dispB ] );
+
+			helpers.add( spy );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+			sinon.assert.calledWithExactly( spy, dispB );
+		} );
+
+		it( 'should be chainable', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
+
+			expect( helpers.add( spy ) ).to.equal( helpers );
+		} );
 	} );
 } );

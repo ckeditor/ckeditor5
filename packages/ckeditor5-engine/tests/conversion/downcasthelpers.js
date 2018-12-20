@@ -27,7 +27,7 @@ import DowncastHelpers, {
 
 import { stringify } from '../../src/dev-utils/view';
 
-describe( 'downcast-helpers', () => {
+describe( 'DowncastHelpers', () => {
 	let conversion, model, modelRoot, viewRoot, downcastHelpers;
 
 	beforeEach( () => {
@@ -49,7 +49,11 @@ describe( 'downcast-helpers', () => {
 		conversion.register( 'downcast', downcastHelpers );
 	} );
 
-	describe( '_downcastElementToElement', () => {
+	describe( 'elementToElement()', () => {
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } ) ).to.equal( downcastHelpers );
+		} );
+
 		it( 'config.view is a string', () => {
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -101,7 +105,11 @@ describe( 'downcast-helpers', () => {
 		} );
 	} );
 
-	describe( '_downcastAttributeToElement', () => {
+	describe( 'attributeToElement()', () => {
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } ) ).to.equal( downcastHelpers );
+		} );
+
 		it( 'config.view is a string', () => {
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
@@ -245,11 +253,15 @@ describe( 'downcast-helpers', () => {
 		} );
 	} );
 
-	describe( '_downcastAttributeToAttribute', () => {
+	describe( 'attributeToAttribute()', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
 			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } ) ).to.equal( downcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -482,7 +494,11 @@ describe( 'downcast-helpers', () => {
 		} );
 	} );
 
-	describe( '_downcastMarkerToElement', () => {
+	describe( 'markerToElement()', () => {
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } ) ).to.equal( downcastHelpers );
+		} );
+
 		it( 'config.view is a string', () => {
 			downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } );
 
@@ -547,7 +563,11 @@ describe( 'downcast-helpers', () => {
 		} );
 	} );
 
-	describe( '_downcastMarkerToHighlight', () => {
+	describe( 'markerToHighlight()', () => {
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } ) ).to.equal( downcastHelpers );
+		} );
+
 		it( 'config.view is a highlight descriptor', () => {
 			downcastHelpers.markerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
 

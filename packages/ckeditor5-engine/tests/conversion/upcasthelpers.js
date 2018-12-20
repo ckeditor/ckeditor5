@@ -50,7 +50,11 @@ describe( 'UpcastHelpers', () => {
 		conversion.register( 'upcast', upcastHelpers );
 	} );
 
-	describe( '_upcastElementToElement', () => {
+	describe( '.elementToElement()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } ) ).to.equal( upcastHelpers );
+		} );
+
 		it( 'config.view is a string', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
@@ -143,7 +147,11 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '_upcastElementToAttribute', () => {
+	describe( '.elementToAttribute()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } ) ).to.equal( upcastHelpers );
+		} );
+
 		it( 'config.view is string', () => {
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
 
@@ -334,13 +342,17 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '_upcastAttributeToAttribute', () => {
+	describe( '.attributeToAttribute()', () => {
 		beforeEach( () => {
 			upcastHelpers.elementToElement( { view: 'img', model: 'image' } );
 
 			schema.register( 'image', {
 				inheritAllFrom: '$block'
 			} );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } ) ).to.equal( upcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -544,7 +556,11 @@ describe( 'UpcastHelpers', () => {
 		} );
 	} );
 
-	describe( '_upcastElementToMarker', () => {
+	describe( '.elementToMarker()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } ) ).to.equal( upcastHelpers );
+		} );
+
 		it( 'config.view is a string', () => {
 			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } );
 
