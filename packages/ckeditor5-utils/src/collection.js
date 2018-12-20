@@ -433,8 +433,7 @@ export default class Collection {
 	 *
 	 * @param {module:utils/collection~Collection} externalCollection A collection to be bound.
 	 * @returns {Object}
-	 * @returns {module:utils/collection~Collection#bindTo#as} return.as
-	 * @returns {module:utils/collection~Collection#bindTo#using} return.using
+	 * @returns {module:utils/collection~CollectionBindToChain} The binding chain object.
 	 */
 	bindTo( externalCollection ) {
 		if ( this._bindToCollection ) {
@@ -449,24 +448,10 @@ export default class Collection {
 		this._bindToCollection = externalCollection;
 
 		return {
-			/**
-			 * Creates the class factory binding.
-			 *
-			 * @static
-			 * @param {Function} Class Specifies which class factory is to be initialized.
-			 */
 			as: Class => {
 				this._setUpBindToBinding( item => new Class( item ) );
 			},
 
-			/**
-			 * Creates callback or property binding.
-			 *
-			 * @static
-			 * @param {Function|String} callbackOrProperty When the function is passed, it is used to
-			 * produce the items. When the string is provided, the property value is used to create
-			 * the bound collection items.
-			 */
 			using: callbackOrProperty => {
 				if ( typeof callbackOrProperty == 'function' ) {
 					this._setUpBindToBinding( item => callbackOrProperty( item ) );
@@ -628,3 +613,28 @@ export default class Collection {
 }
 
 mix( Collection, EmitterMixin );
+
+/**
+ * An object returned by the {@link module:utils/collection~Collection#bindTo `bindTo()`} method
+ * providing functions that specify the type of the binding.
+ *
+ * See the {@link module:utils/collection~Collection#bindTo `bindTo()`} documentation for examples.
+ *
+ * @interface module:utils/collection~CollectionBindToChain
+ */
+
+/**
+ * Creates a callback or a property binding.
+ *
+ * @method #using
+ * @param {Function|String} callbackOrProperty  When the function is passed, it should return
+ * the collection items. When the string is provided, the property value is used to create the bound collection items.
+ */
+
+/**
+ * Creates the class factory binding in which items of the source collection are passed to
+ * the constructor of the specified class.
+ *
+ * @method #as
+ * @param {Function} Class The class constructor used to create instances in the factory.
+ */
