@@ -17,7 +17,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ListEditing', () => {
