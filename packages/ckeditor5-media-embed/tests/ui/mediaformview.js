@@ -82,7 +82,7 @@ describe( 'MediaFormView', () => {
 				expect( view.urlInputView.inputView.placeholder ).to.equal( 'https://example.com' );
 			} );
 
-			it( 'has info text' () => {
+			it( 'has info text', () => {
 				expect( view.urlInputView.infoText ).to.match( /^Paste the URL/ );
 			} );
 		} );
