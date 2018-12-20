@@ -18,7 +18,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 
 /**
- * The {@glink builds/guides/overview#decoupled-editor decoupled editor} implementation.
+ * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
