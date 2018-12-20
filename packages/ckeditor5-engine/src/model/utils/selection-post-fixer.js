@@ -159,7 +159,6 @@ function tryFixingCollapsedRange( range, schema ) {
 //
 // @param {module:engine/model/range~Range} range Expanded range to fix.
 // @param {module:engine/model/schema~Schema} schema
-
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
 function tryFixingNonCollapsedRage( range, schema ) {
 	const start = range.start;
