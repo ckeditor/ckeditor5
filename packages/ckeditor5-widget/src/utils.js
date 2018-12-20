@@ -55,8 +55,8 @@ export function isWidget( node ) {
  * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *
  * This function needs to be used in conjunction with
- * {@link module:engine/conversion/downcast-converters~DowncastHelpers downcast conversion helpers}
- * like {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement `elementToElement()`}.
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers downcast conversion helpers}
+ * like {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  * Moreover, typically you will want to use `toWidget()` only for `editingDowncast`, while keeping the `dataDowncast` clean.
  *
  * For example, in order to convert a `<widget>` model element to `<div class="widget">` in the view, you can define
@@ -190,7 +190,7 @@ export function getLabel( element ) {
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
- * used together with {@link module:engine/conversion/downcast-converters~DowncastHelpers#elementToElement `elementToElement()`}.
+ * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  *
  * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define
  * such converters:
