@@ -16,7 +16,7 @@ While CKEditor 5 is compatible with your framework and initializing it requires 
 
 When checking how to integrate CKEditor 5 with your framework you can follow these steps:
 
-1. **Check whether an [official integration](#official-rich-text-editor-integrations) exists.**
+1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
 	There are three official integrations so far: for {@link builds/guides/frameworks/react React}, {@link builds/guides/frameworks/angular Angular 2+}, and for {@link builds/guides/frameworks/vuejs Vue.js}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).

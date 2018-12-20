@@ -14,7 +14,7 @@ order: 10
 
 CKEditor 5 is currently supported in the following desktop browsers:
 
-* Full support (see [notes below](#notes)):
+* Full support:
 	* Chrome (latest stable release).
 	* Firefox (latest stable release).
 	* Safari (latest stable release).
