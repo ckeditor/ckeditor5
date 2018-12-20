@@ -97,13 +97,13 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
-		describe( 'className', () => {
+		describe( 'class', () => {
 			it( 'should set additional class to the view#element', () => {
-				view.className = 'foo';
+				view.class = 'foo';
 
 				expect( view.element.classList.contains( 'foo' ) ).to.true;
 
-				view.className = '';
+				view.class = '';
 
 				expect( view.element.classList.contains( 'foo' ) ).to.false;
 			} );

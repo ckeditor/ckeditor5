@@ -205,7 +205,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
 	 */
 	_show( { view, balloonClassName = '' } ) {
-		this.view.className = balloonClassName;
+		this.view.class = balloonClassName;
 
 		this.view.content.add( view );
 		this.view.pin( this._getBalloonPosition() );

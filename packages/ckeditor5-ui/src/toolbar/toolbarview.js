@@ -68,9 +68,9 @@ export default class ToolbarView extends View {
 		 * An additional CSS class added to the {@link #element}.
 		 *
 		 * @observable
-		 * @member {String} #className
+		 * @member {String} #class
 		 */
-		this.set( 'className' );
+		this.set( 'class' );
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
@@ -99,7 +99,7 @@ export default class ToolbarView extends View {
 					'ck',
 					'ck-toolbar',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
-					bind.to( 'className' )
+					bind.to( 'class' )
 				]
 			},
 

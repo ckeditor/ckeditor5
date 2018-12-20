@@ -286,7 +286,7 @@ describe( 'ContextualBalloon', () => {
 				balloonClassName: 'foo'
 			} );
 
-			expect( balloon.view.className ).to.equal( 'foo' );
+			expect( balloon.view.class ).to.equal( 'foo' );
 
 			balloon.add( {
 				view: viewB,
@@ -297,7 +297,7 @@ describe( 'ContextualBalloon', () => {
 				balloonClassName: 'bar'
 			} );
 
-			expect( balloon.view.className ).to.equal( 'bar' );
+			expect( balloon.view.class ).to.equal( 'bar' );
 		} );
 	} );
 
@@ -391,7 +391,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewB );
 
-			expect( balloon.view.className ).to.equal( 'foo' );
+			expect( balloon.view.class ).to.equal( 'foo' );
 		} );
 	} );
 

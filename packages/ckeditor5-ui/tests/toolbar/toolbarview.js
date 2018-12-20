@@ -85,14 +85,14 @@ describe( 'ToolbarView', () => {
 				expect( view.element.classList.contains( 'ck-toolbar_vertical' ) ).to.be.true;
 			} );
 
-			it( 'reacts on view#className', () => {
-				view.className = 'foo';
+			it( 'reacts on view#class', () => {
+				view.class = 'foo';
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
 
-				view.className = 'bar';
+				view.class = 'bar';
 				expect( view.element.classList.contains( 'bar' ) ).to.be.true;
 
-				view.className = false;
+				view.class = false;
 				expect( view.element.classList.contains( 'foo' ) ).to.be.false;
 				expect( view.element.classList.contains( 'bar' ) ).to.be.false;
 			} );
