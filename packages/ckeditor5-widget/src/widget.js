@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
-import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import { getCode, keyCodes, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import '../theme/widget.css';
 
@@ -415,8 +415,13 @@ function isSelectAllKeyCode( domEventData ) {
 // @returns {Boolean}
 function isInsideNestedEditable( element ) {
 	while ( element ) {
-		if ( !!element && element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
+		if ( element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
 			return true;
+		}
+
+		// Click on nested widget should select it.
+		if ( isWidget( element ) ) {
+			return false;
 		}
 
 		element = element.parent;
