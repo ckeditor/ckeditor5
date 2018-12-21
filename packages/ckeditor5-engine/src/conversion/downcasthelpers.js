@@ -69,7 +69,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
-		return this.add( _downcastElementToElement( config ) );
+		return this.add( downcastElementToElement( config ) );
 	}
 
 	/**
@@ -154,7 +154,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	attributeToElement( config ) {
-		return this.add( _downcastAttributeToElement( config ) );
+		return this.add( downcastAttributeToElement( config ) );
 	}
 
 	/**
@@ -220,7 +220,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	attributeToAttribute( config ) {
-		return this.add( _downcastAttributeToAttribute( config ) );
+		return this.add( downcastAttributeToAttribute( config ) );
 	}
 
 	/**
@@ -282,7 +282,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToElement( config ) {
-		return this.add( _downcastMarkerToElement( config ) );
+		return this.add( downcastMarkerToElement( config ) );
 	}
 
 	/**
@@ -341,7 +341,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	markerToHighlight( config ) {
-		return this.add( _downcastMarkerToHighlight( config ) );
+		return this.add( downcastMarkerToHighlight( config ) );
 	}
 }
 
@@ -781,7 +781,7 @@ function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		const descriptor = _prepareDescriptor( highlightDescriptor, data, conversionApi );
+		const descriptor = prepareDescriptor( highlightDescriptor, data, conversionApi );
 
 		if ( !descriptor ) {
 			return;
@@ -844,7 +844,7 @@ function highlightElement( highlightDescriptor ) {
 			return;
 		}
 
-		const descriptor = _prepareDescriptor( highlightDescriptor, data, conversionApi );
+		const descriptor = prepareDescriptor( highlightDescriptor, data, conversionApi );
 
 		if ( !descriptor ) {
 			return;
@@ -903,7 +903,7 @@ function removeHighlight( highlightDescriptor ) {
 			return;
 		}
 
-		const descriptor = _prepareDescriptor( highlightDescriptor, data, conversionApi );
+		const descriptor = prepareDescriptor( highlightDescriptor, data, conversionApi );
 
 		if ( !descriptor ) {
 			return;
@@ -946,10 +946,10 @@ function removeHighlight( highlightDescriptor ) {
 // that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
 // as parameters and returns a view container element.
 // @returns {Function} Conversion helper.
-function _downcastElementToElement( config ) {
+function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
-	config.view = _normalizeToElementConfig( config.view, 'container' );
+	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
@@ -969,7 +969,7 @@ function _downcastElementToElement( config ) {
 // given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _downcastAttributeToElement( config ) {
+function downcastAttributeToElement( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
@@ -981,13 +981,13 @@ function _downcastAttributeToElement( config ) {
 
 	if ( config.model.values ) {
 		for ( const modelValue of config.model.values ) {
-			config.view[ modelValue ] = _normalizeToElementConfig( config.view[ modelValue ], 'attribute' );
+			config.view[ modelValue ] = normalizeToElementConfig( config.view[ modelValue ], 'attribute' );
 		}
 	} else {
-		config.view = _normalizeToElementConfig( config.view, 'attribute' );
+		config.view = normalizeToElementConfig( config.view, 'attribute' );
 	}
 
-	const elementCreator = _getFromAttributeCreator( config );
+	const elementCreator = getFromAttributeCreator( config );
 
 	return dispatcher => {
 		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.converterPriority || 'normal' } );
@@ -1008,7 +1008,7 @@ function _downcastAttributeToElement( config ) {
 // `{ key, value }` objects or a functions.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _downcastAttributeToAttribute( config ) {
+function downcastAttributeToAttribute( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
@@ -1020,13 +1020,13 @@ function _downcastAttributeToAttribute( config ) {
 
 	if ( config.model.values ) {
 		for ( const modelValue of config.model.values ) {
-			config.view[ modelValue ] = _normalizeToAttributeConfig( config.view[ modelValue ] );
+			config.view[ modelValue ] = normalizeToAttributeConfig( config.view[ modelValue ] );
 		}
 	} else {
-		config.view = _normalizeToAttributeConfig( config.view );
+		config.view = normalizeToAttributeConfig( config.view );
 	}
 
-	const elementCreator = _getFromAttributeCreator( config );
+	const elementCreator = getFromAttributeCreator( config );
 
 	return dispatcher => {
 		dispatcher.on( eventName, changeAttribute( elementCreator ), { priority: config.converterPriority || 'normal' } );
@@ -1043,10 +1043,10 @@ function _downcastAttributeToAttribute( config ) {
 // that takes the model marker data as a parameter and returns a view UI element.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _downcastMarkerToElement( config ) {
+function downcastMarkerToElement( config ) {
 	config = cloneDeep( config );
 
-	config.view = _normalizeToElementConfig( config.view, 'ui' );
+	config.view = normalizeToElementConfig( config.view, 'ui' );
 
 	return dispatcher => {
 		dispatcher.on( 'addMarker:' + config.model, insertUIElement( config.view ), { priority: config.converterPriority || 'normal' } );
@@ -1064,7 +1064,7 @@ function _downcastMarkerToElement( config ) {
 // that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _downcastMarkerToHighlight( config ) {
+function downcastMarkerToHighlight( config ) {
 	return dispatcher => {
 		dispatcher.on( 'addMarker:' + config.model, highlightText( config.view ), { priority: config.converterPriority || 'normal' } );
 		dispatcher.on( 'addMarker:' + config.model, highlightElement( config.view ), { priority: config.converterPriority || 'normal' } );
@@ -1078,13 +1078,13 @@ function _downcastMarkerToHighlight( config ) {
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} view View configuration.
 // @param {'container'|'attribute'|'ui'} viewElementType View element type to create.
 // @returns {Function} Element creator function to use in lower level converters.
-function _normalizeToElementConfig( view, viewElementType ) {
+function normalizeToElementConfig( view, viewElementType ) {
 	if ( typeof view == 'function' ) {
 		// If `view` is already a function, don't do anything.
 		return view;
 	}
 
-	return ( modelData, viewWriter ) => _createViewElementFromDefinition( view, viewWriter, viewElementType );
+	return ( modelData, viewWriter ) => createViewElementFromDefinition( view, viewWriter, viewElementType );
 }
 
 // Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
@@ -1093,7 +1093,7 @@ function _normalizeToElementConfig( view, viewElementType ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @param {'container'|'attribute'|'ui'} viewElementType
 // @returns {module:engine/view/element~Element}
-function _createViewElementFromDefinition( viewElementDefinition, viewWriter, viewElementType ) {
+function createViewElementFromDefinition( viewElementDefinition, viewWriter, viewElementType ) {
 	if ( typeof viewElementDefinition == 'string' ) {
 		// If `viewElementDefinition` is given as a `String`, normalize it to an object with `name` property.
 		viewElementDefinition = { name: viewElementDefinition };
@@ -1138,7 +1138,7 @@ function _createViewElementFromDefinition( viewElementDefinition, viewWriter, vi
 	return element;
 }
 
-function _getFromAttributeCreator( config ) {
+function getFromAttributeCreator( config ) {
 	if ( config.model.values ) {
 		return ( modelAttributeValue, viewWriter ) => {
 			const view = config.view[ modelAttributeValue ];
@@ -1158,7 +1158,7 @@ function _getFromAttributeCreator( config ) {
 // for generating a view attribute.
 //
 // @param {Object} view View configuration.
-function _normalizeToAttributeConfig( view ) {
+function normalizeToAttributeConfig( view ) {
 	if ( typeof view == 'string' ) {
 		return modelAttributeValue => ( { key: view, value: modelAttributeValue } );
 	} else if ( typeof view == 'object' ) {
@@ -1177,7 +1177,7 @@ function _normalizeToAttributeConfig( view ) {
 }
 
 // Helper function for `highlight`. Prepares the actual descriptor object using value passed to the converter.
-function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
+function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	// If passed descriptor is a creator function, call it. If not, just use passed value.
 	const descriptor = typeof highlightDescriptor == 'function' ?
 		highlightDescriptor( data, conversionApi ) :

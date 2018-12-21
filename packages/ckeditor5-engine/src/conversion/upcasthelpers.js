@@ -72,7 +72,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToElement( config ) {
-		return this.add( _upcastElementToElement( config ) );
+		return this.add( upcastElementToElement( config ) );
 	}
 
 	/**
@@ -158,7 +158,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToAttribute( config ) {
-		return this.add( _upcastElementToAttribute( config ) );
+		return this.add( upcastElementToAttribute( config ) );
 	}
 
 	/**
@@ -252,7 +252,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	attributeToAttribute( config ) {
-		return this.add( _upcastAttributeToAttribute( config ) );
+		return this.add( upcastAttributeToAttribute( config ) );
 	}
 
 	/**
@@ -301,7 +301,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToMarker( config ) {
-		return this.add( _upcastElementToMarker( config ) );
+		return this.add( upcastElementToMarker( config ) );
 	}
 }
 
@@ -362,12 +362,12 @@ export function convertText() {
 // instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _upcastElementToElement( config ) {
+function upcastElementToElement( config ) {
 	config = cloneDeep( config );
 
-	const converter = _prepareToElementConverter( config );
+	const converter = prepareToElementConverter( config );
 
-	const elementName = _getViewElementNameFromConfig( config );
+	const elementName = getViewElementNameFromConfig( config );
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
@@ -386,14 +386,14 @@ function _upcastElementToElement( config ) {
 // If `String` is given, the model attribute value will be set to `true`.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _upcastElementToAttribute( config ) {
+function upcastElementToAttribute( config ) {
 	config = cloneDeep( config );
 
-	_normalizeModelAttributeConfig( config );
+	normalizeModelAttributeConfig( config );
 
-	const converter = _prepareToAttributeConverter( config, false );
+	const converter = prepareToAttributeConverter( config, false );
 
-	const elementName = _getViewElementNameFromConfig( config );
+	const elementName = getViewElementNameFromConfig( config );
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
@@ -416,18 +416,18 @@ function _upcastElementToAttribute( config ) {
 // If `String` is given, the model attribute value will be same as view attribute value.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
 // @returns {Function} Conversion helper.
-function _upcastAttributeToAttribute( config ) {
+function upcastAttributeToAttribute( config ) {
 	config = cloneDeep( config );
 
 	let viewKey = null;
 
 	if ( typeof config.view == 'string' || config.view.key ) {
-		viewKey = _normalizeViewAttributeKeyValueConfig( config );
+		viewKey = normalizeViewAttributeKeyValueConfig( config );
 	}
 
-	_normalizeModelAttributeConfig( config, viewKey );
+	normalizeModelAttributeConfig( config, viewKey );
 
-	const converter = _prepareToAttributeConverter( config, true );
+	const converter = prepareToAttributeConverter( config, true );
 
 	return dispatcher => {
 		dispatcher.on( 'element', converter, { priority: config.converterPriority || 'low' } );
@@ -444,12 +444,12 @@ function _upcastAttributeToAttribute( config ) {
 // a model marker name.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 // @returns {Function} Conversion helper.
-function _upcastElementToMarker( config ) {
+function upcastElementToMarker( config ) {
 	config = cloneDeep( config );
 
-	_normalizeToMarkerConfig( config );
+	normalizeToMarkerConfig( config );
 
-	return _upcastElementToElement( config );
+	return upcastElementToElement( config );
 }
 
 // Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
@@ -457,7 +457,7 @@ function _upcastElementToMarker( config ) {
 //
 // @param {Object} config Conversion config.
 // @returns {String|null} View element name or `null` if name is not directly set.
-function _getViewElementNameFromConfig( config ) {
+function getViewElementNameFromConfig( config ) {
 	if ( typeof config.view == 'string' ) {
 		return config.view;
 	}
@@ -473,7 +473,7 @@ function _getViewElementNameFromConfig( config ) {
 //
 // @param {Object} config Conversion configuration.
 // @returns {Function} View to model converter.
-function _prepareToElementConverter( config ) {
+function prepareToElementConverter( config ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
@@ -489,7 +489,7 @@ function _prepareToElementConverter( config ) {
 		match.match.name = true;
 
 		// Create model element basing on config.
-		const modelElement = _getModelElement( config.model, data.viewItem, conversionApi.writer );
+		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
 
 		// Do not convert if element building function returned falsy value.
 		if ( !modelElement ) {
@@ -552,7 +552,7 @@ function _prepareToElementConverter( config ) {
 // @param {String|Function|module:engine/model/element~Element} model Model conversion configuration.
 // @param {module:engine/view/node~Node} input The converted view node.
 // @param {module:engine/model/writer~Writer} writer A writer instance to use to create the model element.
-function _getModelElement( model, input, writer ) {
+function getModelElement( model, input, writer ) {
 	if ( model instanceof Function ) {
 		return model( input, writer );
 	} else {
@@ -566,7 +566,7 @@ function _getModelElement( model, input, writer ) {
 //
 // @param {Object} config Conversion config.
 // @returns {String} Key of the converted view attribute.
-function _normalizeViewAttributeKeyValueConfig( config ) {
+function normalizeViewAttributeKeyValueConfig( config ) {
 	if ( typeof config.view == 'string' ) {
 		config.view = { key: config.view };
 	}
@@ -606,7 +606,7 @@ function _normalizeViewAttributeKeyValueConfig( config ) {
 // @param {Object} config Conversion config.
 // @param {String} viewAttributeKeyToCopy Key of the converted view attribute. If it is set, model attribute value
 // will be equal to view attribute value.
-function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null ) {
+function normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null ) {
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true : viewElement => viewElement.getAttribute( viewAttributeKeyToCopy );
 
 	const key = typeof config.model != 'object' ? config.model : config.model.key;
@@ -622,7 +622,7 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 // @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
-function _prepareToAttributeConverter( config, shallow ) {
+function prepareToAttributeConverter( config, shallow ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
@@ -641,7 +641,7 @@ function _prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		if ( _onlyViewNameIsDefined( config ) ) {
+		if ( onlyViewNameIsDefined( config ) ) {
 			match.match.name = true;
 		} else {
 			// Do not test or consume `name` consumable.
@@ -661,7 +661,7 @@ function _prepareToAttributeConverter( config, shallow ) {
 		}
 
 		// Set attribute on current `output`. `Schema` is checked inside this helper function.
-		const attributeWasSet = _setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
+		const attributeWasSet = setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
 		if ( attributeWasSet ) {
 			conversionApi.consumable.consume( data.viewItem, match.match );
@@ -673,8 +673,8 @@ function _prepareToAttributeConverter( config, shallow ) {
 //
 // @param {Object} config Conversion config.
 // @returns {Boolean}
-function _onlyViewNameIsDefined( config ) {
-	if ( typeof config.view == 'object' && !_getViewElementNameFromConfig( config ) ) {
+function onlyViewNameIsDefined( config ) {
+	if ( typeof config.view == 'object' && !getViewElementNameFromConfig( config ) ) {
 		return false;
 	}
 
@@ -690,7 +690,7 @@ function _onlyViewNameIsDefined( config ) {
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
 // @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
-function _setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
+function setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 	let result = false;
 
 	// Set attribute on each item in range according to Schema.
@@ -709,7 +709,7 @@ function _setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 // function and converts it to a format that is supported by `_upcastElementToElement()` function.
 //
 // @param {Object} config Conversion configuration.
-function _normalizeToMarkerConfig( config ) {
+function normalizeToMarkerConfig( config ) {
 	const oldModel = config.model;
 
 	config.model = ( viewElement, modelWriter ) => {
