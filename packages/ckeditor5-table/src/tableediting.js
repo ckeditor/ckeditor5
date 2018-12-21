@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import upcastTable, { upcastTableCell } from './converters/upcasttable';
 import {
@@ -99,7 +98,7 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
 
 		// Table row conversion.
-		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 
 		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
