@@ -673,6 +673,31 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and C:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 */
+	* getTopMostBlocks() {
+		for ( const block of this.getSelectedBlocks() ) {
+			const parentBlock = findAncestorBlock( block );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			if ( !parentBlock || !this.containsEntireContent( parentBlock ) ) {
+				yield block;
+			}
+		}
+	}
+
+	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
 	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
@@ -801,4 +826,22 @@ function getParentBlock( position, visited ) {
 	ancestors.forEach( element => visited.add( element ) );
 
 	return block;
+}
+
+// Returns first ancestor block of a node.
+//
+// @param {module:engine/model/node~Node} node
+// @returns {module:engine/model/node~Node|undefined}
+function findAncestorBlock( node ) {
+	const schema = node.document.model.schema;
+
+	let parent = node.parent;
+
+	while ( parent ) {
+		if ( schema.isBlock( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
 }

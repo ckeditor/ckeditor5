@@ -253,6 +253,10 @@ export default class DocumentSelection {
 		return this._selection.getSelectedBlocks();
 	}
 
+	getTopMostBlocks( schema ) {
+		return this._selection.getTopMostBlocks( schema );
+	}
+
 	/**
 	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
