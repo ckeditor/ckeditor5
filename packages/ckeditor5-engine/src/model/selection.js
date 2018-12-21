@@ -675,7 +675,7 @@ export default class Selection {
 	/**
 	 * Returns blocks that aren't nested in other selected blocks.
 	 *
-	 * In this case the method will return blocks A, B and C:
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
 	 *
 	 *		[<blockA></blockA>
 	 *		<blockB>
@@ -684,7 +684,9 @@ export default class Selection {
 	 *		</blockB>
 	 *		<blockE></blockE>]
 	 *
-	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	* getTopMostBlocks() {
 		for ( const block of this.getSelectedBlocks() ) {
