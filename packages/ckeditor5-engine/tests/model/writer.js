@@ -1413,6 +1413,51 @@ describe( 'Writer', () => {
 			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
+		it( 'should create a marker operation if a marker was affected', () => {
+			const markerRange = new Range( Position._createAt( p2, 0 ), Position._createAt( p2, 0 ) );
+
+			addMarker( 'name', {
+				range: markerRange,
+				usingOperation: true
+			} );
+
+			const documentVersion = model.document.version;
+
+			merge( Position._createAfter( p1 ) );
+
+			const history = model.document.history;
+
+			const lastOperation = history._operations[ history._operations.length - 1 ];
+			const secondLastOperation = history._operations[ history._operations.length - 2 ];
+
+			expect( secondLastOperation.type ).to.equal( 'marker' );
+			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
+			expect( secondLastOperation.newRange.isEqual( markerRange ) );
+
+			expect( lastOperation.type ).to.equal( 'merge' );
+			expect( model.document.version ).to.equal( documentVersion + 2 );
+		} );
+
+		it( 'should not create a marker operation if affected marker was not using operations', () => {
+			const markerRange = new Range( Position._createAt( p2, 0 ), Position._createAt( p2, 2 ) );
+
+			addMarker( 'name', {
+				range: markerRange,
+				usingOperation: false
+			} );
+
+			const documentVersion = model.document.version;
+
+			merge( Position._createAfter( p1 ) );
+
+			const history = model.document.history;
+
+			const lastOperation = history._operations[ history._operations.length - 1 ];
+
+			expect( lastOperation.type ).to.equal( 'merge' );
+			expect( model.document.version ).to.equal( documentVersion + 1 );
+		} );
+
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
 				merge( new Position( root, [ 2 ] ) );
@@ -1456,6 +1501,51 @@ describe( 'Writer', () => {
 
 			expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
 			expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+		} );
+
+		it( 'should create a marker operation if a marker was affected', () => {
+			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+
+			addMarker( 'name', {
+				range: markerRange,
+				usingOperation: true
+			} );
+
+			const documentVersion = model.document.version;
+
+			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+
+			const history = model.document.history;
+
+			const lastOperation = history._operations[ history._operations.length - 1 ];
+			const secondLastOperation = history._operations[ history._operations.length - 2 ];
+
+			expect( secondLastOperation.type ).to.equal( 'marker' );
+			expect( secondLastOperation.oldRange.isEqual( markerRange ) );
+			expect( secondLastOperation.newRange.isEqual( markerRange ) );
+
+			expect( lastOperation.type ).to.equal( 'move' );
+			expect( model.document.version ).to.equal( documentVersion + 2 );
+		} );
+
+		it( 'should not create a marker operation if affected marker was not using operations', () => {
+			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+
+			addMarker( 'name', {
+				range: markerRange,
+				usingOperation: false
+			} );
+
+			const documentVersion = model.document.version;
+
+			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+
+			const history = model.document.history;
+
+			const lastOperation = history._operations[ history._operations.length - 1 ];
+
+			expect( lastOperation.type ).to.equal( 'move' );
+			expect( model.document.version ).to.equal( documentVersion + 1 );
 		} );
 
 		it( 'should throw if object to move is not a range', () => {
@@ -1553,6 +1643,52 @@ describe( 'Writer', () => {
 				remove( div );
 
 				expect( batch.operations[ 0 ].type ).to.equal( 'remove' );
+			} );
+
+			it( 'should create a marker operation if a marker was affected', () => {
+				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+
+				addMarker( 'name', {
+					range: markerRange,
+					usingOperation: true
+				} );
+
+				const documentVersion = model.document.version;
+
+				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+
+				const history = model.document.history;
+
+				const lastOperation = history._operations[ history._operations.length - 1 ];
+				const secondLastOperation = history._operations[ history._operations.length - 2 ];
+
+				expect( secondLastOperation.type ).to.equal( 'marker' );
+				expect( secondLastOperation.oldRange.isEqual( markerRange ) );
+				expect( secondLastOperation.newRange.isEqual( markerRange ) );
+
+				expect( lastOperation.type ).to.equal( 'remove' );
+
+				expect( model.document.version ).to.equal( documentVersion + 2 );
+			} );
+
+			it( 'should not create a marker operation if affected marker was not using operations', () => {
+				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+
+				addMarker( 'name', {
+					range: markerRange,
+					usingOperation: false
+				} );
+
+				const documentVersion = model.document.version;
+
+				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+
+				const history = model.document.history;
+
+				const lastOperation = history._operations[ history._operations.length - 1 ];
+
+				expect( lastOperation.type ).to.equal( 'remove' );
+				expect( model.document.version ).to.equal( documentVersion + 1 );
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
@@ -1922,16 +2058,16 @@ describe( 'Writer', () => {
 			range = Range._createIn( root );
 		} );
 
-		it( 'should throw if options.usingOperations is not defined', () => {
+		it( 'should throw if options.usingOperation is not defined', () => {
 			expect( () => {
 				addMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperations/ );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperation/ );
 		} );
 
-		it( 'should throw if name and range is defined but options.usingOperations is not defined', () => {
+		it( 'should throw if name and range is defined but options.usingOperation is not defined', () => {
 			expect( () => {
 				addMarker( 'name', { range } );
-			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperations/ );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperation/ );
 		} );
 
 		it( 'should add marker to the document marker collection', () => {

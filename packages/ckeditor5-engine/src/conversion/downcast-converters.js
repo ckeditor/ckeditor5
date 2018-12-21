@@ -858,7 +858,7 @@ export function wrap( elementCreator ) {
  */
 export function highlightText( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 
@@ -921,7 +921,7 @@ export function highlightText( highlightDescriptor ) {
  */
 export function highlightElement( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 

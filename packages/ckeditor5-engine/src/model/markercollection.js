@@ -230,7 +230,7 @@ export default class MarkerCollection {
 	 * Fired whenever marker is added, updated or removed from `MarkerCollection`.
 	 *
 	 * @event update
-	 * @param {module:engine/model/markercollection~Marker} Updated Marker.
+	 * @param {module:engine/model/markercollection~Marker} marker Updated Marker.
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the update. When is not defined it
 	 * means that marker is just added.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after update. When is not defined it
