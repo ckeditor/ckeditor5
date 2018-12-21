@@ -10,8 +10,6 @@
 import ShiftEnterCommand from './shiftentercommand';
 import EnterObserver from './enterobserver';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 /**
  * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
@@ -44,16 +42,16 @@ export default class ShiftEnter extends Plugin {
 
 		// Configure converters.
 		conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
+			.elementToElement( {
 				model: 'softBreak',
 				view: 'br'
-			} ) );
+			} );
 
 		conversion.for( 'downcast' )
-			.add( downcastElementToElement( {
+			.elementToElement( {
 				model: 'softBreak',
 				view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
-			} ) );
+			} );
 
 		view.addObserver( EnterObserver );
 
