@@ -259,6 +259,15 @@ describe( 'DowncastHelpers', () => {
 
 		beforeEach( () => {
 			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
+			downcastHelpers.elementToElement( {
+				model: 'paragraph',
+				view: ( modelItem, viewWriter ) => viewWriter.createContainerElement( 'p' )
+			} );
+
+			downcastHelpers.attributeToAttribute( {
+				model: 'class',
+				view: 'class'
+			} );
 		} );
 
 		it( 'should be chainable', () => {
@@ -492,6 +501,101 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		it( 'should convert attribute insert/change/remove on a model node', () => {
+			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'class', 'bar', modelElement );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="bar">foobar</p></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'class', modelElement );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
+			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
+			downcastHelpers.attributeToAttribute( {
+				model: 'theme',
+				view: ( value, data ) => {
+					if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
+						value += ' fix-content';
+					}
+
+					return { key: 'class', value };
+				}
+			} );
+
+			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
+			const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
+
+			model.change( writer => {
+				writer.insert( [ modelParagraph, modelDiv ], modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'theme', 'awesome', modelParagraph );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'theme', modelParagraph );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
+		} );
+
+		it( 'should be possible to override setAttribute', () => {
+			downcastHelpers.attributeToAttribute( {
+				model: 'class',
+				view: ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:class' );
+				},
+				converterPriority: 'high'
+			} );
+
+			model.change( writer => {
+				const modelElement = new ModelElement( 'paragraph', { classes: 'foo' }, new ModelText( 'foobar' ) );
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			// No attribute set.
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should not convert or consume if element creator returned null', () => {
+			const callback = sinon.stub().returns( null );
+
+			downcastHelpers.attributeToAttribute( {
+				model: 'class',
+				view: callback,
+				converterPriority: 'high'
+			} );
+
+			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+
+			sinon.assert.called( callback );
 		} );
 	} );
 
@@ -1338,95 +1442,6 @@ describe( 'downcast-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
 		} );
 	} );
-	//
-	// describe( 'changeAttribute', () => {
-	// 	it( 'should convert attribute insert/change/remove on a model node', () => {
-	// 		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
-	//
-	// 		model.change( writer => {
-	// 			writer.insert( modelElement, modelRootStart );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
-	//
-	// 		model.change( writer => {
-	// 			writer.setAttribute( 'class', 'bar', modelElement );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="bar">foobar</p></div>' );
-	//
-	// 		model.change( writer => {
-	// 			writer.removeAttribute( 'class', modelElement );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 	} );
-	//
-	// 	it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-	// 		const themeConverter = ( value, data ) => {
-	// 			if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
-	// 				value += ' fix-content';
-	// 			}
-	//
-	// 			return { key: 'class', value };
-	// 		};
-	//
-	// 		dispatcher.on( 'insert:div', insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'div' ) ) );
-	// 		dispatcher.on( 'attribute:theme', changeAttribute( themeConverter ) );
-	//
-	// 		const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
-	// 		const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
-	//
-	// 		model.change( writer => {
-	// 			writer.insert( [ modelParagraph, modelDiv ], modelRootStart );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
-	//
-	// 		model.change( writer => {
-	// 			writer.setAttribute( 'theme', 'awesome', modelParagraph );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
-	//
-	// 		model.change( writer => {
-	// 			writer.removeAttribute( 'theme', modelParagraph );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
-	// 	} );
-	//
-	// 	it( 'should be possible to override setAttribute', () => {
-	// 		const modelElement = new ModelElement( 'paragraph', { classes: 'foo' }, new ModelText( 'foobar' ) );
-	//
-	// 		dispatcher.on( 'attribute:class', ( evt, data, conversionApi ) => {
-	// 			conversionApi.consumable.consume( data.item, 'attribute:class' );
-	// 		}, { converterPriority: 'high' } );
-	//
-	// 		model.change( writer => {
-	// 			writer.insert( modelElement, modelRootStart );
-	// 		} );
-	//
-	// 		// No attribute set.
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 	} );
-	//
-	// 	it( 'should not convert or consume if element creator returned null', () => {
-	// 		const callback = sinon.stub().returns( null );
-	//
-	// 		dispatcher.on( 'attribute:class', changeAttribute( callback ) );
-	//
-	// 		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
-	//
-	// 		model.change( writer => {
-	// 			writer.insert( modelElement, modelRootStart );
-	// 		} );
-	//
-	// 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
-	//
-	// 		sinon.assert.called( callback );
-	// 	} );
-	// } );
 
 	describe( 'wrap', () => {
 		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
