@@ -14,10 +14,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import {
-	downcastMarkerToHighlight,
-	downcastAttributeToElement
-} from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 /* global document */
 
@@ -156,7 +152,7 @@ describe( 'LinkEditing', () => {
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( { model: 'foo', view: 'f' } ) );
+			editor.conversion.for( 'downcast' ).attributeToElement( { model: 'foo', view: 'f' } );
 
 			setModelData( model,
 				'<paragraph>' +
@@ -328,7 +324,7 @@ describe( 'LinkEditing', () => {
 			} );
 
 			it( 'works for the addMarker and removeMarker events', () => {
-				downcastMarkerToHighlight( { model: 'fooMarker', view: {} } )( editor.editing.downcastDispatcher );
+				editor.conversion.for( 'editingDowncast' ).markerToHighlight( { model: 'fooMarker', view: {} } );
 
 				setModelData( model,
 					'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'

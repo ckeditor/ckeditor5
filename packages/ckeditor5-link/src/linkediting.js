@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import { createLinkElement, ensureSafeUrl } from './utils';
@@ -38,15 +36,15 @@ export default class LinkEditing extends Plugin {
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
 		editor.conversion.for( 'dataDowncast' )
-			.add( downcastAttributeToElement( { model: 'linkHref', view: createLinkElement } ) );
+			.attributeToElement( { model: 'linkHref', view: createLinkElement } );
 
 		editor.conversion.for( 'editingDowncast' )
-			.add( downcastAttributeToElement( { model: 'linkHref', view: ( href, writer ) => {
+			.attributeToElement( { model: 'linkHref', view: ( href, writer ) => {
 				return createLinkElement( ensureSafeUrl( href ), writer );
-			} } ) );
+			} } );
 
 		editor.conversion.for( 'upcast' )
-			.add( upcastElementToAttribute( {
+			.elementToAttribute( {
 				view: {
 					name: 'a',
 					attributes: {
@@ -57,7 +55,7 @@ export default class LinkEditing extends Plugin {
 					key: 'linkHref',
 					value: viewElement => viewElement.getAttribute( 'href' )
 				}
-			} ) );
+			} );
 
 		// Create linking commands.
 		editor.commands.add( 'link', new LinkCommand( editor ) );
