@@ -346,50 +346,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 }
 
 /**
- * Function factory that creates a converter which converts node insertion changes from the model to the view.
- * The function passed will be provided with all the parameters of the dispatcher's
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
- * The result of the function will be inserted into the view.
- *
- * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
- *
- *		downcastDispatcher.on(
- *			'insert:myElem',
- *			insertElement( ( modelItem, viewWriter ) => {
- *				const text = viewWriter.createText( 'myText' );
- *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
- *
- *				// Do something fancy with `myElem` using `modelItem` or other parameters.
- *
- *				return myElem;
- *			}
- *		) );
- *
- * @param {Function} elementCreator Function returning a view element, which will be inserted.
- * @returns {Function} Insert element event converter.
- */
-export function insertElement( elementCreator ) {
-	return ( evt, data, conversionApi ) => {
-		const viewElement = elementCreator( data.item, conversionApi.writer );
-
-		if ( !viewElement ) {
-			return;
-		}
-
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-			return;
-		}
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		conversionApi.mapper.bindElements( data.item, viewElement );
-		conversionApi.writer.insert( viewPosition, viewElement );
-	};
-}
-
-/**
  * Function factory that creates a default downcast converter for text insertion changes.
  *
  * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
@@ -438,6 +394,145 @@ export function remove() {
 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
 			conversionApi.mapper.unbindViewElement( child );
 		}
+	};
+}
+
+/**
+ * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
+ * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
+ * is not provided in the descriptor, the default priority will be used.
+ *
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
+ * @returns {module:engine/view/attributeelement~AttributeElement}
+ */
+export function createViewElementFromHighlightDescriptor( descriptor ) {
+	const viewElement = new ViewAttributeElement( 'span', descriptor.attributes );
+
+	if ( descriptor.classes ) {
+		viewElement._addClass( descriptor.classes );
+	}
+
+	if ( descriptor.priority ) {
+		viewElement._priority = descriptor.priority;
+	}
+
+	viewElement._id = descriptor.id;
+
+	return viewElement;
+}
+
+// only: insertText, insertElement, wrap, insertUIElement
+
+/**
+ * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+ * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
+ * selection will be put inside it.
+ *
+ * Attributes from the model are converted to a view element that will be wrapping these view nodes that are bound to
+ * model elements having the given attribute. This is useful for attributes like `bold` that may be set on text nodes in the model
+ * but are represented as an element in the view:
+ *
+ *		[paragraph]              MODEL ====> VIEW        <p>
+ *			|- a {bold: true}                             |- <b>
+ *			|- b {bold: true}                             |   |- ab
+ *			|- c                                          |- c
+ *
+ * Passed `Function` will be provided with the attribute value and then all the parameters of the
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * The result of the function will be the wrapping element.
+ * When the provided `Function` does not return any element, no conversion will take place.
+ *
+ * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
+ *
+ *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
+ *			return viewWriter.createAttributeElement( 'strong' );
+ *		} );
+ *
+ * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
+ * @returns {Function} Set/change attribute converter.
+ */
+export function wrap( elementCreator ) {
+	return ( evt, data, conversionApi ) => {
+		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
+		// or the attribute was removed.
+		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi.writer );
+
+		// Create node to wrap with.
+		const newViewElement = elementCreator( data.attributeNewValue, conversionApi.writer );
+
+		if ( !oldViewElement && !newViewElement ) {
+			return;
+		}
+
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
+		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
+
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
+			// Selection attribute conversion.
+			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement );
+		} else {
+			// Node attribute conversion.
+			let viewRange = conversionApi.mapper.toViewRange( data.range );
+
+			// First, unwrap the range from current wrapper.
+			if ( data.attributeOldValue !== null && oldViewElement ) {
+				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
+			}
+
+			if ( data.attributeNewValue !== null && newViewElement ) {
+				viewWriter.wrap( viewRange, newViewElement );
+			}
+		}
+	};
+}
+
+/**
+ * Function factory that creates a converter which converts node insertion changes from the model to the view.
+ * The function passed will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * The result of the function will be inserted into the view.
+ *
+ * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
+ *
+ *		downcastDispatcher.on(
+ *			'insert:myElem',
+ *			insertElement( ( modelItem, viewWriter ) => {
+ *				const text = viewWriter.createText( 'myText' );
+ *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *
+ *				// Do something fancy with `myElem` using `modelItem` or other parameters.
+ *
+ *				return myElem;
+ *			}
+ *		) );
+ *
+ * @param {Function} elementCreator Function returning a view element, which will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertElement( elementCreator ) {
+	return ( evt, data, conversionApi ) => {
+		const viewElement = elementCreator( data.item, conversionApi.writer );
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		conversionApi.mapper.bindElements( data.item, viewElement );
+		conversionApi.writer.insert( viewPosition, viewElement );
 	};
 }
 
@@ -510,7 +605,7 @@ export function insertUIElement( elementCreator ) {
  *
  * @returns {Function} Removed UI element converter.
  */
-export function removeUIElement() {
+function removeUIElement() {
 	return ( evt, data, conversionApi ) => {
 		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
 
@@ -561,7 +656,7 @@ export function removeUIElement() {
  * The function is passed the model attribute value as the first parameter and additional data about the change as the second parameter.
  * @returns {Function} Set/change attribute converter.
  */
-export function changeAttribute( attributeCreator ) {
+function changeAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, data ) => ( { value, key: data.attributeKey } ) );
 
 	return ( evt, data, conversionApi ) => {
@@ -663,75 +758,6 @@ export function changeAttribute( attributeCreator ) {
 }
 
 /**
- * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
- * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
- * selection will be put inside it.
- *
- * Attributes from the model are converted to a view element that will be wrapping these view nodes that are bound to
- * model elements having the given attribute. This is useful for attributes like `bold` that may be set on text nodes in the model
- * but are represented as an element in the view:
- *
- *		[paragraph]              MODEL ====> VIEW        <p>
- *			|- a {bold: true}                             |- <b>
- *			|- b {bold: true}                             |   |- ab
- *			|- c                                          |- c
- *
- * Passed `Function` will be provided with the attribute value and then all the parameters of the
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
- * The result of the function will be the wrapping element.
- * When the provided `Function` does not return any element, no conversion will take place.
- *
- * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
- *
- *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
- *			return viewWriter.createAttributeElement( 'strong' );
- *		} );
- *
- * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
- * @returns {Function} Set/change attribute converter.
- */
-export function wrap( elementCreator ) {
-	return ( evt, data, conversionApi ) => {
-		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
-		// or the attribute was removed.
-		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi.writer );
-
-		// Create node to wrap with.
-		const newViewElement = elementCreator( data.attributeNewValue, conversionApi.writer );
-
-		if ( !oldViewElement && !newViewElement ) {
-			return;
-		}
-
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
-
-		const viewWriter = conversionApi.writer;
-		const viewSelection = viewWriter.document.selection;
-
-		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
-			// Selection attribute conversion.
-			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement );
-		} else {
-			// Node attribute conversion.
-			let viewRange = conversionApi.mapper.toViewRange( data.range );
-
-			// First, unwrap the range from current wrapper.
-			if ( data.attributeOldValue !== null && oldViewElement ) {
-				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
-			}
-
-			if ( data.attributeNewValue !== null && newViewElement ) {
-				viewWriter.wrap( viewRange, newViewElement );
-			}
-		}
-	};
-}
-
-/**
  * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
  * See {link module:engine/conversion/downcasthelpers~createViewElementFromHighlightDescriptor}.
@@ -749,7 +775,7 @@ export function wrap( elementCreator ) {
  * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
-export function highlightText( highlightDescriptor ) {
+function highlightText( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
 		if ( data.markerRange.isCollapsed ) {
 			return;
@@ -812,7 +838,7 @@ export function highlightText( highlightDescriptor ) {
  * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
-export function highlightElement( highlightDescriptor ) {
+function highlightElement( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
 		if ( data.markerRange.isCollapsed ) {
 			return;
@@ -874,7 +900,7 @@ export function highlightElement( highlightDescriptor ) {
  * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} highlightDescriptor
  * @returns {Function}
  */
-export function removeHighlight( highlightDescriptor ) {
+function removeHighlight( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
 		// This conversion makes sense only for non-collapsed range.
 		if ( data.markerRange.isCollapsed ) {
@@ -912,30 +938,6 @@ export function removeHighlight( highlightDescriptor ) {
 
 		evt.stop();
 	};
-}
-
-/**
- * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
- * is not provided in the descriptor, the default priority will be used.
- *
- * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
- * @returns {module:engine/view/attributeelement~AttributeElement}
- */
-export function createViewElementFromHighlightDescriptor( descriptor ) {
-	const viewElement = new ViewAttributeElement( 'span', descriptor.attributes );
-
-	if ( descriptor.classes ) {
-		viewElement._addClass( descriptor.classes );
-	}
-
-	if ( descriptor.priority ) {
-		viewElement._priority = descriptor.priority;
-	}
-
-	viewElement._id = descriptor.id;
-
-	return viewElement;
 }
 
 // Model element to view element conversion helper.

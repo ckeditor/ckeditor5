@@ -16,13 +16,10 @@ import {
 	clearAttributes,
 } from '../../src/conversion/downcast-selection-converters';
 
-import {
+import DowncastHelpers, {
 	insertElement,
 	insertText,
-	wrap,
-	highlightElement,
-	highlightText,
-	removeHighlight
+	wrap
 } from '../../src/conversion/downcasthelpers';
 
 import createViewRoot from '../view/_utils/createroot';
@@ -30,7 +27,7 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'downcast-selection-converters', () => {
-	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
+	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, downcastHelpers;
 
 	beforeEach( () => {
 		model = new Model();
@@ -48,8 +45,6 @@ describe( 'downcast-selection-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		highlightDescriptor = { classes: 'marker', priority: 1 };
-
 		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
@@ -57,9 +52,8 @@ describe( 'downcast-selection-converters', () => {
 		const strongCreator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' );
 		dispatcher.on( 'attribute:bold', wrap( strongCreator ) );
 
-		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
-		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
-		dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
+		downcastHelpers = new DowncastHelpers( dispatcher );
+		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -241,9 +235,10 @@ describe( 'downcast-selection-converters', () => {
 			} );
 
 			it( 'in marker - using highlight descriptor creator', () => {
-				dispatcher.on( 'addMarker:marker2', highlightText(
-					data => ( { classes: data.markerName } )
-				) );
+				downcastHelpers.markerToHighlight( {
+					model: 'marker2',
+					view: data => ( { classes: data.markerName } )
+				} );
 
 				setModelData( model, 'foobar' );
 
@@ -269,7 +264,10 @@ describe( 'downcast-selection-converters', () => {
 			} );
 
 			it( 'should do nothing if creator return null', () => {
-				dispatcher.on( 'addMarker:marker3', highlightText( () => null ) );
+				downcastHelpers.markerToHighlight( {
+					model: 'marker3',
+					view: () => null
+				} );
 
 				setModelData( model, 'foobar' );
 
