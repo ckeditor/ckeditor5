@@ -14,6 +14,8 @@ import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
+import DowncastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
+import UpcastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/upcasthelpers';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
@@ -178,11 +180,11 @@ export default class Editor {
 		 */
 		this.conversion = new Conversion();
 
-		this.conversion.register( 'downcast', [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] );
-		this.conversion.register( 'editingDowncast', [ this.editing.downcastDispatcher ] );
-		this.conversion.register( 'dataDowncast', [ this.data.downcastDispatcher ] );
+		this.conversion.register( 'downcast', new DowncastHelpers( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] ) );
+		this.conversion.register( 'editingDowncast', new DowncastHelpers( this.editing.downcastDispatcher ) );
+		this.conversion.register( 'dataDowncast', new DowncastHelpers( this.data.downcastDispatcher ) );
 
-		this.conversion.register( 'upcast', [ this.data.upcastDispatcher ] );
+		this.conversion.register( 'upcast', new UpcastHelpers( this.data.upcastDispatcher ) );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
