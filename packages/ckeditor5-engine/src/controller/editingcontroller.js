@@ -11,7 +11,7 @@ import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText, remove } from '../conversion/downcast-converters';
+import { insertText, remove } from '../conversion/downcasthelpers';
 import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 import { clearAttributes, convertCollapsedSelection, convertRangeSelection } from '../conversion/downcast-selection-converters';
 

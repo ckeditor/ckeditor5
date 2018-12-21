@@ -300,9 +300,9 @@ mix( MarkerCollection, EmitterMixin );
  *
  * Markers downcast happens on {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} events.
- * Use {@link module:engine/conversion/downcast-converters downcast converters} or attach a custom converter to mentioned events.
+ * Use {@link module:engine/conversion/downcasthelpers downcast converters} or attach a custom converter to mentioned events.
  * For {@link module:engine/controller/datacontroller~DataController data pipeline}, marker should be downcasted to an element.
- * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcast-converters upcast converters} or
+ * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcasthelpers upcast converters} or
  * attach a custom converter to {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element}.
  *
  * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
