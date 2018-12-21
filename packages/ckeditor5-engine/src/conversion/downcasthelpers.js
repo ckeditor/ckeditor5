@@ -763,7 +763,7 @@ function changeAttribute( attributeCreator ) {
 // @returns {Function}
 function highlightText( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 
@@ -824,7 +824,7 @@ function highlightText( highlightDescriptor ) {
 // @returns {Function}
 function highlightElement( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
-		if ( data.markerRange.isCollapsed ) {
+		if ( !data.item ) {
 			return;
 		}
 
