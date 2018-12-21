@@ -258,18 +258,9 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 		const markerRange = data.markerRange;
 
-		// Marker that is collapsed has consumable build differently that non-collapsed one.
-		// For more information see `addMarker` event description.
-		// If marker's range is collapsed - check if it can be consumed.
-		if ( markerRange.isCollapsed && !conversionApi.consumable.consume( markerRange, evt.name ) ) {
-			return;
-		}
-
 		// If marker's range is not collapsed - consume all items inside.
 		for ( const value of markerRange ) {
-			if ( !conversionApi.consumable.consume( value.item, evt.name ) ) {
-				return;
-			}
+			conversionApi.consumable.consume( value.item, evt.name );
 		}
 
 		const mapper = conversionApi.mapper;
