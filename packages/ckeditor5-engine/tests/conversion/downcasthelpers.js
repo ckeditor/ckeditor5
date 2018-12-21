@@ -20,7 +20,7 @@ import ViewText from '../../src/view/text';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import DowncastHelpers, { createViewElementFromHighlightDescriptor, insertElement, wrap } from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, { createViewElementFromHighlightDescriptor, wrap } from '../../src/conversion/downcasthelpers';
 
 import { stringify } from '../../src/dev-utils/view';
 
@@ -251,6 +251,18 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<span style="color:#FF0000">foo</span><img class="smiley" src="smile.jpg"></img>' );
+		} );
+
+		it( 'should not convert if creator returned null', () => {
+			downcastHelpers.elementToElement( { model: 'div', view: () => null } );
+
+			const modelElement = new ModelElement( 'div' );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
 		} );
 	} );
 
@@ -1343,15 +1355,8 @@ describe( 'downcast-converters', () => {
 		controller.view.document.getRoot()._name = 'div';
 
 		dispatcher = controller.downcastDispatcher;
-
-		dispatcher.on(
-			'insert:paragraph',
-			insertElement(
-				( modelItem, viewWriter ) => viewWriter.createContainerElement( 'p' )
-			)
-		);
-
-		// dispatcher.on( 'attribute:class', changeAttribute() );
+		const downcastHelpers = new DowncastHelpers( dispatcher );
+		downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 		modelRootStart = model.createPositionAt( modelRoot, 0 );
 	} );
@@ -1413,30 +1418,6 @@ describe( 'downcast-converters', () => {
 
 			model.change( writer => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
-		} );
-	} );
-
-	describe( 'insertElement', () => {
-		it( 'should convert element insertion in model', () => {
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should not convert if creator returned null', () => {
-			dispatcher.on( 'insert:div', insertElement( () => null ) );
-
-			const modelElement = new ModelElement( 'div' );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
@@ -1693,9 +1674,8 @@ describe( 'downcast-converters', () => {
 			const modelP = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 			const modelWidget = new ModelElement( 'widget', null, modelP );
 
-			dispatcher.on( 'insert:widget', insertElement(
-				( modelElement, viewWriter ) => viewWriter.createContainerElement( 'widget' ) )
-			);
+			const downcastHelpers = new DowncastHelpers( dispatcher );
+			downcastHelpers.elementToElement( { model: 'widget', view: 'widget' } );
 
 			model.change( writer => {
 				writer.insert( modelWidget, modelRootStart );

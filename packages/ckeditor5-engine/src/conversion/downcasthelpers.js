@@ -421,8 +421,6 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 	return viewElement;
 }
 
-// only: insertText, insertElement, wrap, insertUIElement
-
 /**
  * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
  * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
@@ -517,7 +515,7 @@ export function wrap( elementCreator ) {
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator ) {
+function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi.writer );
 
@@ -550,7 +548,7 @@ export function insertElement( elementCreator ) {
  * that will be inserted.
  * @returns {Function} Insert element event converter.
  */
-export function insertUIElement( elementCreator ) {
+function insertUIElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.

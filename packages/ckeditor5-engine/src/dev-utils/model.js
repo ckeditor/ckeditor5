@@ -32,7 +32,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 } from '../conversion/downcast-selection-converters';
-import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcasthelpers';
+import { insertText, wrap } from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
@@ -225,19 +225,72 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 			converter( evt, data, conversionApi );
 		}
 	} );
-	downcastDispatcher.on( 'insert', insertElement( modelItem => {
-		// Stringify object types values for properly display as an output string.
-		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
+	downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
+		const viewElement = new ViewContainerElement( data.item.name, attributes );
 
-		return new ViewContainerElement( modelItem.name, attributes );
-	} ) );
+		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		conversionApi.mapper.bindElements( data.item, viewElement );
+		conversionApi.writer.insert( viewPosition, viewElement );
+	} );
+
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
-	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, writer ) => {
-		const name = data.markerName + ':' + ( data.isOpening ? 'start' : 'end' );
+	downcastDispatcher.on( 'addMarker', ( evt, data, conversionApi ) => {
+		const elementCreator = ( data, writer ) => {
+			const name = data.markerName + ':' + ( data.isOpening ? 'start' : 'end' );
 
-		return writer.createUIElement( name );
-	} ) );
+			return writer.createUIElement( name );
+		};
+
+		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
+		// If marker is collapsed, only "opening" element will be inserted.
+		data.isOpening = true;
+		const viewStartElement = elementCreator( data, conversionApi.writer );
+
+		data.isOpening = false;
+		const viewEndElement = elementCreator( data, conversionApi.writer );
+
+		if ( !viewStartElement || !viewEndElement ) {
+			return;
+		}
+
+		const markerRange = data.markerRange;
+
+		// Marker that is collapsed has consumable build differently that non-collapsed one.
+		// For more information see `addMarker` event description.
+		// If marker's range is collapsed - check if it can be consumed.
+		if ( markerRange.isCollapsed && !conversionApi.consumable.consume( markerRange, evt.name ) ) {
+			return;
+		}
+
+		// If marker's range is not collapsed - consume all items inside.
+		for ( const value of markerRange ) {
+			if ( !conversionApi.consumable.consume( value.item, evt.name ) ) {
+				return;
+			}
+		}
+
+		const mapper = conversionApi.mapper;
+		const viewWriter = conversionApi.writer;
+
+		// Add "opening" element.
+		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
+		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
+
+		// Add "closing" element only if range is not collapsed.
+		if ( !markerRange.isCollapsed ) {
+			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
+			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
+		}
+
+		evt.stop();
+	} );
 
 	// Convert model to view.
 	const writer = view._writer;

@@ -16,11 +16,7 @@ import {
 	clearAttributes,
 } from '../../src/conversion/downcast-selection-converters';
 
-import DowncastHelpers, {
-	insertElement,
-	insertText,
-	wrap
-} from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, { insertText, wrap } from '../../src/conversion/downcasthelpers';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
@@ -498,12 +494,12 @@ describe( 'downcast-selection-converters', () => {
 			model.schema.extend( 'td', { allowIn: 'tr' } );
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
+			const downcastHelpers = new DowncastHelpers( dispatcher );
+
 			// "Universal" converter to convert table structure.
-			const containerCreator = ( modelElement, viewWriter ) => viewWriter.createContainerElement( modelElement.name );
-			const tableConverter = insertElement( containerCreator );
-			dispatcher.on( 'insert:table', tableConverter );
-			dispatcher.on( 'insert:tr', tableConverter );
-			dispatcher.on( 'insert:td', tableConverter );
+			downcastHelpers.elementToElement( { model: 'table', view: 'table' } );
+			downcastHelpers.elementToElement( { model: 'tr', view: 'tr' } );
+			downcastHelpers.elementToElement( { model: 'td', view: 'td' } );
 
 			// Special converter for table cells.
 			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
