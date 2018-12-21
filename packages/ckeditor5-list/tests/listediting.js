@@ -17,8 +17,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ListEditing', () => {
@@ -3817,11 +3815,10 @@ describe( 'ListEditing', () => {
 			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:listType' );
 				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
-
-				const converter = insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'p' ) );
-
-				return converter( evt, data, conversionApi );
 			}, { priority: 'highest' } );
+
+			editor.conversion.for( 'downcast' )
+				.elementToElement( { model: 'listItem', view: 'p', converterPriority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
 			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
@@ -4026,7 +4023,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -4047,7 +4044,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the end', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -4066,7 +4063,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the beginning', () => {
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
