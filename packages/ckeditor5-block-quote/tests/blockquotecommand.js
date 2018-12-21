@@ -6,8 +6,6 @@
 import BlockQuoteEditing from '../src/blockquoteediting';
 import BlockQuoteCommand from '../src/blockquotecommand';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -38,9 +36,9 @@ describe( 'BlockQuoteCommand', () => {
 				} );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'heading', view: 'h' } ) );
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'widget', view: 'widget' } ) );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'paragraph', view: 'p' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'heading', view: 'h' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'widget', view: 'widget' } );
 
 				command = editor.commands.get( 'blockQuote' );
 			} );
@@ -386,7 +384,7 @@ describe( 'BlockQuoteCommand', () => {
 					}
 				} );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooBlock', view: 'fooblock' } );
 
 				setModelData(
 					model,
@@ -417,8 +415,8 @@ describe( 'BlockQuoteCommand', () => {
 				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
 				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooWrapper', view: 'foowrapper' } ) );
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooWrapper', view: 'foowrapper' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'fooBlock', view: 'fooblock' } );
 
 				setModelData(
 					model,
