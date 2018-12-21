@@ -20,9 +20,7 @@ import ViewText from '../../src/view/text';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import DowncastHelpers, {
-	insertElement, wrap, createViewElementFromHighlightDescriptor
-} from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, { createViewElementFromHighlightDescriptor, insertElement, wrap } from '../../src/conversion/downcasthelpers';
 
 import { stringify } from '../../src/dev-utils/view';
 
@@ -498,6 +496,8 @@ describe( 'DowncastHelpers', () => {
 	} );
 
 	describe( 'markerToElement()', () => {
+		let modelText, modelElement, range;
+
 		it( 'should be chainable', () => {
 			expect( downcastHelpers.markerToElement( { model: 'search', view: 'marker-search' } ) ).to.equal( downcastHelpers );
 		} );
@@ -563,6 +563,180 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( 'f<span data-marker="search" data-start="true"></span>o<span data-marker="search" data-start="false"></span>o' );
+		} );
+
+		describe( 'collapsed range', () => {
+			beforeEach( () => {
+				modelText = new ModelText( 'foobar' );
+				modelElement = new ModelElement( 'paragraph', null, modelText );
+
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				model.change( writer => {
+					writer.insert( modelElement, modelRootStart );
+				} );
+
+				range = model.createRange( model.createPositionAt( modelElement, 3 ), model.createPositionAt( modelElement, 3 ) );
+			} );
+
+			it( 'should insert and remove ui element', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should not convert if consumable was consumed', () => {
+				sinon.spy( controller.downcastDispatcher, 'fire' );
+
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+				} );
+
+				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.markerRange, 'addMarker:marker' );
+				}, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
+			} );
+
+			it( 'should not convert if creator returned null', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: () => null
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+		} );
+
+		describe( 'non-collapsed range', () => {
+			beforeEach( () => {
+				modelText = new ModelText( 'foobar' );
+				modelElement = new ModelElement( 'paragraph', null, modelText );
+
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				model.change( writer => {
+					writer.insert( modelElement, modelRootStart );
+				} );
+
+				range = model.createRange( model.createPositionAt( modelElement, 2 ), model.createPositionAt( modelElement, 5 ) );
+			} );
+
+			it( 'should insert and remove ui element - element as a creator', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) )
+					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should insert and remove ui element - function as a creator', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': data.markerName } )
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) )
+					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should insert and remove different opening and ending element', () => {
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => {
+						if ( data.isOpening ) {
+							return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
+						}
+
+						return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
+					}
+				} );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should not convert if consumable was consumed', () => {
+				sinon.spy( controller.downcastDispatcher, 'fire' );
+
+				downcastHelpers.markerToElement( {
+					model: 'marker',
+					view: ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } )
+				} );
+				controller.downcastDispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'addMarker:marker' );
+				}, { priority: 'high' } );
+
+				model.change( writer => {
+					writer.addMarker( 'marker', { range, usingOperation: false } );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+				expect( controller.downcastDispatcher.fire.calledWith( 'addMarker:marker' ) );
+			} );
 		} );
 	} );
 
@@ -1383,171 +1557,6 @@ describe( 'downcast-converters', () => {
 			expect( spy.called ).to.be.true;
 		} );
 	} );
-
-	// describe( 'insertUIElement/removeUIElement', () => {
-	// 	let modelText, modelElement, range;
-	//
-	// 	beforeEach( () => {
-	// 		modelText = new ModelText( 'foobar' );
-	// 		modelElement = new ModelElement( 'paragraph', null, modelText );
-	//
-	// 		model.change( writer => {
-	// 			writer.insert( modelElement, modelRootStart );
-	// 		} );
-	// 	} );
-	//
-	// 	describe( 'collapsed range', () => {
-	// 		beforeEach( () => {
-	// 			range = model.createRange( model.createPositionAt( modelElement, 3 ), model.createPositionAt( modelElement, 3 ) );
-	// 		} );
-	//
-	// 		it( 'should insert and remove ui element', () => {
-	// 			const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-	// 			dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
-	//
-	// 			model.change( writer => {
-	// 				writer.removeMarker( 'marker' );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 		} );
-	//
-	// 		it( 'should not convert if consumable was consumed', () => {
-	// 			sinon.spy( dispatcher, 'fire' );
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement(
-	// 				( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } ) )
-	// 			);
-	//
-	// 			dispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
-	// 				conversionApi.consumable.consume( data.markerRange, 'addMarker:marker' );
-	// 			}, { priority: 'high' } );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-	// 		} );
-	//
-	// 		it( 'should not convert if creator returned null', () => {
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( () => null ) );
-	// 			dispatcher.on( 'removeMarker:marker', removeUIElement( () => null ) );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	//
-	// 			model.change( writer => {
-	// 				writer.removeMarker( 'marker' );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 		} );
-	// 	} );
-	//
-	// 	describe( 'non-collapsed range', () => {
-	// 		beforeEach( () => {
-	// 			range = model.createRange( model.createPositionAt( modelElement, 2 ), model.createPositionAt( modelElement, 5 ) );
-	// 		} );
-	//
-	// 		it( 'should insert and remove ui element - element as a creator', () => {
-	// 			const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-	// 			dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) )
-	// 				.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
-	//
-	// 			model.change( writer => {
-	// 				writer.removeMarker( 'marker' );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 		} );
-	//
-	// 		it( 'should insert and remove ui element - function as a creator', () => {
-	// 			const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': data.markerName } );
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-	// 			dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) )
-	// 				.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
-	//
-	// 			model.change( writer => {
-	// 				writer.removeMarker( 'marker' );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 		} );
-	//
-	// 		it( 'should insert and remove different opening and ending element', () => {
-	// 			function creator( data, viewWriter ) {
-	// 				if ( data.isOpening ) {
-	// 					return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
-	// 				}
-	//
-	// 				return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
-	// 			}
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-	// 			dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal(
-	// 				'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
-	// 			);
-	//
-	// 			model.change( writer => {
-	// 				writer.removeMarker( 'marker' );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 		} );
-	//
-	// 		it( 'should not convert if consumable was consumed', () => {
-	// 			const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
-	//
-	// 			sinon.spy( dispatcher, 'fire' );
-	//
-	// 			dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-	// 			dispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
-	// 				conversionApi.consumable.consume( data.item, 'addMarker:marker' );
-	// 			}, { priority: 'high' } );
-	//
-	// 			model.change( writer => {
-	// 				writer.addMarker( 'marker', { range, usingOperation: false } );
-	// 			} );
-	//
-	// 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-	// 			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
-	// 		} );
-	// 	} );
-	// } );
 
 	// Remove converter is by default already added in `EditingController` instance.
 	describe( 'remove', () => {
