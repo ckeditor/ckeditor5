@@ -376,7 +376,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-keystrokes">keystrokes</a></td>
 			<td>
-				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/intro#keystroke-handler Keystrokes and focus management} article.</p>
+				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/ui-library#keystrokes-and-focus-management Keystrokes and focus management} section.</p>
 				<p>Making keystrokes overridable through <code>config.keystrokes</code> is handled in a <a href="https://github.com/ckeditor/ckeditor5-core/issues/8" target="_blank" rel="noopener">dedicated issue</a>. There is also an issue about <a href="https://github.com/ckeditor/ckeditor5-core/issues/20" target="_blank" rel="noopener">improving keystroke handling</a>.</p>
 			</td>
 		</tr>

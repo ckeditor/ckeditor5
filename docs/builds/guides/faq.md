@@ -82,7 +82,7 @@ The {@link features/image Image} and {@link features/image-upload Image upload} 
 
 ## How to use CKEditor 5 with frameworks (Angular, React, etc.)?
 
-For the full list of official integrations see the {@link builds/guides/frameworks/overview#official-integrations "Official integrations"} section.
+For the full list of official integrations see the {@link builds/guides/frameworks/overview#official-wysiwyg-editor-integrations "Official integrations"} section.
 
 If an official integration for the framework of your choice does not exist yet, make sure to read the {@link builds/guides/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and ready to use builds which make it possible to use CKEditor 5 with whichever framework you need.
 
