@@ -17,7 +17,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ListEditing', () => {
@@ -3816,11 +3815,10 @@ describe( 'ListEditing', () => {
 			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:listType' );
 				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
-
-				const converter = insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'p' ) );
-
-				return converter( evt, data, conversionApi );
 			}, { priority: 'highest' } );
+
+			editor.conversion.for( 'downcast' )
+				.elementToElement( { model: 'listItem', view: 'p', converterPriority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
 			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
