@@ -15,7 +15,6 @@ import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageu
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import CKFinderCommand from '../src/ckfindercommand';
 
@@ -67,7 +66,7 @@ describe( 'CKFinderCommand', () => {
 			// Block link attribute.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -85,7 +84,7 @@ describe( 'CKFinderCommand', () => {
 				}
 			} );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -99,7 +98,7 @@ describe( 'CKFinderCommand', () => {
 			// Block link attribute - image is not allowed in 'block'.
 			model.schema.addAttributeCheck( ( ctx, attributeName ) => ( attributeName !== 'linkHref' ) );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -345,7 +344,7 @@ describe( 'CKFinderCommand', () => {
 				}
 			} );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -374,7 +373,7 @@ describe( 'CKFinderCommand', () => {
 			} );
 			model.schema.extend( '$text', { allowIn: 'other' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
 			setModelData( model, '<other>[]</other>' );
 
