@@ -256,10 +256,6 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		data.isOpening = false;
 		const viewEndElement = elementCreator( data, conversionApi.writer );
 
-		if ( !viewStartElement || !viewEndElement ) {
-			return;
-		}
-
 		const markerRange = data.markerRange;
 
 		// Marker that is collapsed has consumable build differently that non-collapsed one.
