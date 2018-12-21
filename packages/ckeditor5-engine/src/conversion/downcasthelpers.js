@@ -655,8 +655,6 @@ function removeUIElement() {
  * @returns {Function} Set/change attribute converter.
  */
 function changeAttribute( attributeCreator ) {
-	attributeCreator = attributeCreator || ( ( value, data ) => ( { value, key: data.attributeKey } ) );
-
 	return ( evt, data, conversionApi ) => {
 		const oldAttribute = attributeCreator( data.attributeOldValue, data );
 		const newAttribute = attributeCreator( data.attributeNewValue, data );
