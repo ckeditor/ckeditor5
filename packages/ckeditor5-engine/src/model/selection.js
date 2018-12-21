@@ -689,11 +689,13 @@ export default class Selection {
 	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	* getTopMostBlocks() {
-		for ( const block of this.getSelectedBlocks() ) {
+		const selected = Array.from( this.getSelectedBlocks() );
+
+		for ( const block of selected ) {
 			const parentBlock = findAncestorBlock( block );
 
 			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
-			if ( !parentBlock || !this.containsEntireContent( parentBlock ) ) {
+			if ( !parentBlock || !selected.includes( parentBlock ) ) {
 				yield block;
 			}
 		}
