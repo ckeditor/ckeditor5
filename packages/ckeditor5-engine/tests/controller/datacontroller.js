@@ -183,6 +183,14 @@ describe( 'DataController', () => {
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
+		it( 'should set data to multiple roots at once', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( { main: 'bar', title: 'baz' } );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'bar' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'baz' );
+		} );
+
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.init( 'foo', 'title' );

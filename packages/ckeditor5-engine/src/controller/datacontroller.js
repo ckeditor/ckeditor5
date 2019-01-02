@@ -182,8 +182,9 @@ export default class DataController {
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
 	 *
 	 * @fires init
-	 * @param {String} data Input data.
-	 * @param {String} [rootName='main'] Root name.
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing rootName - initialData pairs to
+	 * initialize data on multiple roots at once.
+	 * @param {String} [rootName='main'] Root name. Takes effect only if the first argument is provided as a string.
 	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
 	 */
 	init( data, rootName = 'main' ) {
@@ -198,10 +199,18 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.' );
 		}
 
-		const modelRoot = this.model.document.getRoot( rootName );
+		let initialData = {};
+		if ( typeof data === 'string' ) {
+			initialData[ rootName ] = data;
+		} else {
+			initialData = data;
+		}
 
 		this.model.enqueueChange( 'transparent', writer => {
-			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
+			for ( const rootName of Object.keys( initialData ) ) {
+				const modelRoot = this.model.document.getRoot( rootName );
+				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
+			}
 		} );
 
 		return Promise.resolve();
