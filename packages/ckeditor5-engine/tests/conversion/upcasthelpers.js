@@ -841,7 +841,7 @@ describe( 'upcast-converters', () => {
 		} );
 	} );
 
-	describe( 'convertSelectionChange', () => {
+	describe( 'convertSelectionChange()', () => {
 		let model, view, viewDocument, mapper, convertSelection, modelRoot, viewRoot;
 
 		beforeEach( () => {
