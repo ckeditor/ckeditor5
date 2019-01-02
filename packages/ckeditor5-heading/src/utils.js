@@ -15,7 +15,10 @@ export function getLocalizedOptions( editor ) {
 		Paragraph: t( 'Paragraph' ),
 		'Heading 1': t( 'Heading 1' ),
 		'Heading 2': t( 'Heading 2' ),
-		'Heading 3': t( 'Heading 3' )
+		'Heading 3': t( 'Heading 3' ),
+		'Heading 4': t( 'Heading 4' ),
+		'Heading 5': t( 'Heading 5' ),
+		'Heading 6': t( 'Heading 6' )
 	};
 
 	return editor.config.get( 'heading.options' ).map( option => {

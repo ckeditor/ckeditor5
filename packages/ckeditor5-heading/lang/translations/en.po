@@ -28,3 +28,15 @@ msgstr "Heading 2"
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
 msgstr "Heading 3"
+
+msgctxt "Dropdown option label for the heading level 4 format."
+msgid "Heading 4"
+msgstr "Heading 4"
+
+msgctxt "Dropdown option label for the heading level 5 format."
+msgid "Heading 5"
+msgstr "Heading 5"
+
+msgctxt "Dropdown option label for the heading level 6 format."
+msgid "Heading 6"
+msgstr "Heading 6"
