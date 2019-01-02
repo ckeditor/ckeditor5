@@ -444,10 +444,11 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
+ *		modelDispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, viewWriter ) => {
  *			return viewWriter.createAttributeElement( 'strong' );
  *		} );
  *
+ * @protected
  * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
