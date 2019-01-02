@@ -535,19 +535,21 @@ export function insertElement( elementCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts marker adding change to the
-// {@link module:engine/view/uielement~UIElement view UI element}.
-//
-// The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
-// In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
-// and at the end of the range.
-//
-// This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
-//
-// @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
-// that will be inserted.
-// @returns {Function} Insert element event converter.
-function insertUIElement( elementCreator ) {
+/**
+ * Function factory that creates a converter which converts marker adding change to the
+ * {@link module:engine/view/uielement~UIElement view UI element}.
+ *
+ * The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
+ * In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
+ * and at the end of the range.
+ *
+ * This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ *
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
+ * that will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertUIElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
