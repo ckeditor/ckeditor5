@@ -21,7 +21,9 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import DowncastHelpers, {
-	clearAttributes, convertCollapsedSelection, convertRangeSelection,
+	clearAttributes,
+	convertCollapsedSelection,
+	convertRangeSelection,
 	createViewElementFromHighlightDescriptor,
 	insertText
 } from '../../src/conversion/downcasthelpers';
