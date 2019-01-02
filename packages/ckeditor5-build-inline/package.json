@@ -50,7 +50,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0",
     "postcss-loader": "^3.0.0",
-    "raw-loader": "^0.5.1",
+    "raw-loader": "^1.0.0",
     "style-loader": "^0.23.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.15.0",
