@@ -10,7 +10,7 @@ order: 30
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application.
 
 ## Quick start
 
@@ -101,7 +101,7 @@ There are two main ways to do that.
 
 	In this approach you will include CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
-	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-from-source).
+	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
 
 ### Note: Building for production
 
@@ -113,7 +113,7 @@ To do that, you need to first [eject the configuration](https://github.com/faceb
 npm run eject
 ```
 
-Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-config).
+Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-configuration).
 
 **Note**: The latest `webpack@4` comes with a version of `UglifyJsPlugin` which supports ES6 out of the box. Also, the React community works on allowing importing ES6 libraries into your applications, so this step will soon be no longer required.
 
