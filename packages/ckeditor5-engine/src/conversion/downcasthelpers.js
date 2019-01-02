@@ -545,6 +545,7 @@ export function insertElement( elementCreator ) {
  *
  * This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
  *
+ * @protected
  * @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
  * that will be inserted.
  * @returns {Function} Insert element event converter.
