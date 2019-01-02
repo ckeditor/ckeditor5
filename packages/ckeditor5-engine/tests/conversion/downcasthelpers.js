@@ -20,7 +20,7 @@ import ViewText from '../../src/view/text';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import DowncastHelpers, { createViewElementFromHighlightDescriptor, wrap } from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, { createViewElementFromHighlightDescriptor } from '../../src/conversion/downcasthelpers';
 
 import { stringify } from '../../src/dev-utils/view';
 
@@ -107,6 +107,10 @@ describe( 'DowncastHelpers', () => {
 	} );
 
 	describe( 'attributeToElement()', () => {
+		beforeEach( () => {
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+		} );
+
 		it( 'should be chainable', () => {
 			expect( downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } ) ).to.equal( downcastHelpers );
 		} );
@@ -263,6 +267,143 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
+		} );
+
+		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
+
+			downcastHelpers.attributeToElement( {
+				model: 'bold',
+				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { style: 'bold' } ) );
+
+			downcastHelpers.attributeToElement( {
+				model: 'style',
+				view: ( modelAttributeValue, viewWriter ) => {
+					if ( modelAttributeValue == 'bold' ) {
+						return viewWriter.createAttributeElement( 'b' );
+					}
+				}
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should update range on re-wrapping attribute (#475)', () => {
+			const modelElement = new ModelElement( 'paragraph', null, [
+				new ModelText( 'x' ),
+				new ModelText( 'foo', { link: 'http://foo.com' } ),
+				new ModelText( 'x' )
+			] );
+
+			downcastHelpers.attributeToElement( {
+				model: 'link',
+				view: ( modelAttributeValue, viewWriter ) => {
+					return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+				}
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
+
+			// Set new attribute on old link but also on non-linked characters.
+			model.change( writer => {
+				writer.setAttribute( 'link', 'http://foobar.com', writer.createRangeIn( modelElement ) );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
+		} );
+
+		it( 'should support unicode', () => {
+			const modelElement = new ModelElement( 'paragraph', null, [ 'நி', new ModelText( 'லைக்', { bold: true } ), 'கு' ] );
+
+			downcastHelpers.attributeToElement( {
+				model: 'bold',
+				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
+		} );
+
+		it( 'should be possible to override ', () => {
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
+
+			downcastHelpers.attributeToElement( {
+				model: 'bold',
+				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' )
+			} );
+			downcastHelpers.attributeToElement( {
+				model: 'bold',
+				view: ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' ),
+				converterPriority: 'high'
+			} );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p><strong>foobar</strong></p></div>' );
+		} );
+
+		it( 'should not convert and not consume if creator function returned null', () => {
+			sinon.spy( controller.downcastDispatcher, 'fire' );
+
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { italic: true } ) );
+
+			downcastHelpers.attributeToElement( {
+				model: 'italic',
+				view: () => null
+			} );
+
+			const spy = sinon.spy();
+			controller.downcastDispatcher.on( 'attribute:italic', spy );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( controller.downcastDispatcher.fire.calledWith( 'attribute:italic:$text' ) ).to.be.true;
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
@@ -1421,136 +1562,6 @@ describe( 'downcast-converters', () => {
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
-		} );
-	} );
-
-	describe( 'wrap', () => {
-		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const creator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' );
-
-			dispatcher.on( 'attribute:bold', wrap( creator ) );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
-
-			model.change( writer => {
-				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { style: 'bold' } ) );
-
-			const elementGenerator = ( modelAttributeValue, viewWriter ) => {
-				if ( modelAttributeValue == 'bold' ) {
-					return viewWriter.createAttributeElement( 'b' );
-				}
-			};
-
-			dispatcher.on( 'attribute:style', wrap( elementGenerator ) );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
-
-			model.change( writer => {
-				writer.removeAttribute( 'style', writer.createRangeIn( modelElement ) );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-		} );
-
-		it( 'should update range on re-wrapping attribute (#475)', () => {
-			const modelElement = new ModelElement( 'paragraph', null, [
-				new ModelText( 'x' ),
-				new ModelText( 'foo', { link: 'http://foo.com' } ),
-				new ModelText( 'x' )
-			] );
-
-			const elementGenerator = ( modelAttributeValue, viewWriter ) => {
-				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
-			};
-
-			dispatcher.on( 'attribute:link', wrap( elementGenerator ) );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
-
-			// Set new attribute on old link but also on non-linked characters.
-			model.change( writer => {
-				writer.setAttribute( 'link', 'http://foobar.com', writer.createRangeIn( modelElement ) );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
-		} );
-
-		it( 'should support unicode', () => {
-			const modelElement = new ModelElement( 'paragraph', null, [ 'நி', new ModelText( 'லைக்', { bold: true } ), 'கு' ] );
-			const creator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' );
-
-			dispatcher.on( 'attribute:bold', wrap( creator ) );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
-
-			model.change( writer => {
-				writer.removeAttribute( 'bold', writer.createRangeIn( modelElement ) );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
-		} );
-
-		it( 'should be possible to override wrap', () => {
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-
-			dispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' ) ) );
-
-			dispatcher.on(
-				'attribute:bold',
-				wrap( ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' ) ),
-				{ priority: 'high' }
-			);
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p><strong>foobar</strong></p></div>' );
-		} );
-
-		it( 'should not convert and not consume if creator function returned null', () => {
-			const elementGenerator = () => null;
-
-			sinon.spy( dispatcher, 'fire' );
-
-			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { italic: true } ) );
-
-			dispatcher.on( 'attribute:italic', wrap( elementGenerator ) );
-
-			const spy = sinon.spy();
-			dispatcher.on( 'attribute:italic', spy );
-
-			model.change( writer => {
-				writer.insert( modelElement, modelRootStart );
-			} );
-
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			expect( dispatcher.fire.calledWith( 'attribute:italic:$text' ) ).to.be.true;
-			expect( spy.called ).to.be.true;
 		} );
 	} );
 
