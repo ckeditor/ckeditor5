@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
-import ImageEditing from '../image/imageediting';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import { normalizeImageStyles } from './utils';
 
@@ -20,13 +19,6 @@ import { normalizeImageStyles } from './utils';
  * @extends {module:core/plugin~Plugin}
  */
 export default class ImageStyleEditing extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ ImageEditing ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
