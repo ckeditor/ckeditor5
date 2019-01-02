@@ -15,6 +15,7 @@ import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
@@ -147,6 +148,17 @@ export default class DocumentSelection {
 	 */
 	get isGravityOverridden() {
 		return this._selection.isGravityOverridden;
+	}
+
+	/**
+	 * A collection of selection markers.
+	 * Marker is a selection marker when selection range is inside the marker range.
+	 *
+	 * @readonly
+	 * @type {module:utils/collection~Collection.<module:engine/model/markercollection~Marker>}
+	 */
+	get markers() {
+		return this._selection.markers;
 	}
 
 	/**
@@ -526,6 +538,12 @@ class LiveSelection extends Selection {
 	constructor( doc ) {
 		super();
 
+		// List of selection markers.
+		// Marker is a selection marker when selection range is inside the marker range.
+		//
+		// @type {module:utils/collection~Collection}
+		this.markers = new Collection( { idProperty: 'name' } );
+
 		// Document which owns this selection.
 		//
 		// @protected
@@ -586,6 +604,9 @@ class LiveSelection extends Selection {
 		} );
 
 		this.listenTo( this._document, 'change', ( evt, batch ) => {
+			// Update selection's markers.
+			this._updateMarkers();
+
 			// Update selection's attributes.
 			this._updateAttributes( false );
 
@@ -786,6 +807,30 @@ class LiveSelection extends Selection {
 		} );
 
 		return liveRange;
+	}
+
+	_updateMarkers() {
+		const markers = [];
+
+		for ( const marker of this._model.markers ) {
+			for ( const selectionRange of this.getRanges() ) {
+				if ( marker.getRange().containsRange( selectionRange ) ) {
+					markers.push( marker );
+				}
+			}
+		}
+
+		for ( const marker of markers ) {
+			if ( this.markers.getIndex( marker ) < 0 ) {
+				this.markers.add( marker );
+			}
+		}
+
+		for ( const marker of Array.from( this.markers ) ) {
+			if ( !markers.includes( marker ) ) {
+				this.markers.remove( marker );
+			}
+		}
 	}
 
 	// Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.

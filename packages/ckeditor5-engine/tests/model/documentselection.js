@@ -16,6 +16,7 @@ import MoveOperation from '../../src/model/operation/moveoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import SplitOperation from '../../src/model/operation/splitoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '../../src/dev-utils/model';
@@ -194,6 +195,157 @@ describe( 'DocumentSelection', () => {
 
 		it( 'should return false if selection has a default range', () => {
 			expect( selection.hasOwnRange ).to.be.false;
+		} );
+	} );
+
+	describe( 'markers', () => {
+		it( 'should implement #markers collection', () => {
+			expect( selection.markers ).to.instanceof( Collection );
+			expect( selection.markers ).to.length( 0 );
+		} );
+
+		it( 'should add markers to the collection when selection is inside the marker range', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-4', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 4 ] ),
+						writer.createPositionFromPath( root, [ 3, 0 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-3' ] );
+		} );
+
+		it( 'should update markers after selection change', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 1 ] ),
+					writer.createPositionFromPath( root, [ 2, 2 ] )
+				) );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 6 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 3 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 3 ] ),
+						writer.createPositionFromPath( root, [ 2, 6 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-1', 'marker-2' ] );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 4 ] ),
+					writer.createPositionFromPath( root, [ 2, 5 ] )
+				) );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-1', 'marker-3' ] );
+		} );
+
+		it( 'should update markers after markers change', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 1 ] ),
+					writer.createPositionFromPath( root, [ 2, 2 ] )
+				) );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 6 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 3 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.addMarker( 'marker-3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 3 ] ),
+						writer.createPositionFromPath( root, [ 2, 6 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ), 1 ).to.have.members( [ 'marker-1', 'marker-2' ] );
+
+			model.change( writer => {
+				writer.removeMarker( 'marker-1' );
+
+				writer.updateMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 3 ] ),
+						writer.createPositionFromPath( root, [ 2, 6 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.updateMarker( 'marker-3', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 0 ] ),
+						writer.createPositionFromPath( root, [ 2, 3 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ), 2 ).to.have.members( [ 'marker-3' ] );
 		} );
 	} );
 
