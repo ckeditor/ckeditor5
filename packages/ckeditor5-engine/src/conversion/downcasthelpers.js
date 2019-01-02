@@ -491,30 +491,33 @@ export function wrap( elementCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts node insertion changes from the model to the view.
-// The function passed will be provided with all the parameters of the dispatcher's
-// {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
-// It is expected that the function returns an {@link module:engine/view/element~Element}.
-// The result of the function will be inserted into the view.
-//
-// The converter automatically consumes the corresponding value from the consumables list, stops the event (see
-// {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
-//
-//		downcastDispatcher.on(
-//			'insert:myElem',
-//			insertElement( ( modelItem, viewWriter ) => {
-//				const text = viewWriter.createText( 'myText' );
-//				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
-//
-//				// Do something fancy with `myElem` using `modelItem` or other parameters.
-//
-//				return myElem;
-//			}
-//		) );
-//
-// @param {Function} elementCreator Function returning a view element, which will be inserted.
-// @returns {Function} Insert element event converter.
-function insertElement( elementCreator ) {
+/**
+ * Function factory that creates a converter which converts node insertion changes from the model to the view.
+ * The function passed will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * The result of the function will be inserted into the view.
+ *
+ * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
+ *
+ *		downcastDispatcher.on(
+ *			'insert:myElem',
+ *			insertElement( ( modelItem, viewWriter ) => {
+ *				const text = viewWriter.createText( 'myText' );
+ *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *
+ *				// Do something fancy with `myElem` using `modelItem` or other parameters.
+ *
+ *				return myElem;
+ *			}
+ *		) );
+ *
+ * @protected
+ * @param {Function} elementCreator Function returning a view element, which will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi.writer );
 
@@ -533,19 +536,22 @@ function insertElement( elementCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts marker adding change to the
-// {@link module:engine/view/uielement~UIElement view UI element}.
-//
-// The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
-// In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
-// and at the end of the range.
-//
-// This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
-//
-// @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
-// that will be inserted.
-// @returns {Function} Insert element event converter.
-function insertUIElement( elementCreator ) {
+/**
+ * Function factory that creates a converter which converts marker adding change to the
+ * {@link module:engine/view/uielement~UIElement view UI element}.
+ *
+ * The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
+ * In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
+ * and at the end of the range.
+ *
+ * This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ *
+ * @protected
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
+ * that will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertUIElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
