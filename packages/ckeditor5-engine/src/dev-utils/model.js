@@ -32,7 +32,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 } from '../conversion/downcast-selection-converters';
-import { insertText, wrap } from '../conversion/downcasthelpers';
+import { insertElement, insertText, wrap } from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
@@ -225,19 +225,12 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 			converter( evt, data, conversionApi );
 		}
 	} );
-	downcastDispatcher.on( 'insert', ( evt, data, conversionApi ) => {
-		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
-		const viewElement = new ViewContainerElement( data.item.name, attributes );
+	downcastDispatcher.on( 'insert', insertElement( modelItem => {
+		// Stringify object types values for properly display as an output string.
+		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-			return;
-		}
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		conversionApi.mapper.bindElements( data.item, viewElement );
-		conversionApi.writer.insert( viewPosition, viewElement );
-	} );
+		return new ViewContainerElement( modelItem.name, attributes );
+	} ) );
 
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );

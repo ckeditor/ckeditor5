@@ -490,30 +490,33 @@ export function wrap( elementCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts node insertion changes from the model to the view.
-// The function passed will be provided with all the parameters of the dispatcher's
-// {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
-// It is expected that the function returns an {@link module:engine/view/element~Element}.
-// The result of the function will be inserted into the view.
-//
-// The converter automatically consumes the corresponding value from the consumables list, stops the event (see
-// {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
-//
-//		downcastDispatcher.on(
-//			'insert:myElem',
-//			insertElement( ( modelItem, viewWriter ) => {
-//				const text = viewWriter.createText( 'myText' );
-//				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
-//
-//				// Do something fancy with `myElem` using `modelItem` or other parameters.
-//
-//				return myElem;
-//			}
-//		) );
-//
-// @param {Function} elementCreator Function returning a view element, which will be inserted.
-// @returns {Function} Insert element event converter.
-function insertElement( elementCreator ) {
+/**
+ * Function factory that creates a converter which converts node insertion changes from the model to the view.
+ * The function passed will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * The result of the function will be inserted into the view.
+ *
+ * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
+ *
+ *		downcastDispatcher.on(
+ *			'insert:myElem',
+ *			insertElement( ( modelItem, viewWriter ) => {
+ *				const text = viewWriter.createText( 'myText' );
+ *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *
+ *				// Do something fancy with `myElem` using `modelItem` or other parameters.
+ *
+ *				return myElem;
+ *			}
+ *		) );
+ *
+ * @protected
+ * @param {Function} elementCreator Function returning a view element, which will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi.writer );
 
