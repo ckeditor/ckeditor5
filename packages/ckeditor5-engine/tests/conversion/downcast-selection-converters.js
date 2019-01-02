@@ -10,13 +10,13 @@ import ViewUIElement from '../../src/view/uielement';
 
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
-import {
-	convertRangeSelection,
-	convertCollapsedSelection,
-	clearAttributes,
-} from '../../src/conversion/downcast-selection-converters';
 
-import DowncastHelpers, { insertText } from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, {
+	clearAttributes,
+	convertCollapsedSelection,
+	convertRangeSelection,
+	insertText
+} from '../../src/conversion/downcasthelpers';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';

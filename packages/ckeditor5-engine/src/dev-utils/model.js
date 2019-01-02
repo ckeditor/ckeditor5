@@ -29,10 +29,13 @@ import DowncastDispatcher from '../conversion/downcastdispatcher';
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import Mapper from '../conversion/mapper';
 import {
-	convertRangeSelection,
 	convertCollapsedSelection,
-} from '../conversion/downcast-selection-converters';
-import { insertElement, insertText, insertUIElement, wrap } from '../conversion/downcasthelpers';
+	convertRangeSelection,
+	insertElement,
+	insertText,
+	insertUIElement,
+	wrap
+} from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
