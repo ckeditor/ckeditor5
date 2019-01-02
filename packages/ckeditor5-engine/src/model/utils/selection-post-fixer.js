@@ -183,11 +183,19 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		// - [<block>foo</block>]    ->    <block>[foo]</block>
 		// - [<block>foo]</block>    ->    <block>[foo]</block>
 		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
+		// - [<block>foo</block><object></object>]    ->    <block>[foo</block><object></object>]
 		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
-			const fixedStart = schema.getNearestSelectionRange( start, 'forward' );
-			const fixedEnd = schema.getNearestSelectionRange( end, 'backward' );
+			const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
+			const fixedStart = isStartObject ? null : schema.getNearestSelectionRange( start, 'forward' );
 
-			return new Range( fixedStart ? fixedStart.start : start, fixedEnd ? fixedEnd.start : end );
+			const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
+			const fixedEnd = isEndObject ? null : schema.getNearestSelectionRange( end, 'backward' );
+
+			// The schema.getNearestSelectionRange might return null - if that happens use original position.
+			const rangeStart = fixedStart ? fixedStart.start : start;
+			const rangeEnd = fixedEnd ? fixedEnd.start : end;
+
+			return new Range( rangeStart, rangeEnd );
 		}
 	}
 
@@ -197,13 +205,23 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	// At this point we eliminated valid positions on text nodes so if one of range positions is placed inside a limit element
 	// then the range crossed limit element boundaries and needs to be fixed.
 	if ( isStartInLimit || isEndInLimit ) {
+		const bothInSameParent = ( start.nodeAfter && end.nodeBefore ) && start.nodeAfter.parent === end.nodeBefore.parent;
+
+		const expandStart = isStartInLimit && ( !bothInSameParent || !isInObject( start.nodeAfter, schema ) );
+		const expandEnd = isEndInLimit && ( !bothInSameParent || !isInObject( end.nodeBefore, schema ) );
+
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
-		const startPosition = Position._createAt( startLimitElement, 0 );
-		const endPosition = Position._createAt( endLimitElement, 0 );
+		let fixedStart = start;
+		let fixedEnd = end;
 
-		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( startPosition, schema, 'start' ) : start;
-		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( endPosition, schema, 'end' ) : end;
+		if ( expandStart ) {
+			fixedStart = Position._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
+		}
+
+		if ( expandEnd ) {
+			fixedEnd = Position._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
+		}
 
 		return new Range( fixedStart, fixedEnd );
 	}
@@ -212,34 +230,45 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	return null;
 }
 
-// Expands selection so it contains whole limit node.
+// Finds the outer-most ancestor.
 //
-// @param {module:engine/model/position~Position} position
+// @param {module:engine/model/node~Node} startingNode
 // @param {module:engine/model/schema~Schema} schema
 // @param {String} expandToDirection Direction of expansion - either 'start' or 'end' of the range.
-// @returns {module:engine/model/position~Position}
-function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
-	let node = position.parent;
-	let parent = node;
+// @returns {module:engine/model/node~Node}
+function findOutermostLimitAncestor( startingNode, schema ) {
+	let isLimitNode = startingNode;
+	let parent = isLimitNode;
 
 	// Find outer most isLimit block as such blocks might be nested (ie. in tables).
 	while ( schema.isLimit( parent ) && parent.parent ) {
-		node = parent;
+		isLimitNode = parent;
 		parent = parent.parent;
 	}
 
-	// Depending on direction of expanding selection return position before or after found node.
-	return expandToDirection === 'start' ? Position._createBefore( node ) : Position._createAfter( node );
+	return isLimitNode;
 }
 
-// Checks whether both range ends are placed around non-limit elements.
+// Checks whether any of range boundaries is placed around non-limit elements.
 //
 // @param {module:engine/model/position~Position} start
 // @param {module:engine/model/position~Position} end
 // @param {module:engine/model/schema~Schema} schema
+// @returns {Boolean}
 function checkSelectionOnNonLimitElements( start, end, schema ) {
 	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
 	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
-	return startIsOnBlock && endIsOnBlock;
+	// We should fix such selection when one of those nodes needs fixing.
+	return startIsOnBlock || endIsOnBlock;
 }
+
+// Checks if node exists and if it's an object.
+//
+// @param {module:engine/model/node~Node} node
+// @param {module:engine/model/schema~Schema} schema
+// @returns {Boolean}
+function isInObject( node, schema ) {
+	return node && schema.isObject( node );
+}
+

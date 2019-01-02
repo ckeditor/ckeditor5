@@ -14,10 +14,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Mapper from '../conversion/mapper';
 
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText } from '../conversion/downcast-converters';
+import { insertText } from '../conversion/downcasthelpers';
 
 import UpcastDispatcher from '../conversion/upcastdispatcher';
-import { convertText, convertToModelFragment } from '../conversion/upcast-converters';
+import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
 
 import ViewDocumentFragment from '../view/documentfragment';
 import ViewDocument from '../view/document';
