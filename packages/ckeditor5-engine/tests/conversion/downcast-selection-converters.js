@@ -16,7 +16,7 @@ import {
 	clearAttributes,
 } from '../../src/conversion/downcast-selection-converters';
 
-import DowncastHelpers, { insertText, wrap } from '../../src/conversion/downcasthelpers';
+import DowncastHelpers, { insertText } from '../../src/conversion/downcasthelpers';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
@@ -45,10 +45,8 @@ describe( 'downcast-selection-converters', () => {
 
 		dispatcher.on( 'insert:$text', insertText() );
 
-		const strongCreator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' );
-		dispatcher.on( 'attribute:bold', wrap( strongCreator ) );
-
 		downcastHelpers = new DowncastHelpers( dispatcher );
+		downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
