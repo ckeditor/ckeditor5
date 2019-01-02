@@ -1454,42 +1454,9 @@ describe( 'DowncastHelpers', () => {
 	function expectResult( string ) {
 		expect( stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( string );
 	}
-
-	function viewAttributesToString( item ) {
-		let result = '';
-
-		for ( const key of item.getAttributeKeys() ) {
-			const value = item.getAttribute( key );
-
-			if ( value ) {
-				result += ' ' + key + '="' + value + '"';
-			}
-		}
-
-		return result;
-	}
-
-	function viewToString( item ) {
-		let result = '';
-
-		if ( item instanceof ViewText ) {
-			result = item.data;
-		} else {
-			// ViewElement or ViewDocumentFragment.
-			for ( const child of item.getChildren() ) {
-				result += viewToString( child );
-			}
-
-			if ( item instanceof ViewElement ) {
-				result = '<' + item.name + viewAttributesToString( item ) + '>' + result + '</' + item.name + '>';
-			}
-		}
-
-		return result;
-	}
 } );
 
-describe( 'downcast-converters', () => {
+describe( 'downcast converters', () => {
 	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
 
 	beforeEach( () => {
@@ -1511,40 +1478,7 @@ describe( 'downcast-converters', () => {
 		modelRootStart = model.createPositionAt( modelRoot, 0 );
 	} );
 
-	function viewAttributesToString( item ) {
-		let result = '';
-
-		for ( const key of item.getAttributeKeys() ) {
-			const value = item.getAttribute( key );
-
-			if ( value ) {
-				result += ' ' + key + '="' + value + '"';
-			}
-		}
-
-		return result;
-	}
-
-	function viewToString( item ) {
-		let result = '';
-
-		if ( item instanceof ViewText ) {
-			result = item.data;
-		} else {
-			// ViewElement or ViewDocumentFragment.
-			for ( const child of item.getChildren() ) {
-				result += viewToString( child );
-			}
-
-			if ( item instanceof ViewElement ) {
-				result = '<' + item.name + viewAttributesToString( item ) + '>' + result + '</' + item.name + '>';
-			}
-		}
-
-		return result;
-	}
-
-	describe( 'insertText', () => {
+	describe( 'insertText()', () => {
 		it( 'should downcast text', () => {
 			model.change( writer => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
@@ -1575,7 +1509,7 @@ describe( 'downcast-converters', () => {
 	} );
 
 	// Remove converter is by default already added in `EditingController` instance.
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove items from view accordingly to changes in model #1', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 
@@ -1847,7 +1781,7 @@ describe( 'downcast-converters', () => {
 	} );
 } );
 
-describe( 'downcast-selection-converters', () => {
+describe( 'downcast selection converters', () => {
 	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, downcastHelpers;
 
 	beforeEach( () => {
@@ -2418,3 +2352,35 @@ describe( 'downcast-selection-converters', () => {
 	}
 } );
 
+function viewToString( item ) {
+	let result = '';
+
+	if ( item instanceof ViewText ) {
+		result = item.data;
+	} else {
+		// ViewElement or ViewDocumentFragment.
+		for ( const child of item.getChildren() ) {
+			result += viewToString( child );
+		}
+
+		if ( item instanceof ViewElement ) {
+			result = '<' + item.name + viewAttributesToString( item ) + '>' + result + '</' + item.name + '>';
+		}
+	}
+
+	return result;
+}
+
+function viewAttributesToString( item ) {
+	let result = '';
+
+	for ( const key of item.getAttributeKeys() ) {
+		const value = item.getAttribute( key );
+
+		if ( value ) {
+			result += ' ' + key + '="' + value + '"';
+		}
+	}
+
+	return result;
+}
