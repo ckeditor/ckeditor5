@@ -12,10 +12,10 @@ import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import { clearAttributes, convertCollapsedSelection, convertRangeSelection, insertText, remove } from '../conversion/downcasthelpers';
-import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
