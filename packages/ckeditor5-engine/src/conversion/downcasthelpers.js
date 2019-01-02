@@ -470,7 +470,7 @@ export function convertRangeSelection() {
  * converted, broken attributes might be merged again, or the position where the selection is may be wrapped
  * with different, appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/downcast-selection-converters~clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/downcasthelpers~clearAttributes} which does a clean-up
  * by merging attributes.
  *
  * @returns {Function} Selection converter.
@@ -515,7 +515,7 @@ export function convertCollapsedSelection() {
  *
  *		modelDispatcher.on( 'selection', clearAttributes() );
  *
- * See {@link module:engine/conversion/downcast-selection-converters~convertCollapsedSelection}
+ * See {@link module:engine/conversion/downcasthelpers~convertCollapsedSelection}
  * which does the opposite by breaking attributes in the selection position.
  *
  * @returns {Function} Selection converter.
