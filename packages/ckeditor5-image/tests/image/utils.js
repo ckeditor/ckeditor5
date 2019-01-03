@@ -12,7 +12,6 @@ import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import Image from '../../src/image/imageediting';
 
 describe( 'image widget utils', () => {
@@ -150,7 +149,7 @@ describe( 'image widget utils', () => {
 		it( 'should return true when the selection directly in a block', () => {
 			model.schema.register( 'block', { inheritAllFrom: '$block' } );
 			model.schema.extend( '$text', { allowIn: 'block' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
 			expect( isImageAllowed( model ) ).to.be.true;
@@ -167,26 +166,43 @@ describe( 'image widget utils', () => {
 				allowContentOf: '$block',
 				isLimit: true
 			} );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'caption', view: 'figcaption' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'caption', view: 'figcaption' } );
 			setModelData( model, '<image><caption>[]</caption></image>' );
 			expect( isImageAllowed( model ) ).to.be.false;
 		} );
 
 		it( 'should return false when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
 			setModelData( model, '[<object></object>]' );
 
 			expect( isImageAllowed( model ) ).to.be.false;
 		} );
 
-		it( 'should return false when the selection is inside other object', () => {
-			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
-			model.schema.extend( '$text', { allowIn: 'object' } );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'object', view: 'object' } ) );
-			setModelData( model, '<object>[]</object>' );
+		it( 'should be true when the selection is inside isLimit element which allows image', () => {
+			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
+			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
+			model.schema.extend( '$block', { allowIn: 'limit' } );
 
-			expect( isImageAllowed( model ) ).to.be.false;
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'outerObject', view: 'outerObject' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'limit', view: 'limit' } );
+
+			setModelData( model, '<outerObject><limit>[]</limit></outerObject>' );
+
+			expect( isImageAllowed( model ) ).to.be.true;
+		} );
+
+		it( 'should be true when the selection is inside isLimit element which allows image', () => {
+			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
+			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
+			model.schema.extend( '$block', { allowIn: 'limit' } );
+
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'outerObject', view: 'outerObject' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'limit', view: 'limit' } );
+
+			setModelData( model, '<outerObject><limit><paragraph>foo[]</paragraph></limit></outerObject>' );
+
+			expect( isImageAllowed( model ) ).to.be.true;
 		} );
 
 		it( 'should return false when schema disallows image', () => {
@@ -198,7 +214,7 @@ describe( 'image widget utils', () => {
 					return false;
 				}
 			} );
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'block', view: 'block' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block><paragraph>[]</paragraph></block>' );
 
@@ -250,7 +266,7 @@ describe( 'image widget utils', () => {
 			} );
 			model.schema.extend( '$text', { allowIn: 'other' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'other', view: 'p' } );
 
 			setModelData( model, '<other>[]</other>' );
 
