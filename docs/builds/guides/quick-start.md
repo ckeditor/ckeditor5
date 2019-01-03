@@ -199,8 +199,6 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 </script>
 ```
 
-**Note:** We recommend to adjust the position of the block toolbar button using CSS (see the example below) to your liking. By default, the block toolbar button will be attached directly to the boundary of the editable content area.
-
 **Note:** You can configure the block toolbar items using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar `config.blockToolbar`} option.
 
 ### Example
@@ -225,12 +223,6 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 				console.error( error );
 			} );
 	</script>
-	<style>
-		/* Give the block toolbar button some space, moving it a few pixels away from the editable area. */
-		.ck.ck-block-toolbar-button {
-			transform: translateX( -10px );
-		}
-	</style>
 </body>
 </html>
 ```
