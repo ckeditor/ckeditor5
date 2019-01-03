@@ -697,7 +697,7 @@ mix( Selection, EmitterMixin );
 /**
  * An entity that is used to set selection.
  *
- * See also {@link module:engine/model/selection~Selection#setTo}
+ * See also {@link module:engine/view/selection~Selection#setTo}
  *
  * @typedef {
  *    module:engine/view/selection~Selection|
