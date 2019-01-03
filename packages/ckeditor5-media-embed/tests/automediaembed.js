@@ -218,7 +218,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
-		it( 'inserts media in-place', () => {
+		it( 'inserts media in-place (collapsed selection)', () => {
 			setData( editor.model, '<paragraph>Foo []Bar</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
@@ -228,6 +228,19 @@ describe( 'AutoMediaEmbed - integration', () => {
 				'<paragraph>Foo </paragraph>' +
 				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
 				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'inserts media in-place (non-collapsed selection)', () => {
+			setData( editor.model, '<paragraph>Foo [Bar] Baz</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>Foo </paragraph>' +
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+				'<paragraph> Baz</paragraph>'
 			);
 		} );
 
