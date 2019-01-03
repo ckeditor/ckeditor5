@@ -210,29 +210,17 @@ export default class Collection {
 	}
 
 	/**
-	 * Returns a boolean indicating whether the collection contains an item. Item id or index can be used instead of the
-	 * item.
+	 * Returns a boolean indicating whether the collection contains an item.
 	 *
-	 * @param {Object|String|Number} itemOrIdOrIndex The item, item id or item index in the collection.
+	 * @param {Object|String} itemOrId The item or its id in the collection.
 	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
 	 */
-	has( itemOrIdOrIndex ) {
-		if ( typeof itemOrIdOrIndex == 'number' ) {
-			return !!this._items[ itemOrIdOrIndex ];
-		} else if ( typeof itemOrIdOrIndex == 'string' ) {
-			return this._itemMap.has( itemOrIdOrIndex );
+	has( itemOrId ) {
+		if ( typeof itemOrId == 'string' ) {
+			return this._itemMap.has( itemOrId );
 		} else { // Object
 			const idProperty = this._idProperty;
-			const id = itemOrIdOrIndex[ idProperty ];
-
-			if ( typeof id != 'string' ) {
-				/**
-				 * This item's id should be a string.
-				 *
-				 * @error collection-has-invalid-id
-				 */
-				throw new CKEditorError( 'collection-has-invalid-id: This item\'s id should be a string.' );
-			}
+			const id = itemOrId[ idProperty ];
 
 			return this._itemMap.has( id );
 		}
@@ -242,16 +230,16 @@ export default class Collection {
 	 * Gets index of item in the collection.
 	 * When item is not defined in the collection then index will be equal -1.
 	 *
-	 * @param {String|Object} idOrItem The item or its id in the collection.
+	 * @param {Object|String} itemOrId The item or its id in the collection.
 	 * @returns {Number} Index of given item.
 	 */
-	getIndex( idOrItem ) {
+	getIndex( itemOrId ) {
 		let item;
 
-		if ( typeof idOrItem == 'string' ) {
-			item = this._itemMap.get( idOrItem );
+		if ( typeof itemOrId == 'string' ) {
+			item = this._itemMap.get( itemOrId );
 		} else {
-			item = idOrItem;
+			item = itemOrId;
 		}
 
 		return this._items.indexOf( item );

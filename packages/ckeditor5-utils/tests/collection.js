@@ -334,22 +334,6 @@ describe( 'Collection', () => {
 			expect( collection.has( 'bar' ) ).to.equal( false );
 		} );
 
-		it( 'should return true if collection contains item on index', () => {
-			collection.add( getItem( 'foo' ) );
-			collection.add( getItem( 'bar' ) );
-
-			expect( collection.has( 0 ) ).to.equal( true );
-			expect( collection.has( 1 ) ).to.equal( true );
-		} );
-
-		it( 'should return false if collection does not contain item on index', () => {
-			collection.add( getItem( 'foo' ) );
-			collection.add( getItem( 'bar' ) );
-
-			expect( collection.has( -1 ) ).to.equal( false );
-			expect( collection.has( 2 ) ).to.equal( false );
-		} );
-
 		it( 'should return true if collection contains item', () => {
 			const item = getItem( 'foo' );
 
@@ -362,12 +346,6 @@ describe( 'Collection', () => {
 			collection.add( getItem( 'foo' ) );
 
 			expect( collection.has( getItem( 'bar' ) ) ).to.equal( false );
-		} );
-
-		it( 'should throw if an object without id is given', () => {
-			expect( () => {
-				collection.has( {} );
-			} ).to.throw( CKEditorError, /^collection-has-invalid-id/ );
 		} );
 	} );
 
