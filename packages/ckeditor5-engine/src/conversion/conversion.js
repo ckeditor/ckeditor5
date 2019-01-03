@@ -60,7 +60,7 @@ export default class Conversion {
 		 * @private
 		 * @member {Map}
 		 */
-		this._dispatchersGroups = new Map();
+		this._conversionHelpers = new Map();
 	}
 
 	/**
@@ -70,17 +70,12 @@ export default class Conversion {
 	 * If a given group name is used for the second time, the
 	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
 	 *
-	 * @param {Object} options
-	 * @param {String} options.name The name for dispatchers group.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatcher Dispatcher or array of dispatchers to register
-	 * under the given name.
+	 * @param {String} name The name for dispatchers group.
 	 * @param {module:engine/conversion/downcasthelpers~DowncastHelpers|
-	 * module:engine/conversion/upcasthelpers~UpcastHelpers} helpers
+	 * module:engine/conversion/upcasthelpers~UpcastHelpers} conversionHelpers
 	 */
-	register( name, group ) {
-		if ( this._dispatchersGroups.has( name ) ) {
+	register( name, conversionHelpers ) {
+		if ( this._conversionHelpers.has( name ) ) {
 			/**
 			 * Trying to register a group name that was already registered.
 			 *
@@ -89,7 +84,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
 		}
 
-		this._dispatchersGroups.set( name, group );
+		this._conversionHelpers.set( name, conversionHelpers );
 	}
 
 	/**
@@ -138,9 +133,7 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		const group = this._getDispatchersGroup( groupName );
-
-		return group;
+		return this._getConversionHelpers( groupName );
 	}
 
 	/**
@@ -396,7 +389,7 @@ export default class Conversion {
 				.elementToAttribute( {
 					view,
 					model,
-					converterPriority: definition.priority
+					converterPriority: definition.converterPriority
 				} );
 		}
 	}
@@ -526,17 +519,17 @@ export default class Conversion {
 	}
 
 	/**
-	 * Returns dispatchers group registered under a given group name.
+	 * Returns conversion helpers registered under a given name.
 	 *
 	 * If the given group name has not been registered, the
 	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
 	 * @private
 	 * @param {String} groupName
-	 * @returns {module:engine/conversion/conversion~DispatchersGroup}
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
-	_getDispatchersGroup( groupName ) {
-		if ( !this._dispatchersGroups.has( groupName ) ) {
+	_getConversionHelpers( groupName ) {
+		if ( !this._conversionHelpers.has( groupName ) ) {
 			/**
 			 * Trying to add a converter to an unknown dispatchers group.
 			 *
@@ -545,7 +538,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
 		}
 
-		return this._dispatchersGroups.get( groupName );
+		return this._conversionHelpers.get( groupName );
 	}
 }
 
@@ -564,14 +557,6 @@ export default class Conversion {
  * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
  * (`upcastAlso` object values).
  * @property {module:utils/priorities~PriorityString} [converterPriority] The converter priority.
- */
-
-/**
- * @typedef {Object} module:engine/conversion/conversion~DispatchersGroup
- * @property {String} name Group name
- * @property {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
- * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
- * @property {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers} helpers
  */
 
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
