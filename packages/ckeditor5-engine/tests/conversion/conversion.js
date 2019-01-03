@@ -658,6 +658,17 @@ describe( 'Conversion', () => {
 					'<div border="border"><div shade="shade"></div></div>'
 				);
 			} );
+
+			it( 'config.converterPriority is defined (override downcast)', () => {
+				schema.extend( 'image', {
+					allowAttributes: [ 'foo' ]
+				} );
+
+				conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+				conversion.attributeToAttribute( { model: 'foo', view: 'foofoo', converterPriority: 'high' } );
+
+				test( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
+			} );
 		} );
 
 		function test( input, expectedModel, expectedView = null ) {
