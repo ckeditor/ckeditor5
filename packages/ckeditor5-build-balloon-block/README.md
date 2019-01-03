@@ -66,17 +66,6 @@ BalloonBlockEditor
 
 **Note:** If you are planning to integrate CKEditor 5 deep into your application, it is actually more convenient and recommended to install and import the source modules directly (like it happens in `ckeditor.js`). Read more in the [Advanced setup guide](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html).
 
-**Note:** We recommend to adjust the position of the block toolbar button using CSS (see the example below) to your liking. By default, the block toolbar button will be attached directly to the boundary of the editable content area.
-
-```html
-<style>
-	/* Give the block toolbar button some space, moving it a few pixels away from the editable area. */
-	.ck.ck-block-toolbar-button {
-		transform: translateX( -10px );
-	}
-</style>
-```
-
 **Note:** You can configure the block toolbar items using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar `config.blockToolbar`} option.
 
 ## License

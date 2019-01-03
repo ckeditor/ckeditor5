@@ -29,6 +29,8 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
+import '../theme/theme.css';
+
 export default class BalloonBlockEditor extends BalloonEditorBase {}
 
 // Plugins to include in the build.
