@@ -48,7 +48,7 @@ describe( 'HeadingButtonUI', () => {
 			expect( factory.create( 'heading3' ) ).to.be.instanceOf( ButtonView );
 		} );
 
-		it( 'should intialize buttons with correct localized data', () => {
+		it( 'should initialize buttons with correct localized data', () => {
 			const localizedOptions = getLocalizedOptions( editor ).filter( option => option.model == 'heading2' )[ 0 ];
 			const heading2Button = editor.ui.componentFactory.create( 'heading2' );
 
