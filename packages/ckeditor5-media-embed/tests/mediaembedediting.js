@@ -75,7 +75,7 @@ describe( 'MediaEmbedEditing', () => {
 					} ).then( () => {
 						expect( logSpy.calledOnce ).to.equal( true );
 						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 
@@ -330,7 +330,7 @@ describe( 'MediaEmbedEditing', () => {
 					} ).then( () => {
 						expect( logSpy.calledOnce ).to.equal( true );
 						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 
