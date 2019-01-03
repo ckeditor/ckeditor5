@@ -396,7 +396,7 @@ export default class Conversion {
 				.elementToAttribute( {
 					view,
 					model,
-					converterPriority: definition.priority
+					converterPriority: definition.converterPriority
 				} );
 		}
 	}
