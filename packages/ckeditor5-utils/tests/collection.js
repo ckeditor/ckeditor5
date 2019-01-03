@@ -322,13 +322,13 @@ describe( 'Collection', () => {
 	} );
 
 	describe( 'has()', () => {
-		it( 'should return true if collection contains item', () => {
+		it( 'should return true if collection contains item with given id', () => {
 			collection.add( getItem( 'foo' ) );
 
 			expect( collection.has( 'foo' ) ).to.equal( true );
 		} );
 
-		it( 'should return false if collection does not contain item', () => {
+		it( 'should return false if collection does not contain item with given id', () => {
 			collection.add( getItem( 'foo' ) );
 
 			expect( collection.has( 'bar' ) ).to.equal( false );
@@ -350,10 +350,24 @@ describe( 'Collection', () => {
 			expect( collection.has( 2 ) ).to.equal( false );
 		} );
 
-		it( 'should throw if neither string or number given', () => {
+		it( 'should return true if collection contains item', () => {
+			const item = getItem( 'foo' );
+
+			collection.add( item );
+
+			expect( collection.has( item ) ).to.equal( true );
+		} );
+
+		it( 'should return false if collection does not contains item', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( getItem( 'bar' ) ) ).to.equal( false );
+		} );
+
+		it( 'should throw if an object without id is given', () => {
 			expect( () => {
-				collection.has( true );
-			} ).to.throw( CKEditorError, /^collection-has-invalid-arg/ );
+				collection.has( {} );
+			} ).to.throw( CKEditorError, /^collection-has-invalid-id/ );
 		} );
 	} );
 

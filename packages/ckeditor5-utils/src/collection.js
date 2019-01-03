@@ -210,24 +210,32 @@ export default class Collection {
 	}
 
 	/**
-	 * Returns a boolean indicating whether the collection contains an item with the specified id or index.
+	 * Returns a boolean indicating whether the collection contains an item. Item id or index can be used instead of the
+	 * item.
 	 *
-	 * @param {String|Number} idOrIndex The item id or index in the collection.
+	 * @param {Object|String|Number} itemOrIdOrIndex The item, item id or item index in the collection.
 	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
 	 */
-	has( idOrIndex ) {
-		if ( typeof idOrIndex == 'string' ) {
-			return this._itemMap.has( idOrIndex );
-		} else if ( typeof idOrIndex == 'number' ) {
-			return !!this._items[ idOrIndex ];
-		}
+	has( itemOrIdOrIndex ) {
+		if ( typeof itemOrIdOrIndex == 'number' ) {
+			return !!this._items[ itemOrIdOrIndex ];
+		} else if ( typeof itemOrIdOrIndex == 'string' ) {
+			return this._itemMap.has( itemOrIdOrIndex );
+		} else { // Object
+			const idProperty = this._idProperty;
+			const id = itemOrIdOrIndex[ idProperty ];
 
-		/**
-		 * Index or id must be given.
-		 *
-		 * @error collection-has-invalid-arg
-		 */
-		throw new CKEditorError( 'collection-has-invalid-arg: Index or id must be given.' );
+			if ( typeof id != 'string' ) {
+				/**
+				 * This item's id should be a string.
+				 *
+				 * @error collection-has-invalid-id
+				 */
+				throw new CKEditorError( 'collection-has-invalid-id: This item\'s id should be a string.' );
+			}
+
+			return this._itemMap.has( id );
+		}
 	}
 
 	/**
