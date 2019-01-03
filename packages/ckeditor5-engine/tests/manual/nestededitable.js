@@ -5,14 +5,6 @@
 
 /* global console */
 
-import {
-	upcastElementToElement
-} from '../../src/conversion/upcast-converters';
-
-import {
-	downcastElementToElement
-} from '../../src/conversion/downcast-converters';
-
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -41,7 +33,7 @@ class NestedEditable extends Plugin {
 			allowIn: [ 'figure', 'figcaption' ]
 		} );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'figure',
 			view: {
 				name: 'figure',
@@ -49,14 +41,14 @@ class NestedEditable extends Plugin {
 					contenteditable: 'false'
 				}
 			}
-		} ) );
+		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'figure',
 			view: 'figure'
-		} ) );
+		} );
 
-		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'figcaption',
 			view: ( modelItem, viewWriter ) => {
 				const element = viewWriter.createEditableElement( 'figcaption', { contenteditable: 'true' } );
@@ -71,12 +63,12 @@ class NestedEditable extends Plugin {
 
 				return element;
 			}
-		} ) );
+		} );
 
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		editor.conversion.for( 'upcast' ).elementToElement( {
 			model: 'figcaption',
 			view: 'figcaption'
-		} ) );
+		} );
 	}
 }
 

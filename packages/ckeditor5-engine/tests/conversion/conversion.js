@@ -3,22 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import Conversion from '../../src/conversion/conversion';
+import Conversion, { ConversionHelpers } from '../../src/conversion/conversion';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
 
-import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 
 describe( 'Conversion', () => {
-	let conversion, dispA, dispB;
+	let conversion, dispA, dispB, dispC;
 
 	beforeEach( () => {
 		conversion = new Conversion();
@@ -26,10 +27,12 @@ describe( 'Conversion', () => {
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
 		dispA = Symbol( 'dispA' );
 		dispB = Symbol( 'dispB' );
+		dispC = Symbol( 'dispC' );
 
-		conversion.register( 'ab', [ dispA, dispB ] );
-		conversion.register( 'a', [ dispA ] );
-		conversion.register( 'b', [ dispB ] );
+		conversion.register( 'ab', new UpcastHelpers( [ dispA, dispB ] ) );
+		conversion.register( 'a', new UpcastHelpers( dispA ) );
+		conversion.register( 'b', new UpcastHelpers( dispB ) );
+		conversion.register( 'c', new DowncastHelpers( dispC ) );
 	} );
 
 	describe( 'register()', () => {
@@ -41,16 +44,21 @@ describe( 'Conversion', () => {
 	} );
 
 	describe( 'for()', () => {
-		it( 'should return object with .add() method', () => {
-			const forResult = conversion.for( 'ab' );
-
-			expect( forResult.add ).to.be.instanceof( Function );
+		it( 'should return ConversionHelpers', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
 			expect( () => {
 				conversion.for( 'foo' );
 			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+		} );
+
+		it( 'should return proper helpers for group', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'a' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'b' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'c' ) ).to.be.instanceof( DowncastHelpers );
 		} );
 	} );
 
@@ -100,6 +108,7 @@ describe( 'Conversion', () => {
 			schema = model.schema;
 
 			schema.extend( '$text', {
+				allowIn: '$root',
 				allowAttributes: [ 'bold' ]
 			} );
 
@@ -113,8 +122,8 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 			conversion = new Conversion();
-			conversion.register( 'upcast', [ viewDispatcher ] );
-			conversion.register( 'downcast', [ controller.downcastDispatcher ] );
+			conversion.register( 'upcast', new UpcastHelpers( [ viewDispatcher ] ) );
+			conversion.register( 'downcast', new DowncastHelpers( controller.downcastDispatcher ) );
 		} );
 
 		describe( 'elementToElement', () => {
@@ -650,5 +659,40 @@ describe( 'Conversion', () => {
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
 		}
+	} );
+} );
+
+describe( 'ConversionHelpers', () => {
+	describe( 'add()', () => {
+		const dispA = Symbol( 'dispA' );
+		const dispB = Symbol( 'dispB' );
+
+		it( 'should call a helper for one defined dispatcher', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
+
+			helpers.add( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+		} );
+
+		it( 'should call helper for all defined dispatcherers', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( [ dispA, dispB ] );
+
+			helpers.add( spy );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+			sinon.assert.calledWithExactly( spy, dispB );
+		} );
+
+		it( 'should be chainable', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
+
+			expect( helpers.add( spy ) ).to.equal( helpers );
+		} );
 	} );
 } );
