@@ -4,6 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '../src/image';
 import ImageStyle from '../src/imagestyle';
 import ImageStyleEditing from '../src/imagestyle/imagestyleediting';
 import ImageStyleUI from '../src/imagestyle/imagestyleui';
@@ -18,7 +19,7 @@ describe( 'ImageStyle', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ ImageStyle ]
+				plugins: [ Image, ImageStyle ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
