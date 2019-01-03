@@ -51,14 +51,17 @@ export function downcastInsertTable( options = {} ) {
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
+		// Cache for created table rows.
+		const viewRows = new Map();
+
 		for ( const tableWalkerValue of tableWalker ) {
 			const { row, cell } = tableWalkerValue;
 
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
 			const tableRow = table.getChild( row );
 
-			// Check if row was converted
-			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole table at once.
 			conversionApi.consumable.consume( cell, 'insert' );
@@ -104,9 +107,14 @@ export function downcastInsertRow( options = {} ) {
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
+		// Cache for created table rows.
+		const viewRows = new Map();
+
 		for ( const tableWalkerValue of tableWalker ) {
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
-			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+
+			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole row at once.
 			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
@@ -404,29 +412,25 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 	}
 }
 
-// Creates or returns an existing `<tr>` element from the view.
+// Creates `<tr>` view element.
 //
 // @param {module:engine/view/element~Element} tableRow
 // @param {Number} rowIndex
 // @param {module:engine/view/element~Element} tableSection
 // @param {Object} conversionApi
 // @returns {module:engine/view/element~Element}
-function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
-	let trElement = conversionApi.mapper.toViewElement( tableRow );
+function createTr( tableRow, rowIndex, tableSection, conversionApi ) {
+	// Will always consume since we're converting <tableRow> element from a parent <table>.
+	conversionApi.consumable.consume( tableRow, 'insert' );
 
-	if ( !trElement ) {
-		// Will always consume since we're converting <tableRow> element from a parent <table>.
-		conversionApi.consumable.consume( tableRow, 'insert' );
+	const trElement = conversionApi.writer.createContainerElement( 'tr' );
+	conversionApi.mapper.bindElements( tableRow, trElement );
 
-		trElement = conversionApi.writer.createContainerElement( 'tr' );
-		conversionApi.mapper.bindElements( tableRow, trElement );
+	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
+	const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 
-		const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
-		const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
-
-		const position = conversionApi.writer.createPositionAt( tableSection, offset );
-		conversionApi.writer.insert( position, trElement );
-	}
+	const position = conversionApi.writer.createPositionAt( tableSection, offset );
+	conversionApi.writer.insert( position, trElement );
 
 	return trElement;
 }

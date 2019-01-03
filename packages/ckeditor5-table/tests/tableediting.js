@@ -45,6 +45,7 @@ describe( 'TableEditing', () => {
 		// Table:
 		expect( model.schema.isRegistered( 'table' ) ).to.be.true;
 		expect( model.schema.isObject( 'table' ) ).to.be.true;
+		expect( model.schema.isBlock( 'table' ) ).to.be.true;
 		expect( model.schema.isLimit( 'table' ) ).to.be.true;
 
 		expect( model.schema.checkChild( [ '$root' ], 'table' ) ).to.be.true;
