@@ -37,6 +37,8 @@ npm install --save @ckeditor/ckeditor5-build-inline
 # Or:
 npm install --save @ckeditor/ckeditor5-build-balloon
 # Or:
+npm install --save @ckeditor/ckeditor5-build-balloon-block
+# Or:
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 

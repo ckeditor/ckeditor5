@@ -173,6 +173,68 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 </html>
 ```
 
+## Balloon block editor
+
+In your HTML page add an element that CKEditor should make editable:
+
+```html
+<div id="editor"></div>
+```
+
+Load the balloon block editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonBlockEditor.create()`} method.
+
+```html
+<script>
+	BalloonBlockEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+**Note:** We recommend to adjust the position of the block toolbar button using CSS (see the example below) to your liking. By default, the block toolbar button will be attached directly to the boundary of the editable content area.
+
+**Note:** You can configure the block toolbar items using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar `config.blockToolbar`} option.
+
+### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – Balloon block editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Balloon editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		BalloonBlockEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+	<style>
+		/* Give the block toolbar button some space, moving it a few pixels away from the editable area. */
+		.ck.ck-block-toolbar-button {
+			transform: translateX( -10px );
+		}
+	</style>
+</body>
+</html>
+```
+
 ## Document editor
 
 Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
