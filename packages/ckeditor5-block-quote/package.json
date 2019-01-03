@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-image": "^12.0.0",
     "@ckeditor/ckeditor5-list": "^11.0.3",
     "@ckeditor/ckeditor5-paragraph": "^10.0.4",
+    "@ckeditor/ckeditor5-table": "^11.0.0",
     "@ckeditor/ckeditor5-typing": "^11.0.2",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^1.0.9",
