@@ -158,6 +158,18 @@ describe( 'Writer', () => {
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
 		} );
 
+		it( 'should do nothing if empty text node is being inserted', () => {
+			const parent = createDocumentFragment();
+
+			model.enqueueChange( batch, writer => {
+				const text = writer.createText( '' );
+
+				writer.insert( text, parent );
+			} );
+
+			expect( parent.childCount ).to.equal( 0 );
+		} );
+
 		it( 'should create proper operation for inserting element', () => {
 			const parent = createDocumentFragment();
 			const element = createElement( 'child' );
