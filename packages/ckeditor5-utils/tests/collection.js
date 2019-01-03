@@ -321,6 +321,42 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'has()', () => {
+		it( 'should return true if collection contains item', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( 'foo' ) ).to.equal( true );
+		} );
+
+		it( 'should return false if collection does not contain item', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( 'bar' ) ).to.equal( false );
+		} );
+
+		it( 'should return true if collection contains item on index', () => {
+			collection.add( getItem( 'foo' ) );
+			collection.add( getItem( 'bar' ) );
+
+			expect( collection.has( 0 ) ).to.equal( true );
+			expect( collection.has( 1 ) ).to.equal( true );
+		} );
+
+		it( 'should return false if collection does not contain item on index', () => {
+			collection.add( getItem( 'foo' ) );
+			collection.add( getItem( 'bar' ) );
+
+			expect( collection.has( -1 ) ).to.equal( false );
+			expect( collection.has( 2 ) ).to.equal( false );
+		} );
+
+		it( 'should throw if neither string or number given', () => {
+			expect( () => {
+				collection.has( true );
+			} ).to.throw( CKEditorError, /^collection-has-invalid-arg/ );
+		} );
+	} );
+
 	describe( 'getIndex()', () => {
 		it( 'should return index of given item', () => {
 			const item1 = { foo: 'bar' };

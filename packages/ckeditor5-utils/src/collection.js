@@ -210,6 +210,29 @@ export default class Collection {
 	}
 
 	/**
+	 * Returns a boolean indicating whether the collection contains an item with the specified id or index.
+	 *
+	 * @param {String|Number} idOrIndex The item id or index in the collection.
+	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
+	 */
+	has( idOrIndex ) {
+		let item;
+
+		if ( typeof idOrIndex == 'string' ) {
+			return this._itemMap.has( idOrIndex );
+		} else if ( typeof idOrIndex == 'number' ) {
+			return !!this._items[ idOrIndex ];
+		}
+
+		/**
+		 * Index or id must be given.
+		 *
+		 * @error collection-has-invalid-arg
+		 */
+		throw new CKEditorError( 'collection-has-invalid-arg: Index or id must be given.' );
+	}
+
+	/**
 	 * Gets index of item in the collection.
 	 * When item is not defined in the collection then index will be equal -1.
 	 *
