@@ -210,19 +210,36 @@ export default class Collection {
 	}
 
 	/**
+	 * Returns a boolean indicating whether the collection contains an item.
+	 *
+	 * @param {Object|String} itemOrId The item or its id in the collection.
+	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
+	 */
+	has( itemOrId ) {
+		if ( typeof itemOrId == 'string' ) {
+			return this._itemMap.has( itemOrId );
+		} else { // Object
+			const idProperty = this._idProperty;
+			const id = itemOrId[ idProperty ];
+
+			return this._itemMap.has( id );
+		}
+	}
+
+	/**
 	 * Gets index of item in the collection.
 	 * When item is not defined in the collection then index will be equal -1.
 	 *
-	 * @param {String|Object} idOrItem The item or its id in the collection.
+	 * @param {Object|String} itemOrId The item or its id in the collection.
 	 * @returns {Number} Index of given item.
 	 */
-	getIndex( idOrItem ) {
+	getIndex( itemOrId ) {
 		let item;
 
-		if ( typeof idOrItem == 'string' ) {
-			item = this._itemMap.get( idOrItem );
+		if ( typeof itemOrId == 'string' ) {
+			item = this._itemMap.get( itemOrId );
 		} else {
-			item = idOrItem;
+			item = itemOrId;
 		}
 
 		return this._items.indexOf( item );
