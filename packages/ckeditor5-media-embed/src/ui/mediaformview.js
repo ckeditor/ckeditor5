@@ -134,6 +134,21 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		/**
+		 * The default info text for the {@link #inputView}.
+		 *
+		 * @private
+		 * @member {String} _urlInputViewInfoDefault
+		 */
+
+		/**
+		 * The info text with an additional tip for the {@link #inputView},
+		 * displayed when the input has some value.
+		 *
+		 * @private
+		 * @member {String} _urlInputViewInfoTip
+		 */
 	}
 
 	/**
@@ -242,10 +257,8 @@ export default class MediaFormView extends View {
 	 * See {@link #isValid}.
 	 */
 	resetFormStatus() {
-		const t = this.locale.t;
-
 		this.urlInputView.errorText = null;
-		this.urlInputView.infoText = t( 'Paste the URL into the content to embed faster.' );
+		this.urlInputView.infoText = this._urlInputViewInfoDefault;
 	}
 
 	/**
@@ -260,8 +273,17 @@ export default class MediaFormView extends View {
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
 		const inputView = labeledInput.inputView;
 
+		this._urlInputViewInfoDefault = t( 'Paste the media URL in the input.' );
+		this._urlInputViewInfoTip = t( 'Tip: Paste the URL into the content to embed faster.' );
+
 		labeledInput.label = t( 'Media URL' );
+		labeledInput.infoText = this._urlInputViewInfoDefault;
 		inputView.placeholder = 'https://example.com';
+
+		inputView.on( 'input', () => {
+			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
+			labeledInput.infoText = inputView.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
+		} );
 
 		return labeledInput;
 	}
