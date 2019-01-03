@@ -216,8 +216,6 @@ export default class Collection {
 	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
 	 */
 	has( idOrIndex ) {
-		let item;
-
 		if ( typeof idOrIndex == 'string' ) {
 			return this._itemMap.has( idOrIndex );
 		} else if ( typeof idOrIndex == 'number' ) {
