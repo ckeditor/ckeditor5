@@ -7,7 +7,7 @@
  * @module utils/config
  */
 
-import { isPlainObject, cloneDeep } from 'lodash-es';
+import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
 
 /**
  * Handles a configuration dictionary.
@@ -197,8 +197,8 @@ export default class Config {
 			source = source[ part ];
 		}
 
-		// Always returns undefined for non existing configuration
-		return source ? cloneDeep( source[ name ] ) : undefined;
+		// Always returns undefined for non existing configuration.
+		return source ? cloneConfig( source[ name ] ) : undefined;
 	}
 
 	/**
@@ -214,4 +214,20 @@ export default class Config {
 			this._setToTarget( target, key, configuration[ key ], isDefine );
 		} );
 	}
+}
+
+// Clones configuration object or value.
+// @param {*} source Source configuration
+// @returns {*} Cloned configuration value.
+function cloneConfig( source ) {
+	return cloneDeepWith( source, leaveDOMReferences );
+}
+
+// A customizer function for cloneDeepWith.
+// It will leave references to DOM Elements instead of cloning them.
+//
+// @param {*} value
+// @returns {Element|undefined}
+function leaveDOMReferences( value ) {
+	return isElement( value ) ? value : undefined;
 }

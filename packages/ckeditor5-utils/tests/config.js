@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import Config from '../src/config';
 
 describe( 'Config', () => {
@@ -433,6 +435,28 @@ describe( 'Config', () => {
 
 			// But array members should remain the same contents should be equal:
 			expect( pluginsAgain ).to.deep.equal( plugins );
+		} );
+
+		it( 'should return DOM nodes references from config array', () => {
+			const foo = document.createElement( 'div' );
+
+			config.set( 'node', foo );
+			config.set( 'nodes', [ foo ] );
+
+			expect( config.get( 'node' ) ).to.equal( foo );
+			expect( config.get( 'nodes' ) ).to.deep.equal( [ foo ] );
+
+			const nodes = config.get( 'nodes' );
+
+			expect( nodes[ 0 ] ).to.equal( foo );
+
+			const nodesAgain = config.get( 'nodes' );
+
+			// The returned array should be a new instance:
+			expect( nodesAgain ).to.not.equal( nodes );
+
+			// But array members should remain the same contents should be equal:
+			expect( nodesAgain ).to.deep.equal( nodes );
 		} );
 	} );
 } );
