@@ -421,6 +421,27 @@ describe( 'DocumentSelection', () => {
 
 			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
 		} );
+
+		it( 'should add marker of selected widget', () => {
+			root._insertChild( 0, new Element( 'widget' ) );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 0 ] ),
+					writer.createPositionFromPath( root, [ 1 ] )
+				) );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 0 ] ),
+						writer.createPositionFromPath( root, [ 1 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
