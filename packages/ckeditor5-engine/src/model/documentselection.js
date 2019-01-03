@@ -813,8 +813,10 @@ class LiveSelection extends Selection {
 		const markers = [];
 
 		for ( const marker of this._model.markers ) {
+			const markerRange = marker.getRange();
+
 			for ( const selectionRange of this.getRanges() ) {
-				if ( marker.getRange().containsRange( selectionRange ) ) {
+				if ( markerRange.containsRange( selectionRange, !selectionRange.isCollapsed ) ) {
 					markers.push( marker );
 				}
 			}

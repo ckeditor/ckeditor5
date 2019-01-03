@@ -244,7 +244,7 @@ describe( 'DocumentSelection', () => {
 				} );
 			} );
 
-			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-3' ] );
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker-2', 'marker-3' ] );
 		} );
 
 		it( 'should update markers after selection change', () => {
@@ -346,6 +346,80 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			expect( selection.markers.map( marker => marker.name ), 2 ).to.have.members( [ 'marker-3' ] );
+		} );
+
+		it( 'should not add marker when collapsed selection is on the marker left bound', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers ).to.length( 0 );
+		} );
+
+		it( 'should not add marker when collapsed selection is on the marker right bound', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 4 ] )
+				) );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 2 ] ),
+						writer.createPositionFromPath( root, [ 2, 4 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers ).to.length( 0 );
+		} );
+
+		it( 'should add marker when non-collapsed selection is inside a marker and touches the left bound', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 1 ] ),
+					writer.createPositionFromPath( root, [ 2, 3 ] )
+				) );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
+		} );
+
+		it( 'should add marker when non-collapsed selection is inside a marker and touches the right bound', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 2 ] ),
+					writer.createPositionFromPath( root, [ 2, 5 ] )
+				) );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( root, [ 2, 1 ] ),
+						writer.createPositionFromPath( root, [ 2, 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			expect( selection.markers.map( marker => marker.name ) ).to.have.members( [ 'marker' ] );
 		} );
 	} );
 
