@@ -159,6 +159,10 @@ export default class Writer {
 	insert( item, itemOrPosition, offset = 0 ) {
 		this._assertWriterUsedCorrectly();
 
+		if ( item instanceof Text && item.data == '' ) {
+			return;
+		}
+
 		const position = Position._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
