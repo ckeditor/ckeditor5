@@ -132,7 +132,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
-	 * @param {File|Promise} fileOrPromise Native file or promise handle.
+	 * @param {File|Promise.<File>} fileOrPromise Native file or promise handle.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	getLoader( fileOrPromise ) {
@@ -144,7 +144,7 @@ export default class FileRepository extends Plugin {
 	 *
 	 * Requires {@link #createUploadAdapter} factory to be defined.
 	 *
-	 * @param {File|Promise} fileOrPromise Native File object or native Promise object which resolves to a File.
+	 * @param {File|Promise.<File>} fileOrPromise Native File object or native Promise object which resolves to a File.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	createLoader( fileOrPromise ) {
@@ -176,10 +176,7 @@ export default class FileRepository extends Plugin {
 			return null;
 		}
 
-		const filePromise = fileOrPromise instanceof Promise ? fileOrPromise : new Promise( resolve => resolve( fileOrPromise ) );
-		const loader = new FileLoader( filePromise );
-
-		loader._adapter = this.createUploadAdapter( loader );
+		const loader = new FileLoader( Promise.resolve( fileOrPromise ), this.createUploadAdapter );
 
 		this.loaders.add( loader );
 		this._loadersMap.set( fileOrPromise, loader );
@@ -270,10 +267,10 @@ class FileLoader {
 	/**
 	 * Creates a new instance of `FileLoader`.
 	 *
-	 * @param {File} file A native file instance.
-	 * @param {module:upload/filerepository~UploadAdapter} adapter
+	 * @param {Promise.<File>} filePromise A promise which resolves to a file instance.
+	 * @param {Function} uploadAdapterCreator The function which returns {@link module:upload/filerepository~UploadAdapter} instance.
 	 */
-	constructor( file, adapter ) {
+	constructor( filePromise, uploadAdapterCreator ) {
 		/**
 		 * Unique id of FileLoader instance.
 		 *
@@ -283,13 +280,12 @@ class FileLoader {
 		this.id = uid();
 
 		/**
-		 * Additional wrapper over a file promise passed to this loader.
+		 * Additional wrapper over the initial file promise passed to this loader.
 		 *
-		 * @see #_createFilePromiseWrapper
 		 * @private
-		 * @member {Object} wrapper
+		 * @member {module:upload/filerepository~FilePromiseWrapper}
 		 */
-		this._filePromiseWrapper = this._createFilePromiseWrapper( file );
+		this._filePromiseWrapper = this._createFilePromiseWrapper( filePromise );
 
 		/**
 		 * Adapter instance associated with this file loader.
@@ -297,7 +293,7 @@ class FileLoader {
 		 * @private
 		 * @member {module:upload/filerepository~UploadAdapter}
 		 */
-		this._adapter = adapter;
+		this._adapter = uploadAdapterCreator( this );
 
 		/**
 		 * FileReader used by FileLoader.
@@ -376,19 +372,22 @@ class FileLoader {
 	/**
 	 * Returns a `Promise` which resolves to a `File` instance associated with this file loader.
 	 *
-	 * @type {Promise}
+	 * @type {Promise.<File>}
 	 */
 	get file() {
 		if ( !this._filePromiseWrapper ) {
 			// Loader was destroyed, return promise which resolves to null.
-			return new Promise( resolve => resolve( null ) );
+			return Promise.resolve( null );
 		} else {
-			// The `loader.file.then( ... )` can be called, then `loader._destroy()` (which is sync) and then
-			// `loader.file.then( ... )` will be resolved. In such case, even after `destroy` call the promise will
-			// return `File` instance so we use nested promises which handles this case.
-			return this._filePromiseWrapper.promise.then( file => {
-				return new Promise( resolve => resolve( this._filePromiseWrapper ? file : null ) );
-			} );
+			// The `this._filePromiseWrapper.promise` is chained and not simply returned to handle a case when:
+			//
+			//		* The `loader.file.then( ... )` is called by external code (returned promise is pending).
+			//		* Then `loader._destroy()` is called (call is synchronous) which destroys the `loader`.
+			//		* Promise returned by the first `loader.file.then( ... )` call is resolved.
+			//
+			// Returning `this._filePromiseWrapper.promise` will still resolve to a `File` instance so there
+			// is an additional check needed in the chain to see if `loader` was destroyed in the meantime.
+			return this._filePromiseWrapper.promise.then( file => this._filePromiseWrapper ? file : null );
 		}
 	}
 
@@ -410,7 +409,7 @@ class FileLoader {
 	 *			}
 	 *		} );
 	 *
-	 * @returns {Promise} Returns promise that will be resolved with read data. Promise will be rejected if error
+	 * @returns {Promise.<String>} Returns promise that will be resolved with read data. Promise will be rejected if error
 	 * occurs or if read process is aborted.
 	 */
 	read() {
@@ -455,7 +454,7 @@ class FileLoader {
 	 *			}
 	 *		} );
 	 *
-	 * @returns {Promise} Returns promise that will be resolved with response data. Promise will be rejected if error
+	 * @returns {Promise.<Object>} Returns promise that will be resolved with response data. Promise will be rejected if error
 	 * occurs or if read process is aborted.
 	 */
 	upload() {
@@ -519,12 +518,8 @@ class FileLoader {
 	 * control (resolving, rejecting, checking if fulfilled) over it.
 	 *
 	 * @private
-	 * @param filePromise The file promise to be wrapped.
-	 * @returns {Object}
-	 * @returns {Promise} wrapper.promise Wrapper promise.
-	 * @returns {Function} wrapper.resolver Resolves the promise when called.
-	 * @returns {Function} wrapper.rejecter Rejects the promise when called.
-	 * @returns {Boolean} wrapper.isFulfilled Whether original promise is already fulfilled.
+	 * @param filePromise The initial file promise to be wrapped.
+	 * @returns {module:upload/filerepository~FilePromiseWrapper}
 	 */
 	_createFilePromiseWrapper( filePromise ) {
 		const wrapper = {};
@@ -589,7 +584,7 @@ mix( FileLoader, ObservableMixin );
  * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
  *
  * @method module:upload/filerepository~UploadAdapter#upload
- * @returns {Promise} Promise that should be resolved when data is uploaded.
+ * @returns {Promise.<Object>} Promise that should be resolved when data is uploaded.
  */
 
 /**
@@ -600,4 +595,15 @@ mix( FileLoader, ObservableMixin );
  * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
  *
  * @method module:upload/filerepository~UploadAdapter#abort
+ */
+
+/**
+ * Object returned by {@link module:upload/filerepository~FileLoader#_createFilePromiseWrapper} method
+ * to add more control over the initial file promise passed to {@link module:upload/filerepository~FileLoader}.
+ *
+ * @typedef {Object} module:upload/filerepository~FilePromiseWrapper
+ * @property {Promise.<File>} promise Wrapper promise which can be chained for further processing.
+ * @property {Function} resolver Resolves the promise when called.
+ * @property {Function} rejecter Rejects the promise when called.
+ * @property {Boolean} isFulfilled Whether original promise is already fulfilled.
  */
