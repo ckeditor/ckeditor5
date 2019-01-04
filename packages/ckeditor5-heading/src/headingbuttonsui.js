@@ -14,11 +14,17 @@ import { getLocalizedOptions } from './utils';
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';
 import iconHeading3 from '../theme/icons/heading3.svg';
+import iconHeading4 from '../theme/icons/heading4.svg';
+import iconHeading5 from '../theme/icons/heading5.svg';
+import iconHeading6 from '../theme/icons/heading6.svg';
 
 const defaultIcons = {
 	heading1: iconHeading1,
 	heading2: iconHeading2,
-	heading3: iconHeading3
+	heading3: iconHeading3,
+	heading4: iconHeading4,
+	heading5: iconHeading5,
+	heading6: iconHeading6
 };
 
 /**
