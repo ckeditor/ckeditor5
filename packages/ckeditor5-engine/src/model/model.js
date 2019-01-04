@@ -331,9 +331,7 @@ export default class Model {
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/item~Item|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} [selectable=model.document.selection]
+	 * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
 	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
 	 * This param defines a position in relation to that item.
@@ -596,14 +594,8 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new selection instance based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or based on the given {@link module:engine/model/range~Range range},
-	 * * or based on the given iterable collection of {@link module:engine/model/range~Range ranges}
-	 * * or at the given {@link module:engine/model/position~Position position},
-	 * * or on the given {@link module:engine/model/element~Element element},
-	 * * or creates an empty selection if no arguments were passed.
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
 	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
@@ -650,9 +642,7 @@ export default class Model {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.

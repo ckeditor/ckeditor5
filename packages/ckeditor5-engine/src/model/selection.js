@@ -27,12 +27,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  */
 export default class Selection {
 	/**
-	 * Creates a new selection instance
-	 * based on the given {@link module:engine/model/selection~Selection selection},
-	 * or based on the given {@link module:engine/model/range~Range range},
-	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
-	 * or at the given {@link module:engine/model/position~Position position},
-	 * or on the given {@link module:engine/model/element~Element element},
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Creates empty selection without ranges.
@@ -77,9 +72,7 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -322,9 +315,7 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 *
 	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );
@@ -368,9 +359,7 @@ export default class Selection {
 	 *		// Sets backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -849,3 +838,19 @@ function findAncestorBlock( node ) {
 		parent = parent.parent;
 	}
 }
+
+/**
+ * An entity that is used to set selection.
+ *
+ * See also {@link module:engine/model/selection~Selection#setTo}
+ *
+ * @typedef {
+ *     module:engine/model/selection~Selection|
+ *     module:engine/model/documentselection~DocumentSelection|
+ *     module:engine/model/position~Position|
+ *     module:engine/model/range~Range|
+ *     module:engine/model/node~Node|
+ *     Iterable.<module:engine/model/range~Range>|
+ *     null
+ * } module:engine/model/selection~Selectable
+ */
