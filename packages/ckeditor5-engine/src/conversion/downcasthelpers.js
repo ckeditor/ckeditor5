@@ -263,7 +263,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
 	 * receives the `data` object as a parameter and should return an instance of the
-	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` and `conversionApi` objects are passed from
+	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
 	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
 	 * the marker end boundary element.
