@@ -1053,7 +1053,7 @@ function _convertType( type ) {
 // Checks if a given priority is allowed. Returns null if the priority cannot be converted.
 //
 // @param {String} priorityString
-// returns {Number|Null}
+// returns {Number|null}
 function _convertPriority( priorityString ) {
 	const priority = parseInt( priorityString, 10 );
 

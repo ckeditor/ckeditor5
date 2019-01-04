@@ -296,7 +296,7 @@ export default class DowncastDispatcher {
 
 			// Do not fire event if the attribute has been consumed.
 			if ( this.conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire( 'attribute:' + data.attributeKey, data, this.conversionApi );
+				this.fire( 'attribute:' + data.attributeKey + ':$text', data, this.conversionApi );
 			}
 		}
 
@@ -323,22 +323,28 @@ export default class DowncastDispatcher {
 		// In markers' case, event name == consumable name.
 		const eventName = 'addMarker:' + markerName;
 
-		// When range is collapsed - fire single event with collapsed range in consumable.
-		if ( markerRange.isCollapsed ) {
-			const consumable = new Consumable();
-			consumable.add( markerRange, eventName );
+		//
+		// First, fire an event for the whole marker.
+		//
+		const consumable = new Consumable();
+		consumable.add( markerRange, eventName );
 
-			this.conversionApi.consumable = consumable;
+		this.conversionApi.consumable = consumable;
 
-			this.fire( eventName, { markerName, markerRange }, this.conversionApi );
+		this.fire( eventName, { markerName, markerRange }, this.conversionApi );
 
+		//
+		// Do not fire events for each item inside the range if the range got consumed.
+		//
+		if ( !consumable.test( markerRange, eventName ) ) {
 			return;
 		}
 
-		// Create consumable for each item in range.
+		//
+		// Then, fire an event for each item inside the marker range.
+		//
 		this.conversionApi.consumable = this._createConsumableForRange( markerRange, eventName );
 
-		// Create separate event for each node in the range.
 		for ( const item of markerRange.getItems() ) {
 			// Do not fire event for already consumed items.
 			if ( !this.conversionApi.consumable.test( item, eventName ) ) {

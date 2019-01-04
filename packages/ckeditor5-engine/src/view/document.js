@@ -40,7 +40,7 @@ export default class Document {
 		 * model root using {@link module:engine/model/document~Document#createRoot}.
 		 *
 		 * @readonly
-		 * @member {Collection} module:engine/view/document~Document#roots
+		 * @member {module:utils/collection~Collection} module:engine/view/document~Document#roots
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
 

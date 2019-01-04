@@ -364,7 +364,7 @@ function matchStyles( patterns, element ) {
  *
  *		// Match view element which has matching attributes.
  *		const pattern = {
- *			attribute: {
+ *			attributes: {
  *				title: 'foobar',	// Attribute title should equal 'foobar'.
  *				foo: /^\w+/,		// Attribute foo should match /^\w+/ regexp.
  *				bar: true			// Attribute bar should be set (can be empty).
@@ -384,7 +384,7 @@ function matchStyles( patterns, element ) {
  *		// Multiple classes to match.
  *		const pattern = {
  *			classes: [ 'baz', 'bar', /foo.../ ]
- *		}:
+ *		};
  *
  *		// Match view element which has given styles.
  *		const pattern = {
