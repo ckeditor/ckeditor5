@@ -483,7 +483,7 @@ describe( 'ImageUploadEditing', () => {
 		loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
 	} );
 
-	it( 'should abort upload if image is removed', done => {
+	it( 'should abort upload if image is removed', () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -492,7 +492,7 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( loader.status ).to.equal( 'reading' );
 
-		loader.file.then( () => {
+		return loader.file.then( () => {
 			nativeReaderMock.mockSuccess( base64Sample );
 
 			const image = doc.getRoot().getChild( 0 );
@@ -500,10 +500,8 @@ describe( 'ImageUploadEditing', () => {
 				writer.remove( image );
 			} );
 
-			tryExpect( done, () => {
-				expect( loader.status ).to.equal( 'aborted' );
-				sinon.assert.calledOnce( abortSpy );
-			} );
+			expect( loader.status ).to.equal( 'aborted' );
+			sinon.assert.calledOnce( abortSpy );
 		} );
 	} );
 
