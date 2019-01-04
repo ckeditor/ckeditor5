@@ -136,18 +136,18 @@ export default class MediaFormView extends View {
 		} );
 
 		/**
-		 * The default info text for the {@link #inputView}.
+		 * The default info text for the {@link #urlInputView}.
 		 *
 		 * @private
-		 * @member {String} _urlInputViewInfoDefault
+		 * @member {String} #_urlInputViewInfoDefault
 		 */
 
 		/**
-		 * The info text with an additional tip for the {@link #inputView},
+		 * The info text with an additional tip for the {@link #urlInputView},
 		 * displayed when the input has some value.
 		 *
 		 * @private
-		 * @member {String} _urlInputViewInfoTip
+		 * @member {String} #_urlInputViewInfoTip
 		 */
 	}
 
