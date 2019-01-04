@@ -823,7 +823,7 @@ class LiveSelection extends Selection {
 		}
 
 		for ( const marker of markers ) {
-			if ( !this.markers.get( marker.name ) ) {
+			if ( !this.markers.has( marker ) ) {
 				this.markers.add( marker );
 			}
 		}
