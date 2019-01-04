@@ -4,7 +4,6 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
@@ -211,7 +210,7 @@ describe( 'upcastTable()', () => {
 		editor.model.schema.register( 'div', {
 			inheritAllFrom: '$block'
 		} );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 		editor.setData(
 			'<div>foo' +
@@ -457,7 +456,7 @@ describe( 'upcastTable()', () => {
 			] ) );
 		} );
 
-		it( 'should upcast table with <img> in table cell to empty table cell', () => {
+		it( 'should upcast table with <img> in table cell', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -469,7 +468,7 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '' ]
+				[ '<image src="sample.png"></image>' ]
 			] ) );
 		} );
 	} );
