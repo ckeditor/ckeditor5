@@ -219,14 +219,14 @@ describe( 'FileRepository', () => {
 		} );
 
 		it( 'should return loader by promise instance (initialized with promise)', () => {
-			const promise = new Promise( resolve => resolve( createNativeFileMock() ) );
+			const promise = Promise.resolve( createNativeFileMock() );
 			const loader = fileRepository.createLoader( promise );
 
 			expect( fileRepository.getLoader( promise ) ).to.equal( loader );
 		} );
 
 		it( 'should return loader by file instance (initialized with promise)', done => {
-			const promise = new Promise( resolve => resolve( createNativeFileMock() ) );
+			const promise = Promise.resolve( createNativeFileMock() );
 			const loader = fileRepository.createLoader( promise );
 
 			loader.file.then( fileInstance => {
@@ -279,27 +279,25 @@ describe( 'FileRepository', () => {
 			expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 0 );
 		} );
 
-		it( 'should destroy loader by provided file (initialized with promise)', done => {
+		it( 'should destroy loader by provided file (initialized with promise)', () => {
 			fileRepository.destroyLoader( loader );
 
-			const promise = new Promise( resolve => resolve( createNativeFileMock() ) );
+			const promise = Promise.resolve( createNativeFileMock() );
 			const newLoader = fileRepository.createLoader( promise );
 
 			destroySpy = testUtils.sinon.spy( newLoader, '_destroy' );
 
-			newLoader.file.then( fileInstance => {
-				tryExpect( done, () => {
-					expect( fileRepository.loaders.length ).to.equal( 1 );
-					expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 2 );
+			return newLoader.file.then( fileInstance => {
+				expect( fileRepository.loaders.length ).to.equal( 1 );
+				expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 2 );
 
-					fileRepository.destroyLoader( fileInstance );
+				fileRepository.destroyLoader( fileInstance );
 
-					sinon.assert.calledOnce( destroySpy );
+				sinon.assert.calledOnce( destroySpy );
 
-					expect( fileRepository.getLoader( fileInstance ) ).to.be.null;
-					expect( fileRepository.loaders.length ).to.equal( 0 );
-					expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 0 );
-				} );
+				expect( fileRepository.getLoader( fileInstance ) ).to.be.null;
+				expect( fileRepository.loaders.length ).to.equal( 0 );
+				expect( Array.from( fileRepository._loadersMap.keys() ).length ).to.equal( 0 );
 			} );
 		} );
 	} );
@@ -403,40 +401,34 @@ describe( 'FileRepository', () => {
 				expect( loader.file ).to.instanceof( Promise );
 			} );
 
-			it( 'should return promise which resolves to a file', done => {
-				loader.file.then( fileInstance => {
-					tryExpect( done, () => {
-						expect( fileInstance ).to.equal( file );
-					} );
+			it( 'should return promise which resolves to a file', () => {
+				return loader.file.then( fileInstance => {
+					expect( fileInstance ).to.equal( file );
 				} );
 			} );
 
-			it( 'should return promise which resolves to null after loader is destroyed (destroy before)', done => {
+			it( 'should return promise which resolves to null after loader is destroyed (destroy before)', () => {
 				loader._destroy();
 
-				loader.file.then( fileInstance => {
-					tryExpect( done, () => {
-						expect( fileInstance ).to.be.null;
-					} );
+				return loader.file.then( fileInstance => {
+					expect( fileInstance ).to.be.null;
 				} );
 			} );
 
-			it( 'should return promise which resolves to null after loader is destroyed (destroy after)', done => {
-				loader.file.then( fileInstance => {
-					tryExpect( done, () => {
-						expect( fileInstance ).to.be.null;
-					} );
+			it( 'should return promise which resolves to null after loader is destroyed (destroy after)', () => {
+				const promise = loader.file.then( fileInstance => {
+					expect( fileInstance ).to.be.null;
 				} );
 
 				loader._destroy();
+
+				return promise;
 			} );
 
-			it( 'should return promise which resolves to null after loader is destroyed (file promise resolved, destroy after)', done => {
-				loader._filePromiseWrapper.promise.then( () => {
+			it( 'should return promise which resolves to null after loader is destroyed (file promise resolved, destroy after)', () => {
+				return loader._filePromiseWrapper.promise.then( () => {
 					loader.file.then( fileInstance => {
-						tryExpect( done, () => {
-							expect( fileInstance ).to.be.null;
-						} );
+						expect( fileInstance ).to.be.null;
 					} );
 
 					loader._destroy();
@@ -463,7 +455,7 @@ describe( 'FileRepository', () => {
 				expect( loader.status ).to.equal( 'reading' );
 			} );
 
-			it( 'should resolve promise when file promise is resolved', done => {
+			it( 'should resolve promise when file promise is resolved', () => {
 				let resolveFile = null;
 
 				const filePromise = new Promise( resolve => {
@@ -472,20 +464,20 @@ describe( 'FileRepository', () => {
 
 				const loader = fileRepository.createLoader( filePromise );
 
-				loader.read()
+				const promise = loader.read()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
-						} );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 					} );
 
 				resolveFile( createNativeFileMock() );
 
 				loader.file.then( () => nativeReaderMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 
-			it( 'should reject promise when file promise is rejected', done => {
+			it( 'should reject promise when file promise is rejected', () => {
 				let rejectFile = null;
 
 				const filePromise = new Promise( ( resolve, reject ) => {
@@ -494,14 +486,14 @@ describe( 'FileRepository', () => {
 
 				const loader = fileRepository.createLoader( filePromise );
 
-				loader.read().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'File loading error' );
-						expect( loader.status ).to.equal( 'error' );
-					} );
+				const promise = loader.read().catch( e => {
+					expect( e ).to.equal( 'File loading error' );
+					expect( loader.status ).to.equal( 'error' );
 				} );
 
 				rejectFile( 'File loading error' );
+
+				return promise;
 			} );
 
 			it( 'should reject promise when reading is aborted (before file promise is resolved)', () => {
@@ -515,38 +507,38 @@ describe( 'FileRepository', () => {
 				return promise;
 			} );
 
-			it( 'should reject promise when reading is aborted (after file promise is resolved)', done => {
-				loader.read().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'aborted' );
-						expect( loader.status ).to.equal( 'aborted' );
-					} );
+			it( 'should reject promise when reading is aborted (after file promise is resolved)', () => {
+				const promise = loader.read().catch( e => {
+					expect( e ).to.equal( 'aborted' );
+					expect( loader.status ).to.equal( 'aborted' );
 				} );
 
 				loader.file.then( () => loader.abort() );
+
+				return promise;
 			} );
 
-			it( 'should reject promise on reading error (after file promise is resolved)', done => {
-				loader.read().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'reading error' );
-						expect( loader.status ).to.equal( 'error' );
-					} );
+			it( 'should reject promise on reading error (after file promise is resolved)', () => {
+				const promise = loader.read().catch( e => {
+					expect( e ).to.equal( 'reading error' );
+					expect( loader.status ).to.equal( 'error' );
 				} );
 
 				loader.file.then( () => nativeReaderMock.mockError( 'reading error' ) );
+
+				return promise;
 			} );
 
-			it( 'should resolve promise on reading complete (after file promise is resolved)', done => {
-				loader.read()
+			it( 'should resolve promise on reading complete (after file promise is resolved)', () => {
+				const promise = loader.read()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
-						} );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 					} );
 
 				loader.file.then( () => nativeReaderMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 		} );
 
@@ -569,7 +561,7 @@ describe( 'FileRepository', () => {
 				expect( loader.status ).to.equal( 'uploading' );
 			} );
 
-			it( 'should resolve promise when file promise is resolved', done => {
+			it( 'should resolve promise when file promise is resolved', () => {
 				let resolveFile = null;
 
 				const filePromise = new Promise( resolve => {
@@ -578,20 +570,20 @@ describe( 'FileRepository', () => {
 
 				const loader = fileRepository.createLoader( filePromise );
 
-				loader.upload()
+				const promise = loader.upload()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
-						} );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 					} );
 
 				resolveFile( createNativeFileMock() );
 
 				loader.file.then( () => adapterMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 
-			it( 'should reject promise when file promise is rejected', done => {
+			it( 'should reject promise when file promise is rejected', () => {
 				let rejectFile = null;
 
 				const filePromise = new Promise( ( resolve, reject ) => {
@@ -600,14 +592,14 @@ describe( 'FileRepository', () => {
 
 				const loader = fileRepository.createLoader( filePromise );
 
-				loader.upload().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'File loading error' );
-						expect( loader.status ).to.equal( 'error' );
-					} );
+				const promise = loader.upload().catch( e => {
+					expect( e ).to.equal( 'File loading error' );
+					expect( loader.status ).to.equal( 'error' );
 				} );
 
 				rejectFile( 'File loading error' );
+
+				return promise;
 			} );
 
 			it( 'should reject promise when uploading is aborted (before file promise is resolved)', () => {
@@ -621,47 +613,45 @@ describe( 'FileRepository', () => {
 				return promise;
 			} );
 
-			it( 'should reject promise when uploading is aborted (after file promise is resolved)', done => {
-				loader.upload().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'aborted' );
-						expect( loader.status ).to.equal( 'aborted' );
-					} );
+			it( 'should reject promise when uploading is aborted (after file promise is resolved)', () => {
+				const promise = loader.upload().catch( e => {
+					expect( e ).to.equal( 'aborted' );
+					expect( loader.status ).to.equal( 'aborted' );
 				} );
 
 				loader.file.then( () => loader.abort() );
+
+				return promise;
 			} );
 
-			it( 'should reject promise on reading error (after file promise is resolved)', done => {
-				loader.upload().catch( e => {
-					tryExpect( done, () => {
-						expect( e ).to.equal( 'uploading error' );
-						expect( loader.status ).to.equal( 'error' );
-					} );
+			it( 'should reject promise on reading error (after file promise is resolved)', () => {
+				const promise = loader.upload().catch( e => {
+					expect( e ).to.equal( 'uploading error' );
+					expect( loader.status ).to.equal( 'error' );
 				} );
 
 				loader.file.then( () => adapterMock.mockError( 'uploading error' ) );
+
+				return promise;
 			} );
 
-			it( 'should resolve promise on reading complete (after file promise is resolved)', done => {
-				loader.upload()
+			it( 'should resolve promise on reading complete (after file promise is resolved)', () => {
+				const promise = loader.upload()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
-						} );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 					} );
 
 				loader.file.then( () => adapterMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 
-			it( 'should monitor upload progress', done => {
-				loader.upload()
+			it( 'should monitor upload progress', () => {
+				const promise = loader.upload()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
-						} );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 					} );
 
 				loader.file.then( () => {
@@ -678,6 +668,8 @@ describe( 'FileRepository', () => {
 
 					adapterMock.mockSuccess( 'result data' );
 				} );
+
+				return promise;
 			} );
 		} );
 
@@ -698,52 +690,41 @@ describe( 'FileRepository', () => {
 				expect( adapterAbortSpy.callCount ).to.equal( 0 );
 			} );
 
-			it( 'should abort correctly after successful read', done => {
-				loader.read()
+			it( 'should abort correctly after successful read', () => {
+				const promise = loader.read()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 
-							loader.abort();
+						loader.abort();
 
-							expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
-							expect( readerAbortSpy.callCount ).to.equal( 0 );
-							expect( adapterAbortSpy.callCount ).to.equal( 0 );
-						} );
+						expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
+						expect( readerAbortSpy.callCount ).to.equal( 0 );
+						expect( adapterAbortSpy.callCount ).to.equal( 0 );
 					} );
 
 				loader.file.then( () => nativeReaderMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 
-			it( 'should abort correctly after successful upload', done => {
-				loader.upload()
+			it( 'should abort correctly after successful upload', () => {
+				const promise = loader.upload()
 					.then( data => {
-						tryExpect( done, () => {
-							expect( data ).to.equal( 'result data' );
-							expect( loader.status ).to.equal( 'idle' );
+						expect( data ).to.equal( 'result data' );
+						expect( loader.status ).to.equal( 'idle' );
 
-							loader.abort();
+						loader.abort();
 
-							expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
-							expect( readerAbortSpy.callCount ).to.equal( 0 );
-							expect( adapterAbortSpy.callCount ).to.equal( 0 );
-						} );
+						expect( filePromiseRejecterSpy.callCount ).to.equal( 0 );
+						expect( readerAbortSpy.callCount ).to.equal( 0 );
+						expect( adapterAbortSpy.callCount ).to.equal( 0 );
 					} );
 
 				loader.file.then( () => adapterMock.mockSuccess( 'result data' ) );
+
+				return promise;
 			} );
 		} );
 	} );
 } );
-
-// When `expect` is called inside `Promise.then` any errors are usually caught by the `Promise.catch` (from the tested code)
-// and are not correctly propagated to the testing framework. Call `done()` with encountered error so it is displayed correctly.
-function tryExpect( doneFn, expectFn ) {
-	try {
-		expectFn();
-		doneFn();
-	} catch ( err ) {
-		doneFn( err );
-	}
-}
