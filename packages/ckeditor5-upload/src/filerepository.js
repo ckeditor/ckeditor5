@@ -370,9 +370,9 @@ class FileLoader {
 	}
 
 	/**
-	 * Returns a `Promise` which resolves to a `File` instance associated with this file loader.
+	 * A `Promise` which resolves to a `File` instance associated with this file loader.
 	 *
-	 * @type {Promise.<File>}
+	 * @type {Promise.<File|null>}
 	 */
 	get file() {
 		if ( !this._filePromiseWrapper ) {
