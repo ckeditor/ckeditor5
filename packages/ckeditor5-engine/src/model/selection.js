@@ -27,12 +27,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  */
 export default class Selection {
 	/**
-	 * Creates a new selection instance
-	 * based on the given {@link module:engine/model/selection~Selection selection},
-	 * or based on the given {@link module:engine/model/range~Range range},
-	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
-	 * or at the given {@link module:engine/model/position~Position position},
-	 * or on the given {@link module:engine/model/element~Element element},
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Creates empty selection without ranges.
@@ -320,9 +315,7 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 *
 	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );

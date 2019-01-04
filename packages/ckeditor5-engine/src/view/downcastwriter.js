@@ -56,10 +56,7 @@ export default class DowncastWriter {
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection document selection},
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
-	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
 	 *
 	 * Usage:
 	 *

@@ -366,9 +366,7 @@ export default class DocumentSelection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
 	 *
 	 * @see module:engine/model/writer~Writer#setSelection

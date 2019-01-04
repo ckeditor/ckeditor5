@@ -1074,14 +1074,8 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets the document's selection (ranges and direction) to the specified location based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or the given {@link module:engine/model/position~Position position},
-	 * * or the given {@link module:engine/model/range~Range range},
-	 * * or the given iterable of {@link module:engine/model/range~Range ranges},
-	 * * or the given {@link module:engine/model/node~Node node},
-	 * * or `null`.
+	 * Sets the document's selection (ranges and direction) to the specified location based on the given
+	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );

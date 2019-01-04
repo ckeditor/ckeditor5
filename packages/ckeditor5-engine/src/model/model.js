@@ -594,14 +594,8 @@ export default class Model {
 	}
 
 	/**
-	 * Creates a new selection instance based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or based on the given {@link module:engine/model/range~Range range},
-	 * * or based on the given iterable collection of {@link module:engine/model/range~Range ranges}
-	 * * or at the given {@link module:engine/model/position~Position position},
-	 * * or on the given {@link module:engine/model/element~Element element},
-	 * * or creates an empty selection if no arguments were passed.
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
+	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
 	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
