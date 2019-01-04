@@ -60,18 +60,9 @@ body {
 	--ck-z-default: 100;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
-
-/*
-	Override Bootstrap's CSS.
-	Note: This will not be necessary once the following issue is fixed and released:
-	https://github.com/ckeditor/ckeditor5-theme-lark/issues/189
-*/
-.ck.ck-button {
-	-webkit-appearance: none;
-}
 ```
 
-And passing the `focus: false` option to Boostrap's `modal()` function:
+And passing the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Boostrap's `modal()` function:
 
 ```js
 $( '#modal-container' ).modal( {
