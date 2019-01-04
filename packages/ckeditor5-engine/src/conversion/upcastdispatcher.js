@@ -348,7 +348,7 @@ export default class UpcastDispatcher {
 	 * Change this value for the next converter to tell where the conversion should continue.
 	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
 	 * converted element should be reflected by setting or modifying this property.
-	 * @param {module:engine/model/upcastdispatcher~UpcastConversionApi} conversionApi Conversion utilities to be used by callback.
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion utilities to be used by callback.
 	 */
 
 	/**
