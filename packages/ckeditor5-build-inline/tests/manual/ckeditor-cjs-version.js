@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+/* eslint-env commonjs */
+/* globals window, document, console */
+
 const InlineEditor = require( '../../build/ckeditor' );
 
 InlineEditor.create( document.querySelector( '#editor' ) )

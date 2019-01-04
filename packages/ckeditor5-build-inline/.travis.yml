@@ -1,0 +1,31 @@
+sudo: required
+dist: trusty
+addons:
+  firefox: latest
+  apt:
+    sources:
+    - google-chrome
+    packages:
+    - google-chrome-stable
+language: node_js
+node_js:
+- '8'
+cache:
+- node_modules
+branches:
+  except:
+  - stable
+before_install:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- npm config set package-lock false
+- npm i -g npm@^5.7.1
+install:
+- npm install @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
+script:
+- ckeditor5-dev-tests-travis
+env:
+  global:
+  - secure: FOSfcMoLfECRJ2SD96ZIwuxvnl9D63/z1SIvvEpJM1n99dbJoObfALFEuEHl/XopYRNaZ7VXO4PEnzt+96YaH9SOlnxrQzi53vr1Zm6LX8LUh1ULEd9F2RNVs5AAqEQcbv2W+91APB9ipxvVPpZtYW9TKXf9FEtBQrMfgkaMrBXyyS+1NZ5EgYu78Qy8CSvszUZChZMR3xB6h7RsDOgv7wzpPa9sYbMGrlm5WmzPaVKFuBnuYj7FcMjk3hm6Mt9qj0TtTANAuA2JaPu0g2sDEU6VneKRZQT3QTpC45GNy3/vKgb+36dB+mI90WnIRO5WS/tVzAXf1sNTeWZdyNZFZFqyOJVoCFdHuhz3YdJPtRO4AiN/eIQdV2QkFYFgd90yHoCZgI16tvGhonTS95QT+e/hbTt2XwucmSIDquV5k5QNV/paNERc90kz4eyZOow29hxsBRQa8f9g3IOBCN3UDR8pn41e/oK7l5SFGrpAylcXap3ezToaAcLUuDolyr7UHP3gVJXpn0KBVxAlg/37FH9jMTtnzji6r1YJlduwbcbzTUANywTGs4B4FpNN5fHvOyYRRkDQCQh489jvFDidj6VeT7Ldy/cgbqwrL1yykse5l/q6vyUn8Yke247bVaNDuSds0r/oYypKrq2xCpiigbUa6u6d4Mv3Sah1LkEl9dE=
+  - secure: QIl38ob/usXnE6M2doZVOGZ9eUIP6DDFSkYZFaHIWelIEWCgpSCxEHEgJ8PtRooKxCFNlTyJWGrxa1J186SZlP3CqpLOed92yF1AMxhj+ua+2GRZvwH0k+K22D4Gkg+O8NvIOQbIl4+Qpc+ZQeHrZI+xjnC7oMiJ11VRHON7+32+o8ymbJxkIuL+GCvzN8JJtXpSMeZdFXlZxNAwoXyrm0lVNgkq8ANWbzg+eLCjHT9ch5AMobOrR5D/PsbMUw/eI2QDIpKKwvgnuGkNdvl05Klm5dgGX4cnhFj3KbRf7KWSm9g7sNjVkaCEgPSG8ipReBGkwW3eBmC4nIh8hDAsNg0XgJG0bt/rAVnQkBOW3Q1XNv05ZP+Ez0dTZ59jLifZItyiQLjEtCxLD834B9gFP9u5FIHuJXVPa2047m6OVds94Lc60x10eK6Si5CTJMe0NEQ6OTIpm8wXqfVYY14TNOOw0tJOy7jAyU8b24EfXk3ACZlZHiUrDtcGzBRdikIsIoNH1V3BAnPIKRKm9JUN6QpkFCK/q/M43x5mMcxAfErqKEV3feJdN41y2RsjaQVr1sFGm1veHqbdF5/pFnBWcnbjer7XSf/KXMmxM4+hRE6mTR8XAw8kC5Vh1SHfjPDSPsuUQWbrdPBnpeKzWI30bFQeAYDpqM6I4ZAyJMJpTmM=

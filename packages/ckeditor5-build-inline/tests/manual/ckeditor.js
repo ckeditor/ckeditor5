@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window, document, console */
+
 import InlineEditor from '../../build/ckeditor';
 
 InlineEditor.create( document.querySelector( '#editor' ) )
