@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+/* eslint-env commonjs */
+/* globals window, document, console */
+
 const BalloonEditor = require( '../../build/ckeditor' );
 
 BalloonEditor.create( document.querySelector( '#editor' ) )
