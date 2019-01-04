@@ -236,7 +236,7 @@ function captionModelToView( elementCreator, hide = true ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewCaption
 // @param {module:engine/model/element~Element} modelCaption
 // @param {module:engine/view/containerelement~ContainerElement} viewImage
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, conversionApi ) {
 	const viewPosition = conversionApi.writer.createPositionAt( viewImage, 'end' );
 
