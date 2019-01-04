@@ -82,16 +82,20 @@ describe( 'MediaFormView', () => {
 				expect( view.urlInputView.inputView.placeholder ).to.equal( 'https://example.com' );
 			} );
 
-			it( 'displays the info text when upon #input when the field has a value', () => {
+			it( 'has info text', () => {
+				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
+			} );
+
+			it( 'displays the tip upon #input when the field has a value', () => {
 				view.urlInputView.inputView.element.value = 'foo';
 				view.urlInputView.inputView.fire( 'input' );
 
-				expect( view.urlInputView.infoText ).to.match( /^Paste the URL/ );
+				expect( view.urlInputView.infoText ).to.match( /^Tip: Paste the URL into/ );
 
 				view.urlInputView.inputView.element.value = '';
 				view.urlInputView.inputView.fire( 'input' );
 
-				expect( view.urlInputView.infoText ).to.be.null;
+				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 			} );
 		} );
 
@@ -307,7 +311,7 @@ describe( 'MediaFormView', () => {
 
 			view.resetFormStatus();
 
-			expect( view.urlInputView.infoText ).to.be.null;
+			expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 		} );
 	} );
 } );
