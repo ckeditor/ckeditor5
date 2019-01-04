@@ -29,6 +29,8 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
+ *
+ * @extends module:engine/view/element~Element
  */
 export default class UIElement extends Element {
 	/**

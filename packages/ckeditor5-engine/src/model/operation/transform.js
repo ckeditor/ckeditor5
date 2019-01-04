@@ -515,6 +515,48 @@ class ContextFactory {
 
 				break;
 			}
+
+			case MarkerOperation: {
+				const markerRange = opA.newRange;
+
+				if ( !markerRange ) {
+					return;
+				}
+
+				switch ( opB.constructor ) {
+					case MoveOperation: {
+						const movedRange = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
+
+						const affectedLeft = movedRange.containsPosition( markerRange.start ) ||
+							movedRange.start.isEqual( markerRange.start );
+
+						const affectedRight = movedRange.containsPosition( markerRange.end ) ||
+							movedRange.end.isEqual( markerRange.end );
+
+						if ( ( affectedLeft || affectedRight ) && !movedRange.containsRange( markerRange ) ) {
+							this._setRelation( opA, opB, {
+								side: affectedLeft ? 'left' : 'right',
+								offset: affectedLeft ? markerRange.start.offset : markerRange.end.offset
+							} );
+						}
+
+						break;
+					}
+
+					case MergeOperation: {
+						const wasInLeftElement = markerRange.start.isEqual( opB.targetPosition );
+						const wasInRightElement = markerRange.end.isEqual( opB.sourcePosition );
+
+						if ( wasInLeftElement || wasInRightElement ) {
+							this._setRelation( opA, opB, { wasInLeftElement, wasInRightElement } );
+						}
+
+						break;
+					}
+				}
+
+				break;
+			}
 		}
 	}
 
@@ -1068,24 +1110,49 @@ setTransformation( MarkerOperation, MergeOperation, ( a, b ) => {
 	return [ a ];
 } );
 
-setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
+setTransformation( MarkerOperation, MoveOperation, ( a, b, context ) => {
 	if ( a.oldRange ) {
 		a.oldRange = Range._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
 	}
 
 	if ( a.newRange ) {
+		if ( context.abRelation ) {
+			if ( context.abRelation.side == 'left' && b.targetPosition.isEqual( a.newRange.start ) ) {
+				a.newRange.start.offset = context.abRelation.offset;
+				a.newRange.end.offset += b.howMany;
+
+				return [ a ];
+			} else if ( context.abRelation.side == 'right' && b.targetPosition.isEqual( a.newRange.end ) ) {
+				a.newRange.end.offset = context.abRelation.offset;
+
+				return [ a ];
+			}
+		}
+
 		a.newRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
 	}
 
 	return [ a ];
 } );
 
-setTransformation( MarkerOperation, SplitOperation, ( a, b ) => {
+setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 	if ( a.oldRange ) {
 		a.oldRange = a.oldRange._getTransformedBySplitOperation( b );
 	}
 
 	if ( a.newRange ) {
+		if ( context.abRelation ) {
+			if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
+				a.newRange.start = Position._createAt( b.moveTargetPosition );
+			}
+
+			if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasInRightElement ) {
+				a.newRange.end = Position._createAt( b.moveTargetPosition );
+			}
+
+			return [ a ];
+		}
+
 		a.newRange = a.newRange._getTransformedBySplitOperation( b );
 	}
 
@@ -1719,6 +1786,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				targetPositionPath.push( 0 );
 
 				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, targetPositionPath );
+				splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( gyMoveSource, gyMoveTarget, 1 );
 				const splitNodesMove = new MoveOperation( splitNodesMoveSource, b.howMany, splitNodesMoveTarget, 0 );
 
 				results.push( gyMove );

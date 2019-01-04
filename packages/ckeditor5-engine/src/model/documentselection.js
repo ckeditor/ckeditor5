@@ -247,10 +247,30 @@ export default class DocumentSelection {
 	 *		<paragraph>b</paragraph>
 	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
-	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	getSelectedBlocks() {
 		return this._selection.getSelectedBlocks();
+	}
+
+	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	getTopMostBlocks() {
+		return this._selection.getTopMostBlocks();
 	}
 
 	/**
@@ -696,7 +716,8 @@ class LiveSelection extends Selection {
 			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
-			 * @param {String} uid The unique identifier returned by {@link #overrideGravity}.
+			 * @param {String} uid The unique identifier returned by
+			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',

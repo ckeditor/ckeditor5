@@ -19,15 +19,18 @@ import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import {
-	upcastElementToElement, upcastElementToAttribute, upcastAttributeToAttribute, upcastElementToMarker,
-	convertToModelFragment, convertText
-} from '../../src/conversion/upcast-converters';
+import UpcastHelpers, { convertToModelFragment, convertText, convertSelectionChange } from '../../src/conversion/upcasthelpers';
 
-import { stringify } from '../../src/dev-utils/model';
+import { getData as modelGetData, setData as modelSetData, stringify } from '../../src/dev-utils/model';
+import View from '../../src/view/view';
+import createViewRoot from '../view/_utils/createroot';
+import { setData as viewSetData } from '../../src/dev-utils/view';
+import Mapper from '../../src/conversion/mapper';
+import ViewSelection from '../../src/view/selection';
+import ViewRange from '../../src/view/range';
 
-describe( 'upcast-helpers', () => {
-	let upcastDispatcher, model, schema, conversion;
+describe( 'UpcastHelpers', () => {
+	let upcastDispatcher, model, schema, conversion, upcastHelpers;
 
 	beforeEach( () => {
 		model = new Model();
@@ -49,14 +52,17 @@ describe( 'upcast-helpers', () => {
 		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'upcast', [ upcastDispatcher ] );
+		upcastHelpers = new UpcastHelpers( upcastDispatcher );
+		conversion.register( 'upcast', upcastHelpers );
 	} );
 
-	describe( 'upcastElementToElement', () => {
-		it( 'config.view is a string', () => {
-			const helper = upcastElementToElement( { view: 'p', model: 'paragraph' } );
+	describe( '.elementToElement()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } ) ).to.equal( upcastHelpers );
+		} );
 
-			conversion.for( 'upcast' ).add( helper );
+		it( 'config.view is a string', () => {
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
 		} );
@@ -66,10 +72,8 @@ describe( 'upcast-helpers', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			const helperA = upcastElementToElement( { view: 'p', model: 'p' } );
-			const helperB = upcastElementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+			upcastHelpers.elementToElement( { view: 'p', model: 'p' } );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
 
 			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
 		} );
@@ -79,15 +83,13 @@ describe( 'upcast-helpers', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			const helperFancy = upcastElementToElement( {
+			upcastHelpers.elementToElement( {
 				view: {
 					name: 'p',
 					classes: 'fancy'
 				},
-				model: 'fancyParagraph',
+				model: 'fancyParagraph'
 			} );
-
-			conversion.for( 'upcast' ).add( helperFancy );
 
 			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
 			expectResult( new ViewContainerElement( 'p' ), '' );
@@ -99,7 +101,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'level' ]
 			} );
 
-			const helper = upcastElementToElement( {
+			upcastHelpers.elementToElement( {
 				view: {
 					name: 'p',
 					classes: 'heading'
@@ -109,24 +111,18 @@ describe( 'upcast-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'upcast' ).add( helper );
-
 			expectResult( new ViewContainerElement( 'p', { class: 'heading', 'data-level': 2 } ), '<heading level="2"></heading>' );
 			expectResult( new ViewContainerElement( 'p', { 'data-level': 2 } ), '' );
 		} );
 
 		it( 'should fire conversion of the element children', () => {
-			const helper = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			expectResult( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ), '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should not insert a model element if it is not allowed by schema', () => {
-			const helper = upcastElementToElement( { view: 'h2', model: 'heading' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.elementToElement( { view: 'h2', model: 'heading' } );
 
 			expectResult( new ViewContainerElement( 'h2' ), '' );
 		} );
@@ -136,10 +132,8 @@ describe( 'upcast-helpers', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			const helperParagraph = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-			const helperHeading = upcastElementToElement( { view: 'h2', model: 'heading' } );
-
-			conversion.for( 'upcast' ).add( helperParagraph ).add( helperHeading );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+			upcastHelpers.elementToElement( { view: 'h2', model: 'heading' } );
 
 			expectResult(
 				new ViewContainerElement( 'p', null, [
@@ -152,20 +146,20 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should not do anything if returned model element is null', () => {
-			const helperA = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-			const helperB = upcastElementToElement( { view: 'p', model: () => null, converterPriority: 'high' } );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
+			upcastHelpers.elementToElement( { view: 'p', model: () => null, converterPriority: 'high' } );
 
 			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
 		} );
 	} );
 
-	describe( 'upcastElementToAttribute', () => {
-		it( 'config.view is string', () => {
-			const helper = upcastElementToAttribute( { view: 'strong', model: 'bold' } );
+	describe( '.elementToAttribute()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } ) ).to.equal( upcastHelpers );
+		} );
 
-			conversion.for( 'upcast' ).add( helper );
+		it( 'config.view is string', () => {
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
 
 			expectResult(
 				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
@@ -174,10 +168,8 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = upcastElementToAttribute( { view: 'strong', model: 'strong' } );
-			const helperB = upcastElementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'strong' } );
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
 
 			expectResult(
 				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
@@ -186,15 +178,13 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'config.view is an object', () => {
-			const helper = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				view: {
 					name: 'span',
 					classes: 'bold'
 				},
 				model: 'bold'
 			} );
-
-			conversion.for( 'upcast' ).add( helper );
 
 			expectResult(
 				new ViewAttributeElement( 'span', { class: 'bold' }, new ViewText( 'foo' ) ),
@@ -209,7 +199,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			const helper = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				view: {
 					name: 'span',
 					classes: [ 'styled', 'styled-dark' ]
@@ -219,8 +209,6 @@ describe( 'upcast-helpers', () => {
 					value: 'dark'
 				}
 			} );
-
-			conversion.for( 'upcast' ).add( helper );
 
 			expectResult(
 				new ViewAttributeElement( 'span', { class: 'styled styled-dark' }, new ViewText( 'foo' ) ),
@@ -235,7 +223,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'fontSize' ]
 			} );
 
-			const helper = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				view: {
 					name: 'span',
 					styles: {
@@ -259,8 +247,6 @@ describe( 'upcast-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'upcast' ).add( helper );
-
 			expectResult(
 				new ViewAttributeElement( 'span', { style: 'font-size:9px' }, new ViewText( 'foo' ) ),
 				'<$text fontSize="small">foo</$text>'
@@ -278,9 +264,7 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should not set an attribute if it is not allowed by schema', () => {
-			const helper = upcastElementToAttribute( { view: 'em', model: 'italic' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.elementToAttribute( { view: 'em', model: 'italic' } );
 
 			expectResult(
 				new ViewAttributeElement( 'em', null, new ViewText( 'foo' ) ),
@@ -289,8 +273,8 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should not do anything if returned model attribute is null', () => {
-			const helperA = upcastElementToAttribute( { view: 'strong', model: 'bold' } );
-			const helperB = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+			upcastHelpers.elementToAttribute( {
 				view: 'strong',
 				model: {
 					key: 'bold',
@@ -299,8 +283,6 @@ describe( 'upcast-helpers', () => {
 				converterPriority: 'high'
 			} );
 
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
-
 			expectResult(
 				new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ),
 				'<$text bold="true">foo</$text>'
@@ -308,17 +290,15 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should allow two converters to convert attributes on the same element', () => {
-			const helperA = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'attribA',
 				view: { name: 'span', classes: 'attrib-a' }
 			} );
 
-			const helperB = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'attribB',
 				view: { name: 'span', styles: { color: 'attrib-b' } }
 			} );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
 			expectResult(
 				new ViewAttributeElement( 'span', { class: 'attrib-a', style: 'color:attrib-b;' }, new ViewText( 'foo' ) ),
@@ -327,22 +307,20 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should consume element only when only is name specified', () => {
-			const helperBold = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'bold',
 				view: { name: 'strong' }
 			} );
 
-			const helperA = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'attribA',
 				view: { name: 'strong' }
 			} );
 
-			const helperB = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'attribB',
 				view: { name: 'strong', classes: 'foo' }
 			} );
-
-			conversion.for( 'upcast' ).add( helperBold ).add( helperA ).add( helperB );
 
 			expectResult(
 				new ViewAttributeElement( 'strong', { class: 'foo' }, new ViewText( 'foo' ) ),
@@ -352,14 +330,12 @@ describe( 'upcast-helpers', () => {
 
 		// #1443.
 		it( 'should set attributes on the element\'s children', () => {
-			const helperBold = upcastElementToAttribute( {
+			upcastHelpers.elementToAttribute( {
 				model: 'bold',
 				view: { name: 'strong' }
 			} );
 
-			const helperP = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-
-			conversion.for( 'upcast' ).add( helperP ).add( helperBold );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			expectResult(
 				new ViewAttributeElement(
@@ -372,13 +348,17 @@ describe( 'upcast-helpers', () => {
 		} );
 	} );
 
-	describe( 'upcastAttributeToAttribute', () => {
+	describe( '.attributeToAttribute()', () => {
 		beforeEach( () => {
-			conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'img', model: 'image' } ) );
+			upcastHelpers.elementToElement( { view: 'img', model: 'image' } );
 
 			schema.register( 'image', {
 				inheritAllFrom: '$block'
 			} );
+		} );
+
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } ) ).to.equal( upcastHelpers );
 		} );
 
 		it( 'config.view is a string', () => {
@@ -386,9 +366,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'source' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( { view: 'src', model: 'source' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
@@ -401,9 +379,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'source' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
@@ -416,9 +392,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'source' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
@@ -431,10 +405,8 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'src', 'source' ]
 			} );
 
-			const helperA = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'src' } );
-			const helperB = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+			upcastHelpers.attributeToAttribute( { view: { key: 'src' }, model: 'src' } );
+			upcastHelpers.attributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
@@ -447,15 +419,13 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( {
+			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'data-style',
 					value: /[\s\S]*/
 				},
 				model: 'styled'
 			} );
-
-			conversion.for( 'upcast' ).add( helper );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { 'data-style': 'dark' } ),
@@ -468,7 +438,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( {
+			upcastHelpers.attributeToAttribute( {
 				view: {
 					name: 'img',
 					key: 'class',
@@ -480,9 +450,7 @@ describe( 'upcast-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'upcast' )
-				.add( helper )
-				.add( upcastElementToElement( { view: 'p', model: 'paragraph' } ) );
+			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
 			expectResult(
 				new ViewContainerElement( 'img', { class: 'styled-dark' } ),
@@ -505,7 +473,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			const helper = upcastAttributeToAttribute( {
+			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'class',
 					value: /styled-[\S]+/
@@ -521,8 +489,6 @@ describe( 'upcast-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'upcast' ).add( helper );
-
 			expectResult(
 				new ViewAttributeElement( 'img', { 'class': 'styled-dark' } ),
 				'<image styled="dark"></image>'
@@ -530,9 +496,7 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'should not set an attribute if it is not allowed by schema', () => {
-			const helper = upcastAttributeToAttribute( { view: 'src', model: 'source' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.attributeToAttribute( { view: 'src', model: 'source' } );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
@@ -545,7 +509,7 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			const helperA = upcastAttributeToAttribute( {
+			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'class',
 					value: 'styled'
@@ -556,7 +520,7 @@ describe( 'upcast-helpers', () => {
 				}
 			} );
 
-			const helperB = upcastAttributeToAttribute( {
+			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'class',
 					value: 'styled'
@@ -566,8 +530,6 @@ describe( 'upcast-helpers', () => {
 					value: () => null
 				}
 			} );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
 			expectResult(
 				new ViewAttributeElement( 'img', { class: 'styled' } ),
@@ -584,13 +546,10 @@ describe( 'upcast-helpers', () => {
 				allowAttributes: [ 'border', 'shade' ]
 			} );
 
-			conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+			upcastHelpers.elementToElement( { view: 'div', model: 'div' } );
 
-			const shadeHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'shade' }, model: 'shade' } );
-			const borderHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'border' }, model: 'border' } );
-
-			conversion.for( 'upcast' ).add( shadeHelper );
-			conversion.for( 'upcast' ).add( borderHelper );
+			upcastHelpers.attributeToAttribute( { view: { key: 'class', value: 'shade' }, model: 'shade' } );
+			upcastHelpers.attributeToAttribute( { view: { key: 'class', value: 'border' }, model: 'border' } );
 
 			expectResult(
 				new ViewContainerElement(
@@ -603,11 +562,13 @@ describe( 'upcast-helpers', () => {
 		} );
 	} );
 
-	describe( 'upcastElementToMarker', () => {
-		it( 'config.view is a string', () => {
-			const helper = upcastElementToMarker( { view: 'marker-search', model: 'search' } );
+	describe( '.elementToMarker()', () => {
+		it( 'should be chainable', () => {
+			expect( upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } ) ).to.equal( upcastHelpers );
+		} );
 
-			conversion.for( 'upcast' ).add( helper );
+		it( 'config.view is a string', () => {
+			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } );
 
 			const frag = new ViewDocumentFragment( [
 				new ViewText( 'fo' ),
@@ -623,10 +584,8 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			const helperA = upcastElementToMarker( { view: 'marker-search', model: 'search-result' } );
-			const helperB = upcastElementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
-
-			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search-result' } );
+			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
 
 			const frag = new ViewDocumentFragment( [
 				new ViewText( 'fo' ),
@@ -642,15 +601,13 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'config.view is an object', () => {
-			const helper = upcastElementToMarker( {
+			upcastHelpers.elementToMarker( {
 				view: {
 					name: 'span',
 					'data-marker': 'search'
 				},
 				model: 'search'
 			} );
-
-			conversion.for( 'upcast' ).add( helper );
 
 			const frag = new ViewDocumentFragment( [
 				new ViewText( 'f' ),
@@ -666,12 +623,10 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'config.model is a function', () => {
-			const helper = upcastElementToMarker( {
+			upcastHelpers.elementToMarker( {
 				view: 'comment',
 				model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
 			} );
-
-			conversion.for( 'upcast' ).add( helper );
 
 			const frag = new ViewDocumentFragment( [
 				new ViewText( 'foo' ),
@@ -687,11 +642,9 @@ describe( 'upcast-helpers', () => {
 		} );
 
 		it( 'marker is in a block element', () => {
-			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+			upcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			const helper = upcastElementToMarker( { view: 'marker-search', model: 'search' } );
-
-			conversion.for( 'upcast' ).add( helper );
+			upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } );
 
 			const element = new ViewContainerElement( 'p', null, [
 				new ViewText( 'fo' ),
@@ -885,6 +838,120 @@ describe( 'upcast-converters', () => {
 			model.change( writer => dispatcher.convert( view, writer ) );
 
 			sinon.assert.calledTwice( spy );
+		} );
+	} );
+
+	describe( 'convertSelectionChange()', () => {
+		let model, view, viewDocument, mapper, convertSelection, modelRoot, viewRoot;
+
+		beforeEach( () => {
+			model = new Model();
+			modelRoot = model.document.createRoot();
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			view = new View();
+			viewDocument = view.document;
+			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			viewSetData( view, '<p>foo</p><p>bar</p>' );
+
+			mapper = new Mapper();
+			mapper.bindElements( modelRoot, viewRoot );
+			mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
+			mapper.bindElements( modelRoot.getChild( 1 ), viewRoot.getChild( 1 ) );
+
+			convertSelection = convertSelectionChange( model, mapper );
+		} );
+
+		afterEach( () => {
+			view.destroy();
+		} );
+
+		it( 'should convert collapsed selection', () => {
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( ViewRange._createFromParentsAndOffsets(
+				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			expect( modelGetData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+			expect( modelGetData( model ) ).to.equal( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+		} );
+
+		it( 'should support unicode', () => {
+			modelSetData( model, '<paragraph>நிலைக்கு</paragraph>' );
+			viewSetData( view, '<p>நிலைக்கு</p>' );
+
+			// Re-bind elements that were just re-set.
+			mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
+
+			const viewSelection = new ViewSelection( [
+				ViewRange._createFromParentsAndOffsets( viewRoot.getChild( 0 ).getChild( 0 ), 2, viewRoot.getChild( 0 ).getChild( 0 ), 6 )
+			] );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			expect( modelGetData( model ) ).to.equal( '<paragraph>நி[லைக்]கு</paragraph>' );
+		} );
+
+		it( 'should convert multi ranges selection', () => {
+			const viewSelection = new ViewSelection( [
+				ViewRange._createFromParentsAndOffsets(
+					viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
+				ViewRange._createFromParentsAndOffsets(
+					viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 )
+			] );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			expect( modelGetData( model ) ).to.equal(
+				'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+
+			const ranges = Array.from( model.document.selection.getRanges() );
+			expect( ranges.length ).to.equal( 2 );
+
+			expect( ranges[ 0 ].start.parent ).to.equal( modelRoot.getChild( 0 ) );
+			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
+			expect( ranges[ 0 ].end.parent ).to.equal( modelRoot.getChild( 0 ) );
+			expect( ranges[ 0 ].end.offset ).to.equal( 2 );
+
+			expect( ranges[ 1 ].start.parent ).to.equal( modelRoot.getChild( 1 ) );
+			expect( ranges[ 1 ].start.offset ).to.equal( 1 );
+			expect( ranges[ 1 ].end.parent ).to.equal( modelRoot.getChild( 1 ) );
+			expect( ranges[ 1 ].end.offset ).to.equal( 2 );
+		} );
+
+		it( 'should convert reverse selection', () => {
+			const viewSelection = new ViewSelection( [
+				ViewRange._createFromParentsAndOffsets(
+					viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
+				ViewRange._createFromParentsAndOffsets(
+					viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 )
+			], { backward: true } );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			expect( modelGetData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+			expect( model.document.selection.isBackward ).to.true;
+		} );
+
+		it( 'should not enqueue changes if selection has not changed', () => {
+			const viewSelection = new ViewSelection( [
+				ViewRange._createFromParentsAndOffsets(
+					viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 )
+			] );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			const spy = sinon.spy();
+
+			model.on( 'change', spy );
+
+			convertSelection( null, { newSelection: viewSelection } );
+
+			expect( spy.called ).to.be.false;
 		} );
 	} );
 } );

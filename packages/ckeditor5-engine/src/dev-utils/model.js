@@ -29,10 +29,13 @@ import DowncastDispatcher from '../conversion/downcastdispatcher';
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import Mapper from '../conversion/mapper';
 import {
-	convertRangeSelection,
 	convertCollapsedSelection,
-} from '../conversion/downcast-selection-converters';
-import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcast-converters';
+	convertRangeSelection,
+	insertElement,
+	insertText,
+	insertUIElement,
+	wrap
+} from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
@@ -231,6 +234,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 		return new ViewContainerElement( modelItem.name, attributes );
 	} ) );
+
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
 	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, writer ) => {
@@ -278,7 +282,6 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {module:engine/model/schema~Schema} schema A schema instance used by converters for element validation.
- * @param {module:engine/model/batch~Batch} batch A batch used for conversion.
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
