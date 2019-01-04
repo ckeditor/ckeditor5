@@ -96,13 +96,15 @@ class UploadAdapter {
 	 * Starts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#upload
-	 * @returns {Promise}
+	 * @returns {Promise.<Object>}
 	 */
 	upload() {
-		return new Promise( ( resolve, reject ) => {
-			this._initRequest();
-			this._initListeners( resolve, reject );
-			this._sendRequest();
+		return this.loader.file.then( file => {
+			return new Promise( ( resolve, reject ) => {
+				this._initRequest();
+				this._initListeners( resolve, reject, file );
+				this._sendRequest( file );
+			} );
 		} );
 	}
 
@@ -110,7 +112,6 @@ class UploadAdapter {
 	 * Aborts the upload process.
 	 *
 	 * @see module:upload/filerepository~UploadAdapter#abort
-	 * @returns {Promise}
 	 */
 	abort() {
 		if ( this.xhr ) {
@@ -136,12 +137,13 @@ class UploadAdapter {
 	 * @private
 	 * @param {Function} resolve Callback function to be called when the request is successful.
 	 * @param {Function} reject Callback function to be called when the request cannot be completed.
+	 * @param {File} file File instance to be uploaded.
 	 */
-	_initListeners( resolve, reject ) {
+	_initListeners( resolve, reject, file ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
 		const t = this.t;
-		const genericError = t( 'Cannot upload file:' ) + ` ${ loader.file.name }.`;
+		const genericError = t( 'Cannot upload file:' ) + ` ${ file.name }.`;
 
 		xhr.addEventListener( 'error', () => reject( genericError ) );
 		xhr.addEventListener( 'abort', () => reject() );
@@ -173,11 +175,12 @@ class UploadAdapter {
 	 * Prepares the data and sends the request.
 	 *
 	 * @private
+	 * @param {File} file File instance to be uploaded.
 	 */
-	_sendRequest() {
+	_sendRequest( file ) {
 		// Prepare form data.
 		const data = new FormData();
-		data.append( 'upload', this.loader.file );
+		data.append( 'upload', file );
 		data.append( 'ckCsrfToken', getCsrfToken() );
 
 		// Send request.
