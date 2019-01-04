@@ -619,7 +619,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements only)', () => {
-			const logSpy = testUtils.sinon.spy( log, 'warn' );
+			const logStub = testUtils.sinon.stub( log, 'warn' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -631,7 +631,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p test="1"></p><p test="2"></p>' );
-			expect( logSpy.callCount ).to.equal( 0 );
+			expect( logStub.callCount ).to.equal( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
@@ -642,7 +642,7 @@ describe( 'DowncastHelpers', () => {
 
 		// #1587
 		it( 'config.view and config.model as strings in generic conversion (elements + text)', () => {
-			const logSpy = testUtils.sinon.spy( log, 'warn' );
+			const logStub = testUtils.sinon.stub( log, 'warn' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -657,8 +657,8 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p><p test="1">Bar</p>' );
-			expect( logSpy.callCount ).to.equal( 2 );
-			expect( logSpy.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
+			expect( logStub.callCount ).to.equal( 2 );
+			expect( logStub.alwaysCalledWithMatch( 'conversion-attribute-to-attribute-on-text' ) ).to.true;
 
 			model.change( writer => {
 				writer.removeAttribute( 'test', modelRoot.getChild( 1 ) );
