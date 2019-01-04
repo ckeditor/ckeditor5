@@ -436,7 +436,7 @@ function createContextTree( contextDefinition, writer ) {
  * and is passed as one of parameters when {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher dispatcher}
  * fires it's events.
  *
- * @interface UpcastConversionApi
+ * @interface module:engine/conversion/upcastdispatcher~UpcastConversionApi
  */
 
 /**

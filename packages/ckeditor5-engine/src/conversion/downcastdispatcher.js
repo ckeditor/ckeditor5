@@ -631,7 +631,7 @@ function shouldMarkerChangeBeConverted( modelPosition, marker, mapper ) {
  * and is passed as one of parameters when {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher dispatcher}
  * fires it's events.
  *
- * @interface DowncastConversionApi
+ * @interface module:engine/conversion/downcastdispatcher~DowncastConversionApi
  */
 
 /**
