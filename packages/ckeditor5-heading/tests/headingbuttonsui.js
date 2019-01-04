@@ -24,7 +24,7 @@ describe( 'HeadingButtonUI', () => {
 			return ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ HeadingButtonsUI, HeadingEditing ],
-					toolbar: [ 'heading1', 'heading2', 'heading3', 'heading3' ],
+					toolbar: [ 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ],
 					heading: {
 						options: [
 							{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
