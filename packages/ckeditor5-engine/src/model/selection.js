@@ -848,9 +848,9 @@ function findAncestorBlock( node ) {
  *     module:engine/model/selection~Selection|
  *     module:engine/model/documentselection~DocumentSelection|
  *     module:engine/model/position~Position|
+ *     module:engine/model/range~Range|
  *     module:engine/model/node~Node|
  *     Iterable.<module:engine/model/range~Range>|
- *     module:engine/model/range~Range|
  *     null
  * } module:engine/model/selection~Selectable
  */
