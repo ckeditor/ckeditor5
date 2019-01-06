@@ -630,47 +630,107 @@ describe( 'Editor', () => {
 				} );
 		} );
 
-		it( 'should not load plugins specified in the config as "removePlugins"', () => {
-			const editor = new Editor( {
-				plugins: [ PluginA, PluginD ],
-				removePlugins: [ PluginD ]
+		describe( '"removePlugins" config', () => {
+			it( 'should prevent plugins from being loaded', () => {
+				const editor = new Editor( {
+					plugins: [ PluginA, PluginD ],
+					removePlugins: [ PluginD ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					} );
 			} );
 
-			return editor.initPlugins()
-				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 1 );
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+			it( 'should not load plugins built in the Editor', () => {
+				Editor.builtinPlugins = [ PluginA, PluginD ];
+
+				const editor = new Editor( {
+					removePlugins: [ 'D' ]
 				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					} );
+			} );
+
+			it( 'should not load plugins build into Editor\'s subclass', () => {
+				class CustomEditor extends Editor {}
+
+				CustomEditor.builtinPlugins = [ PluginA, PluginD ];
+
+				const editor = new CustomEditor( {
+					removePlugins: [ 'D' ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( PluginA ) ).to.not.be.undefined;
+					} );
+			} );
 		} );
 
-		it( 'should not load plugins built in the Editor when "removePlugins" option is specified', () => {
-			Editor.builtinPlugins = [ PluginA, PluginD ];
+		describe( '"extraPlugins" config', () => {
+			it( 'should load additional plugins', () => {
+				const editor = new Editor( {
+					plugins: [ PluginA, PluginC ],
+					extraPlugins: [ PluginB ]
+				} );
 
-			const editor = new Editor( {
-				removePlugins: [ 'D' ]
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 3 );
+						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
 			} );
 
-			return editor.initPlugins()
-				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 1 );
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+			it( 'should not duplicate plugins', () => {
+				const editor = new Editor( {
+					plugins: [ PluginA, PluginB ],
+					extraPlugins: [ PluginB ]
 				} );
-		} );
 
-		it( 'should not load plugins build into Editor\'s subclass when "removePlugins" option is specified', () => {
-			class CustomEditor extends Editor {}
-
-			CustomEditor.builtinPlugins = [ PluginA, PluginD ];
-
-			const editor = new CustomEditor( {
-				removePlugins: [ 'D' ]
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 2 );
+						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
 			} );
 
-			return editor.initPlugins()
-				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 1 );
-					expect( editor.plugins.get( PluginA ) ).to.not.be.undefined;
+			it( 'should not duplicate plugins built in the Editor', () => {
+				Editor.builtinPlugins = [ PluginA, PluginB ];
+
+				const editor = new Editor( {
+					extraPlugins: [ 'B' ]
 				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 2 );
+						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
+			} );
+
+			it( 'should not duplicate plugins build into Editor\'s subclass', () => {
+				class CustomEditor extends Editor {}
+
+				CustomEditor.builtinPlugins = [ PluginA, PluginB ];
+
+				const editor = new CustomEditor( {
+					extraPlugins: [ 'B' ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 2 );
+						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
+			} );
 		} );
 
 		it( 'should not call "afterInit" method if plugin does not have this method', () => {

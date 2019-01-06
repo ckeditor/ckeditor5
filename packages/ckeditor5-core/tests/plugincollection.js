@@ -448,6 +448,72 @@ describe( 'PluginCollection', () => {
 					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
 				} );
 		} );
+
+		it( 'throws if plugin cannot be retrieved by name', () => {
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [] ).then( () => {
+				expect( () => plugins.get( 'foo' ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'foo' } );
+			} );
+		} );
+
+		it( 'throws if plugin cannot be retrieved by class', () => {
+			class SomePlugin extends Plugin {}
+			SomePlugin.pluginName = 'foo';
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [] ).then( () => {
+				expect( () => plugins.get( SomePlugin ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'foo' } );
+			} );
+		} );
+
+		it( 'throws if plugin cannot be retrieved by class (class name in error)', () => {
+			class SomePlugin extends Plugin {}
+
+			const plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [] ).then( () => {
+				expect( () => plugins.get( SomePlugin ) )
+					.to.throw( CKEditorError, /^plugincollection-plugin-not-loaded:/ )
+					.with.deep.property( 'data', { plugin: 'SomePlugin' } );
+			} );
+		} );
+	} );
+
+	describe( 'has()', () => {
+		let plugins;
+
+		beforeEach( () => {
+			plugins = new PluginCollection( editor, availablePlugins );
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by name)', () => {
+			expect( plugins.has( 'foobar' ) ).to.be.false;
+		} );
+
+		it( 'returns false if plugins is not loaded (retrieved by class)', () => {
+			class SomePlugin extends Plugin {
+			}
+
+			expect( plugins.has( SomePlugin ) ).to.be.false;
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by name)', () => {
+			return plugins.load( [ PluginA ] ).then( () => {
+				expect( plugins.has( 'A' ) ).to.be.true;
+			} );
+		} );
+
+		it( 'returns true if plugins is loaded (retrieved by class)', () => {
+			return plugins.load( [ PluginA ] ).then( () => {
+				expect( plugins.has( PluginA ) ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {

@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.1...v11.1.0) (2018-12-05)
+
+### Features
+
+* Implemented the `config.extraPlugins` option. Closes [#146](https://github.com/ckeditor/ckeditor5-core/issues/146). ([4b5c3d4](https://github.com/ckeditor/ckeditor5-core/commit/4b5c3d4))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([c4795fb](https://github.com/ckeditor/ckeditor5-core/commit/c4795fb))
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-core/compare/v11.0.0...v11.0.1) (2018-10-08)
 
 ### Other changes

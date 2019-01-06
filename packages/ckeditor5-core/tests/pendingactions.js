@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtaulTestEditor from './_utils/virtualtesteditor';
+import VirtualTestEditor from './_utils/virtualtesteditor';
 import PendingActions from '../src/pendingactions';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 let editor, pendingActions;
 
-beforeEach( () => {
-	return VirtaulTestEditor.create( {
-		plugins: [ PendingActions ],
-	} ).then( newEditor => {
-		editor = newEditor;
-		pendingActions = editor.plugins.get( PendingActions );
-	} );
-} );
-
-afterEach( () => {
-	return editor.destroy();
-} );
-
 describe( 'PendingActions', () => {
+	beforeEach( () => {
+		return VirtualTestEditor.create( {
+			plugins: [ PendingActions ],
+		} ).then( newEditor => {
+			editor = newEditor;
+			pendingActions = editor.plugins.get( PendingActions );
+		} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should define static pluginName property', () => {
 		expect( PendingActions ).to.have.property( 'pluginName', 'PendingActions' );
 	} );
@@ -116,6 +116,8 @@ describe( 'PendingActions', () => {
 
 	describe( 'first', () => {
 		it( 'should return first pending action from the list', () => {
+			expect( pendingActions.first ).to.be.null;
+
 			const action = pendingActions.add( 'Action 1' );
 
 			pendingActions.add( 'Action 2' );
