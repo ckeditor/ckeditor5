@@ -19,4 +19,4 @@
 **Expected result**
 * Editor isn't initialized at the start of the scenario.
 * The token is different than the previous token.
-* After clicking the button the editor doesn't initialize and there is an error in the output - `Error: Cannot download new token!`.
+* After clicking the button the editor doesn't initialize and there is an error in the output - `Cannot download new token!`.
