@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.4](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.3...v10.0.4) (2018-12-05)
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([e253314](https://github.com/ckeditor/ckeditor5-font/commit/e253314))
+
+
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.2...v10.0.3) (2018-10-08)
 
 ### Other changes
