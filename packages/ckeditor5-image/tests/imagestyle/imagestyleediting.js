@@ -32,7 +32,7 @@ describe( 'ImageStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ],
+					plugins: [ ImageEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -42,17 +42,13 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should be loaded', () => {
 			expect( editor.plugins.get( ImageStyleEditing ) ).to.be.instanceOf( ImageStyleEditing );
 		} );
-
-		it( 'should load image editing', () => {
-			expect( editor.plugins.get( ImageEditing ) ).to.be.instanceOf( ImageEditing );
-		} );
 	} );
 
 	describe( 'init', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ],
+					plugins: [ ImageEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
@@ -72,7 +68,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should define image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ]
+					plugins: [ ImageEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -265,7 +261,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should fall back to defaults when no image.styles', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ]
+					plugins: [ ImageEditing, ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -277,7 +273,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should not alter the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ],
+					plugins: [ ImageEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							'side'
@@ -294,7 +290,7 @@ describe( 'ImageStyleEditing', () => {
 		it( 'should not alter object definitions in the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEditing ],
+					plugins: [ ImageEditing, ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'side' }

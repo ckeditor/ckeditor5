@@ -10,12 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import { isImageType } from '../../src/imageupload/utils';
+import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
 
 /**
- * The editing part of the image upload feature.
+ * The editing part of the image upload feature. It registers the `'imageUpload'` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -34,6 +35,7 @@ export default class ImageUploadEditing extends Plugin {
 		const editor = this.editor;
 		const doc = editor.model.document;
 		const schema = editor.model.schema;
+		const conversion = editor.conversion;
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		// Setup schema to allow uploadId and uploadStatus for images.
@@ -43,6 +45,16 @@ export default class ImageUploadEditing extends Plugin {
 
 		// Register imageUpload command.
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
+
+		// Register upcast converter for uploadId.
+		conversion.for( 'upcast' )
+			.attributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'uploadId'
+				},
+				model: 'uploadId'
+			} );
 
 		// Handle pasted images.
 		// For every image file, a new file loader is created and a placeholder image is
@@ -55,7 +67,14 @@ export default class ImageUploadEditing extends Plugin {
 				return;
 			}
 
-			const images = Array.from( data.dataTransfer.files ).filter( isImageType );
+			const images = Array.from( data.dataTransfer.files ).filter( file => {
+				// See https://github.com/ckeditor/ckeditor5-image/pull/254.
+				if ( !file ) {
+					return false;
+				}
+
+				return isImageType( file );
+			} );
 
 			const ranges = data.targetRanges.map( viewRange => editor.editing.mapper.toModelRange( viewRange ) );
 
@@ -68,11 +87,52 @@ export default class ImageUploadEditing extends Plugin {
 
 					// Upload images after the selection has changed in order to ensure the command's state is refreshed.
 					editor.model.enqueueChange( 'default', () => {
-						editor.execute( 'imageUpload', { files: images } );
+						editor.execute( 'imageUpload', { file: images } );
 					} );
 				}
 			} );
 		} );
+
+		// Handle HTML pasted with images with base64 or blob sources.
+		// For every image file, a new file loader is created and a placeholder image is
+		// inserted into the content. Then, those images are uploaded once they appear in the model
+		// (see Document#change listener below).
+		if ( editor.plugins.has( 'Clipboard' ) ) {
+			this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
+				const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
+					.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
+					.map( value => fetchLocalImage( value.item ) );
+
+				if ( !fetchableImages.length ) {
+					return;
+				}
+
+				evt.stop();
+
+				Promise.all( fetchableImages ).then( items => {
+					const writer = new UpcastWriter();
+
+					for ( const item of items ) {
+						if ( !item.file ) {
+							// Failed to fetch image or create a file instance, remove image element.
+							writer.remove( item.image );
+						} else {
+							// Set attribute marking the image as processed.
+							writer.setAttribute( 'uploadProcessed', true, item.image );
+
+							const loader = fileRepository.createLoader( item.file );
+
+							if ( loader ) {
+								writer.setAttribute( 'src', '', item.image );
+								writer.setAttribute( 'uploadId', loader.id, item.image );
+							}
+						}
+					}
+
+					editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', data );
+				} );
+			} );
+		}
 
 		// Prevents from the browser redirecting to the dropped image.
 		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
@@ -156,33 +216,7 @@ export default class ImageUploadEditing extends Plugin {
 			.then( data => {
 				model.enqueueChange( 'transparent', writer => {
 					writer.setAttributes( { uploadStatus: 'complete', src: data.default }, imageElement );
-
-					// Srcset attribute for responsive images support.
-					let maxWidth = 0;
-					const srcsetAttribute = Object.keys( data )
-						// Filter out keys that are not integers.
-						.filter( key => {
-							const width = parseInt( key, 10 );
-
-							if ( !isNaN( width ) ) {
-								maxWidth = Math.max( maxWidth, width );
-
-								return true;
-							}
-						} )
-
-						// Convert each key to srcset entry.
-						.map( key => `${ data[ key ] } ${ key }w` )
-
-						// Join all entries.
-						.join( ', ' );
-
-					if ( srcsetAttribute != '' ) {
-						writer.setAttribute( 'srcset', {
-							data: srcsetAttribute,
-							width: maxWidth
-						}, imageElement );
-					}
+					this._parseAndSetSrcsetAttributeOnImage( data, imageElement, writer );
 				} );
 
 				clean();
@@ -217,6 +251,44 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 
 			fileRepository.destroyLoader( loader );
+		}
+	}
+
+	/**
+	 * Creates `srcset` attribute based on a given file upload response and sets it as an attribute to a specific image element.
+	 *
+	 * @protected
+	 * @param {Object} data Data object from which `srcset` will be created.
+	 * @param {module:engine/model/element~Element} image The image element on which `srcset` attribute will be set.
+	 * @param {module:engine/model/writer~Writer} writer
+	 */
+	_parseAndSetSrcsetAttributeOnImage( data, image, writer ) {
+		// Srcset attribute for responsive images support.
+		let maxWidth = 0;
+
+		const srcsetAttribute = Object.keys( data )
+		// Filter out keys that are not integers.
+			.filter( key => {
+				const width = parseInt( key, 10 );
+
+				if ( !isNaN( width ) ) {
+					maxWidth = Math.max( maxWidth, width );
+
+					return true;
+				}
+			} )
+
+			// Convert each key to srcset entry.
+			.map( key => `${ data[ key ] } ${ key }w` )
+
+			// Join all entries.
+			.join( ', ' );
+
+		if ( srcsetAttribute != '' ) {
+			writer.setAttribute( 'srcset', {
+				data: srcsetAttribute,
+				width: maxWidth
+			}, image );
 		}
 	}
 }

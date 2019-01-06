@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, console */
+/* globals window, document, console */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -36,6 +36,8 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
+		window.editor = editor;
+
 		// Register fake adapter.
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
 			const adapterMock = new UploadAdapterMock( loader );

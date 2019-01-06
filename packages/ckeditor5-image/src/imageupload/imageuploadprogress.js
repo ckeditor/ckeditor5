@@ -55,8 +55,7 @@ export default class ImageUploadProgress extends Plugin {
 	 *
 	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 	 */
 	uploadStatusChange( evt, data, conversionApi ) {
 		const editor = this.editor;

@@ -5,44 +5,25 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-
-import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ImageInsertCommand from '../../src/image/imageinsertcommand';
 import Image from '../../src/image/imageediting';
+
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-describe( 'ImageUploadCommand', () => {
-	let editor, command, model, fileRepository;
-
-	testUtils.createSinonSandbox();
-
-	class UploadAdapterPluginMock extends Plugin {
-		init() {
-			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createUploadAdapter = loader => {
-				return new UploadAdapterMock( loader );
-			};
-		}
-	}
+describe( 'ImageInsertCommand', () => {
+	let editor, command, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ FileRepository, Image, Paragraph, UploadAdapterPluginMock ]
+				plugins: [ Image, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 
-				command = new ImageUploadCommand( editor );
+				command = new ImageInsertCommand( editor );
 
 				const schema = model.schema;
 				schema.extend( 'image', { allowAttributes: 'uploadId' } );
@@ -152,32 +133,29 @@ describe( 'ImageUploadCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should insert image at selection position as other widgets', () => {
-			const file = createNativeFileMock();
+			const imgSrc = 'foo/bar.jpg';
+
 			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			command.execute( { file } );
+			command.execute( { source: imgSrc } );
 
-			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( model ) )
-				.to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
+			expect( getModelData( model ) ).to.equal( `[<image src="${ imgSrc }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
-		it( 'should use parent batch', () => {
-			const file = createNativeFileMock();
+		it( 'should insert multiple images at selection position as other widgets', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
 
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
 
-			model.change( writer => {
-				expect( writer.batch.operations ).to.length( 0 );
+			command.execute( { source: [ imgSrc1, imgSrc2 ] } );
 
-				command.execute( { file } );
-
-				expect( writer.batch.operations ).to.length.above( 0 );
-			} );
+			expect( getModelData( model ) )
+				.to.equal( `<image src="${ imgSrc1 }"></image>[<image src="${ imgSrc2 }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should not insert image nor crash when image could not be inserted', () => {
-			const file = createNativeFileMock();
+			const imgSrc = 'foo/bar.jpg';
 
 			model.schema.register( 'other', {
 				allowIn: '$root',
@@ -189,26 +167,9 @@ describe( 'ImageUploadCommand', () => {
 
 			setModelData( model, '<other>[]</other>' );
 
-			command.execute( { file } );
+			command.execute( { source: imgSrc } );
 
 			expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
-		} );
-
-		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
-			const file = createNativeFileMock();
-
-			fileRepository.createUploadAdapter = undefined;
-
-			const logStub = testUtils.sinon.stub( log, 'error' );
-
-			setModelData( model, '<paragraph>fo[]o</paragraph>' );
-
-			expect( () => {
-				command.execute( { file } );
-			} ).to.not.throw();
-
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
-			expect( logStub.calledOnce ).to.be.true;
 		} );
 	} );
 } );

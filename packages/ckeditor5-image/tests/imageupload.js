@@ -6,6 +6,7 @@
 /* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Image from '../src/image';
 import ImageUpload from '../src/imageupload';
 import ImageUploadEditing from '../src/imageupload/imageuploadediting';
@@ -23,7 +24,7 @@ describe( 'ImageUpload', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageUpload, UploadAdapterPluginMock ]
+				plugins: [ Image, ImageUpload, UploadAdapterPluginMock, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

@@ -15,7 +15,7 @@ import { isImageType } from './utils';
 /**
  * The image upload button plugin.
  *
- * For a detailed overview, check the {@glink features/image-upload Image upload feature} documentation.
+ * For a detailed overview, check the {@glink features/image-upload/image-upload Image upload feature} documentation.
  *
  * Adds the `'imageUpload'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
@@ -51,7 +51,7 @@ export default class ImageUploadUI extends Plugin {
 				const imagesToUpload = Array.from( files ).filter( isImageType );
 
 				if ( imagesToUpload.length ) {
-					editor.execute( 'imageUpload', { files: imagesToUpload } );
+					editor.execute( 'imageUpload', { file: imagesToUpload } );
 				}
 			} );
 

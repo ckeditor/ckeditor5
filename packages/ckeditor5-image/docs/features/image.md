@@ -29,7 +29,7 @@ The {@link module:image/image~Image} feature adds support for plain images with 
 ```
 
 <info-box hint>
-	This feature follows the markup proposed by the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/features/images.html) project.
+	This feature follows the markup proposed by the [Editor Recommendations](https://ckeditor.github.io/editor-recommendations/features/image.html) project.
 </info-box>
 
 You can see the demo of an editor with the base image feature enabled below:
@@ -144,7 +144,7 @@ See the result below:
 {@snippet features/image-style-custom}
 
 <info-box hint>
-	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantical options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
+	In the example above the options used represent simple "align left" and "align right" styles. Most text editors support left, center and right alignments, however, try not to think about CKEditor 5's image styles in this way. Try to understand what use cases the system needs to support and define semantic options accordingly. Defining useful and clear styles is one of the steps towards a good user experience and clear, portable output. For example, the "side image" style can be displayed as a floated image on wide screens and as a normal image on low resolution screens.
 </info-box>
 
 ### Defining custom styles
@@ -173,9 +173,7 @@ See the {@link features/image-upload Image upload} guide.
 
 ## Responsive images
 
-Coming soon...
-
-<!-- TODO 6 when finished, link here from the image-upload guide. -->
+Responsive images support in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Learn more how to use the feature in your project in the {@link features/easy-image#responsive-images "Easy Image integration"} guide.
 
 ## Installation
 
@@ -213,7 +211,8 @@ ClassicEditor
 The {@link module:image/image~Image} plugin registers:
 
 * The `'imageTextAlternative'` button.
-* * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
+* The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
+* The {@link module:image/image/imageinsertcommand~ImageInsertCommand `'imageInsert'` command} which accepts a source (e.g. an URL) of an image to insert.
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
