@@ -10,7 +10,6 @@ import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 /* global document, Event */
@@ -101,15 +100,15 @@ describe( 'ContextualBalloon', () => {
 				model.schema.register( 'nestedEditable', { allowIn: 'widget' } );
 				model.schema.extend( '$text', { allowIn: 'nestedEditable' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+				editor.conversion.for( 'downcast' ).elementToElement( {
 					model: 'widget',
 					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figure', { contenteditable: 'false' } )
-				} ) );
+				} );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+				editor.conversion.for( 'downcast' ).elementToElement( {
 					model: 'nestedEditable',
 					view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'figcaption', { contenteditable: 'true' } )
-				} ) );
+				} );
 
 				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
 
@@ -287,7 +286,7 @@ describe( 'ContextualBalloon', () => {
 				balloonClassName: 'foo'
 			} );
 
-			expect( balloon.view.className ).to.equal( 'foo' );
+			expect( balloon.view.class ).to.equal( 'foo' );
 
 			balloon.add( {
 				view: viewB,
@@ -298,7 +297,7 @@ describe( 'ContextualBalloon', () => {
 				balloonClassName: 'bar'
 			} );
 
-			expect( balloon.view.className ).to.equal( 'bar' );
+			expect( balloon.view.class ).to.equal( 'bar' );
 		} );
 	} );
 
@@ -392,7 +391,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewB );
 
-			expect( balloon.view.className ).to.equal( 'foo' );
+			expect( balloon.view.class ).to.equal( 'foo' );
 		} );
 	} );
 

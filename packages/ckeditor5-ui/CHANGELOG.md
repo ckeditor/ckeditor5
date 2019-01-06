@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (2018-12-05)
+
+### Features
+
+* Added the `.ck-read-only` CSS class to the `EditableUIView` when `#isReadOnly` is `true`. ([4119822](https://github.com/ckeditor/ckeditor5-ui/commit/4119822))
+* Added the optional `DropdownView#class` property to set a custom CSS class on the main element in DOM. Closes [#447](https://github.com/ckeditor/ckeditor5-ui/issues/447). ([9cdcd4a](https://github.com/ckeditor/ckeditor5-ui/commit/9cdcd4a))
+
+  Thanks to [@lucasreppewelander](https://github.com/lucasreppewelander)!
+* Implemented `LabeledInputView#infoText` to display useful hints next to the input (see [ckeditor/ckeditor5-media-embed#35](https://github.com/ckeditor/ckeditor5-media-embed/issues/35)). ([6ac03ea](https://github.com/ckeditor/ckeditor5-ui/commit/6ac03ea))
+* Implemented configurable, smart `DropdownView` panel positioning. Closes [#123](https://github.com/ckeditor/ckeditor5-ui/issues/123). ([8094f19](https://github.com/ckeditor/ckeditor5-ui/commit/8094f19))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([ed88305](https://github.com/ckeditor/ckeditor5-ui/commit/ed88305))
+* Updated translations. ([2e409a9](https://github.com/ckeditor/ckeditor5-ui/commit/2e409a9)) ([611bd04](https://github.com/ckeditor/ckeditor5-ui/commit/611bd04)) ([c6689e4](https://github.com/ckeditor/ckeditor5-ui/commit/c6689e4)) ([07c4fdb](https://github.com/ckeditor/ckeditor5-ui/commit/07c4fdb))
+
+
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.0.0...v11.1.0) (2018-10-08)
 
 ### Features

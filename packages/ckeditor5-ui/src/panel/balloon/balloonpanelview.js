@@ -125,9 +125,9 @@ export default class BalloonPanelView extends View {
 		 * An additional CSS class added to the {@link #element}.
 		 *
 		 * @observable
-		 * @member {String} #className
+		 * @member {String} #class
 		 */
-		this.set( 'className' );
+		this.set( 'class' );
 
 		/**
 		 * A callback that starts pining the panel when {@link #isVisible} gets
@@ -154,7 +154,7 @@ export default class BalloonPanelView extends View {
 					bind.to( 'position', value => `ck-balloon-panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
 					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' ),
-					bind.to( 'className' )
+					bind.to( 'class' )
 				],
 
 				style: {
