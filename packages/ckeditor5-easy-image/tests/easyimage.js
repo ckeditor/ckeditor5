@@ -5,11 +5,14 @@
 
 /* globals window, setTimeout */
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import EasyImage from '../src/easyimage';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -42,7 +45,7 @@ describe( 'EasyImage', () => {
 
 		return ClassicTestEditor
 			.create( div, {
-				plugins: [ EasyImage ],
+				plugins: [ Clipboard, EasyImage ],
 				cloudServices: {
 					tokenUrl: 'abc',
 					uploadUrl: 'def'
@@ -96,7 +99,7 @@ describe( 'EasyImage', () => {
 			return ClassicTestEditor
 				.create( div, {
 					plugins: [
-						Paragraph, EasyImage
+						Clipboard, Paragraph, EasyImage
 					],
 					cloudServices: {
 						tokenUrl: 'abc',
@@ -119,7 +122,7 @@ describe( 'EasyImage', () => {
 							}
 						} );
 
-						editor.execute( 'imageUpload', { files: createNativeFileMock() } );
+						editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 						setTimeout( () => {
 							upload._uploadGateway.resolveLastUpload();

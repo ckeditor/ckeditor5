@@ -8,13 +8,13 @@ category: api-reference
 
 This package implements the {@link features/image#image-upload Easy Image} feature for CKEditor 5.
 
-Easy Image lets you easily insert images which are automatically rescaled, optimized, responsive and delivered through a blazing-fast CDN. It integrates automatically with [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
+Easy Image lets you easily insert images which are automatically rescaled, optimized, responsive and delivered through a blazing-fast CDN. It integrates automatically with the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
 
 ## Documentation
 
-See the {@link features/image-upload Image upload} guide.
+See the {@link features/easy-image "Easy Image integration" guide} and the {@link module:easy-image/easyimage~EasyImage plugin documentation} to learn how to enable the integration.
 
-You can also check the {@link module:easy-image/easyimage~EasyImage} plugin documentation.
+Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn about other ways to upload images into CKEditor 5.
 
 ## Installation
 
