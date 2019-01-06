@@ -10,11 +10,13 @@ CKFinder adapter for CKEditor 5
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder/status.svg)](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-adapter-ckfinder?type=dev)
 
-This package implements an upload adapter to [CKFinder](https://ckeditor.com/ckeditor-4/ckfinder/)'s backend for CKEditor 5.
+This package implements a CKEditor 5 upload adapter compatible with the [CKFinder file manager and uploader](https://ckeditor.com/ckfinder/)'s server–side connector.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-adapter-ckfinder` package](https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the ["CKFinder integration" guide](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html) and the [plugin documentation](https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html) to learn how to configure the adapter.
+
+Check out the {@link features/image-upload/image-upload comprehensive "Image upload overview"} to learn about other ways to upload images into CKEditor 5.
 
 ## License
 

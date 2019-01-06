@@ -14,10 +14,14 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { getCsrfToken } from './utils';
 
 /**
- * A plugin that enables CKFinder uploads in CKEditor 5.
+ * A plugin that enables file uploads in CKEditor 5 using the CKFinder server–side connector.
  *
- * Configure the upload URL in
- * {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl `ckfinder.uploadUrl`}.
+ * See the {@glink features/image-upload/ckfinder "CKFinder file manager integration" guide} to learn how to configure
+ * and use this feature as well as find out more about the full integration with the file manager
+ * provided by the {@link module:ckfinder/ckfinder~CKFinder} plugin.
+ *
+ * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -180,34 +184,3 @@ class UploadAdapter {
 		this.xhr.send( data );
 	}
 }
-
-/**
- * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
- *
- * Read more in {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig}.
- *
- * @member {module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig} module:core/editor/editorconfig~EditorConfig#ckfinder
- */
-
-/**
- * The configuration of the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter CKFinder upload adapter}.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- * 				ckfinder: {
- *					uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
- * 				}
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface CKFinderAdapterConfig
- */
-
-/**
- * The URL to which files should be uploaded.
- *
- * @member {String} module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl
- */

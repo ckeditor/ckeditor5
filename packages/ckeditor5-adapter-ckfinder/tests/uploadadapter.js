@@ -5,6 +5,8 @@
 
 /* globals document */
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CKFinderUploadAdapter from '../src/uploadadapter';
@@ -24,7 +26,7 @@ describe( 'CKFinderUploadAdapter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
+				plugins: [ Clipboard, Image, ImageUpload, CKFinderUploadAdapter ],
 				ckfinder: {
 					uploadUrl: 'http://example.com'
 				}
@@ -65,7 +67,7 @@ describe( 'CKFinderUploadAdapter', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, ImageUpload, CKFinderUploadAdapter ],
+					plugins: [ Clipboard, Image, ImageUpload, CKFinderUploadAdapter ],
 				} )
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
