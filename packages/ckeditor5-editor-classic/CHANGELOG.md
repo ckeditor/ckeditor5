@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.1...v11.0.2) (2018-12-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.0...v11.0.1) (2018-10-08)
 
 Internal changes only (updated dependencies, documentation, etc.).
