@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [10.1.3](https://github.com/ckeditor/ckeditor5-essentials/compare/v10.1.2...v10.1.3) (2018-12-05)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [10.1.2](https://github.com/ckeditor/ckeditor5-essentials/compare/v10.1.1...v10.1.2) (2018-10-08)
 
 Internal changes only (updated dependencies, documentation, etc.).
