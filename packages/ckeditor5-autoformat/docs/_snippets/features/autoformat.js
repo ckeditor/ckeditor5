@@ -26,7 +26,7 @@ ClassicEditor
 				'undo',
 				'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )
