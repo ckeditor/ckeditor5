@@ -11,9 +11,9 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-basic-styles' ), {
 		toolbar: {
 			items: [
-				'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'undo', 'redo'
+				'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )

@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.0.3...v10.1.0) (2018-12-05)
+
+### Features
+
+* Introduced the `Superscript` and the `Subscript` features. Closes [#76](https://github.com/ckeditor/ckeditor5-basic-styles/issues/76). Closes [#74](https://github.com/ckeditor/ckeditor5-basic-styles/issues/74). ([f281e99](https://github.com/ckeditor/ckeditor5-basic-styles/commit/f281e99))
+
+  Thanks to [@idleb](https://github.com/idleb)!
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([6314191](https://github.com/ckeditor/ckeditor5-basic-styles/commit/6314191))
+* Updated translations. ([f9d3d07](https://github.com/ckeditor/ckeditor5-basic-styles/commit/f9d3d07)) ([67fb2e2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/67fb2e2))
+
+
 ## [10.0.3](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.0.2...v10.0.3) (2018-10-08)
 
 ### Other changes
