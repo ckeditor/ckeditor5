@@ -24,7 +24,18 @@ describe( 'HeadingButtonUI', () => {
 			return ClassicTestEditor
 				.create( editorElement, {
 					plugins: [ HeadingButtonsUI, HeadingEditing ],
-					toolbar: [ 'heading1', 'heading2', 'heading3' ]
+					toolbar: [ 'heading1', 'heading2', 'heading3', 'heading4', 'heading5', 'heading6' ],
+					heading: {
+						options: [
+							{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+							{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+							{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+							{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' },
+							{ model: 'heading4', view: 'h5', title: 'Heading 4', class: 'ck-heading_heading4' },
+							{ model: 'heading5', view: 'h6', title: 'Heading 5', class: 'ck-heading_heading5' },
+							{ model: 'heading6', view: 'p', title: 'Heading 6', class: 'ck-heading_heading6' }
+						]
+					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -46,9 +57,12 @@ describe( 'HeadingButtonUI', () => {
 			expect( factory.create( 'heading1' ) ).to.be.instanceOf( ButtonView );
 			expect( factory.create( 'heading2' ) ).to.be.instanceOf( ButtonView );
 			expect( factory.create( 'heading3' ) ).to.be.instanceOf( ButtonView );
+			expect( factory.create( 'heading4' ) ).to.be.instanceOf( ButtonView );
+			expect( factory.create( 'heading5' ) ).to.be.instanceOf( ButtonView );
+			expect( factory.create( 'heading6' ) ).to.be.instanceOf( ButtonView );
 		} );
 
-		it( 'should intialize buttons with correct localized data', () => {
+		it( 'should initialize buttons with correct localized data', () => {
 			const localizedOptions = getLocalizedOptions( editor ).filter( option => option.model == 'heading2' )[ 0 ];
 			const heading2Button = editor.ui.componentFactory.create( 'heading2' );
 
