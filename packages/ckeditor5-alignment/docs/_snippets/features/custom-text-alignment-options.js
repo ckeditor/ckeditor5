@@ -13,7 +13,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		alignment: {
 			options: [ 'left', 'right' ]
