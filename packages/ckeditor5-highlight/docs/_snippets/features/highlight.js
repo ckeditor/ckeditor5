@@ -14,7 +14,7 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 			],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {
