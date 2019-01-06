@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import Config from '../src/config';
 
 describe( 'Config', () => {
@@ -19,7 +21,14 @@ describe( 'Config', () => {
 					path: 'xyz'
 				}
 			},
-			toolbar: 'top'
+			toolbar: 'top',
+			options: {
+				foo: [
+					{ bar: 'b' },
+					{ bar: 'a' },
+					{ bar: 'z' }
+				]
+			}
 		} );
 	} );
 
@@ -334,7 +343,7 @@ describe( 'Config', () => {
 			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
 		} );
 
-		it( 'should retrieve a object of the configuration', () => {
+		it( 'should retrieve an object of the configuration', () => {
 			const resize = config.get( 'resize' );
 
 			expect( resize ).to.be.an( 'object' );
@@ -370,6 +379,84 @@ describe( 'Config', () => {
 			expect( () => {
 				config.resize.maxHeight;
 			} ).to.throw();
+		} );
+
+		it( 'should not be possible to alter config object by altering returned value', () => {
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+
+			const icon = config.get( 'resize.icon' );
+			icon.path = 'foo/bar';
+
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+
+			const resize = config.get( 'resize' );
+			resize.icon.path = 'foo/baz';
+
+			expect( config.get( 'resize.icon.path' ) ).to.equal( 'xyz' );
+		} );
+
+		it( 'should not be possible to alter array in config by altering returned value', () => {
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+
+			const fooOptions = config.get( 'options.foo' );
+			fooOptions.pop();
+
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+
+			const options = config.get( 'options' );
+			options.foo.pop();
+
+			expect( config.get( 'options.foo' ) ).to.deep.equal( [ { bar: 'b' }, { bar: 'a' }, { bar: 'z' } ] );
+		} );
+
+		it( 'should return class & functions references from config array', () => {
+			class Foo {}
+
+			function bar() {
+				return 'bar';
+			}
+
+			const baz = () => 'baz';
+
+			config.set( 'plugins', [ Foo, bar, baz ] );
+
+			expect( config.get( 'plugins' ) ).to.deep.equal( [ Foo, bar, baz ] );
+
+			const plugins = config.get( 'plugins' );
+
+			expect( plugins[ 0 ] ).to.equal( Foo );
+			expect( plugins[ 1 ] ).to.equal( bar );
+			expect( plugins[ 2 ] ).to.equal( baz );
+
+			const pluginsAgain = config.get( 'plugins' );
+
+			// The returned array should be a new instance:
+			expect( pluginsAgain ).to.not.equal( plugins );
+
+			// But array members should remain the same contents should be equal:
+			expect( pluginsAgain ).to.deep.equal( plugins );
+		} );
+
+		it( 'should return DOM nodes references from config array', () => {
+			const foo = document.createElement( 'div' );
+
+			config.set( 'node', foo );
+			config.set( 'nodes', [ foo ] );
+
+			expect( config.get( 'node' ) ).to.equal( foo );
+			expect( config.get( 'nodes' ) ).to.deep.equal( [ foo ] );
+
+			const nodes = config.get( 'nodes' );
+
+			expect( nodes[ 0 ] ).to.equal( foo );
+
+			const nodesAgain = config.get( 'nodes' );
+
+			// The returned array should be a new instance:
+			expect( nodesAgain ).to.not.equal( nodes );
+
+			// But array members should remain the same contents should be equal:
+			expect( nodesAgain ).to.deep.equal( nodes );
 		} );
 	} );
 } );

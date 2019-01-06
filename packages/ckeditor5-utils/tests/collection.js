@@ -321,6 +321,34 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'has()', () => {
+		it( 'should return true if collection contains item with given id', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( 'foo' ) ).to.equal( true );
+		} );
+
+		it( 'should return false if collection does not contain item with given id', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( 'bar' ) ).to.equal( false );
+		} );
+
+		it( 'should return true if collection contains item', () => {
+			const item = getItem( 'foo' );
+
+			collection.add( item );
+
+			expect( collection.has( item ) ).to.equal( true );
+		} );
+
+		it( 'should return false if collection does not contains item', () => {
+			collection.add( getItem( 'foo' ) );
+
+			expect( collection.has( getItem( 'bar' ) ) ).to.equal( false );
+		} );
+	} );
+
 	describe( 'getIndex()', () => {
 		it( 'should return index of given item', () => {
 			const item1 = { foo: 'bar' };

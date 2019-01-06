@@ -635,5 +635,5 @@ function removeCallback( emitter, event, callback ) {
  *
  * @method #to
  * @param {module:utils/emittermixin~Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
- * @param {String|Function} nameOrFunction A custom event name or function which converts the original name string.
+ * @param {String|Function} [nameOrFunction] A custom event name or function which converts the original name string.
  */

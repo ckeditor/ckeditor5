@@ -210,19 +210,36 @@ export default class Collection {
 	}
 
 	/**
+	 * Returns a boolean indicating whether the collection contains an item.
+	 *
+	 * @param {Object|String} itemOrId The item or its id in the collection.
+	 * @returns {Boolean} `true` if the collection contains the item, `false` otherwise.
+	 */
+	has( itemOrId ) {
+		if ( typeof itemOrId == 'string' ) {
+			return this._itemMap.has( itemOrId );
+		} else { // Object
+			const idProperty = this._idProperty;
+			const id = itemOrId[ idProperty ];
+
+			return this._itemMap.has( id );
+		}
+	}
+
+	/**
 	 * Gets index of item in the collection.
 	 * When item is not defined in the collection then index will be equal -1.
 	 *
-	 * @param {String|Object} idOrItem The item or its id in the collection.
+	 * @param {Object|String} itemOrId The item or its id in the collection.
 	 * @returns {Number} Index of given item.
 	 */
-	getIndex( idOrItem ) {
+	getIndex( itemOrId ) {
 		let item;
 
-		if ( typeof idOrItem == 'string' ) {
-			item = this._itemMap.get( idOrItem );
+		if ( typeof itemOrId == 'string' ) {
+			item = this._itemMap.get( itemOrId );
 		} else {
-			item = idOrItem;
+			item = itemOrId;
 		}
 
 		return this._items.indexOf( item );
@@ -290,7 +307,7 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
-	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Array} The result of mapping.
 	 */
 	map( callback, ctx ) {
@@ -303,8 +320,8 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Object} The item for which `callback` returned a true value.
-	 * @params {Object} ctx Context in which the `callback` will be called.
 	 */
 	find( callback, ctx ) {
 		return this._items.find( callback, ctx );
@@ -316,7 +333,7 @@ export default class Collection {
 	 * @param {Function} callback
 	 * @param {Object} callback.item
 	 * @param {Number} callback.index
-	 * @params {Object} ctx Context in which the `callback` will be called.
+	 * @param {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Object[]} The array with matching items.
 	 */
 	filter( callback, ctx ) {
@@ -433,8 +450,7 @@ export default class Collection {
 	 *
 	 * @param {module:utils/collection~Collection} externalCollection A collection to be bound.
 	 * @returns {Object}
-	 * @returns {module:utils/collection~Collection#bindTo#as} return.as
-	 * @returns {module:utils/collection~Collection#bindTo#using} return.using
+	 * @returns {module:utils/collection~CollectionBindToChain} The binding chain object.
 	 */
 	bindTo( externalCollection ) {
 		if ( this._bindToCollection ) {
@@ -449,24 +465,10 @@ export default class Collection {
 		this._bindToCollection = externalCollection;
 
 		return {
-			/**
-			 * Creates the class factory binding.
-			 *
-			 * @static
-			 * @param {Function} Class Specifies which class factory is to be initialized.
-			 */
 			as: Class => {
 				this._setUpBindToBinding( item => new Class( item ) );
 			},
 
-			/**
-			 * Creates callback or property binding.
-			 *
-			 * @static
-			 * @param {Function|String} callbackOrProperty When the function is passed, it is used to
-			 * produce the items. When the string is provided, the property value is used to create
-			 * the bound collection items.
-			 */
 			using: callbackOrProperty => {
 				if ( typeof callbackOrProperty == 'function' ) {
 					this._setUpBindToBinding( item => callbackOrProperty( item ) );
@@ -628,3 +630,28 @@ export default class Collection {
 }
 
 mix( Collection, EmitterMixin );
+
+/**
+ * An object returned by the {@link module:utils/collection~Collection#bindTo `bindTo()`} method
+ * providing functions that specify the type of the binding.
+ *
+ * See the {@link module:utils/collection~Collection#bindTo `bindTo()`} documentation for examples.
+ *
+ * @interface module:utils/collection~CollectionBindToChain
+ */
+
+/**
+ * Creates a callback or a property binding.
+ *
+ * @method #using
+ * @param {Function|String} callbackOrProperty  When the function is passed, it should return
+ * the collection items. When the string is provided, the property value is used to create the bound collection items.
+ */
+
+/**
+ * Creates the class factory binding in which items of the source collection are passed to
+ * the constructor of the specified class.
+ *
+ * @method #as
+ * @param {Function} Class The class constructor used to create instances in the factory.
+ */
