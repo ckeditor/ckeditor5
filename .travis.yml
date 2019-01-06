@@ -25,7 +25,7 @@ script:
   - yarn run test --reporter=dots
   - yarn run docs:api --validate-only
   - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-  	  travis_wait yarn run docs:build-and-publish-nightly;
+      travis_wait yarn run docs:build-and-publish-nightly;
     fi'
 notifications:
   slack:
