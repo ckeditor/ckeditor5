@@ -14,6 +14,7 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
 import LivePosition from '@ckeditor/ckeditor5-engine/src/model/liveposition';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { insertMedia } from './utils';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=]+$/;
 
@@ -153,12 +154,15 @@ export default class AutoMediaEmbed extends Plugin {
 
 				writer.remove( urlRange );
 
+				let insertionPosition;
+
 				// Check if position where the media element should be inserted is still valid.
+				// Otherwise leave it as undefined to use document.selection - default behavior of model.insertContent().
 				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
-					writer.setSelection( this._positionToInsert );
+					insertionPosition = this._positionToInsert;
 				}
 
-				mediaEmbedCommand.execute( url );
+				insertMedia( editor.model, url, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;

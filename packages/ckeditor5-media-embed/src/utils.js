@@ -88,6 +88,28 @@ export function getSelectedMediaElement( selection ) {
 	return null;
 }
 
+/**
+ * Creates a media element and inserts it into the model.
+ *
+ * **Note**: This method will use {@link module:engine/model/model~Model#insertContent `model.insertContent()`} logic of inserting content
+ * if no `insertPosition` is passed.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @param {String} url An URL of an embeddable media.
+ * @param {module:engine/model/position~Position} [insertPosition] Position to insert media. If not specified,
+ * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
+ * be applied.
+ */
+export function insertMedia( model, url, insertPosition ) {
+	model.change( writer => {
+		const mediaElement = writer.createElement( 'media', { url } );
+
+		model.insertContent( mediaElement, insertPosition );
+
+		writer.setSelection( mediaElement, 'on' );
+	} );
+}
+
 function getFillerOffset() {
 	return null;
 }

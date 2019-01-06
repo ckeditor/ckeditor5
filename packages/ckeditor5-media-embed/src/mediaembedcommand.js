@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
-import { getSelectedMediaElement } from './utils';
+import { getSelectedMediaElement, insertMedia } from './utils';
 
 /**
  * The insert media command.
@@ -64,13 +64,7 @@ export default class MediaEmbedCommand extends Command {
 		} else {
 			const insertPosition = findOptimalInsertionPosition( selection, model );
 
-			model.change( writer => {
-				const mediaElement = writer.createElement( 'media', { url } );
-
-				model.insertContent( mediaElement, insertPosition );
-
-				writer.setSelection( mediaElement, 'on' );
-			} );
+			insertMedia( model, url, insertPosition );
 		}
 	}
 }
