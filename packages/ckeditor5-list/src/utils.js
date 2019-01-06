@@ -7,6 +7,8 @@
  * @module list/utils
  */
 
+import { getFillerOffset } from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+
 /**
  * Creates list item {@link module:engine/view/containerelement~ContainerElement}.
  *
@@ -15,7 +17,7 @@
  */
 export function createViewListItemElement( writer ) {
 	const viewItem = writer.createContainerElement( 'li' );
-	viewItem.getFillerOffset = getFillerOffset;
+	viewItem.getFillerOffset = getListItemFillerOffset;
 
 	return viewItem;
 }
@@ -23,8 +25,12 @@ export function createViewListItemElement( writer ) {
 // Implementation of getFillerOffset for view list item element.
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-function getFillerOffset() {
+function getListItemFillerOffset() {
 	const hasOnlyLists = !this.isEmpty && ( this.getChild( 0 ).name == 'ul' || this.getChild( 0 ).name == 'ol' );
 
-	return this.isEmpty || hasOnlyLists ? 0 : null;
+	if ( this.isEmpty || hasOnlyLists ) {
+		return 0;
+	}
+
+	return getFillerOffset.call( this );
 }
