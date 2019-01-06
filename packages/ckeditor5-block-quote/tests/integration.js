@@ -13,6 +13,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import {
@@ -30,7 +31,7 @@ describe( 'BlockQuote integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading ]
+				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -415,6 +416,54 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>xxx</paragraph>' +
 				'</blockQuote>' +
 				'<heading1>yyy[]o</heading1>'
+			);
+		} );
+	} );
+
+	describe( 'compatibility with tables', () => {
+		it( 'wraps whole table', () => {
+			setModelData( model, '[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]' );
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
+			);
+		} );
+
+		it( 'unwraps whole table', () => {
+			setModelData(
+				model,
+				'<blockQuote>[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]</blockQuote>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>]'
+			);
+		} );
+
+		it( 'wraps table cell paragraph', () => {
+			setModelData( model, '<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>' );
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'unwraps table cell paragraph', () => {
+			setModelData(
+				model,
+				'<table><tableRow><tableCell><blockQuote><paragraph>[]foo</paragraph></blockQuote></tableCell></tableRow></table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table><tableRow><tableCell><paragraph>[]foo</paragraph></tableCell></tableRow></table>'
 			);
 		} );
 	} );

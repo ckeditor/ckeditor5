@@ -34,7 +34,7 @@ export default class BlockQuoteCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. When the command {@link #value is on}, all block quotes within
+	 * Executes the command. When the command {@link #value is on}, all top-most block quotes within
 	 * the selection will be removed. If it is off, all selected blocks will be wrapped with
 	 * a block quote.
 	 *
@@ -42,9 +42,10 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const doc = model.document;
 		const schema = model.schema;
-		const blocks = Array.from( doc.selection.getSelectedBlocks() );
+		const selection = model.document.selection;
+
+		const blocks = Array.from( selection.getTopMostBlocks() );
 
 		model.change( writer => {
 			if ( this.value ) {
@@ -68,7 +69,9 @@ export default class BlockQuoteCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue() {
-		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const selection = this.editor.model.document.selection;
+
+		const firstBlock = first( selection.getTopMostBlocks() );
 
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		return !!( firstBlock && findQuote( firstBlock ) );
