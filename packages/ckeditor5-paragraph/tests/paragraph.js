@@ -13,9 +13,6 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement, upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 
@@ -81,8 +78,8 @@ describe( 'Paragraph feature', () => {
 				editor.model.schema.register( 'span', { allowWhere: '$text' } );
 				editor.model.schema.extend( '$text', { allowIn: 'span' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'span', view: 'span' } ) );
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'span', view: 'span' } ) );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'span', view: 'span' } );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'span', view: 'span' } );
 
 				editor.setData( '<span>foo</span>' );
 
@@ -109,7 +106,7 @@ describe( 'Paragraph feature', () => {
 			it( 'should autoparagraph text next to allowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading1', view: 'h1' } );
 
 				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>' );
 
@@ -136,7 +133,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: '$root' } );
 				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 				const modelFragment = editor.data.parse( '<div>foo</div><div>bom<p>bim</p></div>' );
 
@@ -150,7 +147,7 @@ describe( 'Paragraph feature', () => {
 			it( 'should autoparagraph text inside disallowed element next to allowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading1', view: 'h1' } );
 
 				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>' );
 
@@ -161,7 +158,7 @@ describe( 'Paragraph feature', () => {
 			it( 'should not autoparagraph text in disallowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading1', view: 'h1' } );
 
 				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>' );
 
@@ -204,7 +201,7 @@ describe( 'Paragraph feature', () => {
 				beforeEach( () => {
 					model.schema.extend( '$text', { allowAttributes: 'bold' } );
 
-					editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'b', model: 'bold' } ) );
+					editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'bold' } );
 				} );
 
 				it( 'inside document fragment', () => {
@@ -217,7 +214,7 @@ describe( 'Paragraph feature', () => {
 					model.schema.register( 'blockQuote', { allowIn: '$root' } );
 					model.schema.extend( '$block', { allowIn: 'blockQuote' } );
 
-					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
+					editor.conversion.for( 'upcast' ).elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 
 					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
 
@@ -255,7 +252,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: 'specialRoot' } );
 				model.schema.extend( '$text', { allowIn: 'div' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', [ 'specialRoot' ] );
 
@@ -331,7 +328,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: '$root' } );
 				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>' );
 
