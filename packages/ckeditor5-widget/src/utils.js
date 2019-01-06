@@ -31,15 +31,20 @@ export const WIDGET_CLASS_NAME = 'ck-widget';
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link module:engine/view/element~Element} is a widget.
+ * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~Element} and a widget.
  *
- * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/node~Node} node
  * @returns {Boolean}
  */
-export function isWidget( element ) {
-	return !!element.getCustomProperty( widgetSymbol );
+export function isWidget( node ) {
+	if ( !node.is( 'element' ) ) {
+		return false;
+	}
+
+	return !!node.getCustomProperty( widgetSymbol );
 }
 
+/* eslint-disable max-len */
 /**
  * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
  *
@@ -49,30 +54,31 @@ export function isWidget( element ) {
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
  * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *
- * This function needs to be used in conjuction with {@link module:engine/conversion/downcast-converters downcast converters}
- * like {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
+ * This function needs to be used in conjunction with
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers downcast conversion helpers}
+ * like {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  * Moreover, typically you will want to use `toWidget()` only for `editingDowncast`, while keeping the `dataDowncast` clean.
  *
  * For example, in order to convert a `<widget>` model element to `<div class="widget">` in the view, you can define
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			.add( downcastElementToElement( {
+ *			.elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createContainerElement( 'div', { class: 'widget' } );
  *
  *					return toWidget( div, writer, { label: 'some widget' } );
  *				}
- *			} ) );
+ *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			.add( downcastElementToElement( {
+ *			.elementToElement( {
  *				model: 'widget',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'widget' } );
  *				}
- *			} ) );
+ *			} );
  *
  * See the full source code of the widget (with a nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).
@@ -85,8 +91,9 @@ export function isWidget( element ) {
  * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
  * @returns {module:engine/view/element~Element} Returns the same element.
  */
+/* eslint-enable max-len */
 export function toWidget( element, writer, options = {} ) {
-	// The selection on Edge behaves better when the whole editor contents is in a single contentedible element.
+	// The selection on Edge behaves better when the whole editor contents is in a single contenteditable element.
 	// https://github.com/ckeditor/ckeditor5/issues/1079
 	if ( !env.isEdge ) {
 		writer.setAttribute( 'contenteditable', 'false', element );
@@ -183,28 +190,28 @@ export function getLabel( element ) {
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `dataDowncast` only and it is usually
- * used together with {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`}.
+ * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
  *
  * For example, in order to convert a `<nested>` model element to `<div class="nested">` in the view, you can define
  * such converters:
  *
  *		editor.conversion.for( 'editingDowncast' )
- *			.add( downcastElementToElement( {
+ *			.elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					const div = writer.createEditableElement( 'div', { class: 'nested' } );
  *
  *					return toWidgetEditable( nested, writer );
  *				}
- *			} ) );
+ *			} );
  *
  *		editor.conversion.for( 'dataDowncast' )
- *			.add( downcastElementToElement( {
+ *			.elementToElement( {
  *				model: 'nested',
  *				view: ( modelItem, writer ) => {
  *					return writer.createContainerElement( 'div', { class: 'nested' } );
  *				}
- *			} ) );
+ *			} );
  *
  * See the full source code of the widget (with nested editable) schema definition and converters in
  * [this sample](https://github.com/ckeditor/ckeditor5-widget/blob/master/tests/manual/widget-with-nestededitable.js).

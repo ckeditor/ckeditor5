@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [10.3.1](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.0...v10.3.1) (2018-12-05)
+
+### Bug fixes
+
+* Selection converter will mark only the topmost widget in case of selecting a widget with another widget nested inside it. Closes [#57](https://github.com/ckeditor/ckeditor5-widget/issues/57). ([a78efec](https://github.com/ckeditor/ckeditor5-widget/commit/a78efec))
+
+### Other changes
+
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([5b7a457](https://github.com/ckeditor/ckeditor5-widget/commit/5b7a457))
+
+
 ## [10.3.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.2.0...v10.3.0) (2018-10-08)
 
 ### Features

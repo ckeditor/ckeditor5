@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
-import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
+import { getCode, keyCodes, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import '../theme/widget.css';
 
@@ -63,14 +63,18 @@ export default class Widget extends Plugin {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
 			const selectedElement = viewSelection.getSelectedElement();
+			let lastMarked = null;
 
 			for ( const range of viewSelection.getRanges() ) {
 				for ( const value of range ) {
 					const node = value.item;
 
-					if ( node.is( 'element' ) && isWidget( node ) ) {
+					// Do not mark nested widgets in selected one. See: #57.
+					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
+
 						this._previouslySelected.add( node );
+						lastMarked = node;
 
 						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
@@ -411,12 +415,30 @@ function isSelectAllKeyCode( domEventData ) {
 // @returns {Boolean}
 function isInsideNestedEditable( element ) {
 	while ( element ) {
-		if ( !!element && element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
+		if ( element.is( 'editableElement' ) && !element.is( 'rootElement' ) ) {
 			return true;
+		}
+
+		// Click on nested widget should select it.
+		if ( isWidget( element ) ) {
+			return false;
 		}
 
 		element = element.parent;
 	}
 
 	return false;
+}
+
+// Checks whether the specified `element` is a child of the `parent` element.
+//
+// @param {module:engine/view/element~Element} element An element to check.
+// @param {module:engine/view/element~Element|null} parent A parent for the element.
+// @returns {Boolean}
+function isChild( element, parent ) {
+	if ( !parent ) {
+		return false;
+	}
+
+	return Array.from( element.getAncestors() ).includes( parent );
 }

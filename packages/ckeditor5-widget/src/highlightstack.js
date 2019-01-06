@@ -17,7 +17,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * * highlight with highest priority should be applied,
  * * if two highlights have same priority - sort by CSS class provided in
- * {@link module:engine/conversion/downcast-converters~HighlightDescriptor}.
+ * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor}.
  *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
@@ -33,7 +33,7 @@ export default class HighlightStack {
 	 * Adds highlight descriptor to the stack.
 	 *
 	 * @fires change:top
-	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer
 	 */
 	add( descriptor, writer ) {
@@ -83,7 +83,7 @@ export default class HighlightStack {
 	 * descriptor with same id is already present.
 	 *
 	 * @private
-	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
+	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} descriptor
 	 */
 	_insertDescriptor( descriptor ) {
 		const stack = this._stack;
@@ -131,8 +131,8 @@ mix( HighlightStack, EmitterMixin );
 
 // Compares two descriptors by checking their priority and class list.
 //
-// @param {module:engine/conversion/downcast-converters~HighlightDescriptor} a
-// @param {module:engine/conversion/downcast-converters~HighlightDescriptor} b
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} a
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} b
 // @returns {Boolean} Returns true if both descriptors are defined and have same priority and classes.
 function compareDescriptors( a, b ) {
 	return a && b && a.priority == b.priority && classesToString( a.classes ) == classesToString( b.classes );
@@ -140,8 +140,8 @@ function compareDescriptors( a, b ) {
 
 // Checks whenever first descriptor should be placed in the stack before second one.
 //
-// @param {module:engine/conversion/downcast-converters~HighlightDescriptor} a
-// @param {module:engine/conversion/downcast-converters~HighlightDescriptor} b
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} a
+// @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} b
 // @returns {Boolean}
 function shouldABeBeforeB( a, b ) {
 	if ( a.priority > b.priority ) {
@@ -154,7 +154,7 @@ function shouldABeBeforeB( a, b ) {
 	return classesToString( a.classes ) > classesToString( b.classes );
 }
 
-// Converts CSS classes passed with {@link module:engine/conversion/downcast-converters~HighlightDescriptor} to
+// Converts CSS classes passed with {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} to
 // sorted string.
 //
 // @param {String|Array<String>} descriptor
@@ -168,9 +168,9 @@ function classesToString( classes ) {
  *
  * @event change:top
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} [data.newDescriptor] New highlight
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} [data.newDescriptor] New highlight
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} [data.oldDescriptor] Old highlight
+ * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor} [data.oldDescriptor] Old highlight
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that can be used to modify element.
  */

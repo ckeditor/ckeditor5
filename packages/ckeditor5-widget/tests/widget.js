@@ -7,7 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Widget from '../src/widget';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -76,12 +75,12 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
-					.add( downcastElementToElement( { model: 'inline', view: 'figure' } ) )
-					.add( downcastElementToElement( { model: 'image', view: 'img' } ) )
-					.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) )
-					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
-					.add( downcastElementToElement( {
+					.elementToElement( { model: 'paragraph', view: 'p' } )
+					.elementToElement( { model: 'inline', view: 'figure' } )
+					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
+					.elementToElement( { model: 'div', view: 'div' } )
+					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, viewWriter ) => {
 							const b = viewWriter.createAttributeElement( 'b' );
@@ -90,15 +89,15 @@ describe( 'Widget', () => {
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
-					} ) )
-					.add( downcastElementToElement( {
+					} )
+					.elementToElement( {
 						model: 'nested',
 						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
-					} ) )
-					.add( downcastElementToElement( {
+					} )
+					.elementToElement( {
 						model: 'editable',
 						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
-					} ) );
+					} );
 			} );
 	} );
 
@@ -201,13 +200,13 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
 	} );
 
-	it( 'should add selected class when no only a widget is selected', () => {
+	it( 'should add selected class when other content is selected with widget', () => {
 		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
 
 		expect( viewDocument.selection.isFake ).to.be.false;
 		expect( getViewData( view ) ).to.equal(
-			'[' +
-			'<p>foo</p>' +
+
+			'<p>{foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
 			']'
@@ -1177,22 +1176,34 @@ describe( 'Widget', () => {
 
 					model.schema.register( 'widget', {
 						inheritAllFrom: '$block',
+						allowIn: 'widget',
 						isObject: true
 					} );
 					model.schema.register( 'paragraph', {
 						inheritAllFrom: '$block'
 					} );
+					model.schema.register( 'nested', {
+						allowIn: 'widget',
+						isLimit: true
+					} );
+					model.schema.extend( '$text', {
+						allowIn: 'nested'
+					} );
 
 					editor.conversion.for( 'downcast' )
-						.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
-						.add( downcastElementToElement( {
+						.elementToElement( { model: 'paragraph', view: 'p' } )
+						.elementToElement( {
 							model: 'widget',
 							view: ( modelItem, viewWriter ) => {
 								const widget = viewWriter.createContainerElement( 'div' );
 
 								return toWidget( widget, viewWriter, { hasSelectionHandler: true } );
 							}
-						} ) );
+						} )
+						.elementToElement( {
+							model: 'nested',
+							view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
+						} );
 				} );
 		} );
 
@@ -1209,6 +1220,159 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
+		} );
+
+		it( 'should select the most top-outer widget if widgets are nested', () => {
+			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
+
+			// The top-outer widget.
+			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 );
+
+			const domEventDataMock = {
+				target: viewWidgetSelectionHandler,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>]'
+			);
+		} );
+
+		it( 'should select a proper widget if they are nested and multiplied', () => {
+			setModelData( model,
+				'<widget></widget>' +
+				'<widget>' +
+					'<widget></widget>' +
+					'<widget></widget>' +
+				'</widget>' +
+				'<widget></widget>'
+			);
+
+			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 1 );
+
+			const domEventDataMock = {
+				target: viewWidgetSelectionHandler,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>' +
+				'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>]' +
+				'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>'
+			);
+		} );
+
+		it( 'works fine with a widget that contains more children', () => {
+			setModelData( model,
+				'<widget>' +
+					'<nested>foo bar</nested>' +
+					'<widget></widget>' +
+				'</widget>'
+			);
+
+			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 );
+
+			const domEventDataMock = {
+				target: viewWidgetSelectionHandler,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+					'<figcaption contenteditable="true">foo bar</figcaption>' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>]'
+			);
+		} );
+
+		it( 'should select a proper widget for more complex structures', () => {
+			setModelData( model,
+				'<widget>' +
+					'<widget></widget>' +
+					'<widget>' +
+						'<widget></widget>' +
+					'</widget>' +
+				'</widget>'
+			);
+
+			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 0 ).getChild( 1 );
+
+			const domEventDataMock = {
+				target: viewWidgetSelectionHandler,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+					'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>' +
+					'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+						'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handler"></div>' +
+						'</div>' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
+					'</div>]' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>'
+			);
+		} );
+
+		it( 'should select widget in editable', () => {
+			model.schema.extend( 'widget', { allowIn: 'nested' } );
+
+			setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
+
+			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			const domEventDataMock = {
+				target: widgetInEditable,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getViewData( view ) ).to.equal(
+				'<div class="ck-widget ck-widget_selectable" contenteditable="false">' +
+					'<figcaption contenteditable="true">' +
+						'[<div class="ck-widget ck-widget_selectable ck-widget_selected" contenteditable="false">' +
+							'<div class="ck ck-widget__selection-handler"></div>' +
+						'</div>]' +
+					'</figcaption>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
+				'</div>'
+			);
 		} );
 	} );
 } );

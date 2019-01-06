@@ -13,9 +13,6 @@ import Widget from '../../src/widget';
 
 import { toWidget, toWidgetEditable } from '../../src/utils';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Widget ],
@@ -41,52 +38,52 @@ ClassicEditor
 		} );
 
 		editor.conversion.for( 'dataDowncast' )
-			.add( downcastElementToElement( {
+			.elementToElement( {
 				model: 'widget',
 				view: ( modelItem, writer ) => {
 					return writer.createContainerElement( 'div', { class: 'widget' } );
 				}
-			} ) )
-			.add( downcastElementToElement( {
+			} )
+			.elementToElement( {
 				model: 'nested',
 				view: ( modelItem, writer ) => {
 					return writer.createContainerElement( 'div', { class: 'nested' } );
 				}
-			} ) );
+			} );
 
 		editor.conversion.for( 'editingDowncast' )
-			.add( downcastElementToElement( {
+			.elementToElement( {
 				model: 'widget',
 				view: ( modelItem, writer ) => {
 					const div = writer.createContainerElement( 'div', { class: 'widget' } );
 
 					return toWidget( div, writer, { label: 'widget label' } );
 				}
-			} ) )
-			.add( downcastElementToElement( {
+			} )
+			.elementToElement( {
 				model: 'nested',
 				view: ( modelItem, writer ) => {
 					const nested = writer.createEditableElement( 'div', { class: 'nested' } );
 
 					return toWidgetEditable( nested, writer );
 				}
-			} ) );
+			} );
 
 		editor.conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
+			.elementToElement( {
 				view: {
 					name: 'div',
 					class: 'widget'
 				},
 				model: 'widget'
-			} ) )
-			.add( upcastElementToElement( {
+			} )
+			.elementToElement( {
 				view: {
 					name: 'div',
 					class: 'nested'
 				},
 				model: 'nested'
-			} ) );
+			} );
 
 		editor.setData(
 			'<p>foobar</p>' +
