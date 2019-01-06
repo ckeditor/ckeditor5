@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import {
 	downcastInsertCell,
 	downcastInsertRow,
@@ -163,7 +161,8 @@ export function defaultSchema( schema, registerParagraph = true ) {
 		allowWhere: '$block',
 		allowAttributes: [ 'headingRows', 'headingColumns' ],
 		isLimit: true,
-		isObject: true
+		isObject: true,
+		isBlock: true
 	} );
 
 	schema.register( 'tableRow', {
@@ -187,13 +186,6 @@ export function defaultSchema( schema, registerParagraph = true ) {
 		}
 	} );
 
-	// Disallow image in table.
-	schema.addChildCheck( ( context, childDefinition ) => {
-		if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
-			return false;
-		}
-	} );
-
 	if ( registerParagraph ) {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 	}
@@ -207,7 +199,7 @@ export function defaultConversion( conversion, asWidget = false ) {
 	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
 
 	// Table row conversion.
-	conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+	conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
 	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
 

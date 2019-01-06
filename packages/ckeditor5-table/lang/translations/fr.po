@@ -13,13 +13,13 @@ msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
 msgstr "Colonne d'entête"
 
-msgctxt "Label for the insert table column before the current one button."
-msgid "Insert column before"
-msgstr "Insérer une colonne avant"
+msgctxt "Label for the insert table column to the left of the current one button."
+msgid "Insert column left"
+msgstr "Insérer une colonne à gauche"
 
-msgctxt "Label for the insert table column after the current one button."
-msgid "Insert column after"
-msgstr "Insérer une colonne après"
+msgctxt "Label for the insert table column to the right of the current one button."
+msgid "Insert column right"
+msgstr "Insérer une colonne à droite"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
@@ -31,15 +31,15 @@ msgstr "Colonne"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Rangée d'entête"
+msgstr "Ligne d'entête"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Insérer une rangée en-dessous"
+msgstr "Insérer une ligne en-dessous"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Insérer une rangée au-dessus"
+msgstr "Insérer une ligne au-dessus"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
@@ -47,7 +47,7 @@ msgstr "Supprimer la rangée"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Rangée"
+msgstr "Ligne"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
@@ -67,11 +67,11 @@ msgstr "Fusionner la cellule à gauche"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Séparer la cellule verticalement"
+msgstr "Scinder la cellule verticalement"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Séparer la cellule horizontalement"
+msgstr "Scinder la cellule horizontalement"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"

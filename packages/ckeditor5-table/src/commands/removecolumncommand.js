@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import TableUtils from '../tableutils';
 import { findAncestor, updateNumericAttribute } from './utils';
 
 /**
@@ -31,7 +30,7 @@ export default class RemoveColumnCommand extends Command {
 	refresh() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const tableUtils = editor.plugins.get( TableUtils );
+		const tableUtils = editor.plugins.get( 'TableUtils' );
 
 		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
 

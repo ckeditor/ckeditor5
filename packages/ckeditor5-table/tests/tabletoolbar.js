@@ -16,6 +16,9 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();
@@ -29,7 +32,10 @@ describe( 'TableToolbar', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
+					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					},
 					table: {
 						contentToolbar: [ 'fake_button' ]
 					}
@@ -151,6 +157,36 @@ describe( 'TableToolbar', () => {
 				// Make sure successive change does not throw, e.g. attempting
 				// to insert the toolbar twice.
 				editor.ui.fire( 'update' );
+				expect( balloon.visibleView ).to.equal( toolbar );
+			} );
+
+			it( 'should not show the toolbar on ui#update when the image inside table is selected', () => {
+				setData(
+					model,
+					'<paragraph>[foo]</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>foo</paragraph><image src=""></image></tableCell></tableRow></table>'
+				);
+
+				expect( balloon.visibleView ).to.be.null;
+
+				const imageToolbar = widgetToolbarRepository._toolbars.get( 'image' ).view;
+
+				model.change( writer => {
+					// Select the <tableCell><paragraph></paragraph>[<image></image>]</tableCell>
+					const nodeByPath = doc.getRoot().getNodeByPath( [ 1, 0, 0, 1 ] );
+
+					writer.setSelection( nodeByPath, 'on' );
+				} );
+
+				expect( balloon.visibleView ).to.equal( imageToolbar );
+
+				model.change( writer => {
+					// Select the <tableCell><paragraph>[]</paragraph><image></image></tableCell>
+					writer.setSelection(
+						writer.createPositionAt( doc.getRoot().getNodeByPath( [ 1, 0, 0, 0 ] ), 0 )
+					);
+				} );
+
 				expect( balloon.visibleView ).to.equal( toolbar );
 			} );
 

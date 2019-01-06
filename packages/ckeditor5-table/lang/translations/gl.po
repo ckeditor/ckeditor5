@@ -13,12 +13,12 @@ msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
 msgstr "Cabeceira de columna"
 
-msgctxt "Label for the insert table column before the current one button."
-msgid "Insert column before"
+msgctxt "Label for the insert table column to the left of the current one button."
+msgid "Insert column left"
 msgstr "Inserir columna á esquerda"
 
-msgctxt "Label for the insert table column after the current one button."
-msgid "Insert column after"
+msgctxt "Label for the insert table column to the right of the current one button."
+msgid "Insert column right"
 msgstr "Inserir columna á dereita"
 
 msgctxt "Label for the delete table column button."

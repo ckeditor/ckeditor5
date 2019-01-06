@@ -4,7 +4,6 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
@@ -211,7 +210,7 @@ describe( 'upcastTable()', () => {
 		editor.model.schema.register( 'div', {
 			inheritAllFrom: '$block'
 		} );
-		editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'div', view: 'div' } );
 
 		editor.setData(
 			'<div>foo' +
@@ -457,7 +456,7 @@ describe( 'upcastTable()', () => {
 			] ) );
 		} );
 
-		it( 'should upcast table with <img> in table cell to empty table cell', () => {
+		it( 'should upcast table with <img> in table cell', () => {
 			editor.setData(
 				'<table>' +
 					'<tbody>' +
@@ -469,8 +468,96 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '' ]
+				[ '<image src="sample.png"></image>' ]
 			] ) );
+		} );
+	} );
+
+	describe( 'handling redundant whitespacing between table elements', () => {
+		it( 'table without thead/tbody/tfoot', () => {
+			editor.setData(
+				'<table> ' +
+					'<tr> <td>1</td></tr>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table>' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with thead only', () => {
+			editor.setData(
+				'<table>' +
+					'<thead>' +
+						'<tr><td>1</td></tr> ' +
+						'<tr><td>2</td></tr>' +
+						' <tr><td>3</td></tr>' +
+					'</thead>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingRows="3">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with thead and tbody', () => {
+			editor.setData(
+				'<table>' +
+					'<thead>   ' +
+						'<tr><td>1</td></tr>' +
+						'<tr><td>2</td></tr>\n\n   ' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr><td>3</td></tr> ' +
+						'\n\n    <tr><td>4</td></tr>' +
+						'<tr>    <td>5</td></tr> ' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table headingRows="2">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'table with tbody and tfoot', () => {
+			editor.setData(
+				'<table>' +
+					'<tbody>' +
+						'     <tr><td>1</td></tr>' +
+						'<tr><td>2</td></tr>' +
+						'<tr><td>3</td></tr> ' +
+						'<tr><td>4</td></tr>\n\n\n' +
+					'</tbody>\n\n' +
+					'   <tfoot>' +
+						'<tr>  <td>5</td>\n\n\n</tr>   ' +
+					'</tfoot>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table>' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>3</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>4</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>5</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 } );

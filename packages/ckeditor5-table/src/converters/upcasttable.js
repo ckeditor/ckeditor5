@@ -180,7 +180,11 @@ function scanTable( viewTable ) {
 				firstTheadElement = tableChild;
 			}
 
-			for ( const tr of Array.from( tableChild.getChildren() ) ) {
+			// There might be some extra empty text nodes between the `tr`s.
+			// Make sure further code operates on `tr`s only. (#145)
+			const trs = Array.from( tableChild.getChildren() ).filter( el => el.is( 'element', 'tr' ) );
+
+			for ( const tr of trs ) {
 				// This <tr> is a child of a first <thead> element.
 				if ( tr.parent.name === 'thead' && tr.parent === firstTheadElement ) {
 					tableMeta.headingRows++;
