@@ -49,6 +49,15 @@ export default class DeleteCommand extends Command {
 	}
 
 	/**
+	 * The current change buffer.
+	 *
+	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
+	 */
+	get buffer() {
+		return this._buffer;
+	}
+
+	/**
 	 * Executes the delete command. Depending on whether the selection is collapsed or not, deletes its content
 	 * or a piece of content in the {@link #direction defined direction}.
 	 *

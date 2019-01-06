@@ -147,7 +147,7 @@ describe( 'InputCommand', () => {
 				range: doc.selection.getFirstRange()
 			} );
 
-			expect( getData( model, { selection: true } ) ).to.be.equal( '<h1>Funny c[</h1><p>]ar</p>' );
+			expect( getData( model, { selection: true } ) ).to.be.equal( '<h1>Funny c[]ar</h1>' );
 			expect( buffer.size ).to.be.equal( 6 );
 		} );
 

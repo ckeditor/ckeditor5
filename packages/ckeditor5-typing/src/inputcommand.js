@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+
 import ChangeBuffer from './utils/changebuffer';
 
 /**
@@ -82,7 +83,7 @@ export default class InputCommand extends Command {
 			this._buffer.lock();
 
 			if ( !isCollapsedRange ) {
-				writer.remove( range );
+				model.deleteContent( model.createSelection( range ) );
 			}
 
 			if ( text ) {
