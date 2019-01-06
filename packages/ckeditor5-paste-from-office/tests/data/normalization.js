@@ -22,6 +22,13 @@ generateTests( {
 } );
 
 generateTests( {
+	input: 'image',
+	type: 'normalization',
+	browsers,
+	editorConfig
+} );
+
+generateTests( {
 	input: 'link',
 	type: 'normalization',
 	browsers,

@@ -10,10 +10,10 @@ import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import { transformListItemLikeElementsIntoLists } from '../../src/filters/list';
 
 describe( 'Filters', () => {
-	describe( 'List', () => {
+	describe( 'list', () => {
 		const htmlDataProcessor = new HtmlDataProcessor();
 
-		describe( 'transformListItemLikeElementsIntoLists', () => {
+		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
 				const html = '<p style="mso-list:l0 level1 lfo0"><span style="mso-list:Ignore">1.</span>Item 1</p>';
 				const view = htmlDataProcessor.toView( html );
