@@ -14,22 +14,25 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 const DEFAULT_PRIORITY = 10;
 
 /**
- * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}.
+ * Attribute elements are used to represent formatting elements in the view (think – `<b>`, `<span style="font-size: 2em">`, etc.).
+ * Most often they are created when downcasting model text attributes.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
- * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
- * class or `AttributeElement`.
+ * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
+ * types (container element, {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
+ *
+ * To create a new attribute element instance use the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  *
  * @extends module:engine/view/element~Element
  */
 export default class AttributeElement extends Element {
 	/**
-	 * Creates a attribute element.
+	 * Creates an attribute element.
 	 *
 	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
-	 * @protected
 	 * @see module:engine/view/element~Element
+	 * @protected
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
@@ -66,7 +69,7 @@ export default class AttributeElement extends Element {
 		 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
 		 *
 		 * @protected
-		 * @member {Set|null}
+		 * @member {Set.<module:engine/view/attributeelement~AttributeElement>|null}
 		 */
 		this._clonesGroup = null;
 	}
@@ -75,7 +78,7 @@ export default class AttributeElement extends Element {
 	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
 	 * @readonly
-	 * @returns {Number}
+	 * @type {Number}
 	 */
 	get priority() {
 		return this._priority;
@@ -86,7 +89,7 @@ export default class AttributeElement extends Element {
 	 * and then two elements are considered similar if, and only if they have the same `id`.
 	 *
 	 * @readonly
-	 * @returns {String|Number}
+	 * @type {String|Number}
 	 */
 	get id() {
 		return this._id;

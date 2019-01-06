@@ -15,6 +15,7 @@ import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
@@ -150,6 +151,17 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * A collection of selection markers.
+	 * Marker is a selection marker when selection range is inside the marker range.
+	 *
+	 * @readonly
+	 * @type {module:utils/collection~Collection.<module:engine/model/markercollection~Marker>}
+	 */
+	get markers() {
+		return this._selection.markers;
+	}
+
+	/**
 	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
 	 *
 	 * @protected
@@ -247,10 +259,30 @@ export default class DocumentSelection {
 	 *		<paragraph>b</paragraph>
 	 *		<paragraph>]c</paragraph> // this block will not be returned
 	 *
-	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 * @returns {Iterable.<module:engine/model/element~Element>}
 	 */
 	getSelectedBlocks() {
 		return this._selection.getSelectedBlocks();
+	}
+
+	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	getTopMostBlocks() {
+		return this._selection.getTopMostBlocks();
 	}
 
 	/**
@@ -346,16 +378,12 @@ export default class DocumentSelection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
 	 *
 	 * @see module:engine/model/writer~Writer#setSelection
 	 * @protected
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -506,6 +534,12 @@ class LiveSelection extends Selection {
 	constructor( doc ) {
 		super();
 
+		// List of selection markers.
+		// Marker is a selection marker when selection range is inside the marker range.
+		//
+		// @type {module:utils/collection~Collection}
+		this.markers = new Collection( { idProperty: 'name' } );
+
 		// Document which owns this selection.
 		//
 		// @protected
@@ -566,6 +600,9 @@ class LiveSelection extends Selection {
 		} );
 
 		this.listenTo( this._document, 'change', ( evt, batch ) => {
+			// Update selection's markers.
+			this._updateMarkers();
+
 			// Update selection's attributes.
 			this._updateAttributes( false );
 
@@ -696,7 +733,8 @@ class LiveSelection extends Selection {
 			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
-			 * @param {String} uid The unique identifier returned by {@link #overrideGravity}.
+			 * @param {String} uid The unique identifier returned by
+			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
@@ -765,6 +803,32 @@ class LiveSelection extends Selection {
 		} );
 
 		return liveRange;
+	}
+
+	_updateMarkers() {
+		const markers = [];
+
+		for ( const marker of this._model.markers ) {
+			const markerRange = marker.getRange();
+
+			for ( const selectionRange of this.getRanges() ) {
+				if ( markerRange.containsRange( selectionRange, !selectionRange.isCollapsed ) ) {
+					markers.push( marker );
+				}
+			}
+		}
+
+		for ( const marker of markers ) {
+			if ( !this.markers.has( marker ) ) {
+				this.markers.add( marker );
+			}
+		}
+
+		for ( const marker of Array.from( this.markers ) ) {
+			if ( !markers.includes( marker ) ) {
+				this.markers.remove( marker );
+			}
+		}
 	}
 
 	// Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.

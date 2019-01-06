@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
-  "version": "11.0.0",
+  "version": "12.0.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -21,25 +21,25 @@
     "ckeditor 5"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^11.0.0",
+    "@ckeditor/ckeditor5-utils": "^11.1.0",
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^10.0.3",
-    "@ckeditor/ckeditor5-block-quote": "^10.1.0",
-    "@ckeditor/ckeditor5-core": "^11.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^11.0.1",
-    "@ckeditor/ckeditor5-enter": "^10.1.2",
-    "@ckeditor/ckeditor5-essentials": "^10.1.2",
-    "@ckeditor/ckeditor5-heading": "^10.1.0",
-    "@ckeditor/ckeditor5-link": "^10.0.4",
-    "@ckeditor/ckeditor5-list": "^11.0.2",
-    "@ckeditor/ckeditor5-paragraph": "^10.0.3",
-    "@ckeditor/ckeditor5-typing": "^11.0.1",
-    "@ckeditor/ckeditor5-undo": "^10.0.3",
-    "@ckeditor/ckeditor5-widget": "^10.3.0",
+    "@ckeditor/ckeditor5-basic-styles": "^10.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^10.1.1",
+    "@ckeditor/ckeditor5-core": "^11.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^11.0.2",
+    "@ckeditor/ckeditor5-enter": "^10.1.3",
+    "@ckeditor/ckeditor5-essentials": "^10.1.3",
+    "@ckeditor/ckeditor5-heading": "^10.1.1",
+    "@ckeditor/ckeditor5-link": "^10.1.0",
+    "@ckeditor/ckeditor5-list": "^11.0.3",
+    "@ckeditor/ckeditor5-paragraph": "^10.0.4",
+    "@ckeditor/ckeditor5-typing": "^11.0.2",
+    "@ckeditor/ckeditor5-undo": "^10.0.4",
+    "@ckeditor/ckeditor5-widget": "^10.3.1",
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.7",
+    "eslint-config-ckeditor5": "^1.0.9",
     "husky": "^0.14.3",
     "lint-staged": "^7.0.0"
   },

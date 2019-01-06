@@ -159,6 +159,10 @@ export default class Writer {
 	insert( item, itemOrPosition, offset = 0 ) {
 		this._assertWriterUsedCorrectly();
 
+		if ( item instanceof Text && item.data == '' ) {
+			return;
+		}
+
 		const position = Position._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
@@ -466,6 +470,14 @@ export default class Writer {
 
 		const position = Position._createAt( itemOrPosition, offset );
 
+		// Do not move anything if the move target is same as moved range start.
+		if ( position.isEqual( range.start ) ) {
+			return;
+		}
+
+		// If part of the marker is removed, create additional marker operation for undo purposes.
+		this._addOperationForAffectedMarkers( 'move', range );
+
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
 			 * Range is going to be moved within not the same document. Please use
@@ -491,17 +503,15 @@ export default class Writer {
 	remove( itemOrRange ) {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange instanceof Range ) {
-			// The array is reversed, so the ranges to remove are in correct order and do not have to be updated.
-			const ranges = itemOrRange.getMinimalFlatRanges().reverse();
+		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
 
-			for ( const flat of ranges ) {
-				applyRemoveOperation( flat.start, flat.end.offset - flat.start.offset, this.batch, this.model );
-			}
-		} else {
-			const howMany = itemOrRange.is( 'text' ) ? itemOrRange.offsetSize : 1;
+		// If part of the marker is removed, create additional marker operation for undo purposes.
+		this._addOperationForAffectedMarkers( 'move', rangeToRemove );
 
-			applyRemoveOperation( Position._createBefore( itemOrRange ), howMany, this.batch, this.model );
+		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
+
+		for ( const flat of ranges ) {
+			applyRemoveOperation( flat.start, flat.end.offset - flat.start.offset, this.batch, this.model );
 		}
 	}
 
@@ -518,6 +528,9 @@ export default class Writer {
 
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
+
+		// If part of the marker is removed, create additional marker operation for undo purposes.
+		this._addOperationForAffectedMarkers( 'merge', position );
 
 		if ( !( nodeBefore instanceof Element ) ) {
 			/**
@@ -623,9 +636,7 @@ export default class Writer {
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -888,12 +899,12 @@ export default class Writer {
 
 		if ( !options || typeof options.usingOperation != 'boolean' ) {
 			/**
-			 * The `options.usingOperations` parameter is required when adding a new marker.
+			 * The `options.usingOperation` parameter is required when adding a new marker.
 			 *
-			 * @error writer-addMarker-no-usingOperations
+			 * @error writer-addMarker-no-usingOperation
 			 */
 			throw new CKEditorError(
-				'writer-addMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
+				'writer-addMarker-no-usingOperation: The options.usingOperation parameter is required when adding a new marker.'
 			);
 		}
 
@@ -1067,14 +1078,8 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets the document's selection (ranges and direction) to the specified location based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or the given {@link module:engine/model/position~Position position},
-	 * * or the given {@link module:engine/model/range~Range range},
-	 * * or the given iterable of {@link module:engine/model/range~Range ranges},
-	 * * or the given {@link module:engine/model/node~Node node},
-	 * * or `null`.
+	 * Sets the document's selection (ranges and direction) to the specified location based on the given
+	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );
@@ -1118,9 +1123,7 @@ export default class Writer {
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -1292,6 +1295,50 @@ export default class Writer {
 		 */
 		if ( this.model._currentWriter !== this ) {
 			throw new CKEditorError( 'writer-incorrect-use: Trying to use a writer outside the change() block.' );
+		}
+	}
+
+	/**
+	 * For given action `type` and `positionOrRange` where the action happens, this function finds all affected markers
+	 * and applies a marker operation with the new marker range equal to the current range. Thanks to this, the marker range
+	 * can be later correctly processed during undo.
+	 *
+	 * @private
+	 * @param {'move'|'merge'} type Writer action type.
+	 * @param {module:engine/model/position~Position|module:engine/model/range~Range} positionOrRange Position or range
+	 * where the writer action happens.
+	 */
+	_addOperationForAffectedMarkers( type, positionOrRange ) {
+		for ( const marker of this.model.markers ) {
+			if ( !marker.managedUsingOperations ) {
+				continue;
+			}
+
+			const markerRange = marker.getRange();
+			let isAffected = false;
+
+			if ( type == 'move' ) {
+				const intersecting =
+					positionOrRange.containsPosition( markerRange.start ) ||
+					positionOrRange.start.isEqual( markerRange.start ) ||
+					positionOrRange.containsPosition( markerRange.end ) ||
+					positionOrRange.end.isEqual( markerRange.end );
+
+				isAffected = intersecting && !positionOrRange.containsRange( markerRange );
+			} else {
+				// if type == 'merge'.
+				const elementBefore = positionOrRange.nodeBefore;
+				const elementAfter = positionOrRange.nodeAfter;
+
+				const affectedOnLeft = markerRange.start.parent == elementBefore && markerRange.start.isAtEnd;
+				const affectedOnRight = markerRange.end.parent == elementAfter && markerRange.end.offset == 0;
+
+				isAffected = affectedOnLeft || affectedOnRight;
+			}
+
+			if ( isAffected ) {
+				this.updateMarker( marker.name, { range: markerRange } );
+			}
 		}
 	}
 }

@@ -71,9 +71,7 @@ export default class DocumentSelection {
 	 *		// Creates fake selection with label.
 	 *		const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -278,10 +276,7 @@ export default class DocumentSelection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/documentselection~DocumentSelection document selection},
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
-	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * {@link module:engine/view/selection~Selectable selectable}.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );
@@ -331,8 +326,7 @@ export default class DocumentSelection {
 	 *
 	 * @protected
 	 * @fires change
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.

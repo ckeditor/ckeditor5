@@ -1110,6 +1110,74 @@ describe( 'Selection', () => {
 		}
 	} );
 
+	describe( 'getTopMostBlocks()', () => {
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.register( 'lvl0', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'lvl1', { allowIn: 'lvl0', isLimit: true } );
+			model.schema.register( 'lvl2', { allowIn: 'lvl1', isObject: true } );
+
+			model.schema.extend( 'p', { allowIn: 'lvl2' } );
+		} );
+
+		it( 'returns an iterator', () => {
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( doc.selection.getTopMostBlocks().next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns block for a collapsed selection', () => {
+			setData( model, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
+		} );
+
+		it( 'returns block for a collapsed selection (empty block)', () => {
+			setData( model, '<p>a</p><p>[]</p><p>c</p>' );
+
+			const blocks = Array.from( doc.selection.getTopMostBlocks() );
+
+			expect( blocks ).to.have.length( 1 );
+			expect( blocks[ 0 ].childCount ).to.equal( 0 );
+		} );
+
+		it( 'returns block for a non collapsed selection', () => {
+			setData( model, '<p>a</p><p>[b]</p><p>c</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b' ] );
+		} );
+
+		it( 'returns two blocks for a non collapsed selection', () => {
+			setData( model, '<p>a</p><p>[b</p><p>c]</p><p>d</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
+		} );
+
+		it( 'returns only top most blocks', () => {
+			setData( model, '[<p>foo</p><lvl0><lvl1><lvl2><p>bar</p></lvl2></lvl1></lvl0><p>baz</p>]' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#foo', 'lvl0', 'p#baz' ] );
+		} );
+
+		it( 'returns only selected blocks even if nested in other blocks', () => {
+			setData( model, '<p>foo</p><lvl0><lvl1><lvl2><p>[b]ar</p></lvl2></lvl1></lvl0><p>baz</p>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
+		} );
+
+		// Map all elements to names. If element contains child text node it will be appended to name with '#'.
+		function stringifyBlocks( elements ) {
+			return Array.from( elements ).map( el => {
+				const name = el.name;
+
+				const firstChild = el.getChild( 0 );
+				const hasText = firstChild && firstChild.data;
+
+				return hasText ? `${ name }#${ firstChild.data }` : name;
+			} );
+		}
+	} );
+
 	describe( 'attributes interface', () => {
 		let rangeInFullP;
 

@@ -29,16 +29,19 @@ import DowncastDispatcher from '../conversion/downcastdispatcher';
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import Mapper from '../conversion/mapper';
 import {
-	convertRangeSelection,
 	convertCollapsedSelection,
-} from '../conversion/downcast-selection-converters';
-import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcast-converters';
+	convertRangeSelection,
+	insertElement,
+	insertText,
+	insertUIElement,
+	wrap
+} from '../conversion/downcasthelpers';
 
 import { isPlainObject } from 'lodash-es';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
- * Writes the content of the {@link module:engine/model/document~Document document} to an HTML-like string.
+ * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
  *
  * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
@@ -72,9 +75,10 @@ export function getData( model, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the content of the {@link module:engine/model/document~Document document} provided as an HTML-like string.
+ * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
- * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before inserting them.
+ * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before
+ * trying to use them.
  *
  * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
@@ -230,6 +234,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 
 		return new ViewContainerElement( modelItem.name, attributes );
 	} ) );
+
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
 	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, writer ) => {
@@ -277,7 +282,6 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {module:engine/model/schema~Schema} schema A schema instance used by converters for element validation.
- * @param {module:engine/model/batch~Batch} batch A batch used for conversion.
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.

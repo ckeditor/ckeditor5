@@ -80,7 +80,7 @@ export function getData( view, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the content of the {@link module:engine/view/document~Document document} provided as an HTML-like string.
+ * Sets the content of a view {@link module:engine/view/document~Document document} provided as an HTML-like string.
  *
  * @param {module:engine/view/view~View} view
  * @param {String} data An HTML-like string to write into the document.
@@ -111,44 +111,47 @@ setData._parse = parse;
 
 /**
  * Converts view elements to HTML-like string representation.
+ *
  * A root element can be provided as {@link module:engine/view/text~Text text}:
  *
- *		const text = new Text( 'foobar' );
+ *		const text = downcastWriter.createText( 'foobar' );
  *		stringify( text ); // 'foobar'
  *
  * or as an {@link module:engine/view/element~Element element}:
  *
- *		const element = new Element( 'p', null, new Text( 'foobar' ) );
+ *		const element = downcastWriter.createElement( 'p', null, downcastWriter.createText( 'foobar' ) );
  *		stringify( element ); // '<p>foobar</p>'
  *
  * or as a {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
  *
- *		const text = new Text( 'foobar' );
- *		const b = new Element( 'b', { name: 'test' }, text );
- *		const p = new Element( 'p', { style: 'color:red;' } );
- *		const fragment = new DocumentFragment( [ p, b ] );
+ *		const text = downcastWriter.createText( 'foobar' );
+ *		const b = downcastWriter.createElement( 'b', { name: 'test' }, text );
+ *		const p = downcastWriter.createElement( 'p', { style: 'color:red;' } );
+ *		const fragment = downcastWriter.createDocumentFragment( [ p, b ] );
  *
  *		stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  *
  * Additionally, a {@link module:engine/view/documentselection~DocumentSelection selection} instance can be provided.
- * Ranges from the selection will then be included in output data.
+ * Ranges from the selection will then be included in the output data.
  * If a range position is placed inside the element node, it will be represented with `[` and `]`:
  *
- *		const text = new Text( 'foobar' );
- *		const b = new Element( 'b', null, text );
- *		const p = new Element( 'p', null, b );
- *		const selection = new Selection(
- *			Range._createFromParentsAndOffsets( p, 0, p, 1 )
+ *		const text = downcastWriter.createText( 'foobar' );
+ *		const b = downcastWriter.createElement( 'b', null, text );
+ *		const p = downcastWriter.createElement( 'p', null, b );
+ *		const selection = downcastWriter.createSelection(
+ *			downcastWriter.createRangeIn( p )
  *		);
  *
  *		stringify( p, selection ); // '<p>[<b>foobar</b>]</p>'
  *
  * If a range is placed inside the text node, it will be represented with `{` and `}`:
  *
- *		const text = new Text( 'foobar' );
- *		const b = new Element( 'b', null, text );
- *		const p = new Element( 'p', null, b );
- *		const selection = new Selection( Range._createFromParentsAndOffsets( text, 1, text, 5 ) );
+ *		const text = downcastWriter.createText( 'foobar' );
+ *		const b = downcastWriter.createElement( 'b', null, text );
+ *		const p = downcastWriter.createElement( 'p', null, b );
+ *		const selection = downcastWriter.createSelection(
+ *			downcastWriter.createRange( downcastWriter.createPositionAt( text, 1 ), downcastWriter.createPositionAt( text, 5 ) )
+ *		);
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
@@ -159,10 +162,10 @@ setData._parse = parse;
  *
  * Multiple ranges are supported:
  *
- *		const text = new Text( 'foobar' );
- *		const selection = new Selection( [
- *			Range._createFromParentsAndOffsets( text, 0, text, 1 ) ),
- *			Range._createFromParentsAndOffsets( text, 3, text, 5 ) )
+ *		const text = downcastWriter.createText( 'foobar' );
+ *		const selection = downcastWriter.createSelection( [
+ *			downcastWriter.createRange( downcastWriter.createPositionAt( text, 0 ), downcastWriter.createPositionAt( text, 1 ) ),
+ *			downcastWriter.createRange( downcastWriter.createPositionAt( text, 3 ), downcastWriter.createPositionAt( text, 5 ) )
  *		] );
  *
  *		stringify( text, selection ); // '{f}oo{ba}r'
@@ -172,9 +175,9 @@ setData._parse = parse;
  * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
  * be converted to a selection containing one range collapsed at this position.
  *
- *		const text = new Text( 'foobar' );
- *		const range = Range._createFromParentsAndOffsets( text, 0, text, 1 );
- *		const position = new Position( text, 3 );
+ *		const text = downcastWriter.createText( 'foobar' );
+ *		const range = downcastWriter.createRange( downcastWriter.createPositionAt( text, 0 ), downcastWriter.createPositionAt( text, 1 ) );
+ *		const position = downcastWriter.createPositionAt( text, 3 );
  *
  *		stringify( text, range ); // '{f}oobar'
  *		stringify( text, position ); // 'foo{}bar'
@@ -186,10 +189,10 @@ setData._parse = parse;
  * {@link module:engine/view/emptyelement~EmptyElement empty elements}
  * and {@link module:engine/view/uielement~UIElement UI elements}:
  *
- *		const attribute = new AttributeElement( 'b' );
- *		const container = new ContainerElement( 'p' );
- *		const empty = new EmptyElement( 'img' );
- *		const ui = new UIElement( 'span' );
+ *		const attribute = downcastWriter.createAttributeElement( 'b' );
+ *		const container = downcastWriter.createContainerElement( 'p' );
+ *		const empty = downcastWriter.createEmptyElement( 'img' );
+ *		const ui = downcastWriter.createUIElement( 'span' );
  *		getData( attribute, null, { showType: true } ); // '<attribute:b></attribute:b>'
  *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *		getData( empty, null, { showType: true } ); // '<empty:img></empty:img>'
@@ -198,14 +201,14 @@ setData._parse = parse;
  * If `options.showPriority` is set to `true`, a priority will be displayed for all
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements}.
  *
- *		const attribute = new AttributeElement( 'b' );
+ *		const attribute = downcastWriter.createAttributeElement( 'b' );
  *		attribute._priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
  * If `options.showAttributeElementId` is set to `true`, the attribute element's id will be displayed for all
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that have it set.
  *
- *		const attribute = new AttributeElement( 'span' );
+ *		const attribute = downcastWriter.createAttributeElement( 'span' );
  *		attribute._id = 'marker:foo';
  *		getData( attribute, null, { showAttributeElementId: true } ); // <span view-id="marker:foo"></span>
  *
@@ -249,7 +252,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 }
 
 /**
- * Parses an HTML-like string and returns view tree nodes.
+ * Parses an HTML-like string and returns a view tree.
  * A simple string will be converted to a {@link module:engine/view/text~Text text} node:
  *
  *		parse( 'foobar' ); // Returns an instance of text.
@@ -1050,7 +1053,7 @@ function _convertType( type ) {
 // Checks if a given priority is allowed. Returns null if the priority cannot be converted.
 //
 // @param {String} priorityString
-// returns {Number|Null}
+// returns {Number|null}
 function _convertPriority( priorityString ) {
 	const priority = parseInt( priorityString, 10 );
 

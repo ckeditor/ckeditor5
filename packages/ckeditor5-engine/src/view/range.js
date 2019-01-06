@@ -11,7 +11,13 @@ import Position from './position';
 import TreeWalker from './treewalker';
 
 /**
- * Tree view range.
+ * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~Position positions}.
+ *
+ * In order to create a new position instance use the `createPosition*()` factory methods available in:
+ *
+ * * {@module:engine/view/view~View}
+ * * {@module:engine/view/downcastwriter~DowncastWriter}
+ * * {@module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Range {
 	/**
@@ -20,7 +26,7 @@ export default class Range {
 	 * **Note:** Constructor creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
 	 * @param {module:engine/view/position~Position} start Start position.
-	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at the `start` position.
 	 */
 	constructor( start, end = null ) {
 		/**
@@ -91,13 +97,14 @@ export default class Range {
 	 *
 	 * For example:
 	 *
-	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b>]</p>
-	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
+	 *		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b>]</p>
+	 *		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
 	 *
 	 * Note that in the sample above:
-	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
-	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 *
+	 * - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
@@ -123,13 +130,14 @@ export default class Range {
 	 *
 	 * For example:
 	 *
-	 * 		<p>Foo</p>[<p><b>Bar</b>]</p> -> <p>Foo</p><p><b>{Bar}</b></p>
-	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
+	 *		<p>Foo</p>[<p><b>Bar</b>]</p> -> <p>Foo</p><p><b>{Bar}</b></p>
+	 *		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
 	 *
 	 * Note that in the sample above:
-	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
-	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 *
+	 * - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
@@ -205,10 +213,10 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = new Text( 'foo' );
-	 *		let img = new ContainerElement( 'img' );
-	 *		let bar = new Text( 'bar' );
-	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
+	 *		let foo = downcastWriter.createText( 'foo' );
+	 *		let img = downcastWriter.createContainerElement( 'img' );
+	 *		let bar = downcastWriter.createText( 'bar' );
+	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
 	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
 	 *		let otherRange = view.createRange( // "oo", img, "ba" are in range.
@@ -260,10 +268,10 @@ export default class Range {
 	 *
 	 * Examples:
 	 *
-	 *		let foo = new Text( 'foo' );
-	 *		let img = new ContainerElement( 'img' );
-	 *		let bar = new Text( 'bar' );
-	 *		let p = new ContainerElement( 'p', null, [ foo, img, bar ] );
+	 *		let foo = downcastWriter.createText( 'foo' );
+	 *		let img = downcastWriter.createContainerElement( 'img' );
+	 *		let bar = downcastWriter.createText( 'bar' );
+	 *		let p = downcastWriter.createContainerElement( 'p', null, [ foo, img, bar ] );
 	 *
 	 *		let range = view.createRange( view.createPositionAt( foo, 2 ), view.createPositionAt( bar, 1 ); // "o", img, "b" are in range.
 	 *		let otherRange = view.createRange( view.createPositionAt( foo, 1 ), view.createPositionAt( p, 2 ); // "oo", img are in range.
@@ -309,6 +317,7 @@ export default class Range {
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 * @returns {module:engine/view/treewalker~TreeWalker}
 	 */
 	getWalker( options = {} ) {
 		options.boundaries = this;
@@ -326,6 +335,11 @@ export default class Range {
 		return this.start.getCommonAncestor( this.end );
 	}
 
+	/**
+	 * Clones this range.
+	 *
+	 * @returns {module:engine/view/range~Range}
+	 */
 	clone() {
 		return new Range( this.start, this.end );
 	}
@@ -381,7 +395,7 @@ export default class Range {
 	}
 
 	/**
-	 * Checks and returns whether this range intersects with given range.
+	 * Checks and returns whether this range intersects with the given range.
 	 *
 	 * @param {module:engine/view/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} True if ranges intersect.
@@ -391,7 +405,7 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range from given parents and offsets.
+	 * Creates a range from the given parents and offsets.
 	 *
 	 * @protected
 	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} startElement Start position

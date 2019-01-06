@@ -13,7 +13,6 @@ import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import ViewPosition from '../../../../src/view/position';
-import { downcastElementToElement } from '../../../../src/conversion/downcast-converters';
 import { setData } from '../../../../src/dev-utils/model';
 
 ClassicEditor
@@ -41,21 +40,21 @@ ClassicEditor
 		} );
 
 		editor.conversion.for( 'downcast' )
-			.add( downcastElementToElement( {
+			.elementToElement( {
 				model: 'widget',
 				view: ( modelItem, writer ) => {
 					const b = writer.createAttributeElement( 'b' );
 					const div = writer.createContainerElement( 'div' );
 
-					writer.insert( ViewPosition._createAt( div ), b );
+					writer.insert( ViewPosition._createAt( div, 0 ), b );
 
 					return toWidget( div, writer, { label: 'element label' } );
 				}
-			} ) )
-			.add( downcastElementToElement( {
+			} )
+			.elementToElement( {
 				model: 'nested',
 				view: ( item, writer ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-			} ) );
+			} );
 
 		setData( editor.model,
 			'<paragraph>foo[]</paragraph>' +

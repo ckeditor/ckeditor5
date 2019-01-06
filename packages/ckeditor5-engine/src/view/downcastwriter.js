@@ -26,11 +26,15 @@ import { isPlainObject } from 'lodash-es';
  *
  * It provides a set of methods used to manipulate view nodes.
  *
- * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
- * To work with ordinary views (e.g. parsed from a string) use the {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
- *
  * Do not create an instance of this writer manually. To modify a view structure, use
- * the {@link module:engine/view/view~View#change View#change()) block.
+ * the {@link module:engine/view/view~View#change `View#change()`} block.
+ *
+ * The `DowncastWriter` is designed to work with semantic views which are the views that were/are being downcasted from the model.
+ * To work with ordinary views (e.g. parsed from a pasted content) use the
+ * {@link module:engine/view/upcastwriter~UpcastWriter upcast writer}.
+ *
+ * Read more about changing the view in the {@glink framework/guides/architecture/editing-engine#changing-the-view Changing the view}
+ * section of the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide.
  */
 export default class DowncastWriter {
 	constructor( document ) {
@@ -52,10 +56,7 @@ export default class DowncastWriter {
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection document selection},
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
-	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
 	 *
 	 * Usage:
 	 *
@@ -110,8 +111,7 @@ export default class DowncastWriter {
 	 * 		// (and be  properly handled by screen readers).
 	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -141,8 +141,8 @@ export default class DowncastWriter {
 	 *
 	 *		writer.createText( 'foo' );
 	 *
-	 * @param {String} data Text data.
-	 * @returns {module:engine/view/text~Text} Created text node.
+	 * @param {String} data The text's data.
+	 * @returns {module:engine/view/text~Text} The created text node.
 	 */
 	createText( data ) {
 		return new Text( data );
@@ -1072,9 +1072,7 @@ export default class DowncastWriter {
 	 *		// Creates fake selection with label.
 	 *		const selection = writer.createSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
-	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
-	 * module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selectable} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.

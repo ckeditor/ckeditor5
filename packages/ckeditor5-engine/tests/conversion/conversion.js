@@ -3,22 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import Conversion from '../../src/conversion/conversion';
+import Conversion, { ConversionHelpers } from '../../src/conversion/conversion';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
+import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers';
+import DowncastHelpers from '../../src/conversion/downcasthelpers';
 
 import EditingController from '../../src/controller/editingcontroller';
 
 import Model from '../../src/model/model';
 
-import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 
 describe( 'Conversion', () => {
-	let conversion, dispA, dispB;
+	let conversion, dispA, dispB, dispC;
 
 	beforeEach( () => {
 		conversion = new Conversion();
@@ -26,10 +27,12 @@ describe( 'Conversion', () => {
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
 		dispA = Symbol( 'dispA' );
 		dispB = Symbol( 'dispB' );
+		dispC = Symbol( 'dispC' );
 
-		conversion.register( 'ab', [ dispA, dispB ] );
-		conversion.register( 'a', [ dispA ] );
-		conversion.register( 'b', [ dispB ] );
+		conversion.register( 'ab', new UpcastHelpers( [ dispA, dispB ] ) );
+		conversion.register( 'a', new UpcastHelpers( dispA ) );
+		conversion.register( 'b', new UpcastHelpers( dispB ) );
+		conversion.register( 'c', new DowncastHelpers( dispC ) );
 	} );
 
 	describe( 'register()', () => {
@@ -41,16 +44,21 @@ describe( 'Conversion', () => {
 	} );
 
 	describe( 'for()', () => {
-		it( 'should return object with .add() method', () => {
-			const forResult = conversion.for( 'ab' );
-
-			expect( forResult.add ).to.be.instanceof( Function );
+		it( 'should return ConversionHelpers', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
 			expect( () => {
 				conversion.for( 'foo' );
 			} ).to.throw( CKEditorError, /conversion-for-unknown-group/ );
+		} );
+
+		it( 'should return proper helpers for group', () => {
+			expect( conversion.for( 'ab' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'a' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'b' ) ).to.be.instanceof( UpcastHelpers );
+			expect( conversion.for( 'c' ) ).to.be.instanceof( DowncastHelpers );
 		} );
 	} );
 
@@ -100,6 +108,7 @@ describe( 'Conversion', () => {
 			schema = model.schema;
 
 			schema.extend( '$text', {
+				allowIn: '$root',
 				allowAttributes: [ 'bold' ]
 			} );
 
@@ -113,8 +122,8 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 			conversion = new Conversion();
-			conversion.register( 'upcast', [ viewDispatcher ] );
-			conversion.register( 'downcast', [ controller.downcastDispatcher ] );
+			conversion.register( 'upcast', new UpcastHelpers( [ viewDispatcher ] ) );
+			conversion.register( 'downcast', new DowncastHelpers( controller.downcastDispatcher ) );
 		} );
 
 		describe( 'elementToElement', () => {
@@ -124,12 +133,22 @@ describe( 'Conversion', () => {
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 			} );
 
-			it( 'config.converterPriority is defined', () => {
+			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 				conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 
 				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
+			} );
+
+			it( 'config.converterPriority is defined (override upcast)', () => {
+				schema.register( 'foo', {
+					inheritAllFrom: '$block'
+				} );
+				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+				conversion.elementToElement( { model: 'foo', view: 'p', converterPriority: 'high' } );
+
+				test( '<p>Foo</p>', '<foo>Foo</foo>', '<p>Foo</p>' );
 			} );
 
 			it( 'config.view is an object', () => {
@@ -223,12 +242,26 @@ describe( 'Conversion', () => {
 				test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
-			it( 'config.converterPriority is defined', () => {
+			it( 'config.converterPriority is defined (override downcast)', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 				conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
 				test( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
 				test( '<p><strong>Foo</strong></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>', '<p><b>Foo</b></p>' );
+			} );
+
+			it( 'config.converterPriority is defined (override upcast)', () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'foo' ]
+				} );
+				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+				conversion.attributeToElement( { model: 'foo', view: 'strong', converterPriority: 'high' } );
+
+				test(
+					'<p><strong>Foo</strong></p>',
+					'<paragraph><$text foo="true">Foo</$text></paragraph>',
+					'<p><strong>Foo</strong></p>'
+				);
 			} );
 
 			it( 'config.view is an object', () => {
@@ -625,6 +658,17 @@ describe( 'Conversion', () => {
 					'<div border="border"><div shade="shade"></div></div>'
 				);
 			} );
+
+			it( 'config.converterPriority is defined (override downcast)', () => {
+				schema.extend( 'image', {
+					allowAttributes: [ 'foo' ]
+				} );
+
+				conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
+				conversion.attributeToAttribute( { model: 'foo', view: 'foofoo', converterPriority: 'high' } );
+
+				test( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
+			} );
 		} );
 
 		function test( input, expectedModel, expectedView = null ) {
@@ -650,5 +694,40 @@ describe( 'Conversion', () => {
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
 		}
+	} );
+} );
+
+describe( 'ConversionHelpers', () => {
+	describe( 'add()', () => {
+		const dispA = Symbol( 'dispA' );
+		const dispB = Symbol( 'dispB' );
+
+		it( 'should call a helper for one defined dispatcher', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
+
+			helpers.add( spy );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+		} );
+
+		it( 'should call helper for all defined dispatcherers', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( [ dispA, dispB ] );
+
+			helpers.add( spy );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWithExactly( spy, dispA );
+			sinon.assert.calledWithExactly( spy, dispB );
+		} );
+
+		it( 'should be chainable', () => {
+			const spy = sinon.spy();
+			const helpers = new ConversionHelpers( dispA );
+
+			expect( helpers.add( spy ) ).to.equal( helpers );
+		} );
 	} );
 } );

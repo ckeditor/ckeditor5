@@ -55,7 +55,8 @@ export default class Text extends Node {
 	/**
 	 * Returns a text data contained in the node.
 	 *
-	 * @returns {String}
+	 * @readonly
+	 * @type {String}
 	 */
 	get data() {
 		return this._data;
