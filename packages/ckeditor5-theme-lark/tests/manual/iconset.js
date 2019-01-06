@@ -18,6 +18,8 @@ import italic from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 import underline from '@ckeditor/ckeditor5-basic-styles/theme/icons/underline.svg';
 import code from '@ckeditor/ckeditor5-basic-styles/theme/icons/code.svg';
 import strikethrough from '@ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg';
+import subscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/subscript.svg';
+import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscript.svg';
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
@@ -70,7 +72,7 @@ const icons = {
 	alignLeft, alignCenter, alignRight, alignJustify,
 
 	// basic-styles
-	bold, italic, underline, code, strikethrough,
+	bold, italic, underline, code, strikethrough, subscript, superscript,
 
 	// core
 	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,
@@ -119,7 +121,7 @@ for ( const i in icons ) {
 	toolbar.items.add( button );
 }
 
-toolbar.className = 'ck-editor-toolbar ck-reset_all';
+toolbar.class = 'ck-editor-toolbar ck-reset_all';
 toolbar.render();
 
 document.body.appendChild( toolbar.element );
