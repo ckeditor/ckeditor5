@@ -24,7 +24,6 @@ import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
-import log from "../../../ckeditor5-utils/src/log";
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
