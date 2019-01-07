@@ -57,7 +57,7 @@ export default class FileReader {
 	 * Reads the provided file.
 	 *
 	 * @param {File} file Native File object.
-	 * @returns {Promise} Returns a promise that will be resolved with file's content.
+	 * @returns {Promise.<String>} Returns a promise that will be resolved with file's content.
 	 * The promise will be rejected in case of an error or when the reading process is aborted.
 	 */
 	read( file ) {
