@@ -4,28 +4,28 @@ addons:
   firefox: latest
   apt:
     sources:
-      - google-chrome
+    - google-chrome
     packages:
-      - google-chrome-stable
+    - google-chrome-stable
 language: node_js
 node_js:
-  - '8'
+- '8'
 cache:
   yarn: true
 branches:
   except:
-    - stable
+  - stable
 before_install:
-  - 'export DISPLAY=:99.0'
-  - sh -e /etc/init.d/xvfb start
-  - npm i -g yarn
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- npm i -g yarn
 install:
-  - yarn add @ckeditor/ckeditor5-dev-tests
-  - ckeditor5-dev-tests-install-dependencies
+- yarn add @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
 script:
-  - ckeditor5-dev-tests-travis
+- ckeditor5-dev-tests-travis
 after_success:
-  - ckeditor5-dev-tests-save-revision
+- ckeditor5-dev-tests-save-revision
 env:
   global:
   - secure: vaFnCrW6mVGS9d6ojXkic+VgfRSZ0wOLPMaN81BYZ+mWHeIkuSI0q596lM92JK4ix++3+JTaX6A3tzLJHXCGC8r7nkJUXHXEdLA+8b8dlZXe6P94bwB7GUqrLzrBUJ/FB9HQXqmlLwniuczqzLgvSac6IeGfuK42JsL4ae+TnOW/GUiMjpv8FbME0IVvIb00ezVP6TW+4PJBrLZ3Z9xF9eyH/pxvTZVgTm5dtF1z07rEH0lFKGRcdzrCHi51eUTXxnwXWgpI9i719esAS0fIuytOZFO5XuwT1QXEKYrHi++UGwWPEi+q7I2KE0aTyWfEkkTMLOK9a4TbMeqdHYayfX4/WG9AbN1Y0SnPcmt3h2fccrar2wXEAJGSfNZtKlk9FAuZszU4bR8bmIquDGIKJCbUe7+CVP8khlZv+isoJKGBeiK7t5F15QbHsqQX/s+EqAZAz/YY7JYQG3Kj5qA7lOXsy9rBnuMnsaTl8V9Gqh3ovbHyADO3NYgx7uvjjOSUqR39rry4gT5UAVOLudPv0BJriKZ0Tr6L50WF/W5cQsXWstctxkfSeoBVI26AgLoY7Int/BlM6kfRqXrVYxbvjjKRkfI/+S6sxjoaI8nDsk3z+CZueuy2BYmUOykVCtglQC0VlRozkmgzusWbtBx/YBMFr/Ih7sdm3sC/X6aepg8=
