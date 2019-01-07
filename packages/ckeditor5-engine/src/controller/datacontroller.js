@@ -113,6 +113,21 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	get( rootName = 'main' ) {
+		if ( !_checkIfRootsExists( [ rootName ], this.model.document.getRootNames() ) ) {
+			/**
+			 * Cannot get data from non-existing root. This error is thrown when {@link #get DataController#get() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #get} like:
+			 *
+			 * 		data.get( 'root2' );
+			 *
+			 * will throw this error.
+			 *
+			 * @error trying-to-get-data-from-non-existing-root
+			 */
+			throw new CKEditorError( 'trying-to-get-data-from-non-existing-root: Attempting to get data from non-existing root.' );
+		}
+
 		// Get model range.
 		return this.stringify( this.model.document.getRoot( rootName ) );
 	}
@@ -205,6 +220,21 @@ export default class DataController {
 			initialData = data;
 		}
 
+		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
+			/**
+			 * Cannot init data on non-existing root. This error is thrown when {@link #init DataController#init() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #init} like:
+			 *
+			 * 		data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 *
+			 * will throw this error.
+			 *
+			 * @error trying-to-init-data-on-non-existing-root
+			 */
+			throw new CKEditorError( 'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.' );
+		}
+
 		this.model.enqueueChange( 'transparent', writer => {
 			for ( const rootName of Object.keys( initialData ) ) {
 				const modelRoot = this.model.document.getRoot( rootName );
@@ -235,25 +265,19 @@ export default class DataController {
 			initialData = data;
 		}
 
-		const rootNames = this.model.document.getRootNames();
-
-		// Check if all roots exists. Thrown an error if there is non-existing one before changing any data.
-		for ( const rootName of Object.keys( initialData ) ) {
-			if ( !rootNames.includes( rootName ) ) {
-				/**
-				 * Cannot set data on non-existing root. This error is thrown when {@link #set DataController#set() method}
-				 * is called with absent root name. For example, if there is an editor instance only with the `main` root,
-				 * calling {@link #set} like:
-				 *
-				 * 		data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
-				 *
-			 	 * will throw this error.
-				 *
-				 * @error trying-to-set-data-on-non-existing-root
-				 */
-				throw new CKEditorError( 'trying-to-set-data-on-non-existing-root: ' +
-					`Attempting to set data on non-existing "${ rootName }" root.` );
-			}
+		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
+			/**
+			 * Cannot set data on non-existing root. This error is thrown when {@link #set DataController#set() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #set} like:
+			 *
+			 * 		data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 *
+			 * will throw this error.
+			 *
+			 * @error trying-to-set-data-on-non-existing-root
+			 */
+			throw new CKEditorError( 'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.' );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
@@ -346,4 +370,20 @@ function _getMarkersRelativeToElement( element ) {
 	}
 
 	return result;
+}
+
+// Check if all provided root names are present in the given list of editor roots.
+//
+// @private
+// @param {Array.<String>} rootNames Root names to check.
+// @param {Array.<String>} editorRoots List of editor root names.
+// @returns {Boolean} Whether all provided root names are present in the editor.
+function _checkIfRootsExists( rootNames, editorRoots ) {
+	for ( const rootName of rootNames ) {
+		if ( !editorRoots.includes( rootName ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }

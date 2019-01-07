@@ -218,6 +218,28 @@ describe( 'DataController', () => {
 
 			return promise;
 		} );
+
+		it( 'should throw an error when non-existent root is used (single)', () => {
+			expect( () => {
+				data.init( { nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.'
+			);
+		} );
+
+		it( 'should throw an error when non-existent root is used (one of many)', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+
+			expect( () => {
+				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.'
+			);
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
+		} );
 	} );
 
 	describe( 'set()', () => {
@@ -287,7 +309,7 @@ describe( 'DataController', () => {
 				data.set( { nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing "nonexistent" root.'
+				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.'
 			);
 		} );
 
@@ -299,7 +321,7 @@ describe( 'DataController', () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing "nonexistent" root.'
+				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.'
 			);
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
@@ -373,6 +395,15 @@ describe( 'DataController', () => {
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+		} );
+
+		it( 'should throw an error when non-existent root is used', () => {
+			expect( () => {
+				data.get( 'nonexistent' );
+			} ).to.throw(
+				CKEditorError,
+				'trying-to-get-data-from-non-existing-root: Attempting to get data from non-existing root.'
+			);
 		} );
 	} );
 
