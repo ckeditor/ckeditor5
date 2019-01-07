@@ -17,7 +17,7 @@ In this guide, you will learn how to address those integration issues and use th
 
 We noticed that [Bootstrap](https://getbootstrap.com) modals cover the UI of the editor and break the input fields. Knowing that you will need to take the following steps to get CKEditor 5 working in the Bootstrap environment:
 
-* configure the `z-index` of CKEditor 5 floating balloons so they are displayed over the Bootstrap overlay,
+* configure the `z-index` of the floating editor UI (e.g. balloons) so it is displayed over the Bootstrap overlay,
 * configure Bootstrap so it stops "stealing" the focus from the rich text editor input fields.
 
 To address the first issue, add the following styles to your application:
@@ -64,7 +64,7 @@ CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work pr
 
 If you want to use CKEditor 5 with [Materialize.css](https://materializecss.com/) you will need to take the following steps:
 
-* customize the base `z-index` of the UI so it is displayed over the Materialize modals,
+* configure the base `z-index` of the floating editor UI so it is displayed over the Materialize modals,
 * bring back the default `.ck-input` class appearance (because Materialize overrides it with higher specificity),
 * configure modals so they stop "stealing" the focus from the rich text editor input fields.
 
@@ -122,7 +122,7 @@ $( '#modal-container' ).modal( {
 
 ## Compatibility with Semantic-UI
 
-CKEditor 5 works properly with [Semantic-UI](https://semantic-ui.com/) after a minor CSS tweak. To use the {@link builds/guides/overview#balloon-editor balloon editor} inside a modal, it is necessary to increase the `z-index` of the UI:
+CKEditor 5 works properly with [Semantic-UI](https://semantic-ui.com/) after a small CSS tweak. To use the {@link builds/guides/overview#balloon-editor balloon editor} inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
 
 ```css
 /*
