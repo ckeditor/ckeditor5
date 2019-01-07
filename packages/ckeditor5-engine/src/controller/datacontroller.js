@@ -238,11 +238,17 @@ export default class DataController {
 
 		const rootNames = this.model.document.getRootNames();
 
-		// Check if all roots exists. Thrown an error if there is non-existing one.
+		// Check if all roots exists. Thrown an error if there is non-existing one before changing any data.
 		for ( const rootName of Object.keys( initialData ) ) {
 			if ( !rootNames.includes( rootName ) ) {
 				/**
-				 * Thrown when there is an attempt to set data on a non-existing root.
+				 * Cannot set data on non-existing root. This error is thrown when {@link #set DataController#set() method}
+				 * is called with absent root name. For example, if there is an editor instance only with the `main` root,
+				 * calling {@link #set} like:
+				 *
+				 * 		data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+				 *
+			 	 * will throw this error.
 				 *
 				 * @error trying-to-set-data-on-non-existing-root
 				 */
