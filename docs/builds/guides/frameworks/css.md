@@ -7,11 +7,11 @@ order: 50
 # Compatibility with CSS Frameworks
 
 CKEditor 5 is compatible with most of the popular CSS frameworks. However, to properly integrate with some of them, additional tweaks may be necessary. This is mostly due to the fact that:
-* CSS frameworks often use higher [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) in their style sheets and override default CKEditor 5 styles, distorting the user interface of the editor,
-* modal components of the frameworks come with the high `z-index` property and render over the UI of the editor,
+* CSS frameworks often use higher [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) in their style sheets and override default editor styles, distorting the user interface,
+* modal components of various UI frameworks use high `z-index` values in their styles and render over (cover) the UI of CKEditor 5,
 * framework modals use aggressive focus management policy which breaks the input fields in the editor (e.g. link input).
 
-In this guide, you will learn how to address those integration issues and use the CKEditor 5 WYSIWYG editor with the most popular CSS frameworks.
+In this guide, you will learn how to address those integration issues and use the CKEditor 5 WYSIWYG editor with the most popular front–end frameworks.
 
 ## Compatibility with Bootstrap
 
