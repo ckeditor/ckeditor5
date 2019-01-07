@@ -15,7 +15,7 @@ import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mo
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'CKFinderUploadAdapter', () => {
-	let editor, sinonXHR;
+	let editor, sinonXHR, fileRepository;
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
@@ -33,6 +33,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				fileRepository = editor.plugins.get( FileRepository );
 			} );
 	} );
 
@@ -45,14 +46,15 @@ describe( 'CKFinderUploadAdapter', () => {
 	} );
 
 	describe( 'UploadAdapter', () => {
-		let adapter, loaderMock;
+		let adapter, loader;
 
 		beforeEach( () => {
 			const file = createNativeFileMock();
 			file.name = 'image.jpeg';
-			loaderMock = { file	};
 
-			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loaderMock );
+			loader = fileRepository.createLoader( file );
+
+			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
@@ -91,15 +93,14 @@ describe( 'CKFinderUploadAdapter', () => {
 					uploaded: 1
 				};
 
-				const promise = adapter.upload()
-					.then( () => {
-						expect( request.url ).to.equal( 'http://example.com' );
-					} );
+				adapter.upload();
 
-				request = sinonXHR.requests[ 0 ];
-				request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
+				return loader.file.then( () => {
+					request = sinonXHR.requests[ 0 ];
+					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
-				return promise;
+					expect( request.url ).to.equal( 'http://example.com' );
+				} );
 			} );
 
 			it( 'should throw an error on generic request error', () => {
@@ -111,8 +112,10 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				const request = sinonXHR.requests[ 0 ];
-				request.error();
+				loader.file.then( () => {
+					const request = sinonXHR.requests[ 0 ];
+					request.error();
+				} );
 
 				return promise;
 			} );
@@ -132,8 +135,10 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Foo bar baz.' );
 					} );
 
-				const request = sinonXHR.requests[ 0 ];
-				request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
+				loader.file.then( () => {
+					const request = sinonXHR.requests[ 0 ];
+					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
+				} );
 
 				return promise;
 			} );
@@ -151,8 +156,10 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				const request = sinonXHR.requests[ 0 ];
-				request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
+				loader.file.then( () => {
+					const request = sinonXHR.requests[ 0 ];
+					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
+				} );
 
 				return promise;
 			} );
@@ -168,8 +175,10 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( request.aborted ).to.be.true;
 					} );
 
-				request = sinonXHR.requests[ 0 ];
-				adapter.abort();
+				loader.file.then( () => {
+					request = sinonXHR.requests[ 0 ];
+					adapter.abort();
+				} );
 
 				return promise;
 			} );
@@ -183,11 +192,13 @@ describe( 'CKFinderUploadAdapter', () => {
 			it( 'should update progress', () => {
 				adapter.upload();
 
-				const request = sinonXHR.requests[ 0 ];
-				request.uploadProgress( { loaded: 4, total: 10 } );
+				return loader.file.then( () => {
+					const request = sinonXHR.requests[ 0 ];
+					request.uploadProgress( { loaded: 4, total: 10 } );
 
-				expect( loaderMock.uploadTotal ).to.equal( 10 );
-				expect( loaderMock.uploaded ).to.equal( 4 );
+					expect( loader.uploadTotal ).to.equal( 10 );
+					expect( loader.uploaded ).to.equal( 4 );
+				} );
 			} );
 		} );
 	} );
