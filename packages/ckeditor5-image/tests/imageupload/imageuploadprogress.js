@@ -90,17 +90,21 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+			try {
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
-				'</figure>]<p>foo</p>'
-			);
+					'</figure>]<p>foo</p>'
+				);
 
-			done();
+				done();
+			} catch ( err ) {
+				done( err );
+			}
 		}, { priority: 'lowest' } );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should work correctly when there is no "reading" status and go straight to "uploading"', () => {
@@ -173,17 +177,21 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			adapterMock.mockProgress( 40, 100 );
 
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+			try {
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar" style="width:40%"></div>' +
-				'</figure>]<p>foo</p>'
-			);
+					'</figure>]<p>foo</p>'
+				);
 
-			done();
+				done();
+			} catch ( err ) {
+				done( err );
+			}
 		}, { priority: 'lowest' } );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary icon', done => {
@@ -194,28 +202,32 @@ describe( 'ImageUploadProgress', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
+				try {
+					expect( getViewData( view ) ).to.equal(
+						'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
 						'<div class="ck-image-upload-complete-icon"></div>' +
-					'</figure>]<p>foo</p>'
-				);
+						'</figure>]<p>foo</p>'
+					);
 
-				clock.tick( 3000 );
+					clock.tick( 3000 );
 
-				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
+					expect( getViewData( view ) ).to.equal(
+						'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
-					'</figure>]<p>foo</p>'
-				);
+						'</figure>]<p>foo</p>'
+					);
 
-				done();
+					done();
+				} catch ( err ) {
+					done( err );
+				}
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png' } );
+			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
 		} );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should allow to customize placeholder image', () => {
@@ -281,18 +293,22 @@ describe( 'ImageUploadProgress', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image">' +
+				try {
+					expect( getViewData( view ) ).to.equal(
+						'[<figure class="ck-widget image">' +
 						'<img src="image.png"></img>' +
-					'</figure>]<p>foo</p>'
-				);
+						'</figure>]<p>foo</p>'
+					);
 
-				done();
+					done();
+				} catch ( err ) {
+					done( err );
+				}
 			}, { priority: 'lowest' } );
 
-			adapterMock.mockSuccess( { default: 'image.png' } );
+			loader.file.then( () => adapterMock.mockSuccess( { default: 'image.png' } ) );
 		} );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 } );
