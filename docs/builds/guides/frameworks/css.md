@@ -6,26 +6,34 @@ order: 50
 
 # Compatibility with CSS Frameworks
 
-Some of popular CSS Frameworks uses stronger [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) of their components that's why sometimes it can overrides CKEditor 5 elements like floating balloons (e.g. URL input).
+CKEditor 5 is compatible with most of the popular CSS frameworks. However, to properly integrate with some of them, additional tweaks may be necessary. This is mostly due to the fact that:
+* CSS frameworks often use higher [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) in their style sheets and override default CKEditor 5 styles, distorting the user interface of the editor,
+* modal components of the frameworks come with the high `z-index` property and render over the UI of the editor,
+* framework modals use aggressive focus management policy which breaks the input fields in the editor (e.g. link input).
+
+In this guide, you will learn how to address those integration issues and use the CKEditor 5 WYSIWYG editor with the most popular CSS frameworks.
 
 ## Compatibility with Bootstrap
 
-In order to display CKEditor 5 inside [Bootstrap](https://getbootstrap.com/) modals you need to proceed as follows:
+We noticed that [Bootstrap](https://getbootstrap.com) modals cover the UI of the editor and break the input fields. Knowing that you will need to take the following steps to get CKEditor 5 working in the Bootstrap environment:
 
-* Configure the `z-index` of CKEditor 5 floating balloons so they are displayed above the Bootstrap overlay.
-* Configure Bootstrap to not steal focus from rich text editor fields.
+* configure the `z-index` of CKEditor 5 floating balloons so they are displayed over the Bootstrap overlay,
+* configure Bootstrap so it stops "stealing" the focus from the rich text editor input fields.
 
-The above can be ensured by adding this CSS:
+To address the first issue, add the following styles to your application:
 
 ```css
-/* We need to handle floating elements inside modals to display them above Bootstrap components. */
+/*
+ * Configure the z-index of the editor's UI, so when inside a Bootstrap
+ * modal, it will be rendered over the modal.
+ */
 :root {
 	--ck-z-default: 100;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
 ```
 
-And passing the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Bootstrap's `modal()` function:
+Pass the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Bootstrap's `modal()` function to fix the second issue:
 
 ```js
 $( '#modal-container' ).modal( {
@@ -33,47 +41,51 @@ $( '#modal-container' ).modal( {
 } );
 ```
 
-Check out the demo on https://codepen.io/ckeditor/pen/vzvgOe.
+[Check out the demo](https://codepen.io/ckeditor/pen/vzvgOe).
 
 ## Compatibility with Foundation
 
-Currently, except `z-index` issue with [Reveal component](https://foundation.zurb.com/sites/docs/reveal.html) there are no obstacles to use CKEditor 5 with [Foundation](https://foundation.zurb.com/sites.html).
+CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work property with [Foundation](https://foundation.zurb.com/sites.html) (also with [Reveal](https://foundation.zurb.com/sites/docs/reveal.html) modal).
 
 ```css
-/* We need to handle floating elements inside modals to display them above Foundation components. */
+/*
+ * Configure the z-index of the editor's UI, so when inside a Reveal modal,
+ * it will be rendered over the modal.
+ */
 :root {
 	--ck-z-default: 100;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
 ```
 
-Check out the demo on https://codepen.io/ckeditor/pen/VqXYQq.
+[Check out the demo](https://codepen.io/ckeditor/pen/VqXYQq).
 
 ## Compatibility with Materialize
 
-If you want to play CKEditor 5 with [Materialize.css](https://materializecss.com/) modals then like in Bootstrap case you need to handle `z-index` issues. Additionally, at this moment we have found one issue related to the `.ck-input` appearance where Materialize overrides it.
+If you want to use CKEditor 5 with [Materialize.css](https://materializecss.com/) you will need to take the following steps:
 
-Configuring modals, you need to handle stealing focus issue and pass [`dismissible: false`](https://materializecss.com/modals.html#options) option.
+* customize the base `z-index` of the UI so it is displayed over the Materialize modals,
+* bring back the default `.ck-input` class appearance (because Materialize overrides it with higher specificity),
+* configure modals so they stop "stealing" the focus from the rich text editor input fields.
 
-```js
-M.Modal.init( modal, { dismissible: false } );
-
-// or jQuery way
-$( '#modal-container' ).modal( {
-	dismissible: false
-} );
-```
+Use the following CSS to address the issues with the `z-index` and selector specificity:
 
 ```css
-/* We need to handle floating elements inside modals to display them above Materialize components. */
+/*
+ * Configure the z-index of the editor's UI, so when inside a Materialize modal,
+ * it will be rendered over the modal.
+ */
 :root {
 	--ck-z-default: 100;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
 
-/* We need to overwrite default input design in materialize.css.
-* See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/forms/_input-fields.scss#L10-L40
-*/
+/*
+ * Bring back the default CKEditor 5 input appearance by overriding high–specificity styles
+ * brought by materialize.css.
+ *
+ * See: https://github.com/Dogfalo/materialize/blob/v1-dev/sass/components/forms/_input-fields.scss#L10-L40
+ */
 .ck input.ck-input.ck-input-text {
 	box-shadow: var(--ck-inner-shadow),0 0;
 	background: var(--ck-color-input-background);
@@ -95,18 +107,32 @@ $( '#modal-container' ).modal( {
 }
 ```
 
-Check out the demo on https://codepen.io/ckeditor/pen/gZebwy.
+To change the behavior of the modals and prevent them from "stealing" the focus, use [`dismissible: false`](https://materializecss.com/modals.html#options) option.
+
+```js
+M.Modal.init( modal, { dismissible: false } );
+
+// Or "jQuery way".
+$( '#modal-container' ).modal( {
+	dismissible: false
+} );
+```
+
+[Check out the demo](https://codepen.io/ckeditor/pen/gZebwy).
 
 ## Compatibility with Semantic-UI
 
-CKEditor 5 also works properly with [Semantic-UI](https://semantic-ui.com/). To place balloon build of CKEditor 5 inside modal then like in other CSS Frameworks it is necessary to make bigger `z-index` than default modal element:
+CKEditor 5 works properly with [Semantic-UI](https://semantic-ui.com/) after a minor CSS tweak. To use the {@link builds/guides/overview#balloon-editor balloon editor} inside a modal, it is necessary to increase the `z-index` of the UI:
 
 ```css
-/* We need to handle floating elements inside modals to display them above Materialize components. */
+/*
+ * Configure the z-index of the editor's UI, so when inside a Semantic-UI modal,
+ * it will be rendered over the modal.
+ */
 :root {
 	--ck-z-default: 100;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
 ```
 
-Check out the demo on https://codepen.io/ckeditor/pen/OrZBpV
+[Check out the demo](https://codepen.io/ckeditor/pen/OrZBpV).
