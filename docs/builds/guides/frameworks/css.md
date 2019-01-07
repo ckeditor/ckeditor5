@@ -96,3 +96,17 @@ $( '#modal-container' ).modal( {
 ```
 
 Check out the demo on https://codepen.io/ckeditor/pen/gZebwy.
+
+## Compatibility with Semantic-UI
+
+CKEditor 5 also works properly with [Semantic-UI](https://semantic-ui.com/). To place balloon build of CKEditor 5 inside modal then like in other CSS Frameworks it is necessary to make bigger `z-index` than default modal element:
+
+```css
+/* We need to handle floating elements inside modals to display them above Materialize components. */
+:root {
+	--ck-z-default: 100;
+	--ck-z-modal: calc( var(--ck-z-default) + 999 );
+}
+```
+
+Check out the demo on https://codepen.io/ckeditor/pen/OrZBpV
