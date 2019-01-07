@@ -25,7 +25,7 @@ The above can be ensured by adding this CSS:
 }
 ```
 
-And passing the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Boostrap's `modal()` function:
+And passing the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Bootstrap's `modal()` function:
 
 ```js
 $( '#modal-container' ).modal( {
