@@ -15,7 +15,7 @@ import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mo
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'CKFinderUploadAdapter', () => {
-	let editor, sinonXHR;
+	let editor, sinonXHR, fileRepository;
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
@@ -33,6 +33,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				fileRepository = editor.plugins.get( FileRepository );
 			} );
 	} );
 
@@ -45,16 +46,15 @@ describe( 'CKFinderUploadAdapter', () => {
 	} );
 
 	describe( 'UploadAdapter', () => {
-		let adapter, loaderMock;
+		let adapter, loader;
 
 		beforeEach( () => {
 			const file = createNativeFileMock();
 			file.name = 'image.jpeg';
-			loaderMock = {
-				file: Promise.resolve( file )
-			};
 
-			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loaderMock );
+			loader = fileRepository.createLoader( file );
+
+			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loader );
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
@@ -95,7 +95,7 @@ describe( 'CKFinderUploadAdapter', () => {
 
 				adapter.upload();
 
-				return loaderMock.file.then( () => {
+				return loader.file.then( () => {
 					request = sinonXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( validResponse ) );
 
@@ -112,7 +112,7 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				loaderMock.file.then( () => {
+				loader.file.then( () => {
 					const request = sinonXHR.requests[ 0 ];
 					request.error();
 				} );
@@ -135,7 +135,7 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Foo bar baz.' );
 					} );
 
-				loaderMock.file.then( () => {
+				loader.file.then( () => {
 					const request = sinonXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
@@ -156,7 +156,7 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( msg ).to.equal( 'Cannot upload file: image.jpeg.' );
 					} );
 
-				loaderMock.file.then( () => {
+				loader.file.then( () => {
 					const request = sinonXHR.requests[ 0 ];
 					request.respond( 200, { 'Content-Type': 'application/json' }, JSON.stringify( responseError ) );
 				} );
@@ -175,7 +175,7 @@ describe( 'CKFinderUploadAdapter', () => {
 						expect( request.aborted ).to.be.true;
 					} );
 
-				loaderMock.file.then( () => {
+				loader.file.then( () => {
 					request = sinonXHR.requests[ 0 ];
 					adapter.abort();
 				} );
@@ -192,12 +192,12 @@ describe( 'CKFinderUploadAdapter', () => {
 			it( 'should update progress', () => {
 				adapter.upload();
 
-				return loaderMock.file.then( () => {
+				return loader.file.then( () => {
 					const request = sinonXHR.requests[ 0 ];
 					request.uploadProgress( { loaded: 4, total: 10 } );
 
-					expect( loaderMock.uploadTotal ).to.equal( 10 );
-					expect( loaderMock.uploaded ).to.equal( 4 );
+					expect( loader.uploadTotal ).to.equal( 10 );
+					expect( loader.uploaded ).to.equal( 4 );
 				} );
 			} );
 		} );
