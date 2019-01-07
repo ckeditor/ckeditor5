@@ -8,10 +8,10 @@
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#3dbe880",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#53dc305",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#17c9d3b",
-    "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#1657e74",
-    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#d862a1b",
-    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#a366827",
-    "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#fc6aad7",
+    "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#7472ecc",
+    "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#af32730",
+    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#858d121",
+    "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#ac9484c",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#5e72ef3",
     "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services#3e5d702",
     "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#5338d7b",
@@ -39,7 +39,7 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#1041e3b",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#114fcb6",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#69b634a",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#6bd50dd",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#62a8c69",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#312d55e",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#85d6ca2"
   }
