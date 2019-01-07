@@ -24,6 +24,7 @@ import ViewDocument from '../view/document';
 import ViewDowncastWriter from '../view/downcastwriter';
 
 import ModelRange from '../model/range';
+import log from "../../../ckeditor5-utils/src/log";
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -184,10 +185,9 @@ export default class DataController {
 	 * @fires init
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing rootName - initialData pairs to
 	 * initialize data on multiple roots at once.
-	 * @param {String} [rootName='main'] Root name. Takes effect only if the first argument is provided as a string.
 	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
 	 */
-	init( data, rootName = 'main' ) {
+	init( data ) {
 		if ( this.model.document.version ) {
 			/**
 			 * Cannot set initial data to not empty {@link module:engine/model/document~Document}.
@@ -201,7 +201,7 @@ export default class DataController {
 
 		let initialData = {};
 		if ( typeof data === 'string' ) {
-			initialData[ rootName ] = data;
+			initialData.main = data; // Default root is 'main'. To initiate data on a different root, object should be passed.
 		} else {
 			initialData = data;
 		}
@@ -225,19 +225,43 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
-	 * @param {String} data Input data.
-	 * @param {String} [rootName='main'] Root name.
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing rootName - initialData pairs to
+	 * set data on multiple roots at once.
 	 */
-	set( data, rootName = 'main' ) {
-		// Save to model.
-		const modelRoot = this.model.document.getRoot( rootName );
+	set( data ) {
+		let initialData = {};
+		if ( typeof data === 'string' ) {
+			initialData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
+		} else {
+			initialData = data;
+		}
+
+		const rootNames = this.model.document.getRootNames();
+
+		// Check if all roots exists. Thrown an error if there is non-existing one.
+		for ( const rootName of Object.keys( initialData ) ) {
+			if ( !rootNames.includes( rootName ) ) {
+				/**
+				 * Thrown when there is an attempt to set data on a non-existing root.
+				 *
+				 * @error trying-to-set-data-on-non-existing-root
+				 */
+				throw new CKEditorError( 'trying-to-set-data-on-non-existing-root: ' +
+					`Attempting to set data on non-existing "${ rootName }" root.` );
+			}
+		}
 
 		this.model.enqueueChange( 'transparent', writer => {
-			writer.setSelection( null );
-			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
+			for ( const rootName of Object.keys( initialData ) ) {
+				// Save to model.
+				const modelRoot = this.model.document.getRoot( rootName );
 
-			writer.remove( writer.createRangeIn( modelRoot ) );
-			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
+				writer.setSelection( null );
+				writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
+
+				writer.remove( writer.createRangeIn( modelRoot ) );
+				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
+			}
 		} );
 	}
 
