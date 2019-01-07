@@ -159,6 +159,10 @@ export default class Writer {
 	insert( item, itemOrPosition, offset = 0 ) {
 		this._assertWriterUsedCorrectly();
 
+		if ( item instanceof Text && item.data == '' ) {
+			return;
+		}
+
 		const position = Position._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
@@ -632,9 +636,7 @@ export default class Writer {
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection `Model#createSelection()`}.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -1076,14 +1078,8 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets the document's selection (ranges and direction) to the specified location based on:
-	 *
-	 * * the given {@link module:engine/model/selection~Selection selection},
-	 * * or the given {@link module:engine/model/position~Position position},
-	 * * or the given {@link module:engine/model/range~Range range},
-	 * * or the given iterable of {@link module:engine/model/range~Range ranges},
-	 * * or the given {@link module:engine/model/node~Node node},
-	 * * or `null`.
+	 * Sets the document's selection (ranges and direction) to the specified location based on the given
+	 * {@link module:engine/model/selection~Selectable selectable} or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = writer.createRange( start, end );
@@ -1127,9 +1123,7 @@ export default class Writer {
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.

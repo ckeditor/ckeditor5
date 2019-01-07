@@ -27,12 +27,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  */
 export default class Selection {
 	/**
-	 * Creates a new selection instance
-	 * based on the given {@link module:engine/model/selection~Selection selection},
-	 * or based on the given {@link module:engine/model/range~Range range},
-	 * or based on an iterable collection of {@link module:engine/model/range~Range ranges}
-	 * or at the given {@link module:engine/model/position~Position position},
-	 * or on the given {@link module:engine/model/element~Element element},
+	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 *		// Creates empty selection without ranges.
@@ -77,9 +72,7 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -322,9 +315,7 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * {@link module:engine/model/selection~Selectable selectable}.
 	 *
 	 *		// Removes all selection's ranges.
 	 *		selection.setTo( null );
@@ -368,9 +359,7 @@ export default class Selection {
 	 *		// Sets backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/node~Node|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {module:engine/model/selection~Selectable} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -673,6 +662,35 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns blocks that aren't nested in other selected blocks.
+	 *
+	 * In this case the method will return blocks A, B and E because C & D are children of block B:
+	 *
+	 *		[<blockA></blockA>
+	 *		<blockB>
+	 *			<blockC></blockC>
+	 *			<blockD></blockD>
+	 *		</blockB>
+	 *		<blockE></blockE>]
+	 *
+	 * **Note:** To get all selected blocks use {@link #getSelectedBlocks `getSelectedBlocks()`}.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
+	* getTopMostBlocks() {
+		const selected = Array.from( this.getSelectedBlocks() );
+
+		for ( const block of selected ) {
+			const parentBlock = findAncestorBlock( block );
+
+			// Filter out blocks that are nested in other selected blocks (like paragraphs in tables).
+			if ( !parentBlock || !selected.includes( parentBlock ) ) {
+				yield block;
+			}
+		}
+	}
+
+	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
 	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
@@ -802,3 +820,37 @@ function getParentBlock( position, visited ) {
 
 	return block;
 }
+
+// Returns first ancestor block of a node.
+//
+// @param {module:engine/model/node~Node} node
+// @returns {module:engine/model/node~Node|undefined}
+function findAncestorBlock( node ) {
+	const schema = node.document.model.schema;
+
+	let parent = node.parent;
+
+	while ( parent ) {
+		if ( schema.isBlock( parent ) ) {
+			return parent;
+		}
+
+		parent = parent.parent;
+	}
+}
+
+/**
+ * An entity that is used to set selection.
+ *
+ * See also {@link module:engine/model/selection~Selection#setTo}
+ *
+ * @typedef {
+ *     module:engine/model/selection~Selection|
+ *     module:engine/model/documentselection~DocumentSelection|
+ *     module:engine/model/position~Position|
+ *     module:engine/model/range~Range|
+ *     module:engine/model/node~Node|
+ *     Iterable.<module:engine/model/range~Range>|
+ *     null
+ * } module:engine/model/selection~Selectable
+ */

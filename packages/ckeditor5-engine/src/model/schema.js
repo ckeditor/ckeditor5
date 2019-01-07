@@ -520,7 +520,7 @@ export default class Schema {
 	 *
 	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
 	* getValidRanges( ranges, attribute ) {
 		ranges = convertToMinimalFlatRanges( ranges );
@@ -539,7 +539,7 @@ export default class Schema {
 	 * @private
 	 * @param {module:engine/model/range~Range} range Range to process.
 	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Iterator.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
 	 */
 	* _getValidRangesForRange( range, attribute ) {
 		let start = range.start;
@@ -1459,7 +1459,7 @@ function* combineWalkers( backward, forward ) {
 // all those minimal flat ranges.
 //
 // @param {Array.<module:engine/model/range~Range>} ranges Ranges to process.
-// @returns {Iterator.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
+// @returns {Iterable.<module:engine/model/range~Range>} Minimal flat ranges of given `ranges`.
 function* convertToMinimalFlatRanges( ranges ) {
 	for ( const range of ranges ) {
 		yield* range.getMinimalFlatRanges();

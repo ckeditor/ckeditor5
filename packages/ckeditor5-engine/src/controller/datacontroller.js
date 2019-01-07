@@ -59,7 +59,7 @@ export default class DataController {
 		 * Data processor used during the conversion.
 		 *
 		 * @readonly
-		 * @member {module:engine/dataProcessor~DataProcessor}
+		 * @member {module:engine/dataprocessor/dataprocessor~DataProcessor}
 		 */
 		this.processor = dataProcessor;
 

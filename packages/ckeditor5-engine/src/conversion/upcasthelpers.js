@@ -8,6 +8,7 @@ import ModelRange from '../model/range';
 import { ConversionHelpers } from './conversion';
 
 import { cloneDeep } from 'lodash-es';
+import ModelSelection from '../model/selection';
 
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
@@ -352,6 +353,41 @@ export function convertText() {
 	};
 }
 
+/**
+ * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection
+ * view selection} taken from the {@link module:engine/view/document~Document#event:selectionChange} event
+ * and sets in on the {@link module:engine/model/document~Document#selection model}.
+ *
+ * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
+ * conversion mechanism, the callback should be set directly on view document.
+ *
+ *		view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
+ *
+ * @param {module:engine/model/model~Model} model Data model.
+ * @param {module:engine/conversion/mapper~Mapper} mapper Conversion mapper.
+ * @returns {Function} {@link module:engine/view/document~Document#event:selectionChange} callback function.
+ */
+export function convertSelectionChange( model, mapper ) {
+	return ( evt, data ) => {
+		const viewSelection = data.newSelection;
+		const modelSelection = new ModelSelection();
+
+		const ranges = [];
+
+		for ( const viewRange of viewSelection.getRanges() ) {
+			ranges.push( mapper.toModelRange( viewRange ) );
+		}
+
+		modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
+
+		if ( !modelSelection.isEqual( model.document.selection ) ) {
+			model.change( writer => {
+				writer.setSelection( modelSelection );
+			} );
+		}
+	};
+}
+
 // View element to model element conversion helper.
 //
 // See {@link ~UpcastHelpers#elementToElement `.elementToElement()` upcast helper} for examples.
@@ -686,7 +722,7 @@ function onlyViewNameIsDefined( config ) {
 //
 // @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
 // @param {Object} modelAttribute Model attribute to set.
-// @param {Object} conversionApi Conversion API.
+// @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion API.
 // @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
 // on all elements in the range.
 // @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
