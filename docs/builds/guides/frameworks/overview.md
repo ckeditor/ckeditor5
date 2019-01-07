@@ -41,33 +41,3 @@ We plan to provide more integrations with time. We would like to [hear your idea
 Starting from version 11.0.0 CKEditor 5 is compatible with Electron. Using CKEditor 5 in Electron applications does not require any additional steps.
 
 Check out a [sweet screencast of CKEditor 5 with real-time collaborative editing in Electron](https://twitter.com/ckeditor/status/1016627687568363520).
-
-## Compatibility with Bootstrap
-
-In order to display CKEditor 5 inside [Bootstrap](https://getbootstrap.com/) modals you need to proceed as follows:
-
-* Configure the `z-index` of CKEditor 5 floating balloons so they are displayed above the Bootstrap overlay.
-* Configure Bootstrap to not steal focus from rich text editor fields.
-
-The above can be ensured by adding this CSS:
-
-```css
-/*
-	You need to add this custom CSS property to the body instead of :root
-	because of CSS specificity.
-*/
-body {
-	--ck-z-default: 100;
-	--ck-z-modal: calc( var(--ck-z-default) + 999 );
-}
-```
-
-And passing the [`focus: false`](https://getbootstrap.com/docs/4.1/components/modal/#options) option to Boostrap's `modal()` function:
-
-```js
-$( '#modal-container' ).modal( {
-	focus: false
-} );
-```
-
-Check out the demo on https://codepen.io/ckeditor/pen/vzvgOe.
