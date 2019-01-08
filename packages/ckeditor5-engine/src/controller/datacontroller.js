@@ -196,9 +196,17 @@ export default class DataController {
 	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
 	 *
+	 * When data is passed as a string it is initialized on a default `main` root:
+	 *
+	 *		dataController.init( '<p>Foo</p>' ); // Initializes data on the `main` root.
+	 *
+	 * To initialize data on a different root or multiple roots at once, object containing `rootName` - `data` pairs should be passed:
+	 *
+	 *		dataController.init( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Initializes data on the `main` and `title` roots.
+	 *
 	 * @fires init
-	 * @param {String|Object.<String,String>} data Input data as a string or an object containing rootName - initialData pairs to
-	 * initialize data on multiple roots at once.
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
+	 * pairs to initialize data on multiple roots at once.
 	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
 	 */
 	init( data ) {
@@ -254,8 +262,16 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
-	 * @param {String|Object.<String,String>} data Input data as a string or an object containing rootName - initialData pairs to
-	 * set data on multiple roots at once.
+	 * When data is passed as a string it is set on a default `main` root:
+	 *
+	 *		dataController.set( '<p>Foo</p>' ); // Sets data on the `main` root.
+	 *
+	 * To set data on a different root or multiple roots at once, object containing `rootName` - `data` pairs should be passed:
+	 *
+	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
+	 *
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
+	 * pairs to set data on multiple roots at once.
 	 */
 	set( data ) {
 		let initialData = {};
