@@ -224,7 +224,7 @@ describe( 'DataController', () => {
 				data.init( { nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.'
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
 			);
 		} );
 
@@ -235,7 +235,7 @@ describe( 'DataController', () => {
 				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.'
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
 			);
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
@@ -309,7 +309,7 @@ describe( 'DataController', () => {
 				data.set( { nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.'
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
 			);
 		} );
 
@@ -321,7 +321,7 @@ describe( 'DataController', () => {
 				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.'
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
 			);
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
@@ -402,7 +402,7 @@ describe( 'DataController', () => {
 				data.get( 'nonexistent' );
 			} ).to.throw(
 				CKEditorError,
-				'trying-to-get-data-from-non-existing-root: Attempting to get data from non-existing root.'
+				'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.'
 			);
 		} );
 	} );
