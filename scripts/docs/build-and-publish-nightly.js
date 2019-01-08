@@ -26,6 +26,7 @@ if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
 }
 
 const path = require( 'path' );
+const ROOT_PATH = process.cwd();
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const mainRepoUrl = 'https://github.com/CKEditor5/ckeditor5.github.io';
@@ -58,7 +59,7 @@ exec( 'rm -rf ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
 exec( `cp -R ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion } ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
 
 // Change work directory in order to make a commit in CKEditor 5 page's repository.
-process.chdir( path.join( process.cwd(), 'ckeditor5.github.io' ) );
+process.chdir( path.join( ROOT_PATH, 'ckeditor5.github.io' ) );
 
 exec( `echo "https://${ process.env.GITHUB_TOKEN }:@github.com" > .git/credentials 2> /dev/null` );
 exec( 'git config credential.helper "store --file=.git/credentials"' );
@@ -74,6 +75,9 @@ if ( exec( 'git diff --name-only docs/' ).trim().length ) {
 } else {
 	console.log( 'Nothing to commit. Documentation is up to date.' );
 }
+
+// Change work directory to the previous value.
+process.chdir( ROOT_PATH );
 
 function exec( command ) {
 	try {
