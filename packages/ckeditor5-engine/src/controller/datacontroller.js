@@ -115,7 +115,7 @@ export default class DataController {
 	get( rootName = 'main' ) {
 		if ( !_checkIfRootsExists( [ rootName ], this.model.document.getRootNames() ) ) {
 			/**
-			 * Cannot get data from non-existing root. This error is thrown when {@link #get DataController#get() method}
+			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
@@ -123,9 +123,9 @@ export default class DataController {
 			 *
 			 * will throw this error.
 			 *
-			 * @error trying-to-get-data-from-non-existing-root
+			 * @error datacontroller-get-non-existent-root
 			 */
-			throw new CKEditorError( 'trying-to-get-data-from-non-existing-root: Attempting to get data from non-existing root.' );
+			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.' );
 		}
 
 		// Get model range.
@@ -222,7 +222,7 @@ export default class DataController {
 
 		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
 			/**
-			 * Cannot init data on non-existing root. This error is thrown when {@link #init DataController#init() method}
+			 * Cannot init data on a non-existing root. This error is thrown when {@link #init DataController#init() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #init} like:
 			 *
@@ -230,9 +230,9 @@ export default class DataController {
 			 *
 			 * will throw this error.
 			 *
-			 * @error trying-to-init-data-on-non-existing-root
+			 * @error datacontroller-init-non-existent-root
 			 */
-			throw new CKEditorError( 'trying-to-init-data-on-non-existing-root: Attempting to init data on non-existing root.' );
+			throw new CKEditorError( 'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.' );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
@@ -267,7 +267,7 @@ export default class DataController {
 
 		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
 			/**
-			 * Cannot set data on non-existing root. This error is thrown when {@link #set DataController#set() method}
+			 * Cannot set data on a non-existing root. This error is thrown when {@link #set DataController#set() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #set} like:
 			 *
@@ -275,9 +275,9 @@ export default class DataController {
 			 *
 			 * will throw this error.
 			 *
-			 * @error trying-to-set-data-on-non-existing-root
+			 * @error datacontroller-set-non-existent-root
 			 */
-			throw new CKEditorError( 'trying-to-set-data-on-non-existing-root: Attempting to set data on non-existing root.' );
+			throw new CKEditorError( 'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.' );
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
