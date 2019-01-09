@@ -76,6 +76,27 @@ if ( exec( 'git diff --name-only docs/' ).trim().length ) {
 	console.log( 'Nothing to commit. Documentation is up to date.' );
 }
 
+// Every 10th day of the month, we would like to clean the history of the documentation repository.
+if ( new Date().getDate() === 10 ) {
+	// Copy a commit which will be a new root in the repository.
+	const commit = exec( 'git log --oneline --reverse -5 --format="%h" | head -n 1' ).trim();
+
+	// Checkout to the status of the git repo at commit. Create a temporary branch.
+	exec( `git checkout --orphan temp ${ commit }` );
+
+	// Create a new commit that is to be the new root commit.
+	exec( 'git commit -m "Documentation build."' );
+
+	// Rebase the part of history from <commit> to master on the temporary branch.
+	exec( `git rebase --onto temp ${ commit } master` );
+
+	// Remove the temporary branch.
+	exec( 'git branch -D temp' );
+
+	// Pray.
+	exec( 'git push -f' );
+}
+
 // Change work directory to the previous value.
 process.chdir( ROOT_PATH );
 

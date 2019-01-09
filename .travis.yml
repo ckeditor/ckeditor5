@@ -27,9 +27,6 @@ script:
   - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
   	  travis_wait npm run docs:build-and-publish-nightly;
     fi'
-  - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-  	  travis_wait node ./scripts/docs/clean-up-repository.js;
-    fi'
 notifications:
   slack:
     rooms:
