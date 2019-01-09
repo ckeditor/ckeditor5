@@ -30,7 +30,7 @@ Before we start, let's make all terms used in this guide are clear.
 			<td>Upload adapter</td>
 			<td>
 				<p>A piece of code (a class) that handles the image upload from the moment it is requested by the user (e.g. when the file is dropped into the content) to the moment a server returns a response to the requested upload. A bridge between the feature and the server.</p>
-				<p>Upload adapters are used by other plugins like {@link module:image/imageupload~ImageUpload `ImageUpload`} to connect to the server and fetch the response. For every user action (e.g. when a file is dropped into the content), a new upload adapter instance is created.</p>
+				<p>Upload adapters are used by other plugins like {@link module:image/imageupload~ImageUpload image upload} to connect to the server and fetch the response. For every user action (e.g. when a file is dropped into the content), a new upload adapter instance is created.</p>
 				<p>CKEditor 5 comes with some {@link features/image-upload#official-upload-adapters official upload adapters} but you can also <a href="#implementing-a-custom-upload-adapter">implement your own adapters</a>.</p>
 				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more</p>
 			</td>
@@ -43,17 +43,17 @@ Before we start, let's make all terms used in this guide are clear.
 			</td>
 		</tr>
 		<tr>
-			<td>{@link module:upload/filerepository~FileRepository `FileRepository`} plugin.</td>
+			<td>{@link module:upload/filerepository~FileRepository File repository} plugin.</td>
 			<td>
 				<p>A central point for managing file upload in CKEditor 5. It glues upload adapters and features using them:</p>
 				<ul>
 					<li>Upload adapters are enabled in the editor by defining the {@link module:upload/filerepository~FileRepository#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method.</li>
-					<li>Features like {@link module:image/imageupload~ImageUpload `ImageUpload`} use the <code>FileRepository</code> API to create a new upload adapter instance each time an upload is requested by the user.</li>
+					<li>Features like {@link module:image/imageupload~ImageUpload image upload} use the <code>FileRepository</code> API to create a new upload adapter instance each time an upload is requested by the user.</li>
 				</ul>
 			</td>
 		</tr>
 		<tr>
-			<td>{@link module:image/imageupload~ImageUpload `ImageUpload`} plugin</td>
+			<td>{@link module:image/imageupload~ImageUpload Image upload} plugin</td>
 			<td>
 				<p>A top–level plugin that responds to actions of the users (e.g. when a file is dropped into the content) by uploading files to the server and updating the edited content once the upload finished. This particular plugin handles user actions related to uploading images.</p>
 				<p>It uses the <code>FileRepository</code> API to spawn upload adapter instances, triggers the image upload (<code>UploadAdapter.upload()</code>) and finally uses the data returned by the adapter's upload promise to update the image in the editor content.</p>
@@ -334,13 +334,13 @@ Other image sizes can also be provided in the response, allowing [responsive ima
 	When returning multiple images, the widest returned one should be the default one. It is essential to correctly set the `width` attribute of the image in the editor content.
 </info-box>
 
-The {@link module:image/imageupload~ImageUpload `ImageUpload`} plugin, which is capable of handling multiple image sizes returned by the upload adapter, will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
+The {@link module:image/imageupload~ImageUpload image upload} plugin, which is capable of handling multiple image sizes returned by the upload adapter, will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
 
 <info-box>
 	The {@link features/easy-image Easy Image} service provides the responsive image support {@link features/easy-image#responsive-images out of the box}.
 </info-box>
 
-Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous chapter](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the `ImageUpload` plugin:
+Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous chapter](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js
 // ...
