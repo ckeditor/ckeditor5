@@ -55,7 +55,7 @@ A custom upload adapter allows you to take the **full control** over the process
 Any upload adapter, whether an image upload adapter or a generic file upload adapter, must implement the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} in order to work, i.e. it must bring its own `upload()` and `abort()` methods.
 
 * The {@link module:upload/filerepository~UploadAdapter#upload `upload()`} method must return a promise:
-	* **resolved** by a successful upload (with an object containing information about the uploaded file),
+	* **resolved** by a successful upload with an object containing information about the uploaded file (see the section about [responsive images](#responsive-images-and-srcset) to learn more),
 	* **rejected** because of an error, in which case nothing is inserted into the content.
 * The {@link module:upload/filerepository~UploadAdapter#abort `abort()`} method must allow the editor to abort the upload process. It is necessary, for instance, when the image was removed from the content by the user before the upload finished or the editor instance was {@link module:core/editor/editor~Editor#destroy destroyed}.
 
@@ -157,7 +157,7 @@ Let's see what the `_initRequest()` method looks like in your custom upload adap
 <info-box>
 	Note that for the sake of keeping the code simple, in this example implementation no particular security mechanism is used that would prevent your application and services from being abused.
 
-	We **strongly recommend** using both authentication and [CSRF protection](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) mechanisms (i.e. CSRF tokens) in your application. For instance, they can be implemented as [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) headers.
+	We **strongly recommend** using both authentication and [<abbr title="Cross-site request forgery">CSRF</abbr> protection](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29) mechanisms (i.e. CSRF tokens) in your application. For instance, they can be implemented as [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) headers.
 </info-box>
 
 ```js
@@ -256,6 +256,59 @@ class MyUploadAdapter {
 		this.xhr.send( data );
 	}
 }
+```
+
+### Responsive images and `srcset`
+
+If the upload is successful, a `Promise` returned by the {@link module:upload/filerepository~UploadAdapter#upload `MyUploadAdapter.upload()`} method can resolve with more than just a `default` path to the uploaded image (see the implementation of `MyUploadAdapter._initListeners()`), which usually looks like this:
+
+```js
+{
+	default: 'http://example.com/images/image–default-size.png'
+}
+```
+
+Other image sizes can also be provided in the response, allowing [responsive images](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images) in the editor. The response containing more than just one image size could look like this:
+
+```js
+{
+	default: 'http://example.com/images/image–default-size.png',
+	'160': 'http://example.com/images/image–size-160.image.png',
+	'500': 'http://example.com/images/image–size-500.image.png',
+	'1000': 'http://example.com/images/image–size-1000.image.png',
+	'1052': 'http://example.com/images/image–default-size.png'
+}
+```
+
+<info-box>
+	When returning multiple images, the widest returned one should be the default one. It is essential to correctly set the `width` attribute of the image in the editor content.
+</info-box>
+
+The {@link module:image/imageupload~ImageUpload `ImageUpload`} plugin, which is capable of handling multiple image sizes returned by the upload adapter, will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
+
+<info-box>
+	The {@link features/easy-image Easy Image} service provides the responsive image support {@link features/easy-image#responsive-images out of the box}.
+</info-box>
+
+Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous chapter](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the `ImageUpload` plugin:
+
+```js
+// ...
+
+xhr.addEventListener( 'load', () => {
+	const response = xhr.response;
+
+	// ...
+
+	// response.urls = {
+	// 	default: 'http://example.com/images/image–default-size.png',
+	// 	'160': '...',
+	// 	'500': '...',
+	// 	// ...
+	// 	'1052': 'http://example.com/images/image–default-size.png'
+	// }
+	resolve( response.urls );
+} );
 ```
 
 ### Activating a custom upload adapter
