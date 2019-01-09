@@ -1,6 +1,7 @@
 ---
 category: framework-deep-dive
 menu-title: Custom upload adapter
+classes: custom-adapter
 ---
 
 # Custom image upload adapter
@@ -12,6 +13,55 @@ While this guide is mainly focused on the image upload (the most common kind of 
 <info-box>
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
 </info-box>
+
+## Glossary of terms
+
+Before we start, let's make all terms used in this guide are clear.
+
+<table>
+	<thead>
+		<tr>
+			<th>Term</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Upload adapter</td>
+			<td>
+				<p>A piece of code (a class) that handles the image upload from the moment it is requested by the user (e.g. when the file is dropped into the content) to the moment a server returns a response to the requested upload. A bridge between the feature and the server.</p>
+				<p>Upload adapters are used by other plugins like {@link module:image/imageupload~ImageUpload `ImageUpload`} to connect to the server and fetch the response. For every user action (e.g. when a file is dropped into the content), a new upload adapter instance is created.</p>
+				<p>CKEditor 5 comes with some {@link features/image-upload#official-upload-adapters official upload adapters} but you can also <a href="#implementing-a-custom-upload-adapter">implement your own adapters</a>.</p>
+				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more</p>
+			</td>
+		</tr>
+		<tr>
+			<td>{@link module:upload/filerepository~UploadAdapter `UploadAdapter`} interface</td>
+			<td>
+				<p>An interface defining the minimal API required to create an upload adapter. In other words, it tells you what methods your upload adapter class must have in order wo work.</p>
+				<p>See <a href="#the-anatomy-of-the-adapter">"The anatomy of the adapter"</a> section to learn more.</p>
+			</td>
+		</tr>
+		<tr>
+			<td>{@link module:upload/filerepository~FileRepository `FileRepository`} plugin.</td>
+			<td>
+				<p>A central point for managing file upload in CKEditor 5. It glues upload adapters and features using them:</p>
+				<ul>
+					<li>Upload adapters are enabled in the editor by defining the {@link module:upload/filerepository~FileRepositor#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method.</li>
+					<li>Features like {@link module:image/imageupload~ImageUpload `ImageUpload`} use the <code>FileRepository</code> API to create a new upload adapter instance each time an upload is requested by the user.</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>{@link module:image/imageupload~ImageUpload `ImageUpload`} plugin</td>
+			<td>
+				<p>A top–level plugin that responds to actions of the users (e.g. when a file is dropped into the content) by uploading files to the server and updating the edited content once the upload finished. This particular plugin handles user actions related to uploading images.</p>
+				<p>It uses the <code>FileRepository</code> API to spawn upload adapter instances, triggers the image upload (<code>UploadAdapter.upload()</code>) and finally uses the data returned by the adapter's upload promise to update the image in the editor content.</p>
+				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 ## How does the image upload work?
 
@@ -55,7 +105,7 @@ A custom upload adapter allows you to take the **full control** over the process
 Any upload adapter, whether an image upload adapter or a generic file upload adapter, must implement the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} in order to work, i.e. it must bring its own `upload()` and `abort()` methods.
 
 * The {@link module:upload/filerepository~UploadAdapter#upload `upload()`} method must return a promise:
-	* **resolved** by a successful upload with an object containing information about the uploaded file (see the section about [responsive images](#responsive-images-and-srcset) to learn more),
+	* **resolved** by a successful upload with an object containing information about the uploaded file (see the section about [responsive images](#responsive-images-and-srcset-attribute) to learn more),
 	* **rejected** because of an error, in which case nothing is inserted into the content.
 * The {@link module:upload/filerepository~UploadAdapter#abort `abort()`} method must allow the editor to abort the upload process. It is necessary, for instance, when the image was removed from the content by the user before the upload finished or the editor instance was {@link module:core/editor/editor~Editor#destroy destroyed}.
 
@@ -258,7 +308,7 @@ class MyUploadAdapter {
 }
 ```
 
-### Responsive images and `srcset`
+### Responsive images and `srcset` attribute
 
 If the upload is successful, a `Promise` returned by the {@link module:upload/filerepository~UploadAdapter#upload `MyUploadAdapter.upload()`} method can resolve with more than just a `default` path to the uploaded image (see the implementation of `MyUploadAdapter._initListeners()`), which usually looks like this:
 
@@ -472,3 +522,8 @@ ClassicEditor
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5. See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
 
+<style>
+.custom-adapter td:first-child {
+	white-space: nowrap;
+}
+</style>
