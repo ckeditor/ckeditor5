@@ -1,5 +1,6 @@
 ---
 category: features-image-upload
+menu-title: Overview
 order: 10
 ---
 
