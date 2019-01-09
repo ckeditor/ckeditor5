@@ -47,7 +47,7 @@ Before we start, let's make all terms used in this guide are clear.
 			<td>
 				<p>A central point for managing file upload in CKEditor 5. It glues upload adapters and features using them:</p>
 				<ul>
-					<li>Upload adapters are enabled in the editor by defining the {@link module:upload/filerepository~FileRepositor#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method.</li>
+					<li>Upload adapters are enabled in the editor by defining the {@link module:upload/filerepository~FileRepository#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method.</li>
 					<li>Features like {@link module:image/imageupload~ImageUpload `ImageUpload`} use the <code>FileRepository</code> API to create a new upload adapter instance each time an upload is requested by the user.</li>
 				</ul>
 			</td>
@@ -138,7 +138,7 @@ class MyUploadAdapter {
 }
 ```
 
-Define the {@link module:upload/filerepository~FileRepositor#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method which uses the `MyUploadAdapter` class to enable the upload adapter in the editor:
+Define the {@link module:upload/filerepository~FileRepository#createUploadAdapter `FileRepository.createUploadAdapter()`} factory method which uses the `MyUploadAdapter` class to enable the upload adapter in the editor:
 
 ```js
 editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
