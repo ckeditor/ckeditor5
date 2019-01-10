@@ -64,14 +64,16 @@ class Adapter {
 	}
 
 	upload() {
-		this.fileUploader = this.uploadGateway.upload( this.loader.file );
+		return this.loader.file.then( file => {
+			this.fileUploader = this.uploadGateway.upload( file );
 
-		this.fileUploader.on( 'progress', ( evt, data ) => {
-			this.loader.uploadTotal = data.total;
-			this.loader.uploaded = data.uploaded;
+			this.fileUploader.on( 'progress', ( evt, data ) => {
+				this.loader.uploadTotal = data.total;
+				this.loader.uploaded = data.uploaded;
+			} );
+
+			return this.fileUploader.send();
 		} );
-
-		return this.fileUploader.send();
 	}
 
 	abort() {
