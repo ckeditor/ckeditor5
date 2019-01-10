@@ -101,7 +101,7 @@ export default class BootstrapEditor extends Editor {
 						editor._elementReplacer.replace( element, editable.element );
 
 						// Tell the world that the UI of the editor is ready to use.
-						editor.fire( 'uiReady' );
+						editor.ui.ready();
 					} )
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
