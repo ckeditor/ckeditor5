@@ -33,6 +33,13 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.element;
+	}
+
+	/**
 	 * Initializes the UI.
 	 */
 	init() {
