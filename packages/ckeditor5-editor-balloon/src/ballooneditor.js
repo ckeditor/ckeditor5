@@ -18,6 +18,7 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -86,7 +87,8 @@ export default class BalloonEditor extends Editor {
 	 * @inheritDoc
 	 */
 	get element() {
-		return this.ui.view.editable.element;
+		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
+		return this.ui.element;
 	}
 
 	/**
@@ -189,6 +191,7 @@ export default class BalloonEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+						editor.ui.ready();
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {

@@ -17,6 +17,13 @@ import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabl
  */
 export default class BalloonEditorUI extends EditorUI {
 	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.editable.element;
+	}
+
+	/**
 	 * Initializes the UI.
 	 */
 	init() {

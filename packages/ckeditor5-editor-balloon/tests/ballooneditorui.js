@@ -147,6 +147,7 @@ class VirtualBalloonTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+						editor.ui.ready();
 						editor.fire( 'uiReady' );
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
