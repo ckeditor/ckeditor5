@@ -40,7 +40,7 @@ exec( `git clone ${ mainRepoUrl }.git` );
 
 // Build the documentation.
 console.log( 'Building documentation...' );
-exec( 'npm run docs -- --production' );
+exec( 'yarn run docs --production' );
 
 console.log( 'Copying files...' );
 

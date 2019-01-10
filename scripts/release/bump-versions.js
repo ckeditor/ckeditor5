@@ -18,10 +18,10 @@
 // You can test the whole process using `dry-run` mode. It won't change anything in the project
 // and any repository.
 //
-// This task must be called before: `npm run release:publish`.
+// This task must be called before: `yarn run release:publish`.
 //
 // Use:
-// npm run release:bump-version -- --dry-run
+// yarn run release:bump-version --dry-run
 
 require( '@ckeditor/ckeditor5-dev-env' )
 	.bumpVersions( {
