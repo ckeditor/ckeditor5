@@ -8,7 +8,7 @@ order: 10
 The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages, each developed in a separate Git repository. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
-* configuration for [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool) and [Lerna.js](https://github.com/lerna/lerna) (a multi-package management tool),
+* configuration for [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool) and [Yarn](https://yarnpkg.com/) (a dependency management tool),
 * translation management tools,
 * documentation generator,
 * and release tools.
@@ -20,7 +20,7 @@ You can find all the official packages listed in [CKEditor 5 development reposit
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Yarn](https://yarnpkg.com/) 1.2.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
@@ -28,12 +28,12 @@ In order to start developing CKEditor 5 you will require:
 First, you need to install a couple of tools which you will be using later:
 
 * [mgit](https://www.npmjs.com/package/mgit2) &ndash; A multi-repo management tool,
-* [Lerna.js](https://github.com/lerna/lerna)@2 &ndash; A multi-package management tool. Note: Lerna@3 is [not supported yet](https://github.com/ckeditor/ckeditor5/issues/1214).
+* [Yarn](https://yarnpkg.com/) &ndash; A dependency management tool.
 
 It is best to install them globally in your system for an easier use later on:
 
 ```bash
-npm install -g lerna@2 mgit2
+npm install -g yarn mgit2
 ```
 
 Note: You may need to use `sudo` on Linux and macOS.
@@ -50,16 +50,14 @@ And install all CKEditor 5 packages from the [npm registry](http://npmjs.com/).
 **Note:** If you plan to use the developement version of CKEditor 5 packages (see the [next section](#switching-to-development-version-of-packages)), you can skip this step to save time.
 
 ```bash
-npm install
+yarn install
 ```
-
-This may take a [while](https://github.com/npm/npm/issues/10380)...
 
 ### Switching to development version of packages
 
 The steps above should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
 
-In order to work with development versions of all the official packages, it is recommended to use mgit and Lerna. The former will clone all package repositories and the latter will be able to symlink them, so they create a correct directory structure, understandable by Node.js-compliant tools (like webpack or Browserify).
+In order to work with development versions of all the official packages, it is recommended to use mgit. The former will clone all package repositories and the latter will be able to symlink them, so they create a correct directory structure, understandable by Node.js-compliant tools (like webpack or Browserify).
 
 First, clone all the repositories:
 
@@ -82,10 +80,10 @@ packages/
 Finally, link them:
 
 ```bash
-lerna bootstrap
+yarn install
 ```
 
-Running Lerna may take a while because it installs all package dependencies. It will also warn you about circular dependencies between packages which you can ignore.
+Running Yarn may take a while because it installs all package dependencies.
 
 Now, all CKEditor packages (except the [development tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
 
@@ -102,7 +100,7 @@ lrwxr-xr-x    1 p  staff    25 31 Jan 10:37 ckeditor5-engine -> ../../../ckedito
 If everything worked correctly, you should be able to run some tests:
 
 ```bash
-npm run test -- --files=core
+yarn run test --files=core
 ```
 
 ### Fetching changes
@@ -117,48 +115,32 @@ git pull
 mgit sync
 ```
 
-From time to time, if the list of dependencies in any of the packages changed, you will need to call Lerna again to symlink them:
+From time to time, if the list of dependencies in any of the packages changed, you will need to call Yarn again to symlink them:
 
 ```bash
-lerna bootstrap
-```
-
-You can also speed it up if you know which package has changed:
-
-```bash
-lerna bootstrap --scope=@ckeditor/ckeditor5-core
+yarn install
 ```
 
 ### Using mgit for custom packages
 
 If you are developing custom packages or forked any of the official packages and want mgit to work with it, change the dependencies configuration in [`mgit.json`](https://github.com/ckeditor/ckeditor5/blob/master/mgit.json). Note that mgit is able to clone the package from any Git URL. Refer to [its documentation](https://github.com/cksource/mgit2) for more details.
 
-### Troubleshooting problems with Lerna
-
-Lerna does pretty complicated things on an already complicated npm ecosystem. If you happen to run into some issues when calling `lerna bootstrap`, here are some tips:
-
-* Look for `npm-debug.log` files in the main package and subpackages. They may point to an obvious issue like a typo in some `package.json`.
-* Sometimes repeating `lerna bootstrap` may help.
-* If nothing else works, do `lerna clean && lerna bootstrap`.
-
-### Final word about mgit and Lerna
+### Final word about mgit
 
 Besides the already mentioned features, mgit allows you to [execute shell commands](https://github.com/cksource/mgit2#exec) on all packages (e.g. check their status). It has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
-
-Lerna is a tool used by many well-known projects such as [Babel.js](https://github.com/babel/babel). It has an amazing community and, relying on it ourselves, we hope that it will become a standard for managing multi-package projects.
 
 ## Running tests
 
 In order to run tests you need to use the `test` and `manual` tasks.
 
 ```bash
-npm test -- --watch --coverage --source-map --files=engine
+yarn run test --watch --coverage --source-map --files=engine
 ```
 
 or, shorter:
 
 ```bash
-npm test -- -wcs --files=engine
+yarn run test -- -wcs --files=engine
 ```
 
 This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckeditor5-engine) package's tests.
@@ -168,7 +150,7 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 To create a server for manual tests use the `manual` task:
 
 ```bash
-npm run manual
+yarn run manual
 ```
 
 It accepts the `--source-map` (`-s`) option. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
@@ -180,7 +162,7 @@ You can read more about the {@link framework/guides/contributing/testing-environ
 To build the documentation you need to run the `docs` task:
 
 ```bash
-npm run docs
+yarn run docs
 ```
 
 The documentation will be available in `build/docs/`.
@@ -197,7 +179,7 @@ This task accepts the following arguments:
 Note: These arguments must be passed after additional `--`:
 
 ```
-npm run docs -- --skip-api
+yarn run docs --skip-api
 ```
 
 ## Bisecting through a multi-repository

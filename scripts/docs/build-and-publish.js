@@ -29,7 +29,7 @@ console.log( 'Updating your ckeditor5.github.io clone...' );
 exec( 'cd ../ckeditor5.github.io && git pull && cd -' );
 
 console.log( 'Building documentation...' );
-exec( 'npm run docs -- --production' );
+exec( 'yarn run docs --production' );
 
 console.log( 'Copying files...' );
 
