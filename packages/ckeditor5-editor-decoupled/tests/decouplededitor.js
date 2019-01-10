@@ -18,6 +18,8 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -302,5 +304,18 @@ describe( 'DecoupledEditor', () => {
 					} );
 			} );
 		}
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow significantly on multiple create/destroy',
+			() => DecoupledEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
