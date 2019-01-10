@@ -11,17 +11,16 @@ language: node_js
 node_js:
 - '8'
 cache:
-- node_modules
+  yarn: true
 branches:
   except:
   - stable
 before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
-- npm config set package-lock false
-- npm i -g npm@^5.7.1
+- npm i -g yarn
 install:
-- npm install @ckeditor/ckeditor5-dev-tests
+- yarn add @ckeditor/ckeditor5-dev-tests
 - ckeditor5-dev-tests-install-dependencies
 script:
 - ckeditor5-dev-tests-travis
