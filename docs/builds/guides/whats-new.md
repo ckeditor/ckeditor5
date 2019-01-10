@@ -26,9 +26,7 @@ The outdated concept of image alignment was dropped in favor of {@link features/
 
 {@img assets/img/builds-image-styles.png 736 Image styles toolbar.}
 
-When integrated with {@link features/image-upload#easy-image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
-
-{@img assets/img/easy-image.png 1440 Responsive images with Easy Image.}
+CKEditor 5 supports several different image upload strategies. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best option for your project.
 
 ### Simple linking
 
@@ -94,7 +92,7 @@ Read more about {@linkTODO collaboration in the CKEditor 5 Framework documentati
 
 With [collaboration services provided by CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) it is now extremely easy to provide collaboration features inside your application.
 
-Check the {@link @ckeditor5 features/overview collaboration demo} and read how to enable features such as comments, user presence list or showing the selection of other users in your editor.
+Check the {@link @ckeditor5 features/real-time-collaboration collaboration demo} and read how to enable features such as comments, user presence list or showing the selection of other users in your editor.
 
 [Letters](https://ckeditor.com/letters/) is an example of an application using the power of CKEditor 5 for collaboration.
 

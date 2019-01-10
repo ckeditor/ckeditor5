@@ -10,7 +10,7 @@ order: 30
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-from-source) into your application.
+The easiest way to use CKEditor 5 in your React application is by choosing one of the {@link builds/guides/overview#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor 5 built from source](#integrating-ckeditor-5-built-from-source) into your application.
 
 ## Quick start
 
@@ -55,6 +55,12 @@ class App extends Component {
                         const data = editor.getData();
                         console.log( { event, editor, data } );
                     } }
+                    onBlur={ editor => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ editor => {
+                        console.log( 'Focus.', editor );
+                    } }
                 />
             </div>
         );
@@ -78,6 +84,9 @@ The `<CKEditor>` component supports the following properties:
 	1. An {@link module:utils/eventinfo~EventInfo `EventInfo`} object,
 	2. An {@link module:core/editor/editor~Editor `Editor`} instance.
 * `onInit` &ndash; A function called when the editor was initialized. It receives the initialized {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `onBlur` &ndash; A function called when the editor was blurred. It receives the blurred {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `onFocus` &ndash; A function called when the editor was focused. It receives the focused {@link module:core/editor/editor~Editor `editor`} as a parameter.
+* `disabled` &ndash; A boolean. The {@link module:core/editor/editor~Editor `editor`} is being switched to read-only mode if the property is set to `true`.
 
 ### Customizing the builds
 
@@ -92,7 +101,7 @@ There are two main ways to do that.
 
 	In this approach you will include CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
-	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-from-source).
+	Read more about this option in [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source).
 
 ### Note: Building for production
 
@@ -104,7 +113,7 @@ To do that, you need to first [eject the configuration](https://github.com/faceb
 npm run eject
 ```
 
-Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-config).
+Then, you can customize `UglifyJsPlugin` options in the webpack configuration. Read how to do this [here](#changes-required-in-webpacks-production-configuration).
 
 **Note**: The latest `webpack@4` comes with a version of `UglifyJsPlugin` which supports ES6 out of the box. Also, the React community works on allowing importing ES6 libraries into your applications, so this step will soon be no longer required.
 

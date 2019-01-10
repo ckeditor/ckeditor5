@@ -7,7 +7,7 @@ toc: false
 # Features
 
 <info-box>
-	Use the **navigation tree on the left** to navigate through selected CKEditor 5 features.
+	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through selected CKEditor 5 features.
 </info-box>
 
 ## Features availability

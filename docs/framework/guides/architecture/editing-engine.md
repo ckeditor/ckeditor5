@@ -198,7 +198,7 @@ What this means is that:
 
 * The view is yet another custom structure.
 * It resembles the DOM. While the model's tree structure only slightly resembled the DOM (e.g. by introducing text attributes), the view is much closer to the DOM. In other words, it is a **virtual DOM**.
-* There are two "pipelines": the **editing pipeline** (also called the "editing view") and the **data pipeline** ("the data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM that the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
+* There are two "pipelines": the **editing pipeline** (also called the "editing view") and the **data pipeline** (the "data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM that the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
 * The views are rendered to the DOM by the {@link module:engine/view/renderer~Renderer} which handles all the quirks required to tame the `contentEditable` used in the editing pipeline.
 
 The fact that there are two views is visible in the API:
@@ -218,23 +218,9 @@ editor.data;                    // The data pipeline (DataController).
 	Check out the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API.
 </info-box>
 
-### Changing the view
-
-Do not change the view manually, unless you really know what you are doing. If the view needs to be changed, in most cases, it means that the model should be changed first. Then the changes you apply to the model are converted ([conversion](#conversion) is covered below) to the view by specific converters.
-
-The view may need to be changed manually if the cause of such change is not represented in the model. For example, the model does not store information about the focus, which is a {@link module:engine/view/document~Document#isFocused property of the view}. When the focus changes, and you want to represent that in some element's class, you need to change that class manually.
-
-For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view writer.
-
-```js
-editor.data.view.change( writer => {
-	writer.insert( position1, writer.createText( 'foo' ) );
-} );
-```
-
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#Conversion).
+The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 
@@ -244,11 +230,40 @@ The element types can be defined as follows:
 * **UI elements** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
 * **Editable element** &ndash; The elements used as "nested editables" of non-editable fragments of the content, for example a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
-Custom properties are used to store information like:
+Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which can be used to store information like:
 
 * Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}).
 * How an element should be marked when a [marker](#markers) highlights it.
 * Whether an element belongs to a certain feature &mdash; if it is a link, progress bar, caption, etc.
+
+#### Non-semantic views
+
+Not all view trees need to (and can) be build with semantic element types. View structures generated straight from input data (e.g. pasted HTML or with `editor.setData()`) consists only of {@link module:engine/view/element~Element base element} instances. Those view structures are (usually) [converted to model structures](#conversion) and then converted back to view structures for editing or data retrieval purposes, at which point they become semantic views again.
+
+The additional information conveyed in the semantic views and special types of operations that feature developers want to perform on those tree (compared to simple tree operations on non-semantic views) means that both structures need to be [modified by different tools](#changing-the-view).
+
+We will explain the [conversion](#conversion) later in this guide. For now, it is only important for you to know that there are semantic views for rendering and data retrieval purposes and non-semantic views for data input.
+
+### Changing the view
+
+Do not change the view manually, unless you really know what you are doing. If the view needs to be changed, in most cases, it means that the model should be changed first. Then the changes you apply to the model are converted ([conversion](#conversion) is covered below) to the view by specific converters.
+
+The view may need to be changed manually if the cause of such change is not represented in the model. For example, the model does not store information about the focus, which is a {@link module:engine/view/document~Document#isFocused property of the view}. When the focus changes, and you want to represent that in some element's class, you need to change that class manually.
+
+For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view downcast writer.
+
+```js
+editor.data.view.change( writer => {
+	writer.insert( position1, writer.createText( 'foo' ) );
+} );
+```
+
+<info-box>
+	There are two view writers:
+
+	* {@link module:engine/view/downcastwriter~DowncastWriter} &mdash; available in the `change()` blocks, used during downcasting the model to the view. It operates on a "semantic view" so a view structure which differentiates between different types of elements (see [Element types and custom data](#element-types-and-custom-data)).
+	* {@link module:engine/view/upcastwriter~UpcastWriter} &mdash; a writer to be used when pre-processing the "input" data (e.g. pasted content) which happens usually before the conversion (upcasting) to the model. It operates on ["non-semantic views"](#non-semantic-views).
+</info-box>
 
 ### Positions
 

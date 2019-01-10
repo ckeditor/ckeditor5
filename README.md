@@ -14,7 +14,7 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 
 A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
 
-![CKEditor 5 Classic rich text editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor%205%20classic%20screeshot.png)
+![CKEditor 5 Classic rich text editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-classic.png)
 
 ## ⚠ This package does not contain any source code
 
@@ -318,7 +318,7 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-adapter-ckfinder.svg" alt="@ckeditor/ckeditor5-adapter-ckfinder npm package badge"></a>
 	</td>
 	<td>
-		The <a href="https://ckeditor.com/ckeditor-4/ckfinder/">CKFinder</a> adapter for features which require upload capabilities.
+		The <a href="https://ckeditor.com/ckfinder/">CKFinder</a> adapter for features which require upload capabilities (e.g. image upload).
 	</td>
 </tr>
 
@@ -379,6 +379,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The block quote feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-ckfinder"><code>@ckeditor/ckeditor5-ckfinder</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-ckfinder.svg" alt="@ckeditor/ckeditor5-ckfinder npm package badge"></a>
+	</td>
+	<td>
+		The <a href="https://ckeditor.com/ckfinder/">CKFinder</a> file browser integration.
 	</td>
 </tr>
 

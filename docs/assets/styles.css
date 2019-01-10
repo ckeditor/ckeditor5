@@ -11,8 +11,9 @@
 	}
 }
 
-/* https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
-@media only screen and (max-width: 1360px) {
+/* https://github.com/ckeditor/ckeditor5/issues/1350
+https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
+@media only screen and (min-width: 960px) and (max-width: 1360px) {
 	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
 	.main .main__content .main__content-inner,
 	.main .main__content-wide .main__content-inner {
@@ -41,5 +42,21 @@
 		 * `.main__content-wide` is 40px wider (800px), that's why we are reducing this right padding.
 		 */
 		padding-right: 300px;
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1349 */
+.main .navigation-hint_mobile {
+	display: none;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1349 */
+@media only screen and (max-width: 960px) {
+	.main .navigation-hint_desktop {
+		display: none;
+	}
+
+	.main .navigation-hint_mobile {
+		display: inline;
 	}
 }

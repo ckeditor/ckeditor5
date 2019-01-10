@@ -78,13 +78,11 @@ By default, CKEditor 5 has no global registry of editor instances. But if necess
 
 ## How to enable image drag&drop and upload? Where should I start?
 
-The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters ({@link features/image-upload#easy-image Easy Image} or {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig CKFinder adapter}) or {@link module:upload/filerepository~UploadAdapter implement and use your own upload adapter}.
-
-See the {@link features/image Image} and {@link features/image-upload Image upload} feature guides to learn more.
+The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
 
 ## How to use CKEditor 5 with frameworks (Angular, React, etc.)?
 
-For the full list of official integrations see the {@link builds/guides/frameworks/overview#official-integrations "Official integrations"} section.
+For the full list of official integrations see the {@link builds/guides/frameworks/overview#official-wysiwyg-editor-integrations "Official integrations"} section.
 
 If an official integration for the framework of your choice does not exist yet, make sure to read the {@link builds/guides/frameworks/overview "Integrating CKEditor 5 with JavaScript frameworks"} guide. CKEditor 5 offers a rich JavaScript API and ready to use builds which make it possible to use CKEditor 5 with whichever framework you need.
 

@@ -33,7 +33,7 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlight', '|', 'undo', 'redo' ],
-			viewportTopOffset: 100
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		cloudServices: CS_CONFIG
 	} )

@@ -21,7 +21,7 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular 2+](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-angular
+npm install --save @ckeditor/ckeditor5-angular
 ```
 
 Install one of the {@link builds/guides/overview#available-builds official editor builds} or {@link builds/guides/development/custom-builds create a custom one} (e.g. if you want to install more plugins or customize something that cannot be controlled with the {@link builds/guides/integration/configuration editor configuration}).
@@ -29,7 +29,7 @@ Install one of the {@link builds/guides/overview#available-builds official edito
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
-npm install --save-dev @ckeditor/ckeditor5-build-classic
+npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
 Now, add `CKEditorModule` to your application module imports:
@@ -246,11 +246,64 @@ Fired with an object containing the editor and the CKEditor 5 `blur` event data.
 Fired when the editing view of the editor is focused. It corresponds with the {@link module:engine/view/document~Document#event:focus `editor.editing.view.document#focus`} event.
 Fired with an object containing the editor and the CKEditor 5 `focus` event data.
 
+## Styling
+
+The CKEditor 5 component for Angular can be styled using the component stylesheet or using a global stylesheet. Let's see how to set the CKEditor 5 component's height using these two approaches.
+
+### Setting the height via the component stylesheet
+
+First, create a (S)CSS file in the parent component's directory and style the given editor's part preceded by the `:host` and `::ng-deep` pseudo selectors.
+
+```css
+/* src/app/app.component.css */
+
+:host ::ng-deep .ck-editor__editable {
+	min-height: 500px;
+}
+```
+
+Then in the parent component add the relative path to the above stylesheet.
+
+```ts
+/* src/app/app.component.ts */
+
+@Component( {
+	// ...
+	styleUrls: [ './app.component.css' ]
+} )
+```
+
+### Setting the height via a global stylesheet
+
+To style the component using a global stylesheet, first, create it:
+
+```css
+/* src/styles.css */
+
+.ck-editor__editable {
+	min-height: 500px;
+}
+```
+
+Then, add it in the `angular.json` configuration file.
+
+```json
+"architect": {
+	"build": {
+		"options": {
+			"styles": [
+				{ "input": "src/styles.css" }
+			]
+		}
+	}
+}
+```
+
 ## Localization
 
 CKEditor 5 can be localized in two steps.
 
-### 1. Load translation files
+### 1. Loading translation files
 
 First, you need to add translation files to the bundle. This step can be achieved in two ways:
 
@@ -274,7 +327,7 @@ First, you need to add translation files to the bundle. This step can be achieve
 	}
 	```
 
-### 2. Configure the language
+### 2. Configuring the language
 
 Then, you need to configure the editor to use the given language:
 

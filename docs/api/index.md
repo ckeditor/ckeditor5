@@ -5,7 +5,7 @@ category: api-reference
 # API documentation
 
 <info-box>
-	Use the **navigation tree on the left** to navigate through CKEditor API.
+	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor API.
 </info-box>
 
 ## Popular API pages

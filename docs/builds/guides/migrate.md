@@ -35,9 +35,7 @@ CKEditor 5 was designed with focus on creating quality content. There are thus g
 
 ## Image upload
 
-Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible anymore and therefore a new approach is needed.
-
-CKEditor 5 Builds come with {@link features/image-upload#easy-image Easy Image} available out of the box. It is super simple to {@link features/image-upload#easy-image enable image upload with it}.
+CKEditor 5 supports several different image upload strategies. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best option for your project.
 
 ## Plugins
 
@@ -378,7 +376,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-keystrokes">keystrokes</a></td>
 			<td>
-				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/intro#keystroke-handler Keystrokes and focus management} article.</p>
+				<p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/ui-library#keystrokes-and-focus-management Keystrokes and focus management} section.</p>
 				<p>Making keystrokes overridable through <code>config.keystrokes</code> is handled in a <a href="https://github.com/ckeditor/ckeditor5-core/issues/8" target="_blank" rel="noopener">dedicated issue</a>. There is also an issue about <a href="https://github.com/ckeditor/ckeditor5-core/issues/20" target="_blank" rel="noopener">improving keystroke handling</a>.</p>
 			</td>
 		</tr>
@@ -567,8 +565,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><span id="uploadUrl"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-uploadUrl">uploadUrl</a></span></td>
 			<td>
-				<p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with support for responsive images. To configure it, provide the {@link module:cloud-services/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available, too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p>
-				<p>Writing your own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p>
+				<p>There are several image upload strategies supported by CKEditor 5. Check out the {@link features/image-upload comprehensive "Image upload" guide} to learn more.</p>
 			</td>
 		</tr>
 		<tr>
