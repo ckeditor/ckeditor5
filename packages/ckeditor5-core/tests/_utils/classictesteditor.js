@@ -75,7 +75,7 @@ export default class ClassicTestEditor extends Editor {
 					} )
 					.then( () => {
 						editor._elementReplacer.replace( element, editor.ui.view.element );
-						editor.fire( 'uiReady' );
+						editor.ui.ready();
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => editor.data.init( getDataFromElement( element ) ) )

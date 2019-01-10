@@ -65,6 +65,35 @@ export default class EditorUI {
 	}
 
 	/**
+	 * The main (outermost) DOM element of the editor UI.
+	 *
+	 * For example, in {@link module:editor-classic/classiceditor~ClassicEditor} it is a `<div>` which
+	 * wraps the editable element and the toolbar. In {@link module:editor-inline/inlineeditor~InlineEditor}
+	 * it is the editable element itself (as there is no other wrapper). However, in
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} it is set to `null` because this editor does not
+	 * come with a single "main" HTML element (its editable element and toolbar are separate).
+	 *
+	 * This property can be understood as a shorthand for retrieving the element that a specific editor integration
+	 * considers to be its main DOM element.
+	 *
+	 * @readonly
+	 * @member {HTMLElement|null} #element
+	 */
+	get element() {
+		return null;
+	}
+
+	/**
+	 * Fires the {@link module:core/editor/editorui~EditorUI#event:ready `ready`} event.
+	 *
+	 * This method should be called after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
+	 * {@link module:core/editor/editor~Editor#event:dataReady} by the specific editor creator.
+	 */
+	ready() {
+		this.fire( 'ready' );
+	}
+
+	/**
 	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update `update`} event.
 	 *
 	 * This method should be called when the editor UI (e.g. positions of its balloons) needs to be updated due to
@@ -81,6 +110,15 @@ export default class EditorUI {
 		this.stopListening();
 		this.view.destroy();
 	}
+
+	/**
+	 * Fired when the editor UI is ready.
+	 *
+	 * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
+	 * {@link module:core/editor/editor~Editor#event:dataReady}.
+	 *
+	 * @event ready
+	 */
 
 	/**
 	 * Fired whenever the UI (all related components) should be refreshed.

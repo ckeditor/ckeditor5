@@ -20,16 +20,19 @@ import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '../../tests/_utils/utils';
 
 describe( 'ClassicTestEditor', () => {
-	let editorElement;
+	let editorElement, logStub;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
+
+		logStub = testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -122,7 +125,7 @@ describe( 'ClassicTestEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
+					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -133,7 +136,7 @@ describe( 'ClassicTestEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( editor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					return editor.destroy();
 				} );
@@ -196,6 +199,26 @@ describe( 'ClassicTestEditor', () => {
 						.then( () => {
 							expect( editor.element.style.display ).to.equal( '' );
 						} );
+				} );
+		} );
+	} );
+
+	describe( 'deprecated uiReady event', () => {
+		it( 'logs deprecated warning when attaching uiReady on listener', () => {
+			return ClassicTestEditor.create( editorElement, { foo: 1 } )
+				.then( editor => {
+					editor.on( 'uiReady', () => {} );
+
+					expect( logStub.calledOnceWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
+				} );
+		} );
+
+		it( 'logs deprecated warning when attaching uiReady once listener', () => {
+			return ClassicTestEditor.create( editorElement, { foo: 1 } )
+				.then( editor => {
+					editor.once( 'uiReady', () => {} );
+
+					expect( logStub.calledOnceWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
 				} );
 		} );
 	} );

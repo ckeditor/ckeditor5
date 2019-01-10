@@ -44,6 +44,10 @@ describe( 'EditorUI', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
+		it( 'should have #element getter', () => {
+			expect( ui.element ).to.null;
+		} );
+
 		it( 'should fire update event after viewDocument#layoutChanged', () => {
 			const spy = sinon.spy();
 
@@ -54,6 +58,22 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledOnce( spy );
 
 			editor.editing.view.document.fire( 'layoutChanged' );
+
+			sinon.assert.calledTwice( spy );
+		} );
+	} );
+
+	describe( 'ready()', () => {
+		it( 'should fire ready event', () => {
+			const spy = sinon.spy();
+
+			ui.on( 'ready', spy );
+
+			ui.ready();
+
+			sinon.assert.calledOnce( spy );
+
+			ui.ready();
 
 			sinon.assert.calledTwice( spy );
 		} );

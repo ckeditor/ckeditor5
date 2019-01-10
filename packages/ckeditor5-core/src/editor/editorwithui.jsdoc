@@ -29,6 +29,8 @@
  */
 
 /**
+ * **Deprecated** since `v12.0.0`. The {@link module:core/editor/editorui~EditorUI#element `EditorUI element`} should be used instead.
+ *
  * The main (outermost) DOM element of the editor UI.
  *
  * For example, in {@link module:editor-classic/classiceditor~ClassicEditor} it is a `<div>` which
@@ -38,18 +40,37 @@
  * come with a single "main" HTML element (its editable element and toolbar are separate).
  *
  * This property can be understood as a shorthand for retrieving the element that a specific editor integration
- * considers to be its main DOM element. There are always other ways to access these elements, too
- * (e.g. via {@link #ui `editor.ui`}).
+ * considers to be its main DOM element.
  *
+ * @deprecated v11.2.0 The {@link module:core/editor/editorui~EditorUI#element `EditorUI element`} should be used instead.
  * @readonly
  * @member {HTMLElement|null} #element
  */
 
 /**
+ * **Deprecated** since `v12.0.0`. The {@link module:core/editor/editorui~EditorUI#event:ready ui ready event} should be listened to instead.
+ *
  * Fired when the editor UI is ready.
  *
  * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
  * {@link module:core/editor/editor~Editor#event:dataReady}.
  *
+ * @deprecated v11.2.0 The {@link module:core/editor/editorui~EditorUI#event:ready ui ready event} should be listened to instead.
  * @event uiReady
+ */
+
+/**
+ * This error is thrown when a component tries to access deprecated
+ * {@link module:core/editor/editorwithui~EditorWithUI#element editor element}. Instead the
+ * {@link module:core/editor/editorui~EditorUI#element `EditorUI element`} should be used.
+ *
+ * @error deprecated-editor-element
+ */
+
+/**
+ * This error is thrown when a component tries to listen to deprecated
+ * {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady editor uiReady event}.
+ * Instead the {@link module:core/editor/editorui~EditorUI#event:ready ui ready event} should be listened to.
+ *
+ * @error deprecated-editor-event-uiReady
  */
