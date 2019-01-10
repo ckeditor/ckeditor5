@@ -338,18 +338,19 @@ describe( 'ImageUploadEditing', () => {
 		editor.execute( 'imageUpload', { file } );
 
 		model.once( '_change', () => {
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="${ base64Sample }"></img>` +
-				'</figure>]' +
-				'<p>foo bar</p>' );
-			expect( loader.status ).to.equal( 'uploading' );
-
-			done();
+			tryExpect( done, () => {
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="ck-widget image" contenteditable="false">' +
+					`<img src="${ base64Sample }"></img>` +
+					'</figure>]' +
+					'<p>foo bar</p>' );
+				expect( loader.status ).to.equal( 'uploading' );
+			} );
 		} );
 
 		expect( loader.status ).to.equal( 'reading' );
-		nativeReaderMock.mockSuccess( base64Sample );
+
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should replace read data with server response once it is present', done => {
@@ -359,18 +360,18 @@ describe( 'ImageUploadEditing', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
-				);
-				expect( loader.status ).to.equal( 'idle' );
-
-				done();
+				tryExpect( done, () => {
+					expect( getViewData( view ) ).to.equal(
+						'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+					);
+					expect( loader.status ).to.equal( 'idle' );
+				} );
 			}, { priority: 'lowest' } );
 
-			adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png' } ) );
 		} );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should fire notification event in case of error', done => {
@@ -378,17 +379,17 @@ describe( 'ImageUploadEditing', () => {
 		const file = createNativeFileMock();
 
 		notification.on( 'show:warning', ( evt, data ) => {
-			expect( data.message ).to.equal( 'Reading error.' );
-			expect( data.title ).to.equal( 'Upload failed' );
-			evt.stop();
-
-			done();
+			tryExpect( done, () => {
+				expect( data.message ).to.equal( 'Reading error.' );
+				expect( data.title ).to.equal( 'Upload failed' );
+				evt.stop();
+			} );
 		}, { priority: 'high' } );
 
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		nativeReaderMock.mockError( 'Reading error.' );
+		loader.file.then( () => nativeReaderMock.mockError( 'Reading error.' ) );
 	} );
 
 	it( 'should not fire notification on abort', done => {
@@ -403,12 +404,15 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
-		nativeReaderMock.abort();
 
-		setTimeout( () => {
-			sinon.assert.notCalled( spy );
-			done();
-		}, 0 );
+		loader.file.then( () => {
+			nativeReaderMock.abort();
+
+			setTimeout( () => {
+				sinon.assert.notCalled( spy );
+				done();
+			}, 0 );
+		} );
 	} );
 
 	it( 'should throw when other error happens during upload', done => {
@@ -435,13 +439,15 @@ describe( 'ImageUploadEditing', () => {
 		// Check if error can be caught.
 		promise.catch( catchSpy );
 
-		nativeReaderMock.mockSuccess();
+		loader.file.then( () => {
+			nativeReaderMock.mockSuccess();
 
-		setTimeout( () => {
-			sinon.assert.calledOnce( catchSpy );
-			sinon.assert.calledWithExactly( catchSpy, error );
-			done();
-		}, 0 );
+			setTimeout( () => {
+				sinon.assert.calledOnce( catchSpy );
+				sinon.assert.calledWithExactly( catchSpy, error );
+				done();
+			}, 0 );
+		} );
 	} );
 
 	it( 'should do nothing if image does not have uploadId', () => {
@@ -467,14 +473,14 @@ describe( 'ImageUploadEditing', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
-				sinon.assert.calledOnce( spy );
-
-				done();
+				tryExpect( done, () => {
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+					sinon.assert.calledOnce( spy );
+				} );
 			} );
 		} );
 
-		nativeReaderMock.mockError( 'Upload error.' );
+		loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
 	} );
 
 	it( 'should abort upload if image is removed', () => {
@@ -485,15 +491,18 @@ describe( 'ImageUploadEditing', () => {
 		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
 
 		expect( loader.status ).to.equal( 'reading' );
-		nativeReaderMock.mockSuccess( base64Sample );
 
-		const image = doc.getRoot().getChild( 0 );
-		model.change( writer => {
-			writer.remove( image );
+		return loader.file.then( () => {
+			nativeReaderMock.mockSuccess( base64Sample );
+
+			const image = doc.getRoot().getChild( 0 );
+			model.change( writer => {
+				writer.remove( image );
+			} );
+
+			expect( loader.status ).to.equal( 'aborted' );
+			sinon.assert.calledOnce( abortSpy );
 		} );
-
-		expect( loader.status ).to.equal( 'aborted' );
-		sinon.assert.calledOnce( abortSpy );
 	} );
 
 	it( 'should not abort and not restart upload when image is moved', () => {
@@ -564,20 +573,20 @@ describe( 'ImageUploadEditing', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
-					'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
-					'</figure>]<p>foo bar</p>'
-				);
-				expect( loader.status ).to.equal( 'idle' );
-
-				done();
+				tryExpect( done, () => {
+					expect( getViewData( view ) ).to.equal(
+						'[<figure class="ck-widget image" contenteditable="false">' +
+						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
+						'</figure>]<p>foo bar</p>'
+					);
+					expect( loader.status ).to.equal( 'idle' );
+				} );
 			}, { priority: 'lowest' } );
 
-			adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } );
+			loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { default: 'image.png', 500: 'image-500.png', 800: 'image-800.png' } ) );
 		} );
 
-		nativeReaderMock.mockSuccess( base64Sample );
+		loader.file.then( () => nativeReaderMock.mockSuccess( base64Sample ) );
 	} );
 
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
@@ -761,12 +770,9 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			try {
-				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'png' );
-				done();
-			} catch ( err ) {
-				done( err );
-			}
+			tryExpect( done, () => {
+				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
+			} );
 		}, { priority: 'low' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -792,12 +798,9 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			try {
-				expect( loader.file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
-				done();
-			} catch ( err ) {
-				done( err );
-			}
+			tryExpect( done, () => {
+				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
+			} );
 		}, { priority: 'low' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -822,18 +825,27 @@ describe( 'ImageUploadEditing', () => {
 } );
 
 // Asserts actual and expected model data.
-// Note: Since this function is run inside a promise, all errors needs to be caught
-// and rethrow to be correctly processed by a testing framework.
 //
 // @param {function} done Callback function to be called when assertion is done.
 // @param {String} actual Actual model data.
 // @param {String} expected Expected model data.
 function expectModel( done, actual, expected ) {
-	try {
+	tryExpect( done, () => {
 		expect( actual ).to.equal( expected );
-		done();
+	} );
+}
+
+// Runs given expect function in a try-catch. It should be used only when `expect` is called as a result of a `Promise`
+// resolution as all errors may be caught by tested code and needs to be rethrow to be correctly processed by a testing framework.
+//
+// @param {Function} doneFn Function to run when assertion is done.
+// @param {Function} expectFn Function containing all assertions.
+function tryExpect( doneFn, expectFn ) {
+	try {
+		expectFn();
+		doneFn();
 	} catch ( err ) {
-		done( err );
+		doneFn( err );
 	}
 }
 
