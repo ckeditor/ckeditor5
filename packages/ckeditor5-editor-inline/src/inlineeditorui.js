@@ -33,6 +33,13 @@ export default class InlineEditorUI extends EditorUI {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.editable.element;
+	}
+
+	/**
 	 * Initializes the UI.
 	 */
 	init() {
