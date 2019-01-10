@@ -197,4 +197,4 @@ ClassicEditor
 
 ```
 
-It is time to build the editor using `npm run build-ckeditor` and see the results. From now on, the editor's theme is using customized styles, which are a part of the build.
+It is time to build the editor using `yarn run build-ckeditor` and see the results. From now on, the editor's theme is using customized styles, which are a part of the build.
