@@ -61,7 +61,7 @@ export default class InlineEditorUI extends EditorUI {
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
 				view.panel.pin( {
-					target: view.editableElement,
+					target: view.editable.editableElement,
 					positions: view.panelPositions
 				} );
 			}
@@ -74,10 +74,10 @@ export default class InlineEditorUI extends EditorUI {
 		// Bind to focusTracker instead of editor.editing.view because otherwise
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.editableElement );
 		view.editable.name = editingRoot.rootName;
 
-		this.focusTracker.add( view.editableElement );
+		this.focusTracker.add( view.editable.editableElement );
 
 		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 

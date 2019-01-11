@@ -9,8 +9,13 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 describe( 'InlineEditorUIView', () => {
 	let locale, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
@@ -119,6 +124,8 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+
 			view.render();
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();

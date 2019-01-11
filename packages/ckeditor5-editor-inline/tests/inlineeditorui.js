@@ -93,7 +93,7 @@ describe( 'InlineEditorUI', () => {
 				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: view.editableElement,
+					target: view.editable.editableElement,
 					positions: sinon.match.array
 				} );
 			} );
