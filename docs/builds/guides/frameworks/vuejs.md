@@ -340,6 +340,44 @@ Now all you need to do is specify the list of rich text editor options (**includ
 </script>
 ```
 
+## Using the Document editor build
+
+If you use the {@link framework/guides/document-editor Document editor} in your application, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create manually add the editor toolbar to the DOM}.
+
+Since accessing the editor toolbar is not possible until after the editor instance is {@link module:core/editor/editor~Editor#event:ready ready}, put your toolbar insertion code in a method executed upon the [`ready`](#ready) event of the component, like in the following example:
+
+```html
+<template>
+		<div id="app">
+			<ckeditor :editor="editor" @ready="onReady" ... ></ckeditor>
+		</div>
+</template>
+
+<script>
+	import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+
+	export default {
+		name: 'app',
+		data() {
+			return {
+				editor: DecoupledEditor,
+
+				// ...
+			};
+		},
+		methods: {
+			onReady( editor )  {
+				// Insert the toolbar before the editable area.
+				editor.ui.view.editable.element.parentElement.insertBefore(
+					editor.ui.view.toolbar.element,
+					editor.ui.view.editable.element
+				);
+			}
+		}
+	}
+</script>
+```
+
 ## Component directives
 
 ### `editor`
