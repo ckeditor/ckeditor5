@@ -87,7 +87,7 @@ Some additional things you should keep in mind:
 * Make sure you signed the [Contributor License Agreement (CLA)](#contributor-license-agreement-cla) and that tests pass. Test your changes!
 
 <info-box>
-	If want your changes to be permanent in your development environment, make sure your `mgit.json` file {@link framework/guides/contributing/development-environment#using-mgit-for-custom-packages points to your forked version of the repository} so next time you execute `mgit update` to refresh the project, the utility will use your fork.
+	If want your changes to be permanent in your development environment, make sure your `mgit.json` file {@link framework/guides/contributing/development-environment#using-mgit-for-custom-packages points to your forked version of the repository} so next time you execute `mgit sync` to refresh the project, the utility will use your fork.
 </info-box>
 
 ## Translating

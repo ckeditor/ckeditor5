@@ -19,7 +19,7 @@ before_install:
 - npm i -g yarn
 install:
 - yarn add mgit2 --ignore-workspace-root-check
-- mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
+- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
 - yarn
 script:
 - yarn run test --reporter=dots

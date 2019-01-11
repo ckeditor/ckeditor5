@@ -104,7 +104,7 @@
     "precommit": "lint-staged",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
-    "bootstrap": "mgit bootstrap && yarn install",
+    "bootstrap": "mgit sync && yarn install",
     "clean": "rm -rf node_modules && mgit exec 'rm -rf node_modules'",
     "reset": "rm -rf ./packages ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",

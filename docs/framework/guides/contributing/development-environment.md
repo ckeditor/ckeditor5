@@ -62,7 +62,7 @@ In order to work with development versions of all the official packages, it is r
 First, clone all the repositories:
 
 ```bash
-mgit bootstrap
+mgit sync
 ```
 
 Expected result:
@@ -112,7 +112,7 @@ Whenever you want to update all packages to their latest versions call:
 git pull
 
 # To update pull changes to all the packages:
-mgit update
+mgit sync
 ```
 
 From time to time, if the list of dependencies in any of the packages changed, you will need to call Yarn again to symlink them:
