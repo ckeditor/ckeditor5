@@ -113,7 +113,7 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	get( rootName = 'main' ) {
-		if ( !_checkIfRootsExists( [ rootName ], this.model.document.getRootNames() ) ) {
+		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
 			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
@@ -228,7 +228,7 @@ export default class DataController {
 			initialData = data;
 		}
 
-		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
+		if ( !this._checkIfRootsExists( Object.keys( initialData ) ) ) {
 			/**
 			 * Cannot init data on a non-existing root. This error is thrown when {@link #init DataController#init() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
@@ -274,14 +274,14 @@ export default class DataController {
 	 * pairs to set data on multiple roots at once.
 	 */
 	set( data ) {
-		let initialData = {};
+		let newData = {};
 		if ( typeof data === 'string' ) {
-			initialData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
+			newData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
 		} else {
-			initialData = data;
+			newData = data;
 		}
 
-		if ( !_checkIfRootsExists( Object.keys( initialData ), this.model.document.getRootNames() ) ) {
+		if ( !this._checkIfRootsExists( Object.keys( newData ) ) ) {
 			/**
 			 * Cannot set data on a non-existing root. This error is thrown when {@link #set DataController#set() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
@@ -297,7 +297,7 @@ export default class DataController {
 		}
 
 		this.model.enqueueChange( 'transparent', writer => {
-			for ( const rootName of Object.keys( initialData ) ) {
+			for ( const rootName of Object.keys( newData ) ) {
 				// Save to model.
 				const modelRoot = this.model.document.getRoot( rootName );
 
@@ -305,7 +305,7 @@ export default class DataController {
 				writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 				writer.remove( writer.createRangeIn( modelRoot ) );
-				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
+				writer.insert( this.parse( newData[ rootName ], modelRoot ), modelRoot, 0 );
 			}
 		} );
 	}
@@ -354,6 +354,23 @@ export default class DataController {
 	destroy() {}
 
 	/**
+	 * Checks if all provided root names are existing editor roots.
+	 *
+	 * @private
+	 * @param {Array.<String>} rootNames Root names to check.
+	 * @returns {Boolean} Whether all provided root names are existing editor roots.
+	 */
+	_checkIfRootsExists( rootNames ) {
+		for ( const rootName of rootNames ) {
+			if ( !this.model.document.getRootNames().includes( rootName ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Event fired by decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
 	 *
@@ -386,20 +403,4 @@ function _getMarkersRelativeToElement( element ) {
 	}
 
 	return result;
-}
-
-// Check if all provided root names are present in the given list of editor roots.
-//
-// @private
-// @param {Array.<String>} rootNames Root names to check.
-// @param {Array.<String>} editorRoots List of editor root names.
-// @returns {Boolean} Whether all provided root names are present in the editor.
-function _checkIfRootsExists( rootNames, editorRoots ) {
-	for ( const rootName of rootNames ) {
-		if ( !editorRoots.includes( rootName ) ) {
-			return false;
-		}
-	}
-
-	return true;
 }
