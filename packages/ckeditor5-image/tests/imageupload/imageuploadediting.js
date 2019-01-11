@@ -483,7 +483,7 @@ describe( 'ImageUploadEditing', () => {
 		loader.file.then( () => nativeReaderMock.mockError( 'Upload error.' ) );
 	} );
 
-	it( 'should abort upload if image is removed', done => {
+	it( 'should abort upload if image is removed', () => {
 		const file = createNativeFileMock();
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
@@ -661,6 +661,13 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not upload and remove image if fetch failed', done => {
+		const notification = editor.plugins.get( Notification );
+
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			evt.stop();
+		}, { priority: 'high' } );
+
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
 			'[<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>]<paragraph>foo</paragraph>',
@@ -686,6 +693,13 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should upload only images which were successfully fetched and remove failed ones', done => {
+		const notification = editor.plugins.get( Notification );
+
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			evt.stop();
+		}, { priority: 'high' } );
+
 		const expectedModel = '<paragraph>bar</paragraph>' +
 			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image>' +
 			'<image src="" uploadId="#loader2_id" uploadStatus="reading"></image>' +
@@ -732,6 +746,13 @@ describe( 'ImageUploadEditing', () => {
 
 		window.File = undefined;
 
+		const notification = editor.plugins.get( Notification );
+
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			evt.stop();
+		}, { priority: 'high' } );
+
 		expectData(
 			'<img src="" uploadId="#loader1_id" uploadProcessed="true"></img><p>baz</p>',
 			'<image src="" uploadId="#loader1_id" uploadStatus="reading"></image><paragraph>baz[]foo</paragraph>',
@@ -756,6 +777,13 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
 		testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
+
+		const notification = editor.plugins.get( Notification );
+
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			evt.stop();
+		}, { priority: 'high' } );
 
 		expectData(
 			'<p>baz</p><img src="" uploadId="#loader1_id" uploadProcessed="true"></img>',
