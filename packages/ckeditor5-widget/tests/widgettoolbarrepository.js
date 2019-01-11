@@ -31,7 +31,7 @@ describe( 'WidgetToolbarRepository', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget ],
+				plugins: [ Paragraph, FakeButton, WidgetToolbarRepository, FakeWidget, FakeChildWidget ],
 				fake: {
 					toolbar: [ 'fake_button' ]
 				}
@@ -69,23 +69,23 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'should create a widget toolbar and add it to the collection', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false,
+				getRelatedElement: () => null,
 			} );
 
-			expect( widgetToolbarRepository._toolbars.size ).to.equal( 1 );
-			expect( widgetToolbarRepository._toolbars.get( 'fake' ) ).to.be.an( 'object' );
+			expect( widgetToolbarRepository._toolbarDefinitions.size ).to.equal( 1 );
+			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.an( 'object' );
 		} );
 
 		it( 'should throw when adding two times widget with the same id', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: () => false
+				getRelatedElement: () => null
 			} );
 
 			expect( () => {
 				widgetToolbarRepository.register( 'fake', {
 					items: editor.config.get( 'fake.toolbar' ),
-					visibleWhen: () => false
+					getRelatedElement: () => null
 				} );
 			} ).to.throw( CKEditorError, /^widget-toolbar-duplicated/ );
 		} );
@@ -96,23 +96,23 @@ describe( 'WidgetToolbarRepository', () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'toolbar should be visible when the `visibleWhen` callback returns true', () => {
+		it( 'toolbar should be visible when the `getRelatedElement` callback returns a selected widget element', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetSelected
+				getRelatedElement: getSelectedFakeWidget
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
 
-			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
 
-		it( 'toolbar should be hidden when the `visibleWhen` callback returns false', () => {
+		it( 'toolbar should be hidden when the `getRelatedElement` callback returns null', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetSelected
+				getRelatedElement: getSelectedFakeWidget
 			} );
 
 			setData( model, '[<paragraph>foo</paragraph>]<fake-widget></fake-widget>' );
@@ -120,10 +120,10 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( null );
 		} );
 
-		it( 'toolbar should be hidden when the `visibleWhen` callback returns false #2', () => {
+		it( 'toolbar should be hidden when the `getRelatedElement` callback returns null #2', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetSelected
+				getRelatedElement: getSelectedFakeWidget
 			} );
 
 			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
@@ -139,7 +139,7 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetSelected
+				getRelatedElement: getSelectedFakeWidget
 			} );
 
 			setData( model, '[<fake-widget></fake-widget>]<fake-widget></fake-widget>' );
@@ -149,7 +149,7 @@ describe( 'WidgetToolbarRepository', () => {
 				writer.setSelection( model.document.getRoot().getChild( 1 ), 'on' );
 			} );
 
-			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
@@ -157,12 +157,12 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'it should be possible to create a widget toolbar for content inside the widget', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetContentSelected
+				getRelatedElement: getSelectedFakeWidgetContent
 			} );
 
 			setData( model, '<fake-widget>[foo]</fake-widget>' );
 
-			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
 		} );
@@ -170,10 +170,10 @@ describe( 'WidgetToolbarRepository', () => {
 		it( 'toolbar should not engage when is in the balloon yet invisible', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
-				visibleWhen: isFakeWidgetSelected
+				getRelatedElement: getSelectedFakeWidget
 			} );
 
-			const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 			setData( model, '[<fake-widget></fake-widget>]' );
 
@@ -194,6 +194,77 @@ describe( 'WidgetToolbarRepository', () => {
 			editor.ui.fire( 'update' );
 
 			expect( balloon.visibleView ).to.equal( lastView );
+		} );
+
+		// #60
+		it( 'should show up only for the related element which is deepest in the view document', () => {
+			// The point of this widget is to provide a getRelatedElement function that
+			// returns a super–shallow related element which is ignored but satisfies code coverage.
+			widgetToolbarRepository.register( 'dummy', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => editor.editing.view.document.getRoot()
+			} );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			widgetToolbarRepository.register( 'fake-child', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeChildWidget
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<fake-widget>' +
+					'<paragraph>foo</paragraph>' +
+					'[<fake-child-widget></fake-child-widget>]' +
+				'</fake-widget>' );
+
+			const fakeChildWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake-child' ).view;
+
+			expect( balloon.visibleView ).to.equal( fakeChildWidgetToolbarView );
+		} );
+
+		// #60
+		it( 'should attach to the new related view element upon selecting another widget', () => {
+			const view = editor.editing.view;
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			widgetToolbarRepository.register( 'fake-child', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeChildWidget
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'[<fake-widget>' +
+					'<paragraph>foo</paragraph>' +
+					'<fake-child-widget></fake-child-widget>' +
+				'</fake-widget>]' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+			const fakeChildWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake-child' ).view;
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+
+			const fakeChildViewElement = view.document.getRoot().getChild( 1 ).getChild( 1 );
+			const updatePositionSpy = sinon.spy( balloon, 'add' );
+
+			view.change( writer => {
+				// [<fake-child-widget></fake-child-widget>]
+				writer.setSelection( fakeChildViewElement, 'on' );
+			} );
+
+			expect( balloon.visibleView ).to.equal( fakeChildWidgetToolbarView );
+
+			expect( updatePositionSpy.firstCall.args[ 0 ].position.target ).to.equal(
+				view.domConverter.viewToDom( fakeChildViewElement ) );
 		} );
 	} );
 } );
@@ -236,10 +307,10 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be hidden when the widget is selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			items: editor.config.get( 'fake.toolbar' ),
-			visibleWhen: isFakeWidgetSelected,
+			getRelatedElement: getSelectedFakeWidget,
 		} );
 
-		const fakeWidgetToolbarView = widgetToolbarRepository._toolbars.get( 'fake' ).view;
+		const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
 		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
 		editor.ui.focusTracker.isFocused = true;
@@ -252,7 +323,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	it( 'balloon toolbar should be visible when the widget is not selected', () => {
 		widgetToolbarRepository.register( 'fake', {
 			items: editor.config.get( 'fake.toolbar' ),
-			visibleWhen: isFakeWidgetSelected
+			getRelatedElement: getSelectedFakeWidget
 		} );
 
 		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
@@ -265,26 +336,41 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 } );
 
 const fakeWidgetSymbol = Symbol( 'fakeWidget' );
+const fakeChildWidgetSymbol = Symbol( 'fakeChildWidget' );
 
-function isFakeWidgetSelected( selection ) {
+function getSelectedFakeWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	return !!viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeWidgetSymbol );
+	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeWidgetSymbol ) ) {
+		return viewElement;
+	}
+
+	return null;
 }
 
-function isFakeWidgetContentSelected( selection ) {
+function getSelectedFakeChildWidget( selection ) {
+	const viewElement = selection.getSelectedElement();
+
+	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeChildWidgetSymbol ) ) {
+		return viewElement;
+	}
+
+	return null;
+}
+
+function getSelectedFakeWidgetContent( selection ) {
 	const pos = selection.getFirstPosition();
 	let node = pos.parent;
 
 	while ( node ) {
 		if ( node.is( 'element' ) && isWidget( node ) && node.getCustomProperty( fakeWidgetSymbol ) ) {
-			return true;
+			return node;
 		}
 
 		node = node.parent;
 	}
 
-	return false;
+	return null;
 }
 
 // Plugin that adds fake_button to editor's component factory.
@@ -317,10 +403,11 @@ class FakeWidget extends Plugin {
 		schema.register( 'fake-widget', {
 			isObject: true,
 			isBlock: true,
-			allowWhere: '$block',
+			allowWhere: '$block'
 		} );
 
 		schema.extend( '$text', { allowIn: 'fake-widget' } );
+		schema.extend( 'paragraph', { allowIn: 'fake-widget' } );
 
 		const conversion = editor.conversion;
 
@@ -347,6 +434,58 @@ class FakeWidget extends Plugin {
 			},
 			model: ( view, modelWriter ) => {
 				return modelWriter.createElement( 'fake-widget' );
+			}
+		} );
+	}
+}
+
+// A simple child widget plugin
+// It registers `<fake-child-widget>` block in model and represents `div` in the view.
+// It allows having text inside self.
+class FakeChildWidget extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
+	init() {
+		const editor = this.editor;
+		const schema = editor.model.schema;
+
+		schema.register( 'fake-child-widget', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block',
+			allowIn: 'fake-widget'
+		} );
+
+		schema.extend( '$text', { allowIn: 'fake-child-widget' } );
+		schema.extend( 'paragraph', { allowIn: 'fake-child-widget' } );
+
+		const conversion = editor.conversion;
+
+		conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'fake-child-widget',
+			view: ( modelElement, viewWriter ) => {
+				return viewWriter.createContainerElement( 'div' );
+			}
+		} );
+
+		conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'fake-child-widget',
+			view: ( modelElement, viewWriter ) => {
+				const fakeWidget = viewWriter.createContainerElement( 'div' );
+				viewWriter.setCustomProperty( fakeChildWidgetSymbol, true, fakeWidget );
+
+				return toWidget( fakeWidget, viewWriter, { label: 'fake-child-widget' } );
+			}
+		} );
+
+		conversion.for( 'upcast' ).elementToElement( {
+			view: {
+				name: 'div'
+			},
+			model: ( view, modelWriter ) => {
+				return modelWriter.createElement( 'fake-child-widget' );
 			}
 		} );
 	}
