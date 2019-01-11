@@ -33,7 +33,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *				widgetToolbarRepository.register( 'image', {
  *					items: editor.config.get( 'image.toolbar' ),
- *					getRelatedElement: viewSelection => getSelectedImageWidget( viewSelection )
+ *					getRelatedElement: getSelectedImageWidget
  *				} );
  *			}
  *		}
