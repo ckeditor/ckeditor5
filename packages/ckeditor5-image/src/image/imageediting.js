@@ -18,8 +18,6 @@ import {
 
 import { toImageWidget } from './utils';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import ImageInsertCommand from './imageinsertcommand';
 
 /**
@@ -54,15 +52,15 @@ export default class ImageEditing extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, viewWriter ) => createImageViewElement( viewWriter )
-		} ) );
+		} );
 
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'image',
 			view: ( modelElement, viewWriter ) => toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) )
-		} ) );
+		} );
 
 		conversion.for( 'downcast' )
 			.add( modelToViewAttributeConverter( 'src' ) )
@@ -70,7 +68,7 @@ export default class ImageEditing extends Plugin {
 			.add( srcsetAttributeConverter() );
 
 		conversion.for( 'upcast' )
-			.add( upcastElementToElement( {
+			.elementToElement( {
 				view: {
 					name: 'img',
 					attributes: {
@@ -78,15 +76,15 @@ export default class ImageEditing extends Plugin {
 					}
 				},
 				model: ( viewImage, modelWriter ) => modelWriter.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
-			} ) )
-			.add( upcastAttributeToAttribute( {
+			} )
+			.attributeToAttribute( {
 				view: {
 					name: 'img',
 					key: 'alt'
 				},
 				model: 'alt'
-			} ) )
-			.add( upcastAttributeToAttribute( {
+			} )
+			.attributeToAttribute( {
 				view: {
 					name: 'img',
 					key: 'srcset'
@@ -105,7 +103,7 @@ export default class ImageEditing extends Plugin {
 						return value;
 					}
 				}
-			} ) )
+			} )
 			.add( viewFigureToModel() );
 
 		// Register imageUpload command.

@@ -492,7 +492,7 @@ describe( 'ImageUploadEditing', () => {
 
 		expect( loader.status ).to.equal( 'reading' );
 
-		loader.file.then( () => {
+		return loader.file.then( () => {
 			nativeReaderMock.mockSuccess( base64Sample );
 
 			const image = doc.getRoot().getChild( 0 );
@@ -500,10 +500,8 @@ describe( 'ImageUploadEditing', () => {
 				writer.remove( image );
 			} );
 
-			tryExpect( done, () => {
-				expect( loader.status ).to.equal( 'aborted' );
-				sinon.assert.calledOnce( abortSpy );
-			} );
+			expect( loader.status ).to.equal( 'aborted' );
+			sinon.assert.calledOnce( abortSpy );
 		} );
 	} );
 
@@ -781,10 +779,8 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should get file extension from base64 string', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			loader.file.then( file => {
-				tryExpect( done, () => {
-					expect( file.name.split( '.' ).pop() ).to.equal( 'png' );
-				} );
+			tryExpect( done, () => {
+				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'png' ) );
 			} );
 		}, { priority: 'low' } );
 
@@ -811,10 +807,8 @@ describe( 'ImageUploadEditing', () => {
 	// Skip this test on Edge as we mock `File` object there so there is no sense in testing it.
 	( isEdgeEnv ? it.skip : it )( 'should use fallback file extension', done => {
 		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
-			loader.file.then( file => {
-				tryExpect( done, () => {
-					expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' );
-				} );
+			tryExpect( done, () => {
+				loader.file.then( file => expect( file.name.split( '.' ).pop() ).to.equal( 'jpeg' ) );
 			} );
 		}, { priority: 'low' } );
 
@@ -915,8 +909,7 @@ function expectModel( done, actual, expected ) {
 }
 
 // Runs given expect function in a try-catch. It should be used only when `expect` is called as a result of a `Promise`
-// resolution. In such cases all errors may be caught by tested code and needs to be rethrow to be correctly processed
-// by a testing framework.
+// resolution as all errors may be caught by tested code and needs to be rethrow to be correctly processed by a testing framework.
 //
 // @param {Function} doneFn Function to run when assertion is done.
 // @param {Function} expectFn Function containing all assertions.

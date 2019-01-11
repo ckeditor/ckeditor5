@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import { isImageType, isLocalImage, fetchLocalImage } from '../../src/imageupload/utils';
@@ -49,13 +48,13 @@ export default class ImageUploadEditing extends Plugin {
 
 		// Register upcast converter for uploadId.
 		conversion.for( 'upcast' )
-			.add( upcastAttributeToAttribute( {
+			.attributeToAttribute( {
 				view: {
 					name: 'img',
 					key: 'uploadId'
 				},
 				model: 'uploadId'
-			} ) );
+			} );
 
 		// Handle pasted images.
 		// For every image file, a new file loader is created and a placeholder image is
