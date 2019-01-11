@@ -113,6 +113,21 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	get( rootName = 'main' ) {
+		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
+			/**
+			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #get} like:
+			 *
+			 * 		data.get( 'root2' );
+			 *
+			 * will throw this error.
+			 *
+			 * @error datacontroller-get-non-existent-root
+			 */
+			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.' );
+		}
+
 		// Get model range.
 		return this.stringify( this.model.document.getRoot( rootName ) );
 	}
@@ -181,12 +196,20 @@ export default class DataController {
 	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
 	 *
+	 * When data is passed as a string it is initialized on a default `main` root:
+	 *
+	 *		dataController.init( '<p>Foo</p>' ); // Initializes data on the `main` root.
+	 *
+	 * To initialize data on a different root or multiple roots at once, object containing `rootName` - `data` pairs should be passed:
+	 *
+	 *		dataController.init( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Initializes data on the `main` and `title` roots.
+	 *
 	 * @fires init
-	 * @param {String} data Input data.
-	 * @param {String} [rootName='main'] Root name.
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
+	 * pairs to initialize data on multiple roots at once.
 	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
 	 */
-	init( data, rootName = 'main' ) {
+	init( data ) {
 		if ( this.model.document.version ) {
 			/**
 			 * Cannot set initial data to not empty {@link module:engine/model/document~Document}.
@@ -198,10 +221,33 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.' );
 		}
 
-		const modelRoot = this.model.document.getRoot( rootName );
+		let initialData = {};
+		if ( typeof data === 'string' ) {
+			initialData.main = data; // Default root is 'main'. To initiate data on a different root, object should be passed.
+		} else {
+			initialData = data;
+		}
+
+		if ( !this._checkIfRootsExists( Object.keys( initialData ) ) ) {
+			/**
+			 * Cannot init data on a non-existing root. This error is thrown when {@link #init DataController#init() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #init} like:
+			 *
+			 * 		data.init( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 *
+			 * will throw this error.
+			 *
+			 * @error datacontroller-init-non-existent-root
+			 */
+			throw new CKEditorError( 'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.' );
+		}
 
 		this.model.enqueueChange( 'transparent', writer => {
-			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
+			for ( const rootName of Object.keys( initialData ) ) {
+				const modelRoot = this.model.document.getRoot( rootName );
+				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
+			}
 		} );
 
 		return Promise.resolve();
@@ -216,19 +262,51 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
-	 * @param {String} data Input data.
-	 * @param {String} [rootName='main'] Root name.
+	 * When data is passed as a string it is set on a default `main` root:
+	 *
+	 *		dataController.set( '<p>Foo</p>' ); // Sets data on the `main` root.
+	 *
+	 * To set data on a different root or multiple roots at once, object containing `rootName` - `data` pairs should be passed:
+	 *
+	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
+	 *
+	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
+	 * pairs to set data on multiple roots at once.
 	 */
-	set( data, rootName = 'main' ) {
-		// Save to model.
-		const modelRoot = this.model.document.getRoot( rootName );
+	set( data ) {
+		let newData = {};
+		if ( typeof data === 'string' ) {
+			newData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
+		} else {
+			newData = data;
+		}
+
+		if ( !this._checkIfRootsExists( Object.keys( newData ) ) ) {
+			/**
+			 * Cannot set data on a non-existing root. This error is thrown when {@link #set DataController#set() method}
+			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
+			 * calling {@link #set} like:
+			 *
+			 * 		data.set( { main: '<p>Foo</p>', root2: '<p>Bar</p>' } );
+			 *
+			 * will throw this error.
+			 *
+			 * @error datacontroller-set-non-existent-root
+			 */
+			throw new CKEditorError( 'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.' );
+		}
 
 		this.model.enqueueChange( 'transparent', writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
-			writer.remove( writer.createRangeIn( modelRoot ) );
-			writer.insert( this.parse( data, modelRoot ), modelRoot, 0 );
+			for ( const rootName of Object.keys( newData ) ) {
+				// Save to model.
+				const modelRoot = this.model.document.getRoot( rootName );
+
+				writer.remove( writer.createRangeIn( modelRoot ) );
+				writer.insert( this.parse( newData[ rootName ], modelRoot ), modelRoot, 0 );
+			}
 		} );
 	}
 
@@ -274,6 +352,23 @@ export default class DataController {
 	 * Removes all event listeners set by the DataController.
 	 */
 	destroy() {}
+
+	/**
+	 * Checks if all provided root names are existing editor roots.
+	 *
+	 * @private
+	 * @param {Array.<String>} rootNames Root names to check.
+	 * @returns {Boolean} Whether all provided root names are existing editor roots.
+	 */
+	_checkIfRootsExists( rootNames ) {
+		for ( const rootName of rootNames ) {
+			if ( !this.model.document.getRootNames().includes( rootName ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	/**
 	 * Event fired by decorated {@link #init} method.

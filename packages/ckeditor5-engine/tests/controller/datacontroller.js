@@ -178,9 +178,17 @@ describe( 'DataController', () => {
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
+		it( 'should set data to multiple roots at once', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( { main: 'bar', title: 'baz' } );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'bar' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'baz' );
+		} );
+
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.init( 'foo', 'title' );
+			data.init( { title: 'foo' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 		} );
@@ -209,6 +217,28 @@ describe( 'DataController', () => {
 			expect( promise ).to.be.instanceof( Promise );
 
 			return promise;
+		} );
+
+		it( 'should throw an error when non-existent root is used (single)', () => {
+			expect( () => {
+				data.init( { nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
+			);
+		} );
+
+		it( 'should throw an error when non-existent root is used (one of many)', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+
+			expect( () => {
+				data.init( { main: 'bar', nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-init-non-existent-root: Attempting to init data on a non-existing root.'
+			);
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '' );
 		} );
 	} );
 
@@ -240,8 +270,8 @@ describe( 'DataController', () => {
 
 		it( 'should get root name as a parameter', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.set( 'foo', 'main' );
-			data.set( 'Bar', 'title' );
+			data.set( 'foo' );
+			data.set( { title: 'Bar' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
@@ -252,7 +282,7 @@ describe( 'DataController', () => {
 		it( 'should parse given data before set in a context of correct root', () => {
 			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
 			data.set( 'foo', 'main' );
-			data.set( 'Bar', 'title' );
+			data.set( { title: 'Bar' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
@@ -265,13 +295,36 @@ describe( 'DataController', () => {
 		it( 'should allow setting empty data', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 
-			data.set( 'foo', 'title' );
+			data.set( { title: 'foo' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
 
-			data.set( '', 'title' );
+			data.set( { title: '' } );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( '' );
+		} );
+
+		it( 'should throw an error when non-existent root is used (single)', () => {
+			expect( () => {
+				data.set( { nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
+			);
+		} );
+
+		it( 'should throw an error when non-existent root is used (one of many) without touching any roots data', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.set( 'foo' );
+
+			expect( () => {
+				data.set( { main: 'bar', nonexistent: '<p>Bar</p>' } );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-set-non-existent-root: Attempting to set data on a non-existing root.'
+			);
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -342,6 +395,15 @@ describe( 'DataController', () => {
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+		} );
+
+		it( 'should throw an error when non-existent root is used', () => {
+			expect( () => {
+				data.get( 'nonexistent' );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.'
+			);
 		} );
 	} );
 
