@@ -45,10 +45,10 @@ export default class DecoupledEditorUI extends EditorUI {
 		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
-		editor.editing.view.attachDomRoot( view.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.editableElement );
 		view.editable.name = editingRoot.rootName;
 
-		this.focusTracker.add( this.view.editableElement );
+		this.focusTracker.add( this.view.editable.editableElement );
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
