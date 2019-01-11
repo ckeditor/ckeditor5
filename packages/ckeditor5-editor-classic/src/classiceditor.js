@@ -201,7 +201,7 @@ export default class ClassicEditor extends Editor {
 
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.editableElement ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
 							getDataFromElement( sourceElementOrData ) :

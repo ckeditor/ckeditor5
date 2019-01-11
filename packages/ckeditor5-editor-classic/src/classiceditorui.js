@@ -62,7 +62,7 @@ export default class ClassicEditorUI extends EditorUI {
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
 
-		this.focusTracker.add( this.view.editableElement );
+		this.focusTracker.add( this.view.editable.editableElement );
 
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
