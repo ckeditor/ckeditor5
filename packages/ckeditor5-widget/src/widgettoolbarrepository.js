@@ -188,7 +188,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 *
 	 * @private
 	 * @param {module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition} toolbarDefinition
-	 * @param {module:engine/model/view~Element} relatedElement
+	 * @param {module:engine/view/element~Element} relatedElement
 	 */
 	_showToolbar( toolbarDefinition, relatedElement ) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
