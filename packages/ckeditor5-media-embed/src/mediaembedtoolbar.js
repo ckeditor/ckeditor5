@@ -8,7 +8,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
-import { isMediaWidgetSelected } from './utils';
+import { getSelectedMediaViewWidget } from './utils';
 
 /**
  * The media embed toolbar plugin. It creates a toolbar for media embed that shows up when the media element is selected.
@@ -42,7 +42,7 @@ export default class MediaEmbedToolbar extends Plugin {
 
 		widgetToolbarRepository.register( 'mediaEmbed', {
 			items: editor.config.get( 'mediaEmbed.toolbar' ) || [],
-			visibleWhen: isMediaWidgetSelected,
+			getRelatedElement: getSelectedMediaViewWidget,
 		} );
 	}
 }

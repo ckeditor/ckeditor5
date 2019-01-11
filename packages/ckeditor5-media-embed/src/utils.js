@@ -27,12 +27,28 @@ export function toMediaWidget( viewElement, writer, label ) {
 	return toWidget( viewElement, writer, { label } );
 }
 
-export function isMediaWidgetSelected( viewSelection ) {
-	const viewElement = viewSelection.getSelectedElement();
+/**
+ * Returns a media widget editing view element if one is selected.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function getSelectedMediaViewWidget( selection ) {
+	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isMediaWidget( viewElement ) );
+	if ( viewElement && isMediaWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	return null;
 }
 
+/**
+ * Checks if a given view element is a media widget.
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
 export function isMediaWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( mediaSymbol ) && isWidget( viewElement );
 }
@@ -78,7 +94,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}
  */
-export function getSelectedMediaElement( selection ) {
+export function getSelectedMediaModelWidget( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'media' ) ) {
