@@ -39,28 +39,33 @@ export function isTableWidget( viewElement ) {
 }
 
 /**
- * Checks if a table widget is the only selected element.
+ * Returns a table widget editing view element if one is selected.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {Boolean}
+ * @returns {module:engine/view/element~Element|null}
  */
-export function isTableWidgetSelected( selection ) {
+export function getSelectedTableWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isTableWidget( viewElement ) );
+	if ( viewElement && isTableWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	return null;
 }
 
 /**
- * Checks if a table widget content is selected.
+ * Returns a table widget editing view element if one is among selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {Boolean}
+ * @returns {module:engine/view/element~Element|null}
  */
-export function isTableContentSelected( selection ) {
-	const selectedElement = selection.getSelectedElement();
-	const isInnerWidgetSelected = selectedElement && isWidget( selectedElement );
-
+export function getTableWidgetAncestor( selection ) {
 	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
 
-	return !isInnerWidgetSelected && !!( parentTable && isTableWidget( parentTable.parent ) );
+	if ( parentTable && isTableWidget( parentTable.parent ) ) {
+		return parentTable.parent;
+	}
+
+	return null;
 }
