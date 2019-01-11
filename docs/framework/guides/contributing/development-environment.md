@@ -20,15 +20,14 @@ You can find all the official packages listed in [CKEditor 5 development reposit
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) 6.9.0+
-* [Yarn](https://yarnpkg.com/) 1.2.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
 
 First, you need to install a couple of tools which you will be using later:
 
-* [mgit](https://www.npmjs.com/package/mgit2) &ndash; A multi-repo management tool,
-* [Yarn](https://yarnpkg.com/) &ndash; A dependency management tool.
+* [mgit2](https://www.npmjs.com/package/mgit2) &mdash; A multi-repo management tool,
+* [Yarn](https://yarnpkg.com/) &mdash; A dependency management tool.
 
 It is best to install them globally in your system for an easier use later on:
 
@@ -36,7 +35,7 @@ It is best to install them globally in your system for an easier use later on:
 npm install -g yarn mgit2
 ```
 
-Note: You may need to use `sudo` on Linux and macOS.
+**Note:** [Read how to avoid using `sudo` to install packages globally](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md) or use [nvm](https://github.com/creationix/nvm).
 
 Then clone the [main repository](https://github.com/ckeditor/ckeditor5):
 
@@ -57,7 +56,7 @@ yarn install
 
 The steps above should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
 
-In order to work with development versions of all the official packages, it is recommended to use mgit. The former will clone all package repositories and the latter will be able to symlink them, so they create a correct directory structure, understandable by Node.js-compliant tools (like webpack or Browserify).
+In order to work with development versions of all the official packages, it is recommended to use mgit. This tool will clone all package repositories to the `packages/` directory. Then, those packages need to be installed in a way understandable by Node.js-compliant tools (like webpack or Browserify). In order to achieve that we use Yarn's feature called [workspaces](https://yarnpkg.com/lang/en/docs/workspaces/) which creates symlinks to these packages.
 
 First, clone all the repositories:
 
@@ -77,24 +76,51 @@ packages/
 └── ckeditor5-utils
 ```
 
-Finally, link them:
+Finally, install all external dependencies (such as the test runner) and create symlinks to CKEditor 5 packages available in the `packages/` directory with this one command:
 
 ```bash
 yarn install
 ```
 
-Running Yarn may take a while because it installs all package dependencies.
-
-Now, all CKEditor packages (except the [development tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
+You can check that CKEditor 5 packages which are part of the development environment (so those except [development tools](https://github.com/ckeditor/ckeditor5-dev) and some closed source packages) should be linked:
 
 ```bash
-(master 340feac) p@m /workspace/ckeditor5> ls -la node_modules/\@ckeditor/ckeditor5-utils/node_modules/\@ckeditor/
-total 16
-drwxr-xr-x    5 p  staff   170 31 Jan 10:37 .
-drwxr-xr-x  292 p  staff  9928 20 Jan 00:20 ..
-lrwxr-xr-x    1 p  staff    23 31 Jan 10:37 ckeditor5-core -> ../../../ckeditor5-core
-drwxr-xr-x    7 p  staff   238 20 Jan 00:20 ckeditor5-dev-docs
-lrwxr-xr-x    1 p  staff    25 31 Jan 10:37 ckeditor5-engine -> ../../../ckeditor5-engine
+(master ae6f43a) p@m /workspace/misc/ckeditor5> ls -la node_modules/\@ckeditor/
+total 0
+drwxr-xr-x    54 p  staff   1728 11 sty 14:41 .
+drwxr-xr-x  1115 p  staff  35680 11 sty 14:41 ..
+drwxr-xr-x     7 p  staff    224 11 sty 14:41 ckeditor-cloud-services-collaboration
+drwxr-xr-x     6 p  staff    192 11 sty 14:41 ckeditor-cloud-services-core
+lrwxr-xr-x     1 p  staff     41 11 sty 14:41 ckeditor5-adapter-ckfinder -> ../../packages/ckeditor5-adapter-ckfinder
+lrwxr-xr-x     1 p  staff     34 11 sty 14:41 ckeditor5-alignment -> ../../packages/ckeditor5-alignment
+lrwxr-xr-x     1 p  staff     35 11 sty 14:41 ckeditor5-autoformat -> ../../packages/ckeditor5-autoformat
+lrwxr-xr-x     1 p  staff     33 11 sty 14:41 ckeditor5-autosave -> ../../packages/ckeditor5-autosave
+lrwxr-xr-x     1 p  staff     37 11 sty 14:41 ckeditor5-basic-styles -> ../../packages/ckeditor5-basic-styles
+lrwxr-xr-x     1 p  staff     36 11 sty 14:41 ckeditor5-block-quote -> ../../packages/ckeditor5-block-quote
+lrwxr-xr-x     1 p  staff     38 11 sty 14:41 ckeditor5-build-balloon -> ../../packages/ckeditor5-build-balloon
+lrwxr-xr-x     1 p  staff     38 11 sty 14:41 ckeditor5-build-classic -> ../../packages/ckeditor5-build-classic
+lrwxr-xr-x     1 p  staff     49 11 sty 14:41 ckeditor5-build-decoupled-document -> ../../packages/ckeditor5-build-decoupled-document
+lrwxr-xr-x     1 p  staff     37 11 sty 14:41 ckeditor5-build-inline -> ../../packages/ckeditor5-build-inline
+lrwxr-xr-x     1 p  staff     33 11 sty 14:41 ckeditor5-ckfinder -> ../../packages/ckeditor5-ckfinder
+lrwxr-xr-x     1 p  staff     34 11 sty 14:41 ckeditor5-clipboard -> ../../packages/ckeditor5-clipboard
+lrwxr-xr-x     1 p  staff     39 11 sty 14:41 ckeditor5-cloud-services -> ../../packages/ckeditor5-cloud-services
+drwxr-xr-x     7 p  staff    224 11 sty 14:41 ckeditor5-collaboration-core
+drwxr-xr-x     7 p  staff    224 11 sty 14:41 ckeditor5-comments
+lrwxr-xr-x     1 p  staff     29 11 sty 14:41 ckeditor5-core -> ../../packages/ckeditor5-core
+drwxr-xr-x     8 p  staff    256 11 sty 14:41 ckeditor5-dev-docs
+drwxr-xr-x     9 p  staff    288 11 sty 14:41 ckeditor5-dev-env
+drwxr-xr-x     9 p  staff    288 11 sty 14:41 ckeditor5-dev-tests
+drwxr-xr-x     8 p  staff    256 11 sty 14:41 ckeditor5-dev-utils
+drwxr-xr-x     8 p  staff    256 11 sty 14:41 ckeditor5-dev-webpack-plugin
+lrwxr-xr-x     1 p  staff     35 11 sty 14:41 ckeditor5-easy-image -> ../../packages/ckeditor5-easy-image
+lrwxr-xr-x     1 p  staff     39 11 sty 14:41 ckeditor5-editor-balloon -> ../../packages/ckeditor5-editor-balloon
+lrwxr-xr-x     1 p  staff     39 11 sty 14:41 ckeditor5-editor-classic -> ../../packages/ckeditor5-editor-classic
+lrwxr-xr-x     1 p  staff     41 11 sty 14:41 ckeditor5-editor-decoupled -> ../../packages/ckeditor5-editor-decoupled
+lrwxr-xr-x     1 p  staff     38 11 sty 14:41 ckeditor5-editor-inline -> ../../packages/ckeditor5-editor-inline
+lrwxr-xr-x     1 p  staff     31 11 sty 14:41 ckeditor5-engine -> ../../packages/ckeditor5-engine
+lrwxr-xr-x     1 p  staff     30 11 sty 14:41 ckeditor5-enter -> ../../packages/ckeditor5-enter
+
+... and so on
 ```
 
 If everything worked correctly, you should be able to run some tests:
@@ -121,13 +147,21 @@ From time to time, if the list of dependencies in any of the packages changed, y
 yarn install
 ```
 
+### Working with multiple repositories
+
+Mgit implements many useful commands, such as:
+
+* `mgit exec 'command'` – executing a shell command in all repositories,
+* `mgit checkout <branch>` – checking all repositories to given branch (or hash),
+* `mgit status` – displaying information about all repositories.
+
+Read more about those commands in [mgit's documentation](https://github.com/cksource/mgit2).
+
+Mgit has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
+
 ### Using mgit for custom packages
 
 If you are developing custom packages or forked any of the official packages and want mgit to work with it, change the dependencies configuration in [`mgit.json`](https://github.com/ckeditor/ckeditor5/blob/master/mgit.json). Note that mgit is able to clone the package from any Git URL. Refer to [its documentation](https://github.com/cksource/mgit2) for more details.
-
-### Final word about mgit
-
-Besides the already mentioned features, mgit allows you to [execute shell commands](https://github.com/cksource/mgit2#exec) on all packages (e.g. check their status). It has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
 
 ## Running tests
 
@@ -169,12 +203,12 @@ The documentation will be available in `build/docs/`.
 
 This task accepts the following arguments:
 
-* `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
-* `--skip-snippets` &ndash; Skips building live snippets.
-* `--skip-validation` &ndash; Skips the final link validation.
-* `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
-* `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
-* `--verbose` &ndash; Prints out more information.
+* `--skip-api` &mdash; Skips building the API documentation (which takes the majority of the total time).
+* `--skip-snippets` &mdash; Skips building live snippets.
+* `--skip-validation` &mdash; Skips the final link validation.
+* `--watch` &mdash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
+* `--production` &mdash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
+* `--verbose` &mdash; Prints out more information.
 
 Note: These arguments must be passed after additional `--`:
 
