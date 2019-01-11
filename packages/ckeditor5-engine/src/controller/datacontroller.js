@@ -298,12 +298,11 @@ export default class DataController {
 
 		this.model.enqueueChange( 'transparent', writer => {
 			writer.setSelection( null );
+			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 			for ( const rootName of Object.keys( newData ) ) {
 				// Save to model.
 				const modelRoot = this.model.document.getRoot( rootName );
-
-				writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( this.parse( newData[ rootName ], modelRoot ), modelRoot, 0 );
