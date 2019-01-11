@@ -776,7 +776,12 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
-		testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
+		if ( isEdgeEnv ) {
+			// Since on Edge `File` is already stubbed, restore it so that excpetion will be thrown.
+			testUtils.sinon.restore();
+		} else {
+			testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
+		}
 
 		const notification = editor.plugins.get( Notification );
 
