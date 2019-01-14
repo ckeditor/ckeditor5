@@ -35,7 +35,7 @@ describe( 'MediaEmbedToolbar', () => {
 			editor = _editor;
 			model = editor.model;
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			toolbar = widgetToolbarRepository._toolbars.get( 'mediaEmbed' ).view;
+			toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 		} );
 	} );
@@ -184,7 +184,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 			editor = _editor;
 			model = editor.model;
 			widgetToolbarRepository = editor.plugins.get( 'WidgetToolbarRepository' );
-			toolbar = widgetToolbarRepository._toolbars.get( 'mediaEmbed' ).view;
+			toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ).view;
 			balloon = editor.plugins.get( 'ContextualBalloon' );
 			balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 		} );
