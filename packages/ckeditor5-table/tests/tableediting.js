@@ -187,13 +187,24 @@ describe( 'TableEditing', () => {
 					.to.equal( '<table><tableRow><tableCell><image src="sample.png"></image></tableCell></tableRow></table>' );
 			} );
 
-			it( 'should convert table with media', () => {
+			it( 'should insert a paragraph when the cell content is unsupported', () => {
+				editor.setData(
+					'<table><tbody><tr><td><foo></foo></td></tr></tbody></table>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert a table with media', () => {
 				editor.setData(
 					'<table><tbody><tr><td><oembed url="https://www.youtube.com/watch?v=H08tGjXNHO4"></oembed></td></tr></tbody></table>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell>' +
+						'<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' +
+					'</tableCell></tableRow></table>' );
 			} );
 		} );
 	} );
