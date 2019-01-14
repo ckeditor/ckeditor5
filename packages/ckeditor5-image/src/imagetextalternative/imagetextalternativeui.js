@@ -40,6 +40,16 @@ export default class ImageTextAlternativeUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this._form.destroy();
+	}
+
+	/**
 	 * Creates a button showing the balloon panel for changing the image text alternative and
 	 * registers it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
