@@ -27,7 +27,7 @@ describe( 'EditableUIView', () => {
 		it( 'sets initial values of attributes', () => {
 			expect( view.isReadOnly ).to.be.false;
 			expect( view.isFocused ).to.be.false;
-			expect( view.externalElement ).to.be.undefined;
+			expect( view._externalElement ).to.be.undefined;
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
@@ -39,7 +39,7 @@ describe( 'EditableUIView', () => {
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-			expect( view.externalElement ).to.be.undefined;
+			expect( view._externalElement ).to.be.undefined;
 			expect( view.isRendered ).to.be.true;
 		} );
 
@@ -52,7 +52,7 @@ describe( 'EditableUIView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
-			expect( view.externalElement ).to.equal( editableElement );
+			expect( view._externalElement ).to.equal( editableElement );
 			expect( view.isRendered ).to.be.true;
 		} );
 	} );
