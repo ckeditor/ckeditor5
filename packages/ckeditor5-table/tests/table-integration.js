@@ -124,8 +124,8 @@ describe( 'Table feature – integration', () => {
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
 			const otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-			editor.data.set( viewTable( [ [ 'foo' ] ] ), 'main' );
-			editor.data.set( viewTable( [ [ 'foo' ] ] ), 'otherRoot' );
+			editor.data.set( { main: viewTable( [ [ 'foo' ] ] ) } );
+			editor.data.set( { otherRoot: viewTable( [ [ 'foo' ] ] ) } );
 
 			editor.model.change( writer => {
 				writer.remove( root.getChild( 0 ) );
