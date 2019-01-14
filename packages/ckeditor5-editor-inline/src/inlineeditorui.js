@@ -18,10 +18,21 @@ import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalize
  */
 export default class InlineEditorUI extends EditorUI {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the inline editor UI class.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor, view ) {
-		super( editor, view );
+		super( editor );
+
+		/**
+		 * The main (top–most) view of the editor UI.
+		 *
+		 * @private
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 */
+		this._view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -33,10 +44,27 @@ export default class InlineEditorUI extends EditorUI {
 	}
 
 	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	get element() {
 		return this.view.editable.element;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	getEditableElement( rootName = 'main' ) {
+		return this.view.editable.name === rootName ? this.view.editable : null;
 	}
 
 	/**
