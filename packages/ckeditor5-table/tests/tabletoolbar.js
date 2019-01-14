@@ -45,7 +45,7 @@ describe( 'TableToolbar', () => {
 					model = newEditor.model;
 					doc = model.document;
 					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					toolbar = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
+					toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 					balloon = editor.plugins.get( 'ContextualBalloon' );
 				} );
 		} );
@@ -69,7 +69,7 @@ describe( 'TableToolbar', () => {
 			} )
 				.then( editor => {
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					expect( widgetToolbarRepository._toolbars.get( 'tableContent' ) ).to.be.undefined;
+					expect( widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ) ).to.be.undefined;
 
 					editorElement.remove();
 					return editor.destroy();
@@ -169,7 +169,7 @@ describe( 'TableToolbar', () => {
 
 				expect( balloon.visibleView ).to.be.null;
 
-				const imageToolbar = widgetToolbarRepository._toolbars.get( 'image' ).view;
+				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
 
 				model.change( writer => {
 					// Select the <tableCell><paragraph></paragraph>[<image></image>]</tableCell>
@@ -257,7 +257,7 @@ describe( 'TableToolbar', () => {
 					editor = newEditor;
 
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
+					const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 
 					expect( toolbarView.items ).to.have.length( 1 );
 					expect( toolbarView.items.get( 0 ).label ).to.equal( 'fake button' );
@@ -287,7 +287,7 @@ describe( 'TableToolbar', () => {
 					editor = newEditor;
 
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
+					const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 
 					expect( toolbarView.items ).to.have.length( 1 );
 					expect( toolbarView.items.get( 0 ).label ).to.equal( 'foo button' );
@@ -316,7 +316,7 @@ describe( 'TableToolbar', () => {
 			} ).then( _editor => {
 				editor = _editor;
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-				toolbar = widgetToolbarRepository._toolbars.get( 'table' ).view;
+				toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'table' ).view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				model = editor.model;
 			} );
@@ -337,7 +337,7 @@ describe( 'TableToolbar', () => {
 				} )
 					.then( editor => {
 						const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-						expect( widgetToolbarRepository._toolbars.get( 'table' ) ).to.be.undefined;
+						expect( widgetToolbarRepository._toolbarDefinitions.get( 'table' ) ).to.be.undefined;
 
 						editorElement.remove();
 						return editor.destroy();
