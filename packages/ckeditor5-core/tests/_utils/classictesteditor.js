@@ -33,7 +33,7 @@ export default class ClassicTestEditor extends Editor {
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
-		this.ui = new EditorUI( this, new BoxedEditorUIView( this.locale ) );
+		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
 		// Expose properties normally exposed by the ClassicEditorUI.
 		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale );
@@ -87,6 +87,33 @@ export default class ClassicTestEditor extends Editor {
 					.then( () => editor )
 			);
 		} );
+	}
+}
+
+/**
+ * A simplified classic editor ui class.
+ *
+ * @memberOf tests.core._utils
+ * @extends core.editor.EditorUI
+ */
+class ClassicTestEditorUI extends EditorUI {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor, view ) {
+		super( editor );
+
+		this._view = view;
+	}
+
+	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
 	}
 }
 

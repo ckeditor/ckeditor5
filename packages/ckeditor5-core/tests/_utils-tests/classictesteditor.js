@@ -209,7 +209,7 @@ describe( 'ClassicTestEditor', () => {
 				.then( editor => {
 					editor.on( 'uiReady', () => {} );
 
-					expect( logStub.calledOnceWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
+					expect( logStub.calledWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
 				} );
 		} );
 
@@ -218,7 +218,7 @@ describe( 'ClassicTestEditor', () => {
 				.then( editor => {
 					editor.once( 'uiReady', () => {} );
 
-					expect( logStub.calledOnceWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
+					expect( logStub.calledWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
 				} );
 		} );
 	} );

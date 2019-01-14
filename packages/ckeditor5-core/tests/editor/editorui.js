@@ -11,16 +11,16 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import testUtils from '../_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'EditorUI', () => {
-	let editor, view, ui;
+	let editor, ui;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editor = new Editor();
-		view = new View();
-		ui = new EditorUI( editor, view );
+		ui = new EditorUI( editor );
 	} );
 
 	afterEach( () => {
@@ -32,7 +32,20 @@ describe( 'EditorUI', () => {
 			expect( ui.editor ).to.equal( editor );
 		} );
 
-		it( 'should set #view', () => {
+		it( 'should not set #view by default', () => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+
+			expect( ui._view ).to.undefined;
+			expect( ui.view ).to.undefined;
+		} );
+
+		it( 'should set #view if passed', () => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+
+			const editor = new Editor();
+			const view = new View();
+			const ui = new EditorUI( editor, view );
+
 			expect( ui.view ).to.equal( view );
 		} );
 
@@ -104,12 +117,23 @@ describe( 'EditorUI', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should destroy the #view', () => {
+		it( 'should destroy the #view if present', () => {
+			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+
+			const editor = new Editor();
+			const view = new View();
+			const ui = new EditorUI( editor, view );
 			const spy = sinon.spy( view, 'destroy' );
 
 			ui.destroy();
 
 			sinon.assert.called( spy );
+		} );
+
+		it( 'should not throw when view absent', () => {
+			expect( () => {
+				ui.destroy();
+			} ).to.not.throw();
 		} );
 	} );
 } );
