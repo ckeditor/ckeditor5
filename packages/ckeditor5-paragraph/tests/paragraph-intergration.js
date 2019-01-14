@@ -182,8 +182,8 @@ describe( 'Paragraph feature – integration', () => {
 					const root = doc.getRoot();
 					const otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-					editor.data.set( '<p>Foobar.</p>', 'main' );
-					editor.data.set( '<p>Foobar.</p>', 'otherRoot' );
+					editor.data.set( { main: '<p>Foobar.</p>' } );
+					editor.data.set( { otherRoot: '<p>Foobar.</p>' } );
 
 					editor.model.change( writer => {
 						writer.remove( root.getChild( 0 ) );
