@@ -33,7 +33,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  *				widgetToolbarRepository.register( 'image', {
  *					items: editor.config.get( 'image.toolbar' ),
- *					visibleWhen: viewSelection => isImageWidgetSelected( viewSelection )
+ *					getRelatedElement: getSelectedImageWidget
  *				} );
  *			}
  *		}
@@ -71,12 +71,12 @@ export default class WidgetToolbarRepository extends Plugin {
 		}
 
 		/**
-		 * A map of toolbars.
+		 * A map of toolbar definitions.
 		 *
 		 * @protected
-		 * @member {Map.<string,Object>} #_toolbars
+		 * @member {Map.<String,module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition>} #_toolbarDefinitions
 		 */
-		this._toolbars = new Map();
+		this._toolbarDefinitions = new Map();
 
 		/**
 		 * @private
@@ -95,7 +95,7 @@ export default class WidgetToolbarRepository extends Plugin {
 
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
-	 * `visibleWhen` function. Toolbar items are gathered from `items` array.
+	 * `getRelatedElement` function. Toolbar items are gathered from `items` array.
 	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
@@ -104,14 +104,14 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @param {String} toolbarId An id for the toolbar. Used to
 	 * @param {Object} options
 	 * @param {Array.<String>} options.items Array of toolbar items.
-	 * @param {Function} options.visibleWhen Callback which specifies when the toolbar should be visible for the widget.
+	 * @param {Function} options.getRelatedElement Callback which returns an element the toolbar should be attached to.
 	 * @param {String} [options.balloonClassName='ck-toolbar-container'] CSS class for the widget balloon.
 	 */
-	register( toolbarId, { items, visibleWhen, balloonClassName = 'ck-toolbar-container' } ) {
+	register( toolbarId, { items, getRelatedElement, balloonClassName = 'ck-toolbar-container' } ) {
 		const editor = this.editor;
 		const toolbarView = new ToolbarView();
 
-		if ( this._toolbars.has( toolbarId ) ) {
+		if ( this._toolbarDefinitions.has( toolbarId ) ) {
 			/**
 			 * Toolbar with the given id was already added.
 			 *
@@ -123,9 +123,9 @@ export default class WidgetToolbarRepository extends Plugin {
 
 		toolbarView.fillFromConfig( items, editor.ui.componentFactory );
 
-		this._toolbars.set( toolbarId, {
+		this._toolbarDefinitions.set( toolbarId, {
 			view: toolbarView,
-			visibleWhen,
+			getRelatedElement,
 			balloonClassName,
 		} );
 	}
@@ -136,12 +136,32 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @private
 	 */
 	_updateToolbarsVisibility() {
-		for ( const toolbar of this._toolbars.values() ) {
-			if ( !this.editor.ui.focusTracker.isFocused || !toolbar.visibleWhen( this.editor.editing.view.document.selection ) ) {
-				this._hideToolbar( toolbar );
+		let maxRelatedElementDepth = 0;
+		let deepestRelatedElement = null;
+		let deepestToolbarDefinition = null;
+
+		for ( const definition of this._toolbarDefinitions.values() ) {
+			const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
+
+			if ( !this.editor.ui.focusTracker.isFocused || !relatedElement ) {
+				this._hideToolbar( definition );
 			} else {
-				this._showToolbar( toolbar );
+				const relatedElementDepth = relatedElement.getAncestors().length;
+
+				// Many toolbars can express willingness to be displayed but they do not know about
+				// each other. Figure out which toolbar is deepest in the view tree to decide which
+				// should be displayed. For instance, if a selected image is inside a table cell, display
+				// the ImageToolbar rather than the TableToolbar (#60).
+				if ( relatedElementDepth > maxRelatedElementDepth ) {
+					maxRelatedElementDepth = relatedElementDepth;
+					deepestRelatedElement = relatedElement;
+					deepestToolbarDefinition = definition;
+				}
 			}
+		}
+
+		if ( deepestToolbarDefinition ) {
+			this._showToolbar( deepestToolbarDefinition, deepestRelatedElement );
 		}
 	}
 
@@ -149,34 +169,35 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * Hides the given toolbar.
 	 *
 	 * @private
-	 * @param {Object} toolbar
+	 * @param {module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition} toolbarDefinition
 	 */
-	_hideToolbar( toolbar ) {
-		if ( !this._isToolbarVisible( toolbar ) ) {
+	_hideToolbar( toolbarDefinition ) {
+		if ( !this._isToolbarVisible( toolbarDefinition ) ) {
 			return;
 		}
 
-		this._balloon.remove( toolbar.view );
+		this._balloon.remove( toolbarDefinition.view );
 	}
 
 	/**
-	 * Shows up the toolbar if the toolbar is not visible and repositions the toolbar's balloon when toolbar's
-	 * view is the most top view in balloon stack.
+	 * Shows up the toolbar if the toolbar is not visible.
+	 * Otherwise, repositions the toolbar's balloon when toolbar's view is the most top view in balloon stack.
 	 *
 	 * It might happen here that the toolbar's view is under another view. Then do nothing as the other toolbar view
 	 * should be still visible after the {@link module:core/editor/editorui~EditorUI#event:update}.
 	 *
 	 * @private
-	 * @param {Object} toolbar
+	 * @param {module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition} toolbarDefinition
+	 * @param {module:engine/view/element~Element} relatedElement
 	 */
-	_showToolbar( toolbar ) {
-		if ( this._isToolbarVisible( toolbar ) ) {
-			repositionContextualBalloon( this.editor );
-		} else if ( !this._balloon.hasView( toolbar.view ) ) {
+	_showToolbar( toolbarDefinition, relatedElement ) {
+		if ( this._isToolbarVisible( toolbarDefinition ) ) {
+			repositionContextualBalloon( this.editor, relatedElement );
+		} else if ( !this._balloon.hasView( toolbarDefinition.view ) ) {
 			this._balloon.add( {
-				view: toolbar.view,
-				position: getBalloonPositionData( this.editor ),
-				balloonClassName: toolbar.balloonClassName,
+				view: toolbarDefinition.view,
+				position: getBalloonPositionData( this.editor, relatedElement ),
+				balloonClassName: toolbarDefinition.balloonClassName,
 			} );
 		}
 	}
@@ -190,20 +211,19 @@ export default class WidgetToolbarRepository extends Plugin {
 	}
 }
 
-function repositionContextualBalloon( editor ) {
+function repositionContextualBalloon( editor, relatedElement ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
-	const position = getBalloonPositionData( editor );
+	const position = getBalloonPositionData( editor, relatedElement );
 
 	balloon.updatePosition( position );
 }
 
-function getBalloonPositionData( editor ) {
+function getBalloonPositionData( editor, relatedElement ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
-	const widget = getParentWidget( editingView.document.selection );
 
 	return {
-		target: editingView.domConverter.viewToDom( widget ),
+		target: editingView.domConverter.viewToDom( relatedElement ),
 		positions: [
 			defaultPositions.northArrowSouth,
 			defaultPositions.northArrowSouthWest,
@@ -215,27 +235,23 @@ function getBalloonPositionData( editor ) {
 	};
 }
 
-function getParentWidget( selection ) {
-	const selectedElement = selection.getSelectedElement();
-
-	if ( selectedElement && isWidget( selectedElement ) ) {
-		return selectedElement;
-	}
-
-	const position = selection.getFirstPosition();
-	let parent = position.parent;
-
-	while ( parent ) {
-		if ( parent.is( 'element' ) && isWidget( parent ) ) {
-			return parent;
-		}
-
-		parent = parent.parent;
-	}
-}
-
 function isWidgetSelected( selection ) {
 	const viewElement = selection.getSelectedElement();
 
 	return !!( viewElement && isWidget( viewElement ) );
 }
+
+/**
+ * The toolbar definition object used by the toolbar repository to manage toolbars.
+ * It contains information necessary to display the toolbar in the
+ * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} and
+ * update it during its life (display) cycle.
+ *
+ * @typedef {Object} module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition
+ *
+ * @property {module:ui/view~View} view The UI view of the toolbar.
+ * @property {Function} getRelatedElement A function that returns an engine {@link module:engine/view/view~View}
+ * element the toolbar is to be attached to. For instance, an image widget or a table widget (or `null` when
+ * there is no such element). The function accepts an instance of {@link module:engine/view/selection~Selection}.
+ * @property {String} balloonClassName CSS class for the widget balloon when a toolbar is displayed.
+ */
