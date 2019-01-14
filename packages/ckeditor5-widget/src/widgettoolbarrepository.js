@@ -243,7 +243,7 @@ function isWidgetSelected( selection ) {
 
 /**
  * The toolbar definition object used by the toolbar repository to manage toolbars.
- * It contains additional information necessary to display the toolbar in the
+ * It contains information necessary to display the toolbar in the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} and
  * update it during its life (display) cycle.
  *
