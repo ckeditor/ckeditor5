@@ -95,6 +95,16 @@ export default class FocusTracker {
 	}
 
 	/**
+	 * Destroys the focus tracker by:
+	 * - Disabling all event listeners attached to tracked elements.
+	 * - Removing all tracked elements that were previously added.
+	 */
+	destroy() {
+		this.stopListening();
+		this._elements.clear();
+	}
+
+	/**
 	 * Stores currently focused element and set {#isFocused} as `true`.
 	 *
 	 * @private
