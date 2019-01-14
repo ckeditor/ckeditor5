@@ -74,7 +74,7 @@ export default class WidgetToolbarRepository extends Plugin {
 		 * A map of toolbar definitions.
 		 *
 		 * @protected
-		 * @member {Map.<string,module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition>} #_toolbarDefinitions
+		 * @member {Map.<String,module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition>} #_toolbarDefinitions
 		 */
 		this._toolbarDefinitions = new Map();
 
