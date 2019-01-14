@@ -777,8 +777,10 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not upload and remove image when `File` constructor is not supported', done => {
 		if ( isEdgeEnv ) {
-			// Since on Edge `File` is already stubbed, restore it so that excpetion will be thrown.
+			// Since on Edge `File` is already stubbed, restore it to it native form so that exception will be thrown.
 			testUtils.sinon.restore();
+			// Since all stubs were restored, re-stub `scrollToTheSelection`.
+			testUtils.sinon.stub( editor.editing.view, 'scrollToTheSelection' ).callsFake( () => {} );
 		} else {
 			testUtils.sinon.stub( window, 'File' ).throws( 'Function expected.' );
 		}
