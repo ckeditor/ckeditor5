@@ -150,6 +150,20 @@ describe( 'DecoupledEditorUI', () => {
 				} );
 		} );
 	} );
+
+	describe( 'getEditableElement()', () => {
+		it( 'returns editable element (default)', () => {
+			expect( ui.getEditableElement() ).to.equal( view.editable );
+		} );
+
+		it( 'returns editable element (root name passed)', () => {
+			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable );
+		} );
+
+		it( 'returns null if editable with the given name is absent', () => {
+			expect( ui.getEditableElement( 'absent' ) ).to.null;
+		} );
+	} );
 } );
 
 function viewCreator( name ) {
