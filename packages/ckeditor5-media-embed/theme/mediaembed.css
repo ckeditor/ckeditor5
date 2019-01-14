@@ -14,4 +14,8 @@
 	/* Make sure media is not overriden with Bootstrap default `flex` value.
 	See: https://github.com/ckeditor/ckeditor5/issues/1373. */
 	display: block;
+
+	/* Give the media some minimal width in the content to prevent them
+	from being "squashed" in tight spaces, e.g. in table cells (#44) */
+	min-width: 15em;
 }
