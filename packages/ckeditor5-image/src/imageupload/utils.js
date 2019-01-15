@@ -43,9 +43,7 @@ export function fetchLocalImage( image ) {
 
 				file ? resolve( file ) : reject();
 			} )
-			.catch( () => {
-				reject();
-			} );
+			.catch( reject );
 	} );
 }
 
