@@ -5,8 +5,6 @@
 
 /* global window, document, setTimeout */
 
-const MiB = 1024 * 1024;
-
 /**
  * @param {Function} callback Callback with test suit body
  */
@@ -33,11 +31,7 @@ export function testMemoryUsage( testName, editorCreator ) {
 		// This is a long-running test unfortunately.
 		this.timeout( 8000 );
 
-		// It happens from time to time that Browser will allocate additional resources and the test will fail slightly by ~100-200kB.
-		// In such scenarios another run of test should pass.
-		this.retries( 2 );
-
-		return runTest( editorCreator );
+		return runTest( editorCreator, this );
 	} );
 }
 
@@ -47,7 +41,7 @@ export function testMemoryUsage( testName, editorCreator ) {
 // - record memory allocations
 // - destroy the editor
 // - create & destroy editor multiple times (6) - after each editor creation the test runner will be paused for ~200ms
-function runTest( editorCreator ) {
+function runTest( editorCreator, test ) {
 	const createEditor = createAndDestroy( editorCreator );
 
 	let memoryAfterFirstStart;
@@ -71,14 +65,18 @@ function runTest( editorCreator ) {
 		.then( testWaitAndDestroy )
 		.then( testWaitAndDestroy )
 		.then( testWaitAndDestroy )
+		.then( testWaitAndDestroy )
+		.then( testWaitAndDestroy )
+		.then( testWaitAndDestroy )
 		// Finally enforce garbage collection to ensure memory is freed before measuring heap size.
 		.then( collectGarbageAndWait )
 		.then( () => {
 			const memory = snapMemInfo();
 
 			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
+			test._memoryDiff = memoryDifference;
 
-			expect( memoryDifference, 'used heap size should not grow above 1 MB' ).to.be.below( MiB );
+			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
 		} );
 
 	function testWaitAndDestroy() {
