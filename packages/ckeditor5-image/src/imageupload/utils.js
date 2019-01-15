@@ -25,7 +25,7 @@ export function isImageType( file ) {
  * Creates a promise which fetches the image local source (base64 or blob) and resolves with a `File` object.
  *
  * @param {module:engine/view/element~Element} image Image which source to fetch.
- * @returns {Promise} A promise which resolves when image source is fetched and converted to `File` instance.
+ * @returns {Promise.<File>} A promise which resolves when image source is fetched and converted to `File` instance.
  * It resolves with a `File` object. If there were any errors during file processing the promise will be rejected.
  */
 export function fetchLocalImage( image ) {
