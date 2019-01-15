@@ -18,6 +18,7 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 ```js
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
@@ -84,10 +85,6 @@ export default class BootstrapEditor extends Editor {
 
 		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
-	}
-
-	get element() {
-		return this.ui.view.element;
 	}
 
 	destroy() {
@@ -256,12 +253,12 @@ Define the `BootstrapEditorUI` and then have a closer look at the content of the
 
 ```js
 // The class organizing the UI of the editor, binding it with existing Bootstrap elements in the DOM.
-class BootstrapEditorUI {
+class BootstrapEditorUI extends EditorUI {
 	constructor( editor ) {
-		this.editor = editor;
+		super( editor );
 
 		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
-		const view = this.view = new EditorUIView( editor.locale );
+		const view = this._view = new EditorUIView( editor.locale );
 
 		// This is the main editor element in the DOM.
 		view.element = $( '.ck-editor' );
@@ -280,10 +277,10 @@ class BootstrapEditorUI {
 			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
 		} );
+	}
 
-		// Mandatory EditorUI interface components.
-		this.componentFactory = new ComponentFactory( editor );
-		this.focusTracker = new FocusTracker();
+	get view() {
+		return this._view;
 	}
 
 	init() {
@@ -305,10 +302,6 @@ class BootstrapEditorUI {
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
 		this._setupBootstrapHeadingDropdown();
-	}
-
-	destroy() {
-		this.view.editable.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.

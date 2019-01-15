@@ -7,6 +7,7 @@
 
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
@@ -69,10 +70,6 @@ export default class BootstrapEditor extends Editor {
 		this._elementReplacer = new ElementReplacer();
 	}
 
-	get element() {
-		return this.ui.view.element;
-	}
-
 	destroy() {
 		// When destroyed, editor sets the output of editor#getData() into editor#element...
 		this.updateSourceElement();
@@ -123,17 +120,17 @@ mix( BootstrapEditor, DataApiMixin );
 mix( BootstrapEditor, ElementApiMixin );
 
 // The class organizing the UI of the editor, binding it with existing Bootstrap elements in DOM.
-class BootstrapEditorUI {
+class BootstrapEditorUI extends EditorUI {
 	constructor( editor ) {
-		this.editor = editor;
+		super( editor );
 
 		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
-		const view = this.view = new EditorUIView( editor.locale );
+		const view = this._view = new EditorUIView( editor.locale );
 
-		// This is the main editor element in DOM.
+		// This is the main editor element in the DOM.
 		view.element = $( '.ck-editor' );
 
-		// This is the editable view in DOM. It will replace the data container in DOM.
+		// This is the editable view in the DOM. It will replace the data container in the DOM.
 		view.editable = new InlineEditableUIView( editor.locale );
 
 		// References to the dropdown elements for further usage. See #_setupBootstrapHeadingDropdown.
@@ -144,27 +141,27 @@ class BootstrapEditorUI {
 		view.toolbarButtons = {};
 
 		[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( name => {
-			// Retrieve the jQuery object corresponding with the button in DOM.
+			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
 		} );
+	}
 
-		// Mandatory EditorUI interface components.
-		this.componentFactory = new ComponentFactory( editor );
-		this.focusTracker = new FocusTracker();
+	get view() {
+		return this._view;
 	}
 
 	init() {
 		const editor = this.editor;
 		const view = this.view;
 
-		// Render the editable component in DOM first.
+		// Render the editable component in the DOM first.
 		view.editable.render();
 
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
 		const editingRoot = editor.editing.view.document.getRoot();
 
-		// Bind the basic attributes of the editable in DOM with the editing layer.
+		// Bind the basic attributes of the editable in the DOM with the editing layer.
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
@@ -172,10 +169,6 @@ class BootstrapEditorUI {
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
 		this._setupBootstrapHeadingDropdown();
-	}
-
-	destroy() {
-		this.view.editable.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
