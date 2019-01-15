@@ -103,6 +103,7 @@ export default class ViewCollection extends Collection {
 	 */
 	destroy() {
 		this.map( view => view.destroy() );
+		this.clear();
 	}
 
 	/**

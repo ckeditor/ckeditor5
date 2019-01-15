@@ -176,6 +176,7 @@ class BootstrapEditorUI {
 
 	destroy() {
 		this.view.editable.destroy();
+		this.view.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
