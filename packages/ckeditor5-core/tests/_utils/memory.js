@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document, setTimeout */
+/* global window, document */
 
 /**
  * @param {Function} callback Callback with test suit body
@@ -11,8 +11,6 @@
 export function describeMemoryUsage( callback ) {
 	describe( 'memory usage', () => {
 		skipIfNoGarbageCollector();
-
-		beforeEach( () => collectGarbageAndWait() );
 
 		beforeEach( createEditorElement );
 
@@ -27,12 +25,7 @@ export function describeMemoryUsage( callback ) {
  * @param {Function} editorCreator Callback which creates editor and returns it's `.create()` promise.
  */
 export function testMemoryUsage( testName, editorCreator ) {
-	it( testName, function() {
-		// This is a long-running test unfortunately.
-		this.timeout( 8000 );
-
-		return runTest( editorCreator, this );
-	} );
+	it( testName, () => runTest( editorCreator ) );
 }
 
 // Runs a single test case. This method will properly setup memory-leak test:
@@ -41,7 +34,7 @@ export function testMemoryUsage( testName, editorCreator ) {
 // - record memory allocations
 // - destroy the editor
 // - create & destroy editor multiple times (6) - after each editor creation the test runner will be paused for ~200ms
-function runTest( editorCreator, test ) {
+function runTest( editorCreator ) {
 	const createEditor = createAndDestroy( editorCreator );
 
 	let memoryAfterFirstStart;
@@ -49,40 +42,34 @@ function runTest( editorCreator, test ) {
 	return Promise.resolve() // Promise.resolve just to align below code.
 	// First editor creation needed to load all editor code,css into the memory (it is reported as used heap memory)
 		.then( createEditor )
-		// Wait for any delayed actions (after editor creation)
-		.then( wait( 200 ) )
-		.then( collectGarbageAndWait )
 		.then( editor => {
-			memoryAfterFirstStart = snapMemInfo();
+			memoryAfterFirstStart = collectMemoryStats();
 
 			return editor;
 		} )
 		.then( destroy )
 		// Run create-wait-destroy multiple times. Multiple runs to grow memory significantly even on smaller leaks.
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		.then( testWaitAndDestroy )
-		// Finally enforce garbage collection to ensure memory is freed before measuring heap size.
-		.then( collectGarbageAndWait )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
+		.then( testAndDestroy )
 		.then( () => {
-			const memory = snapMemInfo();
+			const memory = collectMemoryStats();
 
 			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
-			test._memoryDiff = memoryDifference;
 
 			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
 		} );
 
-	function testWaitAndDestroy() {
+	function testAndDestroy() {
 		return Promise.resolve()
 			.then( createEditor )
-			.then( wait( 200 ) )
 			.then( destroy );
 	}
 }
@@ -110,7 +97,10 @@ function destroy( editor ) {
 	return editor.destroy();
 }
 
-function snapMemInfo() {
+function collectMemoryStats() {
+	// Enforce garbage collection before recording memory stats.
+	window.gc();
+
 	const memeInfo = window.performance.memory;
 
 	return {
@@ -131,16 +121,4 @@ function skipIfNoGarbageCollector() {
 			this.skip();
 		}
 	} );
-}
-
-function collectGarbageAndWait( pass ) {
-	window.gc();
-
-	return Promise.resolve( pass ).then( wait( 500 ) );
-}
-
-// Simple method that returns a helper method that returns a promise which resolves after given timeout.
-// The returned promise will pass the value from previus call (usually and editor instance).
-function wait( ms ) {
-	return editor => new Promise( resolve => setTimeout( () => resolve( editor ), ms ) );
 }
