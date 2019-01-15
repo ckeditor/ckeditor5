@@ -80,6 +80,7 @@ export default class EditorUI {
 	destroy() {
 		this.stopListening();
 		this.view.destroy();
+		this.focusTracker.destroy();
 	}
 
 	/**
