@@ -312,7 +312,7 @@ describe( 'ClassicEditor', () => {
 
 	describeMemoryUsage( () => {
 		testMemoryUsage(
-			'should not grow significantly on multiple create/destroy',
+			'should not grow on multiple create/destroy',
 			() => ClassicEditor
 				.create( document.querySelector( '#mem-editor' ), {
 					plugins: [ ArticlePluginSet ],
