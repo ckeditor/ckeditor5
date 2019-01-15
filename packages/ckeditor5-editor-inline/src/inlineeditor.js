@@ -95,11 +95,13 @@ export default class InlineEditor extends Editor {
 		const data = this.getData();
 
 		this.ui.destroy();
+		this.ui = null;
 
 		return super.destroy()
 			.then( () => {
 				if ( this.sourceElement ) {
 					setDataInElement( this.sourceElement, data );
+					this.sourceElement = null;
 				}
 			} );
 	}
