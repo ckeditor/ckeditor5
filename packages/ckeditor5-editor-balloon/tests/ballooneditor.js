@@ -318,7 +318,7 @@ describe( 'BalloonEditor', () => {
 
 	describeMemoryUsage( () => {
 		testMemoryUsage(
-			'should not grow significantly on multiple create/destroy',
+			'should not grow on multiple create/destroy',
 			() => BalloonEditor
 				.create( document.querySelector( '#mem-editor' ), {
 					plugins: [ ArticlePluginSet ],
