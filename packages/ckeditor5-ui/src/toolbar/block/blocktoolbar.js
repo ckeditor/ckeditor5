@@ -151,6 +151,18 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this.panelView.destroy();
+		this.buttonView.destroy();
+		this.toolbarView.destroy();
+	}
+
+	/**
 	 * Creates the {@link #toolbarView}.
 	 *
 	 * @private
