@@ -42,7 +42,7 @@
  * This property can be understood as a shorthand for retrieving the element that a specific editor integration
  * considers to be its main DOM element.
  *
- * @deprecated v11.2.0 The {@link module:core/editor/editorui~EditorUI#element `EditorUI element`} should be used instead.
+ * @deprecated v12.0.0 The {@link module:core/editor/editorui~EditorUI#element `EditorUI element`} should be used instead.
  * @readonly
  * @member {HTMLElement|null} #element
  */
@@ -55,7 +55,7 @@
  * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
  * {@link module:core/editor/editor~Editor#event:dataReady}.
  *
- * @deprecated v11.2.0 The {@link module:core/editor/editorui~EditorUI#event:ready ui ready event} should be listened to instead.
+ * @deprecated v12.0.0 The {@link module:core/editor/editorui~EditorUI#event:ready ui ready event} should be listened to instead.
  * @event uiReady
  */
 
