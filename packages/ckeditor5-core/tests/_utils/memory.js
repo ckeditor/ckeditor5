@@ -33,6 +33,10 @@ export function testMemoryUsage( testName, editorCreator ) {
 		// This is a long-running test unfortunately.
 		this.timeout( 8000 );
 
+		// It happens from time to time that Browser will allocate additional resources and the test will fail slightly by ~100-200kB.
+		// In such scenarios another run of test should pass.
+		this.retries( 2 );
+
 		return runTest( editorCreator );
 	} );
 }
