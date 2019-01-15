@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { isImageWidgetSelected } from './image/utils';
+import { getSelectedImageWidget } from './image/utils';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
@@ -48,7 +48,7 @@ export default class ImageToolbar extends Plugin {
 
 		widgetToolbarRepository.register( 'image', {
 			items: editor.config.get( 'image.toolbar' ) || [],
-			visibleWhen: isImageWidgetSelected,
+			getRelatedElement: getSelectedImageWidget,
 		} );
 	}
 }
