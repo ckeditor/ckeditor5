@@ -180,6 +180,6 @@ function defaultRefreshToken( tokenUrl ) {
 
 		xhr.send();
 	} );
-};
+}
 
 export default Token;
