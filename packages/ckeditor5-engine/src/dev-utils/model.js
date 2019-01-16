@@ -43,9 +43,14 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
  *
+ *		getData( editor.model ); // -> '<paragraph>Foo![]</paragraph>'
+ *
  * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
  *		<$text attribute="value">Text data</$text>
+ *
+ * **Note:** Using this tool in production-grade code is not recommended. It was designed for development, prototyping,
+ * debugging and testing.
  *
  * @param {module:engine/model/model~Model} model
  * @param {Object} [options]
@@ -77,12 +82,17 @@ getData._stringify = stringify;
 /**
  * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
+ *		setData( editor.model, '<paragraph>Foo![]</paragraph>' );
+ *
  * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before
  * trying to use them.
  *
  * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
  *		<$text attribute="value">Text data</$text>
+ *
+ * **Note:** Using this tool in production-grade code is not recommended. It was designed for development, prototyping,
+ * debugging and testing.
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} data HTML-like string to write into the document.

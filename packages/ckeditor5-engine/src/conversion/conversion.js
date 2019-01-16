@@ -141,13 +141,13 @@ export default class Conversion {
 	 * For example, the model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
 	 *
 	 *		// A simple conversion from the `paragraph` model element to the `<p>` view element (and vice versa).
-	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+	 *		editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
 	 *		// Override other converters by specifying a converter definition with a higher priority.
-	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
+	 *		editor.conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'fancyParagraph',
 	 *			view: {
 	 *				name: 'p',
@@ -156,7 +156,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to a `paragraph` element.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'paragraph',
 	 *			view: 'p',
 	 *			upcastAlso: [
@@ -171,7 +171,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
-	 *		conversion.elementToElement( {
+	 *		editor.conversion.elementToElement( {
 	 *			model: 'heading',
 	 *			view: 'h2',
 	 *			// Convert "headling-like" paragraphs to headings.
@@ -227,13 +227,13 @@ export default class Conversion {
 	 * For example, a model text node with `"Foo"` as data and the `bold` attribute is `<strong>Foo</strong>` in the view.
 	 *
 	 *		// A simple conversion from the `bold=true` attribute to the `<strong>` view element (and vice versa).
-	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+	 *		editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 	 *
 	 *		// Override other converters by specifying a converter definition with a higher priority.
-	 *		conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
+	 *		editor.conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: 'bold',
 	 *			view: {
 	 *				name: 'span',
@@ -243,7 +243,7 @@ export default class Conversion {
 	 *
 	 *		// Use `config.model.name` to define the conversion only from a given node type, `$text` in this case.
 	 *		// The same attribute on different elements may then be handled by a different converter.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: {
 	 *				key: 'textDecoration',
 	 *				values: [ 'underline', 'lineThrough' ],
@@ -266,7 +266,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `bold` attribute.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: 'bold',
 	 *			view: 'strong',
 	 *			upcastAlso: [
@@ -300,7 +300,7 @@ export default class Conversion {
 	 *
 	 *		// Conversion from and to a model attribute key whose value is an enum (`fontSize=big|small`).
 	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
-	 *		conversion.attributeToElement( {
+	 *		editor.conversion.attributeToElement( {
 	 *			model: {
 	 *				key: 'fontSize',
 	 *				values: [ 'big', 'small' ]
@@ -402,10 +402,10 @@ export default class Conversion {
 	 * should be set up.
 	 *
 	 *		// A simple conversion from the `source` model attribute to the `src` view attribute (and vice versa).
-	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
+	 *		editor.conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 	 *
 	 *		// Attribute values are strictly specified.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
 	 *				key: 'aside',
@@ -421,7 +421,7 @@ export default class Conversion {
 	 *		} );
 	 *
 	 *		// Set the style attribute.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
 	 *				key: 'aside',
@@ -442,7 +442,7 @@ export default class Conversion {
 	 *
 	 *		// Conversion from and to a model attribute key whose value is an enum (`align=right|center`).
 	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `align=right` attribute.
-	 *		conversion.attributeToAttribute( {
+	 *		editor.conversion.attributeToAttribute( {
 	 *			model: {
 	 *				key: 'align',
 	 *				values: [ 'right', 'center' ]

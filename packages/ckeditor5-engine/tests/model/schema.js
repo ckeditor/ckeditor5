@@ -1579,6 +1579,12 @@ describe( 'Schema', () => {
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
 
+		it( 'should return position ancestor that allows to insert given node to it - works with a string too', () => {
+			const allowedParent = schema.findAllowedParent( 'paragraph', Position._createAt( r1bQp, 0 ) );
+
+			expect( allowedParent ).to.equal( r1bQ );
+		} );
+
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
@@ -1619,6 +1625,12 @@ describe( 'Schema', () => {
 			const node = new Element( 'section' );
 
 			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when there is no allowed ancestor for given position – works with a string too', () => {
+			const parent = schema.findAllowedParent( 'section', Position._createAt( r1bQp, 0 ) );
 
 			expect( parent ).to.null;
 		} );

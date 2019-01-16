@@ -531,42 +531,6 @@ export default class Schema {
 	}
 
 	/**
-	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
-	 * inside the given range on which the attribute can be applied.
-	 *
-	 * This is a helper function for {@link ~Schema#getValidRanges}.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range Range to process.
-	 * @param {String} attribute The name of the attribute to check.
-	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
-	 */
-	* _getValidRangesForRange( range, attribute ) {
-		let start = range.start;
-		let end = range.start;
-
-		for ( const item of range.getItems( { shallow: true } ) ) {
-			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
-			}
-
-			if ( !this.checkAttribute( item, attribute ) ) {
-				if ( !start.isEqual( end ) ) {
-					yield new Range( start, end );
-				}
-
-				start = Position._createAfter( item );
-			}
-
-			end = Position._createAfter( item );
-		}
-
-		if ( !start.isEqual( end ) ) {
-			yield new Range( start, end );
-		}
-	}
-
-	/**
 	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range range} which is
 	 * nearest to that `position` and is a correct range for selection.
 	 *
@@ -624,7 +588,7 @@ export default class Schema {
 	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
 	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
-	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
+	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
@@ -736,6 +700,42 @@ export default class Schema {
 			}
 		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
+	 * inside the given range on which the attribute can be applied.
+	 *
+	 * This is a helper function for {@link ~Schema#getValidRanges}.
+	 *
+	 * @private
+	 * @param {module:engine/model/range~Range} range Range to process.
+	 * @param {String} attribute The name of the attribute to check.
+	 * @returns {Iterable.<module:engine/model/range~Range>} Ranges in which the attribute is allowed.
+	 */
+	* _getValidRangesForRange( range, attribute ) {
+		let start = range.start;
+		let end = range.start;
+
+		for ( const item of range.getItems( { shallow: true } ) ) {
+			if ( item.is( 'element' ) ) {
+				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
+			}
+
+			if ( !this.checkAttribute( item, attribute ) ) {
+				if ( !start.isEqual( end ) ) {
+					yield new Range( start, end );
+				}
+
+				start = Position._createAfter( item );
+			}
+
+			end = Position._createAfter( item );
+		}
+
+		if ( !start.isEqual( end ) ) {
+			yield new Range( start, end );
 		}
 	}
 }
