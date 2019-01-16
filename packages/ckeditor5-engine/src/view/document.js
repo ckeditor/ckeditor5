@@ -126,7 +126,6 @@ export default class Document {
 	 */
 	destroy() {
 		this.roots.map( root => root.destroy() );
-		this.roots.clear();
 		this.stopListening();
 	}
 
