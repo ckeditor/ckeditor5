@@ -7,6 +7,7 @@
 
 import DecoupledEditor from '../src/ckeditor';
 import BaseDecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'DecoupledEditor build', () => {
 	let editor, editorData, editorElement;
@@ -25,7 +26,7 @@ describe( 'DecoupledEditor build', () => {
 		editor = null;
 	} );
 
-	describe( 'buid', () => {
+	describe( 'build', () => {
 		it( 'contains plugins', () => {
 			expect( DecoupledEditor.builtinPlugins ).to.not.be.empty;
 		} );
@@ -57,6 +58,12 @@ describe( 'DecoupledEditor build', () => {
 					expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
 				} );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => DecoupledEditor.create( document.querySelector( '#mem-editor' ) ) );
 	} );
 
 	function test( getEditorDataOrElement ) {
