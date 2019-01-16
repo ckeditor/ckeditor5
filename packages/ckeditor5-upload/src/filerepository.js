@@ -183,9 +183,13 @@ export default class FileRepository extends Plugin {
 
 		// Store also file => loader mapping so loader can be retrieved by file instance returned upon Promise resolution.
 		if ( fileOrPromise instanceof Promise ) {
-			loader.file.then( file => {
-				this._loadersMap.set( file, loader );
-			} );
+			loader.file
+				.then( file => {
+					this._loadersMap.set( file, loader );
+				} ).catch( () => {
+					// There was an error fetching file, so do not add anything to `this._loadersMap`.
+					// Also the error will be handled by `FileLoader` so no action is required here.
+				} );
 		}
 
 		loader.on( 'change:uploaded', () => {
