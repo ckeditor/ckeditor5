@@ -218,7 +218,7 @@ export default class ImageUploadEditing extends Plugin {
 				}
 
 				// Might be 'aborted'.
-				if ( loader.status == 'error' ) {
+				if ( loader.status == 'error' && error ) {
 					notification.showWarning( error, {
 						title: t( 'Upload failed' ),
 						namespace: 'upload'

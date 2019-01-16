@@ -734,7 +734,7 @@ describe( 'ImageUploadEditing', () => {
 			if ( counter < 3 ) {
 				return fetch( src );
 			} else {
-				return new Promise( ( res, rej ) => rej() );
+				return Promise.reject();
 			}
 		} );
 
@@ -863,6 +863,43 @@ describe( 'ImageUploadEditing', () => {
 				}
 			} ) );
 		} );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+	} );
+
+	it( 'should not show notification when file loader failed with no error', done => {
+		const notification = editor.plugins.get( Notification );
+
+		let notificationsCount = 0;
+		// Prevent popping up alert window.
+		notification.on( 'show:warning', evt => {
+			notificationsCount++;
+			evt.stop();
+		}, { priority: 'high' } );
+
+		// Check data after paste.
+		editor.plugins.get( 'Clipboard' ).on( 'inputTransformation', () => {
+			adapterMocks[ 0 ].loader.file.then( () => {
+				expect.fail( 'Promise should be rejected.' );
+			} ).catch( () => {
+				// Deffer so the promise could be resolved.
+				setTimeout( () => {
+					expect( notificationsCount ).to.equal( 0 );
+					done();
+				} );
+			} );
+		}, { priority: 'low' } );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const clipboardHtml = `<img src=${ base64Sample } />`;
+		const dataTransfer = mockDataTransfer( clipboardHtml );
+
+		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		// Stub `fetch` in a way that it always fails.
+		testUtils.sinon.stub( window, 'fetch' ).callsFake( () => Promise.reject() );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 	} );
