@@ -129,7 +129,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editableElement, editingView );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
 	}
 
 	/**
