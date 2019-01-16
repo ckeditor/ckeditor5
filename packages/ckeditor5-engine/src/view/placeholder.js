@@ -157,3 +157,17 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	return changed;
 }
+
+export function getPlaceholderElement( viewRoot ) {
+	return () => {
+		if ( viewRoot.childCount === 1 ) {
+			const firstRootChild = viewRoot.getChild( 0 );
+
+			if ( firstRootChild.is( 'element' ) ) {
+				return firstRootChild;
+			}
+		}
+
+		return null;
+	};
+}
