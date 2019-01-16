@@ -101,7 +101,6 @@ export default class FocusTracker {
 	 */
 	destroy() {
 		this.stopListening();
-		this._elements.clear();
 	}
 
 	/**
