@@ -25,7 +25,7 @@ export default class InlineEditorUIView extends EditorUIView {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 */
-	constructor( locale, editableElement ) {
+	constructor( locale, editableElement, editingView ) {
 		super( locale );
 
 		/**
@@ -129,7 +129,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editableElement );
+		this.editable = new InlineEditableUIView( locale, editableElement, editingView );
 	}
 
 	/**

@@ -10,6 +10,7 @@
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
+import { attachPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
  * The inline editor UI class.
@@ -38,8 +39,25 @@ export default class InlineEditorUI extends EditorUI {
 	init() {
 		const editor = this.editor;
 		const view = this.view;
+		const editingView = editor.editing.view;
+
+		// Bind to focusTracker instead of editor.editing.view because otherwise
+		// focused editable styles disappear when view#toolbar is focused.
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 
 		view.render();
+
+		editingView.attachDomRoot( view.editableElement );
+
+		const editingRoot = editingView.document.getRoot();
+
+		view.editable.name = editingRoot.rootName;
+
+		editor.on( 'dataReady', () => {
+			view.editable.attachDomRootActions();
+
+			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
+		} );
 
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
@@ -60,25 +78,29 @@ export default class InlineEditorUI extends EditorUI {
 			}
 		} );
 
-		// Setup the editable.
-		const editingRoot = editor.editing.view.document.getRoot();
-		view.editable.bind( 'isReadOnly' ).to( editingRoot );
-
-		// Bind to focusTracker instead of editor.editing.view because otherwise
-		// focused editable styles disappear when view#toolbar is focused.
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editableElement );
-		view.editable.name = editingRoot.rootName;
-
 		this.focusTracker.add( view.editableElement );
 
 		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
+			origin: editingView,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
 	}
+}
+
+function getPlaceholderElement( viewRoot ) {
+	return () => {
+		if ( viewRoot.childCount === 1 ) {
+			const firstRootChild = viewRoot.getChild( 0 );
+
+			if ( firstRootChild.is( 'p' ) ) {
+				return firstRootChild;
+			}
+		}
+
+		return null;
+	};
 }

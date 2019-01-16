@@ -70,7 +70,8 @@ export default class InlineEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, this.sourceElement ) );
+		const view = new InlineEditorUIView( this.locale, this.sourceElement, this.editing.view );
+		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );
 	}
