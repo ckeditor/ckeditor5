@@ -182,15 +182,34 @@ export default class View {
 
 		// Set view root name the same as DOM root tag name.
 		viewRoot._name = domRoot.tagName.toLowerCase();
+		viewRoot._domAttributes = {};
+
+		// Copy the attributes, to remember the state of the attributes as the element
+		// was before attaching. Apply the attributes using the engine, so they all
+		// remain under the control of the engine.
+		// TODO detachDomRoot back to viewRoot._domAttributes.
+		// TODO get rid of .change(), this._writer
+		for ( const { name, value } of domRoot.attributes ) {
+			this._writer.setAttribute( name, viewRoot._domAttributes[ name ] = value, viewRoot );
+		}
+
+		const onIsReadOnlyChange = () => {
+			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
+		};
+
+		// Set initial values.
+		onIsReadOnlyChange();
 
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
 		this._renderer.markToSync( 'children', viewRoot );
+		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on( 'change:isReadOnly', () => this.change( onIsReadOnlyChange ) );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );

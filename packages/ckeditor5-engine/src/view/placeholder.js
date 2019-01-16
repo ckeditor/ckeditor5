@@ -50,6 +50,10 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
  * @param {module:engine/view/element~Element} element
  */
 export function detachPlaceholder( view, element ) {
+	if ( typeof element == 'function' ) {
+		element = element();
+	}
+
 	const doc = element.document;
 
 	view.change( writer => {
@@ -87,6 +91,14 @@ function updateAllPlaceholders( document, writer ) {
 // @param {module:engine/view/element~Element} element
 // @param {Object} info
 function updateSinglePlaceholder( writer, element, info ) {
+	if ( typeof element == 'function' ) {
+		element = element();
+
+		if ( !element ) {
+			return false;
+		}
+	}
+
 	const document = element.document;
 	const text = info.placeholderText;
 	let changed = false;
