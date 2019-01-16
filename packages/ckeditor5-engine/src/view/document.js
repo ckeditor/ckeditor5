@@ -122,6 +122,15 @@ export default class Document {
 	}
 
 	/**
+	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
+	 */
+	destroy() {
+		this.roots.map( root => root.destroy() );
+		this.roots.clear();
+		this.stopListening();
+	}
+
+	/**
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected

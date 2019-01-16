@@ -77,6 +77,10 @@ export default class EditableElement extends ContainerElement {
 		}
 	}
 
+	destroy() {
+		this.stopListening();
+	}
+
 	/**
 	 * Returns document associated with the editable.
 	 *
