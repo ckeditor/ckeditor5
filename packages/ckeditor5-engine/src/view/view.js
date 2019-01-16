@@ -182,13 +182,13 @@ export default class View {
 
 		// Set view root name the same as DOM root tag name.
 		viewRoot._name = domRoot.tagName.toLowerCase();
-		viewRoot._domAttributes = {};
+		viewRoot._initialDomAttributes = {};
 
 		// Copy the attributes, to remember the state of the attributes as the element
 		// was before attaching. Apply the attributes using the engine, so they all
 		// remain under the control of the engine.
 		for ( const { name, value } of domRoot.attributes ) {
-			this._writer.setAttribute( name, viewRoot._domAttributes[ name ] = value, viewRoot );
+			this._writer.setAttribute( name, viewRoot._initialDomAttributes[ name ] = value, viewRoot );
 		}
 
 		const onIsReadOnlyChange = () => {
@@ -219,8 +219,8 @@ export default class View {
 			for ( const viewRoot of this.document.roots ) {
 				writer.removeAttribute( 'contenteditable', viewRoot );
 
-				for ( const attribute in viewRoot._domAttributes ) {
-					writer.setAttribute( attribute, viewRoot._domAttributes[ attribute ], viewRoot );
+				for ( const attribute in viewRoot._initialDomAttributes ) {
+					writer.setAttribute( attribute, viewRoot._initialDomAttributes[ attribute ], viewRoot );
 				}
 			}
 		} );
