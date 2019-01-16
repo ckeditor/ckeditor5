@@ -22,7 +22,7 @@ export default class EditableUIView extends View {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( locale, editableElement, editingView ) {
+	constructor( locale, editingView, editableElement ) {
 		super( locale );
 
 		this.editingView = editingView;

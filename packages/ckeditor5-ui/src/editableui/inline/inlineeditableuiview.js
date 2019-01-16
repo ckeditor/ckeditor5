@@ -23,8 +23,8 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
 	 */
-	constructor( locale, editableElement, view ) {
-		super( locale, editableElement, view );
+	constructor( locale, editingView, editableElement ) {
+		super( locale, editingView, editableElement );
 
 		/**
 		 * The name of the editable UI view.
