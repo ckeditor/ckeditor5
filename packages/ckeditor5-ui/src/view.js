@@ -493,8 +493,6 @@ export default class View {
 		this.stopListening();
 
 		this._viewCollections.map( c => c.destroy() );
-		this._viewCollections.clear();
-		this._unboundChildren.clear();
 
 		// Template isn't obligatory for views.
 		if ( this.template && this.template._revertData ) {
