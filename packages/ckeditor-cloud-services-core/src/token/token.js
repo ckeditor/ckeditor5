@@ -23,15 +23,16 @@ class Token {
 	 * Creates `Token` instance.
 	 * Method `init` should be called after using the constructor or use `create` method instead.
 	 *
-	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
+	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 */
-	constructor( tokenUrl, options = DEFAULT_OPTIONS ) {
-		if ( !tokenUrl ) {
-			throw new Error( '`tokenUrl` must be provided' );
+	constructor( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
+		if ( !tokenUrlOrRefreshToken ) {
+			throw new Error( 'A `tokenUrl` must be provided as the first constructor argument.' );
 		}
 
 		/**
@@ -40,18 +41,23 @@ class Token {
 		 * `create` method creates token with initialized value from url.
 		 *
 		 * @name value
-		 * @type {String}
+		 * @member {String} #value
 		 * @observable
 		 * @readonly
-		 * @memberOf Token#
 		 */
 		this.set( 'value', options.initValue );
 
 		/**
-		 * @type {String}
+		 * Base refreshing function.
+		 *
 		 * @private
+		 * @member {String|Function} #_refresh
 		 */
-		this._tokenUrl = tokenUrl;
+		if ( typeof tokenUrlOrRefreshToken === 'function' ) {
+			this._refresh = tokenUrlOrRefreshToken;
+		} else {
+			this._refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
+		}
 
 		/**
 		 * @type {Object}
@@ -84,35 +90,21 @@ class Token {
 	}
 
 	/**
-	 * Gets the new token.
+	 * Refresh token method. Useful in a method form as it can be override in tests.
 	 *
 	 * @protected
-	 * @returns {Promise.<Token>}
 	 */
 	_refreshToken() {
-		return new Promise( ( resolve, reject ) => {
-			const xhr = new XMLHttpRequest();
+		return this._refresh()
+			.then( value => this.set( 'value', value ) )
+			.then( () => this );
+	}
 
-			xhr.open( 'GET', this._tokenUrl );
-
-			xhr.addEventListener( 'load', () => {
-				const statusCode = xhr.status;
-				const xhrResponse = xhr.response;
-
-				if ( statusCode < 200 || statusCode > 299 ) {
-					return reject( 'Cannot download new token!' );
-				}
-
-				this.set( 'value', xhrResponse );
-
-				return resolve( this );
-			} );
-
-			xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
-			xhr.addEventListener( 'abort', () => reject( 'Abort' ) );
-
-			xhr.send();
-		} );
+	/**
+	 * Destroys token instance. Stops refreshing.
+	 */
+	destroy() {
+		this._stopRefreshing();
 	}
 
 	/**
@@ -121,7 +113,7 @@ class Token {
 	 * @protected
 	 */
 	_startRefreshing() {
-		this._refreshInterval = setInterval( this._refreshToken.bind( this ), this._options.refreshInterval );
+		this._refreshInterval = setInterval( () => this._refreshToken(), this._options.refreshInterval );
 	}
 
 	/**
@@ -136,20 +128,58 @@ class Token {
 	/**
 	 * Creates a initialized {@link Token} instance.
 	 *
-	 * @param {String} tokenUrl Endpoint address to download the token.
+	 * @param {String|Function} tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
+	 * value is a function it has to match the {@link ~refreshToken} interface.
 	 * @param {Object} options
 	 * @param {String} [options.initValue] Initial value of the token.
 	 * @param {Number} [options.refreshInterval=3600000] Delay between refreshes. Default 1 hour.
 	 * @param {Boolean} [options.autoRefresh=true] Specifies whether to start the refresh automatically.
 	 * @returns {Promise.<Token>}
 	 */
-	static create( tokenUrl, options = DEFAULT_OPTIONS ) {
-		const token = new Token( tokenUrl, options );
+	static create( tokenUrlOrRefreshToken, options = DEFAULT_OPTIONS ) {
+		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();
 	}
 }
 
 mix( Token, ObservableMixin );
+
+/**
+ * This function is called in a defined interval by the {@link ~Token} class.
+ * It should return a promise, which resolves with the new token value.
+ * If any error occurs it should return a rejected promise with an error message.
+ *
+ * @function refreshToken
+ * @returns {Promise.<String>}
+ */
+
+/**
+ * @private
+ * @param {String} tokenUrl
+ */
+function defaultRefreshToken( tokenUrl ) {
+	return new Promise( ( resolve, reject ) => {
+		const xhr = new XMLHttpRequest();
+
+		xhr.open( 'GET', tokenUrl );
+
+		xhr.addEventListener( 'load', () => {
+			const statusCode = xhr.status;
+			const xhrResponse = xhr.response;
+
+			if ( statusCode < 200 || statusCode > 299 ) {
+				return reject( new Error( 'Cannot download new token!' ) );
+			}
+
+			return resolve( xhrResponse );
+		} );
+
+		xhr.addEventListener( 'error', () => reject( new Error( 'Network Error' ) ) );
+		xhr.addEventListener( 'abort', () => reject( new Error( 'Abort' ) ) );
+
+		xhr.send();
+	} );
+};
 
 export default Token;

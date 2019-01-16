@@ -176,14 +176,18 @@ class FileUploader {
 				const xhrResponse = xhr.response;
 
 				if ( statusCode < 200 || statusCode > 299 ) {
-					return reject( xhrResponse.message || xhrResponse.error );
+					if ( xhrResponse.message ) {
+						return reject( new Error( xhrResponse.message ) );
+					}
+
+					return reject( xhrResponse.error );
 				}
 
 				return resolve( xhrResponse );
 			} );
 
-			xhr.addEventListener( 'error', () => reject( 'Network Error' ) );
-			xhr.addEventListener( 'abort', () => reject( 'Abort' ) );
+			xhr.addEventListener( 'error', () => reject( new Error( 'Network Error' ) ) );
+			xhr.addEventListener( 'abort', () => reject( new Error( 'Abort' ) ) );
 
 			xhr.send( formData );
 		} );
