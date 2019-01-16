@@ -41,8 +41,7 @@ export default class ClassicEditorUI extends EditorUI {
 		const view = this.view;
 		const editingView = editor.editing.view;
 
-		view.editable.bind( 'isFocused' ).to( editingView.document );
-
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 		view.render();
 
 		// Set–up the sticky panel with toolbar.
