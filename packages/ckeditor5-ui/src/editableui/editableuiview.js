@@ -59,6 +59,8 @@ export default class EditableUIView extends View {
 		 */
 		this.externalElement = editableElement;
 
+		this.viewRoot = null;
+
 		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
@@ -81,8 +83,9 @@ export default class EditableUIView extends View {
 		}
 	}
 
-	attachDomRootActions() {
-		const viewRoot = this.editingView.domConverter.domToView( this.element );
+	enableDomRootActions() {
+		const viewRoot = this.viewRoot = this.editingView.domConverter.domToView( this.element );
+
 		const updateFocusClasses = () => {
 			this.editingView.change( writer => {
 				writer.addClass( this.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
@@ -92,6 +95,12 @@ export default class EditableUIView extends View {
 
 		this.on( 'change:isFocused', updateFocusClasses );
 		updateFocusClasses();
+	}
+
+	disableDomRootActions() {
+		this.editingView.change( writer => {
+			writer.removeClass( [ 'ck-blurred', 'ck-focused' ], this.viewRoot );
+		} );
 	}
 
 	/**
