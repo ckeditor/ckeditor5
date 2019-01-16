@@ -187,8 +187,6 @@ export default class View {
 		// Copy the attributes, to remember the state of the attributes as the element
 		// was before attaching. Apply the attributes using the engine, so they all
 		// remain under the control of the engine.
-		// TODO detachDomRoot back to viewRoot._domAttributes.
-		// TODO get rid of .change(), this._writer
 		for ( const { name, value } of domRoot.attributes ) {
 			this._writer.setAttribute( name, viewRoot._domAttributes[ name ] = value, viewRoot );
 		}
@@ -214,6 +212,18 @@ export default class View {
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
+	}
+
+	detachDomRoots() {
+		this.change( writer => {
+			for ( const viewRoot of this.document.roots ) {
+				writer.removeAttribute( 'contenteditable', viewRoot );
+
+				for ( const attribute in viewRoot._domAttributes ) {
+					writer.setAttribute( attribute, viewRoot._domAttributes[ attribute ], viewRoot );
+				}
+			}
+		} );
 	}
 
 	/**
