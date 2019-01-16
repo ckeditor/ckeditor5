@@ -210,10 +210,6 @@ export default class Template {
 		this._revertTemplateFromNode( node, this._revertData );
 	}
 
-	destroy() {
-		this.stopListening();
-	}
-
 	/**
 	 * Returns an iterator which traverses the template in search of {@link module:ui/view~View}
 	 * instances and returns them one by one.
