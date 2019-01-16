@@ -23,11 +23,8 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
 	 * will create it. Otherwise, the existing element will be used.
 	 */
-	constructor( locale, editableElement ) {
-		super( locale, editableElement );
-
-		const bind = this.bindTemplate;
-		const t = this.t;
+	constructor( locale, editableElement, view ) {
+		super( locale, editableElement, view );
 
 		/**
 		 * The name of the editable UI view.
@@ -37,16 +34,30 @@ export default class InlineEditableUIView extends EditableUIView {
 		 */
 		this.set( 'name', null );
 
-		const getLabel = value => {
-			return t( 'Rich Text Editor, %0', [ value ] );
-		};
-
 		this.extendTemplate( {
 			attributes: {
 				role: 'textbox',
-				'aria-label': bind.to( 'name', getLabel ),
 				class: 'ck-editor__editable_inline'
 			}
 		} );
+	}
+
+	attachDomRootActions() {
+		super.attachDomRootActions();
+
+		const t = this.t;
+		const viewRoot = this.editingView.domConverter.domToView( this.element );
+		const updateAriaLabelAttribute = () => {
+			this.editingView.change( writer => {
+				if ( this.name ) {
+					writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
+				} else {
+					writer.removeAttribute( 'aria-label', viewRoot );
+				}
+			} );
+		};
+
+		this.on( 'change:name', updateAriaLabelAttribute );
+		updateAriaLabelAttribute();
 	}
 }

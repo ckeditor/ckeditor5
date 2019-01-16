@@ -22,10 +22,10 @@ export default class EditableUIView extends View {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( locale, editableElement ) {
+	constructor( locale, editableElement, editingView ) {
 		super( locale );
 
-		const bind = this.bindTemplate;
+		this.editingView = editingView;
 
 		if ( editableElement ) {
 			this.element = this.editableElement = editableElement;
@@ -38,22 +38,10 @@ export default class EditableUIView extends View {
 					'ck',
 					'ck-content',
 					'ck-editor__editable',
-					'ck-rounded-corners',
-					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
-					bind.if( 'isReadOnly', 'ck-read-only' )
-
-				],
-				contenteditable: bind.to( 'isReadOnly', value => !value ),
+					'ck-rounded-corners'
+				]
 			}
 		} );
-
-		/**
-		 * Controls whether the editable is writable or not.
-		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
-		 */
-		this.set( 'isReadOnly', false );
 
 		/**
 		 * Controls whether the editable is focused, i.e. the user is typing in it.
@@ -91,6 +79,19 @@ export default class EditableUIView extends View {
 		} else {
 			this.editableElement = this.element;
 		}
+	}
+
+	attachDomRootActions() {
+		const viewRoot = this.editingView.domConverter.domToView( this.element );
+		const updateFocusClasses = () => {
+			this.editingView.change( writer => {
+				writer.addClass( this.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
+				writer.removeClass( this.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
+			} );
+		};
+
+		this.on( 'change:isFocused', updateFocusClasses );
+		updateFocusClasses();
 	}
 
 	/**
