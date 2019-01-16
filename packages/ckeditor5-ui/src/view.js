@@ -92,7 +92,6 @@ export default class View {
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 */
 	constructor( locale ) {
-		// console.log( 'new', this.constructor.name, '()' );
 		/**
 		 * An HTML element of the view. `null` until {@link #render rendered}
 		 * from the {@link #template}.
