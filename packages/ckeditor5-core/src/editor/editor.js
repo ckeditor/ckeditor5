@@ -278,15 +278,6 @@ export default class Editor {
 				this.data.destroy();
 				this.editing.destroy();
 				this.keystrokes.destroy();
-
-				// Fail-safe dereference of entities that may hold back reference to the editor - prevent memory leaks #1341
-				this.plugins = null;
-				this.commands = null;
-				this.model = null;
-				this.data = null;
-				this.editing = null;
-				this.keystrokes = null;
-				this.conversion = null;
 			} );
 	}
 
