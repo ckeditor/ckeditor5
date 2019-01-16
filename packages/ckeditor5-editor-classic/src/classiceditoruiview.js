@@ -26,7 +26,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 */
-	constructor( locale ) {
+	constructor( locale, editingView ) {
 		super( locale );
 
 		/**
@@ -52,7 +52,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale );
+		this.editable = new InlineEditableUIView( locale, editingView );
 	}
 
 	/**

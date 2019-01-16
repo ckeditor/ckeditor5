@@ -78,7 +78,7 @@ export default class ClassicEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
+		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale, this.editing.view ) );
 
 		attachToForm( this );
 	}
