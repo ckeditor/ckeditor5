@@ -104,7 +104,6 @@ export default class ClassicEditor extends Editor {
 
 		this._elementReplacer.restore();
 		this.ui.destroy();
-		this.ui = null;
 
 		return super.destroy();
 	}
