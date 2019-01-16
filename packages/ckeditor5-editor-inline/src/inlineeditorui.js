@@ -54,7 +54,7 @@ export default class InlineEditorUI extends EditorUI {
 		view.editable.name = editingRoot.rootName;
 
 		editor.on( 'dataReady', () => {
-			view.editable.attachDomRootActions();
+			view.editable.enableDomRootActions();
 
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
@@ -88,6 +88,13 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
+	}
+
+	destroy() {
+		this.view.editable.disableDomRootActions();
+		this.editor.editing.view.detachDomRoots();
+
+		super.destroy();
 	}
 }
 
