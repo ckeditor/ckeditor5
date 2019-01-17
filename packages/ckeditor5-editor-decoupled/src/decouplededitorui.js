@@ -54,13 +54,6 @@ export default class DecoupledEditorUI extends EditorUI {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getEditableElement( rootName = 'main' ) {
-		return this.view.editable.name === rootName ? this.view.editable.element : null;
-	}
-
-	/**
 	 * Initializes the UI.
 	 */
 	init() {
@@ -76,7 +69,10 @@ export default class DecoupledEditorUI extends EditorUI {
 		editor.editing.view.attachDomRoot( view.editable.editableElement );
 		view.editable.name = editingRoot.rootName;
 
+		this._editableElements.push( view.editable );
+
 		this.focusTracker.add( this.view.editable.editableElement );
+
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
