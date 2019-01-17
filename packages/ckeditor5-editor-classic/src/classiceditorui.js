@@ -73,7 +73,7 @@ export default class ClassicEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	getEditableElement( rootName = 'main' ) {
-		return this.view.editable.name === rootName ? this.view.editable : null;
+		return this.view.editable.name === rootName ? this.view.editable.element : null;
 	}
 
 	/**
