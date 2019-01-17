@@ -92,5 +92,7 @@ export default class BalloonEditorUI extends EditorUI {
 				balloonToolbar.hide();
 			}
 		} );
+
+		this.ready();
 	}
 }
