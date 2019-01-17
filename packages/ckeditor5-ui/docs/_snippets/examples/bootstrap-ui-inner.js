@@ -63,17 +63,11 @@ export default class BootstrapEditor extends Editor {
 		// When editor#element is a textarea inside a form element
 		// then content of this textarea will be updated on form submit.
 		attachToForm( this );
-
-		// A helper to easily replace the editor#element with editor.editable#element.
-		this._elementReplacer = new ElementReplacer();
 	}
 
 	destroy() {
 		// When destroyed, editor sets the output of editor#getData() into editor#element...
 		this.updateSourceElement();
-
-		// ...and restores the original editor#element...
-		this._elementReplacer.restore();
 
 		// ...and destroys the UI.
 		this.ui.destroy();
@@ -88,16 +82,8 @@ export default class BootstrapEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						// Initialize the UI first. See the BootstrapEditorUI class to learn more.
-						editor.ui.init();
-
-						// Replace the editor#element with editor.editable#element.
-						editor._elementReplacer.replace( element, editable.element );
-
-						// Tell the world that the UI of the editor is ready to use.
-						editor.ui.ready();
-					} )
+					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
+					.then( () => editor.ui.init( element ) )
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
 					// Fill the editable with the initial data.
@@ -121,6 +107,9 @@ mix( BootstrapEditor, ElementApiMixin );
 class BootstrapEditorUI extends EditorUI {
 	constructor( editor ) {
 		super( editor );
+
+		// A helper to easily replace the editor#element with editor.editable#element.
+		this._elementReplacer = new ElementReplacer();
 
 		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
 		const view = this._view = new EditorUIView( editor.locale );
@@ -148,7 +137,7 @@ class BootstrapEditorUI extends EditorUI {
 		return this._view;
 	}
 
-	init() {
+	init( replacementElement ) {
 		const editor = this.editor;
 		const view = this.view;
 
@@ -167,6 +156,19 @@ class BootstrapEditorUI extends EditorUI {
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
 		this._setupBootstrapHeadingDropdown();
+
+		// Replace the editor#element with editor.editable#element.
+		this._elementReplacer.replace( replacementElement, view.editable.element );
+
+		// Tell the world that the UI of the editor is ready to use.
+		this.ready();
+	}
+
+	destroy() {
+		// Restore the original editor#element.
+		this._elementReplacer.restore();
+
+		super.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
