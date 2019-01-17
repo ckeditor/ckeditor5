@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck .ck-widget.ck-widget_selectable {
+.ck .ck-widget.ck-widget_with-selection-handler {
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
 

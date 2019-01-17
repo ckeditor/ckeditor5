@@ -105,7 +105,7 @@ describe( 'widget utils', () => {
 		it( 'should add element a selection handler to widget if hasSelectionHandler=true is passed', () => {
 			toWidget( element, writer, { hasSelectionHandler: true } );
 
-			expect( element.hasClass( 'ck-widget_selectable' ) ).to.be.true;
+			expect( element.hasClass( 'ck-widget_with-selection-handler' ) ).to.be.true;
 
 			const selectionHandler = element.getChild( 0 );
 			expect( selectionHandler ).to.be.instanceof( UIElement );
