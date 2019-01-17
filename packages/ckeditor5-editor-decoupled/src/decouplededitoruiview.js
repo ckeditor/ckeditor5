@@ -31,7 +31,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, it will be automatically created by
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}. Otherwise, the given element will be used.
 	 */
-	constructor( locale, editableElement ) {
+	constructor( locale, editableElement, editingView ) {
 		super( locale );
 
 		/**
@@ -48,7 +48,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale, editableElement );
+		this.editable = new InlineEditableUIView( locale, editingView, editableElement );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		// Also because of the above, make sure the toolbar supports rounded corners.
