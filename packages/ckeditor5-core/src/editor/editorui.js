@@ -55,6 +55,14 @@ export default class EditorUI {
 		this.focusTracker = new FocusTracker();
 
 		/**
+		 * Stores all editable elements used by the editor instance.
+		 *
+		 * @protected
+		 * @member {Array.<module:ui/editorui/editoruiview~EditorUIView>}
+		 */
+		this._editableElements = [];
+
+		/**
 		 * **Deprecated** since `v12.0.0`. This property is deprecated and should not be used. Use the property
 		 * from the subclass directly instead, for example
 		 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#_view ClassicEditorUI#_view}.
@@ -158,6 +166,8 @@ export default class EditorUI {
 	destroy() {
 		this.stopListening();
 
+		this._editableElements = [];
+
 		if ( this._view ) {
 			this._view.destroy();
 		}
@@ -166,10 +176,23 @@ export default class EditorUI {
 	/**
 	 * Returns the editable editor element with the given name or null if editable does not exist.
 	 *
-	 * @method module:core/editor/editorui~EditorUI#getEditableElement
 	 * @param {String} [rootName=main] The editable name.
 	 * @returns {HTMLElement|null}
 	 */
+	getEditableElement( rootName = 'main' ) {
+		const editable = this._editableElements.find( editable => editable.name === rootName );
+
+		return editable ? editable.element : null;
+	}
+
+	/**
+	 * Returns array of names of all editor editable elements.
+	 *
+	 * @returns {Array.<String>}
+	 */
+	getEditableElementsNames() {
+		return this._editableElements.map( editable => editable.name );
+	}
 
 	/**
 	 * Fired when the editor UI is ready.

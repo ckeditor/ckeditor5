@@ -13,6 +13,8 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import testUtils from '../_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+/* global document */
+
 describe( 'EditorUI', () => {
 	let editor, ui;
 
@@ -134,6 +136,54 @@ describe( 'EditorUI', () => {
 			expect( () => {
 				ui.destroy();
 			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'getEditableElement()', () => {
+		it( 'should return editable element (default root name)', () => {
+			const ui = new EditorUI( editor );
+			const editableMock = { name: 'main', element: document.createElement( 'div' ) };
+
+			ui._editableElements.push( editableMock );
+
+			expect( ui.getEditableElement() ).to.equal( editableMock.element );
+		} );
+
+		it( 'should return editable element (custom root name)', () => {
+			const ui = new EditorUI( editor );
+			const editableMock1 = { name: 'root1', element: document.createElement( 'div' ) };
+			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
+
+			ui._editableElements.push( editableMock1 );
+			ui._editableElements.push( editableMock2 );
+
+			expect( ui.getEditableElement( 'root1' ) ).to.equal( editableMock1.element );
+			expect( ui.getEditableElement( 'root2' ) ).to.equal( editableMock2.element );
+		} );
+
+		it( 'should return null if editable with specified name does not exist', () => {
+			const ui = new EditorUI( editor );
+
+			expect( ui.getEditableElement() ).to.null;
+		} );
+	} );
+
+	describe( 'getEditableElementsNames()', () => {
+		it( 'should return array of names', () => {
+			const ui = new EditorUI( editor );
+			const editableMock1 = { name: 'main', element: document.createElement( 'div' ) };
+			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
+
+			ui._editableElements.push( editableMock1 );
+			ui._editableElements.push( editableMock2 );
+
+			expect( ui.getEditableElementsNames() ).to.deep.equal( [ 'main', 'root2' ] );
+		} );
+
+		it( 'should return empty array if no editables', () => {
+			const ui = new EditorUI( editor );
+
+			expect( ui.getEditableElementsNames() ).to.be.empty;
 		} );
 	} );
 } );
