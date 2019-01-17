@@ -23,11 +23,3 @@
 		}
 	}
 }
-
-.ck-editor__editable > .table:first-child,
-.ck-editor__editable blockquote > .table:first-child {
-	/* Do not truncate selection handler if table is a first-child in the blockquote or content.
-	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
-	https://github.com/ckeditor/ckeditor5-widget/issues/44 */
-	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
-}
