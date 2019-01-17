@@ -10,6 +10,7 @@
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
+import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 /**
  * The classic editor UI class.
@@ -41,6 +42,14 @@ export default class ClassicEditorUI extends EditorUI {
 		 * @member {Object}
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		/**
+		 * The element replacer instance used to hide the editor's source element.
+		 *
+		 * @protected
+		 * @member {module:utils/elementreplacer~ElementReplacer}
+		 */
+		this._elementReplacer = new ElementReplacer();
 	}
 
 	/**
@@ -69,8 +78,10 @@ export default class ClassicEditorUI extends EditorUI {
 
 	/**
 	 * Initializes the UI.
+	 *
+	 * @param {HTMLElement|null} replacementElement The DOM element that will be the source for the created editor.
 	 */
-	init() {
+	init( replacementElement ) {
 		const editor = this.editor;
 		const view = this.view;
 
@@ -100,5 +111,20 @@ export default class ClassicEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
+
+		if ( replacementElement ) {
+			this._elementReplacer.replace( replacementElement, this.element );
+		}
+
+		this.ready();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._elementReplacer.restore();
+
+		super.destroy();
 	}
 }

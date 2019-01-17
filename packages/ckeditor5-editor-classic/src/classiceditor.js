@@ -14,7 +14,6 @@ import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -67,14 +66,6 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		/**
-		 * The element replacer instance used to hide the editor's source element.
-		 *
-		 * @protected
-		 * @member {module:utils/elementreplacer~ElementReplacer}
-		 */
-		this._elementReplacer = new ElementReplacer();
-
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
@@ -104,7 +95,6 @@ export default class ClassicEditor extends Editor {
 			this.updateSourceElement();
 		}
 
-		this._elementReplacer.restore();
 		this.ui.destroy();
 
 		return super.destroy();
@@ -191,16 +181,7 @@ export default class ClassicEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => {
-						if ( isElement( sourceElementOrData ) ) {
-							editor._elementReplacer.replace( sourceElementOrData, editor.ui.element );
-						}
-
-						editor.ui.ready();
-
-						editor.fire( 'uiReady' );
-					} )
+					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.editableElement ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
