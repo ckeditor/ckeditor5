@@ -52,13 +52,6 @@ export default class BalloonEditorUI extends EditorUI {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getEditableElement( rootName = 'main' ) {
-		return this.view.editable.name === rootName ? this.view.editable.element : null;
-	}
-
-	/**
 	 * Initializes the UI.
 	 */
 	init() {
@@ -77,6 +70,8 @@ export default class BalloonEditorUI extends EditorUI {
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 		editor.editing.view.attachDomRoot( view.editable.editableElement );
 		view.editable.name = editingRoot.rootName;
+
+		this._editableElements.push( view.editable );
 
 		this.focusTracker.add( view.editable.editableElement );
 
