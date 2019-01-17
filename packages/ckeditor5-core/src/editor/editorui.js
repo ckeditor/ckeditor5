@@ -139,6 +139,7 @@ export default class EditorUI {
 	 */
 	ready() {
 		this.fire( 'ready' );
+		this.fire( 'uiReady' );
 	}
 
 	/**
@@ -167,7 +168,7 @@ export default class EditorUI {
 	 *
 	 * @method module:core/editor/editorui~EditorUI#getEditableElement
 	 * @param {String} [rootName=main] The editable name.
-	 * @returns {module:ui/editableui/editableuiview~EditableUIView|null}
+	 * @returns {HTMLElement|null}
 	 */
 
 	/**
