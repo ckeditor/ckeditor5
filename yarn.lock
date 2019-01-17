@@ -675,10 +675,10 @@
     request "^2.83.0"
     semver "^5.4.1"
 
-"@ckeditor/ckeditor5-dev-tests@^14.1.0":
-  version "14.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-14.1.0.tgz#a955322f5a802f33f4256774db3ce929dc76400b"
-  integrity sha512-ko6+R7ZkgAiNy0iEEE+Itrq9wXRbJAgtW6hRmhi5UaYS11hrNUPHM+5MPYQfJVGZyzMK9Sd1BJKc0mQyxM4d4w==
+"@ckeditor/ckeditor5-dev-tests@^15.0.1":
+  version "15.1.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-15.1.0.tgz#50db3a1fbddb6c52ed57c237d5338d6c77b74f85"
+  integrity sha512-udscXhNxXCmcXbAK+5BtLDilRBQGJG/ND7WZwG3Q3EIHdE/Dxg3GV6jRTvc8mcabOvVyFKw2I8Sagv42jF298g==
   dependencies:
     "@ckeditor/ckeditor5-dev-utils" "^11.0.1"
     "@ckeditor/ckeditor5-dev-webpack-plugin" "^7.0.1"
@@ -708,7 +708,7 @@
     karma-sourcemap-loader "^0.3.7"
     karma-webpack "^3.0.5"
     lodash "^4.17.11"
-    mgit2 "^0.9.0"
+    mgit2 "^0.10.0"
     minimatch "^3.0.4"
     minimist "^1.2.0"
     mkdirp "^0.5.1"
@@ -720,7 +720,7 @@
     style-loader "^0.23.0"
     webpack "^4.15.0"
 
-"@ckeditor/ckeditor5-dev-utils@^11.0.1":
+"@ckeditor/ckeditor5-dev-utils@^11.0.0", "@ckeditor/ckeditor5-dev-utils@^11.0.1":
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-11.0.1.tgz#f46ab412435e3b455f2371d9c66e0e223adb8e17"
   integrity sha512-5P4y6nynDHYxwtsf32VdKXrLdy8ru3BfuMgkUUte6bs0IdVg6TT/1Da/JA2C47JOlpB8wLVz6lrh34xNJLkJsg==
@@ -740,7 +740,7 @@
     shelljs "^0.8.1"
     through2 "^2.0.3"
 
-"@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.1":
+"@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-7.0.1.tgz#a992a4c479895e83237788d144da604d2669680b"
   integrity sha512-gRPweXnfoXE5c+I5ZJqsgV92/aEFGks9EEdlJ3ymLg7xpH6YlEiru/pNxYtUTFuXmyPlO+CLbT0XZhjTX5oQgA==
@@ -2138,7 +2138,7 @@ chainsaw@~0.1.0:
   dependencies:
     traverse ">=0.3.0 <0.4"
 
-chalk@*, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.0, chalk@^2.3.1, chalk@^2.4.1:
+chalk@*, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.3.1, chalk@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.1.tgz#18c49ab16a037b6eb0152cc83e3471338215b66e"
   integrity sha512-ObN6h1v2fTJSmUXoS3nMQ92LbDK9be4TV+6G+omQlGJFdcUX5heKi1LZ1YnRMIgwTLEj3E24bT6tYni50rlCfQ==
@@ -4400,7 +4400,7 @@ gaze@^1.0.0:
   dependencies:
     globule "^1.0.0"
 
-generic-pool@^3.4.1, generic-pool@^3.4.2:
+generic-pool@^3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.4.2.tgz#92ff7196520d670839a67308092a12aadf2f6a59"
   integrity sha512-H7cUpwCQSiJmAHM4c/aFu6fUfrhWXW1ncyh8ftxEPMu6AiYkHw9K8br720TGPZJbk5eOH2bynjZD1yPvdDAmag==
@@ -6743,31 +6743,20 @@ mergesort@0.0.1:
   resolved "https://registry.yarnpkg.com/mergesort/-/mergesort-0.0.1.tgz#364ecc31b297dc7f44e511d365176f1c39d08fc2"
   integrity sha1-Nk7MMbKX3H9E5RHTZRdvHDnQj8I=
 
-mgit2@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/mgit2/-/mgit2-0.8.0.tgz#a71754f62dccf0025686d3db3980ce5b4df5caee"
-  integrity sha1-pxdU9i3M8AJWhtPbOYDOW031yu4=
-  dependencies:
-    chalk "^2.3.0"
-    cli-table "^0.3.1"
-    generic-pool "^3.4.1"
-    meow "^4.0.0"
-    minimatch "^3.0.4"
-    shelljs "^0.8.1"
-    upath "^1.0.4"
-
-mgit2@^0.9.0:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/mgit2/-/mgit2-0.9.1.tgz#45df66ecfc02d196dadd91535d1c92a1035cf083"
-  integrity sha512-vmQ8llC1nE14Yz0mifMEI/18zzgf+CkigyYU5BTgSs7aF7Y+AM2qn9INlbDVr6ntU32CixknkPAveJrPHYC86g==
+mgit2@^0.10.0:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/mgit2/-/mgit2-0.10.1.tgz#eaa1d9c5e06d2cf8ab91a2fd9dd7c6eb59afec45"
+  integrity sha512-KswWcEVHqO/IXs3n6f9yRpvAtMZSKMF7UWehlgCi2jzeYXuW/cirwHztWLRU4Y05JQbm4f/ZOwv2OkHwyjpXEQ==
   dependencies:
     chalk "^2.4.1"
     cli-table "^0.3.1"
     generic-pool "^3.4.2"
     meow "^5.0.0"
     minimatch "^3.0.4"
+    minimist "^1.2.0"
+    minimist-options "^3.0.2"
     shelljs "^0.8.2"
-    upath "^1.0.5"
+    upath "^1.1.0"
 
 micromatch@^2.1.5:
   version "2.3.11"
@@ -6878,7 +6867,7 @@ minimatch@~0.2.11:
     lru-cache "2"
     sigmund "~1.0.0"
 
-minimist-options@^3.0.1:
+minimist-options@^3.0.1, minimist-options@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/minimist-options/-/minimist-options-3.0.2.tgz#fba4c8191339e13ecf4d61beb03f070103f3d954"
   integrity sha512-FyBrT/d0d4+uiZRbqznPXqw3IpZZG3gl3wKWiX784FycUKVwBt0uLBFkQrtE4tZOrgo78nZp2jnKz3L65T5LdQ==
@@ -10246,7 +10235,7 @@ unzipper@^0.9.3:
     readable-stream "~2.3.6"
     setimmediate "~1.0.4"
 
-upath@^1.0.4, upath@^1.0.5:
+upath@^1.0.5, upath@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.1.0.tgz#35256597e46a581db4793d0ce47fa9aebfc9fabd"
   integrity sha512-bzpH/oBhoS/QI/YtbkqCg6VEiPYjSZtrHQM6/QnJS6OL9pKUFLqb3aFh4Scvwm45+7iAgiMkLhSbaZxUqmrprw==
