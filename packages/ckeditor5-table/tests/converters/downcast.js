@@ -304,7 +304,7 @@ describe( 'downcast converters', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -537,7 +537,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable(
 					getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -683,7 +683,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -860,7 +860,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<thead>' +
@@ -1074,7 +1074,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
