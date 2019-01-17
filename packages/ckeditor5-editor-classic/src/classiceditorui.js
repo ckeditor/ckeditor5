@@ -70,13 +70,6 @@ export default class ClassicEditorUI extends EditorUI {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	getEditableElement( rootName = 'main' ) {
-		return this.view.editable.name === rootName ? this.view.editable.element : null;
-	}
-
-	/**
 	 * Initializes the UI.
 	 *
 	 * @param {HTMLElement|null} replacementElement The DOM element that will be the source for the created editor.
@@ -100,6 +93,8 @@ export default class ClassicEditorUI extends EditorUI {
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
+
+		this._editableElements.push( view.editable );
 
 		this.focusTracker.add( view.editable.editableElement );
 
