@@ -22,8 +22,9 @@ install:
 - mgit sync --resolver-url-template="https://github.com/\${ path }.git"
 - yarn
 script:
-- yarn run test --reporter=dots
-- yarn run docs:api --validate-only
+  - npm version
+#- yarn run test --reporter=dots
+#- yarn run docs:api --validate-only
 - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait yarn run docs:build-and-publish-nightly;
   fi'

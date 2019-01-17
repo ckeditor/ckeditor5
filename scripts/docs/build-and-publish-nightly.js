@@ -16,14 +16,14 @@ This script is to be used on CI to automatically update https://ckeditor5.github
 */
 
 // Build the documentation only when master branch is updated.
-if ( process.env.TRAVIS_BRANCH !== 'master' ) {
-	process.exit();
-}
-
-// Build the documentation only when a cron task triggered the CI.
-if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
-	process.exit();
-}
+// if ( process.env.TRAVIS_BRANCH !== 'master' ) {
+// 	process.exit();
+// }
+//
+// // Build the documentation only when a cron task triggered the CI.
+// if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
+// 	process.exit();
+// }
 
 const path = require( 'path' );
 const ROOT_PATH = process.cwd();
@@ -61,44 +61,47 @@ exec( `cp -R ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion } cked
 // Change work directory in order to make a commit in CKEditor 5 page's repository.
 process.chdir( path.join( ROOT_PATH, 'ckeditor5.github.io' ) );
 
-exec( `echo "https://${ process.env.GITHUB_TOKEN }:@github.com" > .git/credentials 2> /dev/null` );
-exec( 'git config credential.helper "store --file=.git/credentials"' );
+console.log( exec( 'git diff --name-only docs/' ).trim() );
 
-// Commit the documentation.
-if ( exec( 'git diff --name-only docs/' ).trim().length ) {
-	exec( 'git add docs/' );
-	exec( 'git commit -m "Documentation build."' );
-	exec( 'git push origin master --quiet' );
-
-	const lastCommit = exec( 'git log -1 --format="%h"' );
-	console.log( `Successfully published the documentation under ${ mainRepoUrl }/commit/${ lastCommit }` );
-} else {
-	console.log( 'Nothing to commit. Documentation is up to date.' );
-}
-
-// Every 10th day of the month, we would like to clean the history of the documentation repository.
-if ( new Date().getDate() === 10 ) {
-	// Copy a commit which will be a new root in the repository.
-	const commit = exec( 'git log --oneline --reverse -5 --format="%h" | head -n 1' ).trim();
-
-	// Checkout to the status of the git repo at commit. Create a temporary branch.
-	exec( `git checkout --orphan temp ${ commit }` );
-
-	// Create a new commit that is to be the new root commit.
-	exec( 'git commit -m "Documentation build."' );
-
-	// Rebase the part of history from <commit> to master on the temporary branch.
-	exec( `git rebase --onto temp ${ commit } master` );
-
-	// Remove the temporary branch.
-	exec( 'git branch -D temp' );
-
-	// Pray.
-	exec( 'git push -f' );
-}
-
-// Change work directory to the previous value.
-process.chdir( ROOT_PATH );
+//
+// exec( `echo "https://${ process.env.GITHUB_TOKEN }:@github.com" > .git/credentials 2> /dev/null` );
+// exec( 'git config credential.helper "store --file=.git/credentials"' );
+//
+// // Commit the documentation.
+// if ( exec( 'git diff --name-only docs/' ).trim().length ) {
+// 	exec( 'git add docs/' );
+// 	exec( 'git commit -m "Documentation build."' );
+// 	exec( 'git push origin master --quiet' );
+//
+// 	const lastCommit = exec( 'git log -1 --format="%h"' );
+// 	console.log( `Successfully published the documentation under ${ mainRepoUrl }/commit/${ lastCommit }` );
+// } else {
+// 	console.log( 'Nothing to commit. Documentation is up to date.' );
+// }
+//
+// // Every 10th day of the month, we would like to clean the history of the documentation repository.
+// if ( new Date().getDate() === 10 ) {
+// 	// Copy a commit which will be a new root in the repository.
+// 	const commit = exec( 'git log --oneline --reverse -5 --format="%h" | head -n 1' ).trim();
+//
+// 	// Checkout to the status of the git repo at commit. Create a temporary branch.
+// 	exec( `git checkout --orphan temp ${ commit }` );
+//
+// 	// Create a new commit that is to be the new root commit.
+// 	exec( 'git commit -m "Documentation build."' );
+//
+// 	// Rebase the part of history from <commit> to master on the temporary branch.
+// 	exec( `git rebase --onto temp ${ commit } master` );
+//
+// 	// Remove the temporary branch.
+// 	exec( 'git branch -D temp' );
+//
+// 	// Pray.
+// 	exec( 'git push -f' );
+// }
+//
+// // Change work directory to the previous value.
+// process.chdir( ROOT_PATH );
 
 function exec( command ) {
 	try {
