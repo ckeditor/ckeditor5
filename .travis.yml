@@ -18,8 +18,9 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
-- npm i mgit2 --no-save
+- yarn add mgit2 --ignore-workspace-root-check
 - mgit sync --resolver-url-template="https://github.com/\${ path }.git"
+- git checkout package.json yarn.lock
 - rm -rf node_modules
 - yarn install
 script:
