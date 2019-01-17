@@ -139,7 +139,7 @@ export default class EditorUI {
 	 */
 	ready() {
 		this.fire( 'ready' );
-		this.fire( 'uiReady' );
+		this.editor.fire( 'uiReady' );
 	}
 
 	/**
