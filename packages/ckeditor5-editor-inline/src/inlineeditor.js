@@ -181,9 +181,6 @@ export default class InlineEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.ui.ready();
-
-						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?

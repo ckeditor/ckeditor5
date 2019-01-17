@@ -115,5 +115,7 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
+
+		this.ready();
 	}
 }
