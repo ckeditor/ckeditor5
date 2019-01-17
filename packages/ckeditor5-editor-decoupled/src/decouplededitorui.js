@@ -85,5 +85,7 @@ export default class DecoupledEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: this.view.toolbar
 		} );
+
+		this.ready();
 	}
 }
