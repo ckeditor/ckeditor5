@@ -23,9 +23,7 @@ install:
 - yarn
 script:
   - npm version
-#- yarn run test --reporter=dots
-#- yarn run docs:api --validate-only
-- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
+  - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
     travis_wait yarn run docs:build-and-publish-nightly;
   fi'
 notifications:
