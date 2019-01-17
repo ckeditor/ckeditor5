@@ -25,7 +25,11 @@ export function describeMemoryUsage( callback ) {
  * @param {Function} editorCreator Callback which creates editor and returns it's `.create()` promise.
  */
 export function testMemoryUsage( testName, editorCreator ) {
-	it( testName, () => runTest( editorCreator ) );
+	it( testName, function() {
+		this.timeout( 6000 );
+
+		return runTest( editorCreator );
+	} );
 }
 
 // Runs a single test case. This method will properly setup memory-leak test:
