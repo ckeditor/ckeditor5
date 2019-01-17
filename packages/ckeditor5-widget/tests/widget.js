@@ -1236,7 +1236,7 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_with-selection-handler ck-widget_selected" contenteditable="false">' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
 					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 					'</div>' +
@@ -1271,7 +1271,7 @@ describe( 'Widget', () => {
 				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 				'</div>' +
-				'[<div class="ck-widget ck-widget_with-selection-handler ck-widget_selected" contenteditable="false">' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
 					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 					'</div>' +
@@ -1304,7 +1304,7 @@ describe( 'Widget', () => {
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<div class="ck-widget ck-widget_with-selection-handler ck-widget_selected" contenteditable="false">' +
+				'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
 					'<figcaption contenteditable="true">foo bar</figcaption>' +
 					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
@@ -1338,7 +1338,7 @@ describe( 'Widget', () => {
 					'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 					'</div>' +
-					'[<div class="ck-widget ck-widget_with-selection-handler ck-widget_selected" contenteditable="false">' +
+					'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
 						'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handler"></div>' +
 						'</div>' +
@@ -1366,7 +1366,7 @@ describe( 'Widget', () => {
 			expect( getViewData( view ) ).to.equal(
 				'<div class="ck-widget ck-widget_with-selection-handler" contenteditable="false">' +
 					'<figcaption contenteditable="true">' +
-						'[<div class="ck-widget ck-widget_with-selection-handler ck-widget_selected" contenteditable="false">' +
+						'[<div class="ck-widget ck-widget_selected ck-widget_with-selection-handler" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handler"></div>' +
 						'</div>]' +
 					'</figcaption>' +
