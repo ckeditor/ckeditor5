@@ -101,7 +101,14 @@ export default class BalloonEditorUI extends EditorUI {
 		// original content.
 		editor.on( 'dataReady', () => {
 			view.editable.enableEditingRootListeners();
-			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
+
+			const placeholderText = editor.config.get( 'placeholder' ) || editor.sourceElement.getAttribute( 'placeholder' );
+
+			if ( placeholderText ) {
+				const placeholderElement = getPlaceholderElement( editingRoot );
+
+				attachPlaceholder( editingView, placeholderElement, placeholderText );
+			}
 		} );
 
 		enableToolbarKeyboardFocus( {
