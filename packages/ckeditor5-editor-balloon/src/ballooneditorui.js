@@ -18,6 +18,41 @@ import { attachPlaceholder, getPlaceholderElement } from '@ckeditor/ckeditor5-en
  */
 export default class BalloonEditorUI extends EditorUI {
 	/**
+	 * Creates an instance of the balloon editor UI class.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	 */
+	constructor( editor, view ) {
+		super( editor );
+
+		/**
+		 * The main (top–most) view of the editor UI.
+		 *
+		 * @private
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 */
+		this._view = view;
+	}
+
+	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.editable.element;
+	}
+
+	/**
 	 * Initializes the UI.
 	 */
 	init() {
@@ -28,7 +63,7 @@ export default class BalloonEditorUI extends EditorUI {
 
 		view.render();
 
-		editingView.attachDomRoot( view.editableElement );
+		editingView.attachDomRoot( view.editable.editableElement );
 
 		// Setup the editable.
 		const editingRoot = editingView.document.getRoot();
@@ -47,7 +82,9 @@ export default class BalloonEditorUI extends EditorUI {
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 
-		this.focusTracker.add( view.editableElement );
+		this._editableElements.push( view.editable );
+
+		this.focusTracker.add( view.editable.editableElement );
 
 		enableToolbarKeyboardFocus( {
 			origin: editingView,
@@ -61,5 +98,7 @@ export default class BalloonEditorUI extends EditorUI {
 				balloonToolbar.hide();
 			}
 		} );
+
+		this.ready();
 	}
 }

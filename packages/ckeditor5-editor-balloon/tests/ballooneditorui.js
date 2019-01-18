@@ -123,6 +123,20 @@ describe( 'BalloonEditorUI', () => {
 			} );
 		} );
 	} );
+
+	describe( 'getEditableElement()', () => {
+		it( 'returns editable element (default)', () => {
+			expect( ui.getEditableElement() ).to.equal( view.editable.element );
+		} );
+
+		it( 'returns editable element (root name passed)', () => {
+			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable.element );
+		} );
+
+		it( 'returns null if editable with the given name is absent', () => {
+			expect( ui.getEditableElement( 'absent' ) ).to.null;
+		} );
+	} );
 } );
 
 class VirtualBalloonTestEditor extends VirtualTestEditor {
@@ -147,6 +161,7 @@ class VirtualBalloonTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+						editor.ui.ready();
 						editor.fire( 'uiReady' );
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
