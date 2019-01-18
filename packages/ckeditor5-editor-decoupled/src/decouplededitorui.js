@@ -101,7 +101,7 @@ export default class DecoupledEditorUI extends EditorUI {
 		// element and doing so before data is loaded into the model (ready) would destroy the
 		// original content.
 		editor.on( 'dataReady', () => {
-			view.editable.enableDomRootActions();
+			view.editable.enableEditingRootListeners();
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
 
@@ -113,7 +113,7 @@ export default class DecoupledEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this.view.editable.disableDomRootActions();
+		this.view.editable.disableEditingRootListeners();
 		this.editor.editing.view.detachDomRoots();
 
 		super.destroy();
