@@ -119,4 +119,14 @@ export default class BalloonEditorUI extends EditorUI {
 
 		this.ready();
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this.view.editable.disableDomRootActions();
+		this.editor.editing.view.detachDomRoots();
+
+		super.destroy();
+	}
 }
