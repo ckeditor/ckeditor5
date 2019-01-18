@@ -111,7 +111,7 @@ export default class ClassicEditorUI extends EditorUI {
 			this._elementReplacer.replace( replacementElement, this.element );
 		}
 
-		this.ready();
+		this.fire( 'ready' );
 	}
 
 	/**
