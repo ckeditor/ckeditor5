@@ -88,6 +88,6 @@ export default class BalloonEditorUI extends EditorUI {
 			}
 		} );
 
-		this.ready();
+		this.fire( 'ready' );
 	}
 }
