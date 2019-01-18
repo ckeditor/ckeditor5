@@ -15,6 +15,7 @@ import DecoupledEditorUIView from './decouplededitoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -81,6 +82,7 @@ export default class DecoupledEditor extends Editor {
 	 * @inheritDoc
 	 */
 	get element() {
+		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
 		// This editor has no single "main UI element". Its editable and toolbar are exposed separately and need
 		// to be added to the DOM manually by the consumer.
 		return null;
@@ -199,7 +201,6 @@ export default class DecoupledEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?

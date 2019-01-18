@@ -19,10 +19,21 @@ import { attachPlaceholder, getPlaceholderElement } from '@ckeditor/ckeditor5-en
  */
 export default class DecoupledEditorUI extends EditorUI {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the decoupled editor UI class.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor, view ) {
-		super( editor, view );
+		super( editor );
+
+		/**
+		 * The main (top–most) view of the editor UI.
+		 *
+		 * @private
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 */
+		this._view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -31,6 +42,16 @@ export default class DecoupledEditorUI extends EditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+	}
+
+	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
 	}
 
 	/**
@@ -43,7 +64,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		view.render();
 
-		editor.editing.view.attachDomRoot( view.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.editableElement );
 
 		const editingRoot = editor.editing.view.document.getRoot();
 
@@ -58,7 +79,9 @@ export default class DecoupledEditorUI extends EditorUI {
 		// Set up the editable.
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 
-		this.focusTracker.add( this.view.editableElement );
+		this._editableElements.push( view.editable );
+
+		this.focusTracker.add( view.editable.editableElement );
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
@@ -67,5 +90,7 @@ export default class DecoupledEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: this.view.toolbar
 		} );
+
+		this.ready();
 	}
 }

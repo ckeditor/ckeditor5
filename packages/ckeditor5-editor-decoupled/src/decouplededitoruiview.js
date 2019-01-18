@@ -12,6 +12,8 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
  * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable} and a
@@ -72,9 +74,18 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * @inheritDoc
+	 * **Deprecated** since `v12.0.0`. The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
+	 * `EditableUIView editableElement`} could be used instead.
+	 *
+	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
+	 *
+	 * @deprecated v12.0.0 The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
+	 * `EditableUIView editableElement`} could be used instead.
+	 * @readonly
+	 * @member {HTMLElement} #editableElement
 	 */
 	get editableElement() {
-		return this.editable.element;
+		log.warn( 'deprecated-ui-view-editableElement: The DecoupledEditorUIView#editableElement property is deprecated.' );
+		return this.editable.editableElement;
 	}
 }
