@@ -81,7 +81,7 @@ export default class EditableUIView extends View {
 		}
 	}
 
-	enableDomRootActions() {
+	enableEditingRootListeners() {
 		const viewRoot = this.viewRoot = this.editingView.domConverter.domToView( this.element );
 
 		const updateFocusClasses = () => {
@@ -95,7 +95,7 @@ export default class EditableUIView extends View {
 		updateFocusClasses();
 	}
 
-	disableDomRootActions() {
+	disableEditingRootListeners() {
 		this.editingView.change( writer => {
 			writer.removeClass( [ 'ck-blurred', 'ck-focused' ], this.viewRoot );
 		} );

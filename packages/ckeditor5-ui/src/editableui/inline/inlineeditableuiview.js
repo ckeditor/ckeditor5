@@ -42,8 +42,8 @@ export default class InlineEditableUIView extends EditableUIView {
 		} );
 	}
 
-	enableDomRootActions() {
-		super.enableDomRootActions();
+	enableEditingRootListeners() {
+		super.enableEditingRootListeners();
 
 		const t = this.t;
 		const updateAriaLabelAttribute = () => {
@@ -60,7 +60,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		updateAriaLabelAttribute();
 	}
 
-	disableDomRootActions() {
+	disableEditingRootListeners() {
 		this.editingView.change( writer => {
 			writer.removeAttribute( 'aria-label', this.viewRoot );
 		} );
