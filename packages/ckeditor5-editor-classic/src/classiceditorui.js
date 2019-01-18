@@ -79,45 +79,50 @@ export default class ClassicEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
 
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 		view.render();
 
-		// Set–up the sticky panel with toolbar.
-		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
-		view.stickyPanel.limiterElement = view.element;
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the classic editor has only one.
+		this._editableElements.push( view.editable );
 
-		if ( this._toolbarConfig.viewportTopOffset ) {
-			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
-		}
+		// Let the global focus tracker know that the editable UI element is focusable and
+		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
+		// as long as the editable is focused (e.g. the user is typing).
+		this.focusTracker.add( editable.editableElement );
 
-		// Setup the editable.
-		const editingRoot = editingView.document.getRoot();
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
 		view.editable.name = editingRoot.rootName;
 
+		// The UI must wait until the data is ready to attach certain actions that operate
+		// on the editing view–level. They use the view writer to set attributes on the editable
+		// element and doing so before data is loaded into the model (ready) would destroy the
+		// original content.
 		editor.on( 'dataReady', () => {
 			view.editable.enableDomRootActions();
-
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
 
-		this.focusTracker.add( view.editable.editableElement );
-
-		this._editableElements.push( view.editable );
-
-		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
-
-		enableToolbarKeyboardFocus( {
-			origin: editingView,
-			originFocusTracker: this.focusTracker,
-			originKeystrokeHandler: editor.keystrokes,
-			toolbar: view.toolbar
-		} );
-
+		// If an element containing the initial data of the editor was provided, replace it with
+		// an editor instance's UI in DOM until the editor is destroyed. For instance, a <textarea>
+		// can be such element.
 		if ( replacementElement ) {
 			this._elementReplacer.replace( replacementElement, this.element );
 		}
 
+		this._initToolbar();
 		this.ready();
 	}
 
@@ -129,5 +134,33 @@ export default class ClassicEditorUI extends EditorUI {
 		this.view.editable.disableDomRootActions();
 
 		super.destroy();
+	}
+
+	/**
+	 * Initializes the editor toolbar.
+	 *
+	 * @private
+	 */
+	_initToolbar() {
+		const editor = this.editor;
+		const view = this.view;
+		const editingView = editor.editing.view;
+
+		// Set–up the sticky panel with toolbar.
+		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
+		view.stickyPanel.limiterElement = view.element;
+
+		if ( this._toolbarConfig.viewportTopOffset ) {
+			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
+		}
+
+		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+
+		enableToolbarKeyboardFocus( {
+			origin: editingView,
+			originFocusTracker: this.focusTracker,
+			originKeystrokeHandler: editor.keystrokes,
+			toolbar: view.toolbar
+		} );
 	}
 }
