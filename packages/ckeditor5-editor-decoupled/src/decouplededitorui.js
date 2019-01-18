@@ -82,6 +82,6 @@ export default class DecoupledEditorUI extends EditorUI {
 			toolbar: this.view.toolbar
 		} );
 
-		this.ready();
+		this.fire( 'ready' );
 	}
 }
