@@ -110,6 +110,16 @@ export default class DecoupledEditorUI extends EditorUI {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this.view.editable.disableDomRootActions();
+		this.editor.editing.view.detachDomRoots();
+
+		super.destroy();
+	}
+
+	/**
 	 * Initializes the inline editor toolbar and its panel.
 	 *
 	 * @private
