@@ -68,24 +68,72 @@ export default class InlineEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
-
-		// Bind to focusTracker instead of editor.editing.view because otherwise
-		// focused editable styles disappear when view#toolbar is focused.
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
 
 		view.render();
 
-		editingView.attachDomRoot( view.editable.editableElement );
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to InlineEditor.create().
+		const editableElement = editable.editableElement;
 
-		const editingRoot = editingView.document.getRoot();
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the inline editor has only one.
+		this._editableElements.push( editable );
 
-		view.editable.name = editingRoot.rootName;
+		// Let the global focus tracker know that the editable UI element is focusable and
+		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
+		// as long as the editable is focused (e.g. the user is typing).
+		this.focusTracker.add( editableElement );
 
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
+
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
+
+		// The UI must wait until the data is ready to attach certain actions that operate
+		// on the editing view–level. They use the view writer to set attributes on the editable
+		// element and doing so before data is loaded into the model (ready) would destroy the
+		// original content.
 		editor.on( 'dataReady', () => {
-			view.editable.enableDomRootActions();
-
+			editable.enableDomRootActions();
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
+
+		this._initToolbar();
+		this.ready();
+	}
+
+	destroy() {
+		this.view.editable.disableDomRootActions();
+		this.editor.editing.view.detachDomRoots();
+
+		super.destroy();
+	}
+
+	/**
+	 * Initializes the inline editor toolbar and its panel.
+	 *
+	 * @private
+	 */
+	_initToolbar() {
+		const editor = this.editor;
+		const view = this.view;
+		const editableElement = view.editable.editableElement;
+		const editingView = editor.editing.view;
+		const toolbar = view.toolbar;
 
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
@@ -100,32 +148,19 @@ export default class InlineEditorUI extends EditorUI {
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
 				view.panel.pin( {
-					target: view.editable.editableElement,
+					target: editableElement,
 					positions: view.panelPositions
 				} );
 			}
 		} );
 
-		this.focusTracker.add( view.editable.editableElement );
-
-		this._editableElements.push( view.editable );
-
-		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editingView,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: view.toolbar
+			toolbar
 		} );
-
-		this.ready();
-	}
-
-	destroy() {
-		this.view.editable.disableDomRootActions();
-		this.editor.editing.view.detachDomRoots();
-
-		super.destroy();
 	}
 }
