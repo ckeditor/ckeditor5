@@ -1,0 +1,17 @@
+{
+  "name": "ckeditor5-toolbar-group",
+  "version": "1.0.0",
+  "description": "A plugin to group different toolbar items in a dropdown",
+  "main": "toolbargroup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ckeditor",
+    "ckeditor-5",
+    "toolbargroup",
+    "dropdown"
+  ],
+  "author": "Adinlewa Akinwale Fikayo",
+  "license": "ISC"
+}
