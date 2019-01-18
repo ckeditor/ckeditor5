@@ -78,22 +78,6 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
-	describe( 'ready()', () => {
-		it( 'should fire ready event', () => {
-			const spy = sinon.spy();
-
-			ui.on( 'ready', spy );
-
-			ui.ready();
-
-			sinon.assert.calledOnce( spy );
-
-			ui.ready();
-
-			sinon.assert.calledTwice( spy );
-		} );
-	} );
-
 	describe( 'update()', () => {
 		it( 'should fire update event', () => {
 			const spy = sinon.spy();
