@@ -132,6 +132,7 @@ export default class ClassicEditorUI extends EditorUI {
 	destroy() {
 		this._elementReplacer.restore();
 		this.view.editable.disableDomRootActions();
+		this.editor.editing.view.detachDomRoots();
 
 		super.destroy();
 	}
