@@ -19,6 +19,7 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -30,6 +31,8 @@ describe( 'ClassicEditor', () => {
 		editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
 
 		document.body.appendChild( editorElement );
+
+		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
@@ -201,6 +204,7 @@ describe( 'ClassicEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
+					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
@@ -212,7 +216,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -246,6 +250,28 @@ describe( 'ClassicEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'uiReady', () => {
+						isReady = this.editor.ui.view.isRendered;
+					} );
+				}
+			}
+
+			return ClassicEditor
+				.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( newEditor => {
+					expect( isReady ).to.be.true;
+
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'fires ready once UI is rendered', () => {
+			let isReady;
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.ui.on( 'ready', () => {
 						isReady = this.editor.ui.view.isRendered;
 					} );
 				}

@@ -11,6 +11,7 @@ import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { attachPlaceholder, getPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 /**
  * The classic editor UI class.
@@ -19,24 +20,62 @@ import { attachPlaceholder, getPlaceholderElement } from '@ckeditor/ckeditor5-en
  */
 export default class ClassicEditorUI extends EditorUI {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the classic editor UI class.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor, view ) {
-		super( editor, view );
+		super( editor );
+
+		/**
+		 * The main (top–most) view of the editor UI.
+		 *
+		 * @private
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 */
+		this._view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
 		 *
-		 * @type {Object}
 		 * @private
+		 * @member {Object}
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		/**
+		 * The element replacer instance used to hide the editor's source element.
+		 *
+		 * @protected
+		 * @member {module:utils/elementreplacer~ElementReplacer}
+		 */
+		this._elementReplacer = new ElementReplacer();
+	}
+
+	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.element;
 	}
 
 	/**
 	 * Initializes the UI.
+	 *
+	 * @param {HTMLElement|null} replacementElement The DOM element that will be the source for the created editor.
 	 */
-	init() {
+	init( replacementElement ) {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
@@ -62,19 +101,31 @@ export default class ClassicEditorUI extends EditorUI {
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
 
-		this.focusTracker.add( this.view.editableElement );
+		this.focusTracker.add( view.editable.editableElement );
 
-		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		this._editableElements.push( view.editable );
+
+		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editingView,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: this.view.toolbar
+			toolbar: view.toolbar
 		} );
+
+		if ( replacementElement ) {
+			this._elementReplacer.replace( replacementElement, this.element );
+		}
+
+		this.ready();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
+		this._elementReplacer.restore();
 		this.view.editable.disableDomRootActions();
 
 		super.destroy();

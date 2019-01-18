@@ -14,9 +14,9 @@ import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -66,14 +66,6 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		/**
-		 * The element replacer instance used to hide the editor's source element.
-		 *
-		 * @protected
-		 * @member {module:utils/elementreplacer~ElementReplacer}
-		 */
-		this._elementReplacer = new ElementReplacer();
-
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
@@ -87,7 +79,8 @@ export default class ClassicEditor extends Editor {
 	 * @inheritDoc
 	 */
 	get element() {
-		return this.ui.view.element;
+		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
+		return this.ui.element;
 	}
 
 	/**
@@ -102,7 +95,6 @@ export default class ClassicEditor extends Editor {
 			this.updateSourceElement();
 		}
 
-		this._elementReplacer.restore();
 		this.ui.destroy();
 
 		return super.destroy();
@@ -189,15 +181,8 @@ export default class ClassicEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => {
-						if ( isElement( sourceElementOrData ) ) {
-							editor._elementReplacer.replace( sourceElementOrData, editor.element );
-						}
-
-						editor.fire( 'uiReady' );
-					} )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
+					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.editableElement ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
 							getDataFromElement( sourceElementOrData ) :
