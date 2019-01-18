@@ -61,36 +61,71 @@ export default class DecoupledEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
 
 		view.render();
 
-		editor.editing.view.attachDomRoot( view.editable.editableElement );
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to DecoupledEditor.create().
+		const editableElement = editable.editableElement;
 
-		const editingRoot = editor.editing.view.document.getRoot();
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the decoupled editor has only one.
+		this._editableElements.push( view.editable );
 
+		// Let the global focus tracker know that the editable UI element is focusable and
+		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
+		// as long as the editable is focused (e.g. the user is typing).
+		this.focusTracker.add( editableElement );
+
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
 		view.editable.name = editingRoot.rootName;
 
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
+
+		// The UI must wait until the data is ready to attach certain actions that operate
+		// on the editing view–level. They use the view writer to set attributes on the editable
+		// element and doing so before data is loaded into the model (ready) would destroy the
+		// original content.
 		editor.on( 'dataReady', () => {
 			view.editable.enableDomRootActions();
-
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
 
-		// Set up the editable.
-		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
+		this._initToolbar();
+		this.ready();
+	}
 
-		this._editableElements.push( view.editable );
+	/**
+	 * Initializes the inline editor toolbar and its panel.
+	 *
+	 * @private
+	 */
+	_initToolbar() {
+		const editor = this.editor;
+		const view = this.view;
+		const toolbar = view.toolbar;
 
-		this.focusTracker.add( view.editable.editableElement );
-		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: this.view.toolbar
+			toolbar
 		} );
-
-		this.ready();
 	}
 }
