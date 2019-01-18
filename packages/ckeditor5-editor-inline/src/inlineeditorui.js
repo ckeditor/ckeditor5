@@ -111,6 +111,6 @@ export default class InlineEditorUI extends EditorUI {
 			toolbar: view.toolbar
 		} );
 
-		this.ready();
+		this.fire( 'ready' );
 	}
 }
