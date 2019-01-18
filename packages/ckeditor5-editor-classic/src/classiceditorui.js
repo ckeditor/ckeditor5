@@ -112,7 +112,14 @@ export default class ClassicEditorUI extends EditorUI {
 		// original content.
 		editor.on( 'dataReady', () => {
 			view.editable.enableEditingRootListeners();
-			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
+
+			const placeholderText = editor.config.get( 'placeholder' ) || editor.sourceElement.getAttribute( 'placeholder' );
+
+			if ( placeholderText ) {
+				const placeholderElement = getPlaceholderElement( editingRoot );
+
+				attachPlaceholder( editingView, placeholderElement, placeholderText );
+			}
 		} );
 
 		// If an element containing the initial data of the editor was provided, replace it with
