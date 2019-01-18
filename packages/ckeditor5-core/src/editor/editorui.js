@@ -91,6 +91,9 @@ export default class EditorUI {
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
+
+		// Delegate `ready` as `editor.uiReady` event. The `uiReady` is deprecated and should be fired too.
+		this.delegate( 'ready' ).to( this.editor, 'uiReady' );
 	}
 
 	/**
@@ -137,17 +140,6 @@ export default class EditorUI {
 	 */
 	get element() {
 		return null;
-	}
-
-	/**
-	 * Fires the {@link module:core/editor/editorui~EditorUI#event:ready `ready`} event.
-	 *
-	 * This method should be called after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
-	 * {@link module:core/editor/editor~Editor#event:dataReady} by the specific editor creator.
-	 */
-	ready() {
-		this.fire( 'ready' );
-		this.editor.fire( 'uiReady' );
 	}
 
 	/**
