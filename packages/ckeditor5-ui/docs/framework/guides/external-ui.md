@@ -18,6 +18,7 @@ The ready–to–use builds of CKEditor like {@link examples/builds/classic-edit
 ```js
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
@@ -81,21 +82,11 @@ export default class BootstrapEditor extends Editor {
 		// When editor#element is a textarea inside a form element,
 		// the content of this textarea will be updated on form submit.
 		attachToForm( this );
-
-		// A helper to easily replace the editor#element with editor.editable#element.
-		this._elementReplacer = new ElementReplacer();
-	}
-
-	get element() {
-		return this.ui.view.element;
 	}
 
 	destroy() {
 		// When destroyed, the editor sets the output of editor#getData() into editor#element...
 		this.updateSourceElement();
-
-		// ...and restores the original editor#element...
-		this._elementReplacer.restore();
 
 		// ...and destroys the UI.
 		this.ui.destroy();
@@ -110,19 +101,11 @@ export default class BootstrapEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						// Initialize the UI first. See the BootstrapEditorUI class to learn more.
-						editor.ui.init();
-
-						// Replace the editor#element with editor.editable#element.
-						editor._elementReplacer.replace( element, editable.element );
-
-						// Tell the world that the UI of the editor is ready to use.
-						editor.fire( 'uiReady' );
-					} )
-					// Bind the editor editing layer to the editable in the DOM.
+					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
+					.then( () => editor.ui.init( element ) )
+					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
-					// Fill the editable with the intial data.
+					// Fill the editable with the initial data.
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					// Fire the events that announce that the editor is complete and ready to use.
 					.then( () => {
@@ -256,12 +239,15 @@ Define the `BootstrapEditorUI` and then have a closer look at the content of the
 
 ```js
 // The class organizing the UI of the editor, binding it with existing Bootstrap elements in the DOM.
-class BootstrapEditorUI {
+class BootstrapEditorUI extends EditorUI {
 	constructor( editor ) {
-		this.editor = editor;
+		super( editor );
+
+		// A helper to easily replace the editor#element with editor.editable#element.
+		this._elementReplacer = new ElementReplacer();
 
 		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
-		const view = this.view = new EditorUIView( editor.locale );
+		const view = this._view = new EditorUIView( editor.locale );
 
 		// This is the main editor element in the DOM.
 		view.element = $( '.ck-editor' );
@@ -280,13 +266,13 @@ class BootstrapEditorUI {
 			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
 		} );
-
-		// Mandatory EditorUI interface components.
-		this.componentFactory = new ComponentFactory( editor );
-		this.focusTracker = new FocusTracker();
 	}
 
-	init() {
+	get view() {
+		return this._view;
+	}
+
+	init( replacementElement ) {
 		const editor = this.editor;
 		const view = this.view;
 
@@ -305,10 +291,19 @@ class BootstrapEditorUI {
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
 		this._setupBootstrapHeadingDropdown();
+
+		// Replace the editor#element with editor.editable#element.
+		this._elementReplacer.replace( replacementElement, view.editable.element );
+
+		// Tell the world that the UI of the editor is ready to use.
+		this.ready();
 	}
 
 	destroy() {
-		this.view.editable.destroy();
+		// Restore the original editor#element.
+		this._elementReplacer.restore();
+
+		super.destroy();
 	}
 
 	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.

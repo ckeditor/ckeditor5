@@ -27,10 +27,6 @@ export default class EditableUIView extends View {
 
 		this.editingView = editingView;
 
-		if ( editableElement ) {
-			this.element = this.editableElement = editableElement;
-		}
-
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -52,21 +48,23 @@ export default class EditableUIView extends View {
 		this.set( 'isFocused', false );
 
 		/**
-		 * An external {@link #editableElement} passed into the constructor, which also means
-		 * the view will not render its {@link #template}.
-		 *
-		 * @member {HTMLElement} #externalElement
-		 */
-		this.externalElement = editableElement;
-
-		this.viewRoot = null;
-
-		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
 		 * @readonly
 		 * @member {HTMLElement} #editableElement
 		 */
+		this.editableElement = editableElement;
+
+		this.viewRoot = null;
+
+		/**
+		 * Whether an external {@link #editableElement} was passed into the constructor, which also means
+		 * the view will not render its {@link #template}.
+		 *
+		 * @protected
+		 * @member {HTMLElement} #_hasExternalElement
+		 */
+		this._hasExternalElement = !!this.editableElement;
 	}
 
 	/**
@@ -76,8 +74,8 @@ export default class EditableUIView extends View {
 	render() {
 		super.render();
 
-		if ( this.externalElement ) {
-			this.template.apply( this.element = this.externalElement );
+		if ( this._hasExternalElement ) {
+			this.template.apply( this.element = this.editableElement );
 		} else {
 			this.editableElement = this.element;
 		}
@@ -107,8 +105,8 @@ export default class EditableUIView extends View {
 	 * @inheritDoc
 	 */
 	destroy() {
-		if ( this.externalElement ) {
-			this.template.revert( this.externalElement );
+		if ( this._hasExternalElement ) {
+			this.template.revert( this.editableElement );
 		}
 
 		super.destroy();
