@@ -108,7 +108,7 @@ export default class InlineEditorUI extends EditorUI {
 		// element and doing so before data is loaded into the model (ready) would destroy the
 		// original content.
 		editor.on( 'dataReady', () => {
-			editable.enableDomRootActions();
+			editable.enableEditingRootListeners();
 			attachPlaceholder( editingView, getPlaceholderElement( editingRoot ), 'Type some text...' );
 		} );
 
@@ -117,7 +117,7 @@ export default class InlineEditorUI extends EditorUI {
 	}
 
 	destroy() {
-		this.view.editable.disableDomRootActions();
+		this.view.editable.disableEditingRootListeners();
 		this.editor.editing.view.detachDomRoots();
 
 		super.destroy();
