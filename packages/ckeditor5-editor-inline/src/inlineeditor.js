@@ -17,6 +17,7 @@ import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -80,7 +81,8 @@ export default class InlineEditor extends Editor {
 	 * @inheritDoc
 	 */
 	get element() {
-		return this.ui.view.editable.element;
+		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
+		return this.ui.element;
 	}
 
 	/**
@@ -180,7 +182,6 @@ export default class InlineEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
