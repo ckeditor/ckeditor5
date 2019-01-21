@@ -23,7 +23,6 @@ export default class ClassicEditorUI extends EditorUI {
 	 * Creates an instance of the classic editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor ) {
 		super( editor );
