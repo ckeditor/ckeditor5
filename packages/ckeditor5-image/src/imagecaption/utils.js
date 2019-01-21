@@ -7,7 +7,7 @@
  * @module image/imagecaption/utils
  */
 
-import { attachPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { addPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const captionSymbol = Symbol( 'imageCaption' );
@@ -23,7 +23,7 @@ export function captionElementCreator( view, placeholderText ) {
 	return writer => {
 		const editable = writer.createEditableElement( 'figcaption' );
 		writer.setCustomProperty( captionSymbol, true, editable );
-		attachPlaceholder( view, editable, placeholderText );
+		addPlaceholder( view, editable, placeholderText );
 
 		return toWidgetEditable( editable, writer );
 	};
