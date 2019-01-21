@@ -9,7 +9,7 @@
 
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import { attachPlaceholder, getRootPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { addPlaceholder, getRootPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
  * The balloon editor UI class.
@@ -107,7 +107,7 @@ export default class BalloonEditorUI extends EditorUI {
 			if ( placeholderText ) {
 				const placeholderElement = getRootPlaceholderElement( editingRoot );
 
-				attachPlaceholder( editingView, placeholderElement, placeholderText );
+				addPlaceholder( editingView, placeholderElement, placeholderText );
 			}
 		} );
 
