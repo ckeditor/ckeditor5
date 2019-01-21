@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { attachPlaceholder, detachPlaceholder } from '../../src/view/placeholder';
+import { addPlaceholder, removePlaceholder } from '../../src/view/placeholder';
 import createViewRoot from './_utils/createroot';
 import View from '../../src/view/view';
 import ViewRange from '../../src/view/range';
@@ -19,12 +19,12 @@ describe( 'placeholder', () => {
 		viewDocument.isFocused = true;
 	} );
 
-	describe( 'createPlaceholder', () => {
+	describe( 'addPlaceholder', () => {
 		it( 'should attach proper CSS class and data attribute', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -34,7 +34,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div>first div</div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -44,7 +44,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -54,7 +54,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -65,7 +65,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 			viewDocument.isFocused = false;
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -77,7 +77,7 @@ describe( 'placeholder', () => {
 			let result = true;
 			const spy = sinon.spy( () => result );
 
-			attachPlaceholder( view, element, 'foo bar baz', spy );
+			addPlaceholder( view, element, 'foo bar baz', spy );
 
 			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
@@ -92,7 +92,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -108,8 +108,8 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
-			attachPlaceholder( view, element, 'new text' );
+			addPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'new text' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -119,7 +119,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 			setData( view, '<p>paragraph</p>' );
 
 			view.render();
@@ -136,8 +136,8 @@ describe( 'placeholder', () => {
 			setData( secondView, '<div></div><div>{another div}</div>' );
 			const secondElement = secondRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'first placeholder' );
-			attachPlaceholder( secondView, secondElement, 'second placeholder' );
+			addPlaceholder( view, element, 'first placeholder' );
+			addPlaceholder( secondView, secondElement, 'second placeholder' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -165,7 +165,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
@@ -180,17 +180,17 @@ describe( 'placeholder', () => {
 		} );
 	} );
 
-	describe( 'detachPlaceholder', () => {
+	describe( 'removePlaceholder', () => {
 		it( 'should remove placeholder from element', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( view, element, 'foo bar baz' );
+			addPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			detachPlaceholder( view, element );
+			removePlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -200,7 +200,7 @@ describe( 'placeholder', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			detachPlaceholder( view, element );
+			removePlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;

@@ -13,18 +13,18 @@ import '../../theme/placeholder.css';
 const documentPlaceholders = new WeakMap();
 
 /**
- * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call this method
- * once again with new parameters.
+ * Adds a placeholder to the provided view element and updates it's visibility. To change the placeholder,
+ * simply call this method again with new parameters.
  *
  * @param {module:engine/view/view~View} view View controller.
- * @param {module:engine/view/element~Element|Function} element Element to attach placeholder to or a function
+ * @param {module:engine/view/element~Element|Function} element Element to add placeholder to or a function
  * that returns such an element when an {@link module:engine/view/rooteditableelement~RootEditableElement root editable}
  * instance is passed into it.
  * @param {String} placeholderText Placeholder text to use.
  * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
  * If function returns `false` placeholder will not be showed.
  */
-export function attachPlaceholder( view, element, placeholderText, checkFunction ) {
+export function addPlaceholder( view, element, placeholderText, checkFunction ) {
 	const document = view.document;
 
 	// Single listener per document.
@@ -46,12 +46,12 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 }
 
 /**
- * Removes placeholder functionality from given element.
+ * Removes the placeholder functionality from a given element.
  *
  * @param {module:engine/view/view~View} view
  * @param {module:engine/view/element~Element} element
  */
-export function detachPlaceholder( view, element ) {
+export function removePlaceholder( view, element ) {
 	if ( typeof element == 'function' ) {
 		element = element();
 	}
@@ -161,18 +161,18 @@ function updateSinglePlaceholder( writer, element, info ) {
 }
 
 /**
- * Returns a view element the placeholder can be attached to inside a view editing root.
+ * Returns a view element the placeholder can be added to inside a view editing root.
  *
  * Even if empty, the editing root usually hosts at least one empty element (paragraph, heading, etc.).
- * Because of that, the placeholder cannot be attached directly to the root and doing so would mean both
+ * Because of that, the placeholder cannot be added directly to the root and doing so would mean both
  * a CSS pseudo–element (with a placeholder text) and an empty element are displayed next to each other.
  *
- * Instead, the placeholder must be attached to that empty element and this helper returns it, if there
+ * Instead, the placeholder must be added to that empty element and this helper returns it, if there
  * is one.
  *
  * @param {module:engine/view/rooteditableelement~RootEditableElement} root The root editable view that
  * is to have a placeholder.
- * @returns {module:engine/view/element~Element|null} An element the placeholder can be attached to.
+ * @returns {module:engine/view/element~Element|null} An element the placeholder can be added to.
  */
 export function getRootPlaceholderElement( root ) {
 	return () => {

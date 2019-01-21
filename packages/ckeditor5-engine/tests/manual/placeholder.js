@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import { attachPlaceholder } from '../../src/view/placeholder';
+import { addPlaceholder } from '../../src/view/placeholder';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
@@ -25,8 +25,8 @@ ClassicEditor
 		const header = viewDoc.getRoot().getChild( 0 );
 		const paragraph = viewDoc.getRoot().getChild( 1 );
 
-		attachPlaceholder( view, header, 'Type some header text...' );
-		attachPlaceholder( view, paragraph, 'Type some paragraph text...' );
+		addPlaceholder( view, header, 'Type some header text...' );
+		addPlaceholder( view, paragraph, 'Type some paragraph text...' );
 		view.render();
 	} )
 	.catch( err => {
