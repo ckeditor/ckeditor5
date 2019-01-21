@@ -120,8 +120,11 @@ export default class DecoupledEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this.view.editable.disableEditingRootListeners();
-		this.editor.editing.view.detachDomRoots();
+		const view = this.view;
+		const editingView = this.editor.editing.view;
+
+		view.editable.disableEditingRootListeners();
+		editingView.detachDomRoot( view.editable.name );
 
 		super.destroy();
 	}
