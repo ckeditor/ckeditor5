@@ -17,7 +17,9 @@ const documentPlaceholders = new WeakMap();
  * once again with new parameters.
  *
  * @param {module:engine/view/view~View} view View controller.
- * @param {module:engine/view/element~Element} element Element to attach placeholder to.
+ * @param {module:engine/view/element~Element|Function} element Element to attach placeholder to or a function
+ * that returns such an element when an {@link module:engine/view/rooteditableelement~RootEditableElement root editable}
+ * instance is passed into it.
  * @param {String} placeholderText Placeholder text to use.
  * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
  * If function returns `false` placeholder will not be showed.
@@ -158,10 +160,24 @@ function updateSinglePlaceholder( writer, element, info ) {
 	return changed;
 }
 
-export function getPlaceholderElement( viewRoot ) {
+/**
+ * Returns a view element the placeholder can be attached to inside a view editing root.
+ *
+ * Even if empty, the editing root usually hosts at least one empty element (paragraph, heading, etc.).
+ * Because of that, the placeholder cannot be attached directly to the root and doing so would mean both
+ * a CSS pseudo–element (with a placeholder text) and an empty element are displayed next to each other.
+ *
+ * Instead, the placeholder must be attached to that empty element and this helper returns it, if there
+ * is one.
+ *
+ * @param {module:engine/view/rooteditableelement~RootEditableElement} root The root editable view that
+ * is to have a placeholder.
+ * @returns {module:engine/view/element~Element|null} An element the placeholder can be attached to.
+ */
+export function getRootPlaceholderElement( root ) {
 	return () => {
-		if ( viewRoot.childCount === 1 ) {
-			const firstRootChild = viewRoot.getChild( 0 );
+		if ( root.childCount === 1 ) {
+			const firstRootChild = root.getChild( 0 );
 
 			if ( firstRootChild.is( 'element' ) ) {
 				return firstRootChild;
