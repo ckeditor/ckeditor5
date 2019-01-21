@@ -11,7 +11,6 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'DecoupledEditorUIView', () => {
 	let locale, view;
@@ -124,16 +123,6 @@ describe( 'DecoupledEditorUIView', () => {
 
 			view.toolbar.element.remove();
 			view.editable.element.remove();
-		} );
-	} );
-
-	describe( 'editableElement', () => {
-		it( 'returns editable\'s view element', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			view.render();
-			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
-			view.destroy();
 		} );
 	} );
 } );

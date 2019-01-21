@@ -66,12 +66,12 @@ export default class DecoupledEditorUI extends EditorUI {
 		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
-		editor.editing.view.attachDomRoot( view.editable.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.element );
 		view.editable.name = editingRoot.rootName;
 
-		this._editableElements.push( view.editable );
+		this._editableElements.set( view.editable.name, view.editable.element );
 
-		this.focusTracker.add( this.view.editable.editableElement );
+		this.focusTracker.add( this.view.editable.element );
 
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
