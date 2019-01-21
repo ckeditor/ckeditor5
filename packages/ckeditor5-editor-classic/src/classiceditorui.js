@@ -8,6 +8,7 @@
  */
 
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import ClassicEditorUIView from './classiceditoruiview';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
@@ -24,7 +25,7 @@ export default class ClassicEditorUI extends EditorUI {
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
-	constructor( editor, view ) {
+	constructor( editor ) {
 		super( editor );
 
 		/**
@@ -33,7 +34,7 @@ export default class ClassicEditorUI extends EditorUI {
 		 * @private
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
 		 */
-		this._view = view;
+		this._view = new ClassicEditorUIView( editor.locale );
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -94,9 +95,9 @@ export default class ClassicEditorUI extends EditorUI {
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
 
-		this._editableElements.push( view.editable );
+		this._editableElements.set( view.editable.name, view.editable.element );
 
-		this.focusTracker.add( view.editable.editableElement );
+		this.focusTracker.add( view.editable.element );
 
 		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 

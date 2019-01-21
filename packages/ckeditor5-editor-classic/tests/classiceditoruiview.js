@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 import ClassicEditorUIView from '../src/classiceditoruiview';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -12,7 +10,6 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 describe( 'ClassicEditorUIView', () => {
 	let locale, view;
@@ -70,21 +67,6 @@ describe( 'ClassicEditorUIView', () => {
 			it( 'is put into the "main" collection', () => {
 				expect( view.main.get( 0 ) ).to.equal( view.editable );
 			} );
-		} );
-	} );
-
-	describe( 'editableElement', () => {
-		it( 'returns editable\'s view element', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			document.body.appendChild( view.element );
-
-			view.stickyPanel.limiterElement = view.element;
-
-			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
-
-			view.element.remove();
-			view.destroy();
 		} );
 	} );
 } );
