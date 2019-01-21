@@ -10,7 +10,7 @@
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { attachPlaceholder, getRootPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { addPlaceholder, getRootPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 /**
@@ -118,7 +118,7 @@ export default class ClassicEditorUI extends EditorUI {
 			if ( placeholderText ) {
 				const placeholderElement = getRootPlaceholderElement( editingRoot );
 
-				attachPlaceholder( editingView, placeholderElement, placeholderText );
+				addPlaceholder( editingView, placeholderElement, placeholderText );
 			}
 		} );
 
