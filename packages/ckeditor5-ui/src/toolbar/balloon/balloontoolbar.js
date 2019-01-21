@@ -52,7 +52,7 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView = this._createToolbarView();
 
 		/**
-		 * Tracks the focus of the {@link module:ui/editableui/editableuiview~EditableUIView#editableElement}
+		 * Tracks the focus of the {@link module:core/editor/editorui~EditorUI#getEditableElement editable element}
 		 * and the {@link #toolbarView}. When both are blurred then the toolbar should hide.
 		 *
 		 * @readonly

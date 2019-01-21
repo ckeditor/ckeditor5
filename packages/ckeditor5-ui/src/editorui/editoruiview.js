@@ -85,16 +85,3 @@ export default class EditorUIView extends View {
 		document.body.appendChild( bodyElement );
 	}
 }
-
-/**
- * This error is thrown when a component tries to access deprecated `editableElement` property in any of the subclasses of
- * {@link module:ui/editorui/editoruiview~EditorUIView} (which usually is one of
- * {@link module:editor-balloon/ballooneditoruiview~BalloonEditorUIView},
- * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView},
- * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView},
- * {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView}).
- * Instead the {@link module:ui/editableui/editableuiview~EditableUIView#editableElement `EditableUIView editableElement`}
- * could be used.
- *
- * @error deprecated-ui-view-editableElement
- */

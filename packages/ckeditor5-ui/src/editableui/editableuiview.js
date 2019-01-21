@@ -62,7 +62,7 @@ export default class EditableUIView extends View {
 		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
-		 * @readonly
+		 * @private
 		 * @member {HTMLElement} #_editableElement
 		 */
 		this._editableElement = editableElement;
@@ -71,7 +71,7 @@ export default class EditableUIView extends View {
 		 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
 		 * the view will not render its {@link #template}.
 		 *
-		 * @protected
+		 * @private
 		 * @member {Boolean} #_hasExternalElement
 		 */
 		this._hasExternalElement = !!this._editableElement;

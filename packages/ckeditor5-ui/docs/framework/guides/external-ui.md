@@ -97,14 +97,13 @@ export default class BootstrapEditor extends Editor {
 	static create( element, config ) {
 		return new Promise( resolve => {
 			const editor = new this( element, config );
-			const editable = editor.ui.view.editable;
 
 			resolve(
 				editor.initPlugins()
 					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
 					.then( () => editor.ui.init( element ) )
 					// Bind the editor editing layer to the editable in DOM.
-					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					// Fill the editable with the initial data.
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					// Fire the events that announce that the editor is complete and ready to use.
@@ -287,6 +286,9 @@ class BootstrapEditorUI extends EditorUI {
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
+
+		// Register editable element so it is available via getEditableElement() method.
+		this._editableElements.set( view.editable.name, view.editable.element );
 
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
