@@ -72,7 +72,7 @@ export default class EditableUIView extends View {
 		 * the view will not render its {@link #template}.
 		 *
 		 * @protected
-		 * @member {HTMLElement} #_hasExternalElement
+		 * @member {Boolean} #_hasExternalElement
 		 */
 		this._hasExternalElement = !!this.editableElement;
 	}
