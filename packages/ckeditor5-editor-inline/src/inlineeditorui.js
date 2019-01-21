@@ -10,7 +10,7 @@
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import { attachPlaceholder, getPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
+import { attachPlaceholder, getRootPlaceholderElement } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
  * The inline editor UI class.
@@ -113,7 +113,7 @@ export default class InlineEditorUI extends EditorUI {
 			const placeholderText = editor.config.get( 'placeholder' ) || editor.sourceElement.getAttribute( 'placeholder' );
 
 			if ( placeholderText ) {
-				const placeholderElement = getPlaceholderElement( editingRoot );
+				const placeholderElement = getRootPlaceholderElement( editingRoot );
 
 				attachPlaceholder( editingView, placeholderElement, placeholderText );
 			}
