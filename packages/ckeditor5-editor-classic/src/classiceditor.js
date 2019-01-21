@@ -182,7 +182,7 @@ export default class ClassicEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.editableElement ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.element ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
 							getDataFromElement( sourceElementOrData ) :
