@@ -58,24 +58,17 @@ export default class EditorUI {
 		 * Stores all editable elements used by the editor instance.
 		 *
 		 * @protected
-		 * @member {Array.<module:ui/editorui/editoruiview~EditorUIView>}
+		 * @member {Map.<String,HTMLElement>}
 		 */
-		this._editableElements = [];
+		this._editableElements = new Map();
 
 		/**
-		 * **Deprecated** since `v12.0.0`. This property is deprecated and should not be used. Use the property
-		 * from the subclass directly instead, for example
-		 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#_view ClassicEditorUI#_view}.
-		 *
 		 * The main (top–most) view of the editor UI.
 		 *
-		 * @deprecated v12.0.0 This property is deprecated and should not be used. Use the property
-		 * from the subclass directly instead, for example
-		 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#_view ClassicEditorUI#_view}.
 		 * @private
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
 		 */
-		this._view = view;
+		this._view = view; // This property was created in order to deprecate `this.view`. Should be removed with removal of `view` getter.
 
 		// Check if `view` parameter was passed. It is deprecated and should not be used.
 		if ( view ) {
@@ -172,18 +165,16 @@ export default class EditorUI {
 	 * @returns {HTMLElement|null}
 	 */
 	getEditableElement( rootName = 'main' ) {
-		const editable = this._editableElements.find( editable => editable.name === rootName );
-
-		return editable ? editable.element : null;
+		return this._editableElements.has( rootName ) ? this._editableElements.get( rootName ) : null;
 	}
 
 	/**
 	 * Returns array of names of all editor editable elements.
 	 *
-	 * @returns {Array.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getEditableElementsNames() {
-		return this._editableElements.map( editable => editable.name );
+		return this._editableElements.keys();
 	}
 
 	/**

@@ -128,7 +128,7 @@ describe( 'EditorUI', () => {
 			const ui = new EditorUI( editor );
 			const editableMock = { name: 'main', element: document.createElement( 'div' ) };
 
-			ui._editableElements.push( editableMock );
+			ui._editableElements.set( editableMock.name, editableMock.element );
 
 			expect( ui.getEditableElement() ).to.equal( editableMock.element );
 		} );
@@ -138,8 +138,8 @@ describe( 'EditorUI', () => {
 			const editableMock1 = { name: 'root1', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.push( editableMock1 );
-			ui._editableElements.push( editableMock2 );
+			ui._editableElements.set( editableMock1.name, editableMock1.element );
+			ui._editableElements.set( editableMock2.name, editableMock2.element );
 
 			expect( ui.getEditableElement( 'root1' ) ).to.equal( editableMock1.element );
 			expect( ui.getEditableElement( 'root2' ) ).to.equal( editableMock2.element );
@@ -153,15 +153,17 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'getEditableElementsNames()', () => {
-		it( 'should return array of names', () => {
+		it( 'should return iterable object of names', () => {
 			const ui = new EditorUI( editor );
 			const editableMock1 = { name: 'main', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.push( editableMock1 );
-			ui._editableElements.push( editableMock2 );
+			ui._editableElements.set( editableMock1.name, editableMock1.element );
+			ui._editableElements.set( editableMock2.name, editableMock2.element );
 
-			expect( ui.getEditableElementsNames() ).to.deep.equal( [ 'main', 'root2' ] );
+			const names = ui.getEditableElementsNames();
+			expect( names[ Symbol.iterator ] ).to.instanceof( Function );
+			expect( Array.from( names ) ).to.deep.equal( [ 'main', 'root2' ] );
 		} );
 
 		it( 'should return empty array if no editables', () => {
