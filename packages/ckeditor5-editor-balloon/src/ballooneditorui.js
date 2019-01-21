@@ -68,12 +68,12 @@ export default class BalloonEditorUI extends EditorUI {
 		// Bind to focusTracker instead of editor.editing.view because otherwise
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editable.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.element );
 		view.editable.name = editingRoot.rootName;
 
-		this._editableElements.push( view.editable );
+		this._editableElements.set( view.editable.name, view.editable.element );
 
-		this.focusTracker.add( view.editable.editableElement );
+		this.focusTracker.add( view.editable.element );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
