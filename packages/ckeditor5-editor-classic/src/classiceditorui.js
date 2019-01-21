@@ -8,7 +8,6 @@
  */
 
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
-import ClassicEditorUIView from './classiceditoruiview';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
@@ -23,8 +22,9 @@ export default class ClassicEditorUI extends EditorUI {
 	 * Creates an instance of the classic editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
-	constructor( editor ) {
+	constructor( editor, view ) {
 		super( editor );
 
 		/**
@@ -33,7 +33,7 @@ export default class ClassicEditorUI extends EditorUI {
 		 * @private
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
 		 */
-		this._view = new ClassicEditorUIView( editor.locale );
+		this._view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.

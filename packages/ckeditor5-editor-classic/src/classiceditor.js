@@ -13,6 +13,7 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
+import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -69,7 +70,7 @@ export default class ClassicEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new ClassicEditorUI( this );
+		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
 
 		attachToForm( this );
 	}
