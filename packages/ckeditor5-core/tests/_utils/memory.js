@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document */
+/* global window, document, setTimeout */
 
 /**
  * @param {Function} callback Callback with test suit body
@@ -47,9 +47,11 @@ function runTest( editorCreator ) {
 	// First editor creation needed to load all editor code,css into the memory (it is reported as used heap memory)
 		.then( createEditor )
 		.then( editor => {
-			memoryAfterFirstStart = collectMemoryStats();
+			return collectMemoryStats().then( mem => {
+				memoryAfterFirstStart = mem;
 
-			return editor;
+				return editor;
+			} );
 		} )
 		.then( destroy )
 		// Run create-wait-destroy multiple times. Multiple runs to grow memory significantly even on smaller leaks.
@@ -64,11 +66,14 @@ function runTest( editorCreator ) {
 		.then( testAndDestroy )
 		.then( testAndDestroy )
 		.then( () => {
-			const memory = collectMemoryStats();
+			return new Promise( resolve => {
+				collectMemoryStats().then( memory => {
+					const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
 
-			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
-
-			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
+					expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
+					resolve();
+				} );
+			} );
 		} );
 
 	function testAndDestroy() {
@@ -102,16 +107,20 @@ function destroy( editor ) {
 }
 
 function collectMemoryStats() {
-	// Enforce garbage collection before recording memory stats.
-	window.gc();
+	return new Promise( resolve => {
+		// Enforce garbage collection before recording memory stats.
+		window.gc();
 
-	const memeInfo = window.performance.memory;
+		setTimeout( () => {
+			const memeInfo = window.performance.memory;
 
-	return {
-		totalJSHeapSize: memeInfo.totalJSHeapSize,
-		usedJSHeapSize: memeInfo.usedJSHeapSize,
-		jsHeapSizeLimit: memeInfo.jsHeapSizeLimit
-	};
+			resolve( {
+				totalJSHeapSize: memeInfo.totalJSHeapSize,
+				usedJSHeapSize: memeInfo.usedJSHeapSize,
+				jsHeapSizeLimit: memeInfo.jsHeapSizeLimit
+			} );
+		}, 500 );
+	} );
 }
 
 // Will skip test suite if not in compatible browser.
