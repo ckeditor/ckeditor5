@@ -12,8 +12,6 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
  *
@@ -143,22 +141,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.body.add( this.panel );
 		this.registerChild( this.editable );
 		this.panel.content.add( this.toolbar );
-	}
-
-	/**
-	 * **Deprecated** since `v12.0.0`. The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 *
-	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
-	 *
-	 * @deprecated v12.0.0 The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 * @readonly
-	 * @member {HTMLElement} #editableElement
-	 */
-	get editableElement() {
-		log.warn( 'deprecated-ui-view-editableElement: The InlineEditorUIView#editableElement property is deprecated.' );
-		return this.editable.editableElement;
 	}
 
 	/**
