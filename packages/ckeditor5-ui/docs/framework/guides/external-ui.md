@@ -296,7 +296,7 @@ class BootstrapEditorUI extends EditorUI {
 		this._elementReplacer.replace( replacementElement, view.editable.element );
 
 		// Tell the world that the UI of the editor is ready to use.
-		this.ready();
+		this.fire( 'ready' );
 	}
 
 	destroy() {
