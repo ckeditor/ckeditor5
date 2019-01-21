@@ -324,12 +324,12 @@ const ObservableMixinExtended = Object.assign( {}, ObservableMixin, {
 
 	_listenTo: ObservableMixin.listenTo,
 
-	listenTo( emitter, event, callback, options = {} ) {
-		if ( event === 'uiReady' ) {
+	listenTo( emitter, evt, callback, options = {} ) {
+		if ( evt === 'uiReady' ) {
 			log.warn( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' );
 		}
 
-		this._listenTo( emitter, event, callback, options );
+		this._listenTo( emitter, evt, callback, options );
 	}
 } );
 
