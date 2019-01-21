@@ -96,6 +96,8 @@ export default class EditableUIView extends View {
 	}
 
 	disableEditingRootListeners() {
+		super.disableEditingRootListeners();
+
 		this.editingView.change( writer => {
 			writer.removeClass( [ 'ck-blurred', 'ck-focused' ], this.viewRoot );
 		} );
