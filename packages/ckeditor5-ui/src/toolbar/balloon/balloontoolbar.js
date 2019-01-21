@@ -62,7 +62,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Wait for the EditorUI#init. EditableElement is not available before.
 		editor.ui.once( 'ready', () => {
-			this.focusTracker.add( editor.ui.view.editable.editableElement );
+			this.focusTracker.add( editor.ui.view.editable.element );
 			this.focusTracker.add( this.toolbarView.element );
 		} );
 

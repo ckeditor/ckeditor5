@@ -31,7 +31,7 @@ describe( 'InlineEditableUIView', () => {
 		it( 'accepts editableElement', () => {
 			view = new InlineEditableUIView( locale, editableElement );
 
-			expect( view.editableElement ).to.equal( editableElement );
+			expect( view._editableElement ).to.equal( editableElement );
 		} );
 
 		it( 'creates view#element from template when no editableElement provided', () => {

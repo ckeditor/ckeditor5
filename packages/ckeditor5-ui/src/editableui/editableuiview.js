@@ -63,31 +63,31 @@ export default class EditableUIView extends View {
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
 		 * @readonly
-		 * @member {HTMLElement} #editableElement
+		 * @member {HTMLElement} #_editableElement
 		 */
-		this.editableElement = editableElement;
+		this._editableElement = editableElement;
 
 		/**
-		 * Whether an external {@link #editableElement} was passed into the constructor, which also means
+		 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
 		 * the view will not render its {@link #template}.
 		 *
 		 * @protected
 		 * @member {Boolean} #_hasExternalElement
 		 */
-		this._hasExternalElement = !!this.editableElement;
+		this._hasExternalElement = !!this._editableElement;
 	}
 
 	/**
 	 * Renders the view by either applying the {@link #template} to the existing
-	 * {@link #editableElement} or assigning {@link #element} as {@link #editableElement}.
+	 * {@link #_editableElement} or assigning {@link #element} as {@link #_editableElement}.
 	 */
 	render() {
 		super.render();
 
 		if ( this._hasExternalElement ) {
-			this.template.apply( this.element = this.editableElement );
+			this.template.apply( this.element = this._editableElement );
 		} else {
-			this.editableElement = this.element;
+			this._editableElement = this.element;
 		}
 	}
 
@@ -96,7 +96,7 @@ export default class EditableUIView extends View {
 	 */
 	destroy() {
 		if ( this._hasExternalElement ) {
-			this.template.revert( this.editableElement );
+			this.template.revert( this._editableElement );
 		}
 
 		super.destroy();
