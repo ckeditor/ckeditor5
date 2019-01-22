@@ -67,13 +67,11 @@ export function testMemoryUsage( testName, editorCreator ) {
 // - destroy the editor
 // - create & destroy editor multiple times (9) - after each editor creation the test runner will be paused for ~200ms
 function runTest( editorCreator ) {
-	const createEditor = createAndDestroy( editorCreator );
-
 	let memoryAfterFirstStart;
 
 	return Promise.resolve() // Promise.resolve just to align below code.
 	// First editor creation needed to load all editor code,css into the memory (it is reported as used heap memory)
-		.then( createEditor )
+		.then( editorCreator )
 		.then( editor => {
 			return collectMemoryStats().then( mem => {
 				memoryAfterFirstStart = mem;
@@ -83,29 +81,18 @@ function runTest( editorCreator ) {
 		} )
 		.then( destroy )
 		// Run create-wait-destroy multiple times. Multiple runs to grow memory significantly even on smaller leaks.
-		.then( testAndDestroy ) // #2
-		.then( testAndDestroy ) // #3
-		.then( testAndDestroy ) // #4
-		.then( testAndDestroy ) // #5
-		.then( testAndDestroy ) // #6
-		.then( testAndDestroy ) // #7
-		.then( testAndDestroy ) // #8
-		.then( testAndDestroy ) // #9
-		.then( testAndDestroy ) // #10
-		.then( () => {
-			return new Promise( resolve => {
-				collectMemoryStats().then( memory => {
-					const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
+		.then( createAndDestroy ) // #2
+		.then( createAndDestroy ) // #3
+		.then( collectMemoryStats )
+		.then( memory => {
+			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
 
-					expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
-					resolve();
-				} );
-			} );
+			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
 		} );
 
-	function testAndDestroy() {
+	function createAndDestroy() {
 		return Promise.resolve()
-			.then( createEditor )
+			.then( editorCreator )
 			.then( destroy );
 	}
 }
@@ -123,10 +110,6 @@ function createEditorElement() {
 
 function destroyEditorElement() {
 	document.getElementById( 'mem-editor' ).remove();
-}
-
-function createAndDestroy( editorCreator ) {
-	return () => editorCreator();
 }
 
 function destroy( editor ) {
