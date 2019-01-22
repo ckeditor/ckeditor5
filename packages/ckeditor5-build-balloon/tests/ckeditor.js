@@ -7,6 +7,7 @@
 
 import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'BalloonEditor build', () => {
 	let editor, editorElement;
@@ -22,7 +23,7 @@ describe( 'BalloonEditor build', () => {
 		editorElement.remove();
 	} );
 
-	describe( 'buid', () => {
+	describe( 'build', () => {
 		it( 'contains plugins', () => {
 			expect( BalloonEditor.builtinPlugins ).to.not.be.empty;
 		} );
@@ -154,5 +155,11 @@ describe( 'BalloonEditor build', () => {
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => BalloonEditor.create( document.querySelector( '#mem-editor' ) ) );
 	} );
 } );
