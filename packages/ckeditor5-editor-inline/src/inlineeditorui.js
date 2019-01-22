@@ -18,10 +18,21 @@ import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalize
  */
 export default class InlineEditorUI extends EditorUI {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the inline editor UI class.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
 	constructor( editor, view ) {
-		super( editor, view );
+		super( editor );
+
+		/**
+		 * The main (top–most) view of the editor UI.
+		 *
+		 * @private
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 */
+		this._view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -30,6 +41,23 @@ export default class InlineEditorUI extends EditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+	}
+
+	/**
+	 * The main (top–most) view of the editor UI.
+	 *
+	 * @readonly
+	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
+	 */
+	get view() {
+		return this._view;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.view.editable.element;
 	}
 
 	/**
@@ -54,7 +82,7 @@ export default class InlineEditorUI extends EditorUI {
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
 				view.panel.pin( {
-					target: view.editableElement,
+					target: view.editable.element,
 					positions: view.panelPositions
 				} );
 			}
@@ -67,10 +95,12 @@ export default class InlineEditorUI extends EditorUI {
 		// Bind to focusTracker instead of editor.editing.view because otherwise
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editableElement );
+		editor.editing.view.attachDomRoot( view.editable.element );
 		view.editable.name = editingRoot.rootName;
 
-		this.focusTracker.add( view.editableElement );
+		this._editableElements.set( view.editable.name, view.editable.element );
+
+		this.focusTracker.add( view.editable.element );
 
 		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
@@ -80,5 +110,16 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
+
+		this.fire( 'ready' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._view.destroy();
+
+		super.destroy();
 	}
 }

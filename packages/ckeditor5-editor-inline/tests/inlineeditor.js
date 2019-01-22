@@ -19,6 +19,8 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
@@ -32,6 +34,8 @@ describe( 'InlineEditor', () => {
 		editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
 
 		document.body.appendChild( editorElement );
+
+		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
@@ -111,11 +115,11 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'editor.element should contain the whole editor (with UI) element', () => {
+		it( 'editor.ui.element should contain the whole editor (with UI) element', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
+				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.element );
 			} );
 		} );
 	} );
@@ -194,7 +198,7 @@ describe( 'InlineEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
+					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -205,7 +209,7 @@ describe( 'InlineEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -233,12 +237,12 @@ describe( 'InlineEditor', () => {
 				} );
 		} );
 
-		it( 'fires uiReady once UI is ready', () => {
+		it( 'fires ready once UI is ready', () => {
 			let isReady;
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'uiReady', () => {
+					this.editor.ui.on( 'ready', () => {
 						isReady = this.editor.ui.view.isRendered;
 					} );
 				}

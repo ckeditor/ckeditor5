@@ -72,7 +72,7 @@ export default class InlineEditorUIView extends EditorUIView {
 
 		/**
 		 * A set of positioning functions used by the {@link #panel} to float around
-		 * {@link #editableElement}.
+		 * {@link #element editableElement}.
 		 *
 		 * The positioning functions are as follows:
 		 *
@@ -144,17 +144,10 @@ export default class InlineEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	get editableElement() {
-		return this.editable.element;
-	}
-
-	/**
 	 * Determines the panel top position of the {@link #panel} in {@link #panelPositions}.
 	 *
 	 * @private
-	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #editableElement}.
+	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #element}.
 	 * @param {module:utils/dom/rect~Rect} panelRect Rect of the {@link #panel}.
 	 */
 	_getPanelPositionTop( editableRect, panelRect ) {

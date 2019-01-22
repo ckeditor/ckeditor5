@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InlineEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +31,7 @@ describe( 'InlineEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.editable.element;
 			} );
 	} );
 
@@ -93,7 +94,7 @@ describe( 'InlineEditorUI', () => {
 				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: view.editableElement,
+					target: view.editable.element,
 					positions: sinon.match.array
 				} );
 			} );
@@ -198,6 +199,26 @@ describe( 'InlineEditorUI', () => {
 				} );
 		} );
 	} );
+
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
+		} );
+	} );
+
+	describe( 'getEditableElement()', () => {
+		it( 'returns editable element (default)', () => {
+			expect( ui.getEditableElement() ).to.equal( view.editable.element );
+		} );
+
+		it( 'returns editable element (root name passed)', () => {
+			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable.element );
+		} );
+
+		it( 'returns undefined if editable with the given name is absent', () => {
+			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
+		} );
+	} );
 } );
 
 function viewCreator( name ) {
@@ -236,7 +257,6 @@ class VirtualInlineTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.fire( 'uiReady' );
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
 					} )
