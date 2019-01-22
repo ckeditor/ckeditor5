@@ -15,11 +15,11 @@ msgstr "Kopfspalte"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Spalte links einfügen"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Spalte rechts einfügen"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

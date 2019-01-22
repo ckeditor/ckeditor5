@@ -35,11 +35,11 @@ msgstr "Строка заголовков"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Вставить строку выше"
+msgstr "Вставить строку ниже"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Вставить строку ниже"
+msgstr "Вставить строку выше"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
