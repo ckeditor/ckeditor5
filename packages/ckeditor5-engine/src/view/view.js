@@ -398,6 +398,8 @@ export default class View {
 			observer.destroy();
 		}
 
+		this.document.destroy();
+
 		this.stopListening();
 	}
 
