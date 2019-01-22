@@ -188,6 +188,12 @@ export default class FileRepository extends Plugin {
 			} );
 		}
 
+		// Catch the file promise rejection. If there are no `catch` clause, the browser
+		// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
+		loader.file.catch( () => {
+			// The error will be handled by `FileLoader` so no action is required here.
+		} );
+
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
 
