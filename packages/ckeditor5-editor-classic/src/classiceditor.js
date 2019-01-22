@@ -14,7 +14,6 @@ import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
@@ -66,14 +65,6 @@ export default class ClassicEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 		}
 
-		/**
-		 * The element replacer instance used to hide the editor's source element.
-		 *
-		 * @protected
-		 * @member {module:utils/elementreplacer~ElementReplacer}
-		 */
-		this._elementReplacer = new ElementReplacer();
-
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
@@ -81,13 +72,6 @@ export default class ClassicEditor extends Editor {
 		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
 
 		attachToForm( this );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		return this.ui.view.element;
 	}
 
 	/**
@@ -102,7 +86,6 @@ export default class ClassicEditor extends Editor {
 			this.updateSourceElement();
 		}
 
-		this._elementReplacer.restore();
 		this.ui.destroy();
 
 		return super.destroy();
@@ -167,15 +150,15 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * If a source element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
-	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
+	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
 	 * (the original one will be hidden and the editor will be injected next to it).
 	 *
 	 * Moreover, the data will be set back to the source element once the editor is destroyed and
 	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
 	 * automatic integration with native web forms).
 	 *
-	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
-	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
+	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually (by accessing
+	 * it via the {@link module:editor-classic/classiceditorui~ClassicEditorUI#getEditableElement `editor.ui.getEditableElement()`} method).
 	 *
 	 * See the examples above to learn more.
 	 *
@@ -189,15 +172,8 @@ export default class ClassicEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.init() )
-					.then( () => {
-						if ( isElement( sourceElementOrData ) ) {
-							editor._elementReplacer.replace( sourceElementOrData, editor.element );
-						}
-
-						editor.fire( 'uiReady' );
-					} )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
+					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
 							getDataFromElement( sourceElementOrData ) :

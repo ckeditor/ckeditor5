@@ -67,11 +67,4 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get editableElement() {
-		return this.editable.element;
-	}
 }

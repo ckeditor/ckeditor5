@@ -19,6 +19,8 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
@@ -32,6 +34,8 @@ describe( 'ClassicEditor', () => {
 		editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
 
 		document.body.appendChild( editorElement );
+
+		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
@@ -171,20 +175,6 @@ describe( 'ClassicEditor', () => {
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
-				expect( editor.element ).to.equal( editor.ui.view.element );
-			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
-				return ClassicEditor.create( '<p>Hello world!</p>', {
-					plugins: [ Paragraph ]
-				} ).then( editor => {
-					expect( editor.element ).to.equal( editor.ui.view.element );
-
-					return editor.destroy();
-				} );
-			} );
 		} );
 	} );
 
@@ -203,7 +193,7 @@ describe( 'ClassicEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
+					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -214,7 +204,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -242,12 +232,12 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
-		it( 'fires uiReady once UI is rendered', () => {
+		it( 'fires ready once UI is rendered', () => {
 			let isReady;
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'uiReady', () => {
+					this.editor.ui.on( 'ready', () => {
 						isReady = this.editor.ui.view.isRendered;
 					} );
 				}
