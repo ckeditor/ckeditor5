@@ -1,0 +1,30 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Paragraf"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr "Tajuk"
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr "Pilih tajuk"
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Tajuk 1"
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Tajuk 2"
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Tajuk 3"
