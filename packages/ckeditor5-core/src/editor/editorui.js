@@ -98,6 +98,8 @@ export default class EditorUI {
 	destroy() {
 		this.stopListening();
 
+		this.focusTracker.destroy();
+
 		this._editableElements = new Map();
 	}
 
