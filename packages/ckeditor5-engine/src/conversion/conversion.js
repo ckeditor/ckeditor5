@@ -24,6 +24,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * * `dataDowncast`
  * * `upcast`
  *
+ * # One-way converters
+ *
  * To add a converter to a specific group, use the {@link module:engine/conversion/conversion~Conversion#for `for()`}
  * method:
  *
@@ -36,12 +38,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *		// And a slightly different one for the editing pipeline:
  *		editor.conversion.for( 'editingDowncast' ).elementToElement( editingConversionConfig ) );
  *
- * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
- * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
- * You can find a set of them in the {@link module:engine/conversion/downcasthelpers} and
- * {@link module:engine/conversion/upcasthelpers} modules.
+ * See {@link module:engine/conversion/conversion~Conversion#for `for()`} method documentation to learn more about
+ * available conversion helpers and how to use your custom ones.
  *
- * Besides allowing to register converters to specific dispatchers, you can also use methods available in this
+ * # Two-way converters
+ *
+ * Besides using one-way converters via the `for()` method, you can also use other methods available in this
  * class to add two-way converters (upcast and downcast):
  *
  * * {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} &ndash;
@@ -88,46 +90,59 @@ export default class Conversion {
 	}
 
 	/**
-	 * Provides chainable API to assign converters to dispatchers registered under a given group name. Converters are added
-	 * by calling the {@link module:engine/conversion/conversion~ConversionHelpers#add `.add()`} method of an
-	 * {@link module:engine/conversion/conversion~ConversionHelpers conversion helpers} returned by this function.
+	 * Provides a chainable API to assign converters to conversion dispatchers.
+	 *
+	 * You can use conversion helpers available directly in the `for()` chain or your custom ones via
+	 * the {@link module:engine/conversion/conversion~ConversionHelpers#add `add()`} method.
+	 *
+	 * # Using bulit-in conversion helpers
+	 *
+	 * The `for()` chain comes with a set of conversion helpers which you can use like this:
 	 *
 	 *		editor.conversion.for( 'downcast' )
-	 *			.add( conversionHelperA ) // Adds a custom converter A.
-	 *			.add( conversionHelperB ) // Adds a custom converter B.
-	 *			.elementToElement( config ); // Adds a custom element-to-element downcast converter.
+	 *			.elementToElement( config1 )        // Adds an element-to-element downcast converter.
+	 *			.attributeToElement( config2 );     // Adds an attribute-to-element downcast converter.
 	 *
-	 * In this example `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from the `'model'` group.
+	 *		editor.conversion.for( 'upcast' )
+	 *			.elementToAttribute( config3 );     // Adds an element-to-attribute upcast converter.
+	 *
+	 * Refer to the documentation of built-in conversion helpers to learn about their configuration options.
+	 *
+	 * * downcast (model-to-view) conversion helpers:
+	 *
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement `attributeToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute `attributeToAttribute()`}.
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement `markerToElement()`}.
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight `markerToHighlight()`}.
+	 *
+	 * * upcast (view-to-model) conversion helpers:
+	 *
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute `elementToAttribute()`},
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute `attributeToAttribute()`}.
+	 *	* {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker `elementToMarker()`}.
+	 *
+	 * # Using custom conversion helpers
+	 *
+	 * If you need to implement a nontypical converter, you can do so by calling:
+	 *
+	 *		editor.conversion.for( direction ).add( customHelper );
 	 *
 	 * The `.add()` method takes exactly one parameter, which is a function. This function should accept one parameter that
 	 * is a dispatcher instance. The function should add an actual converter to the passed dispatcher instance.
 	 *
-	 * Conversion helpers for most common cases are already provided. They are flexible enough to cover most use cases.
-	 * See the documentation to learn how they can be configured.
+	 * Example:
 	 *
-	 * For downcast (model-to-view conversion), these are:
+	 *		editor.conversion.for( 'upcast' ).add( dispatcher => {
+	 *			dispatcher.on( 'element:a',  ( evt, data, conversionApi ) => {
+	 *				// Do something with a view <a> element.
+	 *			} );
+	 *		} );
 	 *
-	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement Downcast element-to-element converter},
-	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement Downcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute Downcast attribute-to-attribute converter}.
-	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement Downcast marker-to-element converter}.
-	 * * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToHighlight Downcast marker-to-highlight converter}.
-	 *
-	 * For upcast (view-to-model conversion), these are:
-	 *
-	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement Upcast element-to-element converter},
-	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToAttribute Upcast attribute-to-element converter},
-	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute Upcast attribute-to-attribute converter}.
-	 * * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker Upcast element-to-marker converter}.
-	 *
-	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
-	 *
-	 *		// Define conversion configuration - model element 'paragraph' should be converted to view element 'p'.
-	 *		const config = { model: 'paragraph', view: 'p' };
-	 *
-	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		editor.conversion.for( 'downcast' ).elementToElement( config ) );
-	 *		editor.conversion.for( 'upcast' ).elementToElement( config ) );
+	 * Refer to the documentation of {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}
+	 * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} to learn how to write
+	 * custom converters.
 	 *
 	 * @param {String} groupName The name of dispatchers group to add the converters to.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
@@ -595,7 +610,7 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
  */
 export class ConversionHelpers {
 	/**
-	 * Creates ConversionHelpers instance.
+	 * Creates `ConversionHelpers` instance.
 	 *
 	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
@@ -608,7 +623,7 @@ export class ConversionHelpers {
 	 * Registers a conversion helper.
 	 *
 	 * **Note**: See full usage example in the `{@link module:engine/conversion/conversion~Conversion#for conversion.for()}`
-	 * method description
+	 * method description.
 	 *
 	 * @param {Function} conversionHelper The function to be called on event.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
