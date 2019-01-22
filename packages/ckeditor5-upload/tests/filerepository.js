@@ -200,6 +200,24 @@ describe( 'FileRepository', () => {
 			expect( fileRepository.uploadTotal ).to.equal( 500 );
 			expect( fileRepository.uploadedPercent ).to.equal( 20 );
 		} );
+
+		it( 'should catch if file promise rejected (file)', () => {
+			const catchSpy = testUtils.sinon.spy( Promise.prototype, 'catch' );
+
+			fileRepository.createLoader( createNativeFileMock() );
+
+			// One call originates from `loader._createFilePromiseWrapper()` and other from `fileRepository.createLoader()`.
+			expect( catchSpy.callCount ).to.equal( 2 );
+		} );
+
+		it( 'should catch if file promise rejected (promise)', () => {
+			const catchSpy = testUtils.sinon.spy( Promise.prototype, 'catch' );
+
+			fileRepository.createLoader( new Promise( () => {} ) );
+
+			// One call originates from `loader._createFilePromiseWrapper()` and other from `fileRepository.createLoader()`.
+			expect( catchSpy.callCount ).to.equal( 2 );
+		} );
 	} );
 
 	describe( 'getLoader()', () => {
