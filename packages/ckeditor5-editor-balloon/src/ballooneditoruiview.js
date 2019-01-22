@@ -43,11 +43,4 @@ export default class BalloonEditorUIView extends EditorUIView {
 
 		this.registerChild( this.editable );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get editableElement() {
-		return this.editable.element;
-	}
 }

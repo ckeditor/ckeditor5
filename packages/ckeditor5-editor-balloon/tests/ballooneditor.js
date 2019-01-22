@@ -20,6 +20,8 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
@@ -33,6 +35,8 @@ describe( 'BalloonEditor', () => {
 		editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
 
 		document.body.appendChild( editorElement );
+
+		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	afterEach( () => {
@@ -121,14 +125,6 @@ describe( 'BalloonEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
-
-		it( 'editor.element should contain the whole editor (with UI) element', () => {
-			return BalloonEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
-			} );
-		} );
 	} );
 
 	describe( 'create()', () => {
@@ -157,7 +153,6 @@ describe( 'BalloonEditor', () => {
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot ).to.equal( editor.element );
 			expect( domRoot ).to.equal( editor.ui.view.editable.element );
 		} );
 
@@ -213,7 +208,7 @@ describe( 'BalloonEditor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
+					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -224,7 +219,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -252,12 +247,12 @@ describe( 'BalloonEditor', () => {
 				} );
 		} );
 
-		it( 'fires uiReady once UI is ready', () => {
+		it( 'fires ready once UI is ready', () => {
 			let isRendered;
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'uiReady', () => {
+					this.editor.ui.on( 'ready', () => {
 						isRendered = this.editor.ui.view.isRendered;
 					} );
 				}

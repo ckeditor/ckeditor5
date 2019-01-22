@@ -83,13 +83,6 @@ export default class BalloonEditor extends Editor {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		return this.ui.view.editable.element;
-	}
-
-	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
 	 * Updates the original editor element with the data.
@@ -189,7 +182,6 @@ export default class BalloonEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
