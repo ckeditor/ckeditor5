@@ -107,10 +107,10 @@ export default class EditorUI {
 	 * Returns the editable editor element with the given name or null if editable does not exist.
 	 *
 	 * @param {String} [rootName=main] The editable name.
-	 * @returns {HTMLElement|null}
+	 * @returns {HTMLElement|undefined}
 	 */
 	getEditableElement( rootName = 'main' ) {
-		return this._editableElements.has( rootName ) ? this._editableElements.get( rootName ) : null;
+		return this._editableElements.get( rootName );
 	}
 
 	/**

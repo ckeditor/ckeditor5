@@ -121,7 +121,7 @@ describe( 'EditorUI', () => {
 		it( 'should return null if editable with specified name does not exist', () => {
 			const ui = new EditorUI( editor );
 
-			expect( ui.getEditableElement() ).to.null;
+			expect( ui.getEditableElement() ).to.be.undefined;
 		} );
 	} );
 
