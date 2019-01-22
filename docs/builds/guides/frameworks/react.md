@@ -134,9 +134,9 @@ class App extends Component {
                         console.log( 'Editor is ready to use!', editor );
 
                         // Insert the toolbar before the editable area.
-                        editor.ui.view.editable.element.parentElement.insertBefore(
+                        editor.ui.getEditableElement().parentElement.insertBefore(
                             editor.ui.view.toolbar.element,
-                            editor.ui.view.editable.element
+                            editor.ui.getEditableElement()
                         );
                     } }
                     onChange={ ( event, editor ) => console.log( { event, editor } ) }
