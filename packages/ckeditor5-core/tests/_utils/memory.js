@@ -5,6 +5,9 @@
 
 /* global window, document, setTimeout */
 
+const TEST_TIMEOUT = 6000;
+const GARBAGE_COLLECTOR_TIMEOUT = 500;
+
 /**
  * @param {Function} callback Callback with test suit body
  */
@@ -26,7 +29,7 @@ export function describeMemoryUsage( callback ) {
  */
 export function testMemoryUsage( testName, editorCreator ) {
 	it( testName, function() {
-		this.timeout( 6000 );
+		this.timeout( TEST_TIMEOUT );
 
 		return runTest( editorCreator );
 	} );
@@ -119,7 +122,7 @@ function collectMemoryStats() {
 				usedJSHeapSize: memeInfo.usedJSHeapSize,
 				jsHeapSizeLimit: memeInfo.jsHeapSizeLimit
 			} );
-		}, 500 );
+		}, GARBAGE_COLLECTOR_TIMEOUT );
 	} );
 }
 
