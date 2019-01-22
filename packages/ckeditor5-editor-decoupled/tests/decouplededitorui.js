@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'DecoupledEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +31,7 @@ describe( 'DecoupledEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.element;
 			} );
 	} );
 
@@ -148,6 +149,12 @@ describe( 'DecoupledEditorUI', () => {
 
 					return editor.destroy();
 				} );
+		} );
+	} );
+
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
 		} );
 	} );
 

@@ -71,7 +71,7 @@ export default class DecoupledEditorUI extends EditorUI {
 
 		this._editableElements.set( view.editable.name, view.editable.element );
 
-		this.focusTracker.add( this.view.editable.element );
+		this.focusTracker.add( view.editable.element );
 
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
@@ -83,5 +83,14 @@ export default class DecoupledEditorUI extends EditorUI {
 		} );
 
 		this.fire( 'ready' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._view.destroy();
+
+		super.destroy();
 	}
 }

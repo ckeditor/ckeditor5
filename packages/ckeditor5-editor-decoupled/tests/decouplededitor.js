@@ -44,10 +44,6 @@ describe( 'DecoupledEditor', () => {
 			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
 		} );
 
-		it( 'implements the EditorWithUI interface', () => {
-			expect( editor.element ).to.be.null;
-		} );
-
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
 		} );
@@ -195,7 +191,6 @@ describe( 'DecoupledEditor', () => {
 						init() {
 							this.editor.on( 'pluginsReady', spy );
 							this.editor.ui.on( 'ready', spy );
-							this.editor.on( 'uiReady', spy );
 							this.editor.on( 'dataReady', spy );
 							this.editor.on( 'ready', spy );
 						}
@@ -206,7 +201,7 @@ describe( 'DecoupledEditor', () => {
 							plugins: [ EventWatcher ]
 						} )
 						.then( newEditor => {
-							expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+							expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 							return newEditor.destroy();
 						} );
@@ -229,28 +224,6 @@ describe( 'DecoupledEditor', () => {
 						} )
 						.then( newEditor => {
 							expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-							return newEditor.destroy();
-						} );
-				} );
-
-				it( 'fires uiReady once UI is rendered', () => {
-					let isReady;
-
-					class EventWatcher extends Plugin {
-						init() {
-							this.editor.on( 'uiReady', () => {
-								isReady = this.editor.ui.view.isRendered;
-							} );
-						}
-					}
-
-					return DecoupledEditor
-						.create( getElementOrData(), {
-							plugins: [ EventWatcher ]
-						} )
-						.then( newEditor => {
-							expect( isReady ).to.be.true;
 
 							return newEditor.destroy();
 						} );
