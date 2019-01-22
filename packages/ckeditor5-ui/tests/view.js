@@ -325,6 +325,8 @@ describe( 'View', () => {
 		it( 'can be called multiple times', () => {
 			expect( () => {
 				view.destroy();
+				view.destroy();
+				view.destroy();
 			} ).to.not.throw();
 		} );
 

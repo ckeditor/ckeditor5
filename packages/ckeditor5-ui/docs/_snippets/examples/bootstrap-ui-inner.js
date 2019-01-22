@@ -171,6 +171,7 @@ class BootstrapEditorUI extends EditorUI {
 		this._elementReplacer.restore();
 
 		// Destroy the view.
+		this._view.editable.destroy();
 		this._view.destroy();
 
 		super.destroy();
