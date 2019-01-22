@@ -76,6 +76,16 @@ export default class LinkUI extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this.formView.destroy();
+	}
+
+	/**
 	 * Creates the {@link module:link/ui/linkactionsview~LinkActionsView} instance.
 	 *
 	 * @private
