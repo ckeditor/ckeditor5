@@ -3,34 +3,36 @@ dist: trusty
 addons:
   apt:
     sources:
-      - google-chrome
+    - google-chrome
     packages:
-      - google-chrome-stable
+    - google-chrome-stable
 language: node_js
-node_js:
-  - "8"
 cache:
-  - node_modules
+  yarn: true
+node_js:
+- "8"
+cache:
+- node_modules
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - npm config set package-lock false
-  - npm i -g npm@^5.7.1
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- npm i -g yarn
 install:
-  - npm install
-  - npm install mgit2 lerna
-  - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
-  - lerna bootstrap
+- yarn add mgit2 --ignore-workspace-root-check
+- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
+- git checkout package.json yarn.lock
+- rm -rf node_modules
+- yarn install
 script:
-  - npm t -- --reporter=dots
-  - npm run docs:api -- --validate-only
-  - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-  	  travis_wait npm run docs:build-and-publish-nightly;
-    fi'
+- yarn run test --reporter=dots
+- yarn run docs:api --validate-only
+- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
+    travis_wait yarn run docs:build-and-publish-nightly;
+  fi'
 notifications:
   slack:
     rooms:
-      - secure: NKUpSnmkmlRRua0URoQJjEqNfIHx6tuqJhVCbQ6vU5rdUdw6A43OfG7Qym3MRQlXymFuIF0MUsOrS6t0GeXE9hSpC+5ynF02E5wdTD1/R7Tjq0XEdx0mXJTYjuOQA16fvwMxm5p3Ub5uWpSH+gBtyG86UPCbVSxDvvmxHqResAw=
+    - secure: NKUpSnmkmlRRua0URoQJjEqNfIHx6tuqJhVCbQ6vU5rdUdw6A43OfG7Qym3MRQlXymFuIF0MUsOrS6t0GeXE9hSpC+5ynF02E5wdTD1/R7Tjq0XEdx0mXJTYjuOQA16fvwMxm5p3Ub5uWpSH+gBtyG86UPCbVSxDvvmxHqResAw=
     on_success: change
     on_failure: always
     on_pull_requests: false

@@ -14,10 +14,10 @@ mgit exec 'node ../../scripts/bump-year.js'
 node scripts/bump-year.js
 
 Full command to update the entire project:
-git pull && mgit update && mgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
+git pull && mgit sync && mgit exec 'node ../../scripts/bump-year.js' && node scripts/bump-year.js
 
 And after reviewing the changes:
-mgit exec 'git commit -am "Internal: Bumped the year. [skip ci]" && git push' && git commit -am "Internal: Bumped the year." && git push
+mgit commit -m "Internal: Bumped the year. [skip ci]" && mgit push git commit -am "Internal: Bumped the year." && git push
 
 */
 

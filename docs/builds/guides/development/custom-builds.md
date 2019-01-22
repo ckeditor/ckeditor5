@@ -147,7 +147,7 @@ After you changed the webpack entry file or updated some dependencies, it is tim
 To do that, execute the following command:
 
 ```bash
-npm run build
+yarn run build
 ```
 
 You can validate whether your new build works by opening the `sample/index.html` file in a browser (via HTTP, not as a local file). Make sure to **clear the cache**.
