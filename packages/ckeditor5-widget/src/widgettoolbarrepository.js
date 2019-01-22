@@ -93,6 +93,14 @@ export default class WidgetToolbarRepository extends Plugin {
 		}, { priority: 'low' } );
 	}
 
+	destroy() {
+		super.destroy();
+
+		for ( const toolbarConfig of this._toolbarDefinitions.values() ) {
+			toolbarConfig.view.destroy();
+		}
+	}
+
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
 	 * `getRelatedElement` function. Toolbar items are gathered from `items` array.
