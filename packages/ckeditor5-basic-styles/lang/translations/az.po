@@ -1,13 +1,13 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Language: de\n"
+"Language-Team: Azerbaijani (https://www.transifex.com/ckeditor/teams/11143/az/)\n"
+"Language: az\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Fett"
+msgstr "Yarıqalın"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
@@ -15,20 +15,20 @@ msgstr "Kursiv"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Unterstrichen"
+msgstr "Altdan xətt"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Code"
+msgstr "Kod"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr "Durchgestrichen"
+msgstr "Qaralanmış"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr "Tiefgestellt"
+msgstr "Alt yazı"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr "Hochgestellt"
+msgstr "Üst yazı"
