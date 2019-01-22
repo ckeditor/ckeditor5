@@ -9,6 +9,22 @@ const TEST_TIMEOUT = 6000;
 const GARBAGE_COLLECTOR_TIMEOUT = 500;
 
 /**
+ * Memory tests suite definition that:
+ * - skips tests when garbage collector is not available.
+ * - creates/destroys editor element (id = 'mem-editor').
+ *
+ * This method should be used with dedicated memory usage test case functions:
+ *
+ *        describe( 'editor', () => {
+ *			// Other tests.
+ *
+ *			describeMemoryUsage( () => {
+ *				testMemoryUsage( 'and editor', () => {
+ *					return ClassicEditor.create( document.querySelector( '#mem-editor' ) );
+ *				} );
+ *			} );
+ *		} );
+ *
  * @param {Function} callback Callback with test suit body
  */
 export function describeMemoryUsage( callback ) {
@@ -24,7 +40,16 @@ export function describeMemoryUsage( callback ) {
 }
 
 /**
- * @param {String} testName
+ * Single test case for memory usage test. This method will handle memory usage test procedure:
+ * - creating editor instance
+ * - recording its memory usage (after garbage collector)
+ * - create and destroy editor 10 times
+ * - record memory usage after final editor destroy (after garbage collector)
+ * - tests if memory grew
+ *
+ * See {@link describeMemoryUsage} function for usage details.
+ *
+ * @param {String} testName Name of a test case.
  * @param {Function} editorCreator Callback which creates editor and returns it's `.create()` promise.
  */
 export function testMemoryUsage( testName, editorCreator ) {
@@ -40,7 +65,7 @@ export function testMemoryUsage( testName, editorCreator ) {
 // - run garbage collector
 // - record memory allocations
 // - destroy the editor
-// - create & destroy editor multiple times (6) - after each editor creation the test runner will be paused for ~200ms
+// - create & destroy editor multiple times (9) - after each editor creation the test runner will be paused for ~200ms
 function runTest( editorCreator ) {
 	const createEditor = createAndDestroy( editorCreator );
 
@@ -58,16 +83,15 @@ function runTest( editorCreator ) {
 		} )
 		.then( destroy )
 		// Run create-wait-destroy multiple times. Multiple runs to grow memory significantly even on smaller leaks.
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
-		.then( testAndDestroy )
+		.then( testAndDestroy ) // #2
+		.then( testAndDestroy ) // #3
+		.then( testAndDestroy ) // #4
+		.then( testAndDestroy ) // #5
+		.then( testAndDestroy ) // #6
+		.then( testAndDestroy ) // #7
+		.then( testAndDestroy ) // #8
+		.then( testAndDestroy ) // #9
+		.then( testAndDestroy ) // #10
 		.then( () => {
 			return new Promise( resolve => {
 				collectMemoryStats().then( memory => {
