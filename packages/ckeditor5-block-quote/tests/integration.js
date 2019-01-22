@@ -506,5 +506,93 @@ describe( 'BlockQuote integration', () => {
 				'</table>'
 			);
 		} );
+
+		it( 'wraps paragraph+image in table cell', () => {
+			setModelData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'unwraps paragraph+image in table cell', () => {
+			setModelData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'wraps image+paragraph in table cell', () => {
+			setModelData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'unwraps image+paragraph in table cell', () => {
+			setModelData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 } );
