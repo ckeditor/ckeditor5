@@ -5,7 +5,7 @@
 
 /* global window, document, setTimeout */
 
-const TEST_TIMEOUT = 6000;
+const TEST_TIMEOUT = 5000;
 const GARBAGE_COLLECTOR_TIMEOUT = 500;
 
 /**
