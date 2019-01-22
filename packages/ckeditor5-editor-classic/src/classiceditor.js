@@ -150,15 +150,15 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * If a source element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
-	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
+	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
 	 * (the original one will be hidden and the editor will be injected next to it).
 	 *
 	 * Moreover, the data will be set back to the source element once the editor is destroyed and
 	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
 	 * automatic integration with native web forms).
 	 *
-	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
-	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
+	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually (by accessing
+	 * it via the {@link module:editor-classic/classiceditorui~ClassicEditorUI#getEditableElement `editor.ui.getEditableElement()`} method).
 	 *
 	 * See the examples above to learn more.
 	 *
