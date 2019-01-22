@@ -21,11 +21,11 @@ const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
  *
  * See {@glink api/widget package page} for more details and documentation.
  *
- * This plugin enables multiple behaiors required by the widgets:
+ * This plugin enables multiple behaviors required by widgets:
  *
  * * The model to view selection converter for the editing pipeline (it handles widget custom selection rendering).
- * If a converted selection is wraps around a widget element, that selection is marked as
- * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, proper the `ck-widget_selected` CSS class
+ * If a converted selection wraps around a widget element, that selection is marked as
+ * {@link module:engine/view/selection~Selection#isFake fake}. Additionally, the `ck-widget_selected` CSS class
  * is added to indicate that widget has been selected.
  * * The mouse and keyboard events handling on and around widget elements.
  *
