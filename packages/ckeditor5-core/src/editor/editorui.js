@@ -23,9 +23,8 @@ export default class EditorUI {
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
 	 */
-	constructor( editor, view ) {
+	constructor( editor ) {
 		/**
 		 * The editor that the UI belongs to.
 		 *
@@ -33,14 +32,6 @@ export default class EditorUI {
 		 * @member {module:core/editor/editor~Editor} #editor
 		 */
 		this.editor = editor;
-
-		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-		 */
-		this.view = view;
 
 		/**
 		 * An instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
@@ -60,8 +51,35 @@ export default class EditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * Stores all editable elements used by the editor instance.
+		 *
+		 * @protected
+		 * @member {Map.<String,HTMLElement>}
+		 */
+		this._editableElements = new Map();
+
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
+	}
+
+	/**
+	 * The main (outermost) DOM element of the editor UI.
+	 *
+	 * For example, in {@link module:editor-classic/classiceditor~ClassicEditor} it is a `<div>` which
+	 * wraps the editable element and the toolbar. In {@link module:editor-inline/inlineeditor~InlineEditor}
+	 * it is the editable element itself (as there is no other wrapper). However, in
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} it is set to `null` because this editor does not
+	 * come with a single "main" HTML element (its editable element and toolbar are separate).
+	 *
+	 * This property can be understood as a shorthand for retrieving the element that a specific editor integration
+	 * considers to be its main DOM element.
+	 *
+	 * @readonly
+	 * @member {HTMLElement|null} #element
+	 */
+	get element() {
+		return null;
 	}
 
 	/**
@@ -79,9 +97,39 @@ export default class EditorUI {
 	 */
 	destroy() {
 		this.stopListening();
-		this.view.destroy();
+
 		this.focusTracker.destroy();
+
+		this._editableElements = new Map();
 	}
+
+	/**
+	 * Returns the editable editor element with the given name or null if editable does not exist.
+	 *
+	 * @param {String} [rootName=main] The editable name.
+	 * @returns {HTMLElement|undefined}
+	 */
+	getEditableElement( rootName = 'main' ) {
+		return this._editableElements.get( rootName );
+	}
+
+	/**
+	 * Returns array of names of all editor editable elements.
+	 *
+	 * @returns {Iterable.<String>}
+	 */
+	getEditableElementsNames() {
+		return this._editableElements.keys();
+	}
+
+	/**
+	 * Fired when the editor UI is ready.
+	 *
+	 * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
+	 * {@link module:core/editor/editor~Editor#event:dataReady}.
+	 *
+	 * @event ready
+	 */
 
 	/**
 	 * Fired whenever the UI (all related components) should be refreshed.
