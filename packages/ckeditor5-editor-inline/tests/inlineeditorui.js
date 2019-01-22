@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'InlineEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +31,7 @@ describe( 'InlineEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.editable.element;
 			} );
 	} );
 
@@ -196,6 +197,12 @@ describe( 'InlineEditorUI', () => {
 
 					return editor.destroy();
 				} );
+		} );
+	} );
+
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
 		} );
 	} );
 

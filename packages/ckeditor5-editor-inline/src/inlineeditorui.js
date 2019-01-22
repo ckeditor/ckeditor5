@@ -113,4 +113,13 @@ export default class InlineEditorUI extends EditorUI {
 
 		this.fire( 'ready' );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._view.destroy();
+
+		super.destroy();
+	}
 }
