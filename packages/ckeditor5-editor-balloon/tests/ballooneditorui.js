@@ -140,8 +140,8 @@ describe( 'BalloonEditorUI', () => {
 			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable.element );
 		} );
 
-		it( 'returns null if editable with the given name is absent', () => {
-			expect( ui.getEditableElement( 'absent' ) ).to.null;
+		it( 'returns undefined if editable with the given name is absent', () => {
+			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
 		} );
 	} );
 } );
