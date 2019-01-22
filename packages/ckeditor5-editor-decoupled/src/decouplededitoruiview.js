@@ -70,11 +70,4 @@ export default class DecoupledEditorUIView extends EditorUIView {
 
 		this.registerChild( [ this.toolbar, this.editable ] );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get editableElement() {
-		return this.editable.element;
-	}
 }

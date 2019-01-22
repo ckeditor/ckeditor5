@@ -46,7 +46,7 @@ DecoupledEditor
 	} );
 ```
 
-You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `Editor#uiReady`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
+You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorui~EditorUI#event:ready `EditorUI#ready`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
 <info-box>
 	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.

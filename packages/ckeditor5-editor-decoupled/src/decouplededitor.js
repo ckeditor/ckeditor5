@@ -77,15 +77,6 @@ export default class DecoupledEditor extends Editor {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		// This editor has no single "main UI element". Its editable and toolbar are exposed separately and need
-		// to be added to the DOM manually by the consumer.
-		return null;
-	}
-
-	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
 	 * **Note**: The decoupled editor does not remove the toolbar and editable when destroyed. You can
@@ -198,7 +189,6 @@ export default class DecoupledEditor extends Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?

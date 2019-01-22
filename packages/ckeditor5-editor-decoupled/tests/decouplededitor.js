@@ -18,6 +18,8 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
@@ -27,6 +29,10 @@ describe( 'DecoupledEditor', () => {
 	let editor;
 
 	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+	} );
 
 	describe( 'constructor()', () => {
 		beforeEach( () => {
@@ -39,10 +45,6 @@ describe( 'DecoupledEditor', () => {
 
 		it( 'has a Data Interface', () => {
 			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
-		} );
-
-		it( 'implements the EditorWithUI interface', () => {
-			expect( editor.element ).to.be.null;
 		} );
 
 		it( 'creates main root element', () => {
@@ -191,7 +193,7 @@ describe( 'DecoupledEditor', () => {
 					class EventWatcher extends Plugin {
 						init() {
 							this.editor.on( 'pluginsReady', spy );
-							this.editor.on( 'uiReady', spy );
+							this.editor.ui.on( 'ready', spy );
 							this.editor.on( 'dataReady', spy );
 							this.editor.on( 'ready', spy );
 						}
@@ -202,7 +204,7 @@ describe( 'DecoupledEditor', () => {
 							plugins: [ EventWatcher ]
 						} )
 						.then( newEditor => {
-							expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+							expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 							return newEditor.destroy();
 						} );
@@ -230,12 +232,12 @@ describe( 'DecoupledEditor', () => {
 						} );
 				} );
 
-				it( 'fires uiReady once UI is rendered', () => {
+				it( 'fires ready once UI is rendered', () => {
 					let isReady;
 
 					class EventWatcher extends Plugin {
 						init() {
-							this.editor.on( 'uiReady', () => {
+							this.editor.ui.on( 'ready', () => {
 								isReady = this.editor.ui.view.isRendered;
 							} );
 						}
