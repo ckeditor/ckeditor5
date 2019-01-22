@@ -16,7 +16,7 @@ import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'BalloonEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -29,6 +29,7 @@ describe( 'BalloonEditorUI', () => {
 				editor = newEditor;
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.editable.element;
 			} );
 	} );
 
@@ -121,6 +122,12 @@ describe( 'BalloonEditorUI', () => {
 					{ isReadOnly: true }
 				);
 			} );
+		} );
+	} );
+
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
 		} );
 	} );
 

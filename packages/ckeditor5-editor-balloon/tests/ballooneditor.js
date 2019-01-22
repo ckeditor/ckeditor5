@@ -122,14 +122,6 @@ describe( 'BalloonEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
-
-		it( 'editor.element should contain the whole editor (with UI) element', () => {
-			return BalloonEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
-			} );
-		} );
 	} );
 
 	describe( 'create()', () => {
@@ -158,7 +150,6 @@ describe( 'BalloonEditor', () => {
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot ).to.equal( editor.element );
 			expect( domRoot ).to.equal( editor.ui.view.editable.element );
 		} );
 
@@ -215,7 +206,6 @@ describe( 'BalloonEditor', () => {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -226,7 +216,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -249,28 +239,6 @@ describe( 'BalloonEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is ready', () => {
-			let isRendered;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isRendered = this.editor.ui.view.isRendered;
-					} );
-				}
-			}
-
-			return BalloonEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isRendered ).to.be.true;
 
 					editor = newEditor;
 				} );

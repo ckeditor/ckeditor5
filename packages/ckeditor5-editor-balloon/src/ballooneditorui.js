@@ -90,4 +90,13 @@ export default class BalloonEditorUI extends EditorUI {
 
 		this.fire( 'ready' );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this._view.destroy();
+
+		super.destroy();
+	}
 }
