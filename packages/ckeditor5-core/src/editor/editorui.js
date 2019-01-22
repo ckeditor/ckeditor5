@@ -12,7 +12,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -24,10 +23,8 @@ export default class EditorUI {
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} [view] The view of the UI. This parameter is **deprecated**
-	 * since `v12.0.0` and should not be used.
 	 */
-	constructor( editor, view ) {
+	constructor( editor ) {
 		/**
 		 * The editor that the UI belongs to.
 		 *
@@ -62,58 +59,8 @@ export default class EditorUI {
 		 */
 		this._editableElements = new Map();
 
-		/**
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @private
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
-		 */
-		this._view = view; // This property was created in order to deprecate `this.view`. Should be removed with removal of `view` getter.
-
-		// Check if `view` parameter was passed. It is deprecated and should not be used.
-		if ( view ) {
-			/**
-			 * This error is thrown when  the deprecated `view` parameter is passed to the
-			 * {@link module:core/editor/editorui~EditorUI#constructor EditorUI constructor}. Only subclass (for example
-			 * {@link module:editor-classic/classiceditorui~ClassicEditorUI}) should use it without passing it further.
-			 *
-			 * @error deprecated-editorui-view-param-in-constructor
-			 */
-			log.warn( 'deprecated-editorui-view-param-in-constructor: The EditorUI#constructor `view` parameter is deprecated.' );
-		}
-
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
-
-		// Delegate `ready` as `editor.uiReady` event. The `uiReady` is deprecated and should be fired too.
-		this.delegate( 'ready' ).to( this.editor, 'uiReady' );
-	}
-
-	/**
-	 * **Deprecated** since `v12.0.0`. This property is deprecated and should not be used. Use the property
-	 * from the subclass directly instead, for example
-	 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view}.
-	 *
-	 * The main (top–most) view of the editor UI.
-	 *
-	 * @deprecated v12.0.0 This property is deprecated and should not be used. Use the property
-	 * from the subclass directly instead, for example
-	 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view}.
-	 * @readonly
-	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-	 */
-	get view() {
-		/**
-		 * This error is thrown when a component tries to access deprecated
-		 * {@link module:core/editor/editorui~EditorUI#element `EditorUI view`} property. Instead the `view` property
-		 * from the subclass (for example {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view})
-		 * should be accessed directly.
-		 *
-		 * @error deprecated-editorui-view
-		 */
-		log.warn( 'deprecated-editorui-view: The EditorUI#view property is deprecated.' );
-
-		return this._view;
 	}
 
 	/**
@@ -151,11 +98,7 @@ export default class EditorUI {
 	destroy() {
 		this.stopListening();
 
-		this._editableElements = [];
-
-		if ( this._view ) {
-			this._view.destroy();
-		}
+		this._editableElements = new Map();
 	}
 
 	/**

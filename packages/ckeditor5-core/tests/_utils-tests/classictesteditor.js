@@ -20,19 +20,16 @@ import ElementApiMixin from '../../src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '../../tests/_utils/utils';
 
 describe( 'ClassicTestEditor', () => {
-	let editorElement, logStub;
+	let editorElement;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
-
-		logStub = testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -199,26 +196,6 @@ describe( 'ClassicTestEditor', () => {
 						.then( () => {
 							expect( editor.element.style.display ).to.equal( '' );
 						} );
-				} );
-		} );
-	} );
-
-	describe( 'deprecated uiReady event', () => {
-		it( 'logs deprecated warning when attaching uiReady on listener', () => {
-			return ClassicTestEditor.create( editorElement, { foo: 1 } )
-				.then( editor => {
-					editor.on( 'uiReady', () => {} );
-
-					expect( logStub.calledWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
-				} );
-		} );
-
-		it( 'logs deprecated warning when attaching uiReady once listener', () => {
-			return ClassicTestEditor.create( editorElement, { foo: 1 } )
-				.then( editor => {
-					editor.once( 'uiReady', () => {} );
-
-					expect( logStub.calledWith( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' ) ).to.true;
 				} );
 		} );
 	} );

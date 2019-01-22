@@ -8,10 +8,8 @@ import Editor from '../../src/editor/editor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import testUtils from '../_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /* global document */
 
@@ -32,23 +30,6 @@ describe( 'EditorUI', () => {
 	describe( 'constructor()', () => {
 		it( 'should set #editor', () => {
 			expect( ui.editor ).to.equal( editor );
-		} );
-
-		it( 'should not set #view by default', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			expect( ui._view ).to.undefined;
-			expect( ui.view ).to.undefined;
-		} );
-
-		it( 'should set #view if passed', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			const editor = new Editor();
-			const view = new View();
-			const ui = new EditorUI( editor, view );
-
-			expect( ui.view ).to.equal( view );
 		} );
 
 		it( 'should create #componentFactory factory', () => {
@@ -103,23 +84,15 @@ describe( 'EditorUI', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should destroy the #view if present', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+		it( 'should reset editables array', () => {
+			ui._editableElements.set( 'foo', {} );
+			ui._editableElements.set( 'bar', {} );
 
-			const editor = new Editor();
-			const view = new View();
-			const ui = new EditorUI( editor, view );
-			const spy = sinon.spy( view, 'destroy' );
+			expect( ui._editableElements.size ).to.equal( 2 );
 
 			ui.destroy();
 
-			sinon.assert.called( spy );
-		} );
-
-		it( 'should not throw when view absent', () => {
-			expect( () => {
-				ui.destroy();
-			} ).to.not.throw();
+			expect( ui._editableElements.size ).to.equal( 0 );
 		} );
 	} );
 

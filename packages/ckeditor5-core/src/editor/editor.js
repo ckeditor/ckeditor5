@@ -21,7 +21,6 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import '@ckeditor/ckeditor5-utils/src/version';
 
@@ -320,20 +319,7 @@ export default class Editor {
 	}
 }
 
-const ObservableMixinExtended = Object.assign( {}, ObservableMixin, {
-
-	_listenTo: ObservableMixin.listenTo,
-
-	listenTo( emitter, evt, callback, options = {} ) {
-		if ( evt === 'uiReady' ) {
-			log.warn( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' );
-		}
-
-		this._listenTo( emitter, evt, callback, options );
-	}
-} );
-
-mix( Editor, ObservableMixinExtended );
+mix( Editor, ObservableMixin );
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.

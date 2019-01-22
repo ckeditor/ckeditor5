@@ -63,7 +63,7 @@ export default class ClassicTestEditor extends Editor {
 					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
 					// should be rendered after plugins are initialized.
 					.then( () => editor.ui.init( element ) )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
@@ -114,7 +114,7 @@ class ClassicTestEditorUI extends EditorUI {
 
 		this._editableElements.set( 'main', view.editable.element );
 
-		this._elementReplacer.replace( element, this.view.element );
+		this._elementReplacer.replace( element, view.element );
 
 		this.fire( 'ready' );
 	}
@@ -124,6 +124,9 @@ class ClassicTestEditorUI extends EditorUI {
 	 */
 	destroy() {
 		this._elementReplacer.restore();
+
+		this._view.destroy();
+
 		super.destroy();
 	}
 }
