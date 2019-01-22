@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ClassicEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +31,7 @@ describe( 'ClassicEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.element;
 			} );
 	} );
 
@@ -182,6 +183,12 @@ describe( 'ClassicEditorUI', () => {
 	describe( 'view()', () => {
 		it( 'returns view instance', () => {
 			expect( ui.view ).to.equal( view );
+		} );
+	} );
+
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
 		} );
 	} );
 

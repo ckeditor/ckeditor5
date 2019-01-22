@@ -16,7 +16,6 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -73,14 +72,6 @@ export default class ClassicEditor extends Editor {
 		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
 
 		attachToForm( this );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
-		return this.ui.element;
 	}
 
 	/**

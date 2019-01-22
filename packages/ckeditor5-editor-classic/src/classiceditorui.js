@@ -120,6 +120,8 @@ export default class ClassicEditorUI extends EditorUI {
 	destroy() {
 		this._elementReplacer.restore();
 
+		this._view.destroy();
+
 		super.destroy();
 	}
 }

@@ -172,20 +172,6 @@ describe( 'ClassicEditor', () => {
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
-				expect( editor.element ).to.equal( editor.ui.view.element );
-			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
-				return ClassicEditor.create( '<p>Hello world!</p>', {
-					plugins: [ Paragraph ]
-				} ).then( editor => {
-					expect( editor.element ).to.equal( editor.ui.view.element );
-
-					return editor.destroy();
-				} );
-			} );
 		} );
 	} );
 
@@ -205,7 +191,6 @@ describe( 'ClassicEditor', () => {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -216,7 +201,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -239,28 +224,6 @@ describe( 'ClassicEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is rendered', () => {
-			let isReady;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.isRendered;
-					} );
-				}
-			}
-
-			return ClassicEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isReady ).to.be.true;
 
 					editor = newEditor;
 				} );
