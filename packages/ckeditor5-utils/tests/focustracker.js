@@ -170,4 +170,14 @@ describe( 'FocusTracker', () => {
 			expect( focusTracker.isFocused ).to.false;
 		} );
 	} );
+
+	describe( 'destroy()', () => {
+		it( 'should stop listening', () => {
+			const stopListeningSpy = sinon.spy( focusTracker, 'stopListening' );
+
+			focusTracker.destroy();
+
+			sinon.assert.calledOnce( stopListeningSpy );
+		} );
+	} );
 } );
