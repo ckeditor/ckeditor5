@@ -19,6 +19,8 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -306,5 +308,18 @@ describe( 'ClassicEditor', () => {
 					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => ClassicEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
