@@ -43,6 +43,9 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	afterEach( () => {
+		// Blur editor so `blockToolbar.buttonView` `window.resize` listener is detached.
+		editor.ui.focusTracker.isFocused = false;
+
 		element.remove();
 		return editor.destroy();
 	} );
