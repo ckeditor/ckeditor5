@@ -45,7 +45,15 @@ export default class BlockQuoteCommand extends Command {
 		const schema = model.schema;
 		const selection = model.document.selection;
 
-		const blocks = Array.from( selection.getTopMostBlocks() );
+		const selElem = selection.getSelectedElement();
+
+		let blocks;
+
+		if ( selElem ) {
+			blocks = [ selElem ];
+		} else {
+			blocks = Array.from( selection.getTopMostBlocks() );
+		}
 
 		model.change( writer => {
 			if ( this.value ) {
@@ -71,10 +79,14 @@ export default class BlockQuoteCommand extends Command {
 	_getValue() {
 		const selection = this.editor.model.document.selection;
 
-		const firstBlock = first( selection.getTopMostBlocks() );
+		let selectedBlock = selection.getSelectedElement();
+
+		if ( !selectedBlock ) {
+			selectedBlock = first( selection.getTopMostBlocks() );
+		}
 
 		// In the current implementation, the block quote must be an immediate parent of a block element.
-		return !!( firstBlock && findQuote( firstBlock ) );
+		return !!( selectedBlock && findQuote( selectedBlock ) );
 	}
 
 	/**
