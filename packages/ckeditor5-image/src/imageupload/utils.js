@@ -22,30 +22,28 @@ export function isImageType( file ) {
 }
 
 /**
- * Creates a promise which fetches the image local source (base64 or blob) and returns as a `File` object.
+ * Creates a promise which fetches the image local source (base64 or blob) and resolves with a `File` object.
  *
  * @param {module:engine/view/element~Element} image Image which source to fetch.
- * @returns {Promise} A promise which resolves when image source is fetched and converted to `File` instance.
- * It resolves with object holding initial image element (as `image`) and its file source (as `file`). If
- * the `file` attribute is null, it means fetching failed.
+ * @returns {Promise.<File>} A promise which resolves when image source is fetched and converted to `File` instance.
+ * It resolves with a `File` object. If there were any errors during file processing the promise will be rejected.
  */
 export function fetchLocalImage( image ) {
-	return new Promise( resolve => {
+	return new Promise( ( resolve, reject ) => {
+		const imageSrc = image.getAttribute( 'src' );
+
 		// Fetch works asynchronously and so does not block browser UI when processing data.
-		fetch( image.getAttribute( 'src' ) )
+		fetch( imageSrc )
 			.then( resource => resource.blob() )
 			.then( blob => {
-				const mimeType = getImageMimeType( blob, image.getAttribute( 'src' ) );
+				const mimeType = getImageMimeType( blob, imageSrc );
 				const ext = mimeType.replace( 'image/', '' );
 				const filename = `image.${ ext }`;
 				const file = createFileFromBlob( blob, filename, mimeType );
 
-				resolve( { image, file } );
+				file ? resolve( file ) : reject();
 			} )
-			.catch( () => {
-				// We always resolve a promise so `Promise.all` will not reject if one of many fetch fails.
-				resolve( { image, file: null } );
-			} );
+			.catch( reject );
 	} );
 }
 

@@ -101,36 +101,25 @@ export default class ImageUploadEditing extends Plugin {
 			this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
 				const fetchableImages = Array.from( editor.editing.view.createRangeIn( data.content ) )
 					.filter( value => isLocalImage( value.item ) && !value.item.getAttribute( 'uploadProcessed' ) )
-					.map( value => fetchLocalImage( value.item ) );
+					.map( value => { return { promise: fetchLocalImage( value.item ), imageElement: value.item }; } );
 
 				if ( !fetchableImages.length ) {
 					return;
 				}
 
-				evt.stop();
+				const writer = new UpcastWriter();
 
-				Promise.all( fetchableImages ).then( items => {
-					const writer = new UpcastWriter();
+				for ( const fetchableImage of fetchableImages ) {
+					// Set attribute marking that the image was processed already.
+					writer.setAttribute( 'uploadProcessed', true, fetchableImage.imageElement );
 
-					for ( const item of items ) {
-						if ( !item.file ) {
-							// Failed to fetch image or create a file instance, remove image element.
-							writer.remove( item.image );
-						} else {
-							// Set attribute marking the image as processed.
-							writer.setAttribute( 'uploadProcessed', true, item.image );
+					const loader = fileRepository.createLoader( fetchableImage.promise );
 
-							const loader = fileRepository.createLoader( item.file );
-
-							if ( loader ) {
-								writer.setAttribute( 'src', '', item.image );
-								writer.setAttribute( 'uploadId', loader.id, item.image );
-							}
-						}
+					if ( loader ) {
+						writer.setAttribute( 'src', '', fetchableImage.imageElement );
+						writer.setAttribute( 'uploadId', loader.id, fetchableImage.imageElement );
 					}
-
-					editor.plugins.get( 'Clipboard' ).fire( 'inputTransformation', data );
-				} );
+				}
 			} );
 		}
 
@@ -229,7 +218,7 @@ export default class ImageUploadEditing extends Plugin {
 				}
 
 				// Might be 'aborted'.
-				if ( loader.status == 'error' ) {
+				if ( loader.status == 'error' && error ) {
 					notification.showWarning( error, {
 						title: t( 'Upload failed' ),
 						namespace: 'upload'
