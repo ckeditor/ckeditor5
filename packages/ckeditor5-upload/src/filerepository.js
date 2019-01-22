@@ -183,14 +183,16 @@ export default class FileRepository extends Plugin {
 
 		// Store also file => loader mapping so loader can be retrieved by file instance returned upon Promise resolution.
 		if ( fileOrPromise instanceof Promise ) {
-			loader.file
-				.then( file => {
-					this._loadersMap.set( file, loader );
-				} ).catch( () => {
-					// There was an error fetching file, so do not add anything to `this._loadersMap`.
-					// Also the error will be handled by `FileLoader` so no action is required here.
-				} );
+			loader.file.then( file => {
+				this._loadersMap.set( file, loader );
+			} );
 		}
+
+		// Catch the file promise rejection. If there are no `catch` closures, the browser
+		// will throw an error (see https://github.com/ckeditor/ckeditor5-upload/pull/90).
+		loader.file.catch( () => {
+			// The error will be handled by `FileLoader` so no action is required here.
+		} );
 
 		loader.on( 'change:uploaded', () => {
 			let aggregatedUploaded = 0;
