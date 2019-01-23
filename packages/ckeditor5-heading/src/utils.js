@@ -1,4 +1,9 @@
 /**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
  * Returns heading options as defined in `config.heading.options` but processed to consider
  * editor localization, i.e. to display {@link module:heading/heading~HeadingOption}
  * in the correct language.
