@@ -1574,13 +1574,13 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it', () => {
 			const node = new Element( 'paragraph' );
 
-			const allowedParent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
 
 		it( 'should return position ancestor that allows to insert given node to it - works with a string too', () => {
-			const allowedParent = schema.findAllowedParent( 'paragraph', Position._createAt( r1bQp, 0 ) );
+			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'paragraph' );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
@@ -1588,7 +1588,7 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.equal( r1bQp );
 		} );
@@ -1602,7 +1602,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1616,7 +1616,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new Element( 'div' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1624,13 +1624,13 @@ describe( 'Schema', () => {
 		it( 'should return null when there is no allowed ancestor for given position', () => {
 			const node = new Element( 'section' );
 
-			const parent = schema.findAllowedParent( node, Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
 
 		it( 'should return null when there is no allowed ancestor for given position – works with a string too', () => {
-			const parent = schema.findAllowedParent( 'section', Position._createAt( r1bQp, 0 ) );
+			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'section' );
 
 			expect( parent ).to.null;
 		} );
