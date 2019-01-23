@@ -368,9 +368,9 @@ Since accessing the editor toolbar is not possible until after the editor instan
 		methods: {
 			onReady( editor )  {
 				// Insert the toolbar before the editable area.
-				editor.ui.view.editable.element.parentElement.insertBefore(
+				editor.ui.getEditableElement().parentElement.insertBefore(
 					editor.ui.view.toolbar.element,
-					editor.ui.view.editable.element
+					editor.ui.getEditableElement()
 				);
 			}
 		}
@@ -413,7 +413,7 @@ This directive specifies the editor to be used by the component. It must directl
 
 ### `tag-name`
 
-By default, the editor component creates a `<div>` container which is used as an element passed to the editor (e.g. {@link module:editor-classic/classiceditor~ClassicEditor#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
+By default, the editor component creates a `<div>` container which is used as an element passed to the editor (e.g. {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `ClassicEditor#element`}). The element can be configured, so for example to create a `<textarea>`, use the following directive:
 
 ```html
 <ckeditor :editor="editor" tag-name="textarea"></ckeditor>
