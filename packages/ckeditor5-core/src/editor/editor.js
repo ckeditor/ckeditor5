@@ -297,7 +297,8 @@ export default class Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => {
-						editor.fire( 'dataReady' );
+						// Fire `data#ready` event manually as `data#init()` method is not used.
+						editor.data.fire( 'ready' );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
@@ -309,15 +310,8 @@ export default class Editor {
 mix( Editor, ObservableMixin );
 
 /**
- * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
- * any data initially, this event will be fired right before {@link #event:ready}.
- *
- * @event dataReady
- */
-
-/**
  * Fired when {@link module:core/plugincollection~PluginCollection#event:ready plugins},
- * and {@link #event:dataReady data} and all additional editor components are ready.
+ * and {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static

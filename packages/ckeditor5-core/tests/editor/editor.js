@@ -386,14 +386,14 @@ describe( 'Editor', () => {
 			class EventWatcher extends Plugin {
 				init() {
 					this.editor.plugins.on( 'ready', spy );
-					this.editor.on( 'dataReady', spy );
+					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
 				}
 			}
 
 			return Editor.create( { plugins: [ EventWatcher ] } )
 				.then( () => {
-					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'dataReady-editor', 'ready-editor' ] );
+					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'ready-datacontroller', 'ready-editor' ] );
 				} );
 		} );
 	} );

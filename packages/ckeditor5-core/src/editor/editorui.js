@@ -126,7 +126,7 @@ export default class EditorUI {
 	 * Fired when the editor UI is ready.
 	 *
 	 * Fired after {@link module:core/plugincollection~PluginCollection#event:ready} and before
-	 * {@link module:core/editor/editor~Editor#event:dataReady}.
+	 * {@link module:engine/controller/datacontroller~DataController#event:ready}.
 	 *
 	 * @event ready
 	 */

@@ -70,7 +70,7 @@ mix( Plugin, ObservableMixin );
  *				// `listenTo()` and `editor` are available thanks to `Plugin`.
  *				// By using `listenTo()` you will ensure that the listener is removed when
  *				// the plugin is destroyed.
- *				this.listenTo( this.editor, 'dataReady', () => {
+ *				this.listenTo( this.editor.data, 'ready', () => {
  *					// Do something when the data is ready.
  *				} );
  *			}

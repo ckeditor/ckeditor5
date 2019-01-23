@@ -123,7 +123,7 @@ describe( 'ClassicTestEditor', () => {
 				init() {
 					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'dataReady', spy );
+					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
 				}
 			}
@@ -136,7 +136,7 @@ describe( 'ClassicTestEditor', () => {
 					expect( fired ).to.deep.equal( [
 						'ready-plugincollection',
 						'ready-classictesteditorui',
-						'dataReady-classictesteditor',
+						'ready-datacontroller',
 						'ready-classictesteditor'
 					] );
 
