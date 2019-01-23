@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,7 +7,7 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { toImageWidget, isImageWidget, isImageWidgetSelected, isImage, isImageAllowed, insertImage } from '../../src/image/utils';
+import { toImageWidget, isImageWidget, getSelectedImageWidget, isImage, isImageAllowed, insertImage } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -57,7 +57,7 @@ describe( 'image widget utils', () => {
 		} );
 	} );
 
-	describe( 'isImageWidgetSelected()', () => {
+	describe( 'getSelectedImageWidget()', () => {
 		let frag;
 
 		it( 'should return true when image widget is the only element in the selection', () => {
@@ -66,7 +66,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( element, 'on' );
 
-			expect( isImageWidgetSelected( selection ) ).to.be.true;
+			expect( getSelectedImageWidget( selection ) ).to.equal( element );
 		} );
 
 		it( 'should return false when non-widgetized elements is the only element in the selection', () => {
@@ -77,7 +77,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( notWidgetizedElement, 'on' );
 
-			expect( isImageWidgetSelected( selection ) ).to.be.false;
+			expect( getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 
 		it( 'should return false when widget element is not the only element in the selection', () => {
@@ -87,7 +87,7 @@ describe( 'image widget utils', () => {
 
 			const selection = writer.createSelection( writer.createRangeIn( frag ) );
 
-			expect( isImageWidgetSelected( selection ) ).to.be.false;
+			expect( getSelectedImageWidget( selection ) ).to.be.null;
 		} );
 	} );
 

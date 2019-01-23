@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,7 @@
  */
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import { isImageWidgetSelected } from '../utils';
+import { getSelectedImageWidget } from '../utils';
 
 /**
  * A helper utility that positions the
@@ -20,7 +20,7 @@ import { isImageWidgetSelected } from '../utils';
 export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
-	if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
+	if ( getSelectedImageWidget( editor.editing.view.document.selection ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );
