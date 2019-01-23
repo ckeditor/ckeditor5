@@ -599,7 +599,7 @@ describe( 'BlockQuote integration', () => {
 			);
 		} );
 
-		it.only( 'wraps image+paragraph in table cell', () => {
+		it( 'wraps image+paragraph in table cell', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
@@ -621,7 +621,7 @@ describe( 'BlockQuote integration', () => {
 			);
 		} );
 
-		it.only( 'unwraps image+paragraph in table cell', () => {
+		it( 'unwraps image+paragraph in table cell', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
