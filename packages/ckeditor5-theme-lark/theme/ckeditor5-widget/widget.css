@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -48,7 +48,17 @@
 	}
 }
 
-.ck .ck-widget.ck-widget_selectable {
+.ck-editor__editable > .ck-widget.ck-widget_with-selection-handler:first-child,
+.ck-editor__editable blockquote > .ck-widget.ck-widget_with-selection-handler:first-child {
+	/* Do not crop selection handler if a widget is a first-child in the blockquote or in the root editable.
+	In fact, anything with overflow: hidden.
+	https://github.com/ckeditor/ckeditor5-block-quote/issues/28
+	https://github.com/ckeditor/ckeditor5-widget/issues/44
+	https://github.com/ckeditor/ckeditor5-widget/issues/66 */
+	margin-top: calc(1em + var(--ck-widget-handler-icon-size));
+}
+
+.ck .ck-widget.ck-widget_with-selection-handler {
 	& .ck-widget__selection-handler {
 		padding: 4px;
 		box-sizing: border-box;
