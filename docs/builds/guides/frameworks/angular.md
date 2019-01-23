@@ -83,9 +83,9 @@ export class MyComponent {
 	public Editor = DecoupledEditor;
 
 	public onReady( editor ) {
-		editor.ui.view.editable.element.parentElement.insertBefore(
+		editor.ui.getEditableElement().parentElement.insertBefore(
 			editor.ui.view.toolbar.element,
-			editor.ui.view.editable.element
+			editor.ui.getEditableElement()
 		);
 	}
 }
