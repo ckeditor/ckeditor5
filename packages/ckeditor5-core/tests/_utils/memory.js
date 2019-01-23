@@ -11,7 +11,7 @@ const GARBAGE_COLLECTOR_TIMEOUT = 500;
 /**
  * Memory tests suite definition that:
  *
- * * skips tests when garbage collector is not available.
+ * * skips tests when garbage collector is not available,
  * * creates/destroys editor element (id = 'mem-editor').
  *
  * This method should be used with dedicated memory usage test case functions:
@@ -41,35 +41,29 @@ export function describeMemoryUsage( callback ) {
 }
 
 /**
- * Single test case for memory usage test. This method will handle memory usage test procedure:
+ * Single test case for memory usage test. Handles the memory leak test procedure.
  *
- * * creating editor instance
- * * recording its memory usage (after garbage collector)
- * * create and destroy editor 10 times
- * * record memory usage after final editor destroy (after garbage collector)
- * * tests if memory grew
+ * 1. Create and destroy the editor instance to pre-fill the memory with some cacheable data.
+ * 2. Record the heap size.
+ * 3. Create and destroy the editor 5 times.
+ * 4. Record the heap size and compare with the previous result.
+ * 5. Fail when exceeded a 1MB treshold (see code comments for why 1MB).
  *
  * See {@link describeMemoryUsage} function for usage details.
  *
  * @param {String} testName Name of a test case.
- * @param {Function} editorCreator Callback which creates editor and returns it's `.create()` promise.
+ * @param {Function} createEditor Callback which creates editor and returns its `.create()` promise.
  */
-export function testMemoryUsage( testName, editorCreator ) {
+export function testMemoryUsage( testName, createEditor ) {
 	it( testName, function() {
 		this.timeout( TEST_TIMEOUT );
 
-		return runTest( editorCreator );
+		return runTest( createEditor );
 	} );
 }
 
-// Runs a single test case. This method will properly setup memory-leak test:
-//
-// * create editor
-// * run garbage collector
-// * record memory allocations
-// * destroy the editor
-// * create & destroy editor multiple times (9) - after each editor creation the test runner will be paused for ~200ms
-function runTest( editorCreator ) {
+// Runs a single test case.
+function runTest( createEditor ) {
 	let memoryAfterFirstStart;
 
 	return Promise
@@ -101,8 +95,8 @@ function runTest( editorCreator ) {
 
 	function createAndDestroy() {
 		return Promise.resolve()
-			.then( editorCreator )
-			.then( destroy );
+			.then( createEditor )
+			.then( destroyEditor );
 	}
 }
 
@@ -121,7 +115,7 @@ function removeEditorElement() {
 	document.getElementById( 'mem-editor' ).remove();
 }
 
-function destroy( editor ) {
+function destroyEditor( editor ) {
 	return editor.destroy();
 }
 
