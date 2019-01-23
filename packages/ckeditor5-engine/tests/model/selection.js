@@ -1102,6 +1102,20 @@ describe( 'Selection', () => {
 			);
 		} );
 
+		it( 'does not go beyond limit elements', () => {
+			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
+
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
+
+			model.schema.extend( 'p', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
+
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
+
 		// Map all elements to data of its first child text node.
 		function toText( elements ) {
 			return Array.from( elements ).map( el => {
@@ -1113,11 +1127,11 @@ describe( 'Selection', () => {
 	describe( 'getTopMostBlocks()', () => {
 		beforeEach( () => {
 			model.schema.register( 'p', { inheritAllFrom: '$block' } );
-			model.schema.register( 'lvl0', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
-			model.schema.register( 'lvl1', { allowIn: 'lvl0', isLimit: true } );
-			model.schema.register( 'lvl2', { allowIn: 'lvl1', isObject: true } );
+			model.schema.register( 'table', { isBlock: true, isLimit: true, isObject: true, allowIn: '$root' } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isObject: true } );
 
-			model.schema.extend( 'p', { allowIn: 'lvl2' } );
+			model.schema.extend( 'p', { allowIn: 'tableCell' } );
 		} );
 
 		it( 'returns an iterator', () => {
@@ -1154,28 +1168,24 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns only top most blocks', () => {
-			setData( model, '[<p>foo</p><lvl0><lvl1><lvl2><p>bar</p></lvl2></lvl1></lvl0><p>baz</p>]' );
+			setData( model, '[<p>foo</p><table><tableRow><tableCell><p>bar</p></tableCell></tableRow></table><p>baz</p>]' );
 
-			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#foo', 'lvl0', 'p#baz' ] );
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#foo', 'table', 'p#baz' ] );
 		} );
 
 		it( 'returns only selected blocks even if nested in other blocks', () => {
-			setData( model, '<p>foo</p><lvl0><lvl1><lvl2><p>[b]ar</p></lvl2></lvl1></lvl0><p>baz</p>' );
+			setData( model, '<p>foo</p><table><tableRow><tableCell><p>[b]ar</p></tableCell></tableRow></table><p>baz</p>' );
 
 			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'p#bar' ] );
 		} );
 
-		// Map all elements to names. If element contains child text node it will be appended to name with '#'.
-		function stringifyBlocks( elements ) {
-			return Array.from( elements ).map( el => {
-				const name = el.name;
+		it( 'returns only selected blocks even if nested in other blocks (selection on the block)', () => {
+			model.schema.register( 'blk', { allowIn: [ '$root', 'tableCell' ], isObject: true, isBlock: true } );
 
-				const firstChild = el.getChild( 0 );
-				const hasText = firstChild && firstChild.data;
+			setData( model, '<table><tableRow><tableCell><p>foo</p>[<blk></blk><p>bar]</p></tableCell></tableRow></table>' );
 
-				return hasText ? `${ name }#${ firstChild.data }` : name;
-			} );
-		}
+			expect( stringifyBlocks( doc.selection.getTopMostBlocks() ) ).to.deep.equal( [ 'blk', 'p#bar' ] );
+		} );
 	} );
 
 	describe( 'attributes interface', () => {
@@ -1351,4 +1361,16 @@ describe( 'Selection', () => {
 			expect( doc.selection.containsEntireContent() ).to.equal( false );
 		} );
 	} );
+
+	// Map all elements to names. If element contains child text node it will be appended to name with '#'.
+	function stringifyBlocks( elements ) {
+		return Array.from( elements ).map( el => {
+			const name = el.name;
+
+			const firstChild = el.getChild( 0 );
+			const hasText = firstChild && firstChild.data;
+
+			return hasText ? `${ name }#${ firstChild.data }` : name;
+		} );
+	}
 } );

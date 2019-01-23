@@ -809,10 +809,25 @@ function isUnvisitedBlockContainer( element, visited ) {
 }
 
 // Finds the lowest element in position's ancestors which is a block.
+// It will search until first ancestor that is a limit element.
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
+	const schema = position.parent.document.model.schema;
+
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeSelf: true } );
-	const block = ancestors.find( element => isUnvisitedBlockContainer( element, visited ) );
+
+	let hasParentLimit = false;
+
+	const block = ancestors.find( element => {
+		// Stop searching after first parent node that is limit element.
+		if ( hasParentLimit ) {
+			return false;
+		}
+
+		hasParentLimit = schema.isLimit( element );
+
+		return !hasParentLimit && isUnvisitedBlockContainer( element, visited );
+	} );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
 	// the found block may be a child of another block.
