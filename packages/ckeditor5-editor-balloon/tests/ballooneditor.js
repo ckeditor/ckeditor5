@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,6 +21,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'BalloonEditor', () => {
 	let editor, editorElement;
@@ -122,14 +125,6 @@ describe( 'BalloonEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
-
-		it( 'editor.element should contain the whole editor (with UI) element', () => {
-			return BalloonEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
-			} );
-		} );
 	} );
 
 	describe( 'create()', () => {
@@ -158,7 +153,6 @@ describe( 'BalloonEditor', () => {
 		it( 'attaches editable UI as view\'s DOM root', () => {
 			const domRoot = editor.editing.view.getDomRoot();
 
-			expect( domRoot ).to.equal( editor.element );
 			expect( domRoot ).to.equal( editor.ui.view.editable.element );
 		} );
 
@@ -215,7 +209,6 @@ describe( 'BalloonEditor', () => {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -226,7 +219,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -249,28 +242,6 @@ describe( 'BalloonEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is ready', () => {
-			let isRendered;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isRendered = this.editor.ui.view.isRendered;
-					} );
-				}
-			}
-
-			return BalloonEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isRendered ).to.be.true;
 
 					editor = newEditor;
 				} );
@@ -338,5 +309,18 @@ describe( 'BalloonEditor', () => {
 				} )
 				.then( newEditor => newEditor.destroy() );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => BalloonEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
