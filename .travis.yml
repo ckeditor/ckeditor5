@@ -20,7 +20,9 @@ before_install:
 install:
 - yarn add mgit2 --ignore-workspace-root-check
 - mgit sync --resolver-url-template="https://github.com/\${ path }.git"
-- yarn
+- git checkout package.json yarn.lock
+- rm -rf node_modules
+- yarn install
 script:
 - yarn run test --reporter=dots
 - yarn run docs:api --validate-only
