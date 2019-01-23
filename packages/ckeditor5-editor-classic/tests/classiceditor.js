@@ -187,12 +187,12 @@ describe( 'ClassicEditor', () => {
 			const fired = [];
 
 			function spy( evt ) {
-				fired.push( evt.name );
+				fired.push( `${ evt.name }-${ evt.source.constructor.name.toLowerCase() }` );
 			}
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'pluginsReady', spy );
+					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
@@ -204,7 +204,8 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal(
+						[ 'ready-plugincollection', 'ready-classiceditorui', 'dataReady-classiceditor', 'ready-classiceditor' ] );
 
 					editor = newEditor;
 				} );
