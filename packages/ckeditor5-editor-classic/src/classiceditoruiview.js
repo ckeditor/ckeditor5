@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,8 +11,6 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import '../theme/classiceditor.css';
 
@@ -68,21 +66,5 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 
 		this.top.add( this.stickyPanel );
 		this.main.add( this.editable );
-	}
-
-	/**
-	 * **Deprecated** since `v12.0.0`. The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 *
-	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
-	 *
-	 * @deprecated v12.0.0 The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 * @readonly
-	 * @member {HTMLElement} #editableElement
-	 */
-	get editableElement() {
-		log.warn( 'deprecated-ui-view-editableElement: The ClassicEditorUIView#editableElement property is deprecated.' );
-		return this.editable.editableElement;
 	}
 }

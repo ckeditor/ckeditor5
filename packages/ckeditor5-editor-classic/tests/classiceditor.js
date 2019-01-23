@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,6 +20,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -172,20 +175,6 @@ describe( 'ClassicEditor', () => {
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
 			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
-				expect( editor.element ).to.equal( editor.ui.view.element );
-			} );
-
-			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
-				return ClassicEditor.create( '<p>Hello world!</p>', {
-					plugins: [ Paragraph ]
-				} ).then( editor => {
-					expect( editor.element ).to.equal( editor.ui.view.element );
-
-					return editor.destroy();
-				} );
-			} );
 		} );
 	} );
 
@@ -205,7 +194,6 @@ describe( 'ClassicEditor', () => {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -216,7 +204,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -239,28 +227,6 @@ describe( 'ClassicEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is rendered', () => {
-			let isReady;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.isRendered;
-					} );
-				}
-			}
-
-			return ClassicEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isReady ).to.be.true;
 
 					editor = newEditor;
 				} );
@@ -332,5 +298,18 @@ describe( 'ClassicEditor', () => {
 					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => ClassicEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );

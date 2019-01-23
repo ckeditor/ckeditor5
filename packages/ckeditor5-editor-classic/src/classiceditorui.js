@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -84,14 +84,22 @@ export default class ClassicEditorUI extends EditorUI {
 
 		view.render();
 
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to BalloonEditor.create().
+		const editableElement = editable.element;
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
+
 		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 		// editable areas (roots) but the classic editor has only one.
-		this._editableElements.push( view.editable );
+		this._editableElements.set( editable.name, editableElement );
 
 		// Let the global focus tracker know that the editable UI element is focusable and
 		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
 		// as long as the editable is focused (e.g. the user is typing).
-		this.focusTracker.add( editable.editableElement );
+		this.focusTracker.add( editableElement );
 
 		// Let the editable UI element respond to the changes in the global editor focus
 		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
@@ -101,10 +109,6 @@ export default class ClassicEditorUI extends EditorUI {
 		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
 		// toolbar gets focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-
-		// The editable UI and editing root should share the same name. Then name is used
-		// to recognize the particular editable, for instance in ARIA attributes.
-		view.editable.name = editingRoot.rootName;
 
 		// The UI must wait until the data is ready to attach certain actions that operate
 		// on the editing view–level. They use the view writer to set attributes on the editable
@@ -130,19 +134,20 @@ export default class ClassicEditorUI extends EditorUI {
 		}
 
 		this._initToolbar();
-		this.ready();
+		this.fire( 'ready' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		const view = this.view;
+		const view = this._view;
 		const editingView = this.editor.editing.view;
 
 		this._elementReplacer.restore();
 		view.editable.disableEditingRootListeners();
 		editingView.detachDomRoot( view.editable.name );
+		view.destroy();
 
 		super.destroy();
 	}

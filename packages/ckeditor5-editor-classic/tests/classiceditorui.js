@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'ClassicEditorUI', () => {
-	let editor, view, ui;
+	let editor, view, ui, viewElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +31,7 @@ describe( 'ClassicEditorUI', () => {
 
 				ui = editor.ui;
 				view = ui.view;
+				viewElement = view.element;
 			} );
 	} );
 
@@ -185,6 +186,12 @@ describe( 'ClassicEditorUI', () => {
 		} );
 	} );
 
+	describe( 'element()', () => {
+		it( 'returns correct element instance', () => {
+			expect( ui.element ).to.equal( viewElement );
+		} );
+	} );
+
 	describe( 'getEditableElement()', () => {
 		it( 'returns editable element (default)', () => {
 			expect( ui.getEditableElement() ).to.equal( view.editable.element );
@@ -194,8 +201,8 @@ describe( 'ClassicEditorUI', () => {
 			expect( ui.getEditableElement( 'main' ) ).to.equal( view.editable.element );
 		} );
 
-		it( 'returns null if editable with the given name is absent', () => {
-			expect( ui.getEditableElement( 'absent' ) ).to.null;
+		it( 'returns undefined if editable with the given name is absent', () => {
+			expect( ui.getEditableElement( 'absent' ) ).to.be.undefined;
 		} );
 	} );
 } );
@@ -236,8 +243,6 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
-						editor.ui.ready();
-						editor.fire( 'uiReady' );
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
 					} )

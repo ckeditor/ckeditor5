@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -16,7 +16,6 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -73,14 +72,6 @@ export default class ClassicEditor extends Editor {
 		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale, this.editing.view ) );
 
 		attachToForm( this );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
-		return this.ui.element;
 	}
 
 	/**
@@ -159,15 +150,15 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * If a source element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
-	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
+	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
 	 * (the original one will be hidden and the editor will be injected next to it).
 	 *
 	 * Moreover, the data will be set back to the source element once the editor is destroyed and
 	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
 	 * automatic integration with native web forms).
 	 *
-	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
-	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
+	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually (by accessing
+	 * it via the {@link module:editor-classic/classiceditorui~ClassicEditorUI#getEditableElement `editor.ui.getEditableElement()`} method).
 	 *
 	 * See the examples above to learn more.
 	 *
@@ -182,7 +173,7 @@ export default class ClassicEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editable.editableElement ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => {
 						const initialData = isElement( sourceElementOrData ) ?
 							getDataFromElement( sourceElementOrData ) :
