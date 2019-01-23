@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -75,11 +75,15 @@ export default class InlineEditorUI extends EditorUI {
 
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to InlineEditor.create().
-		const editableElement = editable.editableElement;
+		const editableElement = editable.element;
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
 
 		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 		// editable areas (roots) but the inline editor has only one.
-		this._editableElements.push( editable );
+		this._editableElements.set( editable.name, editableElement );
 
 		// Let the global focus tracker know that the editable UI element is focusable and
 		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
@@ -94,10 +98,6 @@ export default class InlineEditorUI extends EditorUI {
 		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
 		// toolbar gets focused.
 		editable.bind( 'isFocused' ).to( this.focusTracker );
-
-		// The editable UI and editing root should share the same name. Then name is used
-		// to recognize the particular editable, for instance in ARIA attributes.
-		editable.name = editingRoot.rootName;
 
 		// Bind the editable UI element to the editing view, making it an end– and entry–point
 		// of the editor's engine. This is where the engine meets the UI.
@@ -120,18 +120,19 @@ export default class InlineEditorUI extends EditorUI {
 		} );
 
 		this._initToolbar();
-		this.ready();
+		this.fire( 'ready' );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		const view = this.view;
+		const view = this._view;
 		const editingView = this.editor.editing.view;
 
 		view.editable.disableEditingRootListeners();
 		editingView.detachDomRoot( view.editable.name );
+		view.destroy();
 
 		super.destroy();
 	}
@@ -144,7 +145,7 @@ export default class InlineEditorUI extends EditorUI {
 	_initToolbar() {
 		const editor = this.editor;
 		const view = this.view;
-		const editableElement = view.editable.editableElement;
+		const editableElement = view.editable.element;
 		const editingView = editor.editing.view;
 		const toolbar = view.toolbar;
 

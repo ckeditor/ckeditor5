@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,7 +17,6 @@ import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -75,14 +74,6 @@ export default class InlineEditor extends Editor {
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
-		return this.ui.element;
 	}
 
 	/**

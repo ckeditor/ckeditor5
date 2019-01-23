@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,8 +11,6 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
@@ -74,7 +72,7 @@ export default class InlineEditorUIView extends EditorUIView {
 
 		/**
 		 * A set of positioning functions used by the {@link #panel} to float around
-		 * {@link #editableElement}.
+		 * {@link #element editableElement}.
 		 *
 		 * The positioning functions are as follows:
 		 *
@@ -146,26 +144,10 @@ export default class InlineEditorUIView extends EditorUIView {
 	}
 
 	/**
-	 * **Deprecated** since `v12.0.0`. The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 *
-	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
-	 *
-	 * @deprecated v12.0.0 The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 * @readonly
-	 * @member {HTMLElement} #editableElement
-	 */
-	get editableElement() {
-		log.warn( 'deprecated-ui-view-editableElement: The InlineEditorUIView#editableElement property is deprecated.' );
-		return this.editable.editableElement;
-	}
-
-	/**
 	 * Determines the panel top position of the {@link #panel} in {@link #panelPositions}.
 	 *
 	 * @private
-	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #editableElement}.
+	 * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #element}.
 	 * @param {module:utils/dom/rect~Rect} panelRect Rect of the {@link #panel}.
 	 */
 	_getPanelPositionTop( editableRect, panelRect ) {

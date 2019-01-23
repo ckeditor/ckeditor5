@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,6 +20,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
 describe( 'InlineEditor', () => {
 	let editor, editorElement;
@@ -112,14 +115,6 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'editor.element should contain the whole editor (with UI) element', () => {
-			return InlineEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
-			} );
-		} );
-
 		it( 'editor.ui.element should contain the whole editor (with UI) element', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
@@ -204,7 +199,6 @@ describe( 'InlineEditor', () => {
 				init() {
 					this.editor.on( 'pluginsReady', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'uiReady', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -215,7 +209,7 @@ describe( 'InlineEditor', () => {
 					plugins: [ EventWatcher ]
 				} )
 				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 					editor = newEditor;
 				} );
@@ -238,28 +232,6 @@ describe( 'InlineEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is ready', () => {
-			let isReady;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.isRendered;
-					} );
-				}
-			}
-
-			return InlineEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isReady ).to.be.true;
 
 					editor = newEditor;
 				} );
@@ -327,5 +299,18 @@ describe( 'InlineEditor', () => {
 				} )
 				.then( newEditor => newEditor.destroy() );
 		} );
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => InlineEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
