@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -37,6 +37,16 @@ export default class ImageTextAlternativeUI extends Plugin {
 	init() {
 		this._createButton();
 		this._createForm();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this._form.destroy();
 	}
 
 	/**
