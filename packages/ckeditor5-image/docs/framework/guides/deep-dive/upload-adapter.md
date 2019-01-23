@@ -8,7 +8,7 @@ classes: custom-adapter
 
 In this guide you will learn the basic concepts of the file upload architecture in CKEditor 5 WYSIWYG editor which will help you implement your own custom upload adapter.
 
-While this guide is mainly focused on the image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developing all sorts of file upload adapters for different file types like documents or media.
+While this guide is mainly focused on the image upload (the most common kind of upload), keep in mind that the presented concepts and the API allow developing all sorts of file upload adapters for different file types like PDFs, movies, etc.
 
 <info-box>
 	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
@@ -57,7 +57,7 @@ Before we start, let's make all terms used in this guide are clear.
 			<td>
 				<p>A top–level plugin that responds to actions of the users (e.g. when a file is dropped into the content) by uploading files to the server and updating the edited content once the upload finished. This particular plugin handles user actions related to uploading images.</p>
 				<p>It uses the <code>FileRepository</code> API to spawn upload adapter instances, triggers the image upload (<code>UploadAdapter.upload()</code>) and finally uses the data returned by the adapter's upload promise to update the image in the editor content.</p>
-				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more</p>
+				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more.</p>
 			</td>
 		</tr>
 	</tbody>
@@ -114,7 +114,7 @@ In its simplest form, a custom adapter implementing the `UploadAdapter` interfac
 ```js
 class MyUploadAdapter {
 	constructor( loader ) {
-		// Save Loader instance to update upload progress.
+		// The FileLoader instance to use during the upload.
 		this.loader = loader;
 	}
 
@@ -148,7 +148,7 @@ editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
 
 ## Implementing a custom upload adapter
 
-In this section, you are going to implement and enable a custom upload adapter. The adapter will use the native [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to send files returned by the loader to a pre–configured URL on the server, handling `error`, `abort`, `load`, and `progress` events fired by the request.
+In this section, we are going to implement and enable a custom upload adapter. The adapter will use the native [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to send files returned by the loader to a pre–configured URL on the server, handling `error`, `abort`, `load`, and `progress` events fired by the request.
 
 <info-box>
 	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
@@ -405,7 +405,7 @@ Here is what the complete implementation of an `XMLHttpRequest`–based upload a
 ```js
 class MyUploadAdapter {
 	constructor( loader ) {
-		// Save Loader instance to update upload progress.
+		// The FileLoader instance to use during the upload.
 		this.loader = loader;
 	}
 
