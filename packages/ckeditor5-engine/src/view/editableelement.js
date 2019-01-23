@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -75,6 +75,10 @@ export default class EditableElement extends ContainerElement {
 		} else {
 			return ( type == 'editableElement' && name == this.name ) || super.is( type, name );
 		}
+	}
+
+	destroy() {
+		this.stopListening();
 	}
 
 	/**

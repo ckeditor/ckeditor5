@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -119,6 +119,14 @@ export default class Document {
 	 */
 	registerPostFixer( postFixer ) {
 		this._postFixers.add( postFixer );
+	}
+
+	/**
+	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
+	 */
+	destroy() {
+		this.roots.map( root => root.destroy() );
+		this.stopListening();
 	}
 
 	/**

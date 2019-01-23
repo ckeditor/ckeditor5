@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -351,7 +351,9 @@ export default class DataController {
 	/**
 	 * Removes all event listeners set by the DataController.
 	 */
-	destroy() {}
+	destroy() {
+		this.stopListening();
+	}
 
 	/**
 	 * Checks if all provided root names are existing editor roots.

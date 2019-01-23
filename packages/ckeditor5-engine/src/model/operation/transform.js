@@ -1,3 +1,8 @@
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
 import InsertOperation from './insertoperation';
 import AttributeOperation from './attributeoperation';
 import RenameOperation from './renameoperation';
