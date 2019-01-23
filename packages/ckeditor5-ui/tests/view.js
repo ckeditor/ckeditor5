@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -324,6 +324,8 @@ describe( 'View', () => {
 
 		it( 'can be called multiple times', () => {
 			expect( () => {
+				view.destroy();
+				view.destroy();
 				view.destroy();
 			} ).to.not.throw();
 		} );

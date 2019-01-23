@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
  */
 
 /* global document, window, Event */
@@ -43,6 +44,9 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	afterEach( () => {
+		// Blur editor so `blockToolbar.buttonView` `window.resize` listener is detached.
+		editor.ui.focusTracker.isFocused = false;
+
 		element.remove();
 		return editor.destroy();
 	} );

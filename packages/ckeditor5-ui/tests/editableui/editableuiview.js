@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -34,7 +34,7 @@ describe( 'EditableUIView', () => {
 			view = new EditableUIView( locale );
 
 			view.render();
-			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element ).to.equal( view._editableElement );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
@@ -48,7 +48,7 @@ describe( 'EditableUIView', () => {
 
 			view.render();
 			expect( view.element ).to.equal( editableElement );
-			expect( view.element ).to.equal( view.editableElement );
+			expect( view.element ).to.equal( view._editableElement );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -52,7 +52,7 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView = this._createToolbarView();
 
 		/**
-		 * Tracks the focus of the {@link module:ui/editableui/editableuiview~EditableUIView#editableElement}
+		 * Tracks the focus of the {@link module:core/editor/editorui~EditorUI#getEditableElement editable element}
 		 * and the {@link #toolbarView}. When both are blurred then the toolbar should hide.
 		 *
 		 * @readonly
@@ -62,7 +62,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Wait for the EditorUI#init. EditableElement is not available before.
 		editor.ui.once( 'ready', () => {
-			this.focusTracker.add( editor.ui.view.editable.editableElement );
+			this.focusTracker.add( editor.ui.getEditableElement() );
 			this.focusTracker.add( this.toolbarView.element );
 		} );
 
@@ -254,9 +254,12 @@ export default class BalloonToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._fireSelectionChangeDebounced.cancel();
-		this.stopListening();
 		super.destroy();
+
+		this.stopListening();
+		this._fireSelectionChangeDebounced.cancel();
+		this.toolbarView.destroy();
+		this.focusTracker.destroy();
 	}
 
 	/**
