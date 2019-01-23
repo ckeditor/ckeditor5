@@ -10,7 +10,7 @@ order: 20
 
 The following legal notices apply to CKEditor 5 Builds and all software from CKEditor 5 Ecosystem included with it.
 
-Copyright (c) 2003-2018, CKSource Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2019, CKSource Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
 
