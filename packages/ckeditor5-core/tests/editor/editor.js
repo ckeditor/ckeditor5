@@ -380,12 +380,12 @@ describe( 'Editor', () => {
 			const fired = [];
 
 			function spy( evt ) {
-				fired.push( evt.name );
+				fired.push( `${ evt.name }-${ evt.source.constructor.name.toLowerCase() }` );
 			}
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.on( 'pluginsReady', spy );
+					this.editor.plugins.on( 'ready', spy );
 					this.editor.on( 'dataReady', spy );
 					this.editor.on( 'ready', spy );
 				}
@@ -393,7 +393,7 @@ describe( 'Editor', () => {
 
 			return Editor.create( { plugins: [ EventWatcher ] } )
 				.then( () => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
+					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'dataReady-editor', 'ready-editor' ] );
 				} );
 		} );
 	} );
@@ -419,8 +419,8 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginD ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'pluginsReady' );
-			editor.on( 'pluginsReady', pluginsReadySpy );
+			const pluginsReadySpy = sinon.spy().named( 'ready' );
+			editor.plugins.on( 'ready', pluginsReadySpy );
 
 			return editor.initPlugins()
 				.then( () => {
@@ -738,8 +738,8 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginE ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'pluginsReady' );
-			editor.on( 'pluginsReady', pluginsReadySpy );
+			const pluginsReadySpy = sinon.spy().named( 'ready' );
+			editor.plugins.on( 'ready', pluginsReadySpy );
 
 			return editor.initPlugins()
 				.then( () => {
@@ -757,8 +757,8 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginF ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'pluginsReady' );
-			editor.on( 'pluginsReady', pluginsReadySpy );
+			const pluginsReadySpy = sinon.spy().named( 'ready' );
+			editor.plugins.on( 'ready', pluginsReadySpy );
 
 			return editor.initPlugins()
 				.then( () => {
