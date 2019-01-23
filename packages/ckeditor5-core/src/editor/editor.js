@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,7 +21,6 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import '@ckeditor/ckeditor5-utils/src/version';
 
@@ -320,20 +319,7 @@ export default class Editor {
 	}
 }
 
-const ObservableMixinExtended = Object.assign( {}, ObservableMixin, {
-
-	_listenTo: ObservableMixin.listenTo,
-
-	listenTo( emitter, event, callback, options = {} ) {
-		if ( event === 'uiReady' ) {
-			log.warn( 'deprecated-editor-event-uiReady: The editor#uiReady event is deprecated.' );
-		}
-
-		this._listenTo( emitter, event, callback, options );
-	}
-} );
-
-mix( Editor, ObservableMixinExtended );
+mix( Editor, ObservableMixin );
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.

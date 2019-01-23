@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,10 +8,8 @@ import Editor from '../../src/editor/editor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import testUtils from '../_utils/utils';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /* global document */
 
@@ -32,23 +30,6 @@ describe( 'EditorUI', () => {
 	describe( 'constructor()', () => {
 		it( 'should set #editor', () => {
 			expect( ui.editor ).to.equal( editor );
-		} );
-
-		it( 'should not set #view by default', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			expect( ui._view ).to.undefined;
-			expect( ui.view ).to.undefined;
-		} );
-
-		it( 'should set #view if passed', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
-
-			const editor = new Editor();
-			const view = new View();
-			const ui = new EditorUI( editor, view );
-
-			expect( ui.view ).to.equal( view );
 		} );
 
 		it( 'should create #componentFactory factory', () => {
@@ -73,22 +54,6 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledOnce( spy );
 
 			editor.editing.view.document.fire( 'layoutChanged' );
-
-			sinon.assert.calledTwice( spy );
-		} );
-	} );
-
-	describe( 'ready()', () => {
-		it( 'should fire ready event', () => {
-			const spy = sinon.spy();
-
-			ui.on( 'ready', spy );
-
-			ui.ready();
-
-			sinon.assert.calledOnce( spy );
-
-			ui.ready();
 
 			sinon.assert.calledTwice( spy );
 		} );
@@ -119,23 +84,15 @@ describe( 'EditorUI', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should destroy the #view if present', () => {
-			testUtils.sinon.stub( log, 'warn' ).callsFake( () => {} );
+		it( 'should reset editables array', () => {
+			ui._editableElements.set( 'foo', {} );
+			ui._editableElements.set( 'bar', {} );
 
-			const editor = new Editor();
-			const view = new View();
-			const ui = new EditorUI( editor, view );
-			const spy = sinon.spy( view, 'destroy' );
+			expect( ui._editableElements.size ).to.equal( 2 );
 
 			ui.destroy();
 
-			sinon.assert.called( spy );
-		} );
-
-		it( 'should not throw when view absent', () => {
-			expect( () => {
-				ui.destroy();
-			} ).to.not.throw();
+			expect( ui._editableElements.size ).to.equal( 0 );
 		} );
 	} );
 
@@ -144,7 +101,7 @@ describe( 'EditorUI', () => {
 			const ui = new EditorUI( editor );
 			const editableMock = { name: 'main', element: document.createElement( 'div' ) };
 
-			ui._editableElements.push( editableMock );
+			ui._editableElements.set( editableMock.name, editableMock.element );
 
 			expect( ui.getEditableElement() ).to.equal( editableMock.element );
 		} );
@@ -154,8 +111,8 @@ describe( 'EditorUI', () => {
 			const editableMock1 = { name: 'root1', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.push( editableMock1 );
-			ui._editableElements.push( editableMock2 );
+			ui._editableElements.set( editableMock1.name, editableMock1.element );
+			ui._editableElements.set( editableMock2.name, editableMock2.element );
 
 			expect( ui.getEditableElement( 'root1' ) ).to.equal( editableMock1.element );
 			expect( ui.getEditableElement( 'root2' ) ).to.equal( editableMock2.element );
@@ -164,20 +121,22 @@ describe( 'EditorUI', () => {
 		it( 'should return null if editable with specified name does not exist', () => {
 			const ui = new EditorUI( editor );
 
-			expect( ui.getEditableElement() ).to.null;
+			expect( ui.getEditableElement() ).to.be.undefined;
 		} );
 	} );
 
 	describe( 'getEditableElementsNames()', () => {
-		it( 'should return array of names', () => {
+		it( 'should return iterable object of names', () => {
 			const ui = new EditorUI( editor );
 			const editableMock1 = { name: 'main', element: document.createElement( 'div' ) };
 			const editableMock2 = { name: 'root2', element: document.createElement( 'p' ) };
 
-			ui._editableElements.push( editableMock1 );
-			ui._editableElements.push( editableMock2 );
+			ui._editableElements.set( editableMock1.name, editableMock1.element );
+			ui._editableElements.set( editableMock2.name, editableMock2.element );
 
-			expect( ui.getEditableElementsNames() ).to.deep.equal( [ 'main', 'root2' ] );
+			const names = ui.getEditableElementsNames();
+			expect( names[ Symbol.iterator ] ).to.instanceof( Function );
+			expect( Array.from( names ) ).to.deep.equal( [ 'main', 'root2' ] );
 		} );
 
 		it( 'should return empty array if no editables', () => {

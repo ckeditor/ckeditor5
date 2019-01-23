@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -24,10 +23,8 @@ export default class EditorUI {
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} [view] The view of the UI. This parameter is **deprecated**
-	 * since `v12.0.0` and should not be used.
 	 */
-	constructor( editor, view ) {
+	constructor( editor ) {
 		/**
 		 * The editor that the UI belongs to.
 		 *
@@ -58,66 +55,12 @@ export default class EditorUI {
 		 * Stores all editable elements used by the editor instance.
 		 *
 		 * @protected
-		 * @member {Array.<module:ui/editorui/editoruiview~EditorUIView>}
+		 * @member {Map.<String,HTMLElement>}
 		 */
-		this._editableElements = [];
-
-		/**
-		 * **Deprecated** since `v12.0.0`. This property is deprecated and should not be used. Use the property
-		 * from the subclass directly instead, for example
-		 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#_view ClassicEditorUI#_view}.
-		 *
-		 * The main (top–most) view of the editor UI.
-		 *
-		 * @deprecated v12.0.0 This property is deprecated and should not be used. Use the property
-		 * from the subclass directly instead, for example
-		 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#_view ClassicEditorUI#_view}.
-		 * @private
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
-		 */
-		this._view = view;
-
-		// Check if `view` parameter was passed. It is deprecated and should not be used.
-		if ( view ) {
-			/**
-			 * This error is thrown when  the deprecated `view` parameter is passed to the
-			 * {@link module:core/editor/editorui~EditorUI#constructor EditorUI constructor}. Only subclass (for example
-			 * {@link module:editor-classic/classiceditorui~ClassicEditorUI}) should use it without passing it further.
-			 *
-			 * @error deprecated-editorui-view-param-in-constructor
-			 */
-			log.warn( 'deprecated-editorui-view-param-in-constructor: The EditorUI#constructor `view` parameter is deprecated.' );
-		}
+		this._editableElements = new Map();
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
-	}
-
-	/**
-	 * **Deprecated** since `v12.0.0`. This property is deprecated and should not be used. Use the property
-	 * from the subclass directly instead, for example
-	 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view}.
-	 *
-	 * The main (top–most) view of the editor UI.
-	 *
-	 * @deprecated v12.0.0 This property is deprecated and should not be used. Use the property
-	 * from the subclass directly instead, for example
-	 * {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view}.
-	 * @readonly
-	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-	 */
-	get view() {
-		/**
-		 * This error is thrown when a component tries to access deprecated
-		 * {@link module:core/editor/editorui~EditorUI#element `EditorUI view`} property. Instead the `view` property
-		 * from the subclass (for example {@link module:editor-classic/classiceditorui~ClassicEditorUI#view ClassicEditorUI#view})
-		 * should be accessed directly.
-		 *
-		 * @error deprecated-editorui-view
-		 */
-		log.warn( 'deprecated-editorui-view: The EditorUI#view property is deprecated.' );
-
-		return this._view;
 	}
 
 	/**
@@ -140,17 +83,6 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Fires the {@link module:core/editor/editorui~EditorUI#event:ready `ready`} event.
-	 *
-	 * This method should be called after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
-	 * {@link module:core/editor/editor~Editor#event:dataReady} by the specific editor creator.
-	 */
-	ready() {
-		this.fire( 'ready' );
-		this.editor.fire( 'uiReady' );
-	}
-
-	/**
 	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update `update`} event.
 	 *
 	 * This method should be called when the editor UI (e.g. positions of its balloons) needs to be updated due to
@@ -166,32 +98,28 @@ export default class EditorUI {
 	destroy() {
 		this.stopListening();
 
-		this._editableElements = [];
+		this.focusTracker.destroy();
 
-		if ( this._view ) {
-			this._view.destroy();
-		}
+		this._editableElements = new Map();
 	}
 
 	/**
 	 * Returns the editable editor element with the given name or null if editable does not exist.
 	 *
 	 * @param {String} [rootName=main] The editable name.
-	 * @returns {HTMLElement|null}
+	 * @returns {HTMLElement|undefined}
 	 */
 	getEditableElement( rootName = 'main' ) {
-		const editable = this._editableElements.find( editable => editable.name === rootName );
-
-		return editable ? editable.element : null;
+		return this._editableElements.get( rootName );
 	}
 
 	/**
 	 * Returns array of names of all editor editable elements.
 	 *
-	 * @returns {Array.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getEditableElementsNames() {
-		return this._editableElements.map( editable => editable.name );
+		return this._editableElements.keys();
 	}
 
 	/**
