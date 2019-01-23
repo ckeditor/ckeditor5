@@ -224,30 +224,17 @@ export default class Editor {
 		const that = this;
 		const config = this.config;
 
-		return loadPlugins()
-			.then( loadedPlugins => {
-				return initPlugins( loadedPlugins, 'init' )
-					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
+		return Promise.resolve()
+			.then( () => {
+				const plugins = config.get( 'plugins' ) || [];
+				const removePlugins = config.get( 'removePlugins' ) || [];
+				const extraPlugins = config.get( 'extraPlugins' ) || [];
+
+				return that.plugins.load( plugins.concat( extraPlugins ), removePlugins );
 			} )
-			.then( () => this.fire( 'pluginsReady' ) );
-
-		function loadPlugins() {
-			const plugins = config.get( 'plugins' ) || [];
-			const removePlugins = config.get( 'removePlugins' ) || [];
-			const extraPlugins = config.get( 'extraPlugins' ) || [];
-
-			return that.plugins.load( plugins.concat( extraPlugins ), removePlugins );
-		}
-
-		function initPlugins( loadedPlugins, method ) {
-			return loadedPlugins.reduce( ( promise, plugin ) => {
-				if ( !plugin[ method ] ) {
-					return promise;
-				}
-
-				return promise.then( plugin[ method ].bind( plugin ) );
-			}, Promise.resolve() );
-		}
+			.then( loadedPlugins => {
+				return this.plugins.init( loadedPlugins );
+			} );
 	}
 
 	/**
@@ -322,12 +309,6 @@ export default class Editor {
 mix( Editor, ObservableMixin );
 
 /**
- * Fired after {@link #initPlugins plugins are initialized}.
- *
- * @event pluginsReady
- */
-
-/**
  * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
  * any data initially, this event will be fired right before {@link #event:ready}.
  *
@@ -335,8 +316,8 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
- * editor components are ready.
+ * Fired when {@link module:core/plugincollection~PluginCollection#event:ready plugins},
+ * and {@link #event:dataReady data} and all additional editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static

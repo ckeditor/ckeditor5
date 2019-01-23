@@ -10,8 +10,13 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
+ *
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class PluginCollection {
 	/**
@@ -294,6 +299,29 @@ export default class PluginCollection {
 	}
 
 	/**
+	 * Runs the initialisation process ({@link module:core/plugin~Plugin#init `init()`}
+	 * and {@link module:core/plugin~Plugin#afterInit `afterInit()`} methods) for the given set of plugins.
+	 *
+	 * @param {<Array.<module:core/plugin~PluginInterface>} plugins The array of plugins to initialise.
+	 * @returns {Promise} A promise which resolves after all given plugins have been initialized.
+	 */
+	init( plugins ) {
+		return initPlugins( plugins, 'init' )
+			.then( () => initPlugins( plugins, 'afterInit' ) )
+			.then( () => { this.fire( 'ready' ); } );
+
+		function initPlugins( loadedPlugins, method ) {
+			return loadedPlugins.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
+
+				return promise.then( plugin[ method ].bind( plugin ) );
+			}, Promise.resolve() );
+		}
+	}
+
+	/**
 	 * Destroys all loaded plugins.
 	 *
 	 * @returns {Promise}
@@ -363,3 +391,11 @@ export default class PluginCollection {
 		}
 	}
 }
+
+mix( PluginCollection, EmitterMixin );
+
+/**
+ * Fired after {@link #init plugins are initialized}.
+ *
+ * @event ready
+ */
