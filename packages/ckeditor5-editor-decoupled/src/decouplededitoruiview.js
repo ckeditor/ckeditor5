@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,8 +11,6 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
-
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * The decoupled editor UI view. It is a virtual view providing an inline
@@ -71,21 +69,5 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		super.render();
 
 		this.registerChild( [ this.toolbar, this.editable ] );
-	}
-
-	/**
-	 * **Deprecated** since `v12.0.0`. The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 *
-	 * The element which is the main editable element (usually the one with `contentEditable="true"`).
-	 *
-	 * @deprecated v12.0.0 The {@link module:ui/editableui/editableuiview~EditableUIView#editableElement
-	 * `EditableUIView editableElement`} could be used instead.
-	 * @readonly
-	 * @member {HTMLElement} #editableElement
-	 */
-	get editableElement() {
-		log.warn( 'deprecated-ui-view-editableElement: The DecoupledEditorUIView#editableElement property is deprecated.' );
-		return this.editable.editableElement;
 	}
 }

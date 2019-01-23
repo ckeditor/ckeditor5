@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,7 +15,6 @@ import DecoupledEditorUIView from './decouplededitoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 import { isElement } from 'lodash-es';
 
 /**
@@ -76,16 +75,6 @@ export default class DecoupledEditor extends Editor {
 
 		const view = new DecoupledEditorUIView( this.locale, this.sourceElement, this.editing.view );
 		this.ui = new DecoupledEditorUI( this, view );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	get element() {
-		log.warn( 'deprecated-editor-element: The editor#element is deprecated.' );
-		// This editor has no single "main UI element". Its editable and toolbar are exposed separately and need
-		// to be added to the DOM manually by the consumer.
-		return null;
 	}
 
 	/**

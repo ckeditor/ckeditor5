@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,6 +19,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -42,10 +45,6 @@ describe( 'DecoupledEditor', () => {
 
 		it( 'has a Data Interface', () => {
 			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
-		} );
-
-		it( 'implements the EditorWithUI interface', () => {
-			expect( editor.element ).to.be.null;
 		} );
 
 		it( 'creates main root element', () => {
@@ -195,7 +194,6 @@ describe( 'DecoupledEditor', () => {
 						init() {
 							this.editor.on( 'pluginsReady', spy );
 							this.editor.ui.on( 'ready', spy );
-							this.editor.on( 'uiReady', spy );
 							this.editor.on( 'dataReady', spy );
 							this.editor.on( 'ready', spy );
 						}
@@ -206,7 +204,7 @@ describe( 'DecoupledEditor', () => {
 							plugins: [ EventWatcher ]
 						} )
 						.then( newEditor => {
-							expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'uiReady', 'dataReady', 'ready' ] );
+							expect( fired ).to.deep.equal( [ 'pluginsReady', 'ready', 'dataReady', 'ready' ] );
 
 							return newEditor.destroy();
 						} );
@@ -229,28 +227,6 @@ describe( 'DecoupledEditor', () => {
 						} )
 						.then( newEditor => {
 							expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-							return newEditor.destroy();
-						} );
-				} );
-
-				it( 'fires uiReady once UI is rendered', () => {
-					let isReady;
-
-					class EventWatcher extends Plugin {
-						init() {
-							this.editor.on( 'uiReady', () => {
-								isReady = this.editor.ui.view.isRendered;
-							} );
-						}
-					}
-
-					return DecoupledEditor
-						.create( getElementOrData(), {
-							plugins: [ EventWatcher ]
-						} )
-						.then( newEditor => {
-							expect( isReady ).to.be.true;
 
 							return newEditor.destroy();
 						} );
@@ -330,5 +306,18 @@ describe( 'DecoupledEditor', () => {
 					} );
 			} );
 		}
+	} );
+
+	describeMemoryUsage( () => {
+		testMemoryUsage(
+			'should not grow on multiple create/destroy',
+			() => DecoupledEditor
+				.create( document.querySelector( '#mem-editor' ), {
+					plugins: [ ArticlePluginSet ],
+					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					}
+				} ) );
 	} );
 } );
