@@ -103,6 +103,12 @@ export default class DataController {
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		this.decorate( 'init' );
+
+		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
+		// to plug into initialisation pipeline without interrupting the initialisation flow.
+		this.on( 'init', () => {
+			this.fire( 'ready' );
+		}, { priority: 'lowest' } );
 	}
 
 	/**
@@ -371,6 +377,12 @@ export default class DataController {
 
 		return true;
 	}
+
+	/**
+	 * Event fired once data initialisation has finished.
+	 *
+	 * @event ready
+	 */
 
 	/**
 	 * Event fired by decorated {@link #init} method.
