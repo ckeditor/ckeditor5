@@ -302,7 +302,7 @@ export default class PluginCollection {
 	 * Runs the initialisation process ({@link module:core/plugin~Plugin#init `init()`}
 	 * and {@link module:core/plugin~Plugin#afterInit `afterInit()`} methods) for the given set of plugins.
 	 *
-	 * @param {<Array.<module:core/plugin~PluginInterface>} plugins The array of plugins to initialise.
+	 * @param {Array.<module:core/plugin~PluginInterface>} plugins The array of plugins to initialise.
 	 * @returns {Promise} A promise which resolves after all given plugins have been initialized.
 	 */
 	init( plugins ) {
