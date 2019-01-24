@@ -42,6 +42,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
  * (as most editor implementations do).
  *
+ * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
@@ -280,30 +281,6 @@ export default class Editor {
 	 */
 	execute( ...args ) {
 		this.commands.execute( ...args );
-	}
-
-	/**
-	 * Creates and initializes a new editor instance.
-	 *
-	 * @param {Object} config The editor config. You can find the list of config options in
-	 * {@link module:core/editor/editorconfig~EditorConfig}.
-	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
-	 */
-	static create( config ) {
-		return new Promise( resolve => {
-			const editor = new this( config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => {
-						// Fire `data#ready` event manually as `data#init()` method is not used.
-						editor.data.fire( 'ready' );
-						editor.fire( 'ready' );
-					} )
-					.then( () => editor )
-			);
-		} );
 	}
 }
 

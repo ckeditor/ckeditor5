@@ -16,6 +16,24 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import Command from '../../src/command';
 import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
 
+class TestEditor extends Editor {
+	static create( config ) {
+		return new Promise( resolve => {
+			const editor = new this( config );
+
+			resolve(
+				editor.initPlugins()
+					.then( () => {
+						// Fire `data#ready` event manually as `data#init()` method is not used.
+						editor.data.fire( 'ready' );
+						editor.fire( 'ready' );
+					} )
+					.then( () => editor )
+			);
+		} );
+	}
+}
+
 class PluginA extends Plugin {
 	constructor( editor ) {
 		super( editor );
@@ -96,8 +114,8 @@ class PluginF {
 
 describe( 'Editor', () => {
 	afterEach( () => {
-		delete Editor.builtinPlugins;
-		delete Editor.defaultConfig;
+		delete TestEditor.builtinPlugins;
+		delete TestEditor.defaultConfig;
 	} );
 
 	it( 'imports the version helper', () => {
@@ -106,7 +124,7 @@ describe( 'Editor', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create a new editor instance', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.commands ).to.be.an.instanceof( CommandCollection );
@@ -125,7 +143,7 @@ describe( 'Editor', () => {
 				}
 			};
 
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				bar: 'foo',
 				foo: {
 					c: 3
@@ -142,7 +160,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should bind editing.view.document#isReadOnly to the editor', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			editor.isReadOnly = false;
 
@@ -155,7 +173,7 @@ describe( 'Editor', () => {
 
 		it( 'should activate #keystrokes', () => {
 			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			sinon.assert.calledWith( spy, editor.editing.view.document );
 		} );
@@ -163,7 +181,7 @@ describe( 'Editor', () => {
 
 	describe( 'plugins', () => {
 		it( 'should be empty on new editor', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( getPlugins( editor ) ).to.be.empty;
 		} );
@@ -171,14 +189,14 @@ describe( 'Editor', () => {
 
 	describe( 'locale', () => {
 		it( 'is instantiated and t() is exposed', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.locale ).to.be.instanceof( Locale );
 			expect( editor.t ).to.equal( editor.locale.t );
 		} );
 
 		it( 'is configured with the config.language', () => {
-			const editor = new Editor( { language: 'pl' } );
+			const editor = new TestEditor( { language: 'pl' } );
 
 			expect( editor.locale.language ).to.equal( 'pl' );
 		} );
@@ -186,13 +204,13 @@ describe( 'Editor', () => {
 
 	describe( 'state', () => {
 		it( 'is `initializing` initially', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.state ).to.equal( 'initializing' );
 		} );
 
 		it( 'is `ready` after initialization chain', () => {
-			return Editor.create().then( editor => {
+			return TestEditor.create().then( editor => {
 				expect( editor.state ).to.equal( 'ready' );
 
 				return editor.destroy();
@@ -200,7 +218,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'is `destroyed` after editor destroy', () => {
-			return Editor.create().then( editor => {
+			return TestEditor.create().then( editor => {
 				return editor.destroy().then( () => {
 					expect( editor.state ).to.equal( 'destroyed' );
 				} );
@@ -208,7 +226,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'is observable', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 			const spy = sinon.spy();
 
 			editor.on( 'change:state', spy );
@@ -219,7 +237,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'reacts on #ready event', done => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.state ).to.equal( 'initializing' );
 
@@ -232,7 +250,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'reacts on #destroy event', done => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.state ).to.equal( 'initializing' );
 
@@ -247,13 +265,13 @@ describe( 'Editor', () => {
 
 	describe( 'isReadOnly', () => {
 		it( 'is false initially', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor.isReadOnly ).to.false;
 		} );
 
 		it( 'is observable', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 			const spy = sinon.spy();
 
 			editor.on( 'change:isReadOnly', spy );
@@ -266,13 +284,13 @@ describe( 'Editor', () => {
 
 	describe( 'conversion', () => {
 		it( 'should have conversion property', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( editor ).to.have.property( 'conversion' );
 		} );
 
 		it( 'should have defined default conversion groups', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( () => {
 				// Would throw if any of this group won't exist.
@@ -286,7 +304,7 @@ describe( 'Editor', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should fire "destroy"', () => {
-			return Editor.create().then( editor => {
+			return TestEditor.create().then( editor => {
 				const spy = sinon.spy();
 
 				editor.on( 'destroy', spy );
@@ -298,7 +316,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should destroy all components it initialized', () => {
-			return Editor.create().then( editor => {
+			return TestEditor.create().then( editor => {
 				const dataDestroySpy = sinon.spy( editor.data, 'destroy' );
 				const modelDestroySpy = sinon.spy( editor.model, 'destroy' );
 				const editingDestroySpy = sinon.spy( editor.editing, 'destroy' );
@@ -318,7 +336,7 @@ describe( 'Editor', () => {
 
 		it( 'should wait for the full init before destroying', done => {
 			const spy = sinon.spy();
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			editor.on( 'destroy', () => {
 				done();
@@ -338,7 +356,7 @@ describe( 'Editor', () => {
 				execute() {}
 			}
 
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			const command = new SomeCommand( editor );
 			sinon.spy( command, 'execute' );
@@ -350,7 +368,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should throw an error if specified command has not been added', () => {
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			expect( () => {
 				editor.execute( 'command' );
@@ -360,7 +378,7 @@ describe( 'Editor', () => {
 
 	describe( 'create()', () => {
 		it( 'should return a promise that resolves properly', () => {
-			const promise = Editor.create();
+			const promise = TestEditor.create();
 
 			expect( promise ).to.be.an.instanceof( Promise );
 
@@ -368,7 +386,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'loads plugins', () => {
-			return Editor.create( { plugins: [ PluginA ] } )
+			return TestEditor.create( { plugins: [ PluginA ] } )
 				.then( editor => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
 
@@ -391,16 +409,16 @@ describe( 'Editor', () => {
 				}
 			}
 
-			return Editor.create( { plugins: [ EventWatcher ] } )
+			return TestEditor.create( { plugins: [ EventWatcher ] } )
 				.then( () => {
-					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'ready-datacontroller', 'ready-editor' ] );
+					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'ready-datacontroller', 'ready-testeditor' ] );
 				} );
 		} );
 	} );
 
 	describe( 'initPlugins()', () => {
 		it( 'should load plugins', () => {
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginB ]
 			} );
 
@@ -415,7 +433,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should initialize plugins in the right order', () => {
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginD ]
 			} );
 
@@ -468,7 +486,7 @@ describe( 'Editor', () => {
 				}
 			}
 
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginSync ]
 			} );
 
@@ -514,7 +532,7 @@ describe( 'Editor', () => {
 				}
 			}
 
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginSync ]
 			} );
 
@@ -534,7 +552,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins built in the Editor even if the passed config is empty', () => {
 			Editor.builtinPlugins = [ PluginA, PluginB, PluginC ];
 
-			const editor = new Editor();
+			const editor = new TestEditor();
 
 			return editor.initPlugins()
 				.then( () => {
@@ -549,7 +567,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
 			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [
 					'A'
 				]
@@ -568,7 +586,7 @@ describe( 'Editor', () => {
 
 			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [
 					'A',
 					'B',
@@ -591,7 +609,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins inherited from the base Editor', () => {
 			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
-			class CustomEditor extends Editor {}
+			class CustomEditor extends TestEditor {}
 
 			const editor = new CustomEditor( {
 				plugins: [
@@ -610,7 +628,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins build into Editor\'s subclass', () => {
-			class CustomEditor extends Editor {}
+			class CustomEditor extends TestEditor {}
 
 			CustomEditor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
@@ -632,7 +650,7 @@ describe( 'Editor', () => {
 
 		describe( '"removePlugins" config', () => {
 			it( 'should prevent plugins from being loaded', () => {
-				const editor = new Editor( {
+				const editor = new TestEditor( {
 					plugins: [ PluginA, PluginD ],
 					removePlugins: [ PluginD ]
 				} );
@@ -647,7 +665,7 @@ describe( 'Editor', () => {
 			it( 'should not load plugins built in the Editor', () => {
 				Editor.builtinPlugins = [ PluginA, PluginD ];
 
-				const editor = new Editor( {
+				const editor = new TestEditor( {
 					removePlugins: [ 'D' ]
 				} );
 
@@ -659,7 +677,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should not load plugins build into Editor\'s subclass', () => {
-				class CustomEditor extends Editor {}
+				class CustomEditor extends TestEditor {}
 
 				CustomEditor.builtinPlugins = [ PluginA, PluginD ];
 
@@ -677,7 +695,7 @@ describe( 'Editor', () => {
 
 		describe( '"extraPlugins" config', () => {
 			it( 'should load additional plugins', () => {
-				const editor = new Editor( {
+				const editor = new TestEditor( {
 					plugins: [ PluginA, PluginC ],
 					extraPlugins: [ PluginB ]
 				} );
@@ -690,7 +708,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should not duplicate plugins', () => {
-				const editor = new Editor( {
+				const editor = new TestEditor( {
 					plugins: [ PluginA, PluginB ],
 					extraPlugins: [ PluginB ]
 				} );
@@ -705,7 +723,7 @@ describe( 'Editor', () => {
 			it( 'should not duplicate plugins built in the Editor', () => {
 				Editor.builtinPlugins = [ PluginA, PluginB ];
 
-				const editor = new Editor( {
+				const editor = new TestEditor( {
 					extraPlugins: [ 'B' ]
 				} );
 
@@ -717,7 +735,7 @@ describe( 'Editor', () => {
 			} );
 
 			it( 'should not duplicate plugins build into Editor\'s subclass', () => {
-				class CustomEditor extends Editor {}
+				class CustomEditor extends TestEditor {}
 
 				CustomEditor.builtinPlugins = [ PluginA, PluginB ];
 
@@ -734,7 +752,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should not call "afterInit" method if plugin does not have this method', () => {
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginE ]
 			} );
 
@@ -753,7 +771,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should not call "init" method if plugin does not have this method', () => {
-			const editor = new Editor( {
+			const editor = new TestEditor( {
 				plugins: [ PluginA, PluginF ]
 			} );
 
