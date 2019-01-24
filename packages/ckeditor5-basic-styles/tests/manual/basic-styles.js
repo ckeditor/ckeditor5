@@ -14,7 +14,7 @@ import Strikethrough from '../../src/strikethrough';
 import Underline from '../../src/underline';
 import Code from '../../src/code';
 import Subscript from '../../src/subscript';
-import Superscript from '../../src/Superscript';
+import Superscript from '../../src/superscript';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
