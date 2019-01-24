@@ -395,7 +395,7 @@ export default class Schema {
 	 * Example:
 	 *
 	 *		// Disallow bold on $text inside heading1.
-	 *		schema.addChildCheck( ( context, attributeName ) => {
+	 *		schema.addAttributeCheck( ( context, attributeName ) => {
 	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
 	 *				return false;
 	 *			}
