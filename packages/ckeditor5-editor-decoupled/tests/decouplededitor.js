@@ -70,13 +70,15 @@ describe( 'DecoupledEditor', () => {
 
 			class AsyncDataInit extends Plugin {
 				init() {
-					this.editor.on( 'dataReady', () => spy( 'dataReady' ) );
+					this.editor.data.on( 'ready', () => spy( 'ready' ) );
 
 					this.editor.data.on( 'init', evt => {
 						evt.stop();
 						evt.return = new Promise( resolve => {
 							resolver = () => {
 								spy( 'asyncInit' );
+								// Since we stop `init` event, `data#ready` needs to be fired manually.
+								this.editor.data.fire( 'ready' );
 								resolve();
 							};
 						} );
@@ -88,7 +90,7 @@ describe( 'DecoupledEditor', () => {
 				plugins: [ Paragraph, Bold, AsyncDataInit ]
 			} ).then( editor => {
 				sinon.assert.calledWith( spy.firstCall, 'asyncInit' );
-				sinon.assert.calledWith( spy.secondCall, 'dataReady' );
+				sinon.assert.calledWith( spy.secondCall, 'ready' );
 
 				editor.destroy().then( done );
 			} );
@@ -194,7 +196,7 @@ describe( 'DecoupledEditor', () => {
 						init() {
 							this.editor.plugins.on( 'ready', spy );
 							this.editor.ui.on( 'ready', spy );
-							this.editor.on( 'dataReady', spy );
+							this.editor.data.on( 'ready', spy );
 							this.editor.on( 'ready', spy );
 						}
 					}
@@ -207,31 +209,9 @@ describe( 'DecoupledEditor', () => {
 							expect( fired ).to.deep.equal( [
 								'ready-plugincollection',
 								'ready-decouplededitorui',
-								'dataReady-decouplededitor',
+								'ready-datacontroller',
 								'ready-decouplededitor'
 							] );
-
-							return newEditor.destroy();
-						} );
-				} );
-
-				it( 'fires dataReady once data is loaded', () => {
-					let data;
-
-					class EventWatcher extends Plugin {
-						init() {
-							this.editor.on( 'dataReady', () => {
-								data = this.editor.getData();
-							} );
-						}
-					}
-
-					return DecoupledEditor
-						.create( getElementOrData(), {
-							plugins: [ EventWatcher, Paragraph, Bold ]
-						} )
-						.then( newEditor => {
-							expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
 							return newEditor.destroy();
 						} );
