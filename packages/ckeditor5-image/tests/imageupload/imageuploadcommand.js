@@ -107,30 +107,16 @@ describe( 'ImageUploadCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be true when the selection is inside isLimit element which allows image', () => {
-			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
-			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
-			model.schema.extend( '$block', { allowIn: 'limit' } );
+		it( 'should be true when the selection is inside block element inside isLimit element which allows image', () => {
+			model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true } );
+			model.schema.extend( '$block', { allowIn: 'tableCell' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'tableCell' } );
 
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'outerObject', view: 'outerObject' } );
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'limit', view: 'limit' } );
-
-			setModelData( model, '<outerObject><limit>[]</limit></outerObject>' );
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be true when the selection is inside isLimit element which allows image', () => {
-			model.schema.register( 'outerObject', { isObject: true, isBlock: true, allowIn: '$root' } );
-			model.schema.register( 'limit', { isLimit: true, allowIn: 'outerObject' } );
-			model.schema.extend( '$block', { allowIn: 'limit' } );
-
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'outerObject', view: 'outerObject' } );
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'limit', view: 'limit' } );
-
-			setModelData( model, '<outerObject><limit><paragraph>foo[]</paragraph></limit></outerObject>' );
-
-			expect( command.isEnabled ).to.be.true;
+			setModelData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 		} );
 
 		it( 'should be false when schema disallows image', () => {
