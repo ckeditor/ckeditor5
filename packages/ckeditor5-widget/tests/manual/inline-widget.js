@@ -18,10 +18,12 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
 		super( editor );
+
 		editor.model.schema.register( 'placeholder', {
 			allowWhere: '$text',
 			isObject: true,
@@ -65,13 +67,44 @@ class InlineWidget extends Plugin {
 			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( modelItem.getAttribute( 'type' ) ) );
 			return widgetElement;
 		}
+
+		this._createToolbarButton();
+	}
+
+	_createToolbarButton() {
+		const editor = this.editor;
+		const t = editor.t;
+
+		editor.ui.componentFactory.add( 'placeholder', locale => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: t( 'Insert placeholder' ),
+				tooltip: true,
+				withText: true
+			} );
+
+			this.listenTo( buttonView, 'execute', () => {
+				const model = editor.model;
+
+				model.change( writer => {
+					const placeholder = writer.createElement( 'placeholder', { type: 'placeholder' } );
+
+					model.insertContent( placeholder );
+
+					writer.setSelection( placeholder, 'on' );
+				} );
+			} );
+
+			return buttonView;
+		} );
 	}
 }
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Widget, InlineWidget ],
-		toolbar: [ 'heading', '|', 'bold', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		editor.model.document.on( 'change', () => {
