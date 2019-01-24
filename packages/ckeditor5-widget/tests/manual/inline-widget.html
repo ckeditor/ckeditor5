@@ -1,0 +1,28 @@
+<div id="editor">
+	<h1>Hello <placeholder>name</placeholder>!</h1>
+
+	<p>We would like to invite you to <placeholder>place</placeholder> that will take place on <placeholder>date</placeholder>.</p>
+</div>
+
+<h2>Model contents:</h2>
+
+<pre id="model"></pre>
+
+<style>
+	placeholder {
+		background: #ffff00;
+		padding: 2px;
+	}
+
+	placeholder::selection{
+		display: none;
+	}
+
+	placeholder:before{
+		content: '{'
+	}
+
+	placeholder:after{
+		content: '}'
+	}
+</style>
