@@ -385,7 +385,11 @@ export default class DataController {
 	 */
 
 	/**
-	 * Event fired by decorated {@link #init} method.
+	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
+	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready} event
+	 * should be fired manually.
+	 *
+	 * The `init` event is fired by decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
 	 *
 	 * @event init
