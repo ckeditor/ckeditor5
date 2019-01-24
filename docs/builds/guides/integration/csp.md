@@ -48,7 +48,8 @@ Some CSP directives have an impact on certain rich text editor features. Here's 
     **Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed Media embed} and {@link features/paste-from-word Paste from Word} features.
 * `style-src 'self' 'unsafe-inline'`: `'unsafe-inline'` is necessary for:
 	* webpack's [style-loader](https://github.com/webpack-contrib/style-loader) to load {@link framework/guides/theme-customization#styles-processing-and-bundling editor UI styles}.
-	**Note**: You can {@link builds/guides/integration/advanced-setup#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
+
+    **Note**: You can {@link builds/guides/integration/advanced-setup#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
 	* certain editor content styles to work properly. For instance, you are going to need it if you want to enable editor features like {@link features/font Font} or {@link features/text-alignment Text alignment} or any other feature that uses inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed Media embed} feature to load media with previews (containing `<iframe>`).
 
