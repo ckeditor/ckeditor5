@@ -386,7 +386,7 @@ export default class DataController {
 
 	/**
 	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
-	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready} event
+	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
 	 * should be fired manually.
 	 *
 	 * The `init` event is fired by decorated {@link #init} method.
