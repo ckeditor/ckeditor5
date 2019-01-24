@@ -28,6 +28,10 @@ Some CSP directives have an impact on certain rich text editor features. Here's 
 * `connect-src 'self'`
 	* Allows the [editor upload features](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload/image-upload.html) to use XMLHttpReqests (AJAX) to upload files to the server, for instance when an image is pasted or dropped into the editor content. The `'self`' value ensures the requests remain within the same host.
 	* Allows [auto–saving editor data](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/saving-data.html#autosave-feature) using XMLHttpReqests.
+
+	**Note**: To use [CKFinder](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload/ckfinder.html) hosted from another domain, make sure the domain is also included in the directive value.
+
+	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/docs/cs/latest/guides/overview.html), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
     **Note**: If CKEditor 5 is served from another host, for instance the [official CDN](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#cdn), make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
