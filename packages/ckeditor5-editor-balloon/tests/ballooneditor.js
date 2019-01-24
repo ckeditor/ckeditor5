@@ -209,7 +209,7 @@ describe( 'BalloonEditor', () => {
 				init() {
 					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
-					this.editor.on( 'dataReady', spy );
+					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
 				}
 			}
@@ -220,29 +220,7 @@ describe( 'BalloonEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( fired ).to.deep.equal(
-						[ 'ready-plugincollection', 'ready-ballooneditorui', 'dataReady-ballooneditor', 'ready-ballooneditor' ] );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires dataReady once data is loaded', () => {
-			let data;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'dataReady', () => {
-						data = this.editor.getData();
-					} );
-				}
-			}
-
-			return BalloonEditor
-				.create( editorElement, {
-					plugins: [ EventWatcher, Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+						[ 'ready-plugincollection', 'ready-ballooneditorui', 'ready-datacontroller', 'ready-ballooneditor' ] );
 
 					editor = newEditor;
 				} );
