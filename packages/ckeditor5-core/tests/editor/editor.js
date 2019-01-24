@@ -24,8 +24,6 @@ class TestEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => {
-						// Fire `data#ready` event manually as `data#init()` method is not used.
-						editor.data.fire( 'ready' );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
@@ -394,24 +392,22 @@ describe( 'Editor', () => {
 				} );
 		} );
 
-		it( 'fires all events in the right order', () => {
+		it( 'fires ready event', () => {
 			const fired = [];
 
 			function spy( evt ) {
-				fired.push( `${ evt.name }-${ evt.source.constructor.name.toLowerCase() }` );
+				fired.push( evt.name );
 			}
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.plugins.on( 'ready', spy );
-					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
 				}
 			}
 
 			return TestEditor.create( { plugins: [ EventWatcher ] } )
 				.then( () => {
-					expect( fired ).to.deep.equal( [ 'ready-plugincollection', 'ready-datacontroller', 'ready-testeditor' ] );
+					expect( fired ).to.deep.equal( [ 'ready' ] );
 				} );
 		} );
 	} );
