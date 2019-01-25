@@ -1017,10 +1017,9 @@ class LiveSelection extends Selection {
 					break;
 				}
 
-				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
-				// It can be done better by using `break;` instead of checking `attrs === null`.
-				if ( value.type == 'text' && attrs === null ) {
+				if ( value.type == 'text' ) {
 					attrs = value.item.getAttributes();
+					break;
 				}
 			}
 		} else {
