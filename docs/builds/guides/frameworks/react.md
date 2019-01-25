@@ -14,16 +14,6 @@ The easiest way to use CKEditor 5 in your React application is by choosing one o
 
 ## Quick start
 
-<info-box>
-	### Compatibility with `create-react-app@2`
-
-	The latest version of `create-react-app` (2.x) does not work with CKEditor 5 Builds due to a [bug (most likely in Babel)](https://github.com/facebook/create-react-app/issues/5387).
-
-	If you want to use CKEditor 5 with an application created via `create-react-app@2` you will need to [eject the configuration even in the development mode](https://github.com/facebook/create-react-app/issues/5387#issuecomment-429255695).
-
-	Until the above issue is resolved, in this guide we will use `create-react-app@1` which does not require ejecting the configuration when testing your application in the development mode. You will have to, however, eject it anyway to [build your app for production](#note-building-for-production).
-</info-box>
-
 Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the build of your choice.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
@@ -134,9 +124,9 @@ class App extends Component {
                         console.log( 'Editor is ready to use!', editor );
 
                         // Insert the toolbar before the editable area.
-                        editor.ui.view.editable.element.parentElement.insertBefore(
+                        editor.ui.getEditableElement().parentElement.insertBefore(
                             editor.ui.view.toolbar.element,
-                            editor.ui.view.editable.element
+                            editor.ui.getEditableElement()
                         );
                     } }
                     onChange={ ( event, editor ) => console.log( { event, editor } ) }
@@ -160,7 +150,7 @@ This guide assumes that you are using [Create React App CLI](https://github.com/
 Install React CLI:
 
 ```bash
-npm install -g create-react-app@1
+npm install -g create-react-app
 ```
 
 Create your project using the CLI and go to the project's directory:
