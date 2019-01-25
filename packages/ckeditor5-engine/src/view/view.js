@@ -135,7 +135,7 @@ export default class View {
 		 * @protected
 		 * @member {Boolean} module:engine/view/view~View#_renderingDisabled
 		 */
-		this._renderingDisabled = false;
+		this._renderingDisabled = true;
 
 		/**
 		 * DowncastWriter instance used in {@link #change change method) callbacks.
@@ -193,7 +193,17 @@ export default class View {
 		//    features (e.g. addPlaceholder()) require dynamic changes of those attributes and they
 		//    cannot be managed by the engine and the UI library at the same time.
 		for ( const { name, value } of domRoot.attributes ) {
-			this._writer.setAttribute( name, viewRoot._initialDomAttributes[ name ] = value, viewRoot );
+			viewRoot._initialDomAttributes[ name ] = value;
+
+			// Do not use writer.setAttribute() for the class attribute. The EditableUIView class
+			// and its descendants could have already set some using the writer.addClass() on the view
+			// document root. They haven't been rendered yet so they are not present in the DOM root.
+			// Using writer.setAttribute( 'class', ... ) would override them completely.
+			if ( name === 'class' ) {
+				this._writer.addClass( value.split( ' ' ), viewRoot );
+			} else {
+				this._writer.setAttribute( name, value, viewRoot );
+			}
 		}
 
 		const onIsReadOnlyChange = () => {
