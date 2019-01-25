@@ -71,15 +71,15 @@ export default class InlineEditorUI extends EditorUI {
 		const editable = view.editable;
 		const editingRoot = editingView.document.getRoot();
 
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
+
 		view.render();
 
 		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
 		// But it can be available earlier if a DOM element has been passed to InlineEditor.create().
 		const editableElement = editable.element;
-
-		// The editable UI and editing root should share the same name. Then name is used
-		// to recognize the particular editable, for instance in ARIA attributes.
-		editable.name = editingRoot.rootName;
 
 		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
 		// editable areas (roots) but the inline editor has only one.
@@ -103,22 +103,7 @@ export default class InlineEditorUI extends EditorUI {
 		// of the editor's engine. This is where the engine meets the UI.
 		editingView.attachDomRoot( editableElement );
 
-		// The UI must wait until the data is ready to attach certain actions that operate
-		// on the editing view–level. They use the view writer to set attributes on the editable
-		// element and doing so before data is loaded into the model (ready) would destroy the
-		// original content.
-		editor.on( 'dataReady', () => {
-			editable.enableEditingRootListeners();
-
-			const placeholderText = editor.config.get( 'placeholder' ) || editor.sourceElement.getAttribute( 'placeholder' );
-
-			if ( placeholderText ) {
-				const placeholderElement = getRootPlaceholderElement( editingRoot );
-
-				addPlaceholder( editingView, placeholderElement, placeholderText );
-			}
-		} );
-
+		this._initPlaceholder();
 		this._initToolbar();
 		this.fire( 'ready' );
 	}
@@ -175,5 +160,24 @@ export default class InlineEditorUI extends EditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar
 		} );
+	}
+
+	/**
+	 * Enable the placeholder text on the editing root, if any was configured.
+	 *
+	 * @private
+	 */
+	_initPlaceholder() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const editingRoot = editingView.document.getRoot();
+
+		const placeholderText = editor.config.get( 'placeholder' ) || editor.sourceElement.getAttribute( 'placeholder' );
+
+		if ( placeholderText ) {
+			const placeholderElement = getRootPlaceholderElement( editingRoot );
+
+			addPlaceholder( editingView, placeholderElement, placeholderText );
+		}
 	}
 }
