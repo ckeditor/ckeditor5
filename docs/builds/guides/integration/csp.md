@@ -27,7 +27,7 @@ Some CSP directives have an impact on certain rich text editor features. Here is
 * `default-src 'none'`: resets the policy and blocks everything. All successive directives work as a white–list. By itself, as long as followed by other directives, it has no impact on the editor.
 * `connect-src 'self'`
 	* Allows the {@link features/image-upload editor upload features} to use [XMLHttpReqests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) (AJAX) to upload files to the server, for instance when an image is pasted or dropped into the editor content. The `'self`' value ensures the requests remain within the same host.
-	* Allows {@link builds/guides/integration/saving-data#autosave-feature auto–saving editor data} using XMLHttpReqests.
+	* Allows {@link builds/guides/integration/saving-data#autosave-feature auto–saving editor data} using `XMLHttpRequest`.
 
 	**Note**: To use {@link features/ckfinder CKFinder} hosted from another domain, make sure the domain is also included in the directive value.
 
