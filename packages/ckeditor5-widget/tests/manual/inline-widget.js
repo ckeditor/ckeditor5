@@ -19,6 +19,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -33,7 +34,7 @@ class InlineWidget extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
 			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( viewWriter, modelItem );
+				const widgetElement = createPlaceholderView( modelItem, viewWriter );
 
 				return toWidget( widgetElement, viewWriter );
 			}
@@ -61,7 +62,7 @@ class InlineWidget extends Plugin {
 			}
 		} );
 
-		function createPlaceholderView( viewWriter, modelItem ) {
+		function createPlaceholderView( modelItem, viewWriter ) {
 			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
 
 			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( modelItem.getAttribute( 'type' ) ) );
@@ -103,7 +104,7 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Widget, InlineWidget ],
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, InlineWidget ],
 		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
