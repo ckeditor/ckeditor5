@@ -237,7 +237,9 @@ const EmitterMixin = {
 					this._delegations = new Map();
 				}
 
-				for ( const eventName of events ) {
+				// Originally there was a for..of loop which unfortunately caused an error in Babel that didn't allow
+				// build an application. See: https://github.com/ckeditor/ckeditor5-react/issues/40.
+				events.forEach( eventName => {
 					const destinations = this._delegations.get( eventName );
 
 					if ( !destinations ) {
@@ -245,7 +247,7 @@ const EmitterMixin = {
 					} else {
 						destinations.set( emitter, nameOrFunction );
 					}
-				}
+				} );
 			}
 		};
 	},
