@@ -41,10 +41,9 @@ export default class EditableUIView extends View {
 		/**
 		 * The name of the editable UI view.
 		 *
-		 * @observable
 		 * @member {String} #name
 		 */
-		this.set( 'name', null );
+		this.name = null;
 
 		/**
 		 * Controls whether the editable is focused, i.e. the user is typing in it.
