@@ -230,6 +230,11 @@ export default class View {
 		const viewRoot = this.document.getRoot( name );
 
 		this.change( writer => {
+			// Remove all root attributes so the element is bare.
+			for ( const attributeName of viewRoot.getAttributeKeys() ) {
+				writer.removeAttribute( attributeName, viewRoot );
+			}
+
 			// Clean-up the changes made by the change:isReadOnly listener.
 			writer.removeAttribute( 'contenteditable', viewRoot );
 
