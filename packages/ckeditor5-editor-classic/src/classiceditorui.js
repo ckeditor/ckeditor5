@@ -31,10 +31,10 @@ export default class ClassicEditorUI extends EditorUI {
 		/**
 		 * The main (top–most) view of the editor UI.
 		 *
-		 * @private
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 * @readonly
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
-		this._view = view;
+		this.view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -51,16 +51,6 @@ export default class ClassicEditorUI extends EditorUI {
 		 * @member {module:utils/elementreplacer~ElementReplacer}
 		 */
 		this._elementReplacer = new ElementReplacer();
-	}
-
-	/**
-	 * The main (top–most) view of the editor UI.
-	 *
-	 * @readonly
-	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-	 */
-	get view() {
-		return this._view;
 	}
 
 	/**
