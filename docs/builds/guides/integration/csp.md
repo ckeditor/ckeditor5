@@ -2,7 +2,7 @@
 # Scope:
 # * Guide developers through the Content Security Policy directives that have an impact on the editor.
 # * List the recommended Content Security Policy settings.
-# * List the minimal Content Security Policy settings.
+# * List the strictest working Content Security Policy settings.
 
 category: builds-integration
 order: 70
@@ -55,7 +55,7 @@ Some CSP directives have an impact on certain rich text editor features. Here's 
 
     **Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
 
-## Minimal configuration
+## Strictest working configuration
 
 Knowing the role of each directive, the most strict set of rules that allows CKEditor 5 to run is as follows:
 
