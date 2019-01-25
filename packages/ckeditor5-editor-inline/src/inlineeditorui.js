@@ -130,7 +130,6 @@ export default class InlineEditorUI extends EditorUI {
 		const view = this._view;
 		const editingView = this.editor.editing.view;
 
-		view.editable.disableEditingRootListeners();
 		editingView.detachDomRoot( view.editable.name );
 		view.destroy();
 
