@@ -42,16 +42,18 @@ export default class InlineEditableUIView extends EditableUIView {
 		} );
 	}
 
-	enableEditingRootListeners() {
-		super.enableEditingRootListeners();
+	render() {
+		super.render();
 
 		const t = this.t;
 		const updateAriaLabelAttribute = () => {
 			this.editingView.change( writer => {
+				const viewRoot = this.editingView.document.getRoot( this.name );
+
 				if ( this.name ) {
-					writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), this.viewRoot );
+					writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
 				} else {
-					writer.removeAttribute( 'aria-label', this.viewRoot );
+					writer.removeAttribute( 'aria-label', viewRoot );
 				}
 			} );
 		};

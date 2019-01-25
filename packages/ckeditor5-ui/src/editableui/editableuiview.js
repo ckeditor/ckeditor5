@@ -55,8 +55,6 @@ export default class EditableUIView extends View {
 		 */
 		this._editableElement = editableElement;
 
-		this.viewRoot = null;
-
 		/**
 		 * Whether an external {@link #_editableElement} was passed into the constructor, which also means
 		 * the view will not render its {@link #template}.
@@ -79,13 +77,11 @@ export default class EditableUIView extends View {
 		} else {
 			this._editableElement = this.element;
 		}
-	}
-
-	enableEditingRootListeners() {
-		const viewRoot = this.viewRoot = this.editingView.domConverter.domToView( this.element );
 
 		const updateFocusClasses = () => {
 			this.editingView.change( writer => {
+				const viewRoot = this.editingView.document.getRoot( this.name );
+
 				writer.addClass( this.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
 				writer.removeClass( this.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
 			} );
