@@ -22,7 +22,7 @@ default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; styl
 
 ## Impact of CSP on editor features
 
-Some CSP directives have an impact on certain rich text editor features. Here's the round-up of directives and their specific roles in the editor:
+Some CSP directives have an impact on certain rich text editor features. Here is the round-up of directives and their specific roles in the editor:
 
 * `default-src 'none'`: resets the policy and blocks everything. All successive directives work as a white–list. By itself, as long as followed by other directives, it has no impact on the editor.
 * `connect-src 'self'`
