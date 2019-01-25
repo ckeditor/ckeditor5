@@ -26,15 +26,15 @@ Some CSP directives have an impact on certain rich text editor features. Here is
 
 * `default-src 'none'`: resets the policy and blocks everything. All successive directives work as a white–list. By itself, as long as followed by other directives, it has no impact on the editor.
 * `connect-src 'self'`
-	* Allows the {@link features/image-upload editor upload features} to use [XMLHttpReqests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) (AJAX) to upload files to the server, for instance when an image is pasted or dropped into the editor content. The `'self`' value ensures the requests remain within the same host.
+	* Allows the {@link features/image-upload editor upload features} to use [`XMLHttpReqests`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) (AJAX) to upload files to the server, for instance, when an image is pasted or dropped into the editor content. The `'self`' value ensures the requests remain within the same host.
 	* Allows {@link builds/guides/integration/saving-data#autosave-feature auto–saving editor data} using `XMLHttpRequest`.
 
 	**Note**: To use {@link features/ckfinder CKFinder} hosted from another domain, make sure the domain is also included in the directive value.
 
-	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance `connect-src 'self' http://*.cke-cs.com`.
+	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance, `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-    **Note**: If CKEditor 5 is served from another host, for instance the {@link builds/guides/integration/installation#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+    **Note**: If CKEditor 5 is served from another host, for instance, the {@link builds/guides/integration/installation#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
 
 	**Note**: To use {@link features/ckfinder CKFinder}, you may need to extend the directive value with `'unsafe-inline' 'unsafe-eval'`.
 
@@ -57,13 +57,13 @@ Some CSP directives have an impact on certain rich text editor features. Here is
 
 ## Strictest working configuration
 
-Knowing the role of each directive, the most strict set of rules that allows CKEditor 5 to run is as follows:
+Knowing the role of each directive, the strictest set of rules that allows CKEditor 5 to run is as follows:
 
 ```
 default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self'; style-src 'self'; frame-src 'self'
 ```
 
-but it comes with some trade–offs, for instance it requires you to:
+but it comes with some trade–offs, for instance, it requires you to:
 
 * use an editor build with the {@link builds/guides/integration/advanced-setup#option-extracting-css styles extracted to a separate `.css` file} (no style-loader),
 * load images in the content from the same host,
