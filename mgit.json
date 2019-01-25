@@ -13,7 +13,7 @@
     "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
-    "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services#t/ckeditor5/335",
+    "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services",
     "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#t/ckeditor5/335",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core",
     "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image",
