@@ -59,10 +59,4 @@ export default class InlineEditableUIView extends EditableUIView {
 		this.on( 'change:name', updateAriaLabelAttribute );
 		updateAriaLabelAttribute();
 	}
-
-	disableEditingRootListeners() {
-		this.editingView.change( writer => {
-			writer.removeAttribute( 'aria-label', this.viewRoot );
-		} );
-	}
 }
