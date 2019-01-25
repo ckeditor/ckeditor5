@@ -150,7 +150,7 @@ This guide assumes that you are using [Create React App CLI](https://github.com/
 Install React CLI:
 
 ```bash
-npm install -g create-react-app@1
+npm install -g create-react-app
 ```
 
 Create your project using the CLI and go to the project's directory:
