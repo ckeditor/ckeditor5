@@ -97,8 +97,8 @@ export default class EditableUIView extends View {
 			this._editableElement = this.element;
 		}
 
-		this.on( 'change:isFocused', () => this._updateisFocusedClasses() );
-		this._updateisFocusedClasses();
+		this.on( 'change:isFocused', () => this._updateIsFocusedClasses() );
+		this._updateIsFocusedClasses();
 	}
 
 	/**
@@ -118,7 +118,7 @@ export default class EditableUIView extends View {
 	 *
 	 * @private
 	 */
-	_updateisFocusedClasses() {
+	_updateIsFocusedClasses() {
 		const editingView = this._editingView;
 
 		editingView.change( writer => {
