@@ -192,7 +192,6 @@ describe( 'ClassicEditor', () => {
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
 					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
@@ -205,7 +204,7 @@ describe( 'ClassicEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( fired ).to.deep.equal(
-						[ 'ready-plugincollection', 'ready-classiceditorui', 'ready-datacontroller', 'ready-classiceditor' ] );
+						[ 'ready-classiceditorui', 'ready-datacontroller', 'ready-classiceditor' ] );
 
 					editor = newEditor;
 				} );
