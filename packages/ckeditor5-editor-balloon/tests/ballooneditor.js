@@ -207,7 +207,6 @@ describe( 'BalloonEditor', () => {
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
 					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
@@ -220,7 +219,7 @@ describe( 'BalloonEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( fired ).to.deep.equal(
-						[ 'ready-plugincollection', 'ready-ballooneditorui', 'ready-datacontroller', 'ready-ballooneditor' ] );
+						[ 'ready-ballooneditorui', 'ready-datacontroller', 'ready-ballooneditor' ] );
 
 					editor = newEditor;
 				} );
