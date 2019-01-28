@@ -15,6 +15,7 @@ import ClassicEditorUIView from '../src/classiceditoruiview';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { isElement } from 'lodash-es';
 
 describe( 'ClassicEditorUI', () => {
@@ -91,7 +92,18 @@ describe( 'ClassicEditorUI', () => {
 				expect( ui.focusTracker.isFocused ).to.true;
 			} );
 
-			it( 'sets view.editable#name', () => {
+			it( 'binds view.editable#isFocused', () => {
+				utils.assertBinding(
+					view.editable,
+					{ isFocused: false },
+					[
+						[ ui.focusTracker, { isFocused: true } ]
+					],
+					{ isFocused: true }
+				);
+			} );
+
+			it( 'set view.editable#name', () => {
 				const editable = editor.editing.view.document.getRoot();
 
 				expect( view.editable.name ).to.equal( editable.rootName );
