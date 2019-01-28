@@ -73,7 +73,7 @@ export default class DecoupledEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		const view = new DecoupledEditorUIView( this.locale, this.sourceElement, this.editing.view );
+		const view = new DecoupledEditorUIView( this.locale, this.editing.view, this.sourceElement );
 		this.ui = new DecoupledEditorUI( this, view );
 	}
 
