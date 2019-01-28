@@ -4,6 +4,8 @@
  */
 
 import ClassicEditorUIView from '../src/classiceditoruiview';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
+import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
@@ -12,13 +14,15 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ClassicEditorUIView', () => {
-	let locale, view;
+	let locale, view, editingView, editingViewRoot;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
-		view = new ClassicEditorUIView( locale );
+		setUpEditingView();
+		view = new ClassicEditorUIView( locale, editingView );
+		view.editable.name = editingViewRoot.rootName;
 		view.render();
 	} );
 
@@ -69,4 +73,11 @@ describe( 'ClassicEditorUIView', () => {
 			} );
 		} );
 	} );
+
+	function setUpEditingView() {
+		editingView = new EditingView();
+		editingViewRoot = new ViewRootEditableElement( 'div' );
+		editingViewRoot._document = editingView.document;
+		editingView.document.roots.add( editingViewRoot );
+	}
 } );

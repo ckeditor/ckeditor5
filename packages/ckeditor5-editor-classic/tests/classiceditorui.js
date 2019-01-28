@@ -10,11 +10,12 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicEditorUI from '../src/classiceditorui';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ClassicEditorUIView from '../src/classiceditoruiview';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { isElement } from 'lodash-es';
 
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -23,7 +24,7 @@ describe( 'ClassicEditorUI', () => {
 
 	beforeEach( () => {
 		return VirtualClassicTestEditor
-			.create( {
+			.create( '', {
 				toolbar: [ 'foo', 'bar' ],
 			} )
 			.then( newEditor => {
@@ -69,7 +70,7 @@ describe( 'ClassicEditorUI', () => {
 
 			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
 				return VirtualClassicTestEditor
-					.create( {
+					.create( '', {
 						toolbar: {
 							viewportTopOffset: 100
 						}
@@ -95,36 +96,72 @@ describe( 'ClassicEditorUI', () => {
 
 				expect( view.editable.name ).to.equal( editable.rootName );
 			} );
+		} );
 
-			it( 'binds view.editable#isFocused', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isFocused: false },
-					[
-						[ editor.editing.view.document, { isFocused: true } ]
-					],
-					{ isFocused: true }
-				);
+		describe( 'placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder', () => {
+				return VirtualClassicTestEditor
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
+						placeholder: 'placeholder-text',
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return editor.destroy();
+					} );
 			} );
 
-			it( 'binds view.editable#isReadOnly', () => {
-				const editable = editor.editing.view.document.getRoot();
+			it( 'sets placeholder from "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
 
-				utils.assertBinding(
-					view.editable,
-					{ isReadOnly: false },
-					[
-						[ editable, { isReadOnly: true } ]
-					],
-					{ isReadOnly: true }
-				);
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualClassicTestEditor
+					.create( element, {
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'uses editor.config.placeholder rather than "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualClassicTestEditor
+					.create( element, {
+						placeholder: 'config takes precedence',
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+
+						return editor.destroy();
+					} );
 			} );
 		} );
 
 		describe( 'view.toolbar#items', () => {
 			it( 'are filled with the config.toolbar (specified as an Array)', () => {
 				return VirtualClassicTestEditor
-					.create( {
+					.create( '', {
 						toolbar: [ 'foo', 'bar' ]
 					} )
 					.then( editor => {
@@ -139,7 +176,7 @@ describe( 'ClassicEditorUI', () => {
 
 			it( 'are filled with the config.toolbar (specified as an Object)', () => {
 				return VirtualClassicTestEditor
-					.create( {
+					.create( '', {
 						toolbar: {
 							items: [ 'foo', 'bar' ],
 							viewportTopOffset: 100
@@ -219,10 +256,14 @@ function viewCreator( name ) {
 }
 
 class VirtualClassicTestEditor extends VirtualTestEditor {
-	constructor( config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		const view = new ClassicEditorUIView( this.locale );
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
+
+		const view = new ClassicEditorUIView( this.locale, this.editing.view );
 		this.ui = new ClassicEditorUI( this, view );
 
 		this.ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
@@ -235,9 +276,9 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 		return super.destroy();
 	}
 
-	static create( config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
