@@ -197,7 +197,6 @@ describe( 'InlineEditor', () => {
 
 			class EventWatcher extends Plugin {
 				init() {
-					this.editor.plugins.on( 'ready', spy );
 					this.editor.ui.on( 'ready', spy );
 					this.editor.data.on( 'ready', spy );
 					this.editor.on( 'ready', spy );
@@ -210,7 +209,7 @@ describe( 'InlineEditor', () => {
 				} )
 				.then( newEditor => {
 					expect( fired ).to.deep.equal( [
-						'ready-plugincollection', 'ready-inlineeditorui', 'ready-datacontroller', 'ready-inlineeditor' ] );
+						'ready-inlineeditorui', 'ready-datacontroller', 'ready-inlineeditor' ] );
 
 					editor = newEditor;
 				} );
