@@ -194,7 +194,6 @@ describe( 'DecoupledEditor', () => {
 
 					class EventWatcher extends Plugin {
 						init() {
-							this.editor.plugins.on( 'ready', spy );
 							this.editor.ui.on( 'ready', spy );
 							this.editor.data.on( 'ready', spy );
 							this.editor.on( 'ready', spy );
@@ -207,7 +206,6 @@ describe( 'DecoupledEditor', () => {
 						} )
 						.then( newEditor => {
 							expect( fired ).to.deep.equal( [
-								'ready-plugincollection',
 								'ready-decouplededitorui',
 								'ready-datacontroller',
 								'ready-decouplededitor'
