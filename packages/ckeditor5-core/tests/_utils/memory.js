@@ -5,6 +5,7 @@
 
 /* global window, document, setTimeout */
 
+const TEST_RETRIES = 2;
 const TEST_TIMEOUT = 5000;
 const GARBAGE_COLLECTOR_TIMEOUT = 500;
 
@@ -57,6 +58,9 @@ export function describeMemoryUsage( callback ) {
 export function testMemoryUsage( testName, createEditor ) {
 	it( testName, function() {
 		this.timeout( TEST_TIMEOUT );
+
+		// Unfortunately the tests fails from time to time so retry a failed tests.
+		this.retries( TEST_RETRIES );
 
 		return runTest( createEditor );
 	} );
