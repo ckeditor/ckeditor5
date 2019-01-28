@@ -4,6 +4,8 @@
  */
 
 import InlineEditorUIView from '../src/inlineeditoruiview';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
+import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
@@ -12,13 +14,15 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'InlineEditorUIView', () => {
-	let locale, view;
+	let locale, view, editingView, editingViewRoot;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
-		view = new InlineEditorUIView( locale );
+		setUpEditingView();
+		view = new InlineEditorUIView( locale, editingView );
+		view.editable.name = editingViewRoot.rootName;
 	} );
 
 	describe( 'constructor()', () => {
@@ -110,7 +114,11 @@ describe( 'InlineEditorUIView', () => {
 
 	describe( 'init()', () => {
 		it( 'appends #toolbar to panel#content', () => {
-			const view = new InlineEditorUIView( locale );
+			locale = new Locale( 'en' );
+			setUpEditingView();
+			const view = new InlineEditorUIView( locale, editingView );
+
+			view.editable.name = editingViewRoot.rootName;
 
 			expect( view.panel.content ).to.have.length( 0 );
 
@@ -305,4 +313,11 @@ describe( 'InlineEditorUIView', () => {
 			} );
 		}
 	} );
+
+	function setUpEditingView() {
+		editingView = new EditingView();
+		editingViewRoot = new ViewRootEditableElement( 'div' );
+		editingViewRoot._document = editingView.document;
+		editingView.document.roots.add( editingViewRoot );
+	}
 } );
