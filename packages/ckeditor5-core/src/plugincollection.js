@@ -144,7 +144,7 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Loads a set of plugins and adds them to the collection.
+	 * Initializes a set of plugins and adds them to the collection.
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) works only if
@@ -155,7 +155,7 @@ export default class PluginCollection {
 	 * collection.
 	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
 	 */
-	load( plugins, removePlugins = [] ) {
+	init( plugins, removePlugins = [] ) {
 		const that = this;
 		const editor = this._editor;
 		const loading = new Set();
@@ -196,6 +196,8 @@ export default class PluginCollection {
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
+			.then( () => initPlugins( loaded, 'init' ) )
+			.then( () => initPlugins( loaded, 'afterInit' ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
@@ -234,6 +236,16 @@ export default class PluginCollection {
 
 					throw err;
 				} );
+		}
+
+		function initPlugins( loadedPlugins, method ) {
+			return loadedPlugins.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
+
+				return promise.then( plugin[ method ].bind( plugin ) );
+			}, Promise.resolve() );
 		}
 
 		function instantiatePlugin( PluginConstructor ) {
@@ -295,29 +307,6 @@ export default class PluginCollection {
 			return plugins
 				.map( pluginNameOrConstructor => getPluginConstructor( pluginNameOrConstructor ) )
 				.filter( PluginConstructor => !!PluginConstructor );
-		}
-	}
-
-	/**
-	 * Runs the initialisation process ({@link module:core/plugin~Plugin#init `init()`}
-	 * and {@link module:core/plugin~Plugin#afterInit `afterInit()`} methods) for the given set of plugins.
-	 *
-	 * @param {Array.<module:core/plugin~PluginInterface>} plugins The array of plugins to initialise.
-	 * @returns {Promise} A promise which resolves after all given plugins have been initialized.
-	 */
-	init( plugins ) {
-		return initPlugins( plugins, 'init' )
-			.then( () => initPlugins( plugins, 'afterInit' ) )
-			.then( () => { this.fire( 'ready' ); } );
-
-		function initPlugins( loadedPlugins, method ) {
-			return loadedPlugins.reduce( ( promise, plugin ) => {
-				if ( !plugin[ method ] ) {
-					return promise;
-				}
-
-				return promise.then( plugin[ method ].bind( plugin ) );
-			}, Promise.resolve() );
 		}
 	}
 
@@ -393,9 +382,3 @@ export default class PluginCollection {
 }
 
 mix( PluginCollection, EmitterMixin );
-
-/**
- * Fired after {@link #init plugins are initialized}.
- *
- * @event ready
- */

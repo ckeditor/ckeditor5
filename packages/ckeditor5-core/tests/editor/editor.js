@@ -433,9 +433,6 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginD ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'ready' );
-			editor.plugins.on( 'ready', pluginsReadySpy );
-
 			return editor.initPlugins()
 				.then( () => {
 					sinon.assert.callOrder(
@@ -446,8 +443,7 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginA ).afterInit,
 						editor.plugins.get( PluginB ).afterInit,
 						editor.plugins.get( PluginC ).afterInit,
-						editor.plugins.get( PluginD ).afterInit,
-						pluginsReadySpy
+						editor.plugins.get( PluginD ).afterInit
 					);
 				} );
 		} );
@@ -752,16 +748,12 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginE ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'ready' );
-			editor.plugins.on( 'ready', pluginsReadySpy );
-
 			return editor.initPlugins()
 				.then( () => {
 					sinon.assert.callOrder(
 						editor.plugins.get( PluginA ).init,
 						editor.plugins.get( PluginE ).init,
-						editor.plugins.get( PluginA ).afterInit,
-						pluginsReadySpy
+						editor.plugins.get( PluginA ).afterInit
 					);
 				} );
 		} );
@@ -771,16 +763,12 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginF ]
 			} );
 
-			const pluginsReadySpy = sinon.spy().named( 'ready' );
-			editor.plugins.on( 'ready', pluginsReadySpy );
-
 			return editor.initPlugins()
 				.then( () => {
 					sinon.assert.callOrder(
 						editor.plugins.get( PluginA ).init,
 						editor.plugins.get( PluginA ).afterInit,
-						editor.plugins.get( PluginF ).afterInit,
-						pluginsReadySpy
+						editor.plugins.get( PluginF ).afterInit
 					);
 				} );
 		} );

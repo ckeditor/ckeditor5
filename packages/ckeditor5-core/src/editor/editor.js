@@ -230,10 +230,7 @@ export default class Editor {
 				const removePlugins = config.get( 'removePlugins' ) || [];
 				const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-				return this.plugins.load( plugins.concat( extraPlugins ), removePlugins );
-			} )
-			.then( loadedPlugins => {
-				return this.plugins.init( loadedPlugins );
+				return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
 			} );
 	}
 
