@@ -104,11 +104,11 @@ export default class Paragraph extends Plugin {
 		// Empty roots autoparagraphing. -----------------------------------------------
 
 		// Post-fixer which takes care of adding empty paragraph elements to empty roots.
-		// Besides fixing content on #changesDone we also need to handle #dataReady because
+		// Besides fixing content on #changesDone we also need to handle editor.data#ready event because
 		// if initial data is empty or setData() wasn't even called there will be no #change fired.
 		model.document.registerPostFixer( writer => this._autoparagraphEmptyRoots( writer ) );
 
-		editor.on( 'dataReady', () => {
+		editor.data.on( 'ready', () => {
 			model.enqueueChange( 'transparent', writer => this._autoparagraphEmptyRoots( writer ) );
 		}, { priority: 'lowest' } );
 	}
