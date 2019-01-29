@@ -106,11 +106,8 @@ export default class BootstrapEditor extends Editor {
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					// Fill the editable with the initial data.
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
-					// Fire the events that announce that the editor is complete and ready to use.
-					.then( () => {
-						editor.fire( 'dataReady' );
-						editor.fire( 'ready' );
-					} )
+					// Fire the `editor#ready` event that announce the editor is complete and ready to use.
+					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
