@@ -637,7 +637,7 @@ describe( 'Autosave', () => {
 			}
 
 			init() {
-				this.editor.once( 'dataReady', () => {
+				this.editor.data.once( 'ready', () => {
 					const editor = this.editor;
 
 					editor.model.change( writer => {
