@@ -34,37 +34,13 @@ export function enablePlaceholder( options ) {
 	const { view, element, text, isDirectHost = true } = options;
 	const doc = view.document;
 
-	// Use a single a single post fixer per document to update all placeholders.
+	// Use a single a single post fixer per—document to update all placeholders.
 	if ( !documentPlaceholders.has( doc ) ) {
 		documentPlaceholders.set( doc, new Map() );
 
-		doc.registerPostFixer( writer => {
-			const placeholders = documentPlaceholders.get( doc );
-
-			// If a post-fixer callback makes a change, it should return `true` so other post–fixers
-			// can re–evaluate the document again.
-			let wasViewModified = false;
-
-			for ( const [ element, { text, isDirectHost } ] of placeholders ) {
-				const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
-
-				// When not a direct host, it could happen that there is no child element
-				// capable of displaying a placeholder.
-				if ( !hostElement ) {
-					return;
-				}
-
-				if ( needsPlaceholder( hostElement ) ) {
-					if ( showPlaceholder( writer, hostElement, text ) ) {
-						wasViewModified = true;
-					}
-				} else if ( hidePlaceholder( writer, hostElement ) ) {
-					wasViewModified = true;
-				}
-			}
-
-			return wasViewModified;
-		} );
+		// If a post-fixer callback makes a change, it should return `true` so other post–fixers
+		// can re–evaluate the document again.
+		doc.registerPostFixer( writer => updateDocumentPlaceholders( doc, writer ) );
 	}
 
 	// Store information about the element placeholder under its document.
@@ -113,24 +89,16 @@ export function disablePlaceholder( view, element ) {
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  * @param {module:engine/view/element~Element} element
- * @param {String} text
  * @returns {Boolean} `true`, if any changes were made to the `element`.
  */
-export function showPlaceholder( writer, element, text ) {
-	let wasElementModified = false;
-
-	// This may be necessary when updating the placeholder text to something else.
-	if ( element.getAttribute( 'data-placeholder' ) !== text ) {
-		writer.setAttribute( 'data-placeholder', text, element );
-		wasElementModified = true;
-	}
-
+export function showPlaceholder( writer, element ) {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
-		wasElementModified = true;
+
+		return true;
 	}
 
-	return wasElementModified;
+	return false;
 }
 
 /**
@@ -147,14 +115,13 @@ export function showPlaceholder( writer, element, text ) {
  * @returns {Boolean} `true`, if any changes were made to the `element`.
  */
 export function hidePlaceholder( writer, element ) {
-	let wasElementModified = false;
-
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
-		wasElementModified = true;
+
+		return true;
 	}
 
-	return wasElementModified;
+	return false;
 }
 
 /**
@@ -198,6 +165,62 @@ export function needsPlaceholder( element ) {
 	}
 
 	return false;
+}
+
+// Updates all placeholders associated with a document in a post–fixer callback.
+//
+// @private
+// @param { module:engine/model/document~Document} doc
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @returns {Boolean} True if any changes were made to the view document.
+function updateDocumentPlaceholders( doc, writer ) {
+	const placeholders = documentPlaceholders.get( doc );
+	let wasViewModified = false;
+
+	for ( const [ element, config ] of placeholders ) {
+		if ( updatePlaceholder( writer, element, config ) ) {
+			wasViewModified = true;
+		}
+	}
+
+	return wasViewModified;
+}
+
+// Updates a single placeholder in a post–fixer callback.
+//
+// @private
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {module:engine/view/element~Element} element
+// @param {Object} config Configuration of the placeholder
+// @param {String} config.text
+// @param {Boolean} config.isDirectHost
+// @returns {Boolean} True if any changes were made to the view document.
+function updatePlaceholder( writer, element, config ) {
+	const { text, isDirectHost } = config;
+	const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
+	let wasViewModified = false;
+
+	// When not a direct host, it could happen that there is no child element
+	// capable of displaying a placeholder.
+	if ( !hostElement ) {
+		return false;
+	}
+
+	// This may be necessary when updating the placeholder text to something else.
+	if ( hostElement.getAttribute( 'data-placeholder' ) !== text ) {
+		writer.setAttribute( 'data-placeholder', text, hostElement );
+		wasViewModified = true;
+	}
+
+	if ( needsPlaceholder( hostElement ) ) {
+		if ( showPlaceholder( writer, hostElement ) ) {
+			wasViewModified = true;
+		}
+	} else if ( hidePlaceholder( writer, hostElement ) ) {
+		wasViewModified = true;
+	}
+
+	return wasViewModified;
 }
 
 // Gets a child element capable of displaying a placeholder if a parent element can host more
