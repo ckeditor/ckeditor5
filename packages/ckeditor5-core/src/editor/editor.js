@@ -219,8 +219,8 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise} A promise which resolves once the initialization is completed.
-	 * @returns {Array.<module:core/plugin~PluginInterface>} return.loadedPlugins Array of loaded plugins.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
+	 * once the initialization is completed providing an array of loaded plugins.
 	 */
 	initPlugins() {
 		const config = this.config;

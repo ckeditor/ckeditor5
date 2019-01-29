@@ -151,9 +151,8 @@ export default class PluginCollection {
 	 * `availablePlugins` were passed to the {@link #constructor}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available in the
-	 * collection.
-	 * @returns {Array.<module:core/plugin~PluginInterface>} return.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
+	 * and available in the collection.
 	 */
 	init( plugins, removePlugins = [] ) {
 		const that = this;
