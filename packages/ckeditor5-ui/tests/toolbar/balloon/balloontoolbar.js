@@ -230,7 +230,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>bar</p><p>{bi}z</p></div>' );
+			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>bar</p><p>{bi}z</p>' );
 			expect( targetRect ).to.deep.equal( forwardSelectionRect );
 		} );
 
@@ -289,7 +289,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>b{ar}</p><p>biz</p></div>' );
+			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>b{ar}</p><p>biz</p>' );
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 
