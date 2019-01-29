@@ -65,11 +65,17 @@ export function disablePlaceholder( view, element ) {
 	const doc = element.document;
 
 	view.change( writer => {
-		if ( documentPlaceholders.has( doc ) ) {
-			documentPlaceholders.get( doc ).delete( element );
+		if ( !documentPlaceholders.has( doc ) ) {
+			return;
 		}
 
-		hidePlaceholder( writer, element );
+		const placeholders = documentPlaceholders.get( doc );
+		const config = placeholders.get( element );
+
+		writer.removeAttribute( 'data-placeholder', config.hostElement );
+		hidePlaceholder( writer, config.hostElement );
+
+		placeholders.delete( element );
 	} );
 }
 
@@ -206,6 +212,11 @@ function updatePlaceholder( writer, element, config ) {
 		return false;
 	}
 
+	// Cache the host element. It will be necessary for disablePlaceholder() to know
+	// which element should have class and attribute removed because, depending on
+	// the config.isDirectHost value, it could be the element or one of its descendants.
+	config.hostElement = hostElement;
+
 	// This may be necessary when updating the placeholder text to something else.
 	if ( hostElement.getAttribute( 'data-placeholder' ) !== text ) {
 		writer.setAttribute( 'data-placeholder', text, hostElement );
@@ -234,7 +245,7 @@ function getChildPlaceholderHostSubstitute( parent ) {
 	if ( parent.childCount === 1 ) {
 		const firstChild = parent.getChild( 0 );
 
-		if ( firstChild.is( 'element' ) ) {
+		if ( firstChild.is( 'element' ) && !firstChild.is( 'uiElement' ) ) {
 			return firstChild;
 		}
 	}
