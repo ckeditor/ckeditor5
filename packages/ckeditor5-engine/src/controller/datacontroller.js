@@ -103,6 +103,12 @@ export default class DataController {
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		this.decorate( 'init' );
+
+		// Fire `ready` event when initialisation has completed. Such low level listener gives possibility
+		// to plug into initialisation pipeline without interrupting the initialisation flow.
+		this.on( 'init', () => {
+			this.fire( 'ready' );
+		}, { priority: 'lowest' } );
 	}
 
 	/**
@@ -373,7 +379,17 @@ export default class DataController {
 	}
 
 	/**
-	 * Event fired by decorated {@link #init} method.
+	 * Event fired once data initialisation has finished.
+	 *
+	 * @event ready
+	 */
+
+	/**
+	 * Event fired after {@link #init init() method} has been run. It can be {@link #listenTo listened to} to adjust/modify
+	 * the initialisation flow. However, if the `init` event is stopped or prevented, the {@link #event:ready ready event}
+	 * should be fired manually.
+	 *
+	 * The `init` event is fired by decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
 	 *
 	 * @event init
