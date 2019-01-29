@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -395,7 +395,7 @@ export default class Schema {
 	 * Example:
 	 *
 	 *		// Disallow bold on $text inside heading1.
-	 *		schema.addChildCheck( ( context, attributeName ) => {
+	 *		schema.addAttributeCheck( ( context, attributeName ) => {
 	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
 	 *				return false;
 	 *			}
@@ -588,11 +588,11 @@ export default class Schema {
 	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
 	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
-	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
+	 * @params {module:engine/model/node~Node|String} node Node for which allowed parent should be found or its name.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
-	findAllowedParent( node, position ) {
+	findAllowedParent( position, node ) {
 		let parent = position.parent;
 
 		while ( parent ) {

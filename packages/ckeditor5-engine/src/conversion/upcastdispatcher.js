@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -263,7 +263,7 @@ export default class UpcastDispatcher {
 	 */
 	_splitToAllowedParent( node, modelCursor ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( node, modelCursor );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( modelCursor, node );
 
 		// When there is no parent that allows to insert node then return `null`.
 		if ( !allowedParent ) {
