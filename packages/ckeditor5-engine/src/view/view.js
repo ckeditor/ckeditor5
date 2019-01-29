@@ -135,7 +135,7 @@ export default class View {
 		 * @protected
 		 * @member {Boolean} module:engine/view/view~View#_renderingDisabled
 		 */
-		this._renderingDisabled = true;
+		this._renderingDisabled = false;
 
 		/**
 		 * DowncastWriter instance used in {@link #change change method) callbacks.
