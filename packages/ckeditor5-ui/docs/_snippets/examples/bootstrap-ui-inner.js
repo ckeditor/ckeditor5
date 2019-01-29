@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -129,6 +129,8 @@ class BootstrapEditorUI extends EditorUI {
 		} );
 	}
 
+	// All EditorUI subclasses should expose their view instance
+	// so other UI classes can access it if necessary.
 	get view() {
 		return this._view;
 	}

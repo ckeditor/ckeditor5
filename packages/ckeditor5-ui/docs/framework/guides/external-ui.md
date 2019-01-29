@@ -264,6 +264,8 @@ class BootstrapEditorUI extends EditorUI {
 		} );
 	}
 
+	// All EditorUI subclasses should expose their view instance
+	// so other UI classes can access it if necessary.
 	get view() {
 		return this._view;
 	}
