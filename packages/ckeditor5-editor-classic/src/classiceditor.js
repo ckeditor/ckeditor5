@@ -181,10 +181,7 @@ export default class ClassicEditor extends Editor {
 
 						return editor.data.init( initialData );
 					} )
-					.then( () => {
-						editor.fire( 'dataReady' );
-						editor.fire( 'ready' );
-					} )
+					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
 		} );
