@@ -376,6 +376,41 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'isInline()', () => {
+		it( 'returns true if an item was registered as inline', () => {
+			schema.register( 'foo', {
+				isInline: true
+			} );
+
+			expect( schema.isInline( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was registered as a limit (because not all limits are objects)', () => {
+			schema.register( 'foo', {
+				isLimit: true
+			} );
+
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered as an object', () => {
+			schema.register( 'foo' );
+
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'returns false if an item was not registered at all', () => {
+			expect( schema.isInline( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'uses getDefinition()\'s item to definition normalization', () => {
+			const stub = sinon.stub( schema, 'getDefinition' ).returns( { isInline: true } );
+
+			expect( schema.isInline( 'foo' ) ).to.be.true;
+			expect( stub.calledOnce ).to.be.true;
+		} );
+	} );
+
 	describe( 'checkChild()', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
@@ -2468,7 +2503,8 @@ describe( 'Schema', () => {
 			},
 			() => {
 				schema.extend( '$text', {
-					allowAttributes: [ 'bold', 'italic' ]
+					allowAttributes: [ 'bold', 'italic' ],
+					isInline: true
 				} );
 
 				// Disallow bold in heading1.
@@ -2494,7 +2530,8 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 			schema.register( '$text', {
-				allowIn: '$block'
+				allowIn: '$block',
+				isInline: true
 			} );
 
 			for ( const definition of definitions ) {
@@ -2738,40 +2775,53 @@ describe( 'Schema', () => {
 			expect( schema.checkAttribute( r1i, 'alignment' ) ).to.be.false;
 		} );
 
+		it( '$text is inline', () => {
+			expect( schema.isLimit( '$text' ) ).to.be.false;
+			expect( schema.isBlock( '$text' ) ).to.be.false;
+			expect( schema.isObject( '$text' ) ).to.be.false;
+			expect( schema.isInline( '$text' ) ).to.be.true;
+		} );
+
 		it( '$root is limit', () => {
 			expect( schema.isLimit( '$root' ) ).to.be.true;
 			expect( schema.isBlock( '$root' ) ).to.be.false;
 			expect( schema.isObject( '$root' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'paragraph is block', () => {
 			expect( schema.isLimit( 'paragraph' ) ).to.be.false;
 			expect( schema.isBlock( 'paragraph' ) ).to.be.true;
 			expect( schema.isObject( 'paragraph' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'heading1 is block', () => {
 			expect( schema.isLimit( 'heading1' ) ).to.be.false;
 			expect( schema.isBlock( 'heading1' ) ).to.be.true;
 			expect( schema.isObject( 'heading1' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'listItem is block', () => {
 			expect( schema.isLimit( 'listItem' ) ).to.be.false;
 			expect( schema.isBlock( 'listItem' ) ).to.be.true;
 			expect( schema.isObject( 'listItem' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'image is block object', () => {
 			expect( schema.isLimit( 'image' ) ).to.be.true;
 			expect( schema.isBlock( 'image' ) ).to.be.true;
 			expect( schema.isObject( 'image' ) ).to.be.true;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 
 		it( 'caption is limit', () => {
 			expect( schema.isLimit( 'caption' ) ).to.be.true;
 			expect( schema.isBlock( 'caption' ) ).to.be.false;
 			expect( schema.isObject( 'caption' ) ).to.be.false;
+			expect( schema.isInline( '$root' ) ).to.be.false;
 		} );
 	} );
 

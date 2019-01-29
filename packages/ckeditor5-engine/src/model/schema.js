@@ -204,7 +204,7 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 * an object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
@@ -218,6 +218,24 @@ export default class Schema {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isObject );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 *
+	 *		schema.isInline( 'paragraph' ); // -> false
+	 *		schema.isInline( 'softBreak' ); // -> true
+	 *
+	 *		const text = writer.createText('foo' );
+	 *		schema.isObject( text ); // -> true
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isInline( item ) {
+		const def = this.getDefinition( item );
+
+		return !!( def && def.isInline );
 	}
 
 	/**
@@ -873,7 +891,7 @@ mix( Schema, ObservableMixin );
  * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
  * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
  * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`, `isInline`. Read about them below.
  *
  * # The is* properties
  *
@@ -889,6 +907,8 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
  * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
  * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
+ * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline text. Examples of inline elements:
+ * `text`, `softBreak` (`<br>`), etc.
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
  * returns `true` for object elements automatically.
  *
@@ -905,7 +925,8 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *		this.schema.register( '$text', {
- *			allowIn: '$block'
+ *			allowIn: '$block',
+ *			isInline: true
  *		} );
  *
  * They reflect typical editor content that is contained within one root, consists of several blocks
