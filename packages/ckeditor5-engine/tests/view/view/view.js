@@ -333,15 +333,15 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
+			view.change( writer => {
+				writer.setSelection( range );
+			} );
+
 			// Make sure the window will have to scroll to the domRoot.
 			Object.assign( domRoot.style, {
 				position: 'absolute',
 				top: '-1000px',
 				left: '-1000px'
-			} );
-
-			view.change( writer => {
-				writer.setSelection( range );
 			} );
 
 			view.scrollToTheSelection();
