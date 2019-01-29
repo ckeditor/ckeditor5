@@ -178,7 +178,7 @@ describe( 'DecoupledEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			return VirtualDecoupledTestEditor.create()
+			return VirtualDecoupledTestEditor.create( '' )
 				.then( editor => {
 					const ui = editor.ui;
 					const view = ui.view;
@@ -262,6 +262,12 @@ class VirtualDecoupledTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+
+						const initialData = isElement( sourceElementOrData ) ?
+							sourceElementOrData.innerHTML :
+							sourceElementOrData;
+
+						editor.data.init( initialData );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
