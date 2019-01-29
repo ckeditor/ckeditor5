@@ -1,17 +1,19 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global window, document, setTimeout */
 
+const TEST_RETRIES = 2;
 const TEST_TIMEOUT = 5000;
 const GARBAGE_COLLECTOR_TIMEOUT = 500;
 
 /**
  * Memory tests suite definition that:
- * - skips tests when garbage collector is not available.
- * - creates/destroys editor element (id = 'mem-editor').
+ *
+ * * skips tests when garbage collector is not available,
+ * * creates/destroys editor element (id = 'mem-editor').
  *
  * This method should be used with dedicated memory usage test case functions:
  *
@@ -19,7 +21,7 @@ const GARBAGE_COLLECTOR_TIMEOUT = 500;
  *			// Other tests.
  *
  *			describeMemoryUsage( () => {
- *				testMemoryUsage( 'and editor', () => {
+ *				testMemoryUsage( 'should not grow on multiple create/destroy', () => {
  *					return ClassicEditor.create( document.querySelector( '#mem-editor' ) );
  *				} );
  *			} );
@@ -33,67 +35,72 @@ export function describeMemoryUsage( callback ) {
 
 		beforeEach( createEditorElement );
 
-		afterEach( destroyEditorElement );
+		afterEach( removeEditorElement );
 
 		callback();
 	} );
 }
 
 /**
- * Single test case for memory usage test. This method will handle memory usage test procedure:
- * - creating editor instance
- * - recording its memory usage (after garbage collector)
- * - create and destroy editor 10 times
- * - record memory usage after final editor destroy (after garbage collector)
- * - tests if memory grew
+ * Single test case for memory usage test. Handles the memory leak test procedure.
+ *
+ * 1. Create and destroy the editor instance to pre-fill the memory with some cacheable data.
+ * 2. Record the heap size.
+ * 3. Create and destroy the editor 5 times.
+ * 4. Record the heap size and compare with the previous result.
+ * 5. Fail when exceeded a 1MB treshold (see code comments for why 1MB).
  *
  * See {@link describeMemoryUsage} function for usage details.
  *
  * @param {String} testName Name of a test case.
- * @param {Function} editorCreator Callback which creates editor and returns it's `.create()` promise.
+ * @param {Function} createEditor Callback which creates editor and returns its `.create()` promise.
  */
-export function testMemoryUsage( testName, editorCreator ) {
+export function testMemoryUsage( testName, createEditor ) {
 	it( testName, function() {
 		this.timeout( TEST_TIMEOUT );
 
-		return runTest( editorCreator );
+		// Unfortunately the tests fails from time to time so retry a failed tests.
+		this.retries( TEST_RETRIES );
+
+		return runTest( createEditor );
 	} );
 }
 
-// Runs a single test case. This method will properly setup memory-leak test:
-// - create editor
-// - run garbage collector
-// - record memory allocations
-// - destroy the editor
-// - create & destroy editor multiple times (9) - after each editor creation the test runner will be paused for ~200ms
-function runTest( editorCreator ) {
+// Runs a single test case.
+function runTest( createEditor ) {
 	let memoryAfterFirstStart;
 
-	return Promise.resolve() // Promise.resolve just to align below code.
-	// First editor creation needed to load all editor code,css into the memory (it is reported as used heap memory)
-		.then( editorCreator )
-		.then( editor => {
+	return Promise
+		.resolve()
+		// Initialize the first editor before mesuring the heap size.
+		// A cold start may allocate a bit of memory on the module-level.
+		.then( createAndDestroy )
+		.then( () => {
 			return collectMemoryStats().then( mem => {
 				memoryAfterFirstStart = mem;
-
-				return editor;
 			} );
 		} )
-		.then( destroy )
-		// Run create-wait-destroy multiple times. Multiple runs to grow memory significantly even on smaller leaks.
+		// Run create&destroy multiple times. Helps scaling up the issue.
+		.then( createAndDestroy ) // #1
 		.then( createAndDestroy ) // #2
 		.then( createAndDestroy ) // #3
+		.then( createAndDestroy ) // #4
+		.then( createAndDestroy ) // #5
 		.then( collectMemoryStats )
 		.then( memory => {
 			const memoryDifference = memory.usedJSHeapSize - memoryAfterFirstStart.usedJSHeapSize;
 
-			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 0 );
+			// While theoretically we should get 0KB when there's no memory leak, in reality,
+			// the results we get (when there are no leaks) vary from -500KB to 500KB (depending on which tests are executed).
+			// However, when we had memory leaks, memoryDifference was reaching 20MB,
+			// so, in order to detect significant memory leaks we can expect that the heap won't grow more than 1MB.
+			expect( memoryDifference, 'used heap size should not grow' ).to.be.at.most( 1e6 );
 		} );
 
 	function createAndDestroy() {
 		return Promise.resolve()
-			.then( editorCreator )
-			.then( destroy );
+			.then( createEditor )
+			.then( destroyEditor );
 	}
 }
 
@@ -108,11 +115,11 @@ function createEditorElement() {
 	document.body.appendChild( editorElement );
 }
 
-function destroyEditorElement() {
+function removeEditorElement() {
 	document.getElementById( 'mem-editor' ).remove();
 }
 
-function destroy( editor ) {
+function destroyEditor( editor ) {
 	return editor.destroy();
 }
 
