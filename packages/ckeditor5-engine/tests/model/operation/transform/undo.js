@@ -463,4 +463,68 @@ describe( 'transform', () => {
 
 		expectClients( '<paragraph><m1:start></m1:start>Foo<m1:end></m1:end>bar</paragraph><paragraph></paragraph>' );
 	} );
+
+	it( 'marker on closing and opening tag - remove multiple elements #1', () => {
+		john.setData(
+			'<paragraph>Abc</paragraph>' +
+			'<paragraph>Foo[</paragraph>' +
+			'<paragraph>]Bar</paragraph>'
+		);
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 0, 1 ], [ 2, 2 ] );
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph>A<m1:start></m1:start>r</paragraph>' );
+
+		john.undo();
+
+		expectClients(
+			'<paragraph>Abc</paragraph>' +
+			'<paragraph>Foo<m1:start></m1:start></paragraph>' +
+			'<paragraph><m1:end></m1:end>Bar</paragraph>'
+		);
+	} );
+
+	it( 'marker on closing and opening tag - remove multiple elements #2', () => {
+		john.setData(
+			'<paragraph>Foo[</paragraph>' +
+			'<paragraph>]Bar</paragraph>' +
+			'<paragraph>Xyz</paragraph>'
+		);
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 0, 1 ], [ 2, 2 ] );
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph>F<m1:start></m1:start>z</paragraph>' );
+
+		john.undo();
+
+		expectClients(
+			'<paragraph>Foo<m1:start></m1:start></paragraph>' +
+			'<paragraph><m1:end></m1:end>Bar</paragraph>' +
+			'<paragraph>Xyz</paragraph>'
+		);
+	} );
+
+	it( 'marker on closing and opening tag + some text - merge elements + remove text', () => {
+		john.setData(
+			'<paragraph>Foo[</paragraph>' +
+			'<paragraph>B]ar</paragraph>'
+		);
+
+		john.setMarker( 'm1' );
+		john.setSelection( [ 0, 1 ], [ 1, 2 ] );
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph>F<m1:start></m1:start>r</paragraph>' );
+
+		john.undo();
+
+		expectClients(
+			'<paragraph>Foo<m1:start></m1:start></paragraph>' +
+			'<paragraph>B<m1:end></m1:end>ar</paragraph>'
+		);
+	} );
 } );
