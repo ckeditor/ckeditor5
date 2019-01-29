@@ -119,6 +119,19 @@ describe( 'view', () => {
 			expect( view._renderer.markedChildren.has( viewH1 ) ).to.be.true;
 		} );
 
+		it( 'should handle the "contenteditable" attribute management on #isReadOnly change', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+
+			viewRoot.isReadOnly = false;
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+
+			viewRoot.isReadOnly = true;
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+		} );
+
 		it( 'should call observe on each observer', () => {
 			// The variable will be overwritten.
 			view.destroy();
@@ -141,6 +154,66 @@ describe( 'view', () => {
 
 			sinon.assert.calledOnce( observerMock.observe );
 			sinon.assert.calledOnce( observerMockGlobalCount.observe );
+		} );
+	} );
+
+	describe( 'detachDomRoot()', () => {
+		it( 'should remove DOM root and unbind DOM element', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+			expect( count( view.domRoots ) ).to.equal( 1 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
+
+			view.detachDomRoot( 'main' );
+			expect( count( view.domRoots ) ).to.equal( 0 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.be.undefined;
+		} );
+
+		it( 'should restore the DOM root attributes to the state before attachDomRoot()', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'data-baz', 'qux' );
+			domDiv.classList.add( 'foo-class' );
+
+			view.attachDomRoot( domDiv );
+
+			view.change( writer => {
+				writer.addClass( 'addedClass', viewRoot );
+				writer.setAttribute( 'added-attribute', 'foo', viewRoot );
+				writer.setAttribute( 'foo', 'changed the value', viewRoot );
+			} );
+
+			view.detachDomRoot( 'main' );
+
+			const attributes = {};
+
+			for ( const attribute of domDiv.attributes ) {
+				attributes[ attribute.name ] = attribute.value;
+			}
+
+			expect( attributes ).to.deep.equal( {
+				foo: 'bar',
+				'data-baz': 'qux',
+				class: 'foo-class'
+			} );
+		} );
+
+		it( 'should remove the "contenteditable" attribute', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+
+			viewRoot.isReadOnly = false;
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+
+			view.detachDomRoot( 'main' );
+
+			expect( viewRoot.hasAttribute( 'contenteditable' ) ).to.be.false;
 		} );
 	} );
 

@@ -206,12 +206,12 @@ export default class View {
 			}
 		}
 
-		const onIsReadOnlyChange = () => {
+		const updateContenteditableAttribute = () => {
 			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
 		};
 
-		// Set initial values.
-		onIsReadOnlyChange();
+		// Set initial value.
+		updateContenteditableAttribute();
 
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
@@ -222,7 +222,7 @@ export default class View {
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
-		viewRoot.on( 'change:isReadOnly', () => this.change( onIsReadOnlyChange ) );
+		viewRoot.on( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
