@@ -206,7 +206,7 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			return VirtualClassicTestEditor.create()
+			return VirtualClassicTestEditor.create( '' )
 				.then( editor => {
 					const ui = editor.ui;
 					const view = ui.view;
@@ -296,6 +296,12 @@ class VirtualClassicTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+
+						const initialData = isElement( sourceElementOrData ) ?
+							sourceElementOrData.innerHTML :
+							sourceElementOrData;
+
+						editor.data.init( initialData );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
