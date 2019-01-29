@@ -349,7 +349,7 @@ export default class PluginCollection {
 			 * not to an editor imported from one of the `@ckeditor/ckeditor5-build-*` packages.
 			 *
 			 * Check your import paths and the list of plugins passed to
-			 * {@link module:core/editor/editor~Editor.create `Editor.create()`}
+			 * {@link #init `PluginCollection.init()`} method
 			 * or specified in {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
 			 *
 			 * The second option is that your `node_modules/` directory contains duplicated versions of the same
