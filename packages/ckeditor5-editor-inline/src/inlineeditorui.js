@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -29,10 +29,10 @@ export default class InlineEditorUI extends EditorUI {
 		/**
 		 * The main (top–most) view of the editor UI.
 		 *
-		 * @private
-		 * @member {module:ui/editorui/editoruiview~EditorUIView} #_view
+		 * @readonly
+		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
-		this._view = view;
+		this.view = view;
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -41,16 +41,6 @@ export default class InlineEditorUI extends EditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-	}
-
-	/**
-	 * The main (top–most) view of the editor UI.
-	 *
-	 * @readonly
-	 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
-	 */
-	get view() {
-		return this._view;
 	}
 
 	/**
@@ -118,7 +108,7 @@ export default class InlineEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._view.destroy();
+		this.view.destroy();
 
 		super.destroy();
 	}
