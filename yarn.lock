@@ -720,7 +720,7 @@
     style-loader "^0.23.0"
     webpack "^4.15.0"
 
-"@ckeditor/ckeditor5-dev-utils@^11.0.0", "@ckeditor/ckeditor5-dev-utils@^11.0.1":
+"@ckeditor/ckeditor5-dev-utils@^11.0.1":
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-utils/-/ckeditor5-dev-utils-11.0.1.tgz#f46ab412435e3b455f2371d9c66e0e223adb8e17"
   integrity sha512-5P4y6nynDHYxwtsf32VdKXrLdy8ru3BfuMgkUUte6bs0IdVg6TT/1Da/JA2C47JOlpB8wLVz6lrh34xNJLkJsg==
@@ -740,7 +740,7 @@
     shelljs "^0.8.1"
     through2 "^2.0.3"
 
-"@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.0", "@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.1":
+"@ckeditor/ckeditor5-dev-webpack-plugin@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-webpack-plugin/-/ckeditor5-dev-webpack-plugin-7.0.1.tgz#a992a4c479895e83237788d144da604d2669680b"
   integrity sha512-gRPweXnfoXE5c+I5ZJqsgV92/aEFGks9EEdlJ3ymLg7xpH6YlEiru/pNxYtUTFuXmyPlO+CLbT0XZhjTX5oQgA==
