@@ -66,7 +66,6 @@ export default class ClassicTestEditor extends Editor {
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
-						editor.fire( 'dataReady' );
 						editor.state = 'ready';
 						editor.fire( 'ready' );
 					} )
