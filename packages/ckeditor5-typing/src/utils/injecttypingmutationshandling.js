@@ -275,7 +275,7 @@ function getMutationsContainer( mutations ) {
 // @param {Array.<module:engine/model/node~Node>} children
 // @returns {Boolean}
 function isSafeForTextMutation( children ) {
-	return children.every( child => child.is( 'text' ) || child.is( 'softBreak' ) );
+	return children.every( child => child.is( 'text' ) || child.is( 'softBreak' ) || child.is( 'placeholder' ) );
 }
 
 // Calculates first change index and number of characters that should be inserted and deleted starting from that index.
