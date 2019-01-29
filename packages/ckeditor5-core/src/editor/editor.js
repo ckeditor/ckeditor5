@@ -219,8 +219,8 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins A promise which resolves
-	 * once the initialization is completed providing array of loaded plugins.
+	 * @returns {Promise} A promise which resolves once the initialization is completed.
+	 * @returns {Array.<module:core/plugin~PluginInterface>} return.loadedPlugins Array of loaded plugins.
 	 */
 	initPlugins() {
 		const config = this.config;
@@ -275,13 +275,24 @@ export default class Editor {
 	execute( ...args ) {
 		this.commands.execute( ...args );
 	}
+
+	/**
+	 * Creates and initializes a new editor instance.
+	 *
+	 * @static
+	 * @method module:core/editor/editor~Editor.create
+	 * @param {Object} config The editor config. You can find the list of config options in
+	 * {@link module:core/editor/editorconfig~EditorConfig}.
+	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
+	 */
 }
 
 mix( Editor, ObservableMixin );
 
 /**
- * Fired when {@link module:core/plugincollection~PluginCollection#event:ready plugins},
- * and {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional editor components are ready.
+ * Fired when {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
+ * editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static
