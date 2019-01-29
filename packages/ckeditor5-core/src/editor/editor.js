@@ -219,19 +219,16 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise} A promise which resolves once the initialization is completed.
+	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins A promise which resolves
+	 * once the initialization is completed providing array of loaded plugins.
 	 */
 	initPlugins() {
 		const config = this.config;
+		const plugins = config.get( 'plugins' ) || [];
+		const removePlugins = config.get( 'removePlugins' ) || [];
+		const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-		return Promise.resolve()
-			.then( () => {
-				const plugins = config.get( 'plugins' ) || [];
-				const removePlugins = config.get( 'removePlugins' ) || [];
-				const extraPlugins = config.get( 'extraPlugins' ) || [];
-
-				return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
-			} );
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
 	}
 
 	/**
