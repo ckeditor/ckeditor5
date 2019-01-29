@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -222,7 +222,6 @@ export default class Editor {
 	 * @returns {Promise} A promise which resolves once the initialization is completed.
 	 */
 	initPlugins() {
-		const that = this;
 		const config = this.config;
 
 		return Promise.resolve()
@@ -231,10 +230,7 @@ export default class Editor {
 				const removePlugins = config.get( 'removePlugins' ) || [];
 				const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-				return that.plugins.load( plugins.concat( extraPlugins ), removePlugins );
-			} )
-			.then( loadedPlugins => {
-				return this.plugins.init( loadedPlugins );
+				return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
 			} );
 	}
 
