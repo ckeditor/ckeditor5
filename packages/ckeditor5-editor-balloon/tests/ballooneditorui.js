@@ -223,6 +223,12 @@ class VirtualBalloonTestEditor extends VirtualTestEditor {
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+
+						const initialData = isElement( sourceElementOrData ) ?
+							sourceElementOrData.innerHTML :
+							sourceElementOrData;
+
+						editor.data.init( initialData );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
