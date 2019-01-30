@@ -136,8 +136,10 @@ class MutationHandler {
 			modelFromDomChildren.pop();
 		}
 
+		const schema = this.editor.model.schema;
+
 		// Skip situations when common ancestor has any container elements.
-		if ( !isSafeForTextMutation( modelFromDomChildren ) || !isSafeForTextMutation( currentModelChildren ) ) {
+		if ( !isSafeForTextMutation( modelFromDomChildren, schema ) || !isSafeForTextMutation( currentModelChildren, schema ) ) {
 			return;
 		}
 
@@ -273,9 +275,10 @@ function getMutationsContainer( mutations ) {
 // Returns true if provided array contains content that won't be problematic during diffing and text mutation handling.
 //
 // @param {Array.<module:engine/model/node~Node>} children
+// @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isSafeForTextMutation( children ) {
-	return children.every( child => child.is( 'text' ) || child.is( 'softBreak' ) || child.is( 'placeholder' ) );
+function isSafeForTextMutation( children, schema ) {
+	return children.every( child => schema.isInline( child ) );
 }
 
 // Calculates first change index and number of characters that should be inserted and deleted starting from that index.
