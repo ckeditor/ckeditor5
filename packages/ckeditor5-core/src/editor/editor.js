@@ -286,6 +286,22 @@ export default class Editor {
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
 	 */
+
+	/**
+	 * Creates and initializes a new editor instance.
+	 *
+	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
+	 *
+	 * See the `create()` methods of the existing editor types to learn how to use them:
+	 *
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create`}
+	 *
+	 * @abstract
+	 * @method module:core/editor/editor~Editor.create
+	 */
 }
 
 mix( Editor, ObservableMixin );
