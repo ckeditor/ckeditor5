@@ -4,10 +4,10 @@
  */
 
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
-import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -18,7 +18,8 @@ describe( 'BalloonEditorUIView', () => {
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
-		setUpEditingView();
+		editingView = new EditingView();
+		editingViewRoot = createRoot( editingView.document );
 		view = new BalloonEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
 	} );
@@ -48,11 +49,4 @@ describe( 'BalloonEditorUIView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
-
-	function setUpEditingView() {
-		editingView = new EditingView();
-		editingViewRoot = new ViewRootEditableElement( 'div' );
-		editingViewRoot._document = editingView.document;
-		editingView.document.roots.add( editingViewRoot );
-	}
 } );
