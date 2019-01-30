@@ -61,9 +61,11 @@ The editor placeholder text is displayed using a CSS pseudo–element (`::before
 
 ```css
 .ck.ck-editor__editable > .ck-placeholder::before {
-    color: #ff7e7e;
+    color: #d21714;
     font-family: Georgia;
 }
 ```
+
+{@snippet features/placeholder-custom}
 
 **Note**: The `.ck-placeholder` class is also used to display placeholders in other places, for instance, {@link features/image#image-captions image captions}. Make sure your custom styles apply to the right subset of placeholders.
