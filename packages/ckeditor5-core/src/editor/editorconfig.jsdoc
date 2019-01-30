@@ -194,5 +194,7 @@
  * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a DOM
  * element passed to the `create()` method.
  *
+ * See the {@glink features/placeholder "Editor placeholder" guide} for more information and live examples.
+ *
  * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
  */
