@@ -114,7 +114,7 @@ export default class EditableUIView extends View {
 
 	/**
 	 * Updates the `ck-focused` and `ck-blurred` CSS classes on the {@link #element} according to
-	 * the {@link #isFocused} property value using the {@link #editingView editing view} API.
+	 * the {@link #isFocused} property value using the {@link #_editingView editing view} API.
 	 *
 	 * @private
 	 */
