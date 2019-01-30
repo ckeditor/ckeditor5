@@ -90,13 +90,11 @@ describe( 'DecoupledEditorUI', () => {
 						placeholder: 'placeholder-text',
 					} )
 					.then( newEditor => {
-						editor = newEditor;
-
-						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
 
-						return editor.destroy();
+						return newEditor.destroy();
 					} );
 			} );
 
@@ -110,13 +108,11 @@ describe( 'DecoupledEditorUI', () => {
 						extraPlugins: [ Paragraph ]
 					} )
 					.then( newEditor => {
-						editor = newEditor;
-
-						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
 
-						return editor.destroy();
+						return newEditor.destroy();
 					} );
 			} );
 
@@ -131,13 +127,11 @@ describe( 'DecoupledEditorUI', () => {
 						extraPlugins: [ Paragraph ]
 					} )
 					.then( newEditor => {
-						editor = newEditor;
-
-						const firstChild = editor.editing.view.document.getRoot().getChild( 0 );
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
 
 						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
 
-						return editor.destroy();
+						return newEditor.destroy();
 					} );
 			} );
 		} );
