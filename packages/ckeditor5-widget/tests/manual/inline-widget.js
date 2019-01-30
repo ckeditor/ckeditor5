@@ -28,6 +28,7 @@ class InlineWidget extends Plugin {
 		editor.model.schema.register( 'placeholder', {
 			allowWhere: '$text',
 			isObject: true,
+			isInline: true,
 			allowAttributes: [ 'type' ]
 		} );
 
