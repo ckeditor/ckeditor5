@@ -169,6 +169,8 @@ describe( 'view', () => {
 			view.detachDomRoot( 'main' );
 			expect( count( view.domRoots ) ).to.equal( 0 );
 			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.be.undefined;
+
+			domDiv.remove();
 		} );
 
 		it( 'should restore the DOM root attributes to the state before attachDomRoot()', () => {
@@ -200,20 +202,25 @@ describe( 'view', () => {
 				'data-baz': 'qux',
 				class: 'foo-class'
 			} );
+
+			domDiv.remove();
 		} );
 
-		it( 'should remove the "contenteditable" attribute', () => {
+		it( 'should remove the "contenteditable" attribute from the DOM root', () => {
 			const domDiv = document.createElement( 'div' );
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.attachDomRoot( domDiv );
+			view.render();
 
 			viewRoot.isReadOnly = false;
-			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+			expect( domDiv.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
 
 			view.detachDomRoot( 'main' );
 
-			expect( viewRoot.hasAttribute( 'contenteditable' ) ).to.be.false;
+			expect( domDiv.hasAttribute( 'contenteditable' ) ).to.be.false;
+
+			domDiv.remove();
 		} );
 	} );
 

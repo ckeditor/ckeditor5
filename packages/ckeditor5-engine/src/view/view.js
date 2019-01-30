@@ -239,20 +239,13 @@ export default class View {
 		const domRoot = this.domRoots.get( name );
 		const viewRoot = this.document.getRoot( name );
 
-		this.change( writer => {
-			// Remove all root attributes so the element is bare.
-			for ( const attributeName of viewRoot.getAttributeKeys() ) {
-				writer.removeAttribute( attributeName, viewRoot );
-			}
+		// Remove all root attributes so the DOM element is "bare".
+		[ ...domRoot.attributes ].forEach( ( { name } ) => domRoot.removeAttribute( name ) );
 
-			// Clean-up the changes made by the change:isReadOnly listener.
-			writer.removeAttribute( 'contenteditable', viewRoot );
-
-			// Revert all view root attributes back to the state before attachDomRoot was called.
-			for ( const attribute in viewRoot._initialDomAttributes ) {
-				writer.setAttribute( attribute, viewRoot._initialDomAttributes[ attribute ], viewRoot );
-			}
-		} );
+		// Revert all view root attributes back to the state before attachDomRoot was called.
+		for ( const attribute in viewRoot._initialDomAttributes ) {
+			domRoot.setAttribute( attribute, viewRoot._initialDomAttributes[ attribute ] );
+		}
 
 		this.domRoots.delete( name );
 		this.domConverter.unbindDomElement( domRoot );
