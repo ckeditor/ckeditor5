@@ -147,7 +147,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'it should track the focus of the #editableElement', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
 
-			editor.ui.view.editableElement.dispatchEvent( new Event( 'focus' ) );
+			editor.ui.getEditableElement().dispatchEvent( new Event( 'focus' ) );
 
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
