@@ -24,8 +24,8 @@ const DataApiMixin = {
 	/**
 	 * @inheritDoc
 	 */
-	getData() {
-		return this.data.get();
+	getData( options ) {
+		return this.data.get( options );
 	}
 };
 
@@ -71,5 +71,10 @@ export default DataApiMixin;
  * the right format for you.
  *
  * @method #getData
+ * @param {Object} [options]
+ * @param {String} [options.rootName='main'] Root name.
+ * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
+ * which means whenever editor content is considered empty, the empty string will be returned. To turn off trimming completely
+ * use `none`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for empty editor).
  * @returns {String} Output data.
  */
