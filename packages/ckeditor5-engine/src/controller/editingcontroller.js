@@ -16,6 +16,7 @@ import { clearAttributes, convertCollapsedSelection, convertRangeSelection, inse
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
+import { mapViewPositionInsideInlineElement } from '../conversion/mapper-helpers';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
@@ -122,6 +123,9 @@ export default class EditingController {
 
 			return viewRoot;
 		} );
+
+		// Attach view-to-model position mapper for inline elements (inline widget).
+		this.mapper.on( 'viewToModelPosition', mapViewPositionInsideInlineElement( this.model ) );
 	}
 
 	/**
