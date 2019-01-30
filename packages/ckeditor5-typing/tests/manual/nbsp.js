@@ -22,7 +22,7 @@ ClassicEditor
 
 		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
-		const editable = editor.ui.view.editableElement;
+		const editable = editor.ui.getEditableElement();
 
 		document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
 			editor.model.change( writer => {
