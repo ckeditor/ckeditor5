@@ -293,8 +293,6 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-
-				editor.ui.focusTracker.isFocused = true;
 			} );
 	} );
 
@@ -327,7 +325,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 		} );
 
 		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
-		editor.ui.focusTracker.isFocused = true;
+		editor.editing.view.document.isFocused = true;
 
 		clock.tick( 200 );
 
