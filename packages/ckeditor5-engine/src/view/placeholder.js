@@ -18,7 +18,7 @@ const documentPlaceholders = new WeakMap();
  *
  * To change the placeholder text, simply call this method again with new options.
  *
- * To disable the placeholder, use {@link module:engine/view/placeholder#disablePlaceholder `disablePlaceholder()`} helper.
+ * To disable the placeholder, use {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} helper.
  *
  * @param {Object} [options] Configuration options of the placeholder.
  * @param {module:engine/view/view~View} options.view Editing view instance.
@@ -56,7 +56,7 @@ export function enablePlaceholder( options ) {
 /**
  * Disables the placeholder functionality from a given element.
  *
- * See {@link module:engine/view/placeholder#enablePlaceholder `enablePlaceholder()`} to learn more.
+ * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
  *
  * @param {module:engine/view/view~View} view
  * @param {module:engine/view/element~Element} element
@@ -84,13 +84,13 @@ export function disablePlaceholder( view, element ) {
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder#enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder#disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
+ * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
  * placeholder functionality.
  *
  * **Note**: This helper will blindly show the placeholder directly in the root editable element if
  * one is passed, which could result in a visual clash if the editable element has some children
- * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder#enablePlaceholder `enablePlaceholder()`}
+ * (for instance, an empty paragraph). Use {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`}
  * in that case or make sure the correct element is passed to the helper.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -112,8 +112,8 @@ export function showPlaceholder( writer, element ) {
  *
  * **Note**: This helper will not update the placeholder visibility nor manage the
  * it in any way in the future. What it does is a one–time state change of an element. Use
- * {@link module:engine/view/placeholder#enablePlaceholder `enablePlaceholder()`} and
- * {@link module:engine/view/placeholder#disablePlaceholder `disablePlaceholder()`} for full
+ * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} and
+ * {@link module:engine/view/placeholder~disablePlaceholder `disablePlaceholder()`} for full
  * placeholder functionality.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -137,7 +137,7 @@ export function hidePlaceholder( writer, element ) {
  * root editable element if one is passed, which may not be the expected result. If an element can
  * host other elements (not just text), most likely one of its children should be checked instead
  * because it will be the final host for the placeholder. Use
- * {@link module:engine/view/placeholder#enablePlaceholder `enablePlaceholder()`} in that case or make
+ * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
