@@ -21,6 +21,7 @@ import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -107,8 +108,8 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget ],
-		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table ],
+		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		editor.model.document.on( 'change', () => {
@@ -128,5 +129,8 @@ function printModelContents( editor ) {
 }
 
 function formatData( data ) {
-	return data.replace( /<(paragraph)>/g, '\n<$1>' );
+	return data
+		.replace( /<(paragraph|\/tableRow|tableCell|table|heading[0-5])>/g, '\n<$1>' )
+		.replace( /(<tableCell>)\n(<paragraph>)/g, '$1$2' )
+		.replace( /\n(<tableCell>)/g, '\n\t$1' );
 }
