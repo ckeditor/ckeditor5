@@ -49,6 +49,8 @@ export default class Editor {
 	/**
 	 * Creates a new instance of the Editor class.
 	 *
+	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
+	 *
 	 * @param {Object} [config] The editor config.
 	 */
 	constructor( config ) {
@@ -112,10 +114,10 @@ export default class Editor {
 		 *
 		 * The editor is in one of the following states:
 		 *
-		 * * `initializing` - during the editor initialization - before {@link #event:ready editor ready event} is fired
-		 * or specific editor creator `editor#create()` method finishes its job,
-		 * * `ready` - after the {@link #event:ready editor ready event} is fired or the promise returned
-		 * by the specific editor creator `editor#create()` method is resolved,
+		 * * `initializing` - during the editor initialization (before {@link module:core/editor/editor~Editor.create `Editor.create()`})
+		 * finished its job,
+		 * * `ready` - after the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
+		 * method is resolved,
 		 * * `destroyed` - once the {@link #destroy `editor.destroy()`} method was called.
 		 *
 		 * @observable
@@ -273,6 +275,17 @@ export default class Editor {
 	execute( ...args ) {
 		this.commands.execute( ...args );
 	}
+
+	/**
+	 * Creates and initializes a new editor instance.
+	 *
+	 * @static
+	 * @method module:core/editor/editor~Editor.create
+	 * @param {Object} config The editor config. You can find the list of config options in
+	 * {@link module:core/editor/editorconfig~EditorConfig}.
+	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
+	 */
 }
 
 mix( Editor, ObservableMixin );
@@ -283,7 +296,7 @@ mix( Editor, ObservableMixin );
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static
- * `Editor.create()` method (provided by the specific editor creators) is resolved, the editor is already ready.
+ * {@link module:core/editor/editor~Editor.create `Editor.create()`} event is resolved, the editor is already ready.
  * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
  * you cannot even add a listener to the `editor#ready` event.
  *

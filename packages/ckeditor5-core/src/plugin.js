@@ -171,7 +171,7 @@ mix( Plugin, ObservableMixin );
  */
 
 /**
- * An array of loaded plugins.
+ * Array of loaded plugins.
  *
  * @typedef {Array.<module:core/plugin~PluginInterface>} module:core/plugin~LoadedPlugins
  */
