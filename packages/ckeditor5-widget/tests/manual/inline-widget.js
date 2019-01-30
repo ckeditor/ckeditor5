@@ -20,6 +20,7 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -63,14 +64,15 @@ class InlineWidget extends Plugin {
 			}
 		} );
 
+		this._createToolbarButton();
+
 		function createPlaceholderView( modelItem, viewWriter ) {
 			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
 
 			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( modelItem.getAttribute( 'type' ) ) );
+
 			return widgetElement;
 		}
-
-		this._createToolbarButton();
 	}
 
 	_createToolbarButton() {
@@ -105,7 +107,7 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, InlineWidget ],
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget ],
 		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
