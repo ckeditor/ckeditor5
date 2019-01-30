@@ -294,7 +294,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-				editor.editing.view.document.isFocused = true;
+				editor.ui.focusTracker.isFocused = true;
 			} );
 	} );
 
