@@ -83,7 +83,8 @@ export default class Conversion {
 			 *
 			 * @error conversion-register-group-exists
 			 */
-			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that has already been registered.' );
+			throw new CKEditorError( 'conversion-register-group-exists: Trying to register' +
+				'a group name that has already been registered.' );
 		}
 
 		this._conversionHelpers.set( name, conversionHelpers );
