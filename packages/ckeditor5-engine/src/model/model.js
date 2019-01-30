@@ -450,6 +450,8 @@ export default class Model {
 	 *
 	 * Content is any text node or element which is registered in the {@link module:engine/model/schema~Schema schema}.
 	 *
+	 * **Note**: To check if editor or any part of the content contains meaningful data, use {@link #isEmpty}.
+	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @returns {Boolean}
 	 */
@@ -470,6 +472,45 @@ export default class Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks whether the given {@link module:engine/model/range~Range range} or
+	 * {@link module:engine/model/element~Element element} is considered empty.
+	 *
+	 * The range or element is considered non-empty if it contains any:
+	 * 		* EmptyElement
+	 * 		* Text node containing at least one non-whitepsace character
+	 * 		* Non-plain `ContainerElement` (for example widget)
+	 * 		* Non-plain `AttributeElement` (for example comment)
+	 *
+	 * 	This method should be used to check if the element/range/editor contains any printable/meaningful content.
+	 * 	It is the proper method to check if editor is empty.
+	 *
+	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
+	 * @returns {Boolean}
+	 */
+	isEmpty( rangeOrElement ) {
+		if ( rangeOrElement instanceof ModelElement ) {
+			rangeOrElement = ModelRange._createIn( rangeOrElement );
+		}
+
+		if ( rangeOrElement.isCollapsed ) {
+			return true;
+		}
+
+		for ( const item of rangeOrElement.getItems() ) {
+			// Remember, `TreeWalker` returns always `textProxy` nodes.
+			if ( item.is( 'textProxy' ) && item.data.match( /\S+/gi ) !== null ) {
+				return false;
+			} else if ( this.schema.isObject( item ) || item.is( 'emptyElement' ) ) {
+				return false;
+			}
+			// Check for Non-plain `ContainerElement`
+			// Check for Non-plain `AttributeElement`
+		}
+
+		return true;
 	}
 
 	/**

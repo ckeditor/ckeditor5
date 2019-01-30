@@ -109,10 +109,17 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
-	 * @param {String} [rootName='main'] Root name.
+	 * @param {Object} [options]
+	 * @param {String} [options.rootName='main'] Root name.
+	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
+	 * which means whenever editor content is considered empty, the empty string will be returned. To turn off trimming completely
+	 * use `none`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for empty editor).
 	 * @returns {String} Output data.
 	 */
-	get( rootName = 'main' ) {
+	get( options ) {
+		const rootName = ( options || {} ).rootName || 'main';
+		const trim = ( options || {} ).trim || 'empty';
+
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
 			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
@@ -129,7 +136,7 @@ export default class DataController {
 		}
 
 		// Get model range.
-		return this.stringify( this.model.document.getRoot( rootName ) );
+		return this.stringify( this.model.document.getRoot( rootName ), trim === 'empty' );
 	}
 
 	/**
@@ -139,14 +146,21 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
+	 * @param {Boolean} [skipEmpty=false] Whether content considered empty should be skipped. The method
+	 * will return an empty string in such cases.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment ) {
-		// Model -> view.
-		const viewDocumentFragment = this.toView( modelElementOrFragment );
+	stringify( modelElementOrFragment, skipEmpty = false ) {
+		if ( skipEmpty && this.model.isEmpty( modelElementOrFragment ) ) {
+			// If trimEmpty is true && model is considered empty return empty string.
+			return '';
+		} else {
+			// Model -> view.
+			const viewDocumentFragment = this.toView( modelElementOrFragment );
 
-		// View -> data.
-		return this.processor.toData( viewDocumentFragment );
+			// View -> data.
+			return this.processor.toData( viewDocumentFragment );
+		}
 	}
 
 	/**
