@@ -100,6 +100,10 @@ export default class ClassicEditorUI extends EditorUI {
 		// toolbar gets focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
+
 		// If an element containing the initial data of the editor was provided, replace it with
 		// an editor instance's UI in DOM until the editor is destroyed. For instance, a <textarea>
 		// can be such element.
