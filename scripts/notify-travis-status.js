@@ -22,9 +22,13 @@ It also has some dependencies:
 
 const buildBranch = process.env.TRAVIS_BRANCH;
 
-// Send a notification only for main branches.
-// TODO: Remove Slack
-if ( buildBranch !== 'master' && buildBranch !== 'master-revisions' && buildBranch !== 'slack' ) {
+// Send a notification only for main branches...
+if ( buildBranch !== 'master' && buildBranch !== 'master-revisions' ) {
+	process.exit();
+}
+
+// ...and "push" builds.
+if ( process.env.TRAVIS_EVENT_TYPE !== 'push' ) {
 	process.exit();
 }
 
