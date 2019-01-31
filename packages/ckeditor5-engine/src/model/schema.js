@@ -64,7 +64,25 @@ export default class Schema {
 	 */
 	register( itemName, definition ) {
 		if ( this._sourceDefinitions[ itemName ] ) {
-			// TODO docs
+			/**
+			 * A single item cannot be registered twice in the schema.
+			 *
+			 * This situation may happen when:
+			 *
+			 * * Two or more plugins called {@link #register `register()`} with the same name. This will usually mean that
+			 * there is a collision between plugins which try to use the same element in the model. Unfortunately,
+			 * the only way to solve this is by modifying one of these plugins to use a unique model element name.
+			 * * A single plugin was loaded twice. This happens when it is installed by npm/yarn in two versions
+			 * and usually means one or more of the following issues:
+			 *     * a version mismatch (two of your dependencies require two different versions of this plugin),
+			 *     * incorrect imports (this plugin is somehow imported twice in a way which confuses webpack),
+			 *     * mess in `node_modules/` (`rm -rf node_modules/` may help).
+			 *
+			 * **Note:** Check the logged `itemName` to better understand which plugin was duplicated/conflicting.
+			 *
+			 * @param itemName The name of the model element that is being registered twice.
+			 * @error schema-cannot-register-item-twice
+			 */
 			throw new CKEditorError( 'schema-cannot-register-item-twice: A single item cannot be registered twice in the schema.', {
 				itemName
 			} );
@@ -103,7 +121,15 @@ export default class Schema {
 	 */
 	extend( itemName, definition ) {
 		if ( !this._sourceDefinitions[ itemName ] ) {
-			// TODO docs
+			/**
+			 * Cannot extend an item which was not registered yet.
+			 *
+			 * This error happens when a plugin tries to extend the schema definition of an item which was not
+			 * {@link #register registered} yet.
+			 *
+			 * @param itemName The name of the model element which is being extended.
+			 * @error schema-cannot-register-item-twice
+			 */
 			throw new CKEditorError( 'schema-cannot-extend-missing-item: Cannot extend an item which was not registered yet.', {
 				itemName
 			} );
