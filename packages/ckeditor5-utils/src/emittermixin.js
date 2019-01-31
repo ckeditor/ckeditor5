@@ -32,12 +32,20 @@ const EmitterMixin = {
 	 * @inheritDoc
 	 */
 	once( event, callback, options ) {
-		const onceCallback = function( event, ...args ) {
-			// Go off() at the first call.
-			event.off();
+		let wasFired = false;
 
-			// Go with the original callback.
-			callback.call( this, event, ...args );
+		const onceCallback = function( event, ...args ) {
+			// Ensure the callback is called only once even if the callback itself leads to re-firing the event
+			// (which would call the callback again).
+			if ( !wasFired ) {
+				wasFired = true;
+
+				// Go off() at the first call.
+				event.off();
+
+				// Go with the original callback.
+				callback.call( this, event, ...args );
+			}
 		};
 
 		// Make a similar on() call, simply replacing the callback.
