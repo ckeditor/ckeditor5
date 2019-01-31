@@ -78,7 +78,7 @@ export default class EditingController {
 			this.view._renderingDisabled = true;
 		}, { priority: 'highest' } );
 
-		this.listenTo( this.model, '_afterChanges', ( data, { hasModelDocumentChanged } ) => {
+		this.listenTo( this.model, '_afterChanges', ( evt, { hasModelDocumentChanged } ) => {
 			this.view._renderingDisabled = false;
 			if ( hasModelDocumentChanged ) {
 				this.view.render();
