@@ -17,6 +17,7 @@ import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -569,6 +570,82 @@ describe( 'Input feature', () => {
 					'<strong>oo\u00A0bar</strong>' +
 				'</p>'
 			);
+		} );
+
+		it( 'should handle correctly if last element is inline', () => {
+			editor.model.schema.register( 'placeholder', { allowWhere: '$text', isInline: true } );
+
+			editor.conversion.elementToElement( {
+				model: 'placeholder',
+				view: 'placeholder'
+			} );
+
+			editor.setData( '<p>foo<placeholder></placeholder></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p>foo<placeholder></placeholder>[]</p>' );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( '!' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
+					newChildren: [
+						new ViewText( 'Foo' ),
+						new ViewContainerElement( 'placeholder' ),
+						new ViewText( 'f' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>foo<placeholder></placeholder>!{}</p>' );
+		} );
+
+		it( 'should handle correctly if some elements are inline', () => {
+			editor.model.schema.register( 'placeholder', { allowWhere: '$text', isInline: true } );
+
+			editor.conversion.elementToElement( {
+				model: 'placeholder',
+				view: 'placeholder'
+			} );
+
+			editor.setData( '<p>foo<placeholder></placeholder>bar<placeholder></placeholder>baz</p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( '!' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
+					newChildren: [
+						new ViewText( 'foo&nbsp;' ),
+						new ViewContainerElement( 'placeholder' ),
+						new ViewText( '&nbsp;bar&nbsp;' ),
+						new ViewContainerElement( 'placeholder' ),
+						new ViewText( '&nbsp;baz&nbsp;' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>foo<placeholder></placeholder>bar<placeholder></placeholder>baz!{}</p>' );
 		} );
 	} );
 
