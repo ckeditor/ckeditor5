@@ -282,11 +282,12 @@ export default class Document {
 	 * fire `change` event for features and conversion and then reset the differ.
 	 * Fire `change:data` event when at least one operation or buffered marker changes the data.
 	 *
+	 * @protected
 	 * @fires change
 	 * @fires change:data
 	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixers will be called.
 	 */
-	runPostFixersAndResetDiffer( writer ) {
+	_runPostFixersAndResetDiffer( writer ) {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 

@@ -701,7 +701,7 @@ export default class Model {
 			// Collect an information whether the model document has changed during from the last pending change callback.
 			hasDocumentChanged = hasDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
 
-			this.document.runPostFixersAndResetDiffer( this._currentWriter );
+			this.document._runPostFixersAndResetDiffer( this._currentWriter );
 
 			// With <3 for @scofalic.
 			this.fire( '_change', this._currentWriter );
