@@ -155,7 +155,11 @@ export default class Document {
 		// fire `change` event for features and conversion and then reset the differ.
 		// Fire `change:data` event when at least one operation or buffered marker changes the data.
 		this.listenTo( model, '_change', ( evt, writer ) => {
-			if ( !this.differ.isEmpty || hasSelectionChanged ) {
+			const documentChanged = !this.differ.isEmpty || hasSelectionChanged;
+
+			evt.return = documentChanged;
+
+			if ( documentChanged ) {
 				this._callPostFixers( writer );
 
 				if ( this.differ.hasDataChanges() ) {

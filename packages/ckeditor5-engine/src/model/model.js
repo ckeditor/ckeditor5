@@ -683,6 +683,7 @@ export default class Model {
 	 */
 	_runPendingChanges() {
 		const ret = [];
+		let modelChanged = false;
 
 		this.fire( '_beforeChanges' );
 
@@ -695,14 +696,14 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event.
-			this.fire( '_change', this._currentWriter );
+			// Fire internal `_change` event and collect the change result.
+			modelChanged = modelChanged || this.fire( '_change', this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
 		}
 
-		this.fire( '_afterChanges' );
+		this.fire( '_afterChanges', { modelChanged } );
 
 		return ret;
 	}
