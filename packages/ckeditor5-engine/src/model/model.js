@@ -683,7 +683,7 @@ export default class Model {
 	 */
 	_runPendingChanges() {
 		const ret = [];
-		let hasDocumentChanged = false;
+		let hasModelDocumentChanged = false;
 
 		this.fire( '_beforeChanges' );
 
@@ -699,18 +699,17 @@ export default class Model {
 			this.document.callPostFixers
 
 			// Collect an information whether the model document has changed during from the last pending change callback.
-			hasDocumentChanged = hasDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
+			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
 
 			this.document._runPostFixersAndResetDiffer( this._currentWriter );
 
-			// With <3 for @scofalic.
 			this.fire( '_change', this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
 		}
 
-		this.fire( '_afterChanges', { hasDocumentChanged } );
+		this.fire( '_afterChanges', { hasModelDocumentChanged } );
 
 		return ret;
 	}
