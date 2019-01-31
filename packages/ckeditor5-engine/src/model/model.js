@@ -499,7 +499,7 @@ export default class Model {
 			return true;
 		}
 
-		// Check if there are any markers which affects data in a given range.
+		// Check if there are any markers which affects data in this given range.
 		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( rangeOrElement ) ) {
 			if ( intersectingMarker.affectsData ) {
 				return false;
@@ -507,7 +507,6 @@ export default class Model {
 		}
 
 		for ( const item of rangeOrElement.getItems() ) {
-			// Remember, `TreeWalker` returns always `textProxy` nodes.
 			if ( item.is( 'textProxy' ) && item.data.match( /\S+/gi ) !== null ) {
 				return false;
 			} else if ( this.schema.isObject( item ) || item.is( 'emptyElement' ) ) {

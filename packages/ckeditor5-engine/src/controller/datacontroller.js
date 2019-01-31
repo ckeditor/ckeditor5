@@ -117,8 +117,10 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	get( options ) {
-		const rootName = ( options || {} ).rootName || 'main';
-		const trim = ( options || {} ).trim || 'empty';
+		options = options || {};
+
+		const rootName = options.rootName || 'main';
+		const trim = options.trim || 'empty';
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
@@ -152,7 +154,7 @@ export default class DataController {
 	 */
 	stringify( modelElementOrFragment, skipEmpty = false ) {
 		if ( skipEmpty && this.model.isEmpty( modelElementOrFragment ) ) {
-			// If trimEmpty is true && model is considered empty return empty string.
+			// If skipEmpty and model is considered empty return empty string.
 			return '';
 		} else {
 			// Model -> view.
