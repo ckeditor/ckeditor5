@@ -324,20 +324,29 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 1, 2, 3 );
 		} );
 
-		it( 'should be removed only after exact event fired', () => {
-			const spy1 = sinon.spy();
-			const spy2 = sinon.spy();
+		it( 'should be removed also when fired through namespaced event', () => {
+			const spy = sinon.spy();
 
-			emitter.on( 'foo', spy1 );
-			emitter.once( 'foo', spy2 );
+			emitter.once( 'foo', spy );
 
 			emitter.fire( 'foo:bar' );
 			emitter.fire( 'foo' );
-			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should be called only once and have infinite loop protection', () => {
+			const spy = sinon.spy();
+
+			emitter.once( 'foo', () => {
+				spy();
+
+				emitter.fire( 'foo' );
+			} );
+
 			emitter.fire( 'foo' );
 
-			sinon.assert.callCount( spy1, 4 );
-			sinon.assert.calledTwice( spy2 );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 
