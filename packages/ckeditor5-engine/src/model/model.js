@@ -485,7 +485,7 @@ export default class Model {
 	 * 		* Non-plain `AttributeElement` (for example comment)
 	 *
 	 * 	This method should be used to check if the element/range/editor contains any printable/meaningful content.
-	 * 	It is the proper method to check if editor is empty.
+	 * 	It is also the correct method to check if editor is empty.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @returns {Boolean}
@@ -499,6 +499,13 @@ export default class Model {
 			return true;
 		}
 
+		// Check if there are any markers which affects data in a given range.
+		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( rangeOrElement ) ) {
+			if ( intersectingMarker.affectsData ) {
+				return false;
+			}
+		}
+
 		for ( const item of rangeOrElement.getItems() ) {
 			// Remember, `TreeWalker` returns always `textProxy` nodes.
 			if ( item.is( 'textProxy' ) && item.data.match( /\S+/gi ) !== null ) {
@@ -506,8 +513,6 @@ export default class Model {
 			} else if ( this.schema.isObject( item ) || item.is( 'emptyElement' ) ) {
 				return false;
 			}
-			// Check for Non-plain `ContainerElement`
-			// Check for Non-plain `AttributeElement`
 		}
 
 		return true;
