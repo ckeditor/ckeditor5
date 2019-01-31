@@ -42,6 +42,7 @@ import '@ckeditor/ckeditor5-utils/src/version';
  * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
  * (as most editor implementations do).
  *
+ * @abstract
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
@@ -218,36 +219,16 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise} A promise which resolves once the initialization is completed.
+	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins A promise which resolves
+	 * once the initialization is completed providing array of loaded plugins.
 	 */
 	initPlugins() {
-		const that = this;
 		const config = this.config;
+		const plugins = config.get( 'plugins' ) || [];
+		const removePlugins = config.get( 'removePlugins' ) || [];
+		const extraPlugins = config.get( 'extraPlugins' ) || [];
 
-		return loadPlugins()
-			.then( loadedPlugins => {
-				return initPlugins( loadedPlugins, 'init' )
-					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
-			} )
-			.then( () => this.fire( 'pluginsReady' ) );
-
-		function loadPlugins() {
-			const plugins = config.get( 'plugins' ) || [];
-			const removePlugins = config.get( 'removePlugins' ) || [];
-			const extraPlugins = config.get( 'extraPlugins' ) || [];
-
-			return that.plugins.load( plugins.concat( extraPlugins ), removePlugins );
-		}
-
-		function initPlugins( loadedPlugins, method ) {
-			return loadedPlugins.reduce( ( promise, plugin ) => {
-				if ( !plugin[ method ] ) {
-					return promise;
-				}
-
-				return promise.then( plugin[ method ].bind( plugin ) );
-			}, Promise.resolve() );
-		}
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
 	}
 
 	/**
@@ -294,49 +275,13 @@ export default class Editor {
 	execute( ...args ) {
 		this.commands.execute( ...args );
 	}
-
-	/**
-	 * Creates and initializes a new editor instance.
-	 *
-	 * @param {Object} config The editor config. You can find the list of config options in
-	 * {@link module:core/editor/editorconfig~EditorConfig}.
-	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
-	 */
-	static create( config ) {
-		return new Promise( resolve => {
-			const editor = new this( config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => {
-						editor.fire( 'dataReady' );
-						editor.fire( 'ready' );
-					} )
-					.then( () => editor )
-			);
-		} );
-	}
 }
 
 mix( Editor, ObservableMixin );
 
 /**
- * Fired after {@link #initPlugins plugins are initialized}.
- *
- * @event pluginsReady
- */
-
-/**
- * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
- * any data initially, this event will be fired right before {@link #event:ready}.
- *
- * @event dataReady
- */
-
-/**
- * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
- * editor components are ready.
+ * Fired when {@link module:core/plugincollection~PluginCollection#event:ready plugins},
+ * and {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static

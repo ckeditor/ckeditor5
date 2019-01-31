@@ -10,8 +10,13 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
+ *
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class PluginCollection {
 	/**
@@ -139,7 +144,7 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Loads a set of plugins and adds them to the collection.
+	 * Initializes a set of plugins and adds them to the collection.
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
 	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) works only if
@@ -150,7 +155,7 @@ export default class PluginCollection {
 	 * collection.
 	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
 	 */
-	load( plugins, removePlugins = [] ) {
+	init( plugins, removePlugins = [] ) {
 		const that = this;
 		const editor = this._editor;
 		const loading = new Set();
@@ -191,6 +196,8 @@ export default class PluginCollection {
 		}
 
 		return Promise.all( pluginConstructors.map( loadPlugin ) )
+			.then( () => initPlugins( loaded, 'init' ) )
+			.then( () => initPlugins( loaded, 'afterInit' ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
@@ -229,6 +236,16 @@ export default class PluginCollection {
 
 					throw err;
 				} );
+		}
+
+		function initPlugins( loadedPlugins, method ) {
+			return loadedPlugins.reduce( ( promise, plugin ) => {
+				if ( !plugin[ method ] ) {
+					return promise;
+				}
+
+				return promise.then( plugin[ method ].bind( plugin ) );
+			}, Promise.resolve() );
 		}
 
 		function instantiatePlugin( PluginConstructor ) {
@@ -363,3 +380,5 @@ export default class PluginCollection {
 		}
 	}
 }
+
+mix( PluginCollection, EmitterMixin );
