@@ -305,7 +305,8 @@ export default class Document {
 	}
 
 	/**
-	 * Returns whether there is a buffered change or if the selection has changed from the last `{@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block}
+	 * Returns whether there is a buffered change or if the selection has changed from the last
+	 * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block}
 	 * or {@link module:engine/model/model~Model#change `change()` block}.
 	 *
 	 * @protected

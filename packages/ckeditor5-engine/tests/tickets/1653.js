@@ -30,5 +30,5 @@ describe( 'Bug ckeditor5-engine#1653', () => {
 
 				return editor.destroy();
 			} );
-	} )
+	} );
 } );
