@@ -6,9 +6,9 @@
 import DataApiMixin from '../../../src/editor/utils/dataapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import testUtils from '../../../tests/_utils/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DataApiMixin', () => {
 	let editor;
