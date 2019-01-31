@@ -20,17 +20,16 @@ before_install:
 - npm i -g yarn
 install:
 - yarn add mgit2 --ignore-workspace-root-check
-#- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
-#- git checkout package.json yarn.lock
-#- rm -rf node_modules
-#- yarn install
+- mgit sync --resolver-url-template="https://github.com/\${ path }.git"
+- git checkout package.json yarn.lock
+- rm -rf node_modules
+- yarn install
 script:
-- npm version
-#- yarn run test --reporter=dots
-#- yarn run docs:api --validate-only
-#- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-#    travis_wait yarn run docs:build-and-publish-nightly;
-#  fi'
+- yarn run test --reporter=dots
+- yarn run docs:api --validate-only
+- 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
+    travis_wait yarn run docs:build-and-publish-nightly;
+  fi'
 after_script:
 - export END_TIME=$( date +%s )
 - yarn add slack-notify @octokit/rest@^16.13.4 --ignore-workspace-root-check
