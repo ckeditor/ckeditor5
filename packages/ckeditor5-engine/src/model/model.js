@@ -696,8 +696,9 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event and collect the change result.
-			modelChanged = modelChanged || this.fire( '_change', this._currentWriter );
+			// Fire internal `_change` event and collect the information whether the model is changed after the callback.
+			const modelChangedAfterCallback = this.fire( '_change', this._currentWriter );
+			modelChanged = modelChanged || modelChangedAfterCallback;
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
@@ -733,6 +734,8 @@ export default class Model {
 	 *
 	 * @protected
 	 * @event _afterChanges
+	 * @param {Object} options
+	 * @param {Boolean} options.modelChanged A boolean indicates whether the model was changed during the {@link module:engine/model/model~Model#change} blocks.
 	 */
 
 	/**
