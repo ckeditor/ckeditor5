@@ -265,7 +265,7 @@ export function toWidgetEditable( editable, writer ) {
 export function findOptimalInsertionPosition( selection, model ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement ) {
+	if ( selectedElement && !model.schema.isInline( selectedElement ) ) {
 		return model.createPositionAfter( selectedElement );
 	}
 

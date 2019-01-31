@@ -392,8 +392,16 @@ describe( 'widget utils', () => {
 			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
 
-		it( 'returns position before block if in the middle of that block', () => {
+		it( 'returns position before block if in the middle of that block (collapsed selection)', () => {
 			setData( model, '<paragraph>x</paragraph><paragraph>f[]oo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
+		} );
+
+		it( 'returns position before block if in the middle of that block (non-collapsed selection)', () => {
+			setData( model, '<paragraph>x</paragraph><paragraph>f[o]o</paragraph><paragraph>y</paragraph>' );
 
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
@@ -424,6 +432,19 @@ describe( 'widget utils', () => {
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		it( 'returns position before block selection is on inline element', () => {
+			model.schema.register( 'placeholder', {
+				allowWhere: '$text',
+				isInline: true
+			} );
+
+			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
 } );
