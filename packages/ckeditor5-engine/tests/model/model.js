@@ -11,7 +11,6 @@ import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import Batch from '../../src/model/batch';
-import Writer from '../../src/model/writer';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
 
 describe( 'Model', () => {
