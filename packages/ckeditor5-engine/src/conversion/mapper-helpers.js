@@ -20,24 +20,26 @@
  *
  * 1. When selection starts before inline widget (offset=0):
  *
- *		                             +- view position
- *		                             |
+ *		//                           +- view position
+ *		//                           |
  *		<p>f[oo <span class="widget">]widget</span></p>
  *
  *		// will map to:
- *		                                               +- model position
- *		                                               |
+ *
+ *		//                                             +- model position
+ *		//                                             |
  *		<paragraph>f[oo <inline-widget></inline-widget>]</paragraph>
  *
  * 2. When selection start before inline widget (offset=0):
  *
- *		                              +- view position
- *		                              |
+ *		//                            +- view position
+ *		//                            |
  *		<p><span class="widget">widget[</span> ba]r</p>
  *
  *		// will map to:
- *		           +- model position
- *		           |
+ *
+ *		//         +- model position
+ *		//         |
  *		<paragraph>[<inline-widget></inline-widget> ba]r</paragraph>
  *
  * @param {module:engine/model/model~Model} model
