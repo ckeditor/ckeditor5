@@ -645,6 +645,42 @@ describe( 'Model', () => {
 			schema.extend( '$block', { allowIn: 'tableCell' } );
 		} );
 
+		it( 'should return true for collapsed range', () => {
+			setData( model, '<paragraph>Foo[] Bar</paragraph>' );
+
+			const root = model.document.getRoot();
+			const selection = model.document.selection;
+			const range = selection.getFirstRange();
+
+			expect( stringify( root, selection ) ).to.equal( '<paragraph>Foo[] Bar</paragraph>' );
+
+			expect( model.isEmpty( range ) ).to.true;
+		} );
+
+		it( 'should return true for range on empty text', () => {
+			setData( model, '<paragraph>Foo[ ]Bar</paragraph>' );
+
+			const root = model.document.getRoot();
+			const selection = model.document.selection;
+			const range = selection.getFirstRange();
+
+			expect( stringify( root, selection ) ).to.equal( '<paragraph>Foo[ ]Bar</paragraph>' );
+
+			expect( model.isEmpty( range ) ).to.true;
+		} );
+
+		it( 'should return false for range on non-empty text', () => {
+			setData( model, '<paragraph>F[oo ]Bar</paragraph>' );
+
+			const root = model.document.getRoot();
+			const selection = model.document.selection;
+			const range = selection.getFirstRange();
+
+			expect( stringify( root, selection ) ).to.equal( '<paragraph>F[oo ]Bar</paragraph>' );
+
+			expect( model.isEmpty( range ) ).to.false;
+		} );
+
 		it( 'should return true for empty paragraph', () => {
 			expectIsEmpty( true, '<paragraph></paragraph>' );
 		} );
@@ -759,6 +795,92 @@ describe( 'Model', () => {
 			expectIsEmpty( false, '<listItem></listItem><image></image>' );
 		} );
 
+		it( 'should return false for media element', () => {
+			expectIsEmpty( false, '<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' );
+		} );
+
+		it( 'should return true for empty element with marker (usingOperation=false, affectsData=false)', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			} );
+		} );
+
+		it( 'should return true for empty element with marker (usingOperation=true, affectsData=false)', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			} );
+		} );
+
+		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert empty text.
+					const text = writer.createText( '    ', { bold: true } );
+					writer.append( text, root.getChild( 0 ) );
+
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start><$text bold="true">    </$text>' +
+					'<comment1:end></comment1:end></paragraph>';
+			} );
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
+			expectIsEmpty( false, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			} );
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
+			expectIsEmpty( false, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			} );
+		} );
+
+		it( 'should return false for empty text with marker (usingOperation=false, affectsData=true)', () => {
+			expectIsEmpty( false, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Insert empty text.
+					const text = writer.createText( '    ', { bold: true } );
+					writer.append( text, root.getChild( 0 ) );
+
+					// Insert marker.
+					const range = ModelRange._createIn( root.getChild( 0 ) );
+					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
+				} );
+
+				return '<paragraph><comment1:start></comment1:start><$text bold="true">    </$text>' +
+					'<comment1:end></comment1:end></paragraph>';
+			} );
+		} );
+
 		function expectIsEmpty( isEmpty, modelData, modifyModel ) {
 			setData( model, modelData );
 
@@ -769,8 +891,11 @@ describe( 'Model', () => {
 				expectedModel = modifyModel( root );
 			}
 
-			expect( stringify( root ) ).to.equal( expectedModel );
+			expect( stringify( root, null, model.markers ) ).to.equal( expectedModel );
 
+			// Test by passing element.
+			expect( model.isEmpty( root ) ).to.equal( !!isEmpty );
+			// Test by passing range.
 			expect( model.isEmpty( ModelRange._createIn( root ) ) ).to.equal( !!isEmpty );
 		}
 	} );

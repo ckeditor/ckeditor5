@@ -336,15 +336,25 @@ describe( 'DataController', () => {
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p>' );
 		} );
 
-		it( 'should get empty paragraph', () => {
+		it( 'should trim empty paragraph by default', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '' );
+		} );
+
+		it( 'should get empty paragraph (with trim=none)', () => {
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			setData( model, '<paragraph></paragraph>' );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+			expect( data.get( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 
 		it( 'should get two paragraphs', () => {
@@ -354,6 +364,7 @@ describe( 'DataController', () => {
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should get text directly in root', () => {
@@ -361,6 +372,7 @@ describe( 'DataController', () => {
 			setData( model, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( 'foo' );
 		} );
 
 		it( 'should get paragraphs without bold', () => {
@@ -370,6 +382,7 @@ describe( 'DataController', () => {
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'should get paragraphs with bold', () => {
@@ -380,6 +393,7 @@ describe( 'DataController', () => {
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
 			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
+			expect( data.get( { trim: 'empty' } ) ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
 
 		it( 'should get root name as a parameter', () => {
@@ -393,13 +407,13 @@ describe( 'DataController', () => {
 			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
-			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
-			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+			expect( data.get( { rootName: 'main' } ) ).to.equal( '<p>foo</p>' );
+			expect( data.get( { rootName: 'title' } ) ).to.equal( 'Bar' );
 		} );
 
 		it( 'should throw an error when non-existent root is used', () => {
 			expect( () => {
-				data.get( 'nonexistent' );
+				data.get( { rootName: 'nonexistent' } );
 			} ).to.throw(
 				CKEditorError,
 				'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.'
