@@ -151,6 +151,7 @@ export default class Document {
 			}
 		}, { priority: 'low' } );
 
+		// Listen to selection changes. If selection changed, mark it.
 		this.listenTo( this.selection, 'change', () => {
 			this._hasSelectionChangedFromTheLastChangeBlock = true;
 		} );
