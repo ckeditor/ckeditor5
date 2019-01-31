@@ -41,7 +41,6 @@ describe( 'DataApiMixin', () => {
 	} );
 
 	describe( 'getData()', () => {
-
 		testUtils.createSinonSandbox();
 
 		it( 'should be added to editor interface', () => {
