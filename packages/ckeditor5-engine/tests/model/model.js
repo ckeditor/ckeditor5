@@ -11,6 +11,7 @@ import ModelPosition from '../../src/model/position';
 import ModelSelection from '../../src/model/selection';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import Batch from '../../src/model/batch';
+import Writer from '../../src/model/writer';
 import { getData, setData, stringify } from '../../src/dev-utils/model';
 
 describe( 'Model', () => {
@@ -571,6 +572,207 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( range ) ).to.be.false;
 		} );
+	} );
+
+	describe( 'isEmpty()', () => {
+		beforeEach( () => {
+			// Register paragraphs and divs.
+			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
+			schema.extend( '$block', { allowIn: 'div' } );
+
+			// Allow bold attribute on text nodes.
+			schema.extend( '$text', { allowAttributes: 'bold' } );
+
+			// Allow sub attribute on text nodes.
+			schema.extend( '$text', { allowAttributes: 'subscript' } );
+
+			// Register blockquotes.
+			schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			// Register headings.
+			schema.register( 'heading1', {
+				inheritAllFrom: '$block'
+			} );
+
+			// Register images.
+			schema.register( 'image', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block',
+				allowAttributes: [ 'alt', 'src', 'srcset' ]
+			} );
+			schema.extend( 'image', { allowIn: 'div' } );
+
+			// Register lists.
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block',
+				allowAttributes: [ 'listType', 'listIndent' ]
+			} );
+
+			// Register media.
+			schema.register( 'media', {
+				isObject: true,
+				isBlock: true,
+				allowWhere: '$block',
+				allowAttributes: [ 'url' ]
+			} );
+
+			// Register tables.
+			schema.register( 'table', {
+				allowWhere: '$block',
+				allowAttributes: [ 'headingRows', 'headingColumns' ],
+				isLimit: true,
+				isObject: true,
+				isBlock: true
+			} );
+
+			schema.register( 'tableRow', {
+				allowIn: 'table',
+				isLimit: true
+			} );
+
+			schema.register( 'tableCell', {
+				allowIn: 'tableRow',
+				allowAttributes: [ 'colspan', 'rowspan' ],
+				isLimit: true
+			} );
+
+			// Allow all $block content inside table cell.
+			schema.extend( '$block', { allowIn: 'tableCell' } );
+		} );
+
+		it( 'should return true for empty paragraph', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>' );
+		} );
+
+		it( 'should return true for multiple empty paragraphs', () => {
+			expectIsEmpty( true, '<paragraph></paragraph><paragraph></paragraph><paragraph></paragraph>' );
+		} );
+
+		it( 'should return true for paragraph with spaces only', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+					writer.insertText( '    ', root.getChild( 0 ), 'end' );
+				} );
+
+				return '<paragraph>    </paragraph>';
+			} );
+		} );
+
+		it( 'should return true for paragraph with whitespaces only', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+					writer.insertText( ' \r\n\t\f\v ', root.getChild( 0 ), 'end' );
+				} );
+
+				return '<paragraph> \r\n\t\f\v </paragraph>';
+			} );
+		} );
+
+		it( 'should return true for text with attribute containing spaces only', () => {
+			expectIsEmpty( true, '<paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+					const text = writer.createText( '   ', { bold: true } );
+					writer.append( text, root.getChild( 0 ) );
+				} );
+
+				return '<paragraph><$text bold="true">   </$text></paragraph>';
+			} );
+		} );
+
+		it( 'should return true for text with attribute containing whitespaces only', () => {
+			expectIsEmpty( true, '<paragraph></paragraph><paragraph></paragraph>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+					const text1 = writer.createText( '          ', { bold: true } );
+					const text2 = writer.createText( ' \r\n\t\f\v ', { bold: true, subscript: true } );
+
+					writer.append( text1, root.getChild( 0 ) );
+					writer.append( text2, root.getChild( 1 ) );
+				} );
+
+				return '<paragraph><$text bold="true">          </$text></paragraph>' +
+					'<paragraph><$text bold="true" subscript="true"> \r\n\t\f\v </$text></paragraph>';
+			} );
+		} );
+
+		it( 'should return false for paragraph with text', () => {
+			expectIsEmpty( false, '<paragraph>Foo Bar</paragraph>' );
+		} );
+
+		it( 'should return false for empty paragraph and paragraph with text', () => {
+			expectIsEmpty( false, '<paragraph></paragraph><paragraph>Foo Bar</paragraph>' );
+		} );
+
+		it( 'should return true for nested empty blocks', () => {
+			expectIsEmpty( true, '<div><paragraph></paragraph></div>' );
+		} );
+
+		it( 'should return true for multiple nested empty blocks', () => {
+			expectIsEmpty( true, '<div><paragraph></paragraph><blockQuote></blockQuote></div>' );
+		} );
+
+		it( 'should return true for empty heading', () => {
+			expectIsEmpty( true, '<heading1></heading1>' );
+		} );
+
+		it( 'should return true for empty list (single list item)', () => {
+			expectIsEmpty( true, '<listItem></listItem>' );
+		} );
+
+		it( 'should return true for empty list (multiple list item)', () => {
+			expectIsEmpty( true, '<listItem></listItem><listItem></listItem><listItem></listItem>' );
+		} );
+
+		it( 'should return true for empty list with whitespaces only', () => {
+			expectIsEmpty( true, '<listItem></listItem><listItem></listItem>', root => {
+				model.enqueueChange( 'transparent', writer => {
+					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+					writer.insertText( ' \r\n\t\f\v ', root.getChild( 0 ), 'end' );
+					writer.insertText( '  ', root.getChild( 1 ), 'end' );
+				} );
+
+				return '<listItem> \r\n\t\f\v </listItem><listItem>  </listItem>';
+			} );
+		} );
+
+		it( 'should return false for list with text', () => {
+			expectIsEmpty( false, '<listItem>foo</listItem><listItem>bar</listItem>' );
+		} );
+
+		it( 'should return false for empty table', () => {
+			expectIsEmpty( false, '<table><tableRow><tableCell></tableCell></tableRow></table>' );
+		} );
+
+		it( 'should return false for single image', () => {
+			expectIsEmpty( false, '<image></image>' );
+		} );
+
+		it( 'should return false for empty element and single image', () => {
+			expectIsEmpty( false, '<listItem></listItem><image></image>' );
+		} );
+
+		function expectIsEmpty( isEmpty, modelData, modifyModel ) {
+			setData( model, modelData );
+
+			const root = model.document.getRoot();
+
+			let expectedModel = modelData;
+			if ( modifyModel ) {
+				expectedModel = modifyModel( root );
+			}
+
+			expect( stringify( root ) ).to.equal( expectedModel );
+
+			expect( model.isEmpty( ModelRange._createIn( root ) ) ).to.equal( !!isEmpty );
+		}
 	} );
 
 	describe( 'createPositionFromPath()', () => {
