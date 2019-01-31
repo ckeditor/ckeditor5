@@ -27,6 +27,14 @@ describe( 'ShiftEnter feature', () => {
 		expect( editor.commands.get( 'shiftEnter' ) ).to.be.instanceof( ShiftEnterCommand );
 	} );
 
+	it( 'should set proper schema rules', () => {
+		expect( editor.model.schema.isRegistered( 'softBreak' ) ).to.be.true;
+
+		expect( editor.model.schema.checkChild( [ '$block' ], 'softBreak' ) ).to.be.true;
+
+		expect( editor.model.schema.isInline( 'softBreak' ) ).to.be.true;
+	} );
+
 	it( 'registers the EnterObserver', () => {
 		const observer = editor.editing.view.getObserver( EnterObserver );
 
