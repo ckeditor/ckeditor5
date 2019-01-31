@@ -21,7 +21,7 @@ describe( 'Bug ckeditor5-engine#1653', () => {
 				editor = newEditor;
 
 				const spy = sinon.spy( editor.editing.view, 'render' );
-				const output = editor.data.parse( '<p></p>' );
+				editor.data.parse( '<p></p>' );
 
 				sinon.assert.notCalled( spy );
 			} )
