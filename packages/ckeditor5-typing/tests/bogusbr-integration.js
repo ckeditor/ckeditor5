@@ -64,7 +64,7 @@ describe( 'Typing – bogus BR integration', () => {
 			} );
 
 			editor.model.document.once( 'change', () => {
-				expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+				expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
 
@@ -82,7 +82,7 @@ describe( 'Typing – bogus BR integration', () => {
 			} );
 
 			editor.model.document.once( 'change', () => {
-				expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+				expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
 
