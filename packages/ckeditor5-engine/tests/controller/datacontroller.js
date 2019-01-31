@@ -160,6 +160,16 @@ describe( 'DataController', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
 		} );
 
+		it( 'should fire ready event after init', () => {
+			const spy = sinon.spy();
+
+			data.on( 'ready', spy );
+
+			data.init( 'foo bar' );
+
+			sinon.assert.called( spy );
+		} );
+
 		it( 'should throw an error when document data is already initialized', () => {
 			data.init( '<p>Foo</p>' );
 

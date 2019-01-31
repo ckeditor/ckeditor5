@@ -15,7 +15,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * We recommend reading the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide first to
  * understand the core concepts of the conversion mechanisms.
  *
- * The instance of the conversion manager is available in the
+ * An instance of the conversion manager is available in the
  * {@link module:core/editor/editor~Editor#conversion `editor.conversion`} property
  * and by default has the following groups of dispatchers (i.e. directions of conversion):
  *
@@ -79,11 +79,12 @@ export default class Conversion {
 	register( name, conversionHelpers ) {
 		if ( this._conversionHelpers.has( name ) ) {
 			/**
-			 * Trying to register a group name that was already registered.
+			 * Trying to register a group name that has already been registered.
 			 *
 			 * @error conversion-register-group-exists
 			 */
-			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
+			throw new CKEditorError( 'conversion-register-group-exists: Trying to register' +
+				'a group name that has already been registered.' );
 		}
 
 		this._conversionHelpers.set( name, conversionHelpers );
@@ -610,7 +611,7 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
  */
 export class ConversionHelpers {
 	/**
-	 * Creates `ConversionHelpers` instance.
+	 * Creates a conversion helpers instance.
 	 *
 	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
