@@ -132,7 +132,12 @@
     "coverage/**",
     "packages/**"
   ],
-  "workspaces": [
-    "packages/*"
-  ]
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/husky"
+    ]
+  }
 }
