@@ -683,7 +683,7 @@ export default class Model {
 	 */
 	_runPendingChanges() {
 		const ret = [];
-		let modelChanged = false;
+		let hasDocumentChanged = false;
 
 		this.fire( '_beforeChanges' );
 
@@ -696,15 +696,21 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event and collect the information whether the model is changed after the callback.
-			const modelChangedAfterCallback = this.fire( '_change', this._currentWriter );
-			modelChanged = modelChanged || modelChangedAfterCallback;
+			this.document.callPostFixers
+
+			// Collect an information whether the model document has changed during from the last pending change callback.
+			hasDocumentChanged = hasDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
+
+			this.document.runPostFixersAndResetDiffer( this._currentWriter );
+
+			// With <3 for @scofalic.
+			this.fire( '_change', this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
 		}
 
-		this.fire( '_afterChanges', { modelChanged } );
+		this.fire( '_afterChanges', { hasDocumentChanged } );
 
 		return ret;
 	}
@@ -715,6 +721,7 @@ export default class Model {
 	 *
 	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
 	 *
+	 * @deprecated
 	 * @protected
 	 * @event _change
 	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
@@ -735,7 +742,7 @@ export default class Model {
 	 * @protected
 	 * @event _afterChanges
 	 * @param {Object} options
-	 * @param {Boolean} options.modelChanged A boolean indicates whether the model was changed during the {@link module:engine/model/model~Model#change} blocks.
+	 * @param {Boolean} options.hasDocumentChanged A boolean indicates whether the model document has changed during the {@link module:engine/model/model~Model#change} blocks.
 	 */
 
 	/**
