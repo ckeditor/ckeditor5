@@ -741,7 +741,7 @@ export default class Model {
 	 * @protected
 	 * @event _afterChanges
 	 * @param {Object} options
-	 * @param {Boolean} options.hasDocumentChanged A boolean indicates whether the model document has changed during the {@link module:engine/model/model~Model#change} blocks.
+	 * @param {Boolean} options.hasModelDocumentChanged A boolean indicates whether the model document has changed during the {@link module:engine/model/model~Model#change} blocks.
 	 */
 
 	/**
