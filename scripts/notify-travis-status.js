@@ -27,8 +27,13 @@ if ( buildBranch !== 'master' && buildBranch !== 'master-revisions' ) {
 	process.exit();
 }
 
-// ...and "push" builds.
+// ...and "push" builds...
 if ( process.env.TRAVIS_EVENT_TYPE !== 'push' ) {
+	process.exit();
+}
+
+// ...and for builds that failed.
+if ( process.env.TRAVIS_TEST_RESULT == 0 ) {
 	process.exit();
 }
 
@@ -40,26 +45,16 @@ const github = new GitHubApi( {
 	version: '3.0.0'
 } );
 
-const buildResult = process.env.TRAVIS_TEST_RESULT == 0;
-const messageColor = buildResult ? 'good' : 'danger';
 const buildId = process.env.TRAVIS_JOB_NUMBER.split( '.' )[ 0 ];
 const buildUrl = process.env.TRAVIS_JOB_WEB_URL;
 const buildCommit = process.env.TRAVIS_COMMIT;
 const [ owner, repo ] = process.env.TRAVIS_REPO_SLUG.split( '/' );
 const commitUrl = `https://github.com/${ owner }/${ repo }/commit/${ buildCommit }`;
 const shortCommit = buildCommit.substring( 0, 7 );
-
-const execTime = {
-	ms: parseInt( process.env.END_TIME ) - parseInt( process.env.START_TIME )
-};
-
-execTime.days = Math.floor( execTime.ms / 86400 );
-execTime.hours = Math.floor( ( execTime.ms - 86400 * execTime.days ) / 3600 );
-execTime.mins = Math.floor( ( ( execTime.ms - 86400 * execTime.days ) - 3600 * execTime.hours ) / 60 );
-execTime.secs = ( ( execTime.ms - 86400 * execTime.days ) - 3600 * execTime.hours ) - 60 * execTime.mins;
+const execTime = getExecuteTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
 
 const message = `Build <${ buildUrl }|#${ buildId }> (<${ commitUrl }|${ shortCommit }>) of \
-${ owner }/${ repo }@${ buildBranch } by [Author] ${ buildResult ? 'passed' : 'errored' } \
+${ owner }/${ repo }@${ buildBranch } by [Author] errored \
 in ${ execTime.mins } min ${ execTime.secs } sec`;
 
 const messageOptions = {
@@ -68,7 +63,7 @@ const messageOptions = {
 	username: 'Travis CI',
 	attachments: [
 		{
-			color: messageColor,
+			color: 'danger',
 		}
 	]
 };
@@ -88,3 +83,21 @@ github.repos.getCommit( { owner, repo, sha: buildCommit } )
 	.then( () => {
 		slack.send( messageOptions );
 	} );
+
+/**
+ * @param {Number} endTime
+ * @param {Number} startTime
+ * @returns {Object}
+ */
+function getExecuteTime( endTime, startTime ) {
+	const execTime = {
+		ms: endTime - startTime
+	};
+
+	execTime.days = Math.floor( execTime.ms / 86400 );
+	execTime.hours = Math.floor( ( execTime.ms - 86400 * execTime.days ) / 3600 );
+	execTime.mins = Math.floor( ( ( execTime.ms - 86400 * execTime.days ) - 3600 * execTime.hours ) / 60 );
+	execTime.secs = ( ( execTime.ms - 86400 * execTime.days ) - 3600 * execTime.hours ) - 60 * execTime.mins;
+
+	return execTime;
+}
