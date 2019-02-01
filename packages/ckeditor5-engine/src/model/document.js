@@ -279,6 +279,21 @@ export default class Document {
 	}
 
 	/**
+	 * A custom `toJSON()` method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} A clone of this object with the document property changed to a string.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json.selection = '[engine.model.DocumentSelection]';
+		json.model = '[engine.model.Model]';
+
+		return json;
+	}
+
+	/**
 	 * Check if there were any changes done on document, and if so, call post-fixers,
 	 * fire `change` event for features and conversion and then reset the differ.
 	 * Fire `change:data` event when at least one operation or buffered marker changes the data.
@@ -289,7 +304,7 @@ export default class Document {
 	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixers will be called.
 	 */
 	_runPostFixersAndResetDiffer( writer ) {
-		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
+		if ( this._hasDocumentChanged() ) {
 			this._callPostFixers( writer );
 
 			if ( this.differ.hasDataChanges() ) {
@@ -310,25 +325,10 @@ export default class Document {
 	 * or {@link module:engine/model/model~Model#change `change()` block}.
 	 *
 	 * @protected
-	 * @returns {Boolean} Returns `true` when document has changed from the last change block.
+	 * @returns {Boolean} Returns `true` if document has changed from the differ's reset.
 	 */
-	_hasDocumentChangedFromTheLastChangeBlock() {
+	_hasDocumentChanged() {
 		return !this.differ.isEmpty || this._hasSelectionChangedFromTheLastChangeBlock;
-	}
-
-	/**
-	 * A custom `toJSON()` method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} A clone of this object with the document property changed to a string.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.DocumentSelection]';
-		json.model = '[engine.model.Model]';
-
-		return json;
 	}
 
 	/**

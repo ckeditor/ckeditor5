@@ -696,8 +696,8 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Collect an information whether the model document has changed during from the last pending change callback.
-			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
+			// Collect an information whether the model document has changed during from the last pending change.
+			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChanged();
 
 			// Fire '_change' event before resetting differ.
 			this.fire( '_change', this._currentWriter );
@@ -740,8 +740,8 @@ export default class Model {
 	 * @protected
 	 * @event _afterChanges
 	 * @param {Object} options
-	 * @param {Boolean} options.hasModelDocumentChanged A boolean indicates whether the model document has changed during the
-	 * {@link module:engine/model/model~Model#change} blocks.
+	 * @param {Boolean} options.hasModelDocumentChanged `true` if the model document has changed during the
+	 * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} blocks.
 	 */
 
 	/**
