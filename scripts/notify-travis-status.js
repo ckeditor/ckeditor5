@@ -16,7 +16,6 @@ This script assumes that is being executed on Travis CI. It requires three envir
 
 It also has some dependencies:
 - "slack-notify"
-- "@octokit/rest@^16.13.4"
 
  */
 
@@ -40,10 +39,6 @@ if ( process.env.TRAVIS_TEST_RESULT == 0 ) {
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
 const slack = require( 'slack-notify' )( SLACK_WEBHOOK_URL );
-const GitHubApi = require( '@octokit/rest' );
-const github = new GitHubApi( {
-	version: '3.0.0'
-} );
 
 const buildId = process.env.TRAVIS_JOB_NUMBER.split( '.' )[ 0 ];
 const buildUrl = process.env.TRAVIS_JOB_WEB_URL;
@@ -53,10 +48,6 @@ const commitUrl = `https://github.com/${ owner }/${ repo }/commit/${ buildCommit
 const shortCommit = buildCommit.substring( 0, 7 );
 const execTime = getExecutionTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
 
-const message = `Build <${ buildUrl }|#${ buildId }> (<${ commitUrl }|${ shortCommit }>) of \
-${ owner }/${ repo }@${ buildBranch } by [Author] errored \
-in ${ execTime.mins } min ${ execTime.secs } sec`;
-
 const messageOptions = {
 	icon_url: 'https://a.slack-edge.com/66f9/img/services/travis_36.png',
 	unfurl_links: 1,
@@ -64,7 +55,34 @@ const messageOptions = {
 	attachments: [
 		{
 			color: 'danger',
-		}
+			fields: [
+				{
+					title: 'Branch',
+					value: `<https://github.com/${ owner }/${ repo }/tree/${ buildBranch }|#${ buildBranch }>`,
+					short: true
+				},
+				{
+					title: 'Commit',
+					value: `<${ commitUrl }|${ shortCommit }>`,
+					short: true
+				},
+				{
+					title: 'Build',
+					value: `<${ buildUrl }|#${ buildId }>`,
+					short: true
+				},
+				{
+					title: 'Testing time',
+					value: `${ execTime.mins } min ${ execTime.secs } sec`,
+					short: true
+				},
+				{
+					title: 'Commit message',
+					value: getFormattedMessage( process.env.TRAVIS_COMMIT_MESSAGE, owner, repo ),
+					short: false
+				},
+			]
+		},
 	]
 };
 
@@ -72,19 +90,11 @@ slack.onError = err => {
 	console.log( 'API error occurred:', err );
 };
 
-github.repos.getCommit( { owner, repo, sha: buildCommit } )
-	.then( response => {
-		messageOptions.attachments[ 0 ].text = message.replace( '[Author]', response.data.commit.author.name );
-	} )
-	.catch( () => {
-		messageOptions.attachments[ 0 ].text = message.replace( 'by [Author] ', '' );
-		messageOptions.attachments[ 0 ].pretext = '_Could not fetch an author of the commit._';
-	} )
-	.then( () => {
-		slack.send( messageOptions );
-	} );
+slack.send( messageOptions );
 
 /**
+ * Returns an object that compares two dates.
+ *
  * @param {Number} endTime
  * @param {Number} startTime
  * @returns {Object}
@@ -100,4 +110,22 @@ function getExecutionTime( endTime, startTime ) {
 	execTime.secs = ( ( execTime.ms - 86400 * execTime.days ) - 3600 * execTime.hours ) - 60 * execTime.mins;
 
 	return execTime;
+}
+
+/**
+ * Replaces `#Id` and `Repo/Owner#Id` with URls to Github Issues.
+ *
+ * @param {String} message
+ * @param {String} repoOwner
+ * @param {String} repoName
+ * @returns {string}
+ */
+function getFormattedMessage( message, repoOwner, repoName ) {
+	return message
+		.replace( / #(\d+)/g, ( _, issueId ) => {
+			return ` <https://github.com/${ repoOwner }/${ repoName }/issues/${ issueId }|#${ issueId }>`;
+		} )
+		.replace( /([\w-]+\/[\w-]+)#(\d+)/g, ( _, repoSlug, issueId ) => {
+			return `<https://github.com/${ repoSlug }/issues/${ issueId }|${ repoSlug }#${ issueId }>`;
+		} );
 }

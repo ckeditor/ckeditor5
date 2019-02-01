@@ -32,7 +32,7 @@ script:
   fi'
 after_script:
 - export END_TIME=$( date +%s )
-- yarn add slack-notify @octokit/rest@^16.13.4 --ignore-workspace-root-check
+- yarn add slack-notify --ignore-workspace-root-check
 - node ./scripts/notify-travis-status.js
 env:
   global:
