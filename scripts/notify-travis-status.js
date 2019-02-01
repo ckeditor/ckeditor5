@@ -51,7 +51,7 @@ const buildCommit = process.env.TRAVIS_COMMIT;
 const [ owner, repo ] = process.env.TRAVIS_REPO_SLUG.split( '/' );
 const commitUrl = `https://github.com/${ owner }/${ repo }/commit/${ buildCommit }`;
 const shortCommit = buildCommit.substring( 0, 7 );
-const execTime = getExecuteTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
+const execTime = getExecutionTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
 
 const message = `Build <${ buildUrl }|#${ buildId }> (<${ commitUrl }|${ shortCommit }>) of \
 ${ owner }/${ repo }@${ buildBranch } by [Author] errored \
@@ -89,7 +89,7 @@ github.repos.getCommit( { owner, repo, sha: buildCommit } )
  * @param {Number} startTime
  * @returns {Object}
  */
-function getExecuteTime( endTime, startTime ) {
+function getExecutionTime( endTime, startTime ) {
 	const execTime = {
 		ms: endTime - startTime
 	};
