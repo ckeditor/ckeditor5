@@ -272,6 +272,22 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
 		} );
+
+		it( 'should not format if the command is not enabled', () => {
+			model.schema.addAttributeCheck( ( context, attributeName ) => {
+				if ( attributeName == 'bold' ) {
+					return false;
+				}
+			} );
+
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+		} );
 	} );
 
 	describe( 'without commands', () => {

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Autoformat from '../src/autoformat';
 import BlockAutoformatEditing from '../src/blockautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -19,7 +20,7 @@ describe( 'BlockAutoformatEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Enter, Paragraph ]
+				plugins: [ Enter, Paragraph, Autoformat ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -28,13 +29,17 @@ describe( 'BlockAutoformatEditing', () => {
 			} );
 	} );
 
-	describe( 'Command name', () => {
+	describe( 'command name', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
+			const testCommand = new TestCommand( editor, spy );
+
+			editor.commands.add( 'testCommand', testCommand );
+
 			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
+
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -44,10 +49,14 @@ describe( 'BlockAutoformatEditing', () => {
 
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
-			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
+			const testCommand = new TestCommand( editor, spy );
+
+			editor.commands.add( 'testCommand', testCommand );
+
 			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
+
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
@@ -55,9 +64,30 @@ describe( 'BlockAutoformatEditing', () => {
 			sinon.assert.calledOnce( spy );
 			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
+
+		it( 'should not autoformat if command is disabled', () => {
+			const spy = testUtils.sinon.spy();
+			const testCommand = new TestCommand( editor, spy );
+
+			testCommand.refresh = function() {
+				this.isEnabled = false;
+			};
+
+			editor.commands.add( 'testCommand', testCommand );
+
+			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+
+			setData( model, '<paragraph>*[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
 	} );
 
-	describe( 'Callback', () => {
+	describe( 'callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
 			new BlockAutoformatEditing( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new

@@ -78,24 +78,29 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'bold' ) ) {
 			/* eslint-disable no-new */
-			new InlineAutoformatEditing( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
-			new InlineAutoformatEditing( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+			const boldCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'bold' );
+
+			new InlineAutoformatEditing( this.editor, /(\*\*)([^*]+)(\*\*)$/g, boldCallback );
+			new InlineAutoformatEditing( this.editor, /(__)([^_]+)(__)$/g, boldCallback );
 			/* eslint-enable no-new */
 		}
 
 		if ( commands.get( 'italic' ) ) {
+			/* eslint-disable no-new */
+			const italicCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'italic' );
+
 			// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
 			// text before the pattern (e.g. `(?:^|[^\*])`).
-
-			/* eslint-disable no-new */
-			new InlineAutoformatEditing( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
-			new InlineAutoformatEditing( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+			new InlineAutoformatEditing( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, italicCallback );
+			new InlineAutoformatEditing( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, italicCallback );
 			/* eslint-enable no-new */
 		}
 
 		if ( commands.get( 'code' ) ) {
 			/* eslint-disable no-new */
-			new InlineAutoformatEditing( this.editor, /(`)([^`]+)(`)$/g, 'code' );
+			const codeCallback = getCallbackFunctionForInlineAutoformat( this.editor, 'code' );
+
+			new InlineAutoformatEditing( this.editor, /(`)([^`]+)(`)$/g, codeCallback );
 			/* eslint-enable no-new */
 		}
 	}
@@ -143,4 +148,29 @@ export default class Autoformat extends Plugin {
 			new BlockAutoformatEditing( this.editor, /^>\s$/, 'blockQuote' );
 		}
 	}
+}
+
+// Helper function for getting `InlineAutoformatEditing` callbacks that checks if command is enabled.
+//
+// @param {module:core/editor/editor~Editor} editor
+// @param {String} attributeKey
+// @returns {Function}
+function getCallbackFunctionForInlineAutoformat( editor, attributeKey ) {
+	return ( writer, rangesToFormat ) => {
+		const command = editor.commands.get( attributeKey );
+
+		if ( !command.isEnabled ) {
+			return false;
+		}
+
+		const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
+
+		for ( const range of validRanges ) {
+			writer.setAttribute( attributeKey, true, range );
+		}
+
+		// After applying attribute to the text, remove given attribute from the selection.
+		// This way user is able to type a text without attribute used by auto formatter.
+		writer.removeSelectionAttribute( attributeKey );
+	};
 }

@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Autoformat from '../src/autoformat';
 import InlineAutoformatEditing from '../src/inlineautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -18,7 +19,7 @@ describe( 'InlineAutoformatEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Enter, Paragraph ]
+				plugins: [ Enter, Paragraph, Autoformat ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -64,7 +65,7 @@ describe( 'InlineAutoformatEditing', () => {
 		} );
 	} );
 
-	describe( 'Callback', () => {
+	describe( 'callback', () => {
 		it( 'should stop when there are no format ranges returned from testCallback', () => {
 			const formatSpy = testUtils.sinon.spy();
 			const testStub = testUtils.sinon.stub().returns( {
@@ -114,6 +115,27 @@ describe( 'InlineAutoformatEditing', () => {
 			} );
 
 			sinon.assert.notCalled( formatSpy );
+		} );
+
+		it( 'should not autoformat if callback returned false', () => {
+			setData( model, '<paragraph>Foobar[]</paragraph>' );
+
+			const p = model.document.getRoot().getChild( 0 );
+
+			const testCallback = () => ( {
+				format: [ model.createRange( model.createPositionAt( p, 0 ), model.createPositionAt( p, 3 ) ) ],
+				remove: [ model.createRange( model.createPositionAt( p, 0 ), model.createPositionAt( p, 3 ) ) ]
+			} );
+
+			const formatCallback = () => false;
+
+			new InlineAutoformatEditing( editor, testCallback, formatCallback ); // eslint-disable-line no-new
+
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>Foobar []</paragraph>' );
 		} );
 	} );
 
