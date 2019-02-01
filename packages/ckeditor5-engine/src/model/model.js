@@ -699,9 +699,10 @@ export default class Model {
 			// Collect an information whether the model document has changed during from the last pending change callback.
 			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
 
-			this.document._runPostFixersAndResetDiffer( this._currentWriter );
-
+			// Fire '_change' event before resetting differ.
 			this.fire( '_change', this._currentWriter );
+
+			this.document._runPostFixersAndResetDiffer( this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
