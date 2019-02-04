@@ -303,8 +303,8 @@ export default class Document {
 	 * @fires change:data
 	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixers will be called.
 	 */
-	_runPostFixersAndResetDiffer( writer ) {
-		if ( this._hasDocumentChanged() ) {
+	_handleChangeBlock( writer ) {
+		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 
 			if ( this.differ.hasDataChanges() ) {
@@ -325,9 +325,9 @@ export default class Document {
 	 * or {@link module:engine/model/model~Model#change `change()` block}.
 	 *
 	 * @protected
-	 * @returns {Boolean} Returns `true` if document has changed from the differ's reset.
+	 * @returns {Boolean} Returns `true` if document has changed from the last `change()` or `enqueueChange()` block.
 	 */
-	_hasDocumentChanged() {
+	_hasDocumentChangedFromTheLastChangeBlock() {
 		return !this.differ.isEmpty || this._hasSelectionChangedFromTheLastChangeBlock;
 	}
 

@@ -697,12 +697,12 @@ export default class Model {
 			ret.push( callbackReturnValue );
 
 			// Collect an information whether the model document has changed during from the last pending change.
-			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChanged();
+			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
 
 			// Fire '_change' event before resetting differ.
 			this.fire( '_change', this._currentWriter );
 
-			this.document._runPostFixersAndResetDiffer( this._currentWriter );
+			this.document._handleChangeBlock( this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
