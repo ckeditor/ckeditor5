@@ -46,7 +46,7 @@ export default class Document {
 		 * The {@link module:engine/model/model~Model model} that the document is a part of.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/model~Model}
+		 * @type {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
@@ -58,7 +58,7 @@ export default class Document {
 		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @member {Number}
+		 * @type {Number}
 		 */
 		this.version = 0;
 
@@ -66,7 +66,7 @@ export default class Document {
 		 * The document's history.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/history~History}
+		 * @type {module:engine/model/history~History}
 		 */
 		this.history = new History( this );
 
@@ -74,7 +74,7 @@ export default class Document {
 		 * The selection in this document.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/documentselection~DocumentSelection}
+		 * @type {module:engine/model/documentselection~DocumentSelection}
 		 */
 		this.selection = new DocumentSelection( this );
 
@@ -83,7 +83,7 @@ export default class Document {
 		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
-		 * @member {module:utils/collection~Collection}
+		 * @type {module:utils/collection~Collection}
 		 */
 		this.roots = new Collection( { idProperty: 'rootName' } );
 
@@ -91,7 +91,7 @@ export default class Document {
 		 * The model differ object. Its role is to buffer changes done on the model document and then calculate a diff of those changes.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/differ~Differ}
+		 * @type {module:engine/model/differ~Differ}
 		 */
 		this.differ = new Differ( model.markers );
 
@@ -99,9 +99,17 @@ export default class Document {
 		 * Post-fixer callbacks registered to the model document.
 		 *
 		 * @private
-		 * @member {Set}
+		 * @type {Set.<Function>}
 		 */
 		this._postFixers = new Set();
+
+		/**
+		 * A boolean indicates whether the selection has changed until
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._hasSelectionChangedFromTheLastChangeBlock = false;
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
@@ -144,29 +152,8 @@ export default class Document {
 		}, { priority: 'low' } );
 
 		// Listen to selection changes. If selection changed, mark it.
-		let hasSelectionChanged = false;
-
 		this.listenTo( this.selection, 'change', () => {
-			hasSelectionChanged = true;
-		} );
-
-		// Wait for `_change` event from model, which signalizes that outermost change block has finished.
-		// When this happens, check if there were any changes done on document, and if so, call post-fixers,
-		// fire `change` event for features and conversion and then reset the differ.
-		// Fire `change:data` event when at least one operation or buffered marker changes the data.
-		this.listenTo( model, '_change', ( evt, writer ) => {
-			if ( !this.differ.isEmpty || hasSelectionChanged ) {
-				this._callPostFixers( writer );
-
-				if ( this.differ.hasDataChanges() ) {
-					this.fire( 'change:data', writer.batch );
-				} else {
-					this.fire( 'change', writer.batch );
-				}
-
-				this.differ.reset();
-				hasSelectionChanged = false;
-			}
+			this._hasSelectionChangedFromTheLastChangeBlock = true;
 		} );
 
 		// Buffer marker changes.
@@ -307,6 +294,44 @@ export default class Document {
 	}
 
 	/**
+	 * Check if there were any changes done on document, and if so, call post-fixers,
+	 * fire `change` event for features and conversion and then reset the differ.
+	 * Fire `change:data` event when at least one operation or buffered marker changes the data.
+	 *
+	 * @protected
+	 * @fires change
+	 * @fires change:data
+	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixers will be called.
+	 */
+	_handleChangeBlock( writer ) {
+		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
+			this._callPostFixers( writer );
+
+			if ( this.differ.hasDataChanges() ) {
+				this.fire( 'change:data', writer.batch );
+			} else {
+				this.fire( 'change', writer.batch );
+			}
+
+			this.differ.reset();
+		}
+
+		this._hasSelectionChangedFromTheLastChangeBlock = false;
+	}
+
+	/**
+	 * Returns whether there is a buffered change or if the selection has changed from the last
+	 * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block}
+	 * or {@link module:engine/model/model~Model#change `change()` block}.
+	 *
+	 * @protected
+	 * @returns {Boolean} Returns `true` if document has changed from the last `change()` or `enqueueChange()` block.
+	 */
+	_hasDocumentChangedFromTheLastChangeBlock() {
+		return !this.differ.isEmpty || this._hasSelectionChangedFromTheLastChangeBlock;
+	}
+
+	/**
 	 * Returns the default root for this document which is either the first root that was added to the document using
 	 * {@link #createRoot} or the {@link #graveyard graveyard root} if no other roots were created.
 	 *
@@ -359,6 +384,7 @@ export default class Document {
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @private
+	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixer callbacks will be called.
 	 */
 	_callPostFixers( writer ) {
 		let wasFixed = false;

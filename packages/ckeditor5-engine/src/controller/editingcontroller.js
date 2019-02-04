@@ -78,9 +78,11 @@ export default class EditingController {
 			this.view._renderingDisabled = true;
 		}, { priority: 'highest' } );
 
-		this.listenTo( this.model, '_afterChanges', () => {
+		this.listenTo( this.model, '_afterChanges', ( evt, { hasModelDocumentChanged } ) => {
 			this.view._renderingDisabled = false;
-			this.view.render();
+			if ( hasModelDocumentChanged ) {
+				this.view.render();
+			}
 		}, { priority: 'lowest' } );
 
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).

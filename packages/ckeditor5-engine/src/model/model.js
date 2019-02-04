@@ -683,6 +683,7 @@ export default class Model {
 	 */
 	_runPendingChanges() {
 		const ret = [];
+		let hasModelDocumentChanged = false;
 
 		this.fire( '_beforeChanges' );
 
@@ -695,14 +696,19 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event.
+			// Collect an information whether the model document has changed during from the last pending change.
+			hasModelDocumentChanged = hasModelDocumentChanged || this.document._hasDocumentChangedFromTheLastChangeBlock();
+
+			// Fire '_change' event before resetting differ.
 			this.fire( '_change', this._currentWriter );
+
+			this.document._handleChangeBlock( this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
 		}
 
-		this.fire( '_afterChanges' );
+		this.fire( '_afterChanges', { hasModelDocumentChanged } );
 
 		return ret;
 	}
@@ -713,6 +719,7 @@ export default class Model {
 	 *
 	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
 	 *
+	 * @deprecated
 	 * @protected
 	 * @event _change
 	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
@@ -732,6 +739,9 @@ export default class Model {
 	 *
 	 * @protected
 	 * @event _afterChanges
+	 * @param {Object} options
+	 * @param {Boolean} options.hasModelDocumentChanged `true` if the model document has changed during the
+	 * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} blocks.
 	 */
 
 	/**
