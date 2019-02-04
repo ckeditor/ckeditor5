@@ -28,7 +28,7 @@ ClassicEditor
 
 		panel.attachTo( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
+			limiter: editor.ui.getEditableElement()
 		} );
 
 		window.attachEditor = editor;
@@ -53,7 +53,7 @@ ClassicEditor
 
 		panel.pin( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
-			limiter: editor.ui.view.editableElement
+			limiter: editor.ui.getEditableElement()
 		} );
 
 		window.stickEditor = editor;
