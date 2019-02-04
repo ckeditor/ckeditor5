@@ -279,17 +279,6 @@ export default class Editor {
 	/**
 	 * Creates and initializes a new editor instance.
 	 *
-	 * @static
-	 * @method module:core/editor/editor~Editor.create
-	 * @param {Object} config The editor config. You can find the list of config options in
-	 * {@link module:core/editor/editorconfig~EditorConfig}.
-	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
-	 */
-
-	/**
-	 * Creates and initializes a new editor instance.
-	 *
 	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
 	 *
 	 * See the `create()` methods of the existing editor types to learn how to use them:
