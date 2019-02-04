@@ -20,7 +20,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'Autoformat', () => {
+describe( 'Autoformat undo integration', () => {
 	let editor, model, doc;
 
 	testUtils.createSinonSandbox();

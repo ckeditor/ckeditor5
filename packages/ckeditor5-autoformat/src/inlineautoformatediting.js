@@ -52,15 +52,23 @@ export default class InlineAutoformatEditing {
 	 *		}
 	 *
 	 * @param {Function|String} attributeOrCallback The name of attribute to apply on matching text or a callback for manual
-	 * formatting.
+	 * formatting. If callback is passed it should return `false` if changes should not be applied (e.g. if a command is disabled).
 	 *
 	 *		// Use attribute name:
 	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, validRanges ) => {
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, rangesToFormat ) => {
+	 *			const command = editor.commands.get( 'bold' );
+	 *
+	 *			if ( !command.isEnabled ) {
+	 *				return false;
+	 *			}
+	 *
+	 *			const validRanges = editor.model.schema.getValidRanges( rangesToFormat, 'bold' );
+	 *
 	 *			for ( let range of validRanges ) {
-	 *				writer.setAttribute( command, true, range );
+	 *				writer.setAttribute( 'bold', true, range );
 	 *			}
 	 *		} );
 	 */
@@ -128,7 +136,9 @@ export default class InlineAutoformatEditing {
 		} );
 
 		// A format callback run on matched text.
-		formatCallback = formatCallback || ( ( writer, validRanges ) => {
+		formatCallback = formatCallback || ( ( writer, rangesToFormat ) => {
+			const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
+
 			for ( const range of validRanges ) {
 				writer.setAttribute( attributeKey, true, range );
 			}
@@ -170,10 +180,13 @@ export default class InlineAutoformatEditing {
 
 			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
 			editor.model.enqueueChange( writer => {
-				const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
-
 				// Apply format.
-				formatCallback( writer, validRanges );
+				const hasChanged = formatCallback( writer, rangesToFormat );
+
+				// Strict check on `false` to have backward compatibility (when callbacks were returning `undefined`).
+				if ( hasChanged === false ) {
+					return;
+				}
 
 				// Remove delimiters - use reversed order to not mix the offsets while removing.
 				for ( const range of rangesToRemove.reverse() ) {

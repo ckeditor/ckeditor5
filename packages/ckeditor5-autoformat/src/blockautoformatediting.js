@@ -26,7 +26,7 @@ export default class BlockAutoformatEditing {
 	 *
 	 * Examples of usage:
 	 *
-	 * To convert a paragraph to heading 1 when `- ` is typed, using just the commmand name:
+	 * To convert a paragraph to heading 1 when `- ` is typed, using just the command name:
 	 *
 	 *		new BlockAutoformatEditing( editor, /^\- $/, 'heading1' );
 	 *
@@ -49,19 +49,24 @@ export default class BlockAutoformatEditing {
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
 		let callback;
+		let command = null;
 
 		if ( typeof callbackOrCommand == 'function' ) {
 			callback = callbackOrCommand;
 		} else {
 			// We assume that the actual command name was provided.
-			const command = callbackOrCommand;
+			command = editor.commands.get( callbackOrCommand );
 
 			callback = () => {
-				editor.execute( command );
+				editor.execute( callbackOrCommand );
 			};
 		}
 
 		editor.model.document.on( 'change', ( evt, batch ) => {
+			if ( command && !command.isEnabled ) {
+				return;
+			}
+
 			if ( batch.type == 'transparent' ) {
 				return;
 			}
