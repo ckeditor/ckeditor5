@@ -68,7 +68,7 @@ export function mapViewPositionInsideInlineElement( model ) {
  *		editor.editing.mapper.on( 'modelToView', mapModelPositionOnInlineElement( model, view ) );
  *
  * This method ensures that selection set on an inline element is set outside surrounding text nodes as by default the position would be set
- * at the end or begging of a text node that is previous/next to the inline element:
+ * at the end or beginning of a text node that is previous/next to the inline element:
  *
  * Without this mapper helper the selection would set inside text nodes:
  *
