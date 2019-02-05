@@ -301,7 +301,7 @@ export default class Document {
 	 * @protected
 	 * @fires change
 	 * @fires change:data
-	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixers will be called.
+	 * @param {module:engine/model/writer~Writer} writer The writer on which post-fixers will be called.
 	 */
 	_handleChangeBlock( writer ) {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
@@ -384,7 +384,7 @@ export default class Document {
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @private
-	 * @param {module:engine/model/writer~Writer writer} writer The writer on which post-fixer callbacks will be called.
+	 * @param {module:engine/model/writer~Writer} writer The writer on which post-fixer callbacks will be called.
 	 */
 	_callPostFixers( writer ) {
 		let wasFixed = false;
