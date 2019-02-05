@@ -137,10 +137,16 @@ export default class View {
 		 */
 		this._renderingDisabled = false;
 
+		/**
+		 * Internal flag to disable rendering when there are no changes since the last rendering.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._hasChangedSinceTheLastRendering = false;
 
 		/**
-		 * DowncastWriter instance used in {@link #change change method) callbacks.
+		 * DowncastWriter instance used in {@link #change change method} callbacks.
 		 *
 		 * @private
 		 * @type {module:engine/view/downcastwriter~DowncastWriter}
