@@ -25,4 +25,20 @@
 	placeholder:after{
 		content: '}'
 	}
+
+	/* This will show box when the fake selection is active. */
+	.ck.ck-content div[style*="left: -9999px;"]:before {
+		background: hsla(9,100%,56%,.3);
+		border: 1px dotted hsl(15, 100%, 43%);
+		color: #333;
+		content: 'fake selection set';
+		display: block;
+		height: 20px;
+		left: calc(50% - 60px);
+		line-height: 20px;
+		padding: 2px 5px;
+		position: fixed;
+		top: 5px;
+		z-index: 1;
+	}
 </style>
