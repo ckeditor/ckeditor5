@@ -137,6 +137,8 @@ export default class View {
 		 */
 		this._renderingDisabled = false;
 
+		this._hasChangedSinceTheLastRendering = false;
+
 		/**
 		 * DowncastWriter instance used in {@link #change change method) callbacks.
 		 *
@@ -163,6 +165,14 @@ export default class View {
 
 			// Informs that layout has changed after render.
 			this.document.fire( 'layoutChanged' );
+
+			// Reset the `_hasChangedSinceTheLastRendering` flag after rendering.
+			this._hasChangedSinceTheLastRendering = false;
+		} );
+
+		// Listen to the selection changes.
+		this.listenTo( this.document.selection, 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
 
@@ -191,6 +201,10 @@ export default class View {
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+
+		viewRoot.on( 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -292,6 +306,7 @@ export default class View {
 			const editable = this.document.selection.editableElement;
 
 			if ( editable ) {
+				this._hasChangedSinceTheLastRendering = true;
 				this.domConverter.focus( editable );
 				this.render();
 			} else {
@@ -368,7 +383,8 @@ export default class View {
 
 		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
 		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
-		if ( !this._renderingDisabled ) {
+		// Also, we don't need to render anything if there're no changes since last rendering.
+		if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
 			this._postFixersInProgress = true;
 			this.document._callPostFixers( this._writer );
 			this._postFixersInProgress = false;
