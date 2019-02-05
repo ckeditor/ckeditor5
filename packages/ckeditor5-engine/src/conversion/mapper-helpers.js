@@ -96,11 +96,12 @@ export function mapModelPositionOnInlineElement( model, view ) {
 		if ( data.isPhantom ) {
 			return;
 		}
+		const modelPosition = data.modelPosition;
 
-		const isBeforeNode = data.modelPosition.stickiness === 'toNext';
-		const node = isBeforeNode ? data.modelPosition.nodeAfter : data.modelPosition.nodeBefore;
+		const isBeforeNode = modelPosition.stickiness === 'toNext';
+		const node = isBeforeNode ? modelPosition.nodeAfter : modelPosition.nodeBefore;
 
-		if ( node && model.schema.isInline( node ) && !node.is( 'text' ) ) {
+		if ( node && model.schema.isInline( node ) ) {
 			const viewElement = data.mapper.toViewElement( node );
 
 			if ( !viewElement ) {
