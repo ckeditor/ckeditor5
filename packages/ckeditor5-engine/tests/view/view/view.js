@@ -411,7 +411,7 @@ describe( 'view', () => {
 
 			sinon.assert.calledOnce( renderSpy );
 			sinon.assert.calledOnce( layoutChangedSpy );
-		} )
+		} );
 
 		it( 'should fire `render` and `layoutChanged` if there is some buffered change', () => {
 			const renderSpy = sinon.spy();
