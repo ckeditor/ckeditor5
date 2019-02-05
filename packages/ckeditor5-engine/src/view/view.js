@@ -66,7 +66,7 @@ export default class View {
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/view~View#document
+		 * @type {module:engine/view/document~Document}
 		 */
 		this.document = new Document();
 
@@ -76,7 +76,7 @@ export default class View {
 		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/view~View#domConverter
+		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter();
 
@@ -84,7 +84,7 @@ export default class View {
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
 		 * @protected
-		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
+		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
@@ -93,7 +93,7 @@ export default class View {
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} module:engine/view/view~View#domRoots
+		 * @type {Map.<String, HTMLElement>}
 		 */
 		this.domRoots = new Map();
 
@@ -101,7 +101,7 @@ export default class View {
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, module:engine/view/observer/observer~Observer>} module:engine/view/view~View#_observers
+		 * @type {Map.<Function, module:engine/view/observer/observer~Observer>}
 		 */
 		this._observers = new Map();
 
@@ -109,7 +109,7 @@ export default class View {
 		 * Is set to `true` when {@link #change view changes} are currently in progress.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_ongoingChange
+		 * @type {Boolean}
 		 */
 		this._ongoingChange = false;
 
@@ -117,7 +117,7 @@ export default class View {
 		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @type {Boolean}
 		 */
 		this._renderingInProgress = false;
 
@@ -125,7 +125,7 @@ export default class View {
 		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @type {Boolean}
 		 */
 		this._postFixersInProgress = false;
 
@@ -133,7 +133,7 @@ export default class View {
 		 * Internal flag to temporary disable rendering. See usage in the editing controller.
 		 *
 		 * @protected
-		 * @member {Boolean} module:engine/view/view~View#_renderingDisabled
+		 * @type {Boolean}
 		 */
 		this._renderingDisabled = false;
 
@@ -141,7 +141,7 @@ export default class View {
 		 * DowncastWriter instance used in {@link #change change method) callbacks.
 		 *
 		 * @private
-		 * @member {module:engine/view/downcastwriter~DowncastWriter} module:engine/view/view~View#_writer
+		 * @type {module:engine/view/downcastwriter~DowncastWriter}
 		 */
 		this._writer = new DowncastWriter( this.document );
 
