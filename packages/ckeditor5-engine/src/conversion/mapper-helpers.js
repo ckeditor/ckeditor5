@@ -8,10 +8,9 @@
  */
 
 /**
- * Maps view position to model element if view positions is inside inLine element - ie. inline widget.
+ * Maps view position to model position if view positions is wrongly set inside inline element - ie. inline widget.
  *
  *		editor.editing.mapper.on( 'viewToModel', mapViewPositionInsideInlineElement( model ) );
- *
  *
  * It will try to map view offset of selection to an expected model position in order to create consistent selection.
  *
@@ -59,6 +58,56 @@ export function mapViewPositionInsideInlineElement( model ) {
 			const isAtStart = viewPosition.offset === 0;
 
 			data.modelPosition = model.createPositionAt( modelParent, isAtStart ? 'after' : 'before' );
+		}
+	};
+}
+
+/**
+ * Maps model position to view position if the position set after/before inline element (ie. inline widget).
+ *
+ *		editor.editing.mapper.on( 'modelToView', mapModelPositionOnInlineElement( model, view ) );
+ *
+ * This methods ensures that selection set on inline element is set outside surrounding text nodes as by default the position would be set
+ * at the end or begging of a text node that is previous/next to the inline element:
+ *
+ * Without this mapper helper the selection would set inside text nodes:
+ *
+ *		//             +-------------------------------+--- model positions
+ *		//             \                               |
+ *		<paragraph>foo [<inline-widget></inline-widget>]</paragraph>
+ *
+ *		// will map to:
+ *		//     +---------------------+- view positions (inside text nodes)
+ *		//     |                     |
+ *		<p>foo {<span class="widget">}widget</span></p>
+ *
+ * With this mapper helper the selection will set outside text nodes:
+ *
+ *		//     +---------------------+--- view positions (outside text nodes)
+ *		//     |                     |
+ *		<p>foo [<span class="widget">]widget</span></p>
+ *
+ * @param {module:engine/model/model~Model} model
+ * @param {module:engine/model/model~Model} view
+ * @return {Function}
+ */
+export function mapModelPositionOnInlineElement( model, view ) {
+	return ( evt, data ) => {
+		if ( data.isPhantom ) {
+			return;
+		}
+
+		const isBeforeNode = data.modelPosition.stickiness === 'toNext';
+		const node = isBeforeNode ? data.modelPosition.nodeAfter : data.modelPosition.nodeBefore;
+
+		if ( node && model.schema.isInline( node ) && !node.is( 'text' ) ) {
+			const viewElement = data.mapper.toViewElement( node );
+
+			if ( !viewElement ) {
+				return;
+			}
+
+			data.viewPosition = isBeforeNode ? view.createPositionBefore( viewElement ) : view.createPositionAfter( viewElement );
 		}
 	};
 }
