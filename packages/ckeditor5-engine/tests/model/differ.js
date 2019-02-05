@@ -1403,6 +1403,16 @@ describe( 'Differ', () => {
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
 			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: range
+					}
+				}
+			] );
 		} );
 
 		it( 'remove marker', () => {
@@ -1413,6 +1423,16 @@ describe( 'Differ', () => {
 			] );
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: null
+					}
+				}
+			] );
 		} );
 
 		it( 'change marker\'s range', () => {
@@ -1424,6 +1444,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range: rangeB }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: rangeB
+					}
+				}
 			] );
 		} );
 
@@ -1445,6 +1475,8 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+			expect( differ.getChangedMarkers() ).to.deep.equal( [] );
+
 			expect( differ.hasDataChanges() ).to.be.false;
 		} );
 
@@ -1456,6 +1488,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range: rangeB }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: null,
+						newRange: rangeB
+					}
+				}
 			] );
 		} );
 
@@ -1475,6 +1517,17 @@ describe( 'Differ', () => {
 			] );
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: null
+					}
+				}
+			] );
+
 			expect( differ.hasDataChanges() ).to.be.true;
 		} );
 
@@ -1489,6 +1542,16 @@ describe( 'Differ', () => {
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
 			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: range
+					}
+				}
+			] );
 		} );
 
 		it( 'change marker to the same range', () => {
@@ -1500,6 +1563,16 @@ describe( 'Differ', () => {
 
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [
 				{ name: 'name', range }
+			] );
+
+			expect( differ.getChangedMarkers() ).to.deep.equal( [
+				{
+					name: 'name',
+					data: {
+						oldRange: range,
+						newRange: range
+					}
+				}
 			] );
 		} );
 	} );

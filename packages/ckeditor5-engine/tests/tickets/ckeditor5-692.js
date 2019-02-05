@@ -29,7 +29,7 @@ describe( 'Bug ckeditor5#692', () => {
 				editor = newEditor;
 				view = editor.editing.view;
 				mutationObserver = view.getObserver( MutationObserver );
-				domEditor = editor.ui.view.editableElement;
+				domEditor = editor.ui.getEditableElement();
 			} );
 	} );
 
