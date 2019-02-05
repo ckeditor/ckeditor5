@@ -177,7 +177,11 @@ export default class View {
 		} );
 
 		// Listen to the selection changes.
-		this.listenTo( this.document.selection, 'change', () => {
+		this.listenTo( this.document, 'selectionChange', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
+
+		this.listenTo( this.document, 'selectionChange', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
@@ -312,9 +316,8 @@ export default class View {
 			const editable = this.document.selection.editableElement;
 
 			if ( editable ) {
-				this._hasChangedSinceTheLastRendering = true;
 				this.domConverter.focus( editable );
-				this.render();
+				this.render( { force: true } );
 			} else {
 				/**
 				 * Before focusing view document, selection should be placed inside one of the view's editables.
@@ -404,11 +407,19 @@ export default class View {
 	/**
 	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
+	 * If no changes are detected view will not re-render, unless the `options.force` is set to `true`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * trying to re-render when rendering to DOM has already started.
+	 *
+	 * @param {Object} [options] Rendering options
+	 * @param {Boolean} [options.force=false] A flag ensures that the view will re-render even when nothing has changed.
 	 */
-	render() {
+	render( options = {} ) {
+		if ( options.force ) {
+			this._hasChangedSinceTheLastRendering = true;
+		}
+
 		this.change( () => {} );
 	}
 

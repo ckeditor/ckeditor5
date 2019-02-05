@@ -169,6 +169,8 @@ describe( 'FocusObserver', () => {
 			setData( view, '<div contenteditable="true">foo bar</div>' );
 			view.render();
 
+			console.log( 1 );
+
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
 			view.on( 'render', renderSpy );
 

@@ -84,7 +84,7 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			result = false;
-			view.render();
+			view.render( { force: true } );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 

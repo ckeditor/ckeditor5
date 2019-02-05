@@ -183,7 +183,7 @@ describe( 'DomEventObserver', () => {
 			view.attachDomRoot( domRoot );
 			uiElement = createUIElement( 'p' );
 			viewRoot._appendChild( uiElement );
-			view.render();
+			view.render( { force: true } );
 
 			domEvent = new MouseEvent( 'click', { bubbles: true } );
 			evtSpy = sinon.spy();

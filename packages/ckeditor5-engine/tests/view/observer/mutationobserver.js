@@ -39,7 +39,7 @@ describe( 'MutationObserver', () => {
 
 		viewRoot._appendChild( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		view.render();
+		view.render( { render: true } );
 	} );
 
 	afterEach( () => {

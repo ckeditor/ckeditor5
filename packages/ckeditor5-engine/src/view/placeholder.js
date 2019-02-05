@@ -40,7 +40,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 	} );
 
 	// Update view right away.
-	view.render();
+	view.render( { force: true } );
 }
 
 /**
