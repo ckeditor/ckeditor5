@@ -16,7 +16,7 @@ While this guide is mainly focused on the image upload (the most common kind of 
 
 ## Glossary of terms
 
-Before we start, let's make all terms used in this guide are clear.
+Before we start, let's make sure all terms used in this guide are clear.
 
 <table>
 	<thead>
@@ -29,21 +29,21 @@ Before we start, let's make all terms used in this guide are clear.
 		<tr>
 			<td>Upload adapter</td>
 			<td>
-				<p>A piece of code (a class) that handles the image upload from the moment it is requested by the user (e.g. when the file is dropped into the content) to the moment a server returns a response to the requested upload. A bridge between the feature and the server.</p>
+				<p>A piece of code (a class) that handles the image upload from the moment it is requested by the user (e.g. when the file is dropped into the content) to the moment the server returns a response to the requested upload. A bridge between the feature and the server.</p>
 				<p>Upload adapters are used by other plugins like {@link module:image/imageupload~ImageUpload image upload} to connect to the server and fetch the response. For every user action (e.g. when a file is dropped into the content), a new upload adapter instance is created.</p>
 				<p>CKEditor 5 comes with some {@link features/image-upload#official-upload-adapters official upload adapters} but you can also <a href="#implementing-a-custom-upload-adapter">implement your own adapters</a>.</p>
-				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more</p>
+				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more.</p>
 			</td>
 		</tr>
 		<tr>
 			<td>{@link module:upload/filerepository~UploadAdapter `UploadAdapter`} interface</td>
 			<td>
-				<p>An interface defining the minimal API required to create an upload adapter. In other words, it tells you what methods your upload adapter class must have in order wo work.</p>
+				<p>An interface defining the minimal API required to create an upload adapter. In other words, it tells you what methods your upload adapter class must have in order to work.</p>
 				<p>See <a href="#the-anatomy-of-the-adapter">"The anatomy of the adapter"</a> section to learn more.</p>
 			</td>
 		</tr>
 		<tr>
-			<td>{@link module:upload/filerepository~FileRepository File repository} plugin.</td>
+			<td>{@link module:upload/filerepository~FileRepository File repository} plugin</td>
 			<td>
 				<p>A central point for managing file upload in CKEditor 5. It glues upload adapters and features using them:</p>
 				<ul>
@@ -55,7 +55,7 @@ Before we start, let's make all terms used in this guide are clear.
 		<tr>
 			<td>{@link module:image/imageupload~ImageUpload Image upload} plugin</td>
 			<td>
-				<p>A top–level plugin that responds to actions of the users (e.g. when a file is dropped into the content) by uploading files to the server and updating the edited content once the upload finished. This particular plugin handles user actions related to uploading images.</p>
+				<p>A top–level plugin that responds to actions of the users (e.g. when a file is dropped into the content) by uploading files to the server and updating the edited content once the upload finishes. This particular plugin handles user actions related to uploading images.</p>
 				<p>It uses the <code>FileRepository</code> API to spawn upload adapter instances, triggers the image upload (<code>UploadAdapter.upload()</code>) and finally uses the data returned by the adapter's upload promise to update the image in the editor content.</p>
 				<p>See the <a href="#how-does-the-image-upload-work">"How does the image upload work?"</a> section to learn more.</p>
 			</td>
@@ -114,25 +114,25 @@ In its simplest form, a custom adapter implementing the `UploadAdapter` interfac
 ```js
 class MyUploadAdapter {
 	constructor( loader ) {
-		// The FileLoader instance to use during the upload.
+		// The file loader instance to use during the upload.
 		this.loader = loader;
 	}
 
 	// Starts the upload process.
 	upload() {
-		// Update loader's progress.
+		// Update the loader's progress.
 		server.onUploadProgress( data => {
 			loader.uploadTotal = data.total;
 			loader.uploaded = data.uploaded;
 		} );
 
-		// Return promise that will be resolved when the file is uploaded.
+		// Return a promise that will be resolved when the file is uploaded.
 		return server.upload( loader.file );
 	}
 
 	// Aborts the upload process.
 	abort() {
-		// Reject promise returned from upload() method.
+		// Reject the promise returned from the upload() method.
 		server.abortUpload();
 	}
 }
@@ -148,12 +148,12 @@ editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
 
 ## Implementing a custom upload adapter
 
-In this section, we are going to implement and enable a custom upload adapter. The adapter will use the native [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to send files returned by the loader to a pre–configured URL on the server, handling `error`, `abort`, `load`, and `progress` events fired by the request.
+In this section, you are going to implement and enable a custom upload adapter. The adapter will use the native [`XMLHttpRequest`](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) to send files returned by the loader to a pre–configured URL on the server, handling the `error`, `abort`, `load`, and `progress` events fired by the request.
 
 <info-box>
 	Note that this is just an example implementation and `XMLHttpRequest` might not necessarily be the best solution for your application.
 
-	Use the provided code snippets as an inspiration for your own custom upload adapter — it is up to you what technologies and APIs will be used. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out–of–the–box.
+	Use the provided code snippets as an inspiration for your own custom upload adapter &mdash; it is up to you to choose the technologies and APIs to use. For instance, you may want to check out the native [`fetch()` API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) that works with `Promises` out of the box.
 </info-box>
 
 <info-box>
@@ -165,7 +165,7 @@ To start off, define the `MyUploadAdapter` class with its constructor.
 ```js
 class MyUploadAdapter {
 	constructor( loader ) {
-		// The FileLoader instance to use during the upload. It sounds scary but do not
+		// The file loader instance to use during the upload. It sounds scary but do not
 		// worry — the loader will be passed into the adapter later on in this guide.
 		this.loader = loader;
 	}
@@ -174,7 +174,7 @@ class MyUploadAdapter {
 }
 ```
 
-Implement the minimal `UploadAdapter` adapter interface as explained in the ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section. The details of the implementation are explained in the following chapters of this guide.
+Implement the minimal `UploadAdapter` adapter interface as explained in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section. The details of the implementation are explained in the following chapters of this guide.
 
 ```js
 class MyUploadAdapter {
@@ -220,7 +220,7 @@ class MyUploadAdapter {
 
 		// Note that your request may look different. It is up to you and your editor
 		// integration to choose the right communication channel. This example uses
-		// the POST request with JSON as a data structure but your configuration
+		// a POST request with JSON as a data structure but your configuration
 		// could be different.
 		xhr.open( 'POST', 'http://example.com/image/upload/path', true );
 		xhr.responseType = 'json';
@@ -266,7 +266,7 @@ class MyUploadAdapter {
 			} );
 		} );
 
-		// Upload progress when it is supported. The FileLoader has the #uploadTotal and #uploaded
+		// Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
 		// properties which are used e.g. to display the upload progress bar in the editor
 		// user interface.
 		if ( xhr.upload ) {
@@ -331,16 +331,16 @@ Other image sizes can also be provided in the response, allowing [responsive ima
 ```
 
 <info-box>
-	When returning multiple images, the widest returned one should be the default one. It is essential to correctly set the `width` attribute of the image in the editor content.
+	When returning multiple images, the widest returned one should be the default one. It is essential to correctly set the `width` attribute of the image in the rich-text editor content.
 </info-box>
 
 The {@link module:image/imageupload~ImageUpload image upload} plugin, which is capable of handling multiple image sizes returned by the upload adapter, will automatically add the URLs to other images sizes to the `srcset` attribute of the image in the content.
 
 <info-box>
-	The {@link features/easy-image Easy Image} service provides the responsive image support {@link features/easy-image#responsive-images out of the box}.
+	The {@link features/easy-image Easy Image} feature provides responsive image support {@link features/easy-image#responsive-images out of the box}.
 </info-box>
 
-Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous chapter](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
+Knowing that, you can implement the `XMLHttpRequest#load` listener that resolves the upload promise in the [previous section](#using-xmlhttprequest-in-an-adapter) so that it passes the entire `urls` property of the server response to the image upload plugin:
 
 ```js
 // ...
@@ -363,9 +363,9 @@ xhr.addEventListener( 'load', () => {
 
 ### Activating a custom upload adapter
 
-Having implemented the adapter, you must figure out how to enable it in the editor. The good news is that it is pretty easy, and you do not need to {@link builds/guides/development/custom-builds rebuild the editor} to do that!
+Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to {@link builds/guides/development/custom-builds rebuild the editor} to do that!
 
-You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, crate a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
+You are going to extend the basic implementation presented in ["The anatomy of the adapter"](#the-anatomy-of-the-adapter) section of this guide so your custom adapter becomes an editor plugin. To do that, create a simple standalone plugin (`MyCustomUploadAdapterPlugin`) that will {@link module:upload/filerepository~FileRepository#createLoader create an instance of the file loader} and glue it with your custom `MyUploadAdapter`.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -405,7 +405,7 @@ Here is what the complete implementation of an `XMLHttpRequest`–based upload a
 ```js
 class MyUploadAdapter {
 	constructor( loader ) {
-		// The FileLoader instance to use during the upload.
+		// The file loader instance to use during the upload.
 		this.loader = loader;
 	}
 
@@ -431,7 +431,7 @@ class MyUploadAdapter {
 
 		// Note that your request may look different. It is up to you and your editor
 		// integration to choose the right communication channel. This example uses
-		// the POST request with JSON as a data structure but your configuration
+		// a POST request with JSON as a data structure but your configuration
 		// could be different.
 		xhr.open( 'POST', 'http://example.com/image/upload/path', true );
 		xhr.responseType = 'json';
@@ -467,7 +467,7 @@ class MyUploadAdapter {
 			} );
 		} );
 
-		// Upload progress when it is supported. The FileLoader has the #uploadTotal and #uploaded
+		// Upload progress when it is supported. The file loader has the #uploadTotal and #uploaded
 		// properties which are used e.g. to display the upload progress bar in the editor
 		// user interface.
 		if ( xhr.upload ) {
