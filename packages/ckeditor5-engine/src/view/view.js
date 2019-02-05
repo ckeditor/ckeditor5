@@ -405,7 +405,7 @@ export default class View {
 	/**
 	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
-	 * If no changes are detected view will not re-render, unless the `options.force` is set to `true`.
+	 * If no changes were detected since the last rendering, the view will not re-render, unless the `options.force` is set to `true`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * trying to re-render when rendering to DOM has already started.
