@@ -283,10 +283,10 @@ export default class Editor {
 	 *
 	 * See the `create()` methods of the existing editor types to learn how to use them:
 	 *
-	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create`}
-	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create`}
-	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create`}
-	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create`}
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
 	 *
 	 * @abstract
 	 * @method module:core/editor/editor~Editor.create
