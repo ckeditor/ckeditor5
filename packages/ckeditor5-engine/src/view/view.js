@@ -138,7 +138,8 @@ export default class View {
 		this._renderingDisabled = false;
 
 		/**
-		 * Internal flag to disable rendering when there are no changes since the last rendering.
+		 * Internal flag that disables rendering when there are no changes since the last rendering.
+		 * It stores information about changed selection and changed elements from attached document roots.
 		 *
 		 * @private
 		 * @type {Boolean}
