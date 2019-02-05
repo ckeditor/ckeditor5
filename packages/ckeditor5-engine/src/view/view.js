@@ -176,12 +176,8 @@ export default class View {
 			this._hasChangedSinceTheLastRendering = false;
 		} );
 
-		// Listen to the selection changes.
-		this.listenTo( this.document, 'selectionChange', () => {
-			this._hasChangedSinceTheLastRendering = true;
-		} );
-
-		this.listenTo( this.document, 'selectionChange', () => {
+		// Listen to the document selection changes directly.
+		this.listenTo( this.document.selection, 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
@@ -420,7 +416,7 @@ export default class View {
 			this._hasChangedSinceTheLastRendering = true;
 		}
 
-		this.change( () => {} );
+		this.change( () => { } );
 	}
 
 	/**

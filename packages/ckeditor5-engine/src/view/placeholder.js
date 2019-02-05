@@ -38,9 +38,6 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 		placeholderText,
 		checkFunction
 	} );
-
-	// Update view right away.
-	view.render( { force: true } );
 }
 
 /**

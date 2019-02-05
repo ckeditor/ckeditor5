@@ -204,7 +204,7 @@ describe( 'view', () => {
 
 		it( 'should be disabled and re-enabled on render', () => {
 			const observerMock = view.addObserver( ObserverMock );
-			view.render();
+			view.render( { force: true } );
 
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( view._renderer.render );
@@ -382,23 +382,49 @@ describe( 'view', () => {
 			const observerMock = view.addObserver( ObserverMock );
 			const renderStub = sinon.stub( view._renderer, 'render' );
 
-			view.render();
+			view.render( { force: true } );
 
 			sinon.assert.callOrder( observerMock.disable, renderStub, observerMock.enable );
 		} );
 
-		it( 'should fire view.document.layoutChanged event on render', () => {
-			const spy = sinon.spy();
+		it( 'should not fire `render` and `layoutChanged` without the `force` flag if there were no changes', () => {
+			const renderSpy = sinon.spy();
+			const layoutChangedSpy = sinon.spy();
 
-			view.document.on( 'layoutChanged', spy );
-
-			view.render();
-
-			sinon.assert.calledOnce( spy );
+			view.on( 'render', renderSpy );
+			view.document.on( 'layoutChanged', layoutChangedSpy );
 
 			view.render();
 
-			sinon.assert.calledTwice( spy );
+			sinon.assert.notCalled( renderSpy );
+			sinon.assert.notCalled( layoutChangedSpy );
+		} );
+
+		it( 'should fire `render` and `layoutChanged` if there were no changes but the `force` flag was set', () => {
+			const renderSpy = sinon.spy();
+			const layoutChangedSpy = sinon.spy();
+
+			view.on( 'render', renderSpy );
+			view.document.on( 'layoutChanged', layoutChangedSpy );
+
+			view.render( { force: true } );
+
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( layoutChangedSpy );
+		} )
+
+		it( 'should fire `render` and `layoutChanged` if there is some buffered change', () => {
+			const renderSpy = sinon.spy();
+			const layoutChangedSpy = sinon.spy();
+
+			view.on( 'render', renderSpy );
+			view.document.on( 'layoutChanged', layoutChangedSpy );
+
+			view.document.selection._setTo( null );
+			view.render();
+
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( layoutChangedSpy );
 		} );
 	} );
 
@@ -414,7 +440,7 @@ describe( 'view', () => {
 
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
-			view.render();
+			view.render( { force: true } );
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
 			expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
@@ -513,7 +539,9 @@ describe( 'view', () => {
 
 			view.on( 'render', eventSpy );
 
-			view.change( () => {} );
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.callOrder( renderSpy, eventSpy );
 		} );
@@ -521,16 +549,24 @@ describe( 'view', () => {
 		it( 'should fire render event once for nested change blocks', () => {
 			const renderSpy = sinon.spy( view._renderer, 'render' );
 			const eventSpy = sinon.spy();
+			const viewEditable = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.on( 'render', eventSpy );
 
-			view.change( () => {
-				view.change( () => {} );
-				view.change( () => {
-					view.change( () => {} );
-					view.change( () => {} );
+			view.change( writer => {
+				writer.setSelection( null );
+				view.change( writer => {
+					writer.setSelection( viewEditable, 0 );
 				} );
-				view.change( () => {} );
+				view.change( writer => {
+					writer.setSelection( null );
+					view.change( writer => {
+						writer.setSelection( viewEditable, 0 );
+					} );
+				} );
+				view.change( writer => {
+					writer.setSelection( null );
+				} );
 			} );
 
 			sinon.assert.calledOnce( renderSpy );
@@ -545,11 +581,12 @@ describe( 'view', () => {
 			view.on( 'render', eventSpy );
 
 			view.change( () => {
-				view.render();
-				view.change( () => {
-					view.render();
+				view.render( { force: true } );
+				view.change( writer => {
+					writer.setSelection( null );
+					view.render( { force: true } );
 				} );
-				view.render();
+				view.render( { force: true } );
 			} );
 
 			sinon.assert.calledOnce( renderSpy );
@@ -567,7 +604,10 @@ describe( 'view', () => {
 			viewDocument.registerPostFixer( postFixer2 );
 			view.on( 'render', eventSpy );
 
-			view.change( changeSpy );
+			view.change( writer => {
+				changeSpy();
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.calledOnce( postFixer1 );
 			sinon.assert.calledOnce( postFixer2 );
@@ -598,7 +638,10 @@ describe( 'view', () => {
 			} );
 			view.on( 'render', eventSpy );
 
-			view.change( changeSpy );
+			view.change( writer => {
+				changeSpy();
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.calledOnce( postFixer1 );
 			sinon.assert.calledOnce( postFixer2 );
