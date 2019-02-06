@@ -348,33 +348,6 @@ describe( 'EditingController', () => {
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
 		} );
 
-		it( 'should prevent rendering of a fresh view until the first changes mere made to the model', () => {
-			const model = new Model();
-			model.document.createRoot();
-
-			const editing = new EditingController( model );
-			const domRoot = document.createElement( 'div' );
-			domRoot.contentEditable = true;
-
-			document.body.appendChild( domRoot );
-
-			const viewRoot = editing.view.document.getRoot();
-			editing.view.attachDomRoot( domRoot );
-
-			editing.view.change( writer => {
-				writer.setAttribute( 'new-attribute', 'foo', viewRoot );
-			} );
-
-			expect( domRoot.hasAttribute( 'new-attribute' ) ).to.be.false;
-
-			model.change( () => {} );
-
-			expect( domRoot.getAttribute( 'new-attribute' ) ).to.equal( 'foo' );
-
-			document.body.removeChild( domRoot );
-			editing.destroy();
-		} );
-
 		describe( 'preventing rendering while in the model.change() block', () => {
 			let renderSpy;
 

@@ -211,7 +211,7 @@ describe( 'view', () => {
 			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.attachDomRoot( domDiv );
-			view.render();
+			view.forceRender();
 
 			viewRoot.isReadOnly = false;
 			expect( domDiv.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
