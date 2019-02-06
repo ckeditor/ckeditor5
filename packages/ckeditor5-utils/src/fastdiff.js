@@ -8,8 +8,7 @@
  */
 
 /**
- * Finds position of the first and last change in the given strings and generates set of changes. Set of changes
- * can be applied to the input text in order to transform it into the output text, for example:
+ * Finds position of the first and last change in the given string/array and generates a set of changes:
  *
  *		fastDiff( '12a', '12xyza' );
  *		// [ { index: 2, type: 'insert', values: [ 'x', 'y', 'z' ] } ]
@@ -20,13 +19,27 @@
  *		fastDiff( '12xyza', '12a' );
  *		// [ { index: 2, type: 'delete', howMany: 3 } ]
  *
- *		fastDiff( '12aa', '12a' );
+ *		fastDiff( [ '1', '2', 'a', 'a' ], [ '1', '2', 'a' ] );
  *		// [ { index: 3, type: 'delete', howMany: 1 } ]
  *
- *		fastDiff( '12abc3', '2ab' );
+ *		fastDiff( [ '1', '2', 'a', 'b', 'c', '3' ], [ '2', 'a', 'b' ] );
  *		// [ { index: 0, type: 'insert', values: [ '2', 'a', 'b' ] }, { index: 3, type: 'delete', howMany: 6 } ]
  *
- * Using returned results you can modify `oldText` to transform it into `newText`:
+ * Passed arrays can contain any type of data, however to compare them correctly custom comparator function
+ * should be passed as a third parameter:
+ *
+ * 		fastDiff( [ { value: 1 }, { value: 2 } ], [ { value: 1 }, { value: 3 } ], ( a, b ) => {
+ * 			return a.value === b.value;
+ * 		} );
+ * 		// [ { index: 1, type: 'insert', values: [ { value: 3 } ] }, { index: 2, type: 'delete', howMany: 1 } ]
+ *
+ * 	By passing `true` as a fourth parameter (`linearChanges`) the output compatible with
+ * 	{@link module:utils/diff~diff diff()} function will be returned:
+ *
+ *		fastDiff( '12a', '12xyza' );
+ *		// [ 'equal', 'equal', 'insert', 'insert', 'insert', 'equal' ]
+ *
+ * The resulted set of changes can be applied to the input in order to transform it into the output, for example:
  *
  * 		let input = '12abc3';
  * 		const output = '2ab';
@@ -40,101 +53,136 @@
  *			}
  *		} );
  *
- *		input === output; // -> true
+ *		// input equals output now
  *
- * The output format of this function is compatible with {@link module:utils/difftochanges~diffToChanges} output format.
+ * or in case of arrays:
  *
- * @param {String} oldText Input string.
- * @param {String} newText Input string.
+ *		let input = [ '1', '2', 'a', 'b', 'c', '3' ];
+ * 		const output = [ '2', 'a', 'b' ];
+ * 		const changes = fastDiff( input, output );
+ *
+ *		changes.forEach( change => {
+ *			if ( change.type == 'insert' ) {
+ *				input = input.slice( 0, change.index ).concat( change.values, input.slice( change.index ) );
+ *			} else if ( change.type == 'delete' ) {
+ *				input = input.slice( 0, change.index ).concat( input.slice( change.index + change.howMany ) );
+ *			}
+ *		} );
+ *
+ *		// input equals output now
+ *
+ * The output format of this function is compatible with {@link module:utils/difftochanges~diffToChanges diffToChanges()}
+ * function output format.
+ *
+ * @param {Array|String} a Input array or string.
+ * @param {Array|String} b Input array or string.
+ * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
+ * @param {Boolean} [linearChanges=false] Whether array of `inset|delete|equal` operations should be returned or changes set.
  * @returns {Array} Array of changes.
  */
-export default function fastDiff( oldText, newText ) {
-	// Check if both texts are equal.
-	if ( oldText === newText ) {
-		return [];
+export default function fastDiff( a, b, cmp, linearChanges = false ) {
+	// Set the comparator function.
+	cmp = cmp || function( a, b ) {
+		return a === b;
+	};
+
+	// Transform text into arrays for easier, consistent processing.
+	if ( typeof a === 'string' ) {
+		a = a.split( '' );
 	}
 
-	const changeIndexes = findChangeBoundaryIndexes( oldText, newText );
+	if ( typeof b === 'string' ) {
+		b = b.split( '' );
+	}
 
-	return changeIndexesToChanges( newText, changeIndexes );
+	// Find first and last change.
+	const changeIndexes = findChangeBoundaryIndexes( a, b, cmp );
+
+	// Transform into changes array.
+	return linearChanges ? changeIndexesToLinearChanges( changeIndexes, b.length ) : changeIndexesToChanges( b, changeIndexes );
 }
 
-// Finds position of the first and last change in the given strings. For example:
+// Finds position of the first and last change in the given arrays. For example:
 //
-//		const indexes = findChangeBoundaryIndexes( '1234', '13424' );
+//		const indexes = findChangeBoundaryIndexes( [ '1', '2', '3', '4' ], [ '1', '3', '4', '2', '4' ] );
 //		console.log( indexes ); // { firstIndex: 1, lastIndexOld: 3, lastIndexNew: 4 }
 //
-// The above indexes means that in `oldText` modified part is `1[23]4` and in the `newText` it is `1[342]4`.
-// Based on such indexes, array with `insert`/`delete` operations which allows transforming
-// old text to the new one can be generated.
+// The above indexes means that in the first array the modified part is `1[23]4` and in the second array it is `1[342]4`.
+// Based on such indexes, array with `insert`/`delete` operations which allows transforming first value into the second one
+// can be generated.
 //
-// It is expected that `oldText` and `newText` are different.
-//
-// @param {String} oldText
-// @param {String} newText
+// @param {Array} arr1
+// @param {Array} arr2
+// @param {Function} cmp Comparator function.
 // @returns {Object}
-// @returns {Number} return.firstIndex Index of the first change in both strings (always the same for both).
-// @returns {Number} result.lastIndexOld Index of the last common character in `oldText` string.
-// @returns {Number} result.lastIndexNew Index of the last common character in `newText` string.
-function findChangeBoundaryIndexes( oldText, newText ) {
-	// Find the first difference between texts.
-	const firstIndex = findFirstDifferenceIndex( oldText, newText );
+// @returns {Number} return.firstIndex Index of the first change in both values (always the same for both).
+// @returns {Number} result.lastIndexOld Index of the last common value in `arr1`.
+// @returns {Number} result.lastIndexNew Index of the last common value in `arr2`.
+function findChangeBoundaryIndexes( arr1, arr2, cmp ) {
+	// Find the first difference between passed values.
+	const firstIndex = findFirstDifferenceIndex( arr1, arr2, cmp );
 
-	// Remove the common part of texts and reverse them to make it simpler to find the last difference between texts.
-	const oldTextReversed = cutAndReverse( oldText, firstIndex );
-	const newTextReversed = cutAndReverse( newText, firstIndex );
+	// If arrays are equal return -1 indexes object.
+	if ( firstIndex === -1 ) {
+		return { firstIndex: -1, lastIndexOld: -1, lastIndexNew: -1 };
+	}
 
-	// Find the first difference between reversed texts.
-	// It should be treated as "how many characters from the end the last difference occurred".
+	// Remove the common part of each value and reverse them to make it simpler to find the last difference between them.
+	const oldTextReversed = cutAndReverse( arr1, firstIndex );
+	const newTextReversed = cutAndReverse( arr2, firstIndex );
+
+	// Find the first difference between reversed values.
+	// It should be treated as "how many elements from the end the last difference occurred".
 	//
 	// For example:
 	//
-	// 			initial	->	after cut	-> reversed:
-	// oldText:	'321ba'	->	'21ba'		-> 'ab12'
-	// newText:	'31xba'	->	'1xba'		-> 'abx1'
-	// lastIndex:						->    2
+	// 				initial	->	after cut	-> reversed:
+	// oldValue:	'321ba'	->	'21ba'		-> 'ab12'
+	// newValue:	'31xba'	->	'1xba'		-> 'abx1'
+	// lastIndex:							-> 2
 	//
-	// So the last change occurred two characters from the end of the texts.
-	const lastIndex = findFirstDifferenceIndex( oldTextReversed, newTextReversed );
+	// So the last change occurred two characters from the end of the arrays.
+	const lastIndex = findFirstDifferenceIndex( oldTextReversed, newTextReversed, cmp );
 
 	// Use `lastIndex` to calculate proper offset, starting from the beginning (`lastIndex` kind of starts from the end).
-	const lastIndexOld = oldText.length - lastIndex;
-	const lastIndexNew = newText.length - lastIndex;
+	const lastIndexOld = arr1.length - lastIndex;
+	const lastIndexNew = arr2.length - lastIndex;
 
 	return { firstIndex, lastIndexOld, lastIndexNew };
 }
 
-// Returns a first index on which `oldText` and `newText` differ.
+// Returns a first index on which given arrays differ. If both arrays are the same, -1 is returned.
 //
-// @param {String} oldText
-// @param {String} newText
+// @param {Array} arr1
+// @param {Array} arr2
+// @param {Function} cmp Comparator function.
 // @returns {Number}
-function findFirstDifferenceIndex( oldText, newText ) {
-	for ( let i = 0; i < Math.max( oldText.length, newText.length ); i++ ) {
-		if ( oldText[ i ] !== newText[ i ] ) {
+function findFirstDifferenceIndex( arr1, arr2, cmp ) {
+	for ( let i = 0; i < Math.max( arr1.length, arr2.length ); i++ ) {
+		if ( arr1[ i ] === undefined || arr2[ i ] === undefined || !cmp( arr1[ i ], arr2[ i ] ) ) {
 			return i;
 		}
 	}
-	// No "backup" return cause we assume that `oldText` and `newText` differ. This means that they either have a
-	// difference or they have a different lengths. This means that the `if` condition will always be met eventually.
+
+	return -1; // Return -1 if arrays are equal.
 }
 
-// Removes `howMany` characters from the given `text` string starting from the beginning, then reverses and returns it.
+// Returns a copy of the given array with `howMany` elements removed starting from the beginning and in reversed order.
 //
-// @param {String} text Text to be processed.
-// @param {Number} howMany How many characters from text beginning to cut.
-// @returns {String} Shortened and reversed text.
-function cutAndReverse( text, howMany ) {
-	return text.substring( howMany ).split( '' ).reverse().join( '' );
+// @param {Array} arr Array to be processed.
+// @param {Number} howMany How many elements from text beginning to remove.
+// @returns {Array} Shortened and reversed array.
+function cutAndReverse( arr, howMany ) {
+	return arr.slice( howMany ).reverse();
 }
 
 // Generates changes array based on change indexes from `findChangeBoundaryIndexes` function. This function will
 // generate array with 0 (no changes), 1 (deletion or insertion) or 2 records (insertion and deletion).
 //
-// @param {String} newText New text for which change indexes were calculated.
+// @param {Array} newArray New array for which change indexes were calculated.
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
 // @returns {Array.<Object>} Array of changes compatible with {@link module:utils/difftochanges~diffToChanges} format.
-function changeIndexesToChanges( newText, changeIndexes ) {
+function changeIndexesToChanges( newArray, changeIndexes ) {
 	const result = [];
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
 
@@ -145,7 +193,7 @@ function changeIndexesToChanges( newText, changeIndexes ) {
 		result.push( {
 			index: firstIndex,
 			type: 'insert',
-			values: newText.substring( firstIndex, lastIndexNew ).split( '' )
+			values: newArray.slice( firstIndex, lastIndexNew )
 		} );
 	}
 
@@ -155,6 +203,39 @@ function changeIndexesToChanges( newText, changeIndexes ) {
 			type: 'delete',
 			howMany: lastIndexOld - firstIndex
 		} );
+	}
+
+	return result;
+}
+
+// Generates array with set `equal|insert|delete` operations based on change indexes from `findChangeBoundaryIndexes` function.
+//
+// @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
+// @param {Number} newLength Length of the new array/string on which `findChangeBoundaryIndexes` calculated change indexes.
+// @returns {Array.<String>} Array of changes compatible with {@link module:utils/diff~diff} format.
+function changeIndexesToLinearChanges( changeIndexes, newLength ) {
+	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
+
+	// No changes.
+	if ( firstIndex === -1 ) {
+		return Array( newLength ).fill( 'equal' );
+	}
+
+	let result = [];
+	if ( firstIndex > 0 ) {
+		result = result.concat( Array( firstIndex ).fill( 'equal' ) );
+	}
+
+	if ( lastIndexNew - firstIndex > 0 ) {
+		result = result.concat( Array( lastIndexNew - firstIndex ).fill( 'insert' ) );
+	}
+
+	if ( lastIndexOld - firstIndex > 0 ) {
+		result = result.concat( Array( lastIndexOld - firstIndex ).fill( 'delete' ) );
+	}
+
+	if ( lastIndexNew < newLength ) {
+		result = result.concat( Array( newLength - lastIndexNew ).fill( 'equal' ) );
 	}
 
 	return result;
