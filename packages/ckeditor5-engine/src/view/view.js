@@ -130,7 +130,7 @@ export default class View {
 		this._postFixersInProgress = false;
 
 		/**
-		 * Internal flag to temporary disable rendering. See usage in the editing controller.
+		 * Internal flag to temporary disable rendering. See the usage in the {@link #_disableRendering}.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -184,10 +184,11 @@ export default class View {
 	}
 
 	/**
-	 * [_disableRendering description]
+	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
+	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
 	 *
 	 * @protected
-	 * @param {Boolean} flag [description]
+	 * @param {Boolean} flag A flag indicates whether the rendering should be disabled.
 	 */
 	_disableRendering( flag ) {
 		this._renderingDisabled = flag;
@@ -420,13 +421,9 @@ export default class View {
 	/**
 	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
-	 * If no changes were detected since the last rendering, the view will not re-render, unless the `options.force` is set to `true`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * trying to re-render when rendering to DOM has already started.
-	 *
-	 * @param {Object} [options] Rendering options
-	 * @param {Boolean} [options.force=false] A flag ensures that the view will re-render even when nothing has changed.
 	 */
 	forceRender() {
 		this._hasChangedSinceTheLastRendering = true;
