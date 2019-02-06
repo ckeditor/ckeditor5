@@ -25,7 +25,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -36,7 +36,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -47,7 +47,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -58,7 +58,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -70,7 +70,7 @@ describe( 'placeholder', () => {
 			viewDocument.isFocused = false;
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -83,14 +83,14 @@ describe( 'placeholder', () => {
 			const spy = sinon.spy( () => result );
 
 			attachPlaceholder( view, element, 'foo bar baz', spy );
-			view.render( { force: true } );
+			view.forceRender();
 
 			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			result = false;
-			view.render( { force: true } );
+			view.forceRender();
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -99,7 +99,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -117,7 +117,7 @@ describe( 'placeholder', () => {
 
 			attachPlaceholder( view, element, 'foo bar baz' );
 			attachPlaceholder( view, element, 'new text' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -130,7 +130,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 			setData( view, '<p>paragraph</p>' );
 
-			view.render();
+			view.forceRender();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
@@ -146,8 +146,8 @@ describe( 'placeholder', () => {
 
 			attachPlaceholder( view, element, 'first placeholder' );
 			attachPlaceholder( secondView, secondElement, 'second placeholder' );
-			view.render( { force: true } );
-			secondView.render( { force: true } );
+			view.forceRender();
+			secondView.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -176,7 +176,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			view.change( writer => {
 				writer.setSelection( ViewRange._createIn( element ) );
@@ -197,7 +197,7 @@ describe( 'placeholder', () => {
 			const element = viewRoot.getChild( 0 );
 
 			attachPlaceholder( view, element, 'foo bar baz' );
-			view.render( { force: true } );
+			view.forceRender();
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;

@@ -136,7 +136,8 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should not call render if destroyed', () => {
-			const renderSpy = sinon.spy( view, 'render' );
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
 			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );

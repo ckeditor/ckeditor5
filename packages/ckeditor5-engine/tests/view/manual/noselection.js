@@ -17,7 +17,7 @@ view.attachDomRoot( document.getElementById( 'editor' ) );
 viewDocument.on( 'selectionChange', () => {
 	// Re-render view selection each time selection is changed.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/796.
-	view.render();
+	view.forceRender();
 } );
 
 setData( view,

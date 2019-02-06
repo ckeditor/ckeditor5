@@ -402,11 +402,6 @@ export default class View {
 		return callbackResult;
 	}
 
-	render() {
-		console.log( 'deprecated usage.' );
-		this.forceRender();
-	}
-
 	/**
 	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
