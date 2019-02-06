@@ -184,22 +184,6 @@ export default class View {
 	}
 
 	/**
-	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
-	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
-	 *
-	 * @protected
-	 * @param {Boolean} flag A flag indicates whether the rendering should be disabled.
-	 */
-	_disableRendering( flag ) {
-		this._renderingDisabled = flag;
-
-		if ( flag == false ) {
-			// Render when you stop blocking rendering.
-			this.change( () => {} );
-		}
-	}
-
-	/**
 	 * Attaches DOM root element to the view element and enable all observers on that element.
 	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view
 	 * what means that all child nodes will be removed and replaced with content of the view root.
@@ -586,6 +570,23 @@ export default class View {
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
 	}
+
+	/**
+	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
+	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
+	 *
+	 * @protected
+	 * @param {Boolean} flag A flag indicates whether the rendering should be disabled.
+	 */
+	_disableRendering( flag ) {
+		this._renderingDisabled = flag;
+
+		if ( flag == false ) {
+			// Render when you stop blocking rendering.
+			this.change( () => {} );
+		}
+	}
+
 
 	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
