@@ -57,7 +57,7 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.ui ).to.be.instanceOf( EditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 			expect( editor.ui.view.isRendered ).to.be.false;
-			expect( editor.ui.view.editableElement ).to.be.undefined;
+			expect( editor.ui.getEditableElement() ).to.be.undefined;
 		} );
 
 		it( 'creates main root element', () => {
@@ -89,11 +89,12 @@ describe( 'ClassicTestEditor', () => {
 		it( 'renders the view including #editable and sets #editableElement', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					const view = editor.ui.view;
+					const ui = editor.ui;
+					const view = ui.view;
 
 					expect( view.isRendered ).to.be.true;
-					expect( view.editableElement.tagName ).to.equal( 'DIV' );
-					expect( view.editableElement ).to.equal( view.editable.element );
+					expect( ui.getEditableElement().tagName ).to.equal( 'DIV' );
+					expect( ui.getEditableElement() ).to.equal( view.editable.element );
 					expect( view.editable.name ).to.equal( 'main' );
 				} );
 		} );
