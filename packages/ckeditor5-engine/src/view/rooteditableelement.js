@@ -35,17 +35,6 @@ export default class RootEditableElement extends EditableElement {
 		 * @member {String}
 		 */
 		this.rootName = 'main';
-
-		/**
-		 * A DOM attributes cache. It saves the initial values of DOM attributes before the DOM element
-		 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
-		 * the view is destroyed, they can be easily restored. This way, the DOM element can go back to
-		 * the (clean) state as if the editing view never used it.
-		 *
-		 * @protected
-		 * @member {Object.<String,String>}
-		 */
-		this._initialDomAttributes = {};
 	}
 
 	/**

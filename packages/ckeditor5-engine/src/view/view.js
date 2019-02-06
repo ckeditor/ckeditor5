@@ -98,6 +98,17 @@ export default class View {
 		this.domRoots = new Map();
 
 		/**
+		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
+		 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
+		 * the view is destroyed ({@link module:engine/view/view~View#detachDomRoot}), they can be easily restored.
+		 * This way, the DOM element can go back to the (clean) state as if the editing view never used it.
+		 *
+		 * @private
+		 * @member {WeakMap.<HTMLElement,Object>}
+		 */
+		this._initialDomRootAttributes = new WeakMap();
+
+		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
@@ -185,6 +196,8 @@ export default class View {
 		// Set view root name the same as DOM root tag name.
 		viewRoot._name = domRoot.tagName.toLowerCase();
 
+		const initialDomRootAttributes = {};
+
 		// 1. Copy and cache the attributes to remember the state of the element before attaching.
 		//    The cached attributes will be restored in detachDomRoot() so the element goes to the
 		//    clean state as if the editing view never used it.
@@ -193,7 +206,7 @@ export default class View {
 		//    features (e.g. addPlaceholder()) require dynamic changes of those attributes and they
 		//    cannot be managed by the engine and the UI library at the same time.
 		for ( const { name, value } of domRoot.attributes ) {
-			viewRoot._initialDomAttributes[ name ] = value;
+			initialDomRootAttributes[ name ] = value;
 
 			// Do not use writer.setAttribute() for the class attribute. The EditableUIView class
 			// and its descendants could have already set some using the writer.addClass() on the view
@@ -205,6 +218,8 @@ export default class View {
 				this._writer.setAttribute( name, value, viewRoot );
 			}
 		}
+
+		this._initialDomRootAttributes.set( domRoot, initialDomRootAttributes );
 
 		const updateContenteditableAttribute = () => {
 			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
@@ -237,14 +252,15 @@ export default class View {
 	 */
 	detachDomRoot( name ) {
 		const domRoot = this.domRoots.get( name );
-		const viewRoot = this.document.getRoot( name );
 
 		// Remove all root attributes so the DOM element is "bare".
 		[ ...domRoot.attributes ].forEach( ( { name } ) => domRoot.removeAttribute( name ) );
 
+		const initialDomRootAttributes = this._initialDomRootAttributes.get( domRoot );
+
 		// Revert all view root attributes back to the state before attachDomRoot was called.
-		for ( const attribute in viewRoot._initialDomAttributes ) {
-			domRoot.setAttribute( attribute, viewRoot._initialDomAttributes[ attribute ] );
+		for ( const attribute in initialDomRootAttributes ) {
+			domRoot.setAttribute( attribute, initialDomRootAttributes[ attribute ] );
 		}
 
 		this.domRoots.delete( name );
