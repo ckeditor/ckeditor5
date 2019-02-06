@@ -582,7 +582,6 @@ export default class View {
 		}
 	}
 
-
 	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
