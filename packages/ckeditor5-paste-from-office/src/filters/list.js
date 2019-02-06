@@ -223,6 +223,10 @@ function isNewListNeeded( previousItem, currentItem ) {
 
 	const previousSibling = currentItem.element.previousSibling;
 
+	if ( !previousSibling ) {
+		return true;
+	}
+
 	// Even with the same id the list does not have to by continuous one (#43).
-	return !( previousSibling && ( previousSibling.is( 'element', 'ul' ) || previousSibling.is( 'element', 'ol' ) ) );
+	return !previousSibling.is( 'element', 'ul' ) && !previousSibling.is( 'element', 'ol' );
 }
