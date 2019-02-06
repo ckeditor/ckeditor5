@@ -179,7 +179,7 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView.isVisible ).to.be.true;
 				sinon.assert.calledWith( pinSpy, {
 					target: blockToolbar.buttonView.element,
-					limiter: editor.ui.view.editableElement
+					limiter: editor.ui.getEditableElement()
 				} );
 				sinon.assert.calledOnce( focusSpy );
 			} );
@@ -279,7 +279,7 @@ describe( 'BlockToolbar', () => {
 			'of the selected block #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
 			styleMock.withArgs( target ).returns( {
@@ -289,7 +289,7 @@ describe( 'BlockToolbar', () => {
 
 			styleMock.callThrough();
 
-			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.getEditableElement(), 'getBoundingClientRect' ).returns( {
 				left: 200
 			} );
 
@@ -313,7 +313,7 @@ describe( 'BlockToolbar', () => {
 			'of the selected block #2', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const target = editor.ui.getEditableElement().querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
 			styleMock.withArgs( target ).returns( {
@@ -324,7 +324,7 @@ describe( 'BlockToolbar', () => {
 
 			styleMock.callThrough();
 
-			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.getEditableElement(), 'getBoundingClientRect' ).returns( {
 				left: 200
 			} );
 
@@ -359,7 +359,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.calledWith( spy, {
 				target: blockToolbar.buttonView.element,
-				limiter: editor.ui.view.editableElement
+				limiter: editor.ui.getEditableElement()
 			} );
 		} );
 
