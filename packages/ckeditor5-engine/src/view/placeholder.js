@@ -38,6 +38,8 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 		placeholderText,
 		checkFunction
 	} );
+
+	view.change( writer => updateAllPlaceholders( document, writer ) );
 }
 
 /**
