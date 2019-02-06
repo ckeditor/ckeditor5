@@ -24,7 +24,7 @@ setData( view,
 viewDocument.on( 'selectionChange', () => {
 	// Re-render view selection each time selection is changed.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/796.
-	view.render();
+	view.forceRender();
 } );
 
 view.focus();

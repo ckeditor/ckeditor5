@@ -82,14 +82,11 @@ export default class EditingController {
 		//
 		// See  https://github.com/ckeditor/ckeditor5-engine/issues/1528
 		this.listenTo( this.model, '_beforeChanges', () => {
-			this.view._renderingDisabled = true;
+			this.view._disableRendering( true );
 		}, { priority: 'highest' } );
 
-		this.listenTo( this.model, '_afterChanges', ( evt, { hasModelDocumentChanged } ) => {
-			this.view._renderingDisabled = false;
-			if ( hasModelDocumentChanged ) {
-				this.view.render();
-			}
+		this.listenTo( this.model, '_afterChanges', () => {
+			this.view._disableRendering( false );
 		}, { priority: 'lowest' } );
 
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).

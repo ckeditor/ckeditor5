@@ -37,7 +37,7 @@ export default class FocusObserver extends DomEventObserver {
 			// overwrite new DOM selection with selection from the view.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
 			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
-			this._renderTimeoutId = setTimeout( () => view.render(), 50 );
+			this._renderTimeoutId = setTimeout( () => view.forceRender(), 50 );
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -47,7 +47,7 @@ export default class FocusObserver extends DomEventObserver {
 				document.isFocused = false;
 
 				// Re-render the document to update view elements.
-				view.render();
+				view.forceRender();
 			}
 		} );
 

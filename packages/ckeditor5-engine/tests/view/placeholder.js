@@ -108,6 +108,8 @@ describe( 'placeholder', () => {
 				text: 'foo bar baz'
 			} );
 
+			view.forceRender();
+
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
@@ -163,7 +165,7 @@ describe( 'placeholder', () => {
 			} );
 			setData( view, '<p>paragraph</p>' );
 
-			view.render();
+			view.forceRender();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
