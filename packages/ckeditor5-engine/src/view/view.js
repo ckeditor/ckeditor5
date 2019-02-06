@@ -183,6 +183,14 @@ export default class View {
 		} );
 	}
 
+	_disablRendering( flag ) {
+		this._renderingDisabled = flag;
+
+		if ( flag == false ) {
+			this.change( () => {} );
+		}
+	}
+
 	/**
 	 * Attaches DOM root element to the view element and enable all observers on that element.
 	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view
@@ -314,7 +322,7 @@ export default class View {
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
-				this.render( { force: true } );
+				this.forceRender();
 			} else {
 				/**
 				 * Before focusing view document, selection should be placed inside one of the view's editables.
@@ -413,12 +421,9 @@ export default class View {
 	 * @param {Object} [options] Rendering options
 	 * @param {Boolean} [options.force=false] A flag ensures that the view will re-render even when nothing has changed.
 	 */
-	render( options = {} ) {
-		if ( options.force ) {
-			this._hasChangedSinceTheLastRendering = true;
-		}
-
-		this.change( () => { } );
+	forceRender() {
+		this._hasChangedSinceTheLastRendering = true;
+		this.change( () => {} );
 	}
 
 	/**

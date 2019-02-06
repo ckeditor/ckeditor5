@@ -116,7 +116,7 @@ export default class Document {
 	 * instance connected with the executed changes block.
 	 *
 	 * Note that registering a post-fixer won't re-render the editor's view. If the view should change after registering the post-fixer then
-	 * it should be done manually calling `view.render( { force: true } );`.
+	 * it should be done manually calling `view.forceRender();`.
 	 *
 	 * @param {Function} postFixer
 	 */
