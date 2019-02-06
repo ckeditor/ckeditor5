@@ -188,10 +188,16 @@
 							"order": 100
 						},
 						{
+							"name": "Track changes",
+							"id": "features-track-changes",
+							"slug": "track-changes",
+							"order": 200
+						},
+						{
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
-							"order": 200
+							"order": 300
 						}
 					]
 				},
