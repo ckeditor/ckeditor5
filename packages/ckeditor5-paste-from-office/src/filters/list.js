@@ -166,7 +166,7 @@ function transformElementIntoListItem( element, writer ) {
 //
 // where:
 //
-//		* `l1` is a list id (all elements with the same id belongs to the same list),
+//		* `l1` is a list id (however it does not mean this is a continuous list - see #43),
 //		* `level1` is a list item indentation level,
 //		* `lfo1` is a list insertion order in a document.
 //
@@ -210,6 +210,23 @@ function removeBulletElement( element, writer ) {
 	}
 }
 
+// Whether previous and current item belongs to the same list. It is determined based on `item.id`
+// (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
+//
+// @param {Object} previousItem
+// @param {Object} currentItem
+// @returns {Boolean}
 function isNewListNeeded( previousItem, currentItem ) {
-	return previousItem.id !== currentItem.id;
+	if ( previousItem.id !== currentItem.id ) {
+		return true;
+	}
+
+	const previousSibling = currentItem.element.previousSibling;
+
+	if ( !previousSibling ) {
+		return true;
+	}
+
+	// Even with the same id the list does not have to by continuous one (#43).
+	return !previousSibling.is( 'element', 'ul' ) && !previousSibling.is( 'element', 'ol' );
 }
