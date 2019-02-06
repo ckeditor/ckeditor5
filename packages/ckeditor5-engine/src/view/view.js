@@ -71,14 +71,22 @@ export default class View {
 		this.document = new Document();
 
 		/**
-		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/view~View#renderer renderer}
+		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
+		 * {@link module:engine/view/view~View#_renderer renderer}
 		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
 		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter();
+
+		/**
+		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
+		 *
+		 * @readonly
+		 * @type {Map.<String, HTMLElement>}
+		 */
+		this.domRoots = new Map();
 
 		/**
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
@@ -88,14 +96,6 @@ export default class View {
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
-
-		/**
-		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
-		 *
-		 * @readonly
-		 * @type {Map.<String, HTMLElement>}
-		 */
-		this.domRoots = new Map();
 
 		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
@@ -114,7 +114,7 @@ export default class View {
 		this._ongoingChange = false;
 
 		/**
-		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
+		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -122,7 +122,7 @@ export default class View {
 		this._renderingInProgress = false;
 
 		/**
-		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
+		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -364,8 +364,8 @@ export default class View {
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
 			 *
-			 * * calling {@link #change} or {@link #render} during rendering process,
-			 * * calling {@link #change} or {@link #render} inside of
+			 * * calling {@link #change} or {@link #forceRender} during rendering process,
+			 * * calling {@link #change} or {@link #forceRender} inside of
 			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
