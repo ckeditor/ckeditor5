@@ -66,7 +66,7 @@ export default class View {
 		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/view~View#document
+		 * @type {module:engine/view/document~Document}
 		 */
 		this.document = new Document();
 
@@ -76,7 +76,7 @@ export default class View {
 		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/view~View#domConverter
+		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter();
 
@@ -84,7 +84,7 @@ export default class View {
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
 		 * @protected
-		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
+		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
 		this._renderer.bind( 'isFocused' ).to( this.document );
@@ -93,7 +93,7 @@ export default class View {
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
 		 *
 		 * @readonly
-		 * @member {Map} module:engine/view/view~View#domRoots
+		 * @type {Map.<String, HTMLElement>}
 		 */
 		this.domRoots = new Map();
 
@@ -101,7 +101,7 @@ export default class View {
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
-		 * @member {Map.<Function, module:engine/view/observer/observer~Observer>} module:engine/view/view~View#_observers
+		 * @type {Map.<Function, module:engine/view/observer/observer~Observer>}
 		 */
 		this._observers = new Map();
 
@@ -109,7 +109,7 @@ export default class View {
 		 * Is set to `true` when {@link #change view changes} are currently in progress.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_ongoingChange
+		 * @type {Boolean}
 		 */
 		this._ongoingChange = false;
 
@@ -117,7 +117,7 @@ export default class View {
 		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @type {Boolean}
 		 */
 		this._renderingInProgress = false;
 
@@ -125,23 +125,32 @@ export default class View {
 		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @type {Boolean}
 		 */
 		this._postFixersInProgress = false;
 
 		/**
-		 * Internal flag to temporary disable rendering. See usage in the editing controller.
+		 * Internal flag to temporary disable rendering. See the usage in the {@link #_disableRendering}.
 		 *
-		 * @protected
-		 * @member {Boolean} module:engine/view/view~View#_renderingDisabled
+		 * @private
+		 * @type {Boolean}
 		 */
 		this._renderingDisabled = false;
 
 		/**
-		 * DowncastWriter instance used in {@link #change change method) callbacks.
+		 * Internal flag that disables rendering when there are no changes since the last rendering.
+		 * It stores information about changed selection and changed elements from attached document roots.
 		 *
 		 * @private
-		 * @member {module:engine/view/downcastwriter~DowncastWriter} module:engine/view/view~View#_writer
+		 * @type {Boolean}
+		 */
+		this._hasChangedSinceTheLastRendering = false;
+
+		/**
+		 * DowncastWriter instance used in {@link #change change method} callbacks.
+		 *
+		 * @private
+		 * @type {module:engine/view/downcastwriter~DowncastWriter}
 		 */
 		this._writer = new DowncastWriter( this.document );
 
@@ -163,6 +172,14 @@ export default class View {
 
 			// Informs that layout has changed after render.
 			this.document.fire( 'layoutChanged' );
+
+			// Reset the `_hasChangedSinceTheLastRendering` flag after rendering.
+			this._hasChangedSinceTheLastRendering = false;
+		} );
+
+		// Listen to the document selection changes directly.
+		this.listenTo( this.document.selection, 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
 
@@ -191,6 +208,10 @@ export default class View {
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+
+		viewRoot.on( 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -293,7 +314,7 @@ export default class View {
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
-				this.render();
+				this.forceRender();
 			} else {
 				/**
 				 * Before focusing view document, selection should be placed inside one of the view's editables.
@@ -309,9 +330,10 @@ export default class View {
 
 	/**
 	 * The `change()` method is the primary way of changing the view. You should use it to modify any node in the view tree.
-	 * It makes sure that after all changes are made the view is rendered to the DOM. It prevents situations when the DOM is updated
-	 * when the view state is not yet correct. It allows to nest calls one inside another and still performs a single rendering
-	 * after all those changes are made. It also returns the return value of its callback.
+	 * It makes sure that after all changes are made the view is rendered to the DOM (assuming that the view will be changed
+	 * inside the callback). It prevents situations when the DOM is updated when the view state is not yet correct. It allows
+	 * to nest calls one inside another and still performs a single rendering after all those changes are made.
+	 * It also returns the return value of its callback.
 	 *
 	 *		const text = view.change( writer => {
 	 *			const newText = writer.createText( 'foo' );
@@ -368,7 +390,8 @@ export default class View {
 
 		// This lock is used by editing controller to render changes from outer most model.change() once. As plugins might call
 		// view.change() inside model.change() block - this will ensures that postfixers and rendering are called once after all changes.
-		if ( !this._renderingDisabled ) {
+		// Also, we don't need to render anything if there're no changes since last rendering.
+		if ( !this._renderingDisabled && this._hasChangedSinceTheLastRendering ) {
 			this._postFixersInProgress = true;
 			this.document._callPostFixers( this._writer );
 			this._postFixersInProgress = false;
@@ -380,13 +403,17 @@ export default class View {
 	}
 
 	/**
-	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
+	 * Forces rendering {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
+	 *
+	 * Note that this method is dedicated for special cases. All view changes should be wrapped in the {@link #change}
+	 * block and the view will automatically check whether it needs to render DOM or not.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * trying to re-render when rendering to DOM has already started.
 	 */
-	render() {
+	forceRender() {
+		this._hasChangedSinceTheLastRendering = true;
 		this.change( () => {} );
 	}
 
@@ -540,6 +567,22 @@ export default class View {
 	 */
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
+	}
+
+	/**
+	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
+	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
+	 *
+	 * @protected
+	 * @param {Boolean} flag A flag indicates whether the rendering should be disabled.
+	 */
+	_disableRendering( flag ) {
+		this._renderingDisabled = flag;
+
+		if ( flag == false ) {
+			// Render when you stop blocking rendering.
+			this.change( () => {} );
+		}
 	}
 
 	/**

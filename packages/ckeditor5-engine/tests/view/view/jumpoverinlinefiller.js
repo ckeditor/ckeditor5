@@ -42,7 +42,7 @@ describe( 'View', () => {
 	describe( 'jump over inline filler hack', () => {
 		it( 'should jump over inline filler when left arrow is pressed after inline filler', () => {
 			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			view.render();
+			view.forceRender();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
@@ -64,7 +64,7 @@ describe( 'View', () => {
 
 		it( 'should do nothing when another key is pressed', () => {
 			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			view.render();
+			view.forceRender();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
 
@@ -77,7 +77,7 @@ describe( 'View', () => {
 
 		it( 'should do nothing if range is not collapsed', () => {
 			setData( view, '<container:p>foo<attribute:b>{x}</attribute:b>bar</container:p>' );
-			view.render();
+			view.forceRender();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
