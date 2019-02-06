@@ -132,7 +132,7 @@ export default class View {
 		/**
 		 * Internal flag to temporary disable rendering. See usage in the editing controller.
 		 *
-		 * @protected
+		 * @private
 		 * @type {Boolean}
 		 */
 		this._renderingDisabled = false;
@@ -183,10 +183,17 @@ export default class View {
 		} );
 	}
 
-	_disablRendering( flag ) {
+	/**
+	 * [_disableRendering description]
+	 *
+	 * @protected
+	 * @param {Boolean} flag [description]
+	 */
+	_disableRendering( flag ) {
 		this._renderingDisabled = flag;
 
 		if ( flag == false ) {
+			// Render when you stop blocking rendering.
 			this.change( () => {} );
 		}
 	}
