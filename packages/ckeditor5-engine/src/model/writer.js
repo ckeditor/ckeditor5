@@ -504,13 +504,12 @@ export default class Writer {
 		this._assertWriterUsedCorrectly();
 
 		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
-
-		// If part of the marker is removed, create additional marker operation for undo purposes.
-		this._addOperationForAffectedMarkers( 'move', rangeToRemove );
-
 		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
+			// If part of the marker is removed, create additional marker operation for undo purposes.
+			this._addOperationForAffectedMarkers( 'move', flat );
+
 			applyRemoveOperation( flat.start, flat.end.offset - flat.start.offset, this.batch, this.model );
 		}
 	}

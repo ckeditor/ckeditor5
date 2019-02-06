@@ -293,6 +293,23 @@ export default class Differ {
 	}
 
 	/**
+	 * Returns all markers which changed.
+	 *
+	 * @returns {Array.<Object>}
+	 */
+	getChangedMarkers() {
+		return Array.from( this._changedMarkers ).map( item => (
+			{
+				name: item[ 0 ],
+				data: {
+					oldRange: item[ 1 ].oldRange,
+					newRange: item[ 1 ].newRange
+				}
+			}
+		) );
+	}
+
+	/**
 	 * Checks whether some of the buffered changes affect the editor data.
 	 *
 	 * Types of changes which affect the editor data:

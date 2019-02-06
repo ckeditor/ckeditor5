@@ -541,7 +541,7 @@ class ContextFactory {
 						if ( ( affectedLeft || affectedRight ) && !movedRange.containsRange( markerRange ) ) {
 							this._setRelation( opA, opB, {
 								side: affectedLeft ? 'left' : 'right',
-								offset: affectedLeft ? markerRange.start.offset : markerRange.end.offset
+								path: affectedLeft ? markerRange.start.path.slice() : markerRange.end.path.slice()
 							} );
 						}
 
@@ -550,10 +550,17 @@ class ContextFactory {
 
 					case MergeOperation: {
 						const wasInLeftElement = markerRange.start.isEqual( opB.targetPosition );
+						const wasStartBeforeMergedElement = markerRange.start.isEqual( opB.deletionPosition );
+						const wasEndBeforeMergedElement = markerRange.end.isEqual( opB.deletionPosition );
 						const wasInRightElement = markerRange.end.isEqual( opB.sourcePosition );
 
-						if ( wasInLeftElement || wasInRightElement ) {
-							this._setRelation( opA, opB, { wasInLeftElement, wasInRightElement } );
+						if ( wasInLeftElement || wasStartBeforeMergedElement || wasEndBeforeMergedElement || wasInRightElement ) {
+							this._setRelation( opA, opB, {
+								wasInLeftElement,
+								wasStartBeforeMergedElement,
+								wasEndBeforeMergedElement,
+								wasInRightElement
+							} );
 						}
 
 						break;
@@ -1122,13 +1129,16 @@ setTransformation( MarkerOperation, MoveOperation, ( a, b, context ) => {
 
 	if ( a.newRange ) {
 		if ( context.abRelation ) {
+			const aNewRange = Range._createFromRanges( a.newRange._getTransformedByMoveOperation( b ) );
+
 			if ( context.abRelation.side == 'left' && b.targetPosition.isEqual( a.newRange.start ) ) {
-				a.newRange.start.offset = context.abRelation.offset;
-				a.newRange.end.offset += b.howMany;
+				a.newRange.start.path = context.abRelation.path;
+				a.newRange.end = aNewRange.end;
 
 				return [ a ];
 			} else if ( context.abRelation.side == 'right' && b.targetPosition.isEqual( a.newRange.end ) ) {
-				a.newRange.end.offset = context.abRelation.offset;
+				a.newRange.start = aNewRange.start;
+				a.newRange.end.path = context.abRelation.path;
 
 				return [ a ];
 			}
@@ -1147,12 +1157,20 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 
 	if ( a.newRange ) {
 		if ( context.abRelation ) {
-			if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
+			const aNewRange = a.newRange._getTransformedBySplitOperation( b );
+
+			if ( a.newRange.start.isEqual( b.splitPosition ) && context.abRelation.wasStartBeforeMergedElement ) {
+				a.newRange.start = Position._createAt( b.insertionPosition );
+			} else if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
 				a.newRange.start = Position._createAt( b.moveTargetPosition );
 			}
 
 			if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasInRightElement ) {
 				a.newRange.end = Position._createAt( b.moveTargetPosition );
+			} else if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasEndBeforeMergedElement ) {
+				a.newRange.end = Position._createAt( b.insertionPosition );
+			} else {
+				a.newRange.end = aNewRange.end;
 			}
 
 			return [ a ];
