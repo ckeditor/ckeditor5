@@ -7,6 +7,8 @@
  * @module autoformat/blockautoformatediting
  */
 
+import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
  * it can be configured to turn a paragraph starting with `*` and followed by a space into a list item.
@@ -78,6 +80,7 @@ export default class BlockAutoformatEditing {
 			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
+
 			const item = entry.position.textNode || entry.position.nodeAfter;
 
 			if ( !item.parent.is( 'paragraph' ) ) {
@@ -95,12 +98,16 @@ export default class BlockAutoformatEditing {
 				// Matched range.
 				const start = writer.createPositionAt( item.parent, 0 );
 				const end = writer.createPositionAt( item.parent, match[ 0 ].length );
-				const range = writer.createRange( start, end );
+				const range = new LiveRange( start, end );
+
+				const wasChanged = callback( { match } );
 
 				// Remove matched text.
-				writer.remove( range );
+				if ( wasChanged !== false ) {
+					writer.remove( range );
+				}
 
-				callback( { match } );
+				range.detach();
 			} );
 		} );
 	}

@@ -154,6 +154,7 @@ describe( 'Autoformat', () => {
 
 			function HeadingPlugin( editor ) {
 				editor.commands.add( 'heading', command );
+				command.refresh();
 			}
 
 			return VirtualTestEditor
@@ -186,6 +187,19 @@ describe( 'Autoformat', () => {
 
 					return editor.destroy();
 				} );
+		} );
+
+		it( 'should not replace if heading command is disabled', () => {
+			setData( model, '<paragraph>#[]</paragraph>' );
+
+			model.change( writer => {
+				editor.commands.get( 'heading' ).refresh = () => {};
+				editor.commands.get( 'heading' ).isEnabled = false;
+
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph># []</paragraph>' );
 		} );
 	} );
 

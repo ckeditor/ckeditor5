@@ -123,6 +123,17 @@ describe( 'BlockAutoformatEditing', () => {
 
 			sinon.assert.notCalled( spy );
 		} );
+
+		it( 'should stop if callback returned false', () => {
+			new BlockAutoformatEditing( editor, /^[*]\s$/, () => false ); // eslint-disable-line no-new
+
+			setData( model, '<paragraph>*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
+		} );
 	} );
 
 	it( 'should ignore transparent batches', () => {
