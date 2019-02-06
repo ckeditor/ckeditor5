@@ -49,8 +49,8 @@ export function enablePlaceholder( options ) {
 		isDirectHost
 	} );
 
-	// Update the view right away.
-	view.render();
+	// Update the placeholders right away.
+	view.change( writer => updateDocumentPlaceholders( doc, writer ) );
 }
 
 /**
