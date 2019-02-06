@@ -331,7 +331,7 @@ export default class View {
 	/**
 	 * The `change()` method is the primary way of changing the view. You should use it to modify any node in the view tree.
 	 * It makes sure that after all changes are made the view is rendered to the DOM (assuming that the view will be changed
-	 * inside the callback). It prevents situations when the DOM is updated when the view state is not yet correct.It allows
+	 * inside the callback). It prevents situations when the DOM is updated when the view state is not yet correct. It allows
 	 * to nest calls one inside another and still performs a single rendering after all those changes are made.
 	 * It also returns the return value of its callback.
 	 *
