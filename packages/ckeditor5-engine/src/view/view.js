@@ -275,7 +275,7 @@ export default class View {
 		const domRoot = this.domRoots.get( name );
 
 		// Remove all root attributes so the DOM element is "bare".
-		[ ...domRoot.attributes ].forEach( ( { name } ) => domRoot.removeAttribute( name ) );
+		Array.from( domRoot.attributes ).forEach( ( { name } ) => domRoot.removeAttribute( name ) );
 
 		const initialDomRootAttributes = this._initialDomRootAttributes.get( domRoot );
 
