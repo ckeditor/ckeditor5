@@ -9,6 +9,7 @@
 
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
  * The balloon editor UI class.
@@ -48,25 +49,44 @@ export default class BalloonEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+		const editingView = editor.editing.view;
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
 
 		view.render();
 
-		// Setup the editable.
-		const editingRoot = editor.editing.view.document.getRoot();
-		view.editable.bind( 'isReadOnly' ).to( editingRoot );
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to BalloonEditor.create().
+		const editableElement = editable.element;
 
-		// Bind to focusTracker instead of editor.editing.view because otherwise
-		// focused editable styles disappear when view#toolbar is focused.
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editable.element );
-		view.editable.name = editingRoot.rootName;
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the balloon editor has only one.
+		this._editableElements.set( editable.name, editableElement );
 
-		this._editableElements.set( view.editable.name, view.editable.element );
+		// Let the global focus tracker know that the editable UI element is focusable and
+		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
+		// as long as the editable is focused (e.g. the user is typing).
+		this.focusTracker.add( editableElement );
 
-		this.focusTracker.add( view.editable.element );
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
 
 		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
+			origin: editingView,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: balloonToolbar.toolbarView,
@@ -78,6 +98,7 @@ export default class BalloonEditorUI extends EditorUI {
 			}
 		} );
 
+		this._initPlaceholder();
 		this.fire( 'ready' );
 	}
 
@@ -85,8 +106,35 @@ export default class BalloonEditorUI extends EditorUI {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this.view.destroy();
+		const view = this.view;
+		const editingView = this.editor.editing.view;
+
+		editingView.detachDomRoot( view.editable.name );
+		view.destroy();
 
 		super.destroy();
+	}
+
+	/**
+	 * Enable the placeholder text on the editing root, if any was configured.
+	 *
+	 * @private
+	 */
+	_initPlaceholder() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const editingRoot = editingView.document.getRoot();
+
+		const placeholderText = editor.config.get( 'placeholder' ) ||
+			editor.sourceElement && editor.sourceElement.getAttribute( 'placeholder' );
+
+		if ( placeholderText ) {
+			enablePlaceholder( {
+				view: editingView,
+				element: editingRoot,
+				text: placeholderText,
+				isDirectHost: false
+			} );
+		}
 	}
 }

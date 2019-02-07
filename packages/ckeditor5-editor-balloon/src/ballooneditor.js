@@ -77,7 +77,8 @@ export default class BalloonEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, this.sourceElement ) );
+		const view = new BalloonEditorUIView( this.locale, this.editing.view, this.sourceElement );
+		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );
 	}

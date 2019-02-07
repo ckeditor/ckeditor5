@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Event */
+/* globals document, Event */
 
 import BalloonEditorUI from '../src/ballooneditorui';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { isElement } from 'lodash-es';
 
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -22,7 +24,7 @@ describe( 'BalloonEditorUI', () => {
 
 	beforeEach( () => {
 		return VirtualBalloonTestEditor
-			.create( {
+			.create( 'foo', {
 				plugins: [ BalloonToolbar ]
 			} )
 			.then( newEditor => {
@@ -111,17 +113,107 @@ describe( 'BalloonEditorUI', () => {
 					{ isFocused: true }
 				);
 			} );
+		} );
 
-			it( 'binds view.editable#isReadOnly', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isReadOnly: false },
-					[
-						[ editable, { isReadOnly: true } ]
-					],
-					{ isReadOnly: true }
-				);
+		describe( 'placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder', () => {
+				return VirtualBalloonTestEditor
+					.create( 'foo', {
+						extraPlugins: [ BalloonToolbar, Paragraph ],
+						placeholder: 'placeholder-text',
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
 			} );
+
+			it( 'sets placeholder from "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualBalloonTestEditor
+					.create( element, {
+						extraPlugins: [ BalloonToolbar, Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'uses editor.config.placeholder rather than "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualBalloonTestEditor
+					.create( element, {
+						placeholder: 'config takes precedence',
+						extraPlugins: [ BalloonToolbar, Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+
+						return newEditor.destroy();
+					} );
+			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'detaches the DOM root then destroys the UI view', () => {
+			return VirtualBalloonTestEditor
+				.create( '', {
+					plugins: [ BalloonToolbar ]
+				} )
+				.then( newEditor => {
+					const destroySpy = sinon.spy( newEditor.ui.view, 'destroy' );
+					const detachSpy = sinon.spy( newEditor.editing.view, 'detachDomRoot' );
+
+					return newEditor.destroy()
+						.then( () => {
+							sinon.assert.callOrder( detachSpy, destroySpy );
+						} );
+				} );
+		} );
+
+		it( 'restores the editor element back to its original state', () => {
+			const domElement = document.createElement( 'div' );
+
+			domElement.setAttribute( 'foo', 'bar' );
+			domElement.setAttribute( 'data-baz', 'qux' );
+			domElement.classList.add( 'foo-class' );
+
+			return VirtualBalloonTestEditor
+				.create( domElement, {
+					plugins: [ BalloonToolbar ]
+				} )
+				.then( newEditor => {
+					return newEditor.destroy()
+						.then( () => {
+							const attributes = {};
+
+							for ( const attribute of domElement.attributes ) {
+								attributes[ attribute.name ] = attribute.value;
+							}
+
+							expect( attributes ).to.deep.equal( {
+								foo: 'bar',
+								'data-baz': 'qux',
+								class: 'foo-class'
+							} );
+						} );
+				} );
 		} );
 	} );
 
@@ -147,10 +239,14 @@ describe( 'BalloonEditorUI', () => {
 } );
 
 class VirtualBalloonTestEditor extends VirtualTestEditor {
-	constructor( config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		const view = new BalloonEditorUIView( this.locale );
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
+
+		const view = new BalloonEditorUIView( this.locale, this.editing.view );
 		this.ui = new BalloonEditorUI( this, view );
 	}
 
@@ -160,14 +256,20 @@ class VirtualBalloonTestEditor extends VirtualTestEditor {
 		return super.destroy();
 	}
 
-	static create( config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+
+						const initialData = isElement( sourceElementOrData ) ?
+							sourceElementOrData.innerHTML :
+							sourceElementOrData;
+
+						editor.data.init( initialData );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )
