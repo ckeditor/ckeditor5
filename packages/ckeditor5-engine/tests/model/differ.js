@@ -631,11 +631,32 @@ describe( 'Differ', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
-		it( 'move to the same position', () => {
+		it( 'move to the same position #1', () => {
 			const position = new Position( root, [ 0 ] );
 
 			model.change( () => {
 				move( position, 1, position );
+
+				expectChanges( [] );
+			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position #2', () => {
+			const sourcePosition = new Position( root, [ 0 ] );
+			const targetPosition = new Position( root, [ 2 ] );
+
+			root._appendChild( [
+				new Element( 'paragraph', null, [
+					new Text( 'x' )
+				] ),
+				new Element( 'paragraph', null, [
+					new Text( 'y' )
+				] )
+			] );
+
+			model.change( () => {
+				move( sourcePosition, 2, targetPosition );
 
 				expectChanges( [] );
 			} );

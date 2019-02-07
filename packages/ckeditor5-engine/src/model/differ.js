@@ -151,7 +151,10 @@ export default class Differ {
 			case 'reinsert': {
 				// When range is moved to the same position then not mark it as a change.
 				// See: https://github.com/ckeditor/ckeditor5-engine/issues/1664.
-				if ( operation.sourcePosition.isEqual( operation.targetPosition ) ) {
+				if (
+					operation.sourcePosition.isEqual( operation.targetPosition ) ||
+					operation.sourcePosition.getShiftedBy( operation.howMany ).isEqual( operation.targetPosition )
+				) {
 					return;
 				}
 
