@@ -95,6 +95,7 @@ describe( 'ClassicTestEditor', () => {
 					expect( view.isRendered ).to.be.true;
 					expect( ui.getEditableElement().tagName ).to.equal( 'DIV' );
 					expect( ui.getEditableElement() ).to.equal( view.editable.element );
+					expect( view.editable.name ).to.equal( 'main' );
 				} );
 		} );
 

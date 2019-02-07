@@ -36,7 +36,7 @@ export default class ClassicTestEditor extends Editor {
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
 		// Expose properties normally exposed by the ClassicEditorUI.
-		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale );
+		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale, this.editing.view );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -106,8 +106,14 @@ class ClassicTestEditorUI extends EditorUI {
 
 	init( element ) {
 		const view = this.view;
+		const editable = view.editable;
+		const editingView = this.editor.editing.view;
+		const editingRoot = editingView.document.getRoot();
+
+		editable.name = editingRoot.rootName;
 
 		view.render();
+
 		view.main.add( view.editable );
 
 		this._editableElements.set( 'main', view.editable.element );
