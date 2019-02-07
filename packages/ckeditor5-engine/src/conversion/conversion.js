@@ -8,6 +8,8 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import UpcastHelpers from './upcasthelpers';
+import DowncastHelpers from './downcasthelpers';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
@@ -57,37 +59,59 @@ export default class Conversion {
 	/**
 	 * Creates a new conversion instance.
 	 */
-	constructor() {
+	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
 		 * @private
 		 * @member {Map}
 		 */
-		this._conversionHelpers = new Map();
+		this._helpers = new Map();
+		this._groups = new Map();
+
+		this._defineGroup( 'downcast', downcastDispatchers, DowncastHelpers );
+		this._defineGroup( 'upcast', upcastDispatchers, UpcastHelpers );
 	}
 
 	/**
-	 * Registers one or more converters under a given group name. The group name can then be used to assign a converter
-	 * to multiple dispatchers at once.
+	 * Define an alias for registered dispatcher.
 	 *
-	 * If a given group name is used for the second time, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
+	 *		const conversion = new Conversion( [ dataDowncastDispatcher, editingDowncastDispatcher ], upcastDispatcher );
 	 *
-	 * @param {String} name The name for dispatchers group.
-	 * @param {module:engine/conversion/downcasthelpers~DowncastHelpers|
-	 * module:engine/conversion/upcasthelpers~UpcastHelpers} conversionHelpers
+	 *		conversion.addAlias( 'dataDowncast', dataDowncastDispatcher );
+	 *
+	 * @param {String} alias An alias of a dispatcher.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher} dispatcher Dispatcher which should have an alias.
 	 */
-	register( name, conversionHelpers ) {
-		if ( this._conversionHelpers.has( name ) ) {
+	addAlias( alias, dispatcher ) {
+		const groupEntry = [ ...this._groups.entries() ].find( ( [ , dispatchers ] ) => dispatchers.includes( dispatcher ) );
+
+		const groupName = groupEntry ? groupEntry[ 0 ] : null;
+
+		const helper = this._helpers.get( groupName );
+
+		this._defineGroup( alias, dispatcher, helper );
+	}
+
+	_defineGroup( name, dispatcher, helpers ) {
+		if ( this._groups.has( name ) ) {
 			/**
 			 * Trying to register a group name that has already been registered.
 			 *
 			 * @error conversion-register-group-exists
 			 */
-			throw new CKEditorError( 'conversion-register-group-exists: Trying to register' +
-				'a group name that has already been registered.' );
+			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
 		}
 
-		this._conversionHelpers.set( name, conversionHelpers );
+		const group = [];
+
+		const dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
+
+		for ( const dispatcher of dispatchers ) {
+			group.push( dispatcher );
+		}
+
+		this._groups.set( name, group );
+		this._helpers.set( name, helpers );
 	}
 
 	/**
@@ -149,7 +173,9 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		return this._getConversionHelpers( groupName );
+		const ConversionHelper = this._getConversionHelpers( groupName );
+
+		return new ConversionHelper( this._groups.get( groupName ) );
 	}
 
 	/**
@@ -545,7 +571,7 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	_getConversionHelpers( groupName ) {
-		if ( !this._conversionHelpers.has( groupName ) ) {
+		if ( !this._helpers.has( groupName ) ) {
 			/**
 			 * Trying to add a converter to an unknown dispatchers group.
 			 *
@@ -554,7 +580,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
 		}
 
-		return this._conversionHelpers.get( groupName );
+		return this._helpers.get( groupName );
 	}
 }
 
