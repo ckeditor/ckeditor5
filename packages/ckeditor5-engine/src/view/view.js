@@ -98,6 +98,17 @@ export default class View {
 		this._renderer.bind( 'isFocused' ).to( this.document );
 
 		/**
+		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
+		 * is {@link module:engine/view/view~View#attachDomRoot attached} to the view so later on, when
+		 * the view is destroyed ({@link module:engine/view/view~View#detachDomRoot}), they can be easily restored.
+		 * This way, the DOM element can go back to the (clean) state as if the editing view never used it.
+		 *
+		 * @private
+		 * @member {WeakMap.<HTMLElement,Object>}
+		 */
+		this._initialDomRootAttributes = new WeakMap();
+
+		/**
 		 * Map of registered {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @private
@@ -184,12 +195,14 @@ export default class View {
 	}
 
 	/**
-	 * Attaches DOM root element to the view element and enable all observers on that element.
-	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized with the view
-	 * what means that all child nodes will be removed and replaced with content of the view root.
+	 * Attaches a DOM root element to the view element and enable all observers on that element.
+	 * Also {@link module:engine/view/renderer~Renderer#markToSync mark element} to be synchronized
+	 * with the view what means that all child nodes will be removed and replaced with content of the view root.
 	 *
 	 * This method also will change view element name as the same as tag name of given dom root.
 	 * Name is always transformed to lower case.
+	 *
+	 * **Note:** Use {@link #detachDomRoot `detachDomRoot()`} to revert this action.
 	 *
 	 * @param {Element} domRoot DOM root element.
 	 * @param {String} [name='main'] Name of the root.
@@ -200,14 +213,48 @@ export default class View {
 		// Set view root name the same as DOM root tag name.
 		viewRoot._name = domRoot.tagName.toLowerCase();
 
+		const initialDomRootAttributes = {};
+
+		// 1. Copy and cache the attributes to remember the state of the element before attaching.
+		//    The cached attributes will be restored in detachDomRoot() so the element goes to the
+		//    clean state as if the editing view never used it.
+		// 2. Apply the attributes using the view writer, so they all go under the control of the engine.
+		//    The editing view takes over the attribute management completely because various
+		//    features (e.g. addPlaceholder()) require dynamic changes of those attributes and they
+		//    cannot be managed by the engine and the UI library at the same time.
+		for ( const { name, value } of Array.from( domRoot.attributes ) ) {
+			initialDomRootAttributes[ name ] = value;
+
+			// Do not use writer.setAttribute() for the class attribute. The EditableUIView class
+			// and its descendants could have already set some using the writer.addClass() on the view
+			// document root. They haven't been rendered yet so they are not present in the DOM root.
+			// Using writer.setAttribute( 'class', ... ) would override them completely.
+			if ( name === 'class' ) {
+				this._writer.addClass( value.split( ' ' ), viewRoot );
+			} else {
+				this._writer.setAttribute( name, value, viewRoot );
+			}
+		}
+
+		this._initialDomRootAttributes.set( domRoot, initialDomRootAttributes );
+
+		const updateContenteditableAttribute = () => {
+			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
+		};
+
+		// Set initial value.
+		updateContenteditableAttribute();
+
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
 		this._renderer.markToSync( 'children', viewRoot );
+		this._renderer.markToSync( 'attributes', viewRoot );
 		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
 		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
 		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
 		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
+		viewRoot.on( 'change:isReadOnly', () => this.change( updateContenteditableAttribute ) );
 
 		viewRoot.on( 'change', () => {
 			this._hasChangedSinceTheLastRendering = true;
@@ -216,6 +263,29 @@ export default class View {
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
+	}
+
+	/**
+	 * Detaches a DOM root element from the view element and restores its attributes to the state before
+	 * {@link #attachDomRoot `attachDomRoot()`}.
+	 *
+	 * @param {String} name Name of the root to detach.
+	 */
+	detachDomRoot( name ) {
+		const domRoot = this.domRoots.get( name );
+
+		// Remove all root attributes so the DOM element is "bare".
+		[ ...domRoot.attributes ].forEach( ( { name } ) => domRoot.removeAttribute( name ) );
+
+		const initialDomRootAttributes = this._initialDomRootAttributes.get( domRoot );
+
+		// Revert all view root attributes back to the state before attachDomRoot was called.
+		for ( const attribute in initialDomRootAttributes ) {
+			domRoot.setAttribute( attribute, initialDomRootAttributes[ attribute ] );
+		}
+
+		this.domRoots.delete( name );
+		this.domConverter.unbindDomElement( domRoot );
 	}
 
 	/**
