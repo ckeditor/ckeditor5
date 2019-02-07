@@ -113,6 +113,7 @@ function fixTableCellContent( tableCell, writer ) {
 	}
 
 	// Check table cell children for directly placed $text nodes.
+	// Temporary solution. See https://github.com/ckeditor/ckeditor5/issues/1464.
 	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( 'text' ) );
 
 	for ( const child of textNodes ) {
