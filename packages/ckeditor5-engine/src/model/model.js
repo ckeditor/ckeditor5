@@ -735,7 +735,6 @@ export default class Model {
 	 *
 	 * @protected
 	 * @event _afterChanges
-	 * {@link module:engine/model/model~Model#change} or {@link module:engine/model/model~Model#enqueueChange} blocks.
 	 */
 
 	/**
