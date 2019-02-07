@@ -222,7 +222,7 @@ export default class View {
 		//    The editing view takes over the attribute management completely because various
 		//    features (e.g. addPlaceholder()) require dynamic changes of those attributes and they
 		//    cannot be managed by the engine and the UI library at the same time.
-		for ( const { name, value } of domRoot.attributes ) {
+		for ( const { name, value } of Array.from( domRoot.attributes ) ) {
 			initialDomRootAttributes[ name ] = value;
 
 			// Do not use writer.setAttribute() for the class attribute. The EditableUIView class
