@@ -6,20 +6,25 @@
 /* globals document */
 
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DecoupledEditorUIView', () => {
-	let locale, view;
+	let locale, view, editingView, editingViewRoot;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );
-		view = new DecoupledEditorUIView( locale );
+		editingView = new EditingView();
+		editingViewRoot = createRoot( editingView.document );
+		view = new DecoupledEditorUIView( locale, editingView );
+		view.editable.name = editingViewRoot.rootName;
 	} );
 
 	describe( 'constructor()', () => {
@@ -57,7 +62,8 @@ describe( 'DecoupledEditorUIView', () => {
 
 			it( 'can be created out of an existing DOM element', () => {
 				const editableElement = document.createElement( 'div' );
-				const testView = new DecoupledEditorUIView( locale, editableElement );
+				const testView = new DecoupledEditorUIView( locale, editingView, editableElement );
+				testView.editable.name = editingViewRoot.rootName;
 
 				testView.render();
 
