@@ -128,6 +128,10 @@ export default class Autoformat extends Plugin {
 
 					// eslint-disable-next-line no-new
 					new BlockAutoformatEditing( this.editor, pattern, () => {
+						if ( !command.isEnabled ) {
+							return false;
+						}
+
 						this.editor.execute( 'heading', { value: commandValue } );
 					} );
 				} );
