@@ -60,11 +60,9 @@ export default class Conversion {
 	 * Creates a new conversion instance.
 	 *
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} downcastDispatchers
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} upcastDispatchers
+	 * Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher>} downcastDispatchers
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastDispatcher|
+	 * Array.<module:engine/conversion/upcastdispatcher~UpcastDispatcher>} upcastDispatchers
 	 */
 	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
@@ -84,7 +82,7 @@ export default class Conversion {
 		 */
 		this._groups = new Map();
 
-		// Define default 'downcast' & 'upcast' dispatchers group.
+		// Define default 'downcast' & 'upcast' dispatchers groups. Those groups are always available as two-way converters needs them.
 		this._defineDispatchersGroup( 'downcast', downcastDispatchers, DowncastHelpers );
 		this._defineDispatchersGroup( 'upcast', upcastDispatchers, UpcastHelpers );
 	}
@@ -92,7 +90,10 @@ export default class Conversion {
 	/**
 	 * Define an alias for registered dispatcher.
 	 *
-	 *		const conversion = new Conversion( [ dataDowncastDispatcher, editingDowncastDispatcher ], upcastDispatcher );
+	 *		const conversion = new Conversion(
+	 *			[ dataDowncastDispatcher, editingDowncastDispatcher ],
+	 *			upcastDispatcher
+	 *		);
 	 *
 	 *		conversion.addAlias( 'dataDowncast', dataDowncastDispatcher );
 	 *
