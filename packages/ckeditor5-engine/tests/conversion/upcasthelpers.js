@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import Conversion from '../../src/conversion/conversion';
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
 import ViewContainerElement from '../../src/view/containerelement';
@@ -30,7 +29,7 @@ import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 
 describe( 'UpcastHelpers', () => {
-	let upcastDispatcher, model, schema, conversion, upcastHelpers;
+	let upcastDispatcher, model, schema, upcastHelpers;
 
 	beforeEach( () => {
 		model = new Model();
@@ -51,9 +50,7 @@ describe( 'UpcastHelpers', () => {
 		upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		conversion = new Conversion();
 		upcastHelpers = new UpcastHelpers( upcastDispatcher );
-		conversion.register( 'upcast', upcastHelpers );
 	} );
 
 	describe( '.elementToElement()', () => {
