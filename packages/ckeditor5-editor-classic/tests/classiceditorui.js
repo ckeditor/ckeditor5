@@ -223,6 +223,47 @@ describe( 'ClassicEditorUI', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'detaches the DOM root then destroys the UI view', () => {
+			return VirtualClassicTestEditor.create( '' )
+				.then( newEditor => {
+					const destroySpy = sinon.spy( newEditor.ui.view, 'destroy' );
+					const detachSpy = sinon.spy( newEditor.editing.view, 'detachDomRoot' );
+
+					return newEditor.destroy()
+						.then( () => {
+							sinon.assert.callOrder( detachSpy, destroySpy );
+						} );
+				} );
+		} );
+
+		it( 'restores the editor element back to its original state', () => {
+			const domElement = document.createElement( 'div' );
+
+			domElement.setAttribute( 'foo', 'bar' );
+			domElement.setAttribute( 'data-baz', 'qux' );
+			domElement.classList.add( 'foo-class' );
+
+			return VirtualClassicTestEditor.create( domElement )
+				.then( newEditor => {
+					return newEditor.destroy()
+						.then( () => {
+							const attributes = {};
+
+							for ( const attribute of domElement.attributes ) {
+								attributes[ attribute.name ] = attribute.value;
+							}
+
+							expect( attributes ).to.deep.equal( {
+								foo: 'bar',
+								'data-baz': 'qux',
+								class: 'foo-class'
+							} );
+						} );
+				} );
+		} );
+	} );
+
 	describe( 'view()', () => {
 		it( 'returns view instance', () => {
 			expect( ui.view ).to.equal( view );
