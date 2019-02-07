@@ -122,7 +122,10 @@ export default class Conversion {
 	}
 
 	/**
-	 * Provides a chainable API to assign converters to conversion dispatchers.
+	 * Provides a chainable API to assign converters to conversion dispatchers group.
+	 *
+	 * If the given group name has not been registered, the
+	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
 	 * You can use conversion helpers available directly in the `for()` chain or your custom ones via
 	 * the {@link module:engine/conversion/conversionhelpers~ConversionHelpers#add `add()`} method.
@@ -180,7 +183,16 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		const ConversionHelper = this._getConversionHelpers( groupName );
+		if ( !this._groups.has( groupName ) ) {
+			/**
+			 * Trying to add a converter to an unknown dispatchers group.
+			 *
+			 * @error conversion-for-unknown-group
+			 */
+			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+		}
+
+		const ConversionHelper = this._helpers.get( groupName );
 
 		return new ConversionHelper( this._groups.get( groupName ) );
 	}
@@ -591,29 +603,6 @@ export default class Conversion {
 
 		this._groups.set( name, dispatchers );
 		this._helpers.set( name, helpers );
-	}
-
-	/**
-	 * Returns conversion helpers registered under a given name.
-	 *
-	 * If the given group name has not been registered, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
-	 *
-	 * @private
-	 * @param {String} groupName
-	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
-	 */
-	_getConversionHelpers( groupName ) {
-		if ( !this._helpers.has( groupName ) ) {
-			/**
-			 * Trying to add a converter to an unknown dispatchers group.
-			 *
-			 * @error conversion-for-unknown-group
-			 */
-			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
-		}
-
-		return this._helpers.get( groupName );
 	}
 }
 
