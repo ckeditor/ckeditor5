@@ -646,13 +646,10 @@ describe( 'Differ', () => {
 			const sourcePosition = new Position( root, [ 0 ] );
 			const targetPosition = new Position( root, [ 2 ] );
 
+			// Add two more elements to the root, now there are 4 paragraphs.
 			root._appendChild( [
-				new Element( 'paragraph', null, [
-					new Text( 'x' )
-				] ),
-				new Element( 'paragraph', null, [
-					new Text( 'y' )
-				] )
+				new Element( 'paragraph' ),
+				new Element( 'paragraph' )
 			] );
 
 			model.change( () => {
