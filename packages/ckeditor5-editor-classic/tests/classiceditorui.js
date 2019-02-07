@@ -250,7 +250,7 @@ describe( 'ClassicEditorUI', () => {
 						.then( () => {
 							const attributes = {};
 
-							for ( const attribute of domElement.attributes ) {
+							for ( const attribute of Array.from( domElement.attributes ) ) {
 								attributes[ attribute.name ] = attribute.value;
 							}
 
