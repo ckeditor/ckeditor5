@@ -629,6 +629,17 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position', () => {
+			const position = new Position( root, [ 0 ] );
+
+			model.change( () => {
+				move( position, 1, position );
+
+				expectChanges( [] );
+			} );
+		} );
 	} );
 
 	describe( 'rename', () => {

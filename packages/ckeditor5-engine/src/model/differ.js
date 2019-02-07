@@ -149,6 +149,12 @@ export default class Differ {
 			case 'remove':
 			case 'move':
 			case 'reinsert': {
+				// When range is moved to the same position then not mark it as a change.
+				// See: https://github.com/ckeditor/ckeditor5-engine/issues/1664.
+				if ( operation.sourcePosition.isEqual( operation.targetPosition ) ) {
+					return;
+				}
+
 				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
 				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
 
