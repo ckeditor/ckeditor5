@@ -5,13 +5,15 @@
 
 /* globals document */
 
+import EditingView from '@ckeditor/ckeditor5-engine/src/view/view';
+import ViewRootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import EditableUIView from '../../src/editableui/editableuiview';
 import View from '../../src/view';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'EditableUIView', () => {
-	let view, editableElement, locale;
+	let view, editableElement, editingView, editingViewRoot, locale;
 
 	testUtils.createSinonSandbox();
 
@@ -19,32 +21,39 @@ describe( 'EditableUIView', () => {
 		locale = new Locale( 'en' );
 		editableElement = document.createElement( 'div' );
 
-		view = new EditableUIView( locale );
+		editingView = new EditingView();
+		editingViewRoot = new ViewRootEditableElement( 'div' );
+		editingViewRoot._document = editingView.document;
+		editingView.document.roots.add( editingViewRoot );
+		view = new EditableUIView( locale, editingView );
+		view.name = editingViewRoot.rootName;
+
 		view.render();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'sets initial values of attributes', () => {
-			expect( view.isReadOnly ).to.be.false;
+			view = new EditableUIView( locale, editingView );
+
 			expect( view.isFocused ).to.be.false;
+			expect( view.name ).to.be.null;
 			expect( view._externalElement ).to.be.undefined;
+			expect( view._editingView ).to.equal( editingView );
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
-			view = new EditableUIView( locale );
-
-			view.render();
 			expect( view.element ).to.equal( view._editableElement );
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
-			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view._externalElement ).to.be.undefined;
 			expect( view.isRendered ).to.be.true;
 		} );
 
 		it( 'accepts editableElement as an argument', () => {
-			view = new EditableUIView( locale, editableElement );
+			view = new EditableUIView( locale, editingView, editableElement );
+			view.name = editingViewRoot.rootName;
 
 			view.render();
 			expect( view.element ).to.equal( editableElement );
@@ -62,24 +71,12 @@ describe( 'EditableUIView', () => {
 			it( 'reacts on view#isFocused', () => {
 				view.isFocused = true;
 
-				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-blurred' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
 
 				view.isFocused = false;
-				expect( view.element.classList.contains( 'ck-focused' ) ).to.be.false;
-				expect( view.element.classList.contains( 'ck-blurred' ) ).to.be.true;
-			} );
-		} );
-
-		describe( 'contenteditable', () => {
-			it( 'reacts on view#isReadOnly', () => {
-				view.isReadOnly = true;
-				expect( view.element.hasAttribute( 'contenteditable' ) ).to.be.false;
-				expect( view.element.classList.contains( 'ck-read-only' ) ).to.be.true;
-
-				view.isReadOnly = false;
-				expect( view.element.hasAttribute( 'contenteditable' ) ).to.be.true;
-				expect( view.element.classList.contains( 'ck-read-only' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.true;
 			} );
 		} );
 	} );
@@ -100,28 +97,18 @@ describe( 'EditableUIView', () => {
 		} );
 
 		describe( 'when #editableElement as an argument', () => {
-			it( 'reverts contentEditable property of editableElement (was false)', () => {
+			it( 'reverts the template of editableElement', () => {
 				editableElement = document.createElement( 'div' );
+				editableElement.classList.add( 'foo' );
 				editableElement.contentEditable = false;
 
-				view = new EditableUIView( locale, editableElement );
+				view = new EditableUIView( locale, editingView, editableElement );
+				view.name = editingViewRoot.rootName;
 
 				view.render();
-				expect( editableElement.contentEditable ).to.equal( 'true' );
 				view.destroy();
-				expect( editableElement.contentEditable ).to.equal( 'false' );
-			} );
-
-			it( 'reverts contentEditable property of editableElement (was true)', () => {
-				editableElement = document.createElement( 'div' );
-				editableElement.contentEditable = true;
-
-				view = new EditableUIView( locale, editableElement );
-
-				view.render();
-				expect( editableElement.contentEditable ).to.equal( 'true' );
-				view.destroy();
-				expect( editableElement.contentEditable ).to.equal( 'true' );
+				expect( view.element.classList.contains( 'ck' ) ).to.be.false;
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
 			} );
 		} );
 	} );

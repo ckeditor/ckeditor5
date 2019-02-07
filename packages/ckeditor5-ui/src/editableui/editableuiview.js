@@ -19,13 +19,12 @@ export default class EditableUIView extends View {
 	 * Creates an instance of EditableUIView class.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The locale instance.
+	 * @param {module:engine/view/view~View} editingView The editing view instance the editable is related to.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
-	constructor( locale, editableElement ) {
+	constructor( locale, editingView, editableElement ) {
 		super( locale );
-
-		const bind = this.bindTemplate;
 
 		this.setTemplate( {
 			tag: 'div',
@@ -34,22 +33,17 @@ export default class EditableUIView extends View {
 					'ck',
 					'ck-content',
 					'ck-editor__editable',
-					'ck-rounded-corners',
-					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
-					bind.if( 'isReadOnly', 'ck-read-only' )
-
-				],
-				contenteditable: bind.to( 'isReadOnly', value => !value ),
+					'ck-rounded-corners'
+				]
 			}
 		} );
 
 		/**
-		 * Controls whether the editable is writable or not.
+		 * The name of the editable UI view.
 		 *
-		 * @observable
-		 * @member {Boolean} #isReadOnly
+		 * @member {String} #name
 		 */
-		this.set( 'isReadOnly', false );
+		this.name = null;
 
 		/**
 		 * Controls whether the editable is focused, i.e. the user is typing in it.
@@ -75,6 +69,19 @@ export default class EditableUIView extends View {
 		 * @member {Boolean} #_hasExternalElement
 		 */
 		this._hasExternalElement = !!this._editableElement;
+
+		/**
+		 * The editing view instance the editable is related to. Editable uses the editing
+		 * view to dynamically modify its certain DOM attributes after {@link #render rendering}.
+		 *
+		 * **Note**: The DOM attributes are performed by the editing view and not UI
+		 * {@link module:ui/view~View#bindTemplate template bindings} because once rendered,
+		 * the editable DOM element must remain under the full control of the engine to work properly.
+		 *
+		 * @protected
+		 * @member {module:engine/view/view~View} #isFocused
+		 */
+		this._editingView = editingView;
 	}
 
 	/**
@@ -89,6 +96,9 @@ export default class EditableUIView extends View {
 		} else {
 			this._editableElement = this.element;
 		}
+
+		this.on( 'change:isFocused', () => this._updateIsFocusedClasses() );
+		this._updateIsFocusedClasses();
 	}
 
 	/**
@@ -100,5 +110,22 @@ export default class EditableUIView extends View {
 		}
 
 		super.destroy();
+	}
+
+	/**
+	 * Updates the `ck-focused` and `ck-blurred` CSS classes on the {@link #element} according to
+	 * the {@link #isFocused} property value using the {@link #_editingView editing view} API.
+	 *
+	 * @private
+	 */
+	_updateIsFocusedClasses() {
+		const editingView = this._editingView;
+
+		editingView.change( writer => {
+			const viewRoot = editingView.document.getRoot( this.name );
+
+			writer.addClass( this.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
+			writer.removeClass( this.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
+		} );
 	}
 }
