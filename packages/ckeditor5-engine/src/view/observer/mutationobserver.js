@@ -55,7 +55,7 @@ export default class MutationObserver extends Observer {
 		this.domConverter = view.domConverter;
 
 		/**
-		 * Reference to the {@link module:engine/view/view~View#renderer}.
+		 * Reference to the {@link module:engine/view/view~View#_renderer}.
 		 *
 		 * @member {module:engine/view/renderer~Renderer}
 		 */
