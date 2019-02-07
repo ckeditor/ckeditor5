@@ -10,11 +10,13 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import InlineEditorUI from '../src/inlineeditorui';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { isElement } from 'lodash-es';
 
 describe( 'InlineEditorUI', () => {
 	let editor, view, ui, viewElement;
@@ -23,7 +25,7 @@ describe( 'InlineEditorUI', () => {
 
 	beforeEach( () => {
 		return VirtualInlineTestEditor
-			.create( {
+			.create( 'foo', {
 				toolbar: [ 'foo', 'bar' ],
 			} )
 			.then( newEditor => {
@@ -65,7 +67,7 @@ describe( 'InlineEditorUI', () => {
 
 			it( 'sets view#viewportTopOffset, if specified', () => {
 				return VirtualInlineTestEditor
-					.create( {
+					.create( 'foo', {
 						toolbar: {
 							viewportTopOffset: 100
 						}
@@ -128,23 +130,66 @@ describe( 'InlineEditorUI', () => {
 					{ isFocused: true }
 				);
 			} );
+		} );
 
-			it( 'binds view.editable#isReadOnly', () => {
-				utils.assertBinding(
-					view.editable,
-					{ isReadOnly: false },
-					[
-						[ editable, { isReadOnly: true } ]
-					],
-					{ isReadOnly: true }
-				);
+		describe( 'placeholder', () => {
+			it( 'sets placeholder from editor.config.placeholder', () => {
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						extraPlugins: [ Paragraph ],
+						placeholder: 'placeholder-text',
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'sets placeholder from "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualInlineTestEditor
+					.create( element, {
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder-text' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'uses editor.config.placeholder rather than "placeholder" attribute of a passed element', () => {
+				const element = document.createElement( 'div' );
+
+				element.setAttribute( 'placeholder', 'placeholder-text' );
+
+				return VirtualInlineTestEditor
+					.create( element, {
+						placeholder: 'config takes precedence',
+						extraPlugins: [ Paragraph ]
+					} )
+					.then( newEditor => {
+						const firstChild = newEditor.editing.view.document.getRoot().getChild( 0 );
+
+						expect( firstChild.getAttribute( 'data-placeholder' ) ).to.equal( 'config takes precedence' );
+
+						return newEditor.destroy();
+					} );
 			} );
 		} );
 
 		describe( 'view.toolbar#items', () => {
 			it( 'are filled with the config.toolbar (specified as an Array)', () => {
 				return VirtualInlineTestEditor
-					.create( {
+					.create( '', {
 						toolbar: [ 'foo', 'bar' ]
 					} )
 					.then( editor => {
@@ -159,7 +204,7 @@ describe( 'InlineEditorUI', () => {
 
 			it( 'are filled with the config.toolbar (specified as an Object)', () => {
 				return VirtualInlineTestEditor
-					.create( {
+					.create( '', {
 						toolbar: {
 							items: [ 'foo', 'bar' ],
 							viewportTopOffset: 100
@@ -177,7 +222,7 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			return VirtualInlineTestEditor.create()
+			return VirtualInlineTestEditor.create( '' )
 				.then( editor => {
 					const ui = editor.ui;
 					const view = ui.view;
@@ -196,6 +241,47 @@ describe( 'InlineEditorUI', () => {
 					sinon.assert.calledOnce( spy );
 
 					return editor.destroy();
+				} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'detaches the DOM root then destroys the UI view', () => {
+			return VirtualInlineTestEditor.create( '' )
+				.then( newEditor => {
+					const destroySpy = sinon.spy( newEditor.ui.view, 'destroy' );
+					const detachSpy = sinon.spy( newEditor.editing.view, 'detachDomRoot' );
+
+					return newEditor.destroy()
+						.then( () => {
+							sinon.assert.callOrder( detachSpy, destroySpy );
+						} );
+				} );
+		} );
+
+		it( 'restores the editor element back to its original state', () => {
+			const domElement = document.createElement( 'div' );
+
+			domElement.setAttribute( 'foo', 'bar' );
+			domElement.setAttribute( 'data-baz', 'qux' );
+			domElement.classList.add( 'foo-class' );
+
+			return VirtualInlineTestEditor.create( domElement )
+				.then( newEditor => {
+					return newEditor.destroy()
+						.then( () => {
+							const attributes = {};
+
+							for ( const attribute of domElement.attributes ) {
+								attributes[ attribute.name ] = attribute.value;
+							}
+
+							expect( attributes ).to.deep.equal( {
+								foo: 'bar',
+								'data-baz': 'qux',
+								class: 'foo-class'
+							} );
+						} );
 				} );
 		} );
 	} );
@@ -233,10 +319,14 @@ function viewCreator( name ) {
 }
 
 class VirtualInlineTestEditor extends VirtualTestEditor {
-	constructor( config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		const view = new InlineEditorUIView( this.locale );
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
+
+		const view = new InlineEditorUIView( this.locale, this.editing.view );
 		this.ui = new InlineEditorUI( this, view );
 
 		this.ui.componentFactory.add( 'foo', viewCreator( 'foo' ) );
@@ -249,14 +339,20 @@ class VirtualInlineTestEditor extends VirtualTestEditor {
 		return super.destroy();
 	}
 
-	static create( config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => {
 						editor.ui.init();
+
+						const initialData = isElement( sourceElementOrData ) ?
+							sourceElementOrData.innerHTML :
+							sourceElementOrData;
+
+						editor.data.init( initialData );
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )

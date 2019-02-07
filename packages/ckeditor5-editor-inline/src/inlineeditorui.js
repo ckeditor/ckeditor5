@@ -10,6 +10,7 @@
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
+import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
  * The inline editor UI class.
@@ -56,8 +57,71 @@ export default class InlineEditorUI extends EditorUI {
 	init() {
 		const editor = this.editor;
 		const view = this.view;
+		const editingView = editor.editing.view;
+		const editable = view.editable;
+		const editingRoot = editingView.document.getRoot();
+
+		// The editable UI and editing root should share the same name. Then name is used
+		// to recognize the particular editable, for instance in ARIA attributes.
+		editable.name = editingRoot.rootName;
 
 		view.render();
+
+		// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
+		// But it can be available earlier if a DOM element has been passed to InlineEditor.create().
+		const editableElement = editable.element;
+
+		// Register the editable UI view in the editor. A single editor instance can aggregate multiple
+		// editable areas (roots) but the inline editor has only one.
+		this._editableElements.set( editable.name, editableElement );
+
+		// Let the global focus tracker know that the editable UI element is focusable and
+		// belongs to the editor. From now on, the focus tracker will sustain the editor focus
+		// as long as the editable is focused (e.g. the user is typing).
+		this.focusTracker.add( editableElement );
+
+		// Let the editable UI element respond to the changes in the global editor focus
+		// tracker. It has been added to the same tracker a few lines above but, in reality, there are
+		// many focusable areas in the editor, like balloons, toolbars or dropdowns and as long
+		// as they have focus, the editable should act like it is focused too (although technically
+		// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
+		// Doing otherwise will result in editable focus styles disappearing, once e.g. the
+		// toolbar gets focused.
+		editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
+
+		this._initPlaceholder();
+		this._initToolbar();
+		this.fire( 'ready' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		const view = this.view;
+		const editingView = this.editor.editing.view;
+
+		editingView.detachDomRoot( view.editable.name );
+		view.destroy();
+
+		super.destroy();
+	}
+
+	/**
+	 * Initializes the inline editor toolbar and its panel.
+	 *
+	 * @private
+	 */
+	_initToolbar() {
+		const editor = this.editor;
+		const view = this.view;
+		const editableElement = view.editable.element;
+		const editingView = editor.editing.view;
+		const toolbar = view.toolbar;
 
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
@@ -72,44 +136,42 @@ export default class InlineEditorUI extends EditorUI {
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
 				view.panel.pin( {
-					target: view.editable.element,
+					target: editableElement,
 					positions: view.panelPositions
 				} );
 			}
 		} );
 
-		// Setup the editable.
-		const editingRoot = editor.editing.view.document.getRoot();
-		view.editable.bind( 'isReadOnly' ).to( editingRoot );
-
-		// Bind to focusTracker instead of editor.editing.view because otherwise
-		// focused editable styles disappear when view#toolbar is focused.
-		view.editable.bind( 'isFocused' ).to( this.focusTracker );
-		editor.editing.view.attachDomRoot( view.editable.element );
-		view.editable.name = editingRoot.rootName;
-
-		this._editableElements.set( view.editable.name, view.editable.element );
-
-		this.focusTracker.add( view.editable.element );
-
-		view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
-			origin: editor.editing.view,
+			origin: editingView,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: view.toolbar
+			toolbar
 		} );
-
-		this.fire( 'ready' );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Enable the placeholder text on the editing root, if any was configured.
+	 *
+	 * @private
 	 */
-	destroy() {
-		this.view.destroy();
+	_initPlaceholder() {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+		const editingRoot = editingView.document.getRoot();
 
-		super.destroy();
+		const placeholderText = editor.config.get( 'placeholder' ) ||
+			editor.sourceElement && editor.sourceElement.getAttribute( 'placeholder' );
+
+		if ( placeholderText ) {
+			enablePlaceholder( {
+				view: editingView,
+				element: editingRoot,
+				text: placeholderText,
+				isDirectHost: false
+			} );
+		}
 	}
 }
