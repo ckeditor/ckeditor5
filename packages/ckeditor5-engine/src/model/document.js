@@ -240,8 +240,8 @@ export default class Document {
 	}
 
 	/**
-	 * Used to register a post-fixer callback. A post-fixer mechanism guarantees that the features that listen to
-	 * the {@link module:engine/model/model~Model#event:_change model's change event} will operate on a correct model state.
+	 * Used to register a post-fixer callback. A post-fixer mechanism guarantees that the features
+	 * will operate on a correct model state.
 	 *
 	 * An execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix the document tree after
 	 * it has changed. Post-fixers are fired just after all changes from the outermost change block were applied but

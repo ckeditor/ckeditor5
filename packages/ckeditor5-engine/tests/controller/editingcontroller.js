@@ -186,7 +186,7 @@ describe( 'EditingController', () => {
 			} );
 
 			editing.view.document.isFocused = true;
-			editing.view.render();
+			editing.view.forceRender();
 
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
