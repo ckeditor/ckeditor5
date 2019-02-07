@@ -193,7 +193,7 @@ describe( 'view', () => {
 
 			const attributes = {};
 
-			for ( const attribute of domDiv.attributes ) {
+			for ( const attribute of Array.from( domDiv.attributes ) ) {
 				attributes[ attribute.name ] = attribute.value;
 			}
 
