@@ -85,7 +85,17 @@ export default class Conversion {
 	addAlias( alias, dispatcher ) {
 		const groupEntry = [ ...this._groups.entries() ].find( ( [ , dispatchers ] ) => dispatchers.includes( dispatcher ) );
 
-		const groupName = groupEntry ? groupEntry[ 0 ] : null;
+		if ( !groupEntry ) {
+			/**
+			 * Trying to register and alias for a dispatcher that nas not been registered.
+			 *
+			 * @error conversion-add-alias-dispatcher-not-registered
+			 */
+			throw new CKEditorError( 'conversion-add-alias-dispatcher-not-registered: ' +
+				'Trying to register and alias for a dispatcher that nas not been registered.' );
+		}
+
+		const groupName = groupEntry[ 0 ];
 
 		const helper = this._helpers.get( groupName );
 
@@ -97,7 +107,7 @@ export default class Conversion {
 			/**
 			 * Trying to register a group name that has already been registered.
 			 *
-			 * @error conversion-register-group-exists
+			 * @error conversion-group-exists
 			 */
 			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
 		}

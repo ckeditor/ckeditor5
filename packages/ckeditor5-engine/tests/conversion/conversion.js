@@ -38,6 +38,12 @@ describe( 'Conversion', () => {
 				conversion.addAlias( 'upcast', upcastDispaA );
 			} ).to.throw( CKEditorError, /conversion-group-exists/ );
 		} );
+
+		it( 'should throw when trying to add not registered dispatcher', () => {
+			expect( () => {
+				conversion.addAlias( 'foo', {} );
+			} ).to.throw( CKEditorError, /conversion-add-alias-dispatcher-not-registered/ );
+		} );
 	} );
 
 	describe( 'for()', () => {
