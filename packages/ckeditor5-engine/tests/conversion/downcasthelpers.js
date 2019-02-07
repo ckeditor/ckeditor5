@@ -51,7 +51,7 @@ describe( 'DowncastHelpers', () => {
 
 		viewRoot = controller.view.document.getRoot();
 
-		downcastHelpers = new DowncastHelpers( controller.downcastDispatcher );
+		downcastHelpers = new DowncastHelpers( [ controller.downcastDispatcher ] );
 
 		modelRootStart = model.createPositionAt( modelRoot, 0 );
 	} );
@@ -1469,7 +1469,7 @@ describe( 'downcast converters', () => {
 		controller.view.document.getRoot()._name = 'div';
 
 		dispatcher = controller.downcastDispatcher;
-		const downcastHelpers = new DowncastHelpers( dispatcher );
+		const downcastHelpers = new DowncastHelpers( [ dispatcher ] );
 		downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
 		modelRootStart = model.createPositionAt( modelRoot, 0 );
@@ -1625,7 +1625,7 @@ describe( 'downcast converters', () => {
 			const modelP = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 			const modelWidget = new ModelElement( 'widget', null, modelP );
 
-			const downcastHelpers = new DowncastHelpers( dispatcher );
+			const downcastHelpers = new DowncastHelpers( [ dispatcher ] );
 			downcastHelpers.elementToElement( { model: 'widget', view: 'widget' } );
 
 			model.change( writer => {
@@ -1801,7 +1801,7 @@ describe( 'downcast selection converters', () => {
 
 		dispatcher.on( 'insert:$text', insertText() );
 
-		downcastHelpers = new DowncastHelpers( dispatcher );
+		downcastHelpers = new DowncastHelpers( [ dispatcher ] );
 		downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
@@ -2248,7 +2248,7 @@ describe( 'downcast selection converters', () => {
 			model.schema.extend( 'td', { allowIn: 'tr' } );
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
-			const downcastHelpers = new DowncastHelpers( dispatcher );
+			const downcastHelpers = new DowncastHelpers( [ dispatcher ] );
 
 			// "Universal" converter to convert table structure.
 			downcastHelpers.elementToElement( { model: 'table', view: 'table' } );

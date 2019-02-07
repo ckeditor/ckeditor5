@@ -15,10 +15,10 @@ export default class ConversionHelpers {
 	 * Creates a conversion helpers instance.
 	 *
 	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
 	 */
-	constructor( dispatcher ) {
-		this._dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
+	constructor( dispatchers ) {
+		this._dispatchers = dispatchers;
 	}
 
 	/**
@@ -31,23 +31,10 @@ export default class ConversionHelpers {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	add( conversionHelper ) {
-		this._addToDispatchers( conversionHelper );
-
-		return this;
-	}
-
-	/**
-	 * Helper function for the `Conversion` `.add()` method.
-	 *
-	 * Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
-	 * adding converters to all specified dispatchers.
-	 *
-	 * @private
-	 * @param {Function} conversionHelper
-	 */
-	_addToDispatchers( conversionHelper ) {
 		for ( const dispatcher of this._dispatchers ) {
 			conversionHelper( dispatcher );
 		}
+
+		return this;
 	}
 }

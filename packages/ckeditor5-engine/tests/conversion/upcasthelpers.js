@@ -50,7 +50,7 @@ describe( 'UpcastHelpers', () => {
 		upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		upcastHelpers = new UpcastHelpers( upcastDispatcher );
+		upcastHelpers = new UpcastHelpers( [ upcastDispatcher ] );
 	} );
 
 	describe( '.elementToElement()', () => {

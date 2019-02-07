@@ -58,17 +58,35 @@ import DowncastHelpers from './downcasthelpers';
 export default class Conversion {
 	/**
 	 * Creates a new conversion instance.
+	 *
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} downcastDispatchers
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} upcastDispatchers
 	 */
 	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
+		 * Maps dispatchers group name to ConversionHelpers class (Upcast or Downcast).
+		 *
 		 * @private
-		 * @member {Map}
+		 * @member {Map.<String,Class>}
 		 */
 		this._helpers = new Map();
+
+		/**
+		 * Maps dispatchers group name to array with dispatchers.
+		 *
+		 * @private
+		 * @member {Map.<String,Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+		 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>>}
+		 */
 		this._groups = new Map();
 
-		this._defineGroup( 'downcast', downcastDispatchers, DowncastHelpers );
-		this._defineGroup( 'upcast', upcastDispatchers, UpcastHelpers );
+		// Define default 'downcast' & 'upcast' dispatchers group.
+		this._defineDispatchersGroup( 'downcast', downcastDispatchers, DowncastHelpers );
+		this._defineDispatchersGroup( 'upcast', upcastDispatchers, UpcastHelpers );
 	}
 
 	/**
@@ -99,36 +117,14 @@ export default class Conversion {
 
 		const helper = this._helpers.get( groupName );
 
-		this._defineGroup( alias, dispatcher, helper );
-	}
-
-	_defineGroup( name, dispatcher, helpers ) {
-		if ( this._groups.has( name ) ) {
-			/**
-			 * Trying to register a group name that has already been registered.
-			 *
-			 * @error conversion-group-exists
-			 */
-			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
-		}
-
-		const group = [];
-
-		const dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
-
-		for ( const dispatcher of dispatchers ) {
-			group.push( dispatcher );
-		}
-
-		this._groups.set( name, group );
-		this._helpers.set( name, helpers );
+		this._defineDispatchersGroup( alias, dispatcher, helper );
 	}
 
 	/**
 	 * Provides a chainable API to assign converters to conversion dispatchers.
 	 *
 	 * You can use conversion helpers available directly in the `for()` chain or your custom ones via
-	 * the {@link module:engine/conversion/conversion~ConversionHelpers#add `add()`} method.
+	 * the {@link module:engine/conversion/conversionhelpers~ConversionHelpers#add `add()`} method.
 	 *
 	 * # Using bulit-in conversion helpers
 	 *
@@ -568,6 +564,32 @@ export default class Conversion {
 					model
 				} );
 		}
+	}
+
+	/**
+	 * Registers dispatchers group.
+	 *
+	 * @private
+	 * @param {String} name Group name.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
+	 * @param {module:engine/conversion/conversionhelpers~ConversionHelpers} helpers
+	 */
+	_defineDispatchersGroup( name, dispatcher, helpers ) {
+		if ( this._groups.has( name ) ) {
+			/**
+			 * Trying to register a group name that has already been registered.
+			 *
+			 * @error conversion-group-exists
+			 */
+			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
+		}
+
+		const dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
+
+		this._groups.set( name, dispatchers );
+		this._helpers.set( name, helpers );
 	}
 
 	/**

@@ -12,7 +12,7 @@ describe( 'ConversionHelpers', () => {
 
 		it( 'should call a helper for one defined dispatcher', () => {
 			const spy = sinon.spy();
-			const helpers = new ConversionHelpers( dispA );
+			const helpers = new ConversionHelpers( [ dispA ] );
 
 			helpers.add( spy );
 
@@ -33,7 +33,7 @@ describe( 'ConversionHelpers', () => {
 
 		it( 'should be chainable', () => {
 			const spy = sinon.spy();
-			const helpers = new ConversionHelpers( dispA );
+			const helpers = new ConversionHelpers( [ dispA ] );
 
 			expect( helpers.add( spy ) ).to.equal( helpers );
 		} );
