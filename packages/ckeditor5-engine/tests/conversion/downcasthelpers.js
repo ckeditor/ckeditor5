@@ -5,8 +5,6 @@
 
 import EditingController from '../../src/controller/editingcontroller';
 
-import Conversion from '../../src/conversion/conversion';
-
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
@@ -36,7 +34,7 @@ import createViewRoot from '../view/_utils/createroot';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'DowncastHelpers', () => {
-	let conversion, model, modelRoot, viewRoot, downcastHelpers, controller;
+	let model, modelRoot, viewRoot, downcastHelpers, controller;
 
 	let modelRootStart;
 
@@ -54,9 +52,6 @@ describe( 'DowncastHelpers', () => {
 		viewRoot = controller.view.document.getRoot();
 
 		downcastHelpers = new DowncastHelpers( controller.downcastDispatcher );
-
-		conversion = new Conversion();
-		conversion.register( 'downcast', downcastHelpers );
 
 		modelRootStart = model.createPositionAt( modelRoot, 0 );
 	} );
