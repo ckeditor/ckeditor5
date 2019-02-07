@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
@@ -15,11 +15,11 @@ msgstr "Päise veerg"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Sisesta veerg vasakule"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Sisesta veerg paremale"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

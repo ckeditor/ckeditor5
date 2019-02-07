@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
 import { findAncestor, updateNumericAttribute } from './utils';
-import TableUtils from '../tableutils';
 
 /**
  * The merge cell command.
@@ -127,7 +126,7 @@ export default class MergeCellCommand extends Command {
 			return;
 		}
 
-		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?

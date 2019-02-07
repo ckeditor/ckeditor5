@@ -1,78 +1,78 @@
 # Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Team: Azerbaijani (https://www.transifex.com/ckeditor/teams/11143/az/)\n"
+"Language: az\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "插入表格"
+msgstr "Cədvəli əlavə et"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "标题列"
+msgstr "Başlıqlı sütun"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Sola sütun əlavə et"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Sağa sütun əlavə et"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "删除本列"
+msgstr "Sütunları sil"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "列"
+msgstr "Sütun"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "标题行"
+msgstr "Başlıqlı sətir"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "在下面插入一行"
+msgstr "Yuxarıya sətir əlavə et"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "在上面插入一行"
+msgstr "Aşağıya sətir əlavə et"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "删除本行"
+msgstr "Sətirləri sil"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "行"
+msgstr "Sətir"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "向上合并单元格"
+msgstr "Xanaları yuxarı birləşdir"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "向右合并单元格"
+msgstr "Xanaları sağa birləşdir"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "向下合并单元格"
+msgstr "Xanaları aşağı birləşdir"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "向左合并单元格"
+msgstr "Xanaları sola birləşdir"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "垂直拆分单元格"
+msgstr "Xanaları şaquli böl"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "水平分割单元格"
+msgstr "Xanaları üfüqi böl"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "合并单元格"
+msgstr "Xanaları birləşdir"

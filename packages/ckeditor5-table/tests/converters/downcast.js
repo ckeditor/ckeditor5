@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -171,6 +171,46 @@ describe( 'downcast converters', () => {
 			) );
 		} );
 
+		it( 'should re-create table on reinsert', () => {
+			model.schema.register( 'wrapper', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+			editor.conversion.elementToElement( { model: 'wrapper', view: 'div' } );
+
+			setModelData( model, modelTable( [ [ '[]' ] ] ) );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td></td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
+
+			model.change( writer => {
+				const table = model.document.getRoot().getChild( 0 );
+				const range = writer.createRange( writer.createPositionBefore( table ), writer.createPositionAfter( table ) );
+				const wrapper = writer.createElement( 'wrapper' );
+
+				writer.wrap( range, wrapper );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<div>' +
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td></td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>' +
+				'</div>'
+			) );
+		} );
+
 		describe( 'headingColumns attribute', () => {
 			it( 'should mark heading columns table cells', () => {
 				setModelData( model, modelTable( [
@@ -264,7 +304,7 @@ describe( 'downcast converters', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -497,7 +537,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable(
 					getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -643,7 +683,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -820,7 +860,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<thead>' +
@@ -1034,7 +1074,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +

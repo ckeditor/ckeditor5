@@ -6,6 +6,7 @@
     * List
     * Heading
     * Block Quote (with inner paragraph)
+    * Image
 
 2. The third column consist blocks with text alignment.
     * Paragraph - should be rendered was `<p>` when alignment is set (apart from default) for single paragraph.

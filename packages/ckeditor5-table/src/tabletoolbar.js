@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { isTableContentSelected, isTableWidgetSelected } from './utils';
+import { getSelectedTableWidget, getTableWidgetAncestor } from './utils';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 
 /**
@@ -63,14 +63,14 @@ export default class TableToolbar extends Plugin {
 		if ( tableContentToolbarItems || deprecatedTableContentToolbarItems ) {
 			widgetToolbarRepository.register( 'tableContent', {
 				items: tableContentToolbarItems || deprecatedTableContentToolbarItems,
-				visibleWhen: isTableContentSelected,
+				getRelatedElement: getTableWidgetAncestor
 			} );
 		}
 
 		if ( tableToolbarItems ) {
 			widgetToolbarRepository.register( 'table', {
 				items: tableToolbarItems,
-				visibleWhen: isTableWidgetSelected,
+				getRelatedElement: getSelectedTableWidget
 			} );
 		}
 	}
