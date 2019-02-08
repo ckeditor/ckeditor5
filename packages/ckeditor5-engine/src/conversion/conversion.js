@@ -79,7 +79,6 @@ export default class Conversion {
 
 		this._upcast = Array.isArray( upcastDispatchers ) ? upcastDispatchers : [ upcastDispatchers ];
 		this._createConversionHelpers( { name: 'upcast', dispatchers: this._upcast, isDowncast: false } );
-
 	}
 
 	/**
@@ -110,7 +109,7 @@ export default class Conversion {
 				'Trying to register and alias for a dispatcher that nas not been registered.' );
 		}
 
-		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast: isDowncast } );
+		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast } );
 	}
 
 	/**
