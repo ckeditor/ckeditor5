@@ -490,6 +490,24 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return true for documentSelection', () => {
+			expect( selection.is( 'documentSelection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( '_setTo() - set collapsed at', () => {
 		it( 'detaches all existing ranges', () => {
 			selection._setTo( [ range, liveRange ] );

@@ -806,6 +806,21 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( selection.is( 'documentSelection' ) ).to.be.false;
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'setTo - used to collapse at start', () => {
 		it( 'should collapse to start position and fire change event', () => {
 			selection.setTo( [ range2, range1, range3 ] );
