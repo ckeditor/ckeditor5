@@ -42,7 +42,11 @@ In this section, we will focus on customization to the "downcast" pipeline of th
 
 In this example all links (`<a href="...">...</a>`) get the `.my-link-class` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
+##### Demo
+
 {@snippet framework/extending-content-add-link-class}
+
+##### Code snippets
 
 Adding a custom CSS class to all links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
@@ -106,7 +110,11 @@ Add some CSS styles for `.my-link-class` to see the customization it in action:
 
 In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.com" in their `href="..."` get the `target="_blank"` attribute. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
+##### Demo
+
 {@snippet framework/extending-content-add-external-link-target}
+
+##### Code snippet
 
 Adding the `target` attribute to all "external" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
