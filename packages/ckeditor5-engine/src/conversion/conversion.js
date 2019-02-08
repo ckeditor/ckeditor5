@@ -66,25 +66,20 @@ export default class Conversion {
 	 */
 	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
-		 * Maps dispatchers group name to ConversionHelpers class (Upcast or Downcast).
+		 * Maps dispatchers group name to ConversionHelpers instances.
 		 *
 		 * @private
-		 * @member {Map.<String,Class>}
+		 * @member {Map.<String,module:engine/conversion/conversionhelpers~ConversionHelpers>}
 		 */
 		this._helpers = new Map();
 
-		/**
-		 * Maps dispatchers group name to array with dispatchers.
-		 *
-		 * @private
-		 * @member {Map.<String,Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-		 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>>}
-		 */
-		this._groups = new Map();
-
 		// Define default 'downcast' & 'upcast' dispatchers groups. Those groups are always available as two-way converters needs them.
-		this._defineDispatchersGroup( 'downcast', downcastDispatchers, DowncastHelpers );
-		this._defineDispatchersGroup( 'upcast', upcastDispatchers, UpcastHelpers );
+		this._downcast = Array.isArray( downcastDispatchers ) ? downcastDispatchers : [ downcastDispatchers ];
+		this._createConversionHelpers( { name: 'downcast', dispatchers: this._downcast, isDowncast: true } );
+
+		this._upcast = Array.isArray( upcastDispatchers ) ? upcastDispatchers : [ upcastDispatchers ];
+		this._createConversionHelpers( { name: 'upcast', dispatchers: this._upcast, isDowncast: false } );
+
 	}
 
 	/**
@@ -102,9 +97,10 @@ export default class Conversion {
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher} dispatcher Dispatcher which should have an alias.
 	 */
 	addAlias( alias, dispatcher ) {
-		const groupEntry = [ ...this._groups.entries() ].find( ( [ , dispatchers ] ) => dispatchers.includes( dispatcher ) );
+		const isDowncast = this._downcast.includes( dispatcher );
+		const isUpcast = this._upcast.includes( dispatcher );
 
-		if ( !groupEntry ) {
+		if ( !isUpcast && !isDowncast ) {
 			/**
 			 * Trying to register and alias for a dispatcher that nas not been registered.
 			 *
@@ -114,11 +110,7 @@ export default class Conversion {
 				'Trying to register and alias for a dispatcher that nas not been registered.' );
 		}
 
-		const groupName = groupEntry[ 0 ];
-
-		const helper = this._helpers.get( groupName );
-
-		this._defineDispatchersGroup( alias, dispatcher, helper );
+		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast: isDowncast } );
 	}
 
 	/**
@@ -183,7 +175,7 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		if ( !this._groups.has( groupName ) ) {
+		if ( !this._helpers.has( groupName ) ) {
 			/**
 			 * Trying to add a converter to an unknown dispatchers group.
 			 *
@@ -192,9 +184,7 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
 		}
 
-		const ConversionHelper = this._helpers.get( groupName );
-
-		return new ConversionHelper( this._groups.get( groupName ) );
+		return this._helpers.get( groupName );
 	}
 
 	/**
@@ -580,17 +570,17 @@ export default class Conversion {
 	}
 
 	/**
-	 * Registers dispatchers group.
+	 * Creates and caches conversion helpers for given dispatchers group.
 	 *
 	 * @private
-	 * @param {String} name Group name.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher|Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
-	 * @param {module:engine/conversion/conversionhelpers~ConversionHelpers} helpers
+	 * @param {Object} options
+	 * @param {String} options.name Group name.
+	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatchers
+	 * @param {Boolean} options.isDowncast
 	 */
-	_defineDispatchersGroup( name, dispatcher, helpers ) {
-		if ( this._groups.has( name ) ) {
+	_createConversionHelpers( { name, dispatchers, isDowncast } ) {
+		if ( this._helpers.has( name ) ) {
 			/**
 			 * Trying to register a group name that has already been registered.
 			 *
@@ -599,9 +589,8 @@ export default class Conversion {
 			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
 		}
 
-		const dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
+		const helpers = isDowncast ? new DowncastHelpers( dispatchers ) : new UpcastHelpers( dispatchers );
 
-		this._groups.set( name, dispatchers );
 		this._helpers.set( name, helpers );
 	}
 }
