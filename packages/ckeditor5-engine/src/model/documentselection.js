@@ -360,6 +360,24 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new DocumentSelection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection' || type == 'documentSelection';
+	}
+
+	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *

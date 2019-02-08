@@ -609,6 +609,23 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new Selection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection';
+	}
+
+	/**
 	 * Gets elements of type "block" touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
