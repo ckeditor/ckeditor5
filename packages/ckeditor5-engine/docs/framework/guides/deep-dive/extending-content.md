@@ -28,19 +28,25 @@ In this section, we will focus on customization to the "downcast" pipeline of th
 
 	```js
 	// Adds a conversion dispatcher for the editing downcast pipeline only.
-	editor.conversion.for( 'editingDowncast' ).add( dispatcher => { ... } );
+	editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+		// ...
+	} );
 
 	// Adds a conversion dispatcher for the data downcast pipeline only.
-	editor.conversion.for( 'dataDowncast' ).add( dispatcher => { ... } );
+	editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+		// ...
+	} );
 
 	// Adds a conversion dispatcher for both data and editing downcast pipelines.
-	editor.conversion.for( 'downcast' ).add( dispatcher => { ... } );
+	editor.conversion.for( 'downcast' ).add( dispatcher => {
+		// ...
+	} );
 	```
 </info-box>
 
 #### Adding a CSS class to all inline elements (e.g. links)
 
-In this example all links (`<a href="...">...</a>`) get the `.my-link-class` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
+In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
 
 ##### Demo
 
@@ -64,7 +70,7 @@ function AddClassToAllLinks( editor ) {
 			// Adding a new CSS class is done by wrapping all link ranges and selection
 			// in a new attribute element with a class.
 			const viewElement = viewWriter.createAttributeElement( 'a', {
-					class: 'my-link-class'
+					class: 'my-green-link'
 				}, {
 					priority: 5
 				} );
@@ -94,10 +100,10 @@ ClassicEditor
 	} );
 ```
 
-Add some CSS styles for `.my-link-class` to see the customization it in action:
+Add some CSS styles for `.my-green-link` to see the customization in action:
 
 ```css
-.my-link-class {
+.my-green-link {
 	color: #209a25;
 	border: 1px solid #209a25;
 	border-radius: 2px;
@@ -113,6 +119,8 @@ In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.
 ##### Demo
 
 {@snippet framework/extending-content-add-external-link-target}
+
+**Note:** Edit the URL of the links including "ckeditor.com" and other domains to see them marked as "internal" or "external".
 
 ##### Code snippet
 
@@ -171,6 +179,77 @@ Add some CSS styles for links with `target="_blank"` to mark them with with the 
 ```css
 a[target="_blank"]::after {
 	content: '\29C9';
+}
+```
+
+#### Adding a CSS class to certain inline elements (e.g. links)
+
+In this example all links (`<a href="...">...</a>`) which do not have "https://" in their `href="..."` attribute get the `.unsafe-link` CSS class. That includes all links in the editor output (`editor.getData()`) and all links in the edited content (existing and future ones).
+
+##### Demo
+
+{@snippet framework/extending-content-add-unsafe-link-class}
+
+**Note:** Edit the URL of the links using "http://" or "https://" to see see them marked as "safe" or "unsafe".
+
+##### Code snippet
+
+Adding the `.unsafe-link` CSS class to all "unsafe" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
+
+```js
+// This plugin brings a customization to the downcast pipeline of the editor.
+function AddClassToUnsafeLinks( editor ) {
+	// Both data and editing pipelines are affected by this conversion.
+	editor.conversion.for( 'downcast' ).add( dispatcher => {
+		// Links are represented in the model as a "linkHref" attribute.
+		// Use the "low" listener priority to apply the changes after the Link feature.
+		dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const viewSelection = viewWriter.document.selection;
+
+			// Adding a new CSS class is done by wrapping all link ranges and selection
+			// in a new attribute element with the "target" attribute.
+			const viewElement = viewWriter.createAttributeElement( 'a', {
+					class: 'unsafe-link'
+				}, {
+					priority: 5
+				} );
+
+			if ( data.attributeNewValue.match( /http:\/\// ) ) {
+				if ( data.item.is( 'selection' ) ) {
+					viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+				} else {
+					viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+				}
+			} else {
+				viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+			}
+		}, { priority: 'low' } );
+	} );
+}
+```
+
+Activate the plugin in the editor:
+
+```js
+ClassicEditor
+	.create( ..., {
+		extraPlugins: [ AddClassToUnsafeLinks ],
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
+
+Add some CSS styles for "unsafe" to make them visible:
+
+```css
+.unsafe-link {
+	color: #ff0000;
+	outline: 1px dashed #ff0000;
 }
 ```
 

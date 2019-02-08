@@ -7,30 +7,30 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-function AddClassToAllLinks( editor ) {
+function AddClassToUnsafeLinks( editor ) {
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
 		dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const viewElement = viewWriter.createAttributeElement( 'a', {
-				class: 'my-green-link'
-			}, {
-				priority: 5
-			} );
+			const viewElement = viewWriter.createAttributeElement( 'a', { class: 'unsafe-link' }, { priority: 5 } );
 
-			if ( data.item.is( 'selection' ) ) {
-				viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+			if ( data.attributeNewValue.match( /http:\/\// ) ) {
+				if ( data.item.is( 'selection' ) ) {
+					viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+				} else {
+					viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+				}
 			} else {
-				viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+				viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
 			}
 		}, { priority: 'low' } );
 	} );
 }
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-link-classes' ), {
+	.create( document.querySelector( '#snippet-link-unsafe-classes' ), {
 		cloudServices: CS_CONFIG,
-		extraPlugins: [ AddClassToAllLinks ],
+		extraPlugins: [ AddClassToUnsafeLinks ],
 		toolbar: {
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
