@@ -275,6 +275,24 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new DocumentSelection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection' || type == 'documentSelection';
+	}
+
+	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/view/selection~Selectable selectable}.
 	 *

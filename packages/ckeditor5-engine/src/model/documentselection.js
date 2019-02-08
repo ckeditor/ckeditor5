@@ -361,7 +361,7 @@ export default class DocumentSelection {
 
 	/**
 	 * Checks whether object is of given type following the convention set by
-	 * {@link module:engine/model/node~Node#is}.
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 *		const selection = new DocumentSelection( ... );
 	 *
