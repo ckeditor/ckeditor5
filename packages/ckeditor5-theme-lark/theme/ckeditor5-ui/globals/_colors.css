@@ -71,8 +71,8 @@
 	/* -- List ---------------------------------------------------------------------------------- */
 
 	--ck-color-list-background: 								var(--ck-color-base-background);
-	--ck-color-list-button-hover-background: 					var(--ck-color-base-foreground);
-	--ck-color-list-button-on-background: 						var(--ck-color-base-active);
+	--ck-color-list-button-hover-background: 					var(--ck-color-button-default-hover-background);
+	--ck-color-list-button-on-background: 						var(--ck-color-button-default-active-background);
 	--ck-color-list-button-on-background-focus: 				var(--ck-color-base-active-focus);
 	--ck-color-list-button-on-text:								var(--ck-color-base-background);
 
