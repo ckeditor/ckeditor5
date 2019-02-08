@@ -12,7 +12,11 @@ function AddClassToAllLinks( editor ) {
 		dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const viewElement = viewWriter.createAttributeElement( 'a', { class: 'my-link-class' }, { priority: 5 } );
+			const viewElement = viewWriter.createAttributeElement( 'a', {
+				class: 'my-link-class'
+			}, {
+				priority: 5
+			} );
 
 			if ( data.item.is( 'selection' ) ) {
 				viewWriter.wrap( viewSelection.getFirstRange(), viewElement );

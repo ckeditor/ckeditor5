@@ -11,13 +11,13 @@ This article will help you learn how to extend (customize) the content produced 
 
 ## Basics of editor conversion
 
-
+TODO (converters, pipelines, block elements, inline attributes)
 
 ## Examples
 
 Customisations in the examples are brought by plugins loaded by the editor. For the sake of simplicity, all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} but keep in mind that code snippets will work with other editors too.
 
-### Extending editor output pipelines (downcast)
+### Extending editor output ("downcast")
 
 In this section, we will focus on customization to the "downcast" pipeline of the editor, which transforms data from the model to the editing view and the output data. The following examples do not customize the model and do not process the (input) data — you can picture them as post–processors (filters) applied to the output only.
 
@@ -57,8 +57,13 @@ function AddClassToAllLinks( editor ) {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
 
-			// Adding a new CSS class is done by wrapping all link ranges and selection in a new attribute element with a class.
-			const viewElement = viewWriter.createAttributeElement( 'a', { class: 'my-link-class' }, { priority: 5 } );
+			// Adding a new CSS class is done by wrapping all link ranges and selection
+			// in a new attribute element with a class.
+			const viewElement = viewWriter.createAttributeElement( 'a', {
+					class: 'my-link-class'
+				}, {
+					priority: 5
+				} );
 
 			if ( data.item.is( 'selection' ) ) {
 				viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
@@ -68,35 +73,33 @@ function AddClassToAllLinks( editor ) {
 		}, { priority: 'low' } );
 	} );
 }
+```
 
-// ...
+Activate the plugin in the editor:
 
+```js
 ClassicEditor
 	.create( ..., {
-		// Activate the plugin in the editor.
 		extraPlugins: [ AddClassToAllLinks ],
 	} )
 	.then( editor => {
-		window.editor = editor;
+		// ...
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 ```
 
-Add some CSS styles for `.my-link-class` to see the customisation it in action:
+Add some CSS styles for `.my-link-class` to see the customization it in action:
 
-
-```html
-<style>
-	.my-link-class {
-		color: #209a25;
-		border: 1px solid #209a25;
-		border-radius: 2px;
-		padding: 0 3px;
-		box-shadow: 1px 1px 0 0 #209a25;
-	}
-</style>
+```css
+.my-link-class {
+	color: #209a25;
+	border: 1px solid #209a25;
+	border-radius: 2px;
+	padding: 0 3px;
+	box-shadow: 1px 1px 0 0 #209a25;
+}
 ```
 
 #### Adding an HTML attribute to certain inline elements (e.g. links)
@@ -105,4 +108,62 @@ In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.
 
 {@snippet framework/extending-content-add-external-link-target}
 
-### Enabling custom attributes in the editor output (upcast)
+Adding the `target` attribute to all "external" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
+
+```js
+// This plugin brings a customization to the downcast pipeline of the editor.
+function AddTargetToExternalLinks( editor ) {
+	// Both data and editing pipelines are affected by this conversion.
+	editor.conversion.for( 'downcast' ).add( dispatcher => {
+		// Links are represented in the model as a "linkHref" attribute.
+		// Use the "low" listener priority to apply the changes after the Link feature.
+		dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const viewSelection = viewWriter.document.selection;
+
+			// Adding a new CSS class is done by wrapping all link ranges and selection
+			// in a new attribute element with the "target" attribute.
+			const viewElement = viewWriter.createAttributeElement( 'a', {
+					target: '_blank'
+				}, {
+					priority: 5
+				} );
+
+			if ( data.attributeNewValue.match( /ckeditor\.com/ ) ) {
+				viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+			} else {
+				if ( data.item.is( 'selection' ) ) {
+					viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+				} else {
+					viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+				}
+			}
+		}, { priority: 'low' } );
+	} );
+}
+```
+
+Activate the plugin in the editor:
+
+```js
+ClassicEditor
+	.create( ..., {
+		extraPlugins: [ AddTargetToExternalLinks ],
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
+
+Add some CSS styles for links with `target="_blank"` to mark them with with the "&#10697;" symbol:
+
+```css
+a[target="_blank"]::after {
+	content: '\29C9';
+}
+```
+
+### Enabling custom attributes in the editor input ("upcast")

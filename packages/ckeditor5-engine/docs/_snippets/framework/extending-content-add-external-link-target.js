@@ -12,7 +12,11 @@ function AddTargetToExternalLinks( editor ) {
 		dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const viewElement = viewWriter.createAttributeElement( 'a', { target: '_blank' }, { priority: 5 } );
+			const viewElement = viewWriter.createAttributeElement( 'a', {
+				target: '_blank'
+			}, {
+				priority: 5
+			} );
 
 			if ( data.attributeNewValue.match( /ckeditor\.com/ ) ) {
 				viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
