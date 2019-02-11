@@ -295,31 +295,6 @@ describe( 'Document', () => {
 			sinon.assert.calledTwice( callB );
 			sinon.assert.calledOnce( callC );
 		} );
-
-		// https://github.com/ckeditor/ckeditor5-engine/issues/1673
-		it( 'should be called when DocumentSelection data are up to date', done => {
-			doc.registerPostFixer( () => {
-				expect( model.document.selection.hasAttribute( 'foo' ) ).to.equal( true );
-				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker' ] );
-				done();
-			} );
-
-			model.schema.extend( '$text', { allowAttributes: 'foo' } );
-
-			model.change( writer => {
-				writer.insertText( 'abcdef', { foo: 'bar' }, doc.getRoot(), 0 );
-
-				writer.addMarker( 'marker', {
-					range: writer.createRange(
-						writer.createPositionFromPath( doc.getRoot(), [ 1 ] ),
-						writer.createPositionFromPath( doc.getRoot(), [ 5 ] )
-					),
-					usingOperation: false
-				} );
-
-				writer.setSelection( writer.createPositionFromPath( doc.getRoot(), [ 3 ] ) );
-			} );
-		} );
 	} );
 
 	describe( 'event change', () => {

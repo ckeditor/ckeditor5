@@ -508,47 +508,6 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( '_refresh()', () => {
-		it( 'should refresh selection markers', () => {
-			model.change( writer => {
-				writer.setSelection( writer.createRange(
-					writer.createPositionFromPath( root, [ 2, 3 ] )
-				) );
-			} );
-
-			const range = model.createRange(
-				model.createPositionFromPath( root, [ 2, 0 ] ),
-				model.createPositionFromPath( root, [ 2, 6 ] )
-			);
-
-			model.markers._set( 'marker', range, false, false );
-
-			expect( Array.from( selection.markers ) ).to.length( 0 );
-
-			selection._refresh();
-
-			expect( Array.from( selection.markers ) ).to.length( 1 );
-		} );
-
-		it( 'should refresh selection attributes', () => {
-			model.schema.extend( '$text', { allowAttributes: 'foo' } );
-
-			model.change( writer => {
-				writer.setSelection( writer.createRange(
-					writer.createPositionFromPath( root, [ 2, 3 ] )
-				) );
-			} );
-
-			root.getChild( 2 ).getChild( 0 )._setAttribute( 'foo', 'bar' );
-
-			expect( selection.hasAttribute( 'foo' ) ).to.equal( false );
-
-			selection._refresh();
-
-			expect( selection.hasAttribute( 'foo' ) ).to.equal( true );
-		} );
-	} );
-
 	describe( '_setTo() - set collapsed at', () => {
 		it( 'detaches all existing ranges', () => {
 			selection._setTo( [ range, liveRange ] );
@@ -1179,6 +1138,70 @@ describe( 'DocumentSelection', () => {
 			selection._restoreGravity( overrideUidB );
 
 			expect( selection.isGravityOverridden ).to.false;
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1673
+	describe( 'refreshing selection data', () => {
+		it( 'should be up to date when post fixers are called', done => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const p = doc.getRoot().getChild( 0 );
+
+			doc.registerPostFixer( () => {
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker' ] );
+				done();
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'abcdef', { foo: 'bar' }, p );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
+			} );
+		} );
+
+		it( 'should be up to date when post fixers have changed the data', () => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const p = doc.getRoot().getChild( 0 );
+
+			doc.registerPostFixer( writer => {
+				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
+				writer.removeMarker( 'marker-1' );
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'abcdef', { foo: 'bar' }, p );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
+			} );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
+			expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
 		} );
 	} );
 
