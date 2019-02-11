@@ -305,6 +305,9 @@ export default class Document {
 	 */
 	_handleChangeBlock( writer ) {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
+			// Refresh the selection data as attributes or markers before the post-fixers are called.
+			this.selection._refresh( writer );
+
 			this._callPostFixers( writer );
 
 			if ( this.differ.hasDataChanges() ) {

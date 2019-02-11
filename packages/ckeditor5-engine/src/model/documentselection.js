@@ -378,6 +378,16 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Refreshes the selection data as attributes or markers.
+	 *
+	 * @protected
+	 * @param {module:engine/model/writer~Writer} writer
+	 */
+	_refresh( writer ) {
+		this._selection.refresh( writer );
+	}
+
+	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
@@ -617,17 +627,6 @@ class LiveSelection extends Selection {
 			}
 		} );
 
-		this.listenTo( this._document, 'change', ( evt, batch ) => {
-			// Update selection's markers.
-			this._updateMarkers();
-
-			// Update selection's attributes.
-			this._updateAttributes( false );
-
-			// Clear selection attributes from element if no longer empty.
-			clearAttributesStoredInElement( this._model, batch );
-		} );
-
 		this.listenTo( this._model, 'applyOperation', () => {
 			while ( this._fixGraveyardRangesData.length ) {
 				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
@@ -728,6 +727,17 @@ class LiveSelection extends Selection {
 			const attributeKeys = [ key ];
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
 		}
+	}
+
+	refresh( writer ) {
+		// Update selection's markers.
+		this._updateMarkers();
+
+		// Update selection's attributes.
+		this._updateAttributes( false );
+
+		// Clear selection attributes from element if no longer empty.
+		clearAttributesStoredInElement( this._model, writer );
 	}
 
 	overrideGravity() {
@@ -1136,8 +1146,8 @@ function getAttrsIfCharacter( node ) {
 //
 // @private
 // @param {module:engine/model/model~Model} model
-// @param {module:engine/model/batch~Batch} batch
-function clearAttributesStoredInElement( model, batch ) {
+// @param {module:engine/model/writer~Writer} writer
+function clearAttributesStoredInElement( model, writer ) {
 	const differ = model.document.differ;
 
 	for ( const entry of differ.getChanges() ) {
@@ -1149,14 +1159,12 @@ function clearAttributesStoredInElement( model, batch ) {
 		const isNoLongerEmpty = entry.length === changeParent.maxOffset;
 
 		if ( isNoLongerEmpty ) {
-			model.enqueueChange( batch, writer => {
-				const storedAttributes = Array.from( changeParent.getAttributeKeys() )
-					.filter( key => key.startsWith( storePrefix ) );
+			const storedAttributes = Array.from( changeParent.getAttributeKeys() )
+				.filter( key => key.startsWith( storePrefix ) );
 
-				for ( const key of storedAttributes ) {
-					writer.removeAttribute( key, changeParent );
-				}
-			} );
+			for ( const key of storedAttributes ) {
+				writer.removeAttribute( key, changeParent );
+			}
 		}
 	}
 }

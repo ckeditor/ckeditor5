@@ -508,6 +508,47 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( '_refresh()', () => {
+		it( 'should refresh selection markers', () => {
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 3 ] )
+				) );
+			} );
+
+			const range = model.createRange(
+				model.createPositionFromPath( root, [ 2, 0 ] ),
+				model.createPositionFromPath( root, [ 2, 6 ] )
+			);
+
+			model.markers._set( 'marker', range, false, false );
+
+			expect( Array.from( selection.markers ) ).to.length( 0 );
+
+			selection._refresh();
+
+			expect( Array.from( selection.markers ) ).to.length( 1 );
+		} );
+
+		it( 'should refresh selection attributes', () => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			model.change( writer => {
+				writer.setSelection( writer.createRange(
+					writer.createPositionFromPath( root, [ 2, 3 ] )
+				) );
+			} );
+
+			root.getChild( 2 ).getChild( 0 )._setAttribute( 'foo', 'bar' );
+
+			expect( selection.hasAttribute( 'foo' ) ).to.equal( false );
+
+			selection._refresh();
+
+			expect( selection.hasAttribute( 'foo' ) ).to.equal( true );
+		} );
+	} );
+
 	describe( '_setTo() - set collapsed at', () => {
 		it( 'detaches all existing ranges', () => {
 			selection._setTo( [ range, liveRange ] );
