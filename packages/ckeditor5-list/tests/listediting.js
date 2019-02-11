@@ -4083,9 +4083,6 @@ describe( 'ListEditing', () => {
 
 		// https://github.com/ckeditor/ckeditor5-list/issues/121
 		it( 'should correctly set data.modelCursor', () => {
-			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
-			model.schema.register( 'div', { inheritAllFrom: '$block' } );
-
 			editor.setData(
 				'<ul>' +
 					'<li>a</li>' +
