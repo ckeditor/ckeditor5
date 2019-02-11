@@ -19,9 +19,7 @@ There are two different ways of configuring the editor placeholder text:
 Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
 
 ```html
-<textarea id="editor" placeholder="Type the content here!">
-	<p>Editor content</p>
-</textarea>
+<textarea id="editor" placeholder="Type the content here!"></textarea>
 ```
 
 ```js
