@@ -187,11 +187,11 @@
  *			::before
  *		</p>
  *
- * **Note**: Placeholder text can also be set using the `placeholder` attribute of an element passed to
+ * **Note**: Placeholder text can also be set using the `data-placeholder` attribute of an element passed to
  * the `create()` method, for instance to
  * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
  *
- * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a DOM
+ * **Note**: This configuration has precedence over the value of the `data-placeholder` attribute of a DOM
  * element passed to the `create()` method.
  *
  * See the {@glink features/placeholder "Editor placeholder" guide} for more information and live examples.
