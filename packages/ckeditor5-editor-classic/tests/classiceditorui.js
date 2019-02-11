@@ -126,8 +126,8 @@ describe( 'ClassicEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from "placeholder" attribute of a passed element', () => {
-				const element = document.createElement( 'div' );
+			it( 'sets placeholder from the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
 
 				element.setAttribute( 'placeholder', 'placeholder-text' );
 
@@ -144,8 +144,8 @@ describe( 'ClassicEditorUI', () => {
 					} );
 			} );
 
-			it( 'uses editor.config.placeholder rather than "placeholder" attribute of a passed element', () => {
-				const element = document.createElement( 'div' );
+			it( 'uses editor.config.placeholder rather than the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
 
 				element.setAttribute( 'placeholder', 'placeholder-text' );
 
