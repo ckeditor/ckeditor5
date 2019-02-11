@@ -14,14 +14,14 @@ See the demo of the placeholder feature:
 
 There are two different ways of configuring the editor placeholder text:
 
-### Using the DOM attribute
+### Using the `placeholder` attribute of a textarea
 
-Set the `data-placeholder` attribute on an element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
+Set the `placeholder` attribute on a `<textarea>` element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
 
 ```html
-<div id="editor" data-placeholder="Type the content here!">
+<textarea id="editor" placeholder="Type the content here!">
 	<p>Editor content</p>
-</div>
+</textarea>
 ```
 
 ```js
@@ -40,7 +40,8 @@ ClassicEditor
 You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder `editor.config.placeholder`} configuration option:
 
 * when no element was passed into `Editor.create()` method,
-* to override the `data-placeholder` attribute value, for instance, if an element was passed into `Editor.create()` but the placeholder text should be different.
+* when the element passed into `Editor.create()` was not a `<textarea>` (for instance, a `<div>` element),
+* to override the `placeholder` text of a `<textarea>`, if one was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
 ClassicEditor
