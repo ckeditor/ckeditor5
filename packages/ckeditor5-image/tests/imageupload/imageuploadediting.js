@@ -523,7 +523,7 @@ describe( 'ImageUploadEditing', () => {
 		expect( loadSpy.called ).to.be.false;
 	} );
 
-	it.only( 'image should be permanently removed if it is removed by user during upload', done => {
+	it( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
