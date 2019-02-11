@@ -7,6 +7,8 @@
  * @module utils/diff
  */
 
+import fastDiff from '../src/fastdiff';
+
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
@@ -27,11 +29,19 @@ export default function diff( a, b, cmp ) {
 		return a === b;
 	};
 
+	const aLength = a.length;
+	const bLength = b.length;
+
+	// Perform `fastDiff` for longer strings/arrays.
+	if ( Math.min( aLength, bLength ) >= 400 && aLength + bLength >= 1300 || aLength + bLength >= 2000 ) {
+		return diff.fastDiff( a, b, cmp, true );
+	}
+
 	// Temporary action type statics.
 	let _insert, _delete;
 
 	// Swapped the arrays to use the shorter one as the first one.
-	if ( b.length < a.length ) {
+	if ( bLength < aLength ) {
 		const tmp = a;
 
 		a = b;
@@ -117,3 +127,7 @@ export default function diff( a, b, cmp ) {
 	// We remove the first item that represents the action for the injected nulls.
 	return es[ delta ].slice( 1 );
 }
+
+// Store the API in static property to easily overwrite it in tests.
+// Too bad dependency injection does not work in Webpack + ES 6 (const) + Babel.
+diff.fastDiff = fastDiff;
