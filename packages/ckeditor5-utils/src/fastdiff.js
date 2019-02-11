@@ -77,7 +77,8 @@
  * @param {Array|String} a Input array or string.
  * @param {Array|String} b Input array or string.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
- * @param {Boolean} [linearChanges=false] Whether array of `inset|delete|equal` operations should be returned or changes set.
+ * @param {Boolean} [linearChanges=false] Whether array of `inset|delete|equal` operations should
+ * be returned instead of changes set.
  * @returns {Array} Array of changes.
  */
 export default function fastDiff( a, b, cmp, linearChanges = false ) {
