@@ -98,10 +98,10 @@ describe( 'DecoupledEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from the "data-placeholder" attribute of a passed element', () => {
-				const element = document.createElement( 'div' );
+			it( 'sets placeholder from the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
 
-				element.dataset.placeholder = 'placeholder-text';
+				element.setAttribute( 'placeholder', 'placeholder-text' );
 
 				return VirtualDecoupledTestEditor
 					.create( element, {
@@ -116,10 +116,10 @@ describe( 'DecoupledEditorUI', () => {
 					} );
 			} );
 
-			it( 'uses editor.config.placeholder rather than the "data-placeholder" attribute of a passed element', () => {
-				const element = document.createElement( 'div' );
+			it( 'uses editor.config.placeholder rather than the "placeholder" attribute of a passed <textarea>', () => {
+				const element = document.createElement( 'textarea' );
 
-				element.dataset.placeholder = 'placeholder-text';
+				element.setAttribute( 'placeholder', 'placeholder-text' );
 
 				return VirtualDecoupledTestEditor
 					.create( element, {
