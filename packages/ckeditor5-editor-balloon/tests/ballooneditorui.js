@@ -131,10 +131,10 @@ describe( 'BalloonEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets placeholder from "placeholder" attribute of a passed element', () => {
+			it( 'sets placeholder from the "data-placeholder" attribute of a passed element', () => {
 				const element = document.createElement( 'div' );
 
-				element.setAttribute( 'placeholder', 'placeholder-text' );
+				element.dataset.placeholder = 'placeholder-text';
 
 				return VirtualBalloonTestEditor
 					.create( element, {
@@ -149,10 +149,10 @@ describe( 'BalloonEditorUI', () => {
 					} );
 			} );
 
-			it( 'uses editor.config.placeholder rather than "placeholder" attribute of a passed element', () => {
+			it( 'uses editor.config.placeholder rather than the "data-placeholder" attribute of a passed element', () => {
 				const element = document.createElement( 'div' );
 
-				element.setAttribute( 'placeholder', 'placeholder-text' );
+				element.dataset.placeholder = 'placeholder-text';
 
 				return VirtualBalloonTestEditor
 					.create( element, {
