@@ -86,13 +86,13 @@ export default function fastDiff( a, b, cmp, linearChanges = false ) {
 		return a === b;
 	};
 
-	// Transform text into arrays for easier, consistent processing.
-	if ( typeof a === 'string' ) {
-		a = a.split( '' );
+	// Transform text or any iterable into arrays for easier, consistent processing.
+	if ( !Array.isArray( a ) ) {
+		a = Array.from( a );
 	}
 
-	if ( typeof b === 'string' ) {
-		b = b.split( '' );
+	if ( !Array.isArray( b ) ) {
+		b = Array.from( b );
 	}
 
 	// Find first and last change.

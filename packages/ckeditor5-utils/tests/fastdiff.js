@@ -3,11 +3,42 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import fastDiff from '../src/fastdiff';
 import diff from '../src/diff';
 import diffToChanges from '../src/difftochanges';
 
 describe( 'fastDiff', () => {
+	describe( 'input types', () => {
+		it( 'should correctly handle strings', () => {
+			const changes = fastDiff( '123', 'abc123' );
+			expect( changes ).to.deep.equal( [ { index: 0, type: 'insert', values: [ 'a', 'b', 'c' ] } ] );
+		} );
+
+		it( 'should correctly handle arrays', () => {
+			const changes = fastDiff( [ '1', '2', '3' ], [ 'a', 'b', 'c', '1', '2', '3' ] );
+			expect( changes ).to.deep.equal( [ { index: 0, type: 'insert', values: [ 'a', 'b', 'c' ] } ] );
+		} );
+
+		it( 'should correctly handle node lists', () => {
+			const el1 = document.createElement( 'p' );
+			const el2 = document.createElement( 'h1' );
+
+			el1.appendChild( document.createElement( 'span' ) );
+			el1.appendChild( document.createElement( 'strong' ) );
+
+			el2.appendChild( document.createElement( 'div' ) );
+			el2.appendChild( document.createElement( 'strong' ) );
+
+			const changes = fastDiff( el1.childNodes, el2.childNodes );
+			expect( changes ).to.deep.equal( [
+				{ index: 0, type: 'insert', values: [ el2.childNodes[ 0 ], el2.childNodes[ 1 ] ] },
+				{ index: 2, type: 'delete', howMany: 2 }
+			] );
+		} );
+	} );
+
 	describe( 'changes object', () => {
 		it( 'should diff identical texts', () => {
 			expectDiff( '123', '123', [] );
