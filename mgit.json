@@ -29,7 +29,7 @@
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#5f39810",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#7c84ba4",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#b157f2f",
-    "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#152cd3d",
+    "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#50ec81d",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#bc3a232",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#9c29d75",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#2988159",
