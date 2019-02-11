@@ -16,10 +16,10 @@ There are two different ways of configuring the editor placeholder text:
 
 ### Using the DOM attribute
 
-Set the `placeholder` attribute on an element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
+Set the `data-placeholder` attribute on an element passed to the `Editor.create()` method (for instance {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}) to configure the placeholder:
 
 ```html
-<div id="editor" placeholder="Type the content here!">
+<div id="editor" data-placeholder="Type the content here!">
 	<p>Editor content</p>
 </div>
 ```
@@ -40,7 +40,7 @@ ClassicEditor
 You can use the {@link module:core/editor/editorconfig~EditorConfig#placeholder `editor.config.placeholder`} configuration option:
 
 * when no element was passed into `Editor.create()` method,
-* to override the `placeholder` attribute value, for instance, if an element was passed into `Editor.create()` but the placeholder text should be different.
+* to override the `data-placeholder` attribute value, for instance, if an element was passed into `Editor.create()` but the placeholder text should be different.
 
 ```js
 ClassicEditor
