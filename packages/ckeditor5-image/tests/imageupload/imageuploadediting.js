@@ -523,7 +523,7 @@ describe( 'ImageUploadEditing', () => {
 		expect( loadSpy.called ).to.be.false;
 	} );
 
-	it( 'image should be permanently removed if it is removed by user during upload', done => {
+	it.only( 'image should be permanently removed if it is removed by user during upload', done => {
 		const file = createNativeFileMock();
 		const notification = editor.plugins.get( Notification );
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
@@ -535,28 +535,20 @@ describe( 'ImageUploadEditing', () => {
 
 		editor.execute( 'imageUpload', { file } );
 
-		model.document.once( 'change', () => {
-			// This is called after "manual" remove.
-			model.document.once( 'change', () => {
-				// This is called after attributes are removed.
-				let undone = false;
+		const stub = sinon.stub();
+		model.document.on( 'change', stub );
 
-				model.document.once( 'change', () => {
-					if ( !undone ) {
-						undone = true;
+		// The first `change` event is fired after the "manual" remove.
+		// The second `change` event is fired after cleaning attributes.
+		stub.onSecondCall().callsFake( () => {
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 
-						// This is called after abort remove.
-						expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+			editor.execute( 'undo' );
 
-						editor.execute( 'undo' );
+			// Expect that the image has not been brought back.
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
 
-						// Expect that the image has not been brought back.
-						expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
-
-						done();
-					}
-				} );
-			} );
+			done();
 		} );
 
 		const image = doc.getRoot().getChild( 0 );
