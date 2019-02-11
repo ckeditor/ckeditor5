@@ -1514,7 +1514,7 @@ describe( 'ListEditing', () => {
 							'</ol>' +
 						'</li>' +
 						'<li>k</li>' +
-					'</ol>'
+					'</ul>'
 				);
 			} );
 
@@ -4017,7 +4017,7 @@ describe( 'ListEditing', () => {
 				allow: 'inline'
 			} );
 
-			editor.data.set( '<ul><li>foo</li></ul>', 'title' );
+			editor.data.set( { title: '<ul><li>foo</li></ul>' } );
 
 			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
 		} );
@@ -4069,7 +4069,7 @@ describe( 'ListEditing', () => {
 			editor.setData(
 				'<div>' +
 					'<ul>' +
-					'<li>foo</li>' +
+						'<li>foo</li>' +
 					'</ul>' +
 					'def' +
 				'</div>'
@@ -4078,6 +4078,26 @@ describe( 'ListEditing', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-list/issues/121
+		it( 'should correctly set data.modelCursor', () => {
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'div', model: 'div' } );
+			model.schema.register( 'div', { inheritAllFrom: '$block' } );
+
+			editor.setData(
+				'<ul>' +
+					'<li>a</li>' +
+					'<li>b</li>' +
+				'</ul>' +
+				'c'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<paragraph>c</paragraph>'
 			);
 		} );
 	} );
