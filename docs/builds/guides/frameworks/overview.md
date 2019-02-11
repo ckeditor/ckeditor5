@@ -44,7 +44,8 @@ Check out a [sweet screencast of CKEditor 5 with real-time collaborative editing
 
 ## Compatibility with Ionic and Cordova
 
-CKEditor 5 is compatible with Ionic framework and Cordova. However, Ionic disables `user-select` by default, what [blocks typing via the virtual keyboard](https://github.com/ckeditor/ckeditor5/issues/701). It's required to set this property to `text` on the CKEditor component. Just update your stylesheet with the following code:
+CKEditor 5 is compatible with [Ionic framework](https://ionicframework.com/) and [Cordova](https://cordova.apache.org/). However, Ionic disables `user-select` by default, what [blocks typing via the virtual keyboard](https://github.com/ckeditor/ckeditor5/issues/701). It's required to set this property to `text` on the CKEditor component. Just update your stylesheet with the following code:
+
 ```css
 ckeditor {
 	-webkit-user-select: text;
