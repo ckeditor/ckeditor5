@@ -161,9 +161,10 @@ export default class InlineEditorUI extends EditorUI {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editingRoot = editingView.document.getRoot();
+		const sourceElement = editor.sourceElement;
 
 		const placeholderText = editor.config.get( 'placeholder' ) ||
-			editor.sourceElement && editor.sourceElement.getAttribute( 'placeholder' );
+			sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 		if ( placeholderText ) {
 			enablePlaceholder( {
