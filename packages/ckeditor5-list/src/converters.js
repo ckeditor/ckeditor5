@@ -373,12 +373,12 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// Result range starts before the first item and ends after the last.
 		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
 
-		// When modelCursor parent had to be split to insert list item.
+		// When `data.modelCursor` parent had to be split to insert list item...
 		if ( splitResult.cursorParent ) {
-			// Then continue conversion in split element.
+			// Continue conversion in the split element.
 			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
 		} else {
-			// Otherwise continue conversion after last list item.
+			// Otherwise continue conversion after the last list item.
 			data.modelCursor = data.modelRange.end;
 		}
 	}
@@ -826,7 +826,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			const result = conversionApi.convertItem( child, writer.createPositionAt( lastListItem, 'end' ) );
 			const convertedChild = result.modelRange.start.nodeAfter;
 
-			nextPosition = result.modelCursor;
+			nextPosition = writer.createPositionAfter( result.modelCursor.parent );
 
 			// If there is a block element child being converted it may split the current list item, for example:
 			//
@@ -839,7 +839,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 			// so we need to update reference to `lastListItem`.
 			if ( convertedChild && convertedChild.is( 'element' ) &&
 				!conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
-				lastListItem = nextPosition.parent;
+				lastListItem = result.modelCursor.parent;
 
 				// Depending on the used converter for block elements, usually the position (`result.modelCursor`
 				// marked as # below) points to the second list item after conversion:
