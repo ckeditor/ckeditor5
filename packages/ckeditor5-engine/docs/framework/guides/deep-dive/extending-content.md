@@ -21,12 +21,12 @@ Customisations in the examples are brought by plugins loaded by the editor. For 
 
 In this section, we will focus on customization to the "downcast" pipeline of the editor, which transforms data from the model to the editing view and the output data. The following examples do not customize the model and do not process the (input) data — you can picture them as post–processors (filters) applied to the output only.
 
-If you want to learn how to load some extra content (element, attributes, classes) into the editor, check out the [next chapter](#enabling-custom-attributes-in-the-editor-input-upcast) of this guide.
+If you want to learn how to load some extra content (element, attributes, classes) into the editor, check out the [next chapter](#loading-custom-content-into-the-editor-upcast) of this guide.
 
 <info-box>
 	You can create separate converters for data and editing (downcast) pipelines. The former (`dataDowncast`) will customize the data in the editor output (e.g. when {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`}) and the later (`editingDowncast`) will only work for the content of the editor when editing.
 
-	If you do not want to complicate you conversion, you can just add a single (`downcast`) converter which will apply both to the data and the editing view. We did that in all examples to keep them simple but keep it mind you have options:
+	If you do not want to complicate your conversion, you can just add a single (`downcast`) converter which will apply both to the data and the editing view. We did that in all examples to keep them simple but keep in mind you have options:
 
 	```js
 	// Adds a conversion dispatcher for the editing downcast pipeline only.
@@ -59,7 +59,7 @@ In this example all links (`<a href="...">...</a>`) get the `.my-green-link` CSS
 Adding a custom CSS class to all links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
 ```js
-// This plugin brings a customization to the downcast pipeline of the editor.
+// This plugin brings customization to the downcast pipeline of the editor.
 function AddClassToAllLinks( editor ) {
 	// Both data and editing pipelines are affected by this conversion.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -129,7 +129,7 @@ In this example all links (`<a href="...">...</a>`) which do not have "ckeditor.
 Adding the `target` attribute to all "external" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
 ```js
-// This plugin brings a customization to the downcast pipeline of the editor.
+// This plugin brings customization to the downcast pipeline of the editor.
 function AddTargetToExternalLinks( editor ) {
 	// Both data and editing pipelines are affected by this conversion.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -192,14 +192,14 @@ In this example all links (`<a href="...">...</a>`) which do not have "https://"
 
 {@snippet framework/extending-content-add-unsafe-link-class}
 
-**Note:** Edit the URL of the links using "http://" or "https://" to see see them marked as "safe" or "unsafe".
+**Note:** Edit the URL of the links using "http://" or "https://" to see them marked as "safe" or "unsafe".
 
 ##### Code
 
 Adding the `.unsafe-link` CSS class to all "unsafe" links is made by a custom converter plugged into the downcast pipeline, following the default converters brought by the {@link features/link Link} feature:
 
 ```js
-// This plugin brings a customization to the downcast pipeline of the editor.
+// This plugin brings customization to the downcast pipeline of the editor.
 function AddClassToUnsafeLinks( editor ) {
 	// Both data and editing pipelines are affected by this conversion.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -273,7 +273,7 @@ Adding a custom CSS class to all `<h2>...</h2>` elements is made by a custom con
 </info-box>
 
 ```js
-// This plugin brings a customization to the downcast pipeline of the editor.
+// This plugin brings customization to the downcast pipeline of the editor.
 function AddClassToAllHeading1( editor ) {
 	// Both data and editing pipelines are affected by this conversion.
 	editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -316,9 +316,11 @@ Add some CSS styles for `.my-heading` to see the customization in action:
 
 ### Loading custom content into the editor ("upcast")
 
-TODO.
+In the [previous chapter](#extending-editor-output-downcast-only) we focused on post–processing of the editor data output. In this one, we will also extend the editor model so custom data can be loaded into it. This will allow you not only to "correct" the editor output but, for instance, losslessly load data unsupported by editor features.
 
-#### Loading a content with a custom attribute
+Eventually, this knowledge will allow you to create your custom features on top of the core features of CKEditor 5.
+
+#### Loading content with a custom attribute
 
 In this example links (`<a href="...">...</a>`) loaded in editor content will preserve their `target` attribute, which is not supported by the {@link features/link Link} feature. The DOM `target` attribute will be stored in the editor model as a `linkTarget` attribute.
 
@@ -373,10 +375,18 @@ ClassicEditor
 	} );
 ```
 
-Add some CSS styles for links with `target="_blank"` to mark them with with the "&#10697;" symbol:
+Add some CSS styles to easily see different link targets:
 
 ```css
-a[target="_blank"]::after {
-	content: '\29C9';
+a[target]::after {
+	content: "target=\"" attr(target) "\"";
+	font-size: 0.6em;
+	position: relative;
+	left: 0em;
+	top: -1em;
+	background: #00ffa6;
+	color: #000;
+	padding: 1px 3px;
+	border-radius: 10px;
 }
 ```

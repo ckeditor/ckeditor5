@@ -38,6 +38,10 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		document.querySelector( '#snippet-link-target-content-update' ).addEventListener( 'click', () => {
+			editor.setData( document.querySelector( '#snippet-link-target-content' ).value );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
