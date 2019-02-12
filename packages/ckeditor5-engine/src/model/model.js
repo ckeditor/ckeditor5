@@ -445,14 +445,15 @@ export default class Model {
 
 	/**
 	 * Checks whether the given {@link module:engine/model/range~Range range} or
-	 * {@link module:engine/model/element~Element element}
-	 * has any content.
+	 * {@link module:engine/model/element~Element element} has any meaningful content.
 	 *
-	 * Content is any text node or element which is registered in the {@link module:engine/model/schema~Schema schema}.
-	 *
-	 * **Note**: To check if editor or any part of the content contains meaningful data, use {@link #isEmpty}.
+	 * Meaningful content is any text node, element which is registered in the {@link module:engine/model/schema~Schema schema}
+	 * or any {@link module:engine/model/markercollection~Marker marker} which
+	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.trimWhitespaces] Whether text node with whitespaces only should be considered to be empty element.
 	 * @returns {Boolean}
 	 */
 	hasContent( rangeOrElement, options ) {
