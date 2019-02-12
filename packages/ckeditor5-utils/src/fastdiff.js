@@ -129,8 +129,8 @@ function findChangeBoundaryIndexes( arr1, arr2, cmp ) {
 	}
 
 	// Remove the common part of each value and reverse them to make it simpler to find the last difference between them.
-	const oldTextReversed = cutAndReverse( arr1, firstIndex );
-	const newTextReversed = cutAndReverse( arr2, firstIndex );
+	const oldArrayReversed = cutAndReverse( arr1, firstIndex );
+	const newArrayReversed = cutAndReverse( arr2, firstIndex );
 
 	// Find the first difference between reversed values.
 	// It should be treated as "how many elements from the end the last difference occurred".
@@ -143,7 +143,7 @@ function findChangeBoundaryIndexes( arr1, arr2, cmp ) {
 	// lastIndex:							-> 2
 	//
 	// So the last change occurred two characters from the end of the arrays.
-	const lastIndex = findFirstDifferenceIndex( oldTextReversed, newTextReversed, cmp );
+	const lastIndex = findFirstDifferenceIndex( oldArrayReversed, newArrayReversed, cmp );
 
 	// Use `lastIndex` to calculate proper offset, starting from the beginning (`lastIndex` kind of starts from the end).
 	const lastIndexOld = arr1.length - lastIndex;
@@ -171,7 +171,7 @@ function findFirstDifferenceIndex( arr1, arr2, cmp ) {
 // Returns a copy of the given array with `howMany` elements removed starting from the beginning and in reversed order.
 //
 // @param {Array} arr Array to be processed.
-// @param {Number} howMany How many elements from text beginning to remove.
+// @param {Number} howMany How many elements from array beginning to remove.
 // @returns {Array} Shortened and reversed array.
 function cutAndReverse( arr, howMany ) {
 	return arr.slice( howMany ).reverse();
@@ -212,7 +212,7 @@ function changeIndexesToChanges( newArray, changeIndexes ) {
 // Generates array with set `equal|insert|delete` operations based on change indexes from `findChangeBoundaryIndexes` function.
 //
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
-// @param {Number} newLength Length of the new array/string on which `findChangeBoundaryIndexes` calculated change indexes.
+// @param {Number} newLength Length of the new array on which `findChangeBoundaryIndexes` calculated change indexes.
 // @returns {Array.<String>} Array of changes compatible with {@link module:utils/diff~diff} format.
 function changeIndexesToLinearChanges( changeIndexes, newLength ) {
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
