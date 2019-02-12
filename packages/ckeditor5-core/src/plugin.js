@@ -169,3 +169,9 @@ mix( Plugin, ObservableMixin );
  * @method #destroy
  * @returns {null|Promise}
  */
+
+/**
+ * Array of loaded plugins.
+ *
+ * @typedef {Array.<module:core/plugin~PluginInterface>} module:core/plugin~LoadedPlugins
+ */

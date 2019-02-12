@@ -25,7 +25,7 @@ export default class PluginCollection {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
-	 * when {@link module:core/plugincollection~PluginCollection#load} is used with plugin names (strings, instead of constructors).
+	 * when {@link module:core/plugincollection~PluginCollection#init} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
@@ -151,9 +151,8 @@ export default class PluginCollection {
 	 * `availablePlugins` were passed to the {@link #constructor}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
 	 * that should not be loaded (despite being specified in the `plugins` array).
-	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available in the
-	 * collection.
-	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which gets resolved once all plugins are loaded
+	 * and available in the collection.
 	 */
 	init( plugins, removePlugins = [] ) {
 		const that = this;

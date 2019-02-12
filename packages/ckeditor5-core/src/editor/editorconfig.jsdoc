@@ -168,3 +168,32 @@
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#language
  */
+
+/**
+ * Specifies the text displayed in the editor when there is no content (editor is empty). It is intended to
+ * help users locate the editor in the application (form) and prompt them to input the content. Work similarly
+ * as to the native DOM
+ * [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute)
+ * used by inputs.
+ *
+ *		const config = {
+ *			placeholder: 'Type some text...'
+ *		};
+ *
+ * The placeholder text is displayed as a pseudo–element of an empty paragraph in the editor content.
+ * The paragraph has the `.ck-placeholder` CSS class and the `data-placeholder` attribute.
+ *
+ *		<p data-placeholder="Type some text..." class="ck-placeholder">
+ *			::before
+ *		</p>
+ *
+ * **Note**: Placeholder text can also be set using the `placeholder` attribute if a `<textarea>` is passed to
+ * the `create()` method, e.g. {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
+ *
+ * **Note**: This configuration has precedence over the value of the `placeholder` attribute of a `<textarea>`
+ * element passed to the `create()` method.
+ *
+ * See the {@glink features/placeholder "Editor placeholder" guide} for more information and live examples.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
+ */

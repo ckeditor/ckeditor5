@@ -14,8 +14,6 @@ import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
-import DowncastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
-import UpcastHelpers from '@ckeditor/ckeditor5-engine/src/conversion/upcasthelpers';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
@@ -179,13 +177,9 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:engine/conversion/conversion~Conversion}
 		 */
-		this.conversion = new Conversion();
-
-		this.conversion.register( 'downcast', new DowncastHelpers( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] ) );
-		this.conversion.register( 'editingDowncast', new DowncastHelpers( this.editing.downcastDispatcher ) );
-		this.conversion.register( 'dataDowncast', new DowncastHelpers( this.data.downcastDispatcher ) );
-
-		this.conversion.register( 'upcast', new UpcastHelpers( this.data.upcastDispatcher ) );
+		this.conversion = new Conversion( [ this.editing.downcastDispatcher, this.data.downcastDispatcher ], this.data.upcastDispatcher );
+		this.conversion.addAlias( 'dataDowncast', this.data.downcastDispatcher );
+		this.conversion.addAlias( 'editingDowncast', this.editing.downcastDispatcher );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
@@ -219,8 +213,8 @@ export default class Editor {
 	/**
 	 * Loads and initializes plugins specified in the config.
 	 *
-	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins A promise which resolves
-	 * once the initialization is completed providing array of loaded plugins.
+	 * @returns {Promise.<module:core/plugin~LoadedPlugins>} A promise which resolves
+	 * once the initialization is completed providing an array of loaded plugins.
 	 */
 	initPlugins() {
 		const config = this.config;
@@ -275,13 +269,29 @@ export default class Editor {
 	execute( ...args ) {
 		this.commands.execute( ...args );
 	}
+
+	/**
+	 * Creates and initializes a new editor instance.
+	 *
+	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
+	 *
+	 * See the `create()` methods of the existing editor types to learn how to use them:
+	 *
+	 * * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}
+	 * * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}
+	 * * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+	 * * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}
+	 *
+	 * @abstract
+	 * @method module:core/editor/editor~Editor.create
+	 */
 }
 
 mix( Editor, ObservableMixin );
 
 /**
- * Fired when {@link module:core/plugincollection~PluginCollection#event:ready plugins},
- * and {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional editor components are ready.
+ * Fired when {@link module:engine/controller/datacontroller~DataController#event:ready data} and all additional
+ * editor components are ready.
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static
