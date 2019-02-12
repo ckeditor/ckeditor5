@@ -21,7 +21,8 @@
 		"features/collaboration/comment-only-mode.html": "features/collaboration/comments/comment-only-mode.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
 		"features/ckfinder.html": "features/image-upload/ckfinder.html",
-		"features/easy-image.html": "features/image-upload/easy-image.html"
+		"features/easy-image.html": "features/image-upload/easy-image.html",
+		"features/collaboration/comments/integrate-comments-with-application.html": "features/collaboration/comments/comments-integration.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
