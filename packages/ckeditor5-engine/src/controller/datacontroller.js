@@ -123,10 +123,7 @@ export default class DataController {
 	 * @returns {String} Output data.
 	 */
 	get( options ) {
-		options = options || {};
-
-		const rootName = options.rootName || 'main';
-		const trim = options.trim || 'empty';
+		const { rootName = 'main', trim = 'empty' } = options || {};
 
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
@@ -143,8 +140,10 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.' );
 		}
 
+		const root = this.model.document.getRoot( rootName );
+
 		// Get model range.
-		return this.stringify( this.model.document.getRoot( rootName ), trim === 'empty' );
+		return trim === 'empty' && !this.model.hasContent( root, { trimWhitespaces: true } ) ? '' : this.stringify( root );
 	}
 
 	/**
@@ -154,21 +153,14 @@ export default class DataController {
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
-	 * @param {Boolean} [skipEmpty=false] Whether content considered empty should be skipped. The method
-	 * will return an empty string in such cases.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElementOrFragment, skipEmpty = false ) {
-		if ( skipEmpty && this.model.isEmpty( modelElementOrFragment ) ) {
-			// If skipEmpty and model is considered empty return empty string.
-			return '';
-		} else {
-			// Model -> view.
-			const viewDocumentFragment = this.toView( modelElementOrFragment );
+	stringify( modelElementOrFragment ) {
+		// Model -> view.
+		const viewDocumentFragment = this.toView( modelElementOrFragment );
 
-			// View -> data.
-			return this.processor.toData( viewDocumentFragment );
-		}
+		// View -> data.
+		return this.processor.toData( viewDocumentFragment );
 	}
 
 	/**

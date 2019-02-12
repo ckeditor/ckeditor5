@@ -355,6 +355,7 @@ describe( 'DataController', () => {
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
+			expect( data.get() ).to.equal( '' );
 			expect( data.get( { trim: 'empty' } ) ).to.equal( '' );
 		} );
 

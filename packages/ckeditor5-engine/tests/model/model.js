@@ -500,6 +500,9 @@ describe( 'Model', () => {
 				isObject: true
 			} );
 			schema.extend( 'image', { allowIn: 'div' } );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
 
 			setData(
 				model,
@@ -510,7 +513,10 @@ describe( 'Model', () => {
 				'<paragraph>foo</paragraph>' +
 				'<div>' +
 				'<image></image>' +
-				'</div>'
+				'</div>' +
+				'<listItem></listItem>' +
+				'<listItem></listItem>' +
+				'<listItem></listItem>'
 			);
 
 			root = model.document.getRoot();
@@ -520,6 +526,34 @@ describe( 'Model', () => {
 			const pFoo = root.getChild( 1 );
 
 			expect( model.hasContent( pFoo ) ).to.be.true;
+		} );
+
+		it( 'should return true if given element has text node (trimWhitespaces)', () => {
+			const pFoo = root.getChild( 1 );
+
+			expect( model.hasContent( pFoo, { trimWhitespaces: true } ) ).to.be.true;
+		} );
+
+		it( 'should return true if given element has text node containing spaces only', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+				writer.insertText( '    ', pEmpty, 'end' );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
+		} );
+
+		it( 'should false true if given element has text node containing spaces only (trimWhitespaces)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+				writer.insertText( '    ', pEmpty, 'end' );
+			} );
+
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true if given element has element that is an object', () => {
@@ -571,332 +605,113 @@ describe( 'Model', () => {
 
 			expect( model.hasContent( range ) ).to.be.false;
 		} );
-	} );
 
-	describe( 'isEmpty()', () => {
-		beforeEach( () => {
-			// Register paragraphs and divs.
-			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			schema.register( 'div', { inheritAllFrom: '$block' } );
-			schema.extend( '$block', { allowIn: 'div' } );
+		it( 'should return false for empty list items', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
 
-			// Allow bold attribute on text nodes.
-			schema.extend( '$text', { allowAttributes: 'bold' } );
+			expect( model.hasContent( range ) ).to.be.false;
+		} );
 
-			// Allow sub attribute on text nodes.
-			schema.extend( '$text', { allowAttributes: 'subscript' } );
+		it( 'should return false for empty element with marker (usingOperation=false, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			// Register blockquotes.
-			schema.register( 'blockQuote', {
-				allowWhere: '$block',
-				allowContentOf: '$root'
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			// Register headings.
-			schema.register( 'heading1', {
-				inheritAllFrom: '$block'
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
 			} );
 
-			// Register images.
-			schema.register( 'image', {
-				isObject: true,
-				isBlock: true,
-				allowWhere: '$block',
-				allowAttributes: [ 'alt', 'src', 'srcset' ]
-			} );
-			schema.extend( 'image', { allowIn: 'div' } );
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+		} );
 
-			// Register lists.
-			schema.register( 'listItem', {
-				inheritAllFrom: '$block',
-				allowAttributes: [ 'listType', 'listIndent' ]
-			} );
+		it( 'should return false (trimWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			// Register media.
-			schema.register( 'media', {
-				isObject: true,
-				isBlock: true,
-				allowWhere: '$block',
-				allowAttributes: [ 'url' ]
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
+
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			// Register tables.
-			schema.register( 'table', {
-				allowWhere: '$block',
-				allowAttributes: [ 'headingRows', 'headingColumns' ],
-				isLimit: true,
-				isObject: true,
-				isBlock: true
-			} );
-
-			schema.register( 'tableRow', {
-				allowIn: 'table',
-				isLimit: true
-			} );
-
-			schema.register( 'tableCell', {
-				allowIn: 'tableRow',
-				allowAttributes: [ 'colspan', 'rowspan' ],
-				isLimit: true
-			} );
-
-			// Allow all $block content inside table cell.
-			schema.extend( '$block', { allowIn: 'tableCell' } );
-		} );
-
-		it( 'should return true for collapsed range', () => {
-			setData( model, '<paragraph>Foo[] Bar</paragraph>' );
-
-			const root = model.document.getRoot();
-			const selection = model.document.selection;
-			const range = selection.getFirstRange();
-
-			expect( stringify( root, selection ) ).to.equal( '<paragraph>Foo[] Bar</paragraph>' );
-
-			expect( model.isEmpty( range ) ).to.true;
-		} );
-
-		it( 'should return true for range on empty text', () => {
-			setData( model, '<paragraph>Foo[ ]Bar</paragraph>' );
-
-			const root = model.document.getRoot();
-			const selection = model.document.selection;
-			const range = selection.getFirstRange();
-
-			expect( stringify( root, selection ) ).to.equal( '<paragraph>Foo[ ]Bar</paragraph>' );
-
-			expect( model.isEmpty( range ) ).to.true;
-		} );
-
-		it( 'should return false for range on non-empty text', () => {
-			setData( model, '<paragraph>F[oo ]Bar</paragraph>' );
-
-			const root = model.document.getRoot();
-			const selection = model.document.selection;
-			const range = selection.getFirstRange();
-
-			expect( stringify( root, selection ) ).to.equal( '<paragraph>F[oo ]Bar</paragraph>' );
-
-			expect( model.isEmpty( range ) ).to.false;
-		} );
-
-		it( 'should return true for empty paragraph', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>' );
-		} );
-
-		it( 'should return true for multiple empty paragraphs', () => {
-			expectIsEmpty( true, '<paragraph></paragraph><paragraph></paragraph><paragraph></paragraph>' );
-		} );
-
-		it( 'should return true for paragraph with spaces only', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
-					writer.insertText( '    ', root.getChild( 0 ), 'end' );
-				} );
-
-				return '<paragraph>    </paragraph>';
-			} );
-		} );
-
-		it( 'should return true for paragraph with whitespaces only', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
-					writer.insertText( ' \r\n\t\f\v ', root.getChild( 0 ), 'end' );
-				} );
-
-				return '<paragraph> \r\n\t\f\v </paragraph>';
-			} );
-		} );
-
-		it( 'should return true for text with attribute containing spaces only', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
-					const text = writer.createText( '   ', { bold: true } );
-					writer.append( text, root.getChild( 0 ) );
-				} );
-
-				return '<paragraph><$text bold="true">   </$text></paragraph>';
-			} );
-		} );
-
-		it( 'should return true for text with attribute containing whitespaces only', () => {
-			expectIsEmpty( true, '<paragraph></paragraph><paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
-					const text1 = writer.createText( '          ', { bold: true } );
-					const text2 = writer.createText( ' \r\n\t\f\v ', { bold: true, subscript: true } );
-
-					writer.append( text1, root.getChild( 0 ) );
-					writer.append( text2, root.getChild( 1 ) );
-				} );
-
-				return '<paragraph><$text bold="true">          </$text></paragraph>' +
-					'<paragraph><$text bold="true" subscript="true"> \r\n\t\f\v </$text></paragraph>';
-			} );
-		} );
-
-		it( 'should return false for paragraph with text', () => {
-			expectIsEmpty( false, '<paragraph>Foo Bar</paragraph>' );
-		} );
-
-		it( 'should return false for empty paragraph and paragraph with text', () => {
-			expectIsEmpty( false, '<paragraph></paragraph><paragraph>Foo Bar</paragraph>' );
-		} );
-
-		it( 'should return true for nested empty blocks', () => {
-			expectIsEmpty( true, '<div><paragraph></paragraph></div>' );
-		} );
-
-		it( 'should return true for multiple nested empty blocks', () => {
-			expectIsEmpty( true, '<div><paragraph></paragraph><blockQuote></blockQuote></div>' );
-		} );
-
-		it( 'should return true for empty heading', () => {
-			expectIsEmpty( true, '<heading1></heading1>' );
-		} );
-
-		it( 'should return true for empty list (single list item)', () => {
-			expectIsEmpty( true, '<listItem></listItem>' );
-		} );
-
-		it( 'should return true for empty list (multiple list item)', () => {
-			expectIsEmpty( true, '<listItem></listItem><listItem></listItem><listItem></listItem>' );
-		} );
-
-		it( 'should return true for empty list with whitespaces only', () => {
-			expectIsEmpty( true, '<listItem></listItem><listItem></listItem>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
-					writer.insertText( ' \r\n\t\f\v ', root.getChild( 0 ), 'end' );
-					writer.insertText( '  ', root.getChild( 1 ), 'end' );
-				} );
-
-				return '<listItem> \r\n\t\f\v </listItem><listItem>  </listItem>';
-			} );
-		} );
-
-		it( 'should return false for list with text', () => {
-			expectIsEmpty( false, '<listItem>foo</listItem><listItem>bar</listItem>' );
-		} );
-
-		it( 'should return false for empty table', () => {
-			expectIsEmpty( false, '<table><tableRow><tableCell></tableCell></tableRow></table>' );
-		} );
-
-		it( 'should return false for single image', () => {
-			expectIsEmpty( false, '<image></image>' );
-		} );
-
-		it( 'should return false for empty element and single image', () => {
-			expectIsEmpty( false, '<listItem></listItem><image></image>' );
-		} );
-
-		it( 'should return false for media element', () => {
-			expectIsEmpty( false, '<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' );
-		} );
-
-		it( 'should return true for empty element with marker (usingOperation=false, affectsData=false)', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
-				} );
-
-				return '<paragraph><comment1:start></comment1:start></paragraph>';
-			} );
-		} );
-
-		it( 'should return true for empty element with marker (usingOperation=true, affectsData=false)', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
-				} );
-
-				return '<paragraph><comment1:start></comment1:start></paragraph>';
-			} );
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
-			expectIsEmpty( true, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert empty text.
-					const text = writer.createText( '    ', { bold: true } );
-					writer.append( text, root.getChild( 0 ) );
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
-				} );
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
 
-				return '<paragraph><comment1:start></comment1:start><$text bold="true">    </$text>' +
-					'<comment1:end></comment1:end></paragraph>';
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
-			expectIsEmpty( false, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
-				} );
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
 			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
-			expectIsEmpty( false, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
-				} );
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-				return '<paragraph><comment1:start></comment1:start></paragraph>';
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
 			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
 		} );
 
-		it( 'should return false for empty text with marker (usingOperation=false, affectsData=true)', () => {
-			expectIsEmpty( false, '<paragraph></paragraph>', root => {
-				model.enqueueChange( 'transparent', writer => {
-					// Insert empty text.
-					const text = writer.createText( '    ', { bold: true } );
-					writer.append( text, root.getChild( 0 ) );
+		it( 'should return true (trimWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-					// Insert marker.
-					const range = ModelRange._createIn( root.getChild( 0 ) );
-					writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
-				} );
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
 
-				return '<paragraph><comment1:start></comment1:start><$text bold="true">    </$text>' +
-					'<comment1:end></comment1:end></paragraph>';
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
 			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.true;
 		} );
-
-		function expectIsEmpty( isEmpty, modelData, modifyModel ) {
-			setData( model, modelData );
-
-			const root = model.document.getRoot();
-
-			let expectedModel = modelData;
-			if ( modifyModel ) {
-				expectedModel = modifyModel( root );
-			}
-
-			expect( stringify( root, null, model.markers ) ).to.equal( expectedModel );
-
-			// Test by passing element.
-			expect( model.isEmpty( root ) ).to.equal( !!isEmpty );
-			// Test by passing range.
-			expect( model.isEmpty( ModelRange._createIn( root ) ) ).to.equal( !!isEmpty );
-		}
 	} );
 
 	describe( 'createPositionFromPath()', () => {

@@ -455,7 +455,7 @@ export default class Model {
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @returns {Boolean}
 	 */
-	hasContent( rangeOrElement ) {
+	hasContent( rangeOrElement, options ) {
 		if ( rangeOrElement instanceof ModelElement ) {
 			rangeOrElement = ModelRange._createIn( rangeOrElement );
 		}
@@ -464,57 +464,31 @@ export default class Model {
 			return false;
 		}
 
+		// Check if there are any markers which affects data in this given range.
+		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( rangeOrElement ) ) {
+			if ( intersectingMarker.affectsData ) {
+				return true;
+			}
+		}
+
+		const { trimWhitespaces = false } = options || {};
+
 		for ( const item of rangeOrElement.getItems() ) {
 			// Remember, `TreeWalker` returns always `textProxy` nodes.
-			if ( item.is( 'textProxy' ) || this.schema.isObject( item ) ) {
+			if ( item.is( 'textProxy' ) ) {
+				if ( !trimWhitespaces ) {
+					return true;
+				} else if ( item.data.match( /\S+/gi ) !== null ) {
+					return true;
+				}
+			}
+
+			if ( this.schema.isObject( item ) ) {
 				return true;
 			}
 		}
 
 		return false;
-	}
-
-	/**
-	 * Checks whether the given {@link module:engine/model/range~Range range} or
-	 * {@link module:engine/model/element~Element element} is considered empty.
-	 *
-	 * The range or element is considered non-empty if it contains any:
-	 * 		* EmptyElement
-	 * 		* Text node containing at least one non-whitepsace character
-	 * 		* Non-plain `ContainerElement` (for example widget)
-	 * 		* Non-plain `AttributeElement` (for example comment)
-	 *
-	 * 	This method should be used to check if the element/range/editor contains any printable/meaningful content.
-	 * 	It is also the correct method to check if editor is empty.
-	 *
-	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
-	 * @returns {Boolean}
-	 */
-	isEmpty( rangeOrElement ) {
-		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange._createIn( rangeOrElement );
-		}
-
-		if ( rangeOrElement.isCollapsed ) {
-			return true;
-		}
-
-		// Check if there are any markers which affects data in this given range.
-		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( rangeOrElement ) ) {
-			if ( intersectingMarker.affectsData ) {
-				return false;
-			}
-		}
-
-		for ( const item of rangeOrElement.getItems() ) {
-			if ( item.is( 'textProxy' ) && item.data.match( /\S+/gi ) !== null ) {
-				return false;
-			} else if ( this.schema.isObject( item ) || item.is( 'emptyElement' ) ) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	/**
