@@ -32,22 +32,26 @@ Some CSP directives have an impact on certain rich text editor features. Here is
 	**Note**: To use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/), include the `http://*.cke-cs.com` domain in the `connect-src` directive, for instance, `connect-src 'self' http://*.cke-cs.com`.
 * `script-src 'self'`: allows the execution of JavaScript from the current host only and can be applied only if the CKEditor 5 script file (`<script src="[ckeditor-build-path]/ckeditor.js"></script>`) is also served from that host.
 
-    **Note**: If CKEditor 5 is served from another host, for instance, the {@link builds/guides/integration/installation#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
+	**Note**: If CKEditor 5 is served from another host, for instance, the {@link builds/guides/integration/installation#cdn official CDN}, make sure the value of `script-src` includes that host (`script-src 'self' https://cdn.ckeditor.com`).
 * `img-src * data:`
 	* The `*` directive value allows images in the editor content to come from any hosts.
 	* The `data:` value allows:
 		* pasting {@link features/image-upload images from the clipboard} and {@link features/paste-from-word from Word} into editor content. Pasted images are usually represented as Base64–encoded strings (`<img src="data:..." />`) and without `data:` they cannot be displayed and uploaded.
 		* displaying the {@link features/media-embed Media embed} feature placeholders for the inserted media.
 
-    **Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed Media embed} and {@link features/paste-from-word Paste from Word} features.
+	**Note**: Use the more strict `img-src 'self'` if all images in the editor content are hosted from the same domain and you do **not** want to enable the {@link features/media-embed Media embed} and {@link features/paste-from-word Paste from Word} features.
 * `style-src 'self' 'unsafe-inline'`: `'unsafe-inline'` is necessary for:
 	* webpack's [style-loader](https://github.com/webpack-contrib/style-loader) to load {@link framework/guides/theme-customization#styles-processing-and-bundling editor UI styles}.
 
-    **Note**: You can {@link builds/guides/integration/advanced-setup#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
+	**Note**: You can {@link builds/guides/integration/advanced-setup#option-extracting-css extract styles to a separate `.css` file} during the editor building process and remove this directive.
 	* certain editor content styles to work properly. For instance, you are going to need it if you want to enable editor features like {@link features/font Font} or {@link features/text-alignment Text alignment} or any other feature that uses inline `style="..."` attributes in the content.
 * `frame-src *`: Necessary for the {@link features/media-embed Media embed} feature to load media with previews (containing `<iframe>`).
 
-    **Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
+	**Note**: Use the more strict `frame-src 'self'` if all the media in the edited content come from the same domain as your application.
+
+<info-box>
+	A different set of Content Security Policy directives might be necessary to run {@link features/ckfinder CKFinder} along with CKEditor 5. Check out the file manager [documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/guide/dev_integration-section-csp-directives-required-by-ckfinder) to learn more.
+</info-box>
 
 ## Strictest working configuration
 
