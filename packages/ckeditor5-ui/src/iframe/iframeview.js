@@ -12,6 +12,17 @@ import View from '../view';
 /**
  * The iframe view class.
  *
+ * 		const iframe = new IframeView();
+ *
+ *		iframe.render();
+ *		document.body.appendChild( iframe.element );
+ *
+ * 		iframe.on( 'loaded', () => {
+ *			console.log( 'The iframe has loaded', iframe.element.contentWindow );
+ *		} );
+ *
+ * 		iframe.element.src = 'https://ckeditor.com';
+ *
  * @extends module:ui/view~View
  */
 export default class IframeView extends View {
