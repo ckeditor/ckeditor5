@@ -627,7 +627,7 @@ class LiveSelection extends Selection {
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
-			if ( operation.type === 'marker' || operation.type === 'rename' || operation.type === 'noop' ) {
+			if ( !operation.isDocumentOperation || operation.type == 'marker' || operation.type == 'rename' || operation.type == 'noop' ) {
 				return;
 			}
 
