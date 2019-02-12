@@ -11,7 +11,7 @@ This article will help you learn how to quickly extend (customize) the content p
 
 ## Basics of editor conversion
 
-TODO (converters, pipelines, block elements, inline attributes)
+TODO (converters, pipelines, block elements, inline attributes).
 
 ## Examples
 
@@ -314,4 +314,69 @@ Add some CSS styles for `.my-heading` to see the customization in action:
 }
 ```
 
-### Enabling custom attributes in the editor input ("upcast")
+### Loading custom content into the editor ("upcast")
+
+TODO.
+
+#### Loading a content with a custom attribute
+
+In this example links (`<a href="...">...</a>`) loaded in editor content will preserve their `target` attribute, which is not supported by the {@link features/link Link} feature. The DOM `target` attribute will be stored in the editor model as a `linkTarget` attribute.
+
+Unlike the [downcast–only solution](#adding-an-html-attribute-to-certain-inline-elements), this approach does not change the content loaded into the editor. Links without the `target` attribute will not get one and links with the attribute will preserve its value.
+
+##### Demo
+
+{@snippet framework/extending-content-allow-link-target}
+
+##### Code
+
+Allowing the `target` attribute in the editor is made by two custom converters plugged into the downcast and upcast pipelines, following the default converters brought by the {@link features/link Link} feature:
+
+```js
+function AllowLinkTarget( editor ) {
+	// Allow the "linkTarget" attribute in the editor model.
+	editor.model.schema.extend( '$text', { allowAttributes: 'linkTarget' } );
+
+	// Tell the editor that the model "linkTarget" attribute converts into <a target="..."></a>
+	editor.conversion.for( 'downcast' ).attributeToElement( {
+		model: 'linkTarget',
+		view: ( attributeValue, writer ) => {
+			return writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
+		},
+		converterPriority: 'low'
+	} );
+
+	// Tell the editor that <a target="..."></a> converts into "linkTarget" attribute in the model.
+	editor.conversion.for( 'upcast' ).attributeToAttribute( {
+		view: {
+			name: 'a',
+			key: 'target'
+		},
+		model: 'linkTarget',
+		converterPriority: 'low'
+	} );
+}
+```
+
+Activate the plugin in the editor:
+
+```js
+ClassicEditor
+	.create( ..., {
+		extraPlugins: [ AllowLinkTarget ],
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
+
+Add some CSS styles for links with `target="_blank"` to mark them with with the "&#10697;" symbol:
+
+```css
+a[target="_blank"]::after {
+	content: '\29C9';
+}
+```
