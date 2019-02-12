@@ -39,8 +39,8 @@ describe( 'DataController', () => {
 
 		data = new DataController( model, htmlDataProcessor );
 
-		upcastHelpers = new UpcastHelpers( data.upcastDispatcher );
-		downcastHelpers = new DowncastHelpers( data.downcastDispatcher );
+		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
+		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
 
 	describe( 'constructor()', () => {

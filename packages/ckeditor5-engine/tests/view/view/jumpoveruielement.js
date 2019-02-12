@@ -62,7 +62,7 @@ describe( 'View', () => {
 	} );
 
 	function renderAndFireKeydownEvent( options ) {
-		view.render();
+		view.forceRender();
 
 		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) }, options );
 		viewDocument.fire( 'keydown', eventData );

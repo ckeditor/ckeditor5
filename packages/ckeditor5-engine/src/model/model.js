@@ -714,8 +714,10 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire internal `_change` event.
+			// Fire '_change' event before resetting differ.
 			this.fire( '_change', this._currentWriter );
+
+			this.document._handleChangeBlock( this._currentWriter );
 
 			this._pendingChanges.shift();
 			this._currentWriter = null;
@@ -732,6 +734,7 @@ export default class Model {
 	 *
 	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
 	 *
+	 * @deprecated
 	 * @protected
 	 * @event _change
 	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.

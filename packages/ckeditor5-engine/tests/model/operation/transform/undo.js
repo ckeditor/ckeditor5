@@ -527,4 +527,51 @@ describe( 'transform', () => {
 			'<paragraph>B<m1:end></m1:end>ar</paragraph>'
 		);
 	} );
+
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1668
+	it( 'marker and moves with undo-redo-undo', () => {
+		john.setData( '<paragraph>X[]Y</paragraph>' );
+
+		const inputBufferBatch = john.editor.commands.get( 'input' ).buffer.batch;
+
+		john.editor.model.enqueueChange( inputBufferBatch, () => {
+			john.type( 'a' );
+			john.type( 'b' );
+			john.type( 'c' );
+
+			john.setSelection( [ 0, 1 ], [ 0, 4 ] );
+			john.setMarker( 'm1' );
+		} );
+
+		expectClients( '<paragraph>X<m1:start></m1:start>abc<m1:end></m1:end>Y</paragraph>' );
+
+		john.setSelection( [ 0, 0 ], [ 0, 5 ] );
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>X<m1:start></m1:start>abc<m1:end></m1:end>Y</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>XY</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph>X<m1:start></m1:start>abc<m1:end></m1:end>Y</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>X<m1:start></m1:start>abc<m1:end></m1:end>Y</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>XY</paragraph>' );
+	} );
 } );

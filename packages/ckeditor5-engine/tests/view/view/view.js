@@ -119,6 +119,19 @@ describe( 'view', () => {
 			expect( view._renderer.markedChildren.has( viewH1 ) ).to.be.true;
 		} );
 
+		it( 'should handle the "contenteditable" attribute management on #isReadOnly change', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+
+			viewRoot.isReadOnly = false;
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+
+			viewRoot.isReadOnly = true;
+			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+		} );
+
 		it( 'should call observe on each observer', () => {
 			// The variable will be overwritten.
 			view.destroy();
@@ -141,6 +154,73 @@ describe( 'view', () => {
 
 			sinon.assert.calledOnce( observerMock.observe );
 			sinon.assert.calledOnce( observerMockGlobalCount.observe );
+		} );
+	} );
+
+	describe( 'detachDomRoot()', () => {
+		it( 'should remove DOM root and unbind DOM element', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+			expect( count( view.domRoots ) ).to.equal( 1 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
+
+			view.detachDomRoot( 'main' );
+			expect( count( view.domRoots ) ).to.equal( 0 );
+			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.be.undefined;
+
+			domDiv.remove();
+		} );
+
+		it( 'should restore the DOM root attributes to the state before attachDomRoot()', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'data-baz', 'qux' );
+			domDiv.classList.add( 'foo-class' );
+
+			view.attachDomRoot( domDiv );
+
+			view.change( writer => {
+				writer.addClass( 'addedClass', viewRoot );
+				writer.setAttribute( 'added-attribute', 'foo', viewRoot );
+				writer.setAttribute( 'foo', 'changed the value', viewRoot );
+			} );
+
+			view.detachDomRoot( 'main' );
+
+			const attributes = {};
+
+			for ( const attribute of Array.from( domDiv.attributes ) ) {
+				attributes[ attribute.name ] = attribute.value;
+			}
+
+			expect( attributes ).to.deep.equal( {
+				foo: 'bar',
+				'data-baz': 'qux',
+				class: 'foo-class'
+			} );
+
+			domDiv.remove();
+		} );
+
+		it( 'should remove the "contenteditable" attribute from the DOM root', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+			view.forceRender();
+
+			viewRoot.isReadOnly = false;
+			expect( domDiv.getAttribute( 'contenteditable' ) ).to.equal( 'true' );
+
+			view.detachDomRoot( 'main' );
+
+			expect( domDiv.hasAttribute( 'contenteditable' ) ).to.be.false;
+
+			domDiv.remove();
 		} );
 	} );
 
@@ -204,7 +284,7 @@ describe( 'view', () => {
 
 		it( 'should be disabled and re-enabled on render', () => {
 			const observerMock = view.addObserver( ObserverMock );
-			view.render();
+			view.forceRender();
 
 			sinon.assert.calledOnce( observerMock.disable );
 			sinon.assert.calledOnce( view._renderer.render );
@@ -260,15 +340,15 @@ describe( 'view', () => {
 
 			view.attachDomRoot( domRoot );
 
+			view.change( writer => {
+				writer.setSelection( range );
+			} );
+
 			// Make sure the window will have to scroll to the domRoot.
 			Object.assign( domRoot.style, {
 				position: 'absolute',
 				top: '-1000px',
 				left: '-1000px'
-			} );
-
-			view.change( writer => {
-				writer.setSelection( range );
 			} );
 
 			view.scrollToTheSelection();
@@ -327,7 +407,7 @@ describe( 'view', () => {
 
 		it( 'should focus editable with selection', () => {
 			const converterFocusSpy = testUtils.sinon.spy( view.domConverter, 'focus' );
-			const renderSpy = testUtils.sinon.spy( view, 'render' );
+			const renderSpy = testUtils.sinon.spy( view, 'forceRender' );
 
 			view.focus();
 
@@ -344,7 +424,7 @@ describe( 'view', () => {
 
 		it( 'should not focus if document is already focused', () => {
 			const converterFocusSpy = testUtils.sinon.spy( view.domConverter, 'focus' );
-			const renderSpy = testUtils.sinon.spy( view, 'render' );
+			const renderSpy = testUtils.sinon.spy( view, 'forceRender' );
 			viewDocument.isFocused = true;
 
 			view.focus();
@@ -377,28 +457,41 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'render()', () => {
+	describe( 'forceRender()', () => {
 		it( 'disable observers, renders and enable observers', () => {
 			const observerMock = view.addObserver( ObserverMock );
 			const renderStub = sinon.stub( view._renderer, 'render' );
 
-			view.render();
+			view.forceRender();
 
 			sinon.assert.callOrder( observerMock.disable, renderStub, observerMock.enable );
 		} );
 
-		it( 'should fire view.document.layoutChanged event on render', () => {
-			const spy = sinon.spy();
+		it( 'should fire `render` and `layoutChanged` even if there were no changes', () => {
+			const renderSpy = sinon.spy();
+			const layoutChangedSpy = sinon.spy();
 
-			view.document.on( 'layoutChanged', spy );
+			view.on( 'render', renderSpy );
+			view.document.on( 'layoutChanged', layoutChangedSpy );
 
-			view.render();
+			view.forceRender();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( layoutChangedSpy );
+		} );
 
-			view.render();
+		it( 'should fire `render` and `layoutChanged` if there is some buffered change', () => {
+			const renderSpy = sinon.spy();
+			const layoutChangedSpy = sinon.spy();
 
-			sinon.assert.calledTwice( spy );
+			view.on( 'render', renderSpy );
+			view.document.on( 'layoutChanged', layoutChangedSpy );
+
+			view.document.selection._setTo( null );
+			view.forceRender();
+
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( layoutChangedSpy );
 		} );
 	} );
 
@@ -414,7 +507,7 @@ describe( 'view', () => {
 
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
-			view.render();
+			view.forceRender();
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
 			expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
@@ -432,7 +525,7 @@ describe( 'view', () => {
 			view.attachDomRoot( domDiv );
 
 			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
-			view.render();
+			view.forceRender();
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
 			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
@@ -451,13 +544,13 @@ describe( 'view', () => {
 
 			const viewP = new ViewElement( 'p', { class: 'foo' } );
 			viewRoot._appendChild( viewP );
-			view.render();
+			view.forceRender();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'foo' );
 
 			viewP._setAttribute( 'class', 'bar' );
-			view.render();
+			view.forceRender();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'bar' );
@@ -503,7 +596,7 @@ describe( 'view', () => {
 				} ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
 			} );
 
-			view.render();
+			view.forceRender();
 			domDiv.remove();
 		} );
 
@@ -513,7 +606,9 @@ describe( 'view', () => {
 
 			view.on( 'render', eventSpy );
 
-			view.change( () => {} );
+			view.change( writer => {
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.callOrder( renderSpy, eventSpy );
 		} );
@@ -521,16 +616,24 @@ describe( 'view', () => {
 		it( 'should fire render event once for nested change blocks', () => {
 			const renderSpy = sinon.spy( view._renderer, 'render' );
 			const eventSpy = sinon.spy();
+			const viewEditable = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.on( 'render', eventSpy );
 
-			view.change( () => {
-				view.change( () => {} );
-				view.change( () => {
-					view.change( () => {} );
-					view.change( () => {} );
+			view.change( writer => {
+				writer.setSelection( null );
+				view.change( writer => {
+					writer.setSelection( viewEditable, 0 );
 				} );
-				view.change( () => {} );
+				view.change( writer => {
+					writer.setSelection( null );
+					view.change( writer => {
+						writer.setSelection( viewEditable, 0 );
+					} );
+				} );
+				view.change( writer => {
+					writer.setSelection( null );
+				} );
 			} );
 
 			sinon.assert.calledOnce( renderSpy );
@@ -545,11 +648,12 @@ describe( 'view', () => {
 			view.on( 'render', eventSpy );
 
 			view.change( () => {
-				view.render();
-				view.change( () => {
-					view.render();
+				view.forceRender();
+				view.change( writer => {
+					writer.setSelection( null );
+					view.forceRender();
 				} );
-				view.render();
+				view.forceRender();
 			} );
 
 			sinon.assert.calledOnce( renderSpy );
@@ -567,7 +671,10 @@ describe( 'view', () => {
 			viewDocument.registerPostFixer( postFixer2 );
 			view.on( 'render', eventSpy );
 
-			view.change( changeSpy );
+			view.change( writer => {
+				changeSpy();
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.calledOnce( postFixer1 );
 			sinon.assert.calledOnce( postFixer2 );
@@ -598,7 +705,10 @@ describe( 'view', () => {
 			} );
 			view.on( 'render', eventSpy );
 
-			view.change( changeSpy );
+			view.change( writer => {
+				changeSpy();
+				writer.setSelection( null );
+			} );
 
 			sinon.assert.calledOnce( postFixer1 );
 			sinon.assert.calledOnce( postFixer2 );
