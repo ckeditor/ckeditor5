@@ -27,7 +27,8 @@ module.exports = function snippetAdapter( data ) {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		production: data.options.production
+		production: data.options.production,
+		templateCommentLoaderConfig: data.options.templateCommentLoaderConfig || {}
 	} );
 
 	let promise;
@@ -151,7 +152,12 @@ function getWebpackConfig( config ) {
 							} )
 						}
 					]
-				}
+				},
+				{
+					test: /\.js$/,
+					loader: require.resolve( './template-comment-loader' ),
+					query: config.templateCommentLoaderConfig
+				},
 			]
 		}
 	};
