@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,6 +8,8 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import UpcastHelpers from './upcasthelpers';
+import DowncastHelpers from './downcasthelpers';
 
 /**
  * A utility class that helps add converters to upcast and downcast dispatchers.
@@ -15,7 +17,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * We recommend reading the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide first to
  * understand the core concepts of the conversion mechanisms.
  *
- * The instance of the conversion manager is available in the
+ * An instance of the conversion manager is available in the
  * {@link module:core/editor/editor~Editor#conversion `editor.conversion`} property
  * and by default has the following groups of dispatchers (i.e. directions of conversion):
  *
@@ -56,44 +58,68 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default class Conversion {
 	/**
 	 * Creates a new conversion instance.
+	 *
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher>} downcastDispatchers
+	 * @param {module:engine/conversion/upcastdispatcher~UpcastDispatcher|
+	 * Array.<module:engine/conversion/upcastdispatcher~UpcastDispatcher>} upcastDispatchers
 	 */
-	constructor() {
+	constructor( downcastDispatchers, upcastDispatchers ) {
 		/**
+		 * Maps dispatchers group name to ConversionHelpers instances.
+		 *
 		 * @private
-		 * @member {Map}
+		 * @member {Map.<String,module:engine/conversion/conversionhelpers~ConversionHelpers>}
 		 */
-		this._conversionHelpers = new Map();
+		this._helpers = new Map();
+
+		// Define default 'downcast' & 'upcast' dispatchers groups. Those groups are always available as two-way converters needs them.
+		this._downcast = Array.isArray( downcastDispatchers ) ? downcastDispatchers : [ downcastDispatchers ];
+		this._createConversionHelpers( { name: 'downcast', dispatchers: this._downcast, isDowncast: true } );
+
+		this._upcast = Array.isArray( upcastDispatchers ) ? upcastDispatchers : [ upcastDispatchers ];
+		this._createConversionHelpers( { name: 'upcast', dispatchers: this._upcast, isDowncast: false } );
 	}
 
 	/**
-	 * Registers one or more converters under a given group name. The group name can then be used to assign a converter
-	 * to multiple dispatchers at once.
+	 * Define an alias for registered dispatcher.
 	 *
-	 * If a given group name is used for the second time, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
+	 *		const conversion = new Conversion(
+	 *			[ dataDowncastDispatcher, editingDowncastDispatcher ],
+	 *			upcastDispatcher
+	 *		);
 	 *
-	 * @param {String} name The name for dispatchers group.
-	 * @param {module:engine/conversion/downcasthelpers~DowncastHelpers|
-	 * module:engine/conversion/upcasthelpers~UpcastHelpers} conversionHelpers
+	 *		conversion.addAlias( 'dataDowncast', dataDowncastDispatcher );
+	 *
+	 * @param {String} alias An alias of a dispatcher.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher} dispatcher Dispatcher which should have an alias.
 	 */
-	register( name, conversionHelpers ) {
-		if ( this._conversionHelpers.has( name ) ) {
+	addAlias( alias, dispatcher ) {
+		const isDowncast = this._downcast.includes( dispatcher );
+		const isUpcast = this._upcast.includes( dispatcher );
+
+		if ( !isUpcast && !isDowncast ) {
 			/**
-			 * Trying to register a group name that was already registered.
+			 * Trying to register and alias for a dispatcher that nas not been registered.
 			 *
-			 * @error conversion-register-group-exists
+			 * @error conversion-add-alias-dispatcher-not-registered
 			 */
-			throw new CKEditorError( 'conversion-register-group-exists: Trying to register a group name that was already registered.' );
+			throw new CKEditorError( 'conversion-add-alias-dispatcher-not-registered: ' +
+				'Trying to register and alias for a dispatcher that nas not been registered.' );
 		}
 
-		this._conversionHelpers.set( name, conversionHelpers );
+		this._createConversionHelpers( { name: alias, dispatchers: [ dispatcher ], isDowncast } );
 	}
 
 	/**
-	 * Provides a chainable API to assign converters to conversion dispatchers.
+	 * Provides a chainable API to assign converters to conversion dispatchers group.
+	 *
+	 * If the given group name has not been registered, the
+	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
 	 * You can use conversion helpers available directly in the `for()` chain or your custom ones via
-	 * the {@link module:engine/conversion/conversion~ConversionHelpers#add `add()`} method.
+	 * the {@link module:engine/conversion/conversionhelpers~ConversionHelpers#add `add()`} method.
 	 *
 	 * # Using bulit-in conversion helpers
 	 *
@@ -148,7 +174,16 @@ export default class Conversion {
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	for( groupName ) {
-		return this._getConversionHelpers( groupName );
+		if ( !this._helpers.has( groupName ) ) {
+			/**
+			 * Trying to add a converter to an unknown dispatchers group.
+			 *
+			 * @error conversion-for-unknown-group
+			 */
+			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+		}
+
+		return this._helpers.get( groupName );
 	}
 
 	/**
@@ -534,26 +569,28 @@ export default class Conversion {
 	}
 
 	/**
-	 * Returns conversion helpers registered under a given name.
-	 *
-	 * If the given group name has not been registered, the
-	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
+	 * Creates and caches conversion helpers for given dispatchers group.
 	 *
 	 * @private
-	 * @param {String} groupName
-	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
+	 * @param {Object} options
+	 * @param {String} options.name Group name.
+	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} options.dispatchers
+	 * @param {Boolean} options.isDowncast
 	 */
-	_getConversionHelpers( groupName ) {
-		if ( !this._conversionHelpers.has( groupName ) ) {
+	_createConversionHelpers( { name, dispatchers, isDowncast } ) {
+		if ( this._helpers.has( name ) ) {
 			/**
-			 * Trying to add a converter to an unknown dispatchers group.
+			 * Trying to register a group name that has already been registered.
 			 *
-			 * @error conversion-for-unknown-group
+			 * @error conversion-group-exists
 			 */
-			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+			throw new CKEditorError( 'conversion-group-exists: Trying to register a group name that has already been registered.' );
 		}
 
-		return this._conversionHelpers.get( groupName );
+		const helpers = isDowncast ? new DowncastHelpers( dispatchers ) : new UpcastHelpers( dispatchers );
+
+		this._helpers.set( name, helpers );
 	}
 }
 
@@ -601,51 +638,6 @@ function* _getUpcastDefinition( model, view, upcastAlso ) {
 
 		for ( const upcastAlsoItem of upcastAlso ) {
 			yield { model, view: upcastAlsoItem };
-		}
-	}
-}
-
-/**
- * Base class for conversion helpers.
- */
-export class ConversionHelpers {
-	/**
-	 * Creates `ConversionHelpers` instance.
-	 *
-	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatcher
-	 */
-	constructor( dispatcher ) {
-		this._dispatchers = Array.isArray( dispatcher ) ? dispatcher : [ dispatcher ];
-	}
-
-	/**
-	 * Registers a conversion helper.
-	 *
-	 * **Note**: See full usage example in the `{@link module:engine/conversion/conversion~Conversion#for conversion.for()}`
-	 * method description.
-	 *
-	 * @param {Function} conversionHelper The function to be called on event.
-	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers|module:engine/conversion/upcasthelpers~UpcastHelpers}
-	 */
-	add( conversionHelper ) {
-		this._addToDispatchers( conversionHelper );
-
-		return this;
-	}
-
-	/**
-	 * Helper function for the `Conversion` `.add()` method.
-	 *
-	 * Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
-	 * adding converters to all specified dispatchers.
-	 *
-	 * @private
-	 * @param {Function} conversionHelper
-	 */
-	_addToDispatchers( conversionHelper ) {
-		for ( const dispatcher of this._dispatchers ) {
-			conversionHelper( dispatcher );
 		}
 	}
 }

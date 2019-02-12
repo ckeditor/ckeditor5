@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -606,6 +606,23 @@ export default class Selection {
 		const nodeBeforeEnd = range.end.nodeBefore;
 
 		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+	}
+
+	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new Selection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection';
 	}
 
 	/**

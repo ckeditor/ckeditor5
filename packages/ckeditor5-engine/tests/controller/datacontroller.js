@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -39,8 +39,8 @@ describe( 'DataController', () => {
 
 		data = new DataController( model, htmlDataProcessor );
 
-		upcastHelpers = new UpcastHelpers( data.upcastDispatcher );
-		downcastHelpers = new DowncastHelpers( data.downcastDispatcher );
+		upcastHelpers = new UpcastHelpers( [ data.upcastDispatcher ] );
+		downcastHelpers = new DowncastHelpers( [ data.downcastDispatcher ] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -158,6 +158,16 @@ describe( 'DataController', () => {
 			data.init( 'foo bar' );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
+		} );
+
+		it( 'should fire ready event after init', () => {
+			const spy = sinon.spy();
+
+			data.on( 'ready', spy );
+
+			data.init( 'foo bar' );
+
+			sinon.assert.called( spy );
 		} );
 
 		it( 'should throw an error when document data is already initialized', () => {

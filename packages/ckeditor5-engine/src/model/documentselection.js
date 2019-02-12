@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -360,6 +360,24 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/model/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new DocumentSelection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection' || type == 'documentSelection';
+	}
+
+	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
@@ -580,7 +598,7 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
-		// Add events that will ensure selection correctness.
+		// Ensure selection is correct and up to date after each range change.
 		this.on( 'change:range', () => {
 			for ( const range of this.getRanges() ) {
 				if ( !this._document._validateSelectionRange( range ) ) {
@@ -597,20 +615,22 @@ class LiveSelection extends Selection {
 					);
 				}
 			}
-		} );
 
-		this.listenTo( this._document, 'change', ( evt, batch ) => {
-			// Update selection's markers.
 			this._updateMarkers();
-
-			// Update selection's attributes.
 			this._updateAttributes( false );
-
-			// Clear selection attributes from element if no longer empty.
-			clearAttributesStoredInElement( this._model, batch );
 		} );
 
-		this.listenTo( this._model, 'applyOperation', () => {
+		// Update markers data stored by the selection after each marker change.
+		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
+
+		// Ensure selection is correct and up to date after each operation.
+		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			if ( !operation.isDocumentOperation || operation.type == 'marker' || operation.type == 'rename' || operation.type == 'noop' ) {
+				return;
+			}
+
 			while ( this._fixGraveyardRangesData.length ) {
 				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
 
@@ -619,10 +639,17 @@ class LiveSelection extends Selection {
 
 			if ( this._hasChangedRange ) {
 				this._hasChangedRange = false;
-
 				this.fire( 'change:range', { directChange: false } );
 			}
+
+			this._updateMarkers();
+			this._updateAttributes( false );
 		}, { priority: 'lowest' } );
+
+		// Clear selection attributes from element if no longer empty.
+		this.listenTo( this._document, 'change', ( evt, batch ) => {
+			clearAttributesStoredInElement( this._model, batch );
+		} );
 	}
 
 	get isCollapsed() {
@@ -1017,10 +1044,9 @@ class LiveSelection extends Selection {
 					break;
 				}
 
-				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
-				// It can be done better by using `break;` instead of checking `attrs === null`.
-				if ( value.type == 'text' && attrs === null ) {
+				if ( value.type == 'text' ) {
 					attrs = value.item.getAttributes();
+					break;
 				}
 			}
 		} else {

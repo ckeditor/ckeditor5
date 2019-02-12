@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -149,6 +149,15 @@ export default class Differ {
 			case 'remove':
 			case 'move':
 			case 'reinsert': {
+				// When range is moved to the same position then not mark it as a change.
+				// See: https://github.com/ckeditor/ckeditor5-engine/issues/1664.
+				if (
+					operation.sourcePosition.isEqual( operation.targetPosition ) ||
+					operation.sourcePosition.getShiftedBy( operation.howMany ).isEqual( operation.targetPosition )
+				) {
+					return;
+				}
+
 				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
 				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
 
@@ -290,6 +299,23 @@ export default class Differ {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Returns all markers which changed.
+	 *
+	 * @returns {Array.<Object>}
+	 */
+	getChangedMarkers() {
+		return Array.from( this._changedMarkers ).map( item => (
+			{
+				name: item[ 0 ],
+				data: {
+					oldRange: item[ 1 ].oldRange,
+					newRange: item[ 1 ].newRange
+				}
+			}
+		) );
 	}
 
 	/**

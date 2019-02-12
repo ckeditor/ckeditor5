@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Matcher from '../view/matcher';
 import ModelRange from '../model/range';
-import { ConversionHelpers } from './conversion';
+import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
 import ModelSelection from '../model/selection';
@@ -20,7 +20,7 @@ import ModelSelection from '../model/selection';
 /**
  * Upcast conversion helper functions.
  *
- * @extends module:engine/conversion/conversion~ConversionHelpers
+ * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
 export default class UpcastHelpers extends ConversionHelpers {
 	/**

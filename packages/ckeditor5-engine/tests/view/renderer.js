@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -3224,7 +3224,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Unwrap italic attribute element.
 			view.change( writer => {
@@ -3234,7 +3234,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
@@ -3250,7 +3250,7 @@ describe( 'Renderer', () => {
 				'</container:p>' );
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Unwrap italic attribute element and change text inside.
 			view.change( writer => {
@@ -3261,7 +3261,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
@@ -3274,7 +3274,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
@@ -3287,7 +3287,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -3300,7 +3300,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
@@ -3313,7 +3313,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -3330,7 +3330,7 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			view.render();
+			view.forceRender();
 
 			// Remove first element and reinsert it at the end.
 			const container = viewRoot.getChild( 0 );
@@ -3344,7 +3344,7 @@ describe( 'Renderer', () => {
 			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
-			view.render();
+			view.forceRender();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );

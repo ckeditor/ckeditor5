@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -487,6 +487,24 @@ describe( 'DocumentSelection', () => {
 			const p = root.getChild( 0 );
 
 			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+	} );
+
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( selection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return true for documentSelection', () => {
+			expect( selection.is( 'documentSelection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( selection.is( 'node' ) ).to.be.false;
+			expect( selection.is( 'text' ) ).to.be.false;
+			expect( selection.is( 'textProxy' ) ).to.be.false;
+			expect( selection.is( 'element' ) ).to.be.false;
+			expect( selection.is( 'rootElement' ) ).to.be.false;
 		} );
 	} );
 
@@ -1120,6 +1138,70 @@ describe( 'DocumentSelection', () => {
 			selection._restoreGravity( overrideUidB );
 
 			expect( selection.isGravityOverridden ).to.false;
+		} );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1673
+	describe( 'refreshing selection data', () => {
+		it( 'should be up to date when post fixers are called', done => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const p = doc.getRoot().getChild( 0 );
+
+			doc.registerPostFixer( () => {
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker' ] );
+				done();
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'abcdef', { foo: 'bar' }, p );
+
+				writer.addMarker( 'marker', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
+			} );
+		} );
+
+		it( 'should be up to date when post fixers have changed the data', () => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const p = doc.getRoot().getChild( 0 );
+
+			doc.registerPostFixer( writer => {
+				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
+				writer.removeMarker( 'marker-1' );
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'abcdef', { foo: 'bar' }, p );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
+			} );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
+			expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
 		} );
 	} );
 

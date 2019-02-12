@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -272,6 +272,24 @@ export default class DocumentSelection {
 	 */
 	isSimilar( otherSelection ) {
 		return this._selection.isSimilar( otherSelection );
+	}
+
+	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new DocumentSelection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection' || type == 'documentSelection';
 	}
 
 	/**

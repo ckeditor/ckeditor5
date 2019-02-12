@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,7 +9,7 @@ import ModelElement from '../model/element';
 
 import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
-import { ConversionHelpers } from './conversion';
+import ConversionHelpers from './conversionhelpers';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import { cloneDeep } from 'lodash-es';
@@ -23,7 +23,7 @@ import { cloneDeep } from 'lodash-es';
 /**
  * Downcast conversion helper functions.
  *
- * @extends module:engine/conversion/conversion~ConversionHelpers
+ * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
 export default class DowncastHelpers extends ConversionHelpers {
 	/**

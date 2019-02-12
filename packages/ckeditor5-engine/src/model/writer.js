@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -504,13 +504,12 @@ export default class Writer {
 		this._assertWriterUsedCorrectly();
 
 		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
-
-		// If part of the marker is removed, create additional marker operation for undo purposes.
-		this._addOperationForAffectedMarkers( 'move', rangeToRemove );
-
 		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
+			// If part of the marker is removed, create additional marker operation for undo purposes.
+			this._addOperationForAffectedMarkers( 'move', flat );
+
 			applyRemoveOperation( flat.start, flat.end.offset - flat.start.offset, this.batch, this.model );
 		}
 	}
@@ -1318,13 +1317,11 @@ export default class Writer {
 			let isAffected = false;
 
 			if ( type == 'move' ) {
-				const intersecting =
+				isAffected =
 					positionOrRange.containsPosition( markerRange.start ) ||
 					positionOrRange.start.isEqual( markerRange.start ) ||
 					positionOrRange.containsPosition( markerRange.end ) ||
 					positionOrRange.end.isEqual( markerRange.end );
-
-				isAffected = intersecting && !positionOrRange.containsRange( markerRange );
 			} else {
 				// if type == 'merge'.
 				const elementBefore = positionOrRange.nodeBefore;

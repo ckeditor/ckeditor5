@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -287,7 +287,7 @@ export default class Node {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this view object is of the given type.
 	 *
 	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
 	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
@@ -300,7 +300,6 @@ export default class Node {
 	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *
-	 * @method #is
 	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
 	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
 	 * @returns {Boolean}

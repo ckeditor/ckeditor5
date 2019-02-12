@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -114,6 +114,9 @@ export default class Document {
 	 *
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
 	 * instance connected with the executed changes block.
+	 *
+	 * Note that registering a post-fixer won't re-render the editor's view. If the view should change after registering the post-fixer then
+	 * it should be done manually calling `view.forceRender();`.
 	 *
 	 * @param {Function} postFixer
 	 */

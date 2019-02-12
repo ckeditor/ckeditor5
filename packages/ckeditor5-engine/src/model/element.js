@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -89,7 +89,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether given model tree object is of given type.
+	 * Checks whether this model object is of the given type.
 	 *
 	 *		obj.name; // 'listItem'
 	 *		obj instanceof Element; // true
@@ -100,7 +100,7 @@ export default class Element extends Node {
 	 *		obj.is( 'text' ); // false
 	 *		obj.is( 'element', 'image' ); // false
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is}.
+	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.

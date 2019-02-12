@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -183,7 +183,7 @@ describe( 'DomEventObserver', () => {
 			view.attachDomRoot( domRoot );
 			uiElement = createUIElement( 'p' );
 			viewRoot._appendChild( uiElement );
-			view.render();
+			view.forceRender();
 
 			domEvent = new MouseEvent( 'click', { bubbles: true } );
 			evtSpy = sinon.spy();
