@@ -232,10 +232,11 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
-		it( 'should display the button when the selection is inside the object', () => {
+		// This test makes no sense now, but so do all other tests here (see https://github.com/ckeditor/ckeditor5/issues/1522).
+		it( 'should not display the button when the selection is inside a limit element', () => {
 			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.be.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
 
 		it( 'should not display the button when the selection is placed in the root element', () => {
