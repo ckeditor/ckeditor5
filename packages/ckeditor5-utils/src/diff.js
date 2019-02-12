@@ -33,7 +33,7 @@ export default function diff( a, b, cmp ) {
 	const bLength = b.length;
 
 	// Perform `fastDiff` for longer strings/arrays (see #269).
-	if ( Math.min( aLength, bLength ) >= 400 && aLength + bLength >= 1300 || aLength + bLength >= 2000 ) {
+	if ( aLength > 200 || bLength > 200 || aLength + bLength > 300 ) {
 		return diff.fastDiff( a, b, cmp, true );
 	}
 
