@@ -635,11 +635,11 @@ describe( 'Input feature', () => {
 					type: 'children',
 					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
 					newChildren: [
-						new ViewText( 'foo&nbsp;' ),
+						new ViewText( 'foo' ),
 						new ViewContainerElement( 'placeholder' ),
-						new ViewText( '&nbsp;bar&nbsp;' ),
+						new ViewText( 'bar' ),
 						new ViewContainerElement( 'placeholder' ),
-						new ViewText( '&nbsp;baz&nbsp;' )
+						new ViewText( 'baz' )
 					],
 					node: viewRoot.getChild( 0 )
 				}
