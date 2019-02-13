@@ -8,7 +8,7 @@
  */
 
 /**
- * Finds position of the first and last change in the given string/array and generates a set of changes:
+ * Finds positions of the first and last change in the given string/array and generates a set of changes:
  *
  *		fastDiff( '12a', '12xyza' );
  *		// [ { index: 2, type: 'insert', values: [ 'x', 'y', 'z' ] } ]
@@ -28,22 +28,16 @@
  * Passed arrays can contain any type of data, however to compare them correctly custom comparator function
  * should be passed as a third parameter:
  *
- * 		fastDiff( [ { value: 1 }, { value: 2 } ], [ { value: 1 }, { value: 3 } ], ( a, b ) => {
- * 			return a.value === b.value;
- * 		} );
- * 		// [ { index: 1, type: 'insert', values: [ { value: 3 } ] }, { index: 2, type: 'delete', howMany: 1 } ]
- *
- * 	By passing `true` as a fourth parameter (`linearChanges`) the output compatible with
- * 	{@link module:utils/diff~diff diff()} function will be returned:
- *
- *		fastDiff( '12a', '12xyza' );
- *		// [ 'equal', 'equal', 'insert', 'insert', 'insert', 'equal' ]
+ *		fastDiff( [ { value: 1 }, { value: 2 } ], [ { value: 1 }, { value: 3 } ], ( a, b ) => {
+ *			return a.value === b.value;
+ *		} );
+ *		// [ { index: 1, type: 'insert', values: [ { value: 3 } ] }, { index: 2, type: 'delete', howMany: 1 } ]
  *
  * The resulted set of changes can be applied to the input in order to transform it into the output, for example:
  *
- * 		let input = '12abc3';
- * 		const output = '2ab';
- * 		const changes = fastDiff( input, output );
+ *		let input = '12abc3';
+ *		const output = '2ab';
+ *		const changes = fastDiff( input, output );
  *
  *		changes.forEach( change => {
  *			if ( change.type == 'insert' ) {
@@ -58,8 +52,8 @@
  * or in case of arrays:
  *
  *		let input = [ '1', '2', 'a', 'b', 'c', '3' ];
- * 		const output = [ '2', 'a', 'b' ];
- * 		const changes = fastDiff( input, output );
+ *		const output = [ '2', 'a', 'b' ];
+ *		const changes = fastDiff( input, output );
  *
  *		changes.forEach( change => {
  *			if ( change.type == 'insert' ) {
@@ -71,17 +65,36 @@
  *
  *		// input equals output now
  *
- * The output format of this function is compatible with {@link module:utils/difftochanges~diffToChanges diffToChanges()}
- * function output format.
+ * By passing `true` as the fourth parameter (`atomicChanges`) the output of this function will become compatible with
+ * the {@link module:utils/diff~diff `diff()`} function:
+ *
+ *		fastDiff( '12a', '12xyza' );
+ *		// [ 'equal', 'equal', 'insert', 'insert', 'insert', 'equal' ]
+ *
+ * The default output format of this function is compatible with the output format of
+ * {@link module:utils/difftochanges~diffToChanges `diffToChanges()`}. The `diffToChanges()` input format is, in turn,
+ * compatible with the output of {@link module:utils/diff~diff `diff()`}:
+ *
+ *		const a = '1234';
+ *		const b = '12xyz34';
+ *
+ *		// Both calls will return the same results (grouped changes format).
+ *		fastDiff( a, b );
+ *		diffToChanges( diff( a, b ) );
+ *
+ *		// Again, both calls will return the same results (atomic changes format).
+ *		fastDiff( a, b, null, true );
+ *		diff( a, b );
+ *
  *
  * @param {Array|String} a Input array or string.
  * @param {Array|String} b Input array or string.
- * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
- * @param {Boolean} [linearChanges=false] Whether array of `inset|delete|equal` operations should
- * be returned instead of changes set.
+ * @param {Function} [cmp] Optional function used to compare array values, by default `===` (strict equal operator) is used.
+ * @param {Boolean} [atomicChanges=false] Whether an array of `inset|delete|equal` operations should
+ * be returned instead of changes set. This makes this function compatible with {@link module:utils/diff~diff `diff()`}.
  * @returns {Array} Array of changes.
  */
-export default function fastDiff( a, b, cmp, linearChanges = false ) {
+export default function fastDiff( a, b, cmp, atomicChanges = false ) {
 	// Set the comparator function.
 	cmp = cmp || function( a, b ) {
 		return a === b;
@@ -100,7 +113,7 @@ export default function fastDiff( a, b, cmp, linearChanges = false ) {
 	const changeIndexes = findChangeBoundaryIndexes( a, b, cmp );
 
 	// Transform into changes array.
-	return linearChanges ? changeIndexesToLinearChanges( changeIndexes, b.length ) : changeIndexesToChanges( b, changeIndexes );
+	return atomicChanges ? changeIndexesToAtomicChanges( changeIndexes, b.length ) : changeIndexesToChanges( b, changeIndexes );
 }
 
 // Finds position of the first and last change in the given arrays. For example:
@@ -214,7 +227,7 @@ function changeIndexesToChanges( newArray, changeIndexes ) {
 // @param {Object} changeIndexes Change indexes object from `findChangeBoundaryIndexes` function.
 // @param {Number} newLength Length of the new array on which `findChangeBoundaryIndexes` calculated change indexes.
 // @returns {Array.<String>} Array of changes compatible with {@link module:utils/diff~diff} format.
-function changeIndexesToLinearChanges( changeIndexes, newLength ) {
+function changeIndexesToAtomicChanges( changeIndexes, newLength ) {
 	const { firstIndex, lastIndexOld, lastIndexNew } = changeIndexes;
 
 	// No changes.

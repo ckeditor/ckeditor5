@@ -18,6 +18,11 @@ import fastDiff from '../src/fastdiff';
  *
  *		diff( 'aba', 'acca' ); // [ 'equal', 'insert', 'insert', 'delete', 'equal' ]
  *
+ * This function is based on the "O(NP) Sequence Comparison Algorithm" by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
+ * Unfortunately, while it gives the most precise results, its to complex for longer strings/arrow (above 200 items).
+ * Therefore, `diff()` automatically switches to {@link module:utils/fastdiff~fastDiff `fastDiff()`} when detecting
+ * such a scenario. The return formats of both functions are identical.
+ *
  * @param {Array|String} a Input array or string.
  * @param {Array|String} b Output array or string.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.
