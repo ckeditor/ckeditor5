@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Conversion, { ConversionHelpers } from '../../src/conversion/conversion';
+import Conversion from '../../src/conversion/conversion';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
@@ -17,35 +17,39 @@ import Model from '../../src/model/model';
 
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
+import ConversionHelpers from '../../src/conversion/conversionhelpers';
 
 describe( 'Conversion', () => {
-	let conversion, dispA, dispB, dispC;
+	let conversion, downcastDispA, upcastDispaA, downcastDispB;
 
 	beforeEach( () => {
-		conversion = new Conversion();
-
 		// Placeholders. Will be used only to see if their were given as attribute for a spy function.
-		dispA = Symbol( 'dispA' );
-		dispB = Symbol( 'dispB' );
-		dispC = Symbol( 'dispC' );
+		downcastDispA = Symbol( 'downA' );
+		downcastDispB = Symbol( 'downB' );
 
-		conversion.register( 'ab', new UpcastHelpers( [ dispA, dispB ] ) );
-		conversion.register( 'a', new UpcastHelpers( dispA ) );
-		conversion.register( 'b', new UpcastHelpers( dispB ) );
-		conversion.register( 'c', new DowncastHelpers( dispC ) );
+		upcastDispaA = Symbol( 'upA' );
+
+		conversion = new Conversion( [ downcastDispA, downcastDispB ], upcastDispaA );
 	} );
 
-	describe( 'register()', () => {
+	describe( 'addAlias()', () => {
 		it( 'should throw when trying to use same group name twice', () => {
 			expect( () => {
-				conversion.register( 'ab' );
-			} ).to.throw( CKEditorError, /conversion-register-group-exists/ );
+				conversion.addAlias( 'upcast', upcastDispaA );
+			} ).to.throw( CKEditorError, /conversion-group-exists/ );
+		} );
+
+		it( 'should throw when trying to add not registered dispatcher', () => {
+			expect( () => {
+				conversion.addAlias( 'foo', {} );
+			} ).to.throw( CKEditorError, /conversion-add-alias-dispatcher-not-registered/ );
 		} );
 	} );
 
 	describe( 'for()', () => {
 		it( 'should return ConversionHelpers', () => {
-			expect( conversion.for( 'ab' ) ).to.be.instanceof( ConversionHelpers );
+			expect( conversion.for( 'upcast' ) ).to.be.instanceof( ConversionHelpers );
+			expect( conversion.for( 'downcast' ) ).to.be.instanceof( ConversionHelpers );
 		} );
 
 		it( 'should throw if non-existing group name has been used', () => {
@@ -55,10 +59,15 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should return proper helpers for group', () => {
-			expect( conversion.for( 'ab' ) ).to.be.instanceof( UpcastHelpers );
-			expect( conversion.for( 'a' ) ).to.be.instanceof( UpcastHelpers );
-			expect( conversion.for( 'b' ) ).to.be.instanceof( UpcastHelpers );
-			expect( conversion.for( 'c' ) ).to.be.instanceof( DowncastHelpers );
+			expect( conversion.for( 'upcast' ) ).to.be.instanceof( UpcastHelpers );
+
+			conversion.addAlias( 'foo', upcastDispaA );
+			expect( conversion.for( 'foo' ) ).to.be.instanceof( UpcastHelpers );
+
+			expect( conversion.for( 'downcast' ) ).to.be.instanceof( DowncastHelpers );
+
+			conversion.addAlias( 'bar', downcastDispB );
+			expect( conversion.for( 'bar' ) ).to.be.instanceof( DowncastHelpers );
 		} );
 	} );
 
@@ -71,22 +80,24 @@ describe( 'Conversion', () => {
 		} );
 
 		it( 'should be chainable', () => {
-			const forResult = conversion.for( 'ab' );
-			const addResult = forResult.add( () => {} );
+			const helpers = conversion.for( 'upcast' );
+			const addResult = helpers.add( () => {} );
 
-			expect( addResult ).to.equal( addResult.add( () => {} ) );
+			expect( addResult ).to.equal( helpers );
 		} );
 
 		it( 'should fire given helper for every dispatcher in given group', () => {
-			conversion.for( 'ab' ).add( helperA );
+			conversion.for( 'downcast' ).add( helperA );
 
-			expect( helperA.calledWithExactly( dispA ) ).to.be.true;
-			expect( helperA.calledWithExactly( dispB ) ).to.be.true;
+			expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
+			expect( helperA.calledWithExactly( downcastDispB ) ).to.be.true;
+			expect( helperA.calledWithExactly( upcastDispaA ) ).to.be.false;
 
-			conversion.for( 'b' ).add( helperB );
+			conversion.for( 'upcast' ).add( helperB );
 
-			expect( helperB.calledWithExactly( dispA ) ).to.be.false;
-			expect( helperB.calledWithExactly( dispB ) ).to.be.true;
+			expect( helperB.calledWithExactly( downcastDispA ) ).to.be.false;
+			expect( helperB.calledWithExactly( downcastDispB ) ).to.be.false;
+			expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
 		} );
 	} );
 
@@ -121,9 +132,7 @@ describe( 'Conversion', () => {
 			viewDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 			viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-			conversion = new Conversion();
-			conversion.register( 'upcast', new UpcastHelpers( [ viewDispatcher ] ) );
-			conversion.register( 'downcast', new DowncastHelpers( controller.downcastDispatcher ) );
+			conversion = new Conversion( controller.downcastDispatcher, viewDispatcher );
 		} );
 
 		describe( 'elementToElement', () => {
@@ -694,40 +703,5 @@ describe( 'Conversion', () => {
 				writer.insert( convertedModel, modelRoot, 0 );
 			} );
 		}
-	} );
-} );
-
-describe( 'ConversionHelpers', () => {
-	describe( 'add()', () => {
-		const dispA = Symbol( 'dispA' );
-		const dispB = Symbol( 'dispB' );
-
-		it( 'should call a helper for one defined dispatcher', () => {
-			const spy = sinon.spy();
-			const helpers = new ConversionHelpers( dispA );
-
-			helpers.add( spy );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, dispA );
-		} );
-
-		it( 'should call helper for all defined dispatcherers', () => {
-			const spy = sinon.spy();
-			const helpers = new ConversionHelpers( [ dispA, dispB ] );
-
-			helpers.add( spy );
-
-			sinon.assert.calledTwice( spy );
-			sinon.assert.calledWithExactly( spy, dispA );
-			sinon.assert.calledWithExactly( spy, dispB );
-		} );
-
-		it( 'should be chainable', () => {
-			const spy = sinon.spy();
-			const helpers = new ConversionHelpers( dispA );
-
-			expect( helpers.add( spy ) ).to.equal( helpers );
-		} );
 	} );
 } );

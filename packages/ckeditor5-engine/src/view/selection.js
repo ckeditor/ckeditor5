@@ -578,6 +578,23 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether object is of given type following the convention set by
+	 * {@link module:engine/view/node~Node#is `Node#is()`}.
+	 *
+	 *		const selection = new Selection( ... );
+	 *
+	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'element' ); // false
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'selection';
+	}
+
+	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
 	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
 	 * Accepts a flag describing in which way the selection is made.

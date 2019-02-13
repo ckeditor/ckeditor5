@@ -147,9 +147,15 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Checks whether given view tree object is of given type.
+	 * Checks whether this view object is of the given type.
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *		obj.is( 'element' ); // true
+	 *		obj.is( 'li' ); // true
+	 *		obj.is( 'element', 'li' ); // true
+	 *		obj.is( 'text' ); // false
+	 *		obj.is( 'element', 'img' ); // false
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`}.
 	 *
 	 * @param {String} type
 	 * @param {String} [name] Element name.

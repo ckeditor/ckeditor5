@@ -629,6 +629,35 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position #1', () => {
+			const position = new Position( root, [ 0 ] );
+
+			model.change( () => {
+				move( position, 1, position );
+
+				expectChanges( [] );
+			} );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1664
+		it( 'move to the same position #2', () => {
+			const sourcePosition = new Position( root, [ 0 ] );
+			const targetPosition = new Position( root, [ 2 ] );
+
+			// Add two more elements to the root, now there are 4 paragraphs.
+			root._appendChild( [
+				new Element( 'paragraph' ),
+				new Element( 'paragraph' )
+			] );
+
+			model.change( () => {
+				move( sourcePosition, 2, targetPosition );
+
+				expectChanges( [] );
+			} );
+		} );
 	} );
 
 	describe( 'rename', () => {

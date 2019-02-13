@@ -1317,13 +1317,11 @@ export default class Writer {
 			let isAffected = false;
 
 			if ( type == 'move' ) {
-				const intersecting =
+				isAffected =
 					positionOrRange.containsPosition( markerRange.start ) ||
 					positionOrRange.start.isEqual( markerRange.start ) ||
 					positionOrRange.containsPosition( markerRange.end ) ||
 					positionOrRange.end.isEqual( markerRange.end );
-
-				isAffected = intersecting && !positionOrRange.containsRange( markerRange );
 			} else {
 				// if type == 'merge'.
 				const elementBefore = positionOrRange.nodeBefore;

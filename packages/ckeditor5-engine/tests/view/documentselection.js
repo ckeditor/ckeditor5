@@ -725,6 +725,24 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for selection', () => {
+			expect( documentSelection.is( 'selection' ) ).to.be.true;
+		} );
+
+		it( 'should return true for documentSelection', () => {
+			expect( documentSelection.is( 'documentSelection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other values', () => {
+			expect( documentSelection.is( 'node' ) ).to.be.false;
+			expect( documentSelection.is( 'text' ) ).to.be.false;
+			expect( documentSelection.is( 'textProxy' ) ).to.be.false;
+			expect( documentSelection.is( 'element' ) ).to.be.false;
+			expect( documentSelection.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( '_setTo()', () => {
 		describe( 'simple scenarios', () => {
 			it( 'should set selection ranges from the given selection', () => {

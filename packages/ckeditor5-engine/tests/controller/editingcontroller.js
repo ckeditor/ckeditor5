@@ -90,7 +90,7 @@ describe( 'EditingController', () => {
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-			const downcastHelpers = new DowncastHelpers( editing.downcastDispatcher );
+			const downcastHelpers = new DowncastHelpers( [ editing.downcastDispatcher ] );
 
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 			downcastHelpers.elementToElement( { model: 'div', view: 'div' } );
@@ -186,7 +186,7 @@ describe( 'EditingController', () => {
 			} );
 
 			editing.view.document.isFocused = true;
-			editing.view.render();
+			editing.view.forceRender();
 
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
