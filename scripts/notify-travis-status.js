@@ -21,13 +21,23 @@ It also has some dependencies:
 
 const buildBranch = process.env.TRAVIS_BRANCH;
 
+const acceptedBranches = [
+	'master',
+	'master-revisions'
+];
+
+const acceptedEvents = [
+	'push',
+	'cron'
+];
+
 // Send a notification only for main branches...
-if ( buildBranch !== 'master' && buildBranch !== 'master-revisions' ) {
+if ( !acceptedBranches.includes( buildBranch ) ) {
 	process.exit();
 }
 
-// ...and "push" builds...
-if ( process.env.TRAVIS_EVENT_TYPE !== 'push' ) {
+// ...and an event that triggered the build is correct...
+if ( !acceptedEvents.includes( process.env.TRAVIS_EVENT_TYPE ) ) {
 	process.exit();
 }
 
@@ -48,7 +58,11 @@ const commitUrl = `https://github.com/${ owner }/${ repo }/commit/${ buildCommit
 const shortCommit = buildCommit.substring( 0, 7 );
 const execTime = getExecutionTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
 
-const messageOptions = {
+slack.onError = err => {
+	console.log( 'API error occurred:', err );
+};
+
+slack.send( {
 	icon_url: 'https://a.slack-edge.com/66f9/img/services/travis_36.png',
 	unfurl_links: 1,
 	username: 'Travis CI',
@@ -84,13 +98,7 @@ const messageOptions = {
 			]
 		},
 	]
-};
-
-slack.onError = err => {
-	console.log( 'API error occurred:', err );
-};
-
-slack.send( messageOptions );
+} );
 
 /**
  * Returns an object that compares two dates.
