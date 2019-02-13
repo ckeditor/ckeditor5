@@ -3206,63 +3206,33 @@ describe( 'Renderer', () => {
 		// is more than 10x in execution time so it is clearly visible in these tests when something goes wrong.
 		describe( 'rendering performance', () => {
 			it( 'should not take more than 250ms to render around 300 element nodes (same html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 65 ), generateViewData1( 55 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 65 ), generateViewData1( 55 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			it( 'should not take more than 250ms to render around 300 element nodes (different html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 55 ), generateViewData2( 65 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 55 ), generateViewData2( 65 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			it( 'should not take more than 250ms to render around 500 element nodes (same html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 105 ), generateViewData1( 95 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 105 ), generateViewData1( 95 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			it( 'should not take more than 250ms to render around 500 element nodes (different html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 95 ), generateViewData2( 105 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 95 ), generateViewData2( 105 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			it( 'should not take more than 250ms to render around 1000 element nodes (same html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 195 ), generateViewData1( 205 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 195 ), generateViewData1( 205 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			it( 'should not take more than 250ms to render around 1000 element nodes (different html)', () => {
-				let execTime = -1;
-
-				expect( () => {
-					execTime = measureRenderingTime( viewRoot, generateViewData1( 205 ), generateViewData2( 195 ) );
-				} ).to.not.throw();
-
-				expect( execTime ).to.be.within( 0, 250 );
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 205 ), generateViewData2( 195 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
 			} );
 
 			function measureRenderingTime( viewRoot, initialData, newData ) {
