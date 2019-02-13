@@ -58,7 +58,11 @@ const commitUrl = `https://github.com/${ owner }/${ repo }/commit/${ buildCommit
 const shortCommit = buildCommit.substring( 0, 7 );
 const execTime = getExecutionTime( parseInt( process.env.END_TIME ), parseInt( process.env.START_TIME ) );
 
-const messageOptions = {
+slack.onError = err => {
+	console.log( 'API error occurred:', err );
+};
+
+slack.send( {
 	icon_url: 'https://a.slack-edge.com/66f9/img/services/travis_36.png',
 	unfurl_links: 1,
 	username: 'Travis CI',
@@ -94,13 +98,7 @@ const messageOptions = {
 			]
 		},
 	]
-};
-
-slack.onError = err => {
-	console.log( 'API error occurred:', err );
-};
-
-slack.send( messageOptions );
+} );
 
 /**
  * Returns an object that compares two dates.
