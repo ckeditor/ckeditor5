@@ -28,7 +28,7 @@ module.exports = function snippetAdapter( data ) {
 		outputPath,
 		language: snippetConfig.language,
 		production: data.options.production,
-		templateCommentLoaderConfig: data.options.templateCommentLoaderConfig || {}
+		definitions: data.options.definitions || {}
 	} );
 
 	let promise;
@@ -118,7 +118,8 @@ function getWebpackConfig( config ) {
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
-			} )
+			} ),
+			new webpack.DefinePlugin( config.definitions )
 		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
@@ -152,12 +153,7 @@ function getWebpackConfig( config ) {
 							} )
 						}
 					]
-				},
-				{
-					test: /\.js$/,
-					loader: require.resolve( './template-comment-loader' ),
-					query: config.templateCommentLoaderConfig
-				},
+				}
 			]
 		}
 	};
