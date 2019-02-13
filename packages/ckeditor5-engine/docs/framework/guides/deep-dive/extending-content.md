@@ -7,21 +7,120 @@ menu-title: Extending editor content
 
 # Extending editor content
 
-This article will help you learn how to quickly extend (customize) the content produced by the core rich text editor features, for instance, with how to add your custom attributes and CSS classes to the output data. It requires some basic knowledge about the editor model and editing view layers you can find in the {@link framework/guides/architecture/editing-engine introduction to the editing engine architecture}.
+This article will help you learn how to quickly extend (customize) the content produced by the existing core rich text editor features, for instance, with how to add custom attributes and CSS classes to the editor output or how to load additional data into an editor.
 
-## Basics of editor conversion
+It requires some basic knowledge about the editor model and editing view layers you can find in the {@link framework/guides/architecture/editing-engine introduction to the editing engine architecture}.
 
-TODO (converters, pipelines, block elements, inline attributes).
+## Selected concepts of data conversion
+
+Before we go to the examples, let us take a look at some concepts that drive the structure of the content in the editor:
+
+### Inline vs. block elements in the content
+
+Generally speaking, there are two main {@link framework/guides/architecture/editing-engine#element-types-and-custom-data types of the content} in the editor {@link framework/guides/architecture/editing-engine#view view and data output}: inline and block.
+
+The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they mark some text in a specific (visual and semantical) way. These elements are a characteristic of a text, for instance, we could say that some part of a text is bold, or a link, etc.. This concept has its reflection in the {@link framework/guides/architecture/editing-engine#model model} of the editor where `<a>` or `<strong>` are not represented as elements. Instead, they are attributes added to a text.
+
+In the model, we might have a `<paragraph>` element with "Foo bar" text, where "bar" has the `bold` attribute set `true`. A pseudo–code of this model data structure could look as follows:
+
+```
+<paragraph>Foo <$text bold="true">bar</$text></paragraph>
+```
+
+Note that there is no `<strong>` or any other additional element there, it is just some text with an attribute. Later, in the process we call the {@link framework/guides/architecture/editing-engine#conversion conversion}, that bold attribute will be converted to the `<strong>` element.
+
+<info-box>
+	View elements created out of model attributes have their own {@link module:engine/view/attributeelement~AttributeElement `AttributeElement` class} and instead of inline elements they can be called attribute elements.
+</info-box>
+
+### Conversion of multiple text attributes
+
+Text may have multiple {@link framework/guides/architecture/editing-engine#element-types-and-custom-data#text-attributes attributes} and all of them are converted to their respective view inline elements. Keep in mind that in the model, attributes do not have any specific order. This is contrary to the editor view or HTML output, where inline elements are nested one in another. The nesting happens during conversion from the model to the view. This makes working in the model simpler, as features do not need to take care of breaking or rearranging elements in the model.
+
+For instance, consider the following model structure:
+
+```
+<paragraph>
+	<$text bold="true" linkHref="url">Foo </$text>
+	<$text linkHref="url">bar</$text>
+	<$text bold="true"> baz</$text>
+</paragraph>
+```
+
+During conversion, it will be converted to:
+
+```html
+<p>
+	<a href="url"><strong>Foo </strong>bar</a><strong> baz</strong>
+</p>
+```
+
+Note, that the `<a>` element is converted in such way it becomes the "topmost" element. This is intentional so that no element ever breaks a link, which would otherwise look as follows:
+
+```html
+<p>
+	<strong><a href="url">Foo </a></strong><a href="url">bar</a><strong> baz</strong>
+</p>
+```
+
+There are two links with the same `href` next to each other in the generated view (editor output), which is semantically wrong. To make sure it never happens, {@link module:engine/view/attributeelement~AttributeElement} has a priority which controls the nesting. Most elements, like for instance `<strong>` do not care about it and stick to the default priority. On the other hand, the `<a>` element uses the priority to make sure it never gets split by other elements.
+
+### Merging text attributes during conversion
+
+Most of the simple inline elements like `<strong>` or `<em>` do not have any attributes. Some of them have just one, for instance `<a>` has its `href`.
+
+But it is easy to come up with features that style a part of a text in a more complex way. An example would be a {@link features/font Font family} feature. When used, it adds the `fontFamily` attribute to a text in the model, which is later converted to a `<span>` element with a corresponding `style` attribute.
+
+So what would happen if several attributes are set on the same part of a text? Take this model example where `fontSize` is used next to the `fontFamily`:
+
+```
+<paragraph>
+	<$text fontFamily="Tahoma" fontSize="big">foo</$text>
+</paragraph>
+```
+
+The above converts as follows:
+
+* `fontFamily="value"` converts to `<span style="font-family: value;">`,
+* `fontSize="value"` converts to `<span class="text-value">`.
+
+and, in theory, we could expect the following HTML as a result:
+
+```html
+<p>
+	<span style="font-family: Tahoma;">
+		<span class="text-big">foo</span>
+	</span>
+</p>
+```
+
+But this is not the most optimal output we can get from the editor. Why not have just one `<span>` element instead?
+
+```html
+<p>
+	<span style="font-family: Tahoma;" class="text-big">foo</span>
+</p>
+```
+
+Obviously a single `<span>` makes more sense. And thanks to the conversion merging mechanism in CKEditor 5, this would be the actual result of the conversion.
+
+Why is it so? In the above scenario, two attributes that convert to `<span>`. When the first attribute (say, `fontFamily`) is converted, there is no `<span>` in the view yet. So the first `<span>` is added with the `style` attribute. But then, when `fontSize` is converted, the `<span>` is already in the view. The {@link module:engine/view/downcastwriter~DowncastWriter writer} recognizes it and checks whether those elements can be merged, following these 3 rules:
+
+1. both elements must have the same {@link module:engine/view/element~Element#name name},
+2. both elements must have the same {@link module:engine/view/attributeelement~AttributeElement#priority priority},
+3. neither can have an {@link module:engine/view/attributeelement~AttributeElement#id id}.
 
 ## Examples
 
-Customisations in the examples are brought by plugins loaded by the editor. For the sake of simplicity, all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} but keep in mind that code snippets will work with other editors too.
+It is recommended that the code that customizes editor data and editing pipelines is delivered as {@link framework/guides/architecture/core-editor-architecture#plugins plugins} and all examples in this chapter follow this convention.
+
+Also for the sake of simplicity all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`} but keep in mind that code snippets will work with other editors too.
 
 ### Extending editor output ("downcast" only)
 
-In this section, we will focus on customization to the "downcast" pipeline of the editor, which transforms data from the model to the editing view and the output data. The following examples do not customize the model and do not process the (input) data — you can picture them as post–processors (filters) applied to the output only.
+In this section, we will focus on customization to the one–way {@link framework/guides/architecture/editing-engine#editing-pipeline "downcast"} pipeline of the editor, which transforms data from the model to the editing view and the output data only. The following examples do not customize the model and do not process the (input) data — you can picture them as post–processors (filters) applied to the output only.
 
-If you want to learn how to load some extra content (element, attributes, classes) into the editor, check out the [next chapter](#loading-custom-content-into-the-editor-upcast) of this guide.
+If you want to learn how to load some extra content (element, attributes, classes) into the editor, check out the [next chapter](#loading-custom-content-into-the-editor-downcast-and-upcast) of this guide.
 
 <info-box>
 	You can create separate converters for data and editing (downcast) pipelines. The former (`dataDowncast`) will customize the data in the editor output (e.g. when {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`}) and the later (`editingDowncast`) will only work for the content of the editor when editing.
@@ -314,9 +413,9 @@ Add some CSS styles for `.my-heading` to see the customization in action:
 }
 ```
 
-### Loading custom content into the editor ("upcast")
+### Loading custom content into the editor ("downcast" and "upcast")
 
-In the [previous chapter](#extending-editor-output-downcast-only) we focused on post–processing of the editor data output. In this one, we will also extend the editor model so custom data can be loaded into it. This will allow you not only to "correct" the editor output but, for instance, losslessly load data unsupported by editor features.
+In the [previous chapter](#extending-editor-output-downcast-only) we focused on post–processing of the editor data output. In this one, we will also extend the editor model so custom data can be loaded into it ({@link framework/guides/architecture/editing-engine#data-pipeline "upcasted"}). This will allow you not only to "correct" the editor output but, for instance, losslessly load data unsupported by editor features.
 
 Eventually, this knowledge will allow you to create your custom features on top of the core features of CKEditor 5.
 
@@ -332,7 +431,7 @@ Unlike the [downcast–only solution](#adding-an-html-attribute-to-certain-inlin
 
 ##### Code
 
-Allowing the `target` attribute in the editor is made by two custom converters plugged into the downcast and upcast pipelines, following the default converters brought by the {@link features/link Link} feature:
+Allowing the `target` attribute in the editor is made by two custom converters plugged into the downcast and "upcast" pipelines, following the default converters brought by the {@link features/link Link} feature:
 
 ```js
 function AllowLinkTarget( editor ) {
