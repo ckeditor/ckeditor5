@@ -361,7 +361,8 @@ describe( 'widget utils', () => {
 
 			model.schema.extend( 'image', {
 				allowIn: '$root',
-				isObject: true
+				isObject: true,
+				isBlock: true
 			} );
 
 			model.schema.extend( 'span', { allowIn: 'paragraph' } );
@@ -374,6 +375,20 @@ describe( 'widget utils', () => {
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 2 ] );
+		} );
+
+		it( 'returns position before parent block if an inline object is selected', () => {
+			model.schema.register( 'placeholder', {
+				allowWhere: '$text',
+				isInline: true,
+				isObject: true
+			} );
+
+			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
+
+			const pos = findOptimalInsertionPosition( doc.selection, model );
+
+			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
 
 		it( 'returns position inside empty block', () => {
@@ -432,19 +447,6 @@ describe( 'widget utils', () => {
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 3 ] );
-		} );
-
-		it( 'returns position before block selection is on inline element', () => {
-			model.schema.register( 'placeholder', {
-				allowWhere: '$text',
-				isInline: true
-			} );
-
-			setData( model, '<paragraph>x</paragraph><paragraph>f[<placeholder></placeholder>]oo</paragraph><paragraph>y</paragraph>' );
-
-			const pos = findOptimalInsertionPosition( doc.selection, model );
-
-			expect( pos.path ).to.deep.equal( [ 1 ] );
 		} );
 	} );
 } );
