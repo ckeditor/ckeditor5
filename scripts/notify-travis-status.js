@@ -21,13 +21,23 @@ It also has some dependencies:
 
 const buildBranch = process.env.TRAVIS_BRANCH;
 
+const acceptedBranches = [
+	'master',
+	'master-revisions'
+];
+
+const acceptedEvents = [
+	'push',
+	'cron'
+];
+
 // Send a notification only for main branches...
-if ( buildBranch !== 'master' && buildBranch !== 'master-revisions' ) {
+if ( !acceptedBranches.includes( buildBranch ) ) {
 	process.exit();
 }
 
-// ...and "push" builds...
-if ( process.env.TRAVIS_EVENT_TYPE !== 'push' ) {
+// ...and an event that triggered the build is correct...
+if ( !acceptedEvents.includes( process.env.TRAVIS_EVENT_TYPE ) ) {
 	process.exit();
 }
 
