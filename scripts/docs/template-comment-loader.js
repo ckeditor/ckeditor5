@@ -14,14 +14,14 @@
 module.exports = function templateCommentLoader( source, map ) {
 	source = source.replace( /\/\/ @if (!?[\w]+) \/\/(.+)/g, ( match, option, body ) => {
 		// this.query comes from the webpack loader config.
-		// Missing param in webpack loader config
+		// Missing param in webpack loader config.
 		if ( !( option in this.query ) ) {
 			return match;
 		}
 
 		const optionValue = this.query[ option ];
 
-		// Do nothing when the option is falsy
+		// Do nothing when the option is falsy.
 		if ( !optionValue ) {
 			return match;
 		}
