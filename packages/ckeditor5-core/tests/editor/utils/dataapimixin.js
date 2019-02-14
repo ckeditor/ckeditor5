@@ -6,6 +6,7 @@
 import DataApiMixin from '../../../src/editor/utils/dataapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import testUtils from '../../../tests/_utils/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -40,6 +41,8 @@ describe( 'DataApiMixin', () => {
 	} );
 
 	describe( 'getData()', () => {
+		testUtils.createSinonSandbox();
+
 		it( 'should be added to editor interface', () => {
 			expect( editor ).have.property( 'getData' ).to.be.a( 'function' );
 		} );
@@ -48,6 +51,24 @@ describe( 'DataApiMixin', () => {
 			setData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
+		} );
+
+		it( 'should get data of the second root', () => {
+			setData( editor.model, 'bar', { rootName: 'secondRoot' } );
+
+			expect( editor.getData( { rootName: 'secondRoot' } ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should pass options object to data.get() method internally', () => {
+			const spy = testUtils.sinon.spy( editor.data, 'get' );
+			const options = { rootName: 'main', trim: 'none' };
+
+			setData( editor.model, 'foo' );
+
+			expect( editor.getData( options ) ).to.equal( 'foo' );
+
+			testUtils.sinon.assert.calledOnce( spy );
+			testUtils.sinon.assert.calledWith( spy, options );
 		} );
 	} );
 } );
