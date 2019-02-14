@@ -148,7 +148,8 @@ export default class BaseCommand extends Command {
 				{
 					useRelations: true,
 					document: this.editor.model.document,
-					padWithNoOps: false
+					padWithNoOps: false,
+					forceWeakRemove: true
 				}
 			);
 

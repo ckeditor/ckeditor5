@@ -266,13 +266,6 @@ describe( 'UndoCommand', () => {
 				for ( const item of model.createRangeIn( doc.graveyard ).getItems() ) {
 					expect( item.hasAttribute( 'key' ) ).to.be.false;
 				}
-
-				// Let's undo wrapping. This will remove the P element and leave us with empty root.
-				undo.execute( batch3 );
-				expect( root.maxOffset ).to.equal( 0 );
-
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
-				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
 			it( 'should omit deltas with non-document operations', () => {
