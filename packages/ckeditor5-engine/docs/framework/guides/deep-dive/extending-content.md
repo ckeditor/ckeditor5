@@ -442,7 +442,10 @@ function AllowLinkTarget( editor ) {
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'linkTarget',
 		view: ( attributeValue, writer ) => {
-			return writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
+			const linkElement = writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
+			writer.setCustomProperty( 'link', true, linkElement );
+
+			return linkElement;
 		},
 		converterPriority: 'low'
 	} );
