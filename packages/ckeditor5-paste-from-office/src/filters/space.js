@@ -18,9 +18,10 @@
  */
 export function normalizeSpacing( htmlString ) {
 	return normalizeSafariSpaceSpans( normalizeSafariSpaceSpans( htmlString ) ) // Run normalization two times to cover nested spans.
+		.replace( /(<span style=['"]mso-spacerun:yes['"]>[^\S\r\n]*)[\r\n]+(\s*<\/span>)/g, '$1$2' )
+		.replace( /<span style=['"]mso-spacerun:yes['"]><\/span>/g, '' )
 		.replace( / <\//g, '\u00A0</' )
 		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' )
-		.replace( /(<span style=['"]mso-spacerun:yes['"]>[^\S\r\n]+)[\r\n]+(\s*<\/span>)/g, '$1$2' )
 		.replace( />(\s*(\r\n?|\n)\s*)+</g, '><' );
 }
 
