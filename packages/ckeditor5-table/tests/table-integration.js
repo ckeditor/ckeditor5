@@ -95,30 +95,30 @@ describe( 'Table feature – integration', () => {
 		} );
 
 		it( 'fixing empty roots should be transparent to undo', () => {
-			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 
 			editor.data.set( viewTable( [ [ 'foo' ] ] ) );
 
-			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.model.change( writer => {
 				writer.remove( root.getChild( 0 ) );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.getData( { trim: 'none' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 		} );
 
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
@@ -135,18 +135,18 @@ describe( 'Table feature – integration', () => {
 				writer.remove( otherRoot.getChild( 0 ) );
 			} );
 
-			expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 
 			editor.execute( 'undo' );
 
-			expect( editor.data.get( 'main' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
-			expect( editor.data.get( 'otherRoot' ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'main' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
+			expect( editor.data.get( { trim: 'none', rootName: 'otherRoot' } ) ).to.equal( viewTable( [ [ 'foo' ] ] ) );
 		} );
 	} );
 
