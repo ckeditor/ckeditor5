@@ -24,6 +24,13 @@ describe( 'Filters', () => {
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
+			it( 'should remove newlines from spacerun spans', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>  \r\n</span>';
+				const expected = '<span style=\'mso-spacerun:yes\'>  </span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
 			it( 'should remove multiline sequences of whitespaces', () => {
 				const input = '<p>Foo</p> \n\n   \n<p>Bar</p>   \r\n\r\n  <p>Baz</p>';
 				const expected = '<p>Foo</p><p>Bar</p><p>Baz</p>';
