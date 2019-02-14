@@ -48,7 +48,7 @@ describe( 'ShiftEnter integration', () => {
 
 		editor.commands.get( 'shiftEnter' ).execute();
 
-		expect( editor.getData() ).to.equal( '<p><br>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p><br>&nbsp;</p>' );
 		expect( editor.ui.view.editable.element.innerHTML ).to.equal( '<p><br><br data-cke-filler="true"></p>' );
 	} );
 } );
