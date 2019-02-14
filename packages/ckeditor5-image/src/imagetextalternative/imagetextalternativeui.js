@@ -34,6 +34,13 @@ export default class ImageTextAlternativeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ImageTextAlternativeUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this._createButton();
 		this._createForm();
