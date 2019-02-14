@@ -10,8 +10,6 @@
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { findAncestor } from './commands/utils';
 
-const tableSymbol = Symbol( 'isTable' );
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to a table widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
@@ -23,7 +21,7 @@ const tableSymbol = Symbol( 'isTable' );
  * @returns {module:engine/view/element~Element}
  */
 export function toTableWidget( viewElement, writer ) {
-	writer.setCustomProperty( tableSymbol, true, viewElement );
+	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandler: true } );
 }
@@ -35,7 +33,7 @@ export function toTableWidget( viewElement, writer ) {
  * @returns {Boolean}
  */
 export function isTableWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( tableSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
 }
 
 /**
