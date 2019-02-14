@@ -306,6 +306,11 @@ export default class LinkUI extends Plugin {
 	 */
 	_removeFormView() {
 		if ( this._isFormInPanel ) {
+			// Blur the input element before removing it from DOM.
+			// See https://github.com/ckeditor/ckeditor5/issues/1501.
+			// Focusing editable before removing FormView makes balloon flickering.
+			this.formView.saveButtonView.focus();
+
 			this._balloon.remove( this.formView );
 
 			// Because the form has an input which has focus, the focus must be brought back

@@ -829,6 +829,18 @@ describe( 'LinkUI', () => {
 				expect( balloon.visibleView ).to.equal( actionsView );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/1501
+			it( 'should blur url input element before hiding the view', () => {
+				linkUIFeature._showUI();
+
+				const focusSpy = testUtils.sinon.spy( formView.saveButtonView, 'focus' );
+				const removeSpy = testUtils.sinon.spy( balloon, 'remove' );
+
+				formView.fire( 'cancel' );
+
+				expect( focusSpy.calledBefore( removeSpy ) ).to.equal( true );
+			} );
 		} );
 	} );
 } );
