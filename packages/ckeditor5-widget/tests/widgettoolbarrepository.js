@@ -333,13 +333,10 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 	} );
 } );
 
-const fakeWidgetSymbol = Symbol( 'fakeWidget' );
-const fakeChildWidgetSymbol = Symbol( 'fakeChildWidget' );
-
 function getSelectedFakeWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeWidgetSymbol ) ) {
+	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeWidget' ) ) {
 		return viewElement;
 	}
 
@@ -349,7 +346,7 @@ function getSelectedFakeWidget( selection ) {
 function getSelectedFakeChildWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( fakeChildWidgetSymbol ) ) {
+	if ( viewElement && isWidget( viewElement ) && !!viewElement.getCustomProperty( 'fakeChildWidget' ) ) {
 		return viewElement;
 	}
 
@@ -361,7 +358,7 @@ function getSelectedFakeWidgetContent( selection ) {
 	let node = pos.parent;
 
 	while ( node ) {
-		if ( node.is( 'element' ) && isWidget( node ) && node.getCustomProperty( fakeWidgetSymbol ) ) {
+		if ( node.is( 'element' ) && isWidget( node ) && node.getCustomProperty( 'fakeWidget' ) ) {
 			return node;
 		}
 
@@ -420,7 +417,7 @@ class FakeWidget extends Plugin {
 			model: 'fake-widget',
 			view: ( modelElement, viewWriter ) => {
 				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( fakeWidgetSymbol, true, fakeWidget );
+				viewWriter.setCustomProperty( 'fakeWidget', true, fakeWidget );
 
 				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
 			}
@@ -472,7 +469,7 @@ class FakeChildWidget extends Plugin {
 			model: 'fake-child-widget',
 			view: ( modelElement, viewWriter ) => {
 				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( fakeChildWidgetSymbol, true, fakeWidget );
+				viewWriter.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
 
 				return toWidget( fakeWidget, viewWriter, { label: 'fake-child-widget' } );
 			}
