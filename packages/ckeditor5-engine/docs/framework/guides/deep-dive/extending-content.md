@@ -492,3 +492,93 @@ a[target]::after {
 	border-radius: 10px;
 }
 ```
+
+#### Loading content with all attributes
+
+In this example divs (`<div>...</div>`) loaded in editor content will preserve their attributes. All the DOM attributes will be stored in the editor model as corresponding attributes.
+
+##### Demo
+
+{@snippet framework/extending-content-allow-div-attributes}
+
+##### Code
+
+Allowing all attributes on `div` elements is achieved by custom "upcast" and "downcast" converters that copies each attribute one by one.
+
+Allowing every possible attribute on div in the model is done by adding a {@link module:engine/model/schema~Schema#addAttriubuteCheck()} callback. 
+
+<info-box>
+	Allowing every attribute on `<div>` elements might introduce security issues - ise XSS attacks. The production code should use only application related attributes and/or properly encode data. 
+</info-box>
+
+Adding "upcast" and "downcast" converters for the `<div>` element is enough for cases where its attributes does not change. If attributes in the model are modified those `elementToElement()` converters will not be called as `div` is already converted. To overcome this a lower-level API is used.
+
+Instead of using predefined converters the {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event-attribute `attribute`} event listener is registered for "downcast" dispatcher.
+
+```js
+function ConvertDivAttributes( editor ) {
+	// Allow divs in the model.
+	editor.model.schema.register( 'div', {
+		allowWhere: '$block',
+		allowContentOf: '$root'
+	} );
+
+	// Allow divs in the model to have all attributes.
+	editor.model.schema.addAttributeCheck( context => {
+		if ( context.endsWith( 'div' ) ) {
+			return true;
+		}
+	} );
+
+	// View-to-model converter converting a view div with all its attributes to the model.
+	editor.conversion.for( 'upcast' ).elementToElement( {
+		view: 'div',
+		model: ( viewElement, modelWriter ) => {
+			return modelWriter.createElement( 'div', viewElement.getAttributes() );
+		}
+	} );
+
+	// Model-to-view convert for the div element (attrbiutes are converted separately).
+	editor.conversion.for( 'downcast' ).elementToElement( {
+		model: 'div',
+		view: 'div'
+	} );
+
+	// Model-to-view converter for div attributes.
+	// Note that we use a lower-level, event-based API here.
+	editor.conversion.for( 'downcast' ).add( dispatcher => {
+		dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+			// Convert div attributes only.
+			if ( data.item.name != 'div' ) {
+				return;
+			}
+
+			const viewWriter = conversionApi.writer;
+			const viewDiv = conversionApi.mapper.toViewElement( data.item );
+
+			// In the model-to-view conversion we convert changes. An attribute can be added or removed or changed.
+			// The below code handles all 3 cases.
+			if ( data.attributeNewValue ) {
+				viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, viewDiv );
+			} else {
+				viewWriter.removeAttribute( data.attributeKey, viewDiv );
+			}
+		} );
+	} );
+}
+```
+
+Activate the plugin in the editor:
+
+```js
+ClassicEditor
+	.create( ..., {
+		extraPlugins: [ ConvertDivAttributes ],
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
