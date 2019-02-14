@@ -447,44 +447,47 @@ export default class Model {
 	 * Checks whether the given {@link module:engine/model/range~Range range} or
 	 * {@link module:engine/model/element~Element element} has any meaningful content.
 	 *
-	 * Meaningful content is any text node, element which is registered in the {@link module:engine/model/schema~Schema schema}
-	 * or any {@link module:engine/model/markercollection~Marker marker} which
+	 * Meaningful content is:
+	 *
+	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
+	 * any non-whitespace characters),
+	 * * or any {@link module:engine/model/schema~Schema#isObject object element},
+	 * * or any {@link module:engine/model/markercollection~Marker marker} which
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
+	 *
+	 * This means that a range containing an empty `<paragraph></paragraph>` is not considered to have a meaningful content.
+	 * However, a range containing an `<image></image>` (which would normally be marked in the schema as an object element)
+	 * is considered non-empty.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.trimWhitespaces] Whether text node with whitespaces only should be considered to be empty element.
+	 * @param {Boolean} [options.ignoreWhitespaces] Whether text node with whitespaces only should be considered empty.
 	 * @returns {Boolean}
 	 */
 	hasContent( rangeOrElement, options ) {
-		if ( rangeOrElement instanceof ModelElement ) {
-			rangeOrElement = ModelRange._createIn( rangeOrElement );
-		}
+		const range = rangeOrElement instanceof ModelElement ? ModelRange._createIn( rangeOrElement ) : rangeOrElement;
 
-		if ( rangeOrElement.isCollapsed ) {
+		if ( range.isCollapsed ) {
 			return false;
 		}
 
 		// Check if there are any markers which affects data in this given range.
-		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( rangeOrElement ) ) {
+		for ( const intersectingMarker of this.markers.getMarkersIntersectingRange( range ) ) {
 			if ( intersectingMarker.affectsData ) {
 				return true;
 			}
 		}
 
-		const { trimWhitespaces = false } = options || {};
+		const { ignoreWhitespaces = false } = options || {};
 
-		for ( const item of rangeOrElement.getItems() ) {
-			// Remember, `TreeWalker` returns always `textProxy` nodes.
+		for ( const item of range.getItems() ) {
 			if ( item.is( 'textProxy' ) ) {
-				if ( !trimWhitespaces ) {
+				if ( !ignoreWhitespaces ) {
 					return true;
-				} else if ( item.data.match( /\S+/gi ) !== null ) {
+				} else if ( item.data.search( /\S/ ) !== -1 ) {
 					return true;
 				}
-			}
-
-			if ( this.schema.isObject( item ) ) {
+			} else if ( this.schema.isObject( item ) ) {
 				return true;
 			}
 		}

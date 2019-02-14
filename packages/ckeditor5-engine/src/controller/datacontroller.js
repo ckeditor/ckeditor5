@@ -118,8 +118,8 @@ export default class DataController {
 	 * @param {Object} [options]
 	 * @param {String} [options.rootName='main'] Root name.
 	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
-	 * which means whenever editor content is considered empty, the empty string will be returned. To turn off trimming completely
-	 * use `none`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for empty editor).
+	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
+	 * use `'none'`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for an empty editor).
 	 * @returns {String} Output data.
 	 */
 	get( options ) {
@@ -131,7 +131,7 @@ export default class DataController {
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
-			 * 		data.get( 'root2' );
+			 *		data.get( 'root2' );
 			 *
 			 * will throw this error.
 			 *
@@ -142,8 +142,11 @@ export default class DataController {
 
 		const root = this.model.document.getRoot( rootName );
 
-		// Get model range.
-		return trim === 'empty' && !this.model.hasContent( root, { trimWhitespaces: true } ) ? '' : this.stringify( root );
+		if ( trim === 'empty' && !this.model.hasContent( root, { ignoreWhitespaces: true } ) ) {
+			return '';
+		}
+
+		return this.stringify( root );
 	}
 
 	/**

@@ -528,10 +528,10 @@ describe( 'Model', () => {
 			expect( model.hasContent( pFoo ) ).to.be.true;
 		} );
 
-		it( 'should return true if given element has text node (trimWhitespaces)', () => {
+		it( 'should return true if given element has text node (ignoreWhitespaces)', () => {
 			const pFoo = root.getChild( 1 );
 
-			expect( model.hasContent( pFoo, { trimWhitespaces: true } ) ).to.be.true;
+			expect( model.hasContent( pFoo, { ignoreWhitespaces: true } ) ).to.be.true;
 		} );
 
 		it( 'should return true if given element has text node containing spaces only', () => {
@@ -545,7 +545,7 @@ describe( 'Model', () => {
 			expect( model.hasContent( pEmpty ) ).to.be.true;
 		} );
 
-		it( 'should false true if given element has text node containing spaces only (trimWhitespaces)', () => {
+		it( 'should false true if given element has text node containing spaces only (ignoreWhitespaces)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
 			model.enqueueChange( 'transparent', writer => {
@@ -553,7 +553,7 @@ describe( 'Model', () => {
 				writer.insertText( '    ', pEmpty, 'end' );
 			} );
 
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true if given element has element that is an object', () => {
@@ -622,7 +622,7 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
@@ -635,10 +635,10 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
-		it( 'should return false (trimWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
+		it( 'should return false (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
 			model.enqueueChange( 'transparent', writer => {
@@ -651,7 +651,7 @@ describe( 'Model', () => {
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
 			} );
 
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
@@ -680,7 +680,7 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
@@ -693,10 +693,10 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.false;
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
-		it( 'should return true (trimWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
+		it( 'should return true (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
 			model.enqueueChange( 'transparent', writer => {
@@ -710,7 +710,7 @@ describe( 'Model', () => {
 			} );
 
 			expect( model.hasContent( pEmpty ) ).to.be.true;
-			expect( model.hasContent( pEmpty, { trimWhitespaces: true } ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.true;
 		} );
 	} );
 
