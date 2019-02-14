@@ -365,14 +365,16 @@ export default class LinkUI extends Plugin {
 
 		this.stopListening( editor.ui, 'update' );
 
+		// Make sure the focus always gets back to the editable
+		// before removing currently focused views.
+		// See https://github.com/ckeditor/ckeditor5-link/issues/193.
+		editor.editing.view.focus();
+
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
-
-		// Make sure the focus always gets back to the editable.
-		editor.editing.view.focus();
 	}
 
 	/**

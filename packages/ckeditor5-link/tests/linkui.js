@@ -416,6 +416,16 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledTwice( spy );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-link/issues/193
+		it( 'should focus the `editable` before before removing elements from the balloon', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const removeSpy = testUtils.sinon.spy( balloon, 'remove' );
+
+			linkUIFeature._hideUI();
+
+			expect( focusSpy.calledBefore( removeSpy ) ).to.equal( true );
+		} );
+
 		it( 'should not throw an error when views are not in the `balloon`', () => {
 			linkUIFeature._hideUI();
 
