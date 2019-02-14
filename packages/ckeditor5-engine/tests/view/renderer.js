@@ -3198,6 +3198,104 @@ describe( 'Renderer', () => {
 				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p>' );
 			} );
 		} );
+
+		// ckeditor/ckeditor5-utils#269
+		// The expected times has a significant margin above the usual execution time (which is around 40-50%
+		// of the expected time) because it depends on the browser and environment in which tests are run.
+		// However, for larger data sets the difference between using `diff()` and `fastDiff()` (see above issue for context)
+		// is more than 10x in execution time so it is clearly visible in these tests when something goes wrong.
+		describe( 'rendering performance', () => {
+			it( 'should not take more than 250ms to render around 300 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 65 ), generateViewData1( 55 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			it( 'should not take more than 250ms to render around 300 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 55 ), generateViewData2( 65 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			it( 'should not take more than 250ms to render around 500 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 105 ), generateViewData1( 95 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			it( 'should not take more than 250ms to render around 500 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 95 ), generateViewData2( 105 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			it( 'should not take more than 250ms to render around 1000 element nodes (same html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 195 ), generateViewData1( 205 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			it( 'should not take more than 250ms to render around 1000 element nodes (different html)', () => {
+				const renderingTime = measureRenderingTime( viewRoot, generateViewData1( 205 ), generateViewData2( 195 ) );
+				expect( renderingTime ).to.be.within( 0, 250 );
+			} );
+
+			function measureRenderingTime( viewRoot, initialData, newData ) {
+				// Set initial data.
+				const initialView = parse( initialData );
+				viewRoot._appendChild( initialView );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Set new data.
+				const newView = parse( newData );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( newView );
+				renderer.markToSync( 'children', viewRoot );
+
+				// Measure render time.
+				const start = Date.now();
+
+				renderer.render();
+
+				return Date.now() - start;
+			}
+
+			function generateViewData1( repeat = 1 ) {
+				const viewData = '' +
+					'<container:h1>' +
+						'CKEditor 5 <attribute:strong>h1</attribute:strong> heading!' +
+					'</container:h1>' +
+					'<container:p>' +
+						'Foo <attribute:strong>Bar</attribute:strong> Baz and some text' +
+					'</container:p>' +
+					'<container:ul>' +
+						'<container:li>Item 1</container:li>' +
+					'</container:ul>' +
+					'<container:ul>' +
+						'<container:li>Item 2</container:li>' +
+					'</container:ul>' +
+					'<container:ul>' +
+						'<container:li>Item 3</container:li>' +
+					'</container:ul>';
+
+				return viewData.repeat( repeat );
+			}
+
+			function generateViewData2( repeat = 1 ) {
+				const viewData = '' +
+					'<container:ol>' +
+						'<container:li>' +
+							'<attribute:strong>Foo</attribute:strong>' +
+						'</container:li>' +
+					'</container:ol>' +
+					'<container:ol>' +
+						'<container:li>Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:h1>Heading 1</container:h1>' +
+					'<container:h2>' +
+						'<attribute:strong>Heading</attribute:strong> 2' +
+					'</container:h2>' +
+					'<container:h3>Heading 4</container:h3>';
+
+				return viewData.repeat( repeat );
+			}
+		} );
 	} );
 
 	describe( '#922', () => {
