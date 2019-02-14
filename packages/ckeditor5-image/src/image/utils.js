@@ -9,8 +9,6 @@
 
 import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-const imageSymbol = Symbol( 'isImage' );
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element.
@@ -22,7 +20,7 @@ const imageSymbol = Symbol( 'isImage' );
  * @returns {module:engine/view/element~Element}
  */
 export function toImageWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( imageSymbol, true, viewElement );
+	writer.setCustomProperty( 'image', true, viewElement );
 
 	return toWidget( viewElement, writer, { label: labelCreator } );
 
@@ -41,7 +39,7 @@ export function toImageWidget( viewElement, writer, label ) {
  * @returns {Boolean}
  */
 export function isImageWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( imageSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
 }
 
 /**
