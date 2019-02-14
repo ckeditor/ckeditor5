@@ -27,20 +27,20 @@
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image",
-    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#t/ckeditor5/1520b",
+    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#t/ckeditor5/1520b",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
-    "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed",
+    "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#t/ckeditor5/1520b",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office",
-    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table",
+    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#t/ckeditor5/1520b",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#t/ckeditor5/1520b"
   }
 }
