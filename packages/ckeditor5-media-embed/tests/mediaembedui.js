@@ -5,6 +5,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import MediaEmbed from '../src/mediaembed';
+import MediaEmbedUI from '../src/mediaembedui';
 import MediaFormView from '../src/ui/mediaformview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -42,6 +43,10 @@ describe( 'MediaEmbedUI', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should be named', () => {
+		expect( MediaEmbedUI.pluginName ).to.equal( 'MediaEmbedUI' );
 	} );
 
 	it( 'should add the "mediaEmbed" component to the factory', () => {

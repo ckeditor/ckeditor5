@@ -61,6 +61,10 @@ describe( 'MediaEmbedEditing', () => {
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 	} );
 
+	it( 'should be named', () => {
+		expect( MediaEmbedEditing.pluginName ).to.equal( 'MediaEmbedEditing' );
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {
