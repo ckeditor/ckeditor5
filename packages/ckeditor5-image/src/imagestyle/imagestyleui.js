@@ -21,6 +21,13 @@ import '../../theme/imagestyle.css';
  */
 export default class ImageStyleUI extends Plugin {
 	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ImageStyleUI';
+	}
+
+	/**
 	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with

@@ -45,6 +45,10 @@ describe( 'ImageTextAlternative', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( ImageTextAlternativeUI.pluginName ).to.equal( 'ImageTextAlternativeUI' );
+	} );
+
 	describe( 'toolbar button', () => {
 		it( 'should be registered in component factory', () => {
 			expect( button ).to.be.instanceOf( ButtonView );

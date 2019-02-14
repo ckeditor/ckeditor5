@@ -41,6 +41,10 @@ describe( 'ImageStyleUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( ImageStyleUI.pluginName ).to.equal( 'ImageStyleUI' );
+	} );
+
 	it( 'should register buttons for each style', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
