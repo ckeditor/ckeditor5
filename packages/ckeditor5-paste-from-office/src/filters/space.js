@@ -17,12 +17,15 @@
  * @returns {String} Input HTML with spaces normalized.
  */
 export function normalizeSpacing( htmlString ) {
-	return normalizeSafariSpaceSpans( normalizeSafariSpaceSpans( htmlString ) ) // Run normalization two times to cover nested spans.
-		.replace( /(<span style=['"]mso-spacerun:yes['"]>[^\S\r\n]*)[\r\n]+(\s*<\/span>)/g, '$1$2' )
+	// Run normalizeSafariSpaceSpans() two times to cover nested spans.
+	return normalizeSafariSpaceSpans( normalizeSafariSpaceSpans( htmlString ) )
+		// Remove all \r\n from "spacerun spans" so the last replace line doesn't strip all whitespaces.
+		.replace( /(<span style=['"]mso-spacerun:yes['"]>[\s]*?)[\r\n]+(\s*<\/span>)/g, '$1$2' )
 		.replace( /<span style=['"]mso-spacerun:yes['"]><\/span>/g, '' )
 		.replace( / <\//g, '\u00A0</' )
 		.replace( / <o:p><\/o:p>/g, '\u00A0<o:p></o:p>' )
-		.replace( />(\s*(\r\n?|\n)\s*)+</g, '><' );
+		// Remove all whitespaces when they contain any \r or \n.
+		.replace( />(\s*[\r\n]\s*)</g, '><' );
 }
 
 /**
