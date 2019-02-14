@@ -44,7 +44,7 @@ export default class MediaEmbedUI extends Plugin {
 		/**
 		 * The form view displayed inside the drop-down.
 		 *
-		 * @member {media-embed/ui/mediaformview~MediaFormView}
+		 * @member {module:media-embed/ui/mediaformview~MediaFormView}
 		 */
 		this.form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
 
