@@ -148,7 +148,7 @@ describe( 'Paragraph feature – integration', () => {
 					const doc = editor.model.document;
 					const root = doc.getRoot();
 
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 
 					editor.setData( '<p>Foobar.</p>' );
@@ -157,19 +157,19 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( root.getChild( 0 ) );
 					} );
 
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.getData() ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
 
 					editor.execute( 'redo' );
 
-					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.getData() ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
 				} );
 		} );
 
@@ -193,18 +193,18 @@ describe( 'Paragraph feature – integration', () => {
 						writer.remove( otherRoot.getChild( 0 ) );
 					} );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
 
 					editor.execute( 'undo' );
 
-					expect( editor.data.get( 'main' ) ).to.equal( '<p>Foobar.</p>' );
-					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'main', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( { rootName: 'otherRoot', trim: 'none' } ) ).to.equal( '<p>Foobar.</p>' );
 				} );
 		} );
 	} );
