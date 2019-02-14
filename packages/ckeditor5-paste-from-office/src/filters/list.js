@@ -38,8 +38,17 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 	itemLikeElements.forEach( ( itemLikeElement, i ) => {
 		if ( !currentList || isNewListNeeded( itemLikeElements[ i - 1 ], itemLikeElement ) ) {
 			const listStyle = detectListStyle( itemLikeElement, stylesString );
+			const indentationDifference = getIndentationDifference( itemLikeElements[ i - 1 ], itemLikeElement );
 
-			currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+			if ( indentationDifference < 0 ) {
+				currentList = findParentListAtLevel( currentList, indentationDifference );
+			} else if ( indentationDifference > 0 ) {
+				const lastListItem = currentList.getChild( currentList.childCount - 1 );
+				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
+				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, indentationDifference );
+			} else {
+				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
+			}
 		}
 
 		const listItem = transformElementIntoListItem( itemLikeElement.element, writer );
@@ -158,11 +167,25 @@ function detectListStyle( listLikeItem, stylesString ) {
 // @param {module:engine/view/element~Element} element Element before which list is inserted.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} Newly created list element.
-function insertNewEmptyList( listStyle, element, writer ) {
+function insertNewEmptyList( listStyle, element, writer, indentLevel = 0 ) {
+	const parent = element.parent;
 	const list = writer.createElement( listStyle.type );
-	const position = element.parent.getChildIndex( element );
+	const position = parent.getChildIndex( element ) + 1;
 
-	writer.insertChild( position, list, element.parent );
+	let currentList = list;
+
+	// Wrap new list into li's depending on indentation level.
+	if ( indentLevel > 1 ) {
+		for ( let i = 1; i < indentLevel; i++ ) {
+			const parentList = new Element( listStyle.type );
+			const parentLi = new Element( 'li' );
+			writer.appendChild( currentList, parentLi );
+			writer.appendChild( parentLi, parentList );
+			currentList = parentList;
+		}
+	}
+
+	writer.insertChild( position, currentList, parent );
 
 	return list;
 }
@@ -253,10 +276,48 @@ function isNewListNeeded( previousItem, currentItem ) {
 		return true;
 	}
 
+	if ( getIndentationDifference( previousItem, currentItem ) !== 0 ) {
+		return true;
+	}
+
 	// Even with the same id the list does not have to be continuous (#43).
 	return !isList( previousSibling );
 }
 
 function isList( element ) {
 	return element.is( 'ol' ) || element.is( 'ul' );
+}
+
+// Calculates the indentation difference between two given list items.
+//
+// @param {Object} previousItem
+// @param {Object} currentItem
+// @returns {Number}
+function getIndentationDifference( previousItem, currentItem ) {
+	return previousItem ? currentItem.indent - previousItem.indent : 0;
+}
+
+// Finds parent list of a given list with indentation level lower by a given value.
+//
+// @param {module:engine/view/element~Element} currentList List element from which to start looking for a parent list.
+// @param {Number} levelDifference Level difference between lists.
+// @returns {module:engine/view/element~Element} Found list.
+function findParentListAtLevel( currentList, levelDifference ) {
+	const ancestors = currentList.getAncestors( { parentFirst: true } );
+
+	let parentList = null;
+	let levelChange = 0;
+
+	for ( const ancestor of ancestors ) {
+		if ( ancestor.name === 'ul' || ancestor.name === 'ol' ) {
+			levelChange--;
+		}
+
+		if ( levelChange === levelDifference ) {
+			parentList = ancestor;
+			break;
+		}
+	}
+
+	return parentList;
 }
