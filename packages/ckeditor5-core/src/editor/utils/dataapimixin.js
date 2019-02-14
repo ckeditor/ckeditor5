@@ -67,14 +67,14 @@ export default DataApiMixin;
  * See the {@glink features/markdown Markdown output} guide for more details.
  *
  * Note: Not only is the format of the data configurable, but the type of the `getData()`'s return value does not
- * have to be a string either. You can e.g. return an object or a DOM `DocumentFragment`  if you consider this
+ * have to be a string either. You can e.g. return an object or a DOM `DocumentFragment` if you consider this
  * the right format for you.
  *
  * @method #getData
  * @param {Object} [options]
  * @param {String} [options.rootName='main'] Root name.
- * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
- * which means whenever editor content is considered empty, the empty string will be returned. To turn off trimming completely
- * use `none`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for empty editor).
+ * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `'empty'` by default,
+ * which means that whenever editor content is considered empty, an empty string is returned. To turn off trimming
+ * use `'none'`. In such cases exact content will be returned (for example `'<p>&nbsp;</p>'` for an empty editor).
  * @returns {String} Output data.
  */
