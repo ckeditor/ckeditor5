@@ -276,7 +276,9 @@ export default class Widget extends Plugin {
 				const paragraph = writer.createElement( 'paragraph' );
 
 				if ( !model.schema.isLimit( objectElement.parent ) ) {
-					position = writer.split( position ).position;
+					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
+
+					position = writer.split( position, paragraphLimit ).position;
 				}
 
 				writer.insert( paragraph, position );

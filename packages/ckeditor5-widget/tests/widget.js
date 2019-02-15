@@ -730,16 +730,25 @@ describe( 'Widget', () => {
 			);
 
 			it( 'should split parent when widget is inside block element', () => {
-				model.schema.register( 'parent', {
+				model.schema.register( 'allowP', {
 					inheritAllFrom: '$block'
 				} );
+				model.schema.register( 'disallowP', {
+					inheritAllFrom: '$block',
+					allowIn: [ 'allowP' ]
+				} );
 				model.schema.extend( 'widget', {
-					allowIn: [ 'parent' ]
+					allowIn: [ 'allowP', 'disallowP' ]
+				} );
+				model.schema.extend( 'paragraph', {
+					allowIn: [ 'allowP' ]
 				} );
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'parent', view: 'parent' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'allowP', view: 'allowP' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'disallowP', view: 'disallowP' } );
 
-				setModelData( model, '<parent>[<widget></widget>]</parent>' );
+				setModelData( model, '<allowP><disallowP>[<widget></widget>]</disallowP></allowP>' );
 
 				viewDocument.fire( 'keydown', new DomEventData(
 					viewDocument,
@@ -748,7 +757,7 @@ describe( 'Widget', () => {
 				) );
 
 				expect( getModelData( model ) ).to.equal(
-					'<parent><widget></widget></parent><paragraph>[]</paragraph><parent></parent>'
+					'<allowP><disallowP><widget></widget></disallowP><paragraph>[]</paragraph><disallowP></disallowP></allowP>'
 				);
 			} );
 		} );
