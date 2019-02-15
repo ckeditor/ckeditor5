@@ -57,6 +57,10 @@ describe( 'LinkUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should be named', () => {
+		expect( LinkUI.pluginName ).to.equal( 'LinkUI' );
+	} );
+
 	it( 'should load ContextualBalloon', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
