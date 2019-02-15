@@ -187,7 +187,7 @@ Although Bootstrap provides most of the CSS, it does not come with styles dedica
 }
 
 /* When in read–only mode, the editable should fade out. */
-.ck-editor .ck-editor__editable:not([contenteditable]) {
+.ck-editor .ck-editor__editable.ck-read-only {
 	background: hsl(0, 0%, 98%);
 	color: hsl(0, 0%, 47%);
 }
