@@ -6,8 +6,9 @@
 /* global document */
 
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
-import Text from '@ckeditor/ckeditor5-engine/src/view/text';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import {
@@ -18,6 +19,7 @@ import {
 	toWidgetEditable,
 	setHighlightHandling,
 	findOptimalInsertionPosition,
+	viewToModelPositionOutsideModelElement,
 	WIDGET_CLASS_NAME
 } from '../src/utils';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
@@ -25,6 +27,9 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -146,7 +151,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should return false for text node', () => {
-			expect( isWidget( new Text( 'p' ) ) ).to.be.false;
+			expect( isWidget( new ViewText( 'p' ) ) ).to.be.false;
 		} );
 	} );
 
@@ -447,6 +452,86 @@ describe( 'widget utils', () => {
 			const pos = findOptimalInsertionPosition( doc.selection, model );
 
 			expect( pos.path ).to.deep.equal( [ 3 ] );
+		} );
+	} );
+
+	describe( 'viewToModelPositionOutsideModelElement', () => {
+		let mapper, model, modelP, viewP, viewXyz, modelSpan, viewSpan;
+
+		beforeEach( () => {
+			mapper = new Mapper();
+			model = new Model();
+
+			const modelFoo = new ModelText( 'foo' );
+			modelSpan = new ModelElement( 'span' );
+			const modelBar = new ModelText( 'bar' );
+			modelP = new ModelElement( 'p', null, [ modelFoo, modelSpan, modelBar ] );
+
+			const viewFoo = new ViewText( 'foo' );
+			viewXyz = new ViewText( 'xyz' );
+			viewSpan = new ViewElement( 'span', null, viewXyz );
+			const viewBar = new ViewText( 'bar' );
+			viewP = new ViewElement( 'p', null, [ viewFoo, viewSpan, viewBar ] );
+
+			mapper.bindElements( modelP, viewP );
+			mapper.bindElements( modelSpan, viewSpan );
+		} );
+
+		it( 'should map view position that is at the beginning of the view element to a position before the model element', () => {
+			mapper.on( 'viewToModelPosition', viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' ) );
+
+			// View:
+			// <p>foo<span>|xyz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 0 );
+
+			// Model:
+			// <p>foo|<span></span>bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 3 ] );
+		} );
+
+		it( 'should map view position that is in the middle of the view element to a position after the model element', () => {
+			mapper.on( 'viewToModelPosition', viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' ) );
+
+			// View:
+			// <p>foo<span>x|yz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 1 );
+
+			// Model:
+			// <p>foo|<span></span>bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 4 ] );
+		} );
+
+		it( 'should map view position that is at the end of the view element to a position after the model element', () => {
+			mapper.on( 'viewToModelPosition', viewToModelPositionOutsideModelElement( model, viewElement => viewElement.name == 'span' ) );
+
+			// View:
+			// <p>foo<span>xyz|</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 3 );
+
+			// Model:
+			// <p>foo<span></span>|bar</p>.
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 4 ] );
+		} );
+
+		it( 'should not fire if view element is not matched', () => {
+			mapper.on( 'viewToModelPosition', viewToModelPositionOutsideModelElement( model, () => false ) );
+
+			// View:
+			// <p>foo<span>x|yz</span>bar</p>.
+			const viewPosition = new ViewPosition( viewXyz, 1 );
+
+			// Model:
+			// <p>foo<span>x|yz</span>bar</p>.
+			modelSpan._appendChild( new ModelText( 'xyz' ) );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+
+			expect( modelPosition.path ).to.deep.equal( [ 3, 1 ] );
 		} );
 	} );
 } );

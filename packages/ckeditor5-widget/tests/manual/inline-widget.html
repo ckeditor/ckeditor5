@@ -1,7 +1,7 @@
 <div id="editor">
-	<h1>Hello <placeholder>name</placeholder>!</h1>
+	<h1>Hello <placeholder>{name}</placeholder>!</h1>
 
-	<p>We would like to invite you to <placeholder>place</placeholder> that will take place on <placeholder>date</placeholder>.</p>
+	<p>We would like to invite you to <placeholder>{place}</placeholder> that will take place on <placeholder>{date}</placeholder>.</p>
 </div>
 
 <h2>Model contents:</h2>
@@ -18,14 +18,6 @@
 
 	placeholder::selection{
 		display: none;
-	}
-
-	placeholder:before{
-		content: '{'
-	}
-
-	placeholder:after{
-		content: '}'
 	}
 
 	/* This will show box when the fake selection is active. */

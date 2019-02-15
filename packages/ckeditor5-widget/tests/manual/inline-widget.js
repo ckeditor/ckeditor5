@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console */
+/* global console, window */
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -17,7 +17,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, viewToModelPositionOutsideModelElement } from '../../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
@@ -57,7 +57,7 @@ class InlineWidget extends Plugin {
 					const text = viewElement.getChild( 0 );
 
 					if ( text.is( 'text' ) ) {
-						type = text.data;
+						type = text.data.slice( 1, -1 );
 					}
 				}
 
@@ -65,12 +65,18 @@ class InlineWidget extends Plugin {
 			}
 		} );
 
+		editor.editing.mapper.on(
+			'viewToModelPosition',
+			viewToModelPositionOutsideModelElement( editor.model, viewElement => viewElement.name == 'placeholder' )
+		);
+
 		this._createToolbarButton();
 
 		function createPlaceholderView( modelItem, viewWriter ) {
 			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
+			const viewText = viewWriter.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( modelItem.getAttribute( 'type' ) ) );
+			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}
@@ -112,6 +118,8 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
+		window.editor = editor;
+
 		editor.model.document.on( 'change', () => {
 			printModelContents( editor );
 		} );
