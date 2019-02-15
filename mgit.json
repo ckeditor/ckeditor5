@@ -34,7 +34,7 @@
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#04b2c95",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#0a9ace6",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#4759492",
-    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#75cc39f",
+    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#b97bc12",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#7437fe6",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#67be4e7",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#b994508",

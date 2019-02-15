@@ -15,6 +15,8 @@ In this guide, you will learn how to address these integration issues and use th
 
 ## Compatibility with Bootstrap
 
+### Bootstrap modals
+
 We noticed that [Bootstrap](https://getbootstrap.com) modals cover the UI of the rich-text editor and break the input fields. Knowing that, you will need to take the following steps to get CKEditor 5 working in the Bootstrap environment:
 
 * Configure the `z-index` of the floating editor UI (e.g. balloons) so it is displayed over the Bootstrap overlay.
@@ -42,6 +44,20 @@ $( '#modal-container' ).modal( {
 ```
 
 [Check out the demo of CKEditor 5 rich-text editor working correctly with Bootstrap](https://codepen.io/ckeditor/pen/vzvgOe).
+
+### Bootstrap table styles
+
+There is also a known [issue](https://github.com/ckeditor/ckeditor5-table/issues/154) concerning table styles brought by Bootstrap breaking the table (widget) layout during editing. If you do not want additional space around edited tables when using Bootstrap, add the following styles to your application:
+
+```css
+/*
+ * Override the width of table set by Bootstrap content styles.
+ * See: https://github.com/ckeditor/ckeditor5-table/issues/154.
+ */
+.ck-content .table {
+	width: auto;
+}
+```
 
 ## Compatibility with Foundation
 
