@@ -36,16 +36,32 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 	let currentList = null;
 
 	itemLikeElements.forEach( ( itemLikeElement, i ) => {
-		if ( !currentList || isNewListNeeded( itemLikeElements[ i - 1 ], itemLikeElement ) ) {
+		const isDifferentList = isNewListNeeded( itemLikeElements[ i - 1 ], itemLikeElement );
+		const previousListItem = isDifferentList ? null : itemLikeElements[ i - 1 ];
+		const indentationDifference = getIndentationDifference( previousListItem, itemLikeElement );
+
+		if ( isDifferentList ) {
+			currentList = null;
+		}
+
+		if ( !currentList || isDifferentList || indentationDifference !== 0 ) {
 			const listStyle = detectListStyle( itemLikeElement, stylesString );
-			const indentationDifference = getIndentationDifference( itemLikeElements[ i - 1 ], itemLikeElement );
 
 			if ( indentationDifference < 0 ) {
 				currentList = findParentListAtLevel( currentList, indentationDifference );
+
+				if ( !currentList.is( listStyle.type ) ) {
+					currentList = writer.rename( listStyle.type, currentList );
+				}
 			} else if ( indentationDifference > 0 ) {
-				const lastListItem = currentList.getChild( currentList.childCount - 1 );
-				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
-				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, indentationDifference );
+				if ( currentList ) {
+					const lastListItem = currentList.getChild( currentList.childCount - 1 );
+					const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
+					currentList = insertNewEmptyList( listStyle, lastListItemChild, writer, indentationDifference );
+				} else {
+					// First item in the list has indentation.
+					currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, indentationDifference + 1 );
+				}
 			} else {
 				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
 			}
@@ -266,6 +282,10 @@ function removeBulletElement( element, writer ) {
 // @param {Object} currentItem
 // @returns {Boolean}
 function isNewListNeeded( previousItem, currentItem ) {
+	if ( !previousItem ) {
+		return true;
+	}
+
 	if ( previousItem.id !== currentItem.id ) {
 		return true;
 	}
@@ -273,10 +293,6 @@ function isNewListNeeded( previousItem, currentItem ) {
 	const previousSibling = currentItem.element.previousSibling;
 
 	if ( !previousSibling ) {
-		return true;
-	}
-
-	if ( getIndentationDifference( previousItem, currentItem ) !== 0 ) {
 		return true;
 	}
 
@@ -294,7 +310,7 @@ function isList( element ) {
 // @param {Object} currentItem
 // @returns {Number}
 function getIndentationDifference( previousItem, currentItem ) {
-	return previousItem ? currentItem.indent - previousItem.indent : 0;
+	return previousItem ? currentItem.indent - previousItem.indent : currentItem.indent - 1;
 }
 
 // Finds parent list of a given list with indentation level lower by a given value.
