@@ -729,7 +729,7 @@ describe( 'Widget', () => {
 				'<paragraph>f[]ar</paragraph>'
 			);
 
-			it( 'should split parent when widget is inside block element', () => {
+			it( 'should split parent when widget is inside a block element', () => {
 				model.schema.register( 'allowP', {
 					inheritAllFrom: '$block'
 				} );
