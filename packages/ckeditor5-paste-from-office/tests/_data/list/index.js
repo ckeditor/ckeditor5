@@ -98,6 +98,9 @@ import heading1Safari from './heading1/input.safari.word2016.html';
 import heading3StyledSafari from './heading3-styled/input.safari.word2016.html';
 import heading7Safari from './heading7/input.safari.word2016.html';
 import resumeTemplateSafari from './resume-template/input.safari.word2016.html';
+import nestedSafari from './nested/input.safari.word2016.html';
+import nestedMixedSafari from './nested-mixed/input.safari.word2016.html';
+import nestedMultipleSafari from './nested-multiple/input.safari.word2016.html';
 
 import simpleNormalizedSafari from './simple/normalized.safari.word2016.html';
 import styledNormalizedSafari from './styled/normalized.safari.word2016.html';
@@ -108,6 +111,7 @@ import heading1NormalizedSafari from './heading1/normalized.safari.word2016.html
 import heading3StyledNormalizedSafari from './heading3-styled/normalized.safari.word2016.html';
 import heading7NormalizedSafari from './heading7/normalized.safari.word2016.html';
 import resumeTemplateNormalizedSafari from './resume-template/normalized.safari.word2016.html';
+import nestedMultipleNormalizedSafari from './nested-multiple/normalized.safari.word2016.html';
 
 import styledSafariModel from './styled/model.safari.word2016.html';
 import resumeTemplateSafariModel from './resume-template/model.safari.word2016.html';
@@ -123,7 +127,10 @@ export const browserFixtures = {
 			heading1: heading1Safari,
 			heading3Styled: heading3StyledSafari,
 			heading7: heading7Safari,
-			resumeTemplate: resumeTemplateSafari
+			resumeTemplate: resumeTemplateSafari,
+			nested: nestedSafari,
+			nestedMixed: nestedMixedSafari,
+			nestedMultiple: nestedMultipleSafari
 		},
 		normalized: {
 			simple: simpleNormalizedSafari,
@@ -134,7 +141,10 @@ export const browserFixtures = {
 			heading1: heading1NormalizedSafari,
 			heading3Styled: heading3StyledNormalizedSafari,
 			heading7: heading7NormalizedSafari,
-			resumeTemplate: resumeTemplateNormalizedSafari
+			resumeTemplate: resumeTemplateNormalizedSafari,
+			nested: nestedNormalized,
+			nestedMixed: nestedMixedNormalized,
+			nestedMultiple: nestedMultipleNormalizedSafari
 		},
 		model: {
 			simple: simpleModel,
@@ -145,7 +155,10 @@ export const browserFixtures = {
 			heading1: heading1Model,
 			heading3Styled: heading3StyledModel,
 			heading7: heading7Model,
-			resumeTemplate: resumeTemplateSafariModel
+			resumeTemplate: resumeTemplateSafariModel,
+			nested: nestedModel,
+			nestedMixed: nestedMixedModel,
+			nestedMultiple: nestedMultipleModel
 		}
 	}
 };
