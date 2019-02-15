@@ -556,7 +556,8 @@ function ConvertDivAttributes( editor ) {
 			const viewWriter = conversionApi.writer;
 			const viewDiv = conversionApi.mapper.toViewElement( data.item );
 
-			// In the model-to-view conversion we convert changes. An attribute can be added or removed or changed.
+			// In the model-to-view conversion we convert changes.
+			// An attribute can be added or removed or changed.
 			// The below code handles all 3 cases.
 			if ( data.attributeNewValue ) {
 				viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, viewDiv );
@@ -574,6 +575,84 @@ Activate the plugin in the editor:
 ClassicEditor
 	.create( ..., {
 		extraPlugins: [ ConvertDivAttributes ],
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+```
+
+#### Parse attribute values  
+
+Some features, like {@link features/font Font}, allows only specific values for inline attributes. In this example we'll add a converter that will parse any `font-size` value into one of defined values.
+
+##### Demo
+
+{@snippet framework/extending-content-arbitrary-attribute-values}
+
+##### Code
+
+Parsing any font value to model requires writing adding custom "upcast" converter that will override default converter from `FontSize`. Unlike the default one, this converter parses values set in CSS nad sets them into the model.
+
+As the default "downcast" converter only operates on pre-defined values we're also adding a model-to-view converter that simply outputs any model value to font-size using `px` units. 
+
+```js
+function HandleFontSizeValue( editor ) {
+	// Add special catch-all converter for font-size feature.
+	editor.conversion.for( 'upcast' ).elementToAttribute( {
+		view: {
+			name: 'span',
+			styles: {
+				'font-size': /[\s\S]+/
+			}
+		},
+		model: {
+			key: 'fontSize',
+			value: viewElement => {
+				const value = parseFloat( viewElement.getStyle( 'font-size' ) ).toFixed( 0 );
+
+				// It might be needed to further convert the value to meet business requirements.
+				// In the sample the font-size is configured to handle only the sizes:
+				// 12, 14, 'default', 18, 20, 22, 24, 26, 28, 30
+				// Other sizes will be converted to the model but the UI might not be aware of them.
+
+				// The font-size feature expects numeric values to be Number not String.
+				return parseInt( value );
+			}
+		},
+		converterPriority: 'high'
+	} );
+
+	// Add special converter for font-size feature to convert all (even not configured) 
+	// model attribute values.
+	editor.conversion.for( 'downcast' ).attributeToElement( {
+		model: {
+			key: 'fontSize'
+		},
+		view: ( modelValue, viewWriter ) => {
+			return viewWriter.createAttributeElement( 'span', {
+				style: `font-size:${ modelValue }px`
+			} );
+		},
+		converterPriority: 'high'
+	} );
+}
+```
+
+Activate the plugin in the editor:
+
+```js
+import Font from '@ckeditor/ckeditor5-font/src/font';
+
+ClassicEditor
+	.create( ..., {
+		items: [ 'heading', '|', 'bold', 'italic', '|', 'fontSize' ],
+		fontsize: {
+			options: [ 10, 12, 14, 'default', 18, 20, 22 ]
+		},
+		extraPlugins: [ Font, HandleFontSizeValue ],
 	} )
 	.then( editor => {
 		// ...
