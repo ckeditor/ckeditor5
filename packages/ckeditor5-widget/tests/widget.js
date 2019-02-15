@@ -728,6 +728,29 @@ describe( 'Widget', () => {
 				keyCodes.enter,
 				'<paragraph>f[]ar</paragraph>'
 			);
+
+			it( 'should split parent when widget is inside block element', () => {
+				model.schema.register( 'parent', {
+					inheritAllFrom: '$block'
+				} );
+				model.schema.extend( 'widget', {
+					allowIn: [ 'parent' ]
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'parent', view: 'parent' } );
+
+				setModelData( model, '<parent>[<widget></widget>]</parent>' );
+
+				viewDocument.fire( 'keydown', new DomEventData(
+					viewDocument,
+					{ target: document.createElement( 'div' ), preventDefault() {} },
+					{ keyCode: keyCodes.enter }
+				) );
+
+				expect( getModelData( model ) ).to.equal(
+					'<parent><widget></widget></parent><paragraph>[]</paragraph><parent></parent>'
+				);
+			} );
 		} );
 
 		function test( name, data, keyCodeOrMock, expected, expectedView ) {

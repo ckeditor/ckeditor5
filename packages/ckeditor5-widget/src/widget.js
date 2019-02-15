@@ -272,9 +272,14 @@ export default class Widget extends Plugin {
 
 		if ( objectElement && model.schema.isObject( objectElement ) ) {
 			model.change( writer => {
+				let position = writer.createPositionAt( objectElement, isBackwards ? 'before' : 'after' );
 				const paragraph = writer.createElement( 'paragraph' );
 
-				writer.insert( paragraph, objectElement, isBackwards ? 'before' : 'after' );
+				if ( !model.schema.isLimit( objectElement.parent ) ) {
+					position = writer.split( position ).position;
+				}
+
+				writer.insert( paragraph, position );
 				writer.setSelection( paragraph, 'in' );
 			} );
 
