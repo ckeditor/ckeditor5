@@ -24,6 +24,41 @@ describe( 'Filters', () => {
 				expect( normalizeSpacing( input ) ).to.equal( expected );
 			} );
 
+			it( 'should remove newlines from spacerun spans #1', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>  \n</span>';
+				const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #2', () => {
+				const input = '<span style=\'mso-spacerun:yes\'> \r\n</span>';
+				const expected = '<span style=\'mso-spacerun:yes\'>\u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #3', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>  \r\n\n  </span>';
+				const expected = '<span style=\'mso-spacerun:yes\'>   \u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #4', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>\n\n\n  </span>';
+				const expected = '<span style=\'mso-spacerun:yes\'> \u00A0</span>';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
+			it( 'should remove newlines from spacerun spans #5', () => {
+				const input = '<span style=\'mso-spacerun:yes\'>\n\n</span>';
+				const expected = '';
+
+				expect( normalizeSpacing( input ) ).to.equal( expected );
+			} );
+
 			it( 'should remove multiline sequences of whitespaces', () => {
 				const input = '<p>Foo</p> \n\n   \n<p>Bar</p>   \r\n\r\n  <p>Baz</p>';
 				const expected = '<p>Foo</p><p>Bar</p><p>Baz</p>';
