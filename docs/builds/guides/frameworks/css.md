@@ -43,6 +43,18 @@ $( '#modal-container' ).modal( {
 
 [Check out the demo of CKEditor 5 rich-text editor working correctly with Bootstrap](https://codepen.io/ckeditor/pen/vzvgOe).
 
+There is also known issue regarding Bootstrap 4 (and previous versions too) which is [table width property override](https://github.com/twbs/bootstrap/blob/v4-dev/scss/_tables.scss#L5-L6).
+
+```css
+/*
+ * Override Bootstrap default width of table.
+ * See: https://github.com/ckeditor/ckeditor5-table/issues/154.
+ */
+.ck-widget.table {
+	width: auto;
+}
+```
+
 ## Compatibility with Foundation
 
 CKEditor 5 requires some minor adjustments to the `z-index` of the UI to work properly with [Foundation](https://foundation.zurb.com/sites.html) (and with the [Reveal](https://foundation.zurb.com/sites/docs/reveal.html) modal, too).
