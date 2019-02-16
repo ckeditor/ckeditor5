@@ -68,6 +68,38 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
+### Note: Strict mode type checking
+
+If your IDE or compiler is used strict mode (where all symbol references are
+checked for type and an error is indicated if they do not match or are unknown)
+then it is necessary to add a ```typings.d.ts``` file to your project, similar to 
+to the folloiwng 
+
+```ts
+// Simple typings for editors 
+
+declare module '@ckeditor/ckeditor5-build-classic' {
+  const ClassicEditorBuild: any;
+  export = ClassicEditorBuild;
+}
+
+declare module '@ckeditor/ckeditor5-build-inline' {
+  const InlineEditorBuild: any;
+  export = InlineEditorBuild;
+}
+
+declare module '@ckeditor/ckeditor5-build-balloon' {
+  const BalloonEditorBuild: any;
+  export = BalloonEditorBuild;
+}
+
+declare module '@ckeditor/ckeditor5-build-decoupled-document' {
+  const DecoupledDocumentEditorBuild: any;
+  export = DecoupledDocumentEditorBuild;
+}
+```
+This will elminate the unwanted errors.
+
 ### Note: Using the Document editor build
 
 If you want to use the {@link framework/guides/document-editor Document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
@@ -116,7 +148,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 2. Use the model in the template to enable a two–way data binding:
 
 	```html
-	<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
+	<ckeditor [(ngModel)]="model.editorData" [editor]="Editor" name="editor1"></ckeditor>
 	```
 
 ## Supported `@Input` properties
@@ -297,6 +329,7 @@ Then, add it in the `angular.json` configuration file.
 }
 ```
 
+<<<<<<< HEAD
 ### Setting the placeholder
 
 To display {@link features/editor-placeholder the placeholder} in the main editable element simply set the `placeholder` field in the CKEditor 5 component configuration:
@@ -312,6 +345,173 @@ export class MyComponent {
 }
 ```
 
+=======
+## Accessing the CKEditor API from an Angular Component
+
+The **ckeditor** component will provide all the functionality needed for most use cases.  In 
+cases where access to the Javascript-level {@link api CKEditor API} is needed
+it is easy to access with an additional step.
+
+To do this, assign the Angular **ckeditor** component to a locally scoped variable as
+follows:
+
+```html
+	<ckeditor #editor1 [editor]="Editor" [config]="ckconfig"
+			  [(ngModel)]="text" name="editcontent"></ckeditor>
+```
+
+You can then refer to that variable as needed in any method call within the component
+such as:
+
+```html
+	<button type="button" (click)="doPasteSomething(editor1)">Do Someting</button>
+```
+
+In the component the target function will look like this:
+
+```ts
+  doPasteSomething(editorComponent: CKEditorComponent) {
+    const editor = editorComponent.editorInstance;
+    editor.model.insertContent(' >> This just got pasted! << ');
+  }
+```
+
+The operations performed may be anything that is defined and allowable by the API.
+
+Note that the Angular **editor1** template variable may also be accessed with an
+**@ViewChild**-decorated variable declaration.  The method in the example, however,
+will be preferable in the case where there is more than one **ckeditor** element on
+the page.  Also, if the **ckeditor** element is inside an ***ngIf** structure the **@ViewChild**
+declared variable may be inadvertently undefined.
+
+
+## Implementing an Upload Adapter in an Angular Application
+
+An Upload Adapter can be used with CKEditor so that when a user adds an image 
+to a document it is encoded as a link to the image.  The image itself is stored
+separately from the document.   When images are large or numerous this results
+in noticable improvement in performance over the default behavior.  Read about custom
+UploadAdapters {@link framework/guides/deep-dive/upload-adapter here}. 
+
+The first step is to create an Upload Adapter.  This can be done in the same file where the 
+component that will use it.  Alternatively this can have its own file and be
+imported.
+
+This class will be instantiated each time that CKEditor needs it.  Note that
+the functions in this class will run outside an **NgZone** which means that
+if it makes changes to variables bound to HTML elements, the shadow-DOM logic
+in the Angular framework won't detect those changes.  
+
+The instance property **loader** is the primary interface between the UploadAdapter
+and the CKEditor instance.
+
+```ts
+class UploadAdapter {
+  private loader;
+  private url;
+
+  private sub: Subscription;
+
+  constructor(loader, url) {
+    this.loader = loader;
+    this.url = url;
+  }
+
+  upload() {
+    return new Promise((resolve, reject) => {
+      const fd = new FormData();
+      fd.append('file', this.loader.file);
+
+      this.sub = this.httpPostMediaReq(fd).subscribe(
+        (event) => {
+          if (event.type === HttpEventType.Response) {
+            const resp = event.body;
+            if (!resp.list || resp.list.length < 1 || resp.list[0].id < 1) reject(resp.error);
+            else {
+              const imageURL = this.imageURL(resp.list[0].id);
+              resolve({ default: imageURL });
+            }
+          }
+          else if (event.type === HttpEventType.UploadProgress) {
+            this.loader.uploaded = event.loaded;
+            this.loader.uploadTotal = event.total;
+          }
+        },
+        (err) => {
+            reject(err.body.message);
+        });
+    });
+  }
+  
+  imageURL(id) {
+     // RETURN THE URL WHERE THE SUCCESSFULY UPLOADED IMAGE
+     // CAN BE RETRIEVED WITH AN HTTP GET REQUEST
+  }
+  
+  httpPostMediaReq(formReq: FormData): Observable<any> {
+      const options: {
+        observe: 'events';
+        reportProgress: boolean;
+        withCredentials: boolean;
+      } = {
+        withCredentials: true,
+        reportProgress: true,
+        observe: 'events'
+      };
+      const request = new HttpRequest(
+        'POST', this.url, formReq, options);
+      return this.http.request(request);
+    }
+
+  abort() {
+    console.log('UploadAdapter abort');
+    if (this.sub) this.sub.unsubscribe();
+  }
+
+```
+
+Next, in your component, create a function that can be plugged into CKEditor that
+will generate an UploadAdapter as needed:
+
+```ts
+  MyUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return new UploadAdapter(loader, '/image');  // MODIFY FOR YOUR SERVER
+    };
+  }
+```
+
+The second parameter is the URL where the image will be sent.  This will need
+to have everything the **imageURL** function in the UploadAdpater needs to 
+generate a complete URL.
+
+Next, we need to tell CKEditor where the Plugin can be found.  This is done
+using the **extraPlugins** element in the configuration object, which can
+be used without rebuilding the standard build you are using.  The following
+instance variable can be defined:
+
+```ts
+  ckconfig = {
+    extraPlugins: [ (ei) => this.MyUploadAdapterPlugin(ei) ]
+  };
+```
+
+Any other desired configuration settings can be added (such as **toolbar**).
+Then it can be used in the **ckeditor** component as follows:
+
+```html
+        <ckeditor [editor]="Editor" [config]="ckconfig"
+                  [(ngModel)]="text" name="editcontent"></ckeditor>
+```
+
+Note the use of a closure in the **extraPlugins** array in the configuration.
+This is done so that the **MyUploadAdapterPlugin** function will have access
+to the properties of the component instance that spawned it.  
+
+At this point your UploadAdapter should be invoked any time the user pastes
+or drag-and-drops an image into the **ckeditor** window.
+
+>>>>>>> Updates to angular.md
 ## Localization
 
 The CKEditor 5 component can be localized in two steps.
