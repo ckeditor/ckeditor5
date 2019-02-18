@@ -191,6 +191,10 @@ export default class ImageTextAlternativeUI extends Plugin {
 			return;
 		}
 
+		// Blur the input element before removing it from DOM to prevent issues in some browsers.
+		// See https://github.com/ckeditor/ckeditor5/issues/1501.
+		this._form.saveButtonView.focus();
+
 		this._balloon.remove( this._form );
 
 		if ( focusEditable ) {
