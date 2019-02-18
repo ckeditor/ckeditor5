@@ -9,8 +9,6 @@
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
-const mediaSymbol = Symbol( 'isMedia' );
-
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the media widget element.
@@ -22,7 +20,7 @@ const mediaSymbol = Symbol( 'isMedia' );
  * @returns {module:engine/view/element~Element}
  */
 export function toMediaWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( mediaSymbol, true, viewElement );
+	writer.setCustomProperty( 'media', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
 }
@@ -50,7 +48,7 @@ export function getSelectedMediaViewWidget( selection ) {
  * @returns {Boolean}
  */
 export function isMediaWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( mediaSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( 'media' ) && isWidget( viewElement );
 }
 
 /**
