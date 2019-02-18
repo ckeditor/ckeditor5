@@ -114,12 +114,6 @@ export default class ImageUploadProgress extends Plugin {
 	}
 }
 
-// Symbol added to progress bar UIElement to distinguish it from other elements.
-const progressBarSymbol = Symbol( 'progress-bar' );
-
-// Symbol added to placeholder UIElement to distinguish it from other elements.
-const placeholderSymbol = Symbol( 'placeholder' );
-
 // Adds ck-appear class to the image figure if one is not already applied.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
@@ -154,7 +148,7 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 		writer.setAttribute( 'src', placeholder, viewImg );
 	}
 
-	if ( !_getUIElement( viewFigure, placeholderSymbol ) ) {
+	if ( !_getUIElement( viewFigure, 'placeholder' ) ) {
 		writer.insert( writer.createPositionAfter( viewImg ), _createPlaceholder( writer ) );
 	}
 }
@@ -168,7 +162,7 @@ function _hidePlaceholder( viewFigure, writer ) {
 		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	_removeUIElement( viewFigure, writer, placeholderSymbol );
+	_removeUIElement( viewFigure, writer, 'placeholder' );
 }
 
 // Shows progress bar displaying upload progress.
@@ -195,7 +189,7 @@ function _showProgressBar( viewFigure, writer, loader, view ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
 function _hideProgressBar( viewFigure, writer ) {
-	_removeUIElement( viewFigure, writer, progressBarSymbol );
+	_removeUIElement( viewFigure, writer, 'progressBar' );
 }
 
 // Shows complete icon and hides after a certain amount of time.
@@ -221,7 +215,7 @@ function _showCompleteIcon( viewFigure, writer, view ) {
 function _createProgressBar( writer ) {
 	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
 
-	writer.setCustomProperty( progressBarSymbol, true, progressBar );
+	writer.setCustomProperty( 'progressBar', true, progressBar );
 
 	return progressBar;
 }
@@ -234,7 +228,7 @@ function _createProgressBar( writer ) {
 function _createPlaceholder( writer ) {
 	const placeholder = writer.createUIElement( 'div', { class: 'ck-upload-placeholder-loader' } );
 
-	writer.setCustomProperty( placeholderSymbol, true, placeholder );
+	writer.setCustomProperty( 'placeholder', true, placeholder );
 
 	return placeholder;
 }
@@ -244,7 +238,7 @@ function _createPlaceholder( writer ) {
 //
 // @private
 // @param {module:engine/view/element~Element} imageFigure
-// @param {Symbol} uniqueProperty
+// @param {String} uniqueProperty
 // @returns {module:engine/view/uielement~UIElement|undefined}
 function _getUIElement( imageFigure, uniqueProperty ) {
 	for ( const child of imageFigure.getChildren() ) {
@@ -259,7 +253,7 @@ function _getUIElement( imageFigure, uniqueProperty ) {
 // @private
 // @param {module:engine/view/element~Element} imageFigure
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Symbol} uniqueProperty
+// @param {String} uniqueProperty
 function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 	const element = _getUIElement( viewFigure, uniqueProperty );
 
