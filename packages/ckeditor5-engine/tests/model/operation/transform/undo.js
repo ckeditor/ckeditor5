@@ -5,6 +5,7 @@
 
 import { Client, expectClients, clearBuffer } from './utils.js';
 
+import DocumentFragment from '../../../../src/model/documentfragment';
 import Element from '../../../../src/model/element';
 import Text from '../../../../src/model/text';
 
@@ -610,6 +611,44 @@ describe( 'transform', () => {
 
 		function getPastedContent() {
 			return new Element( 'heading1', null, new Text( 'Foobar' ) );
+		}
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1540
+	it( 'paste, select all, paste, undo, undo, redo, redo, redo', () => {
+		const model = john.editor.model;
+
+		john.setData( '<paragraph>[]</paragraph>' );
+
+		model.insertContent( getPastedContent() );
+
+		john.setSelection( [ 0, 0 ], [ 1, 3 ] );
+
+		model.insertContent( getPastedContent() );
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		function getPastedContent() {
+			return new DocumentFragment( [
+				new Element( 'heading1', null, new Text( 'Foo' ) ),
+				new Element( 'paragraph', null, new Text( 'Bar' ) )
+			] );
 		}
 	} );
 } );
