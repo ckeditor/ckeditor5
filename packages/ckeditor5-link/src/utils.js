@@ -7,8 +7,6 @@
  * @module link/utils
  */
 
-const linkElementSymbol = Symbol( 'linkElement' );
-
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))/i;
 
@@ -19,7 +17,7 @@ const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))
  * @returns {Boolean}
  */
 export function isLinkElement( node ) {
-	return node.is( 'attributeElement' ) && !!node.getCustomProperty( linkElementSymbol );
+	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
 }
 
 /**
@@ -31,7 +29,7 @@ export function isLinkElement( node ) {
 export function createLinkElement( href, writer ) {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
 	const linkElement = writer.createAttributeElement( 'a', { href }, { priority: 5 } );
-	writer.setCustomProperty( linkElementSymbol, true, linkElement );
+	writer.setCustomProperty( 'link', true, linkElement );
 
 	return linkElement;
 }
