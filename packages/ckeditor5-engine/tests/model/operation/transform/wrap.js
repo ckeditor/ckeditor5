@@ -382,7 +382,7 @@ describe( 'transform', () => {
 				expectClients( '<blockQuote><paragraph>c</paragraph></blockQuote>' );
 			} );
 
-			it.skip( 'delete all wrapped content and undo', () => {
+			it( 'delete all wrapped content and undo', () => {
 				john.setData( '[<paragraph>Foo</paragraph><paragraph>Bar</paragraph><paragraph>Abc</paragraph>]' );
 				kate.setData( '<paragraph>[Foo</paragraph><paragraph>Bar</paragraph><paragraph>Ab]c</paragraph>' );
 
