@@ -262,7 +262,7 @@ export function toWidgetEditable( editable, writer ) {
 export function findOptimalInsertionPosition( selection, model ) {
 	const selectedElement = selection.getSelectedElement();
 
-	if ( selectedElement ) {
+	if ( selectedElement && model.schema.isBlock( selectedElement ) ) {
 		return model.createPositionAfter( selectedElement );
 	}
 
@@ -287,6 +287,65 @@ export function findOptimalInsertionPosition( selection, model ) {
 	}
 
 	return selection.focus;
+}
+
+/**
+ * A util to be used in order to map view positions to correct model positions when implementing a widget
+ * which renders non-empty view element for an empty model element.
+ *
+ * For example:
+ *
+ *		// Model:
+ *		<placeholder type="name"></placeholder>
+ *
+ *		// View:
+ *		<span class="placeholder">name</span>
+ *
+ * In such case, view positions inside `<span>` cannot be correct mapped to the model (because the model element is empty).
+ * To handle mapping positions inside `<span class="placeholder">` to the model use this util as follows:
+ *
+ *		editor.editing.mapper.on(
+ *			'viewToModelPosition',
+ *			viewToModelPositionOutsideModelElement( model, viewElement => viewElement.hasClass( 'placeholder' ) )
+ *		);
+ *
+ * The callback will try to map the view offset of selection to an expected model position.
+ *
+ * 1. When the position is at the end (or in the middle) of the inline widget:
+ *
+ *		// View:
+ *		<p>foo <span class="placeholder">name|</span> bar</p>
+ *
+ *		// Model:
+ *		<paragraph>foo <placeholder type="name"></placeholder>| bar</paragraph>
+ *
+ * 2. When the position is at the beginning of the inline widget:
+ *
+ *		// View:
+ *		<p>foo <span class="placeholder">|name</span> bar</p>
+ *
+ *		// Model:
+ *		<paragraph>foo |<placeholder type="name"></placeholder> bar</paragraph>
+ *
+ * @param {module:engine/model/model~Model} model Model instance on which the callback operates.
+ * @param {Function} viewElementMatcher Function that is passed a view element and should return `true` if the custom mapping
+ * should be applied to the given view element.
+ * @return {Function}
+ */
+export function viewToModelPositionOutsideModelElement( model, viewElementMatcher ) {
+	return ( evt, data ) => {
+		const { mapper, viewPosition } = data;
+
+		const viewParent = mapper.findMappedViewAncestor( viewPosition );
+
+		if ( !viewElementMatcher( viewParent ) ) {
+			return;
+		}
+
+		const modelParent = mapper.toModelElement( viewParent );
+
+		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
+	};
 }
 
 // Default filler offset function applied to all widget elements.
