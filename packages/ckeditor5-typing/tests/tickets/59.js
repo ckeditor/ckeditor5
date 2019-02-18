@@ -44,7 +44,7 @@ describe( 'Bug ckeditor5-typing#59', () => {
 			editor.execute( 'delete' );
 		}
 
-		expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 	} );
 
 	// This is something that came to my mind after I worked on ckeditor/ckeditor5-engine#659.
@@ -60,6 +60,6 @@ describe( 'Bug ckeditor5-typing#59', () => {
 			editor.execute( 'bold' );
 		}
 
-		expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+		expect( editor.getData( { trim: 'none' } ) ).to.equal( '<p>&nbsp;</p>' );
 	} );
 } );
