@@ -306,7 +306,7 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const contextFactory = new ContextFactory( options.document, options.useRelations );
+	const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
 	contextFactory.setOriginalOperations( operationsA );
 	contextFactory.setOriginalOperations( operationsB );
 
@@ -386,12 +386,16 @@ class ContextFactory {
 	// @param {module:engine/model/document~Document} document Document which the operations change.
 	// @param {Boolean} useRelations Whether during transformation relations should be used (used during undo for
 	// better conflict resolution).
-	constructor( document, useRelations ) {
+	// @param {Boolean} [forceWeakRemove=false] If set to `false`, remove operation will be always stronger than move operation,
+	// so the removed nodes won't end up back in the document root. When set to `true`, context data will be used.
+	constructor( document, useRelations, forceWeakRemove = false ) {
 		// `model.History` instance which information about undone operations will be taken from.
 		this._history = document.history;
 
 		// Whether additional context should be used.
 		this._useRelations = useRelations;
+
+		this._forceWeakRemove = !!forceWeakRemove;
 
 		// For each operation that is created during transformation process, we keep a reference to the original operation
 		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
@@ -583,7 +587,8 @@ class ContextFactory {
 			aWasUndone: this._wasUndone( opA ),
 			bWasUndone: this._wasUndone( opB ),
 			abRelation: this._useRelations ? this._getRelation( opA, opB ) : null,
-			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null
+			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null,
+			forceWeakRemove: this._forceWeakRemove
 		};
 	}
 
@@ -1313,7 +1318,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b.type == 'remove' && !context.bWasUndone ) {
+	if ( b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return [ new NoOperation( 0 ) ];
 		}
@@ -1596,9 +1601,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 	// to provide more expected results.
-	if ( a.type == 'remove' && b.type != 'remove' && !context.aWasUndone ) {
+	if ( a.type == 'remove' && b.type != 'remove' && !context.aWasUndone && !context.forceWeakRemove ) {
 		aIsStrong = true;
-	} else if ( a.type != 'remove' && b.type == 'remove' && !context.bWasUndone ) {
+	} else if ( a.type != 'remove' && b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
 		aIsStrong = false;
 	}
 
@@ -1768,7 +1773,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	if ( b.graveyardPosition ) {
 		const movesGraveyardElement = moveRange.start.isEqual( b.graveyardPosition ) || moveRange.containsPosition( b.graveyardPosition );
 
-		if ( a.howMany > 1 && movesGraveyardElement ) {
+		if ( a.howMany > 1 && movesGraveyardElement && !context.aWasUndone ) {
 			ranges.push( Range._createFromPositionAndShift( b.insertionPosition, 1 ) );
 		}
 	}
@@ -1780,7 +1785,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 	const movedRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( b.deletionPosition.hasSameParentAs( a.sourcePosition ) && movedRange.containsPosition( b.sourcePosition ) ) {
-		if ( a.type == 'remove' ) {
+		if ( a.type == 'remove' && !context.forceWeakRemove ) {
 			// Case 1:
 			//
 			// The element to remove got merged.
@@ -1794,21 +1799,22 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				const results = [];
 
 				let gyMoveSource = b.graveyardPosition.clone();
-				let splitNodesMoveSource = b.targetPosition.clone();
+				let splitNodesMoveSource = b.targetPosition._getTransformedByMergeOperation( b );
 
 				if ( a.howMany > 1 ) {
 					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
-					gyMoveSource = gyMoveSource._getTransformedByInsertion( a.targetPosition, a.howMany - 1 );
+
+					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
 					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
 				}
 
 				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, a.targetPosition );
 				const gyMove = new MoveOperation( gyMoveSource, 1, gyMoveTarget, 0 );
 
-				const targetPositionPath = gyMove.getMovedRangeStart().path.slice();
-				targetPositionPath.push( 0 );
+				const splitNodesMoveTargetPath = gyMove.getMovedRangeStart().path.slice();
+				splitNodesMoveTargetPath.push( 0 );
 
-				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, targetPositionPath );
+				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, splitNodesMoveTargetPath );
 				splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( gyMoveSource, gyMoveTarget, 1 );
 				const splitNodesMove = new MoveOperation( splitNodesMoveSource, b.howMany, splitNodesMoveTarget, 0 );
 
@@ -2052,7 +2058,9 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		// is already moved to the correct position, we need to only move the nodes after the split position.
 		// This will be done by `MoveOperation` instead of `SplitOperation`.
 		//
-		if ( rangeToMove.start.isEqual( a.graveyardPosition ) || rangeToMove.containsPosition( a.graveyardPosition ) ) {
+		const gyElementMoved = rangeToMove.start.isEqual( a.graveyardPosition ) || rangeToMove.containsPosition( a.graveyardPosition );
+
+		if ( !context.bWasUndone && gyElementMoved ) {
 			const sourcePosition = a.splitPosition._getTransformedByMoveOperation( b );
 
 			const newParentPosition = a.graveyardPosition._getTransformedByMoveOperation( b );

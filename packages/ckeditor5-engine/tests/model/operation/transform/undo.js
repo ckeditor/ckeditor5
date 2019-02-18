@@ -5,6 +5,9 @@
 
 import { Client, expectClients, clearBuffer } from './utils.js';
 
+import Element from '../../../../src/model/element';
+import Text from '../../../../src/model/text';
+
 describe( 'transform', () => {
 	let john;
 
@@ -573,5 +576,40 @@ describe( 'transform', () => {
 		john.undo();
 
 		expectClients( '<paragraph>XY</paragraph>' );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1385
+	it( 'paste inside paste + undo, undo + redo, redo', () => {
+		const model = john.editor.model;
+
+		john.setData( '<paragraph>[]</paragraph>' );
+
+		model.insertContent( getPastedContent() );
+
+		john.setSelection( [ 0, 3 ] );
+
+		model.insertContent( getPastedContent() );
+
+		expectClients( '<heading1>FooFoobarbar</heading1>' );
+
+		john.undo();
+
+		expectClients( '<heading1>Foobar</heading1>' );
+
+		john.undo();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foobar</heading1>' );
+
+		john.redo();
+
+		expectClients( '<heading1>FooFoobarbar</heading1>' );
+
+		function getPastedContent() {
+			return new Element( 'heading1', null, new Text( 'Foobar' ) );
+		}
 	} );
 } );

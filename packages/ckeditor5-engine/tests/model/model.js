@@ -500,6 +500,9 @@ describe( 'Model', () => {
 				isObject: true
 			} );
 			schema.extend( 'image', { allowIn: 'div' } );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
 
 			setData(
 				model,
@@ -510,7 +513,10 @@ describe( 'Model', () => {
 				'<paragraph>foo</paragraph>' +
 				'<div>' +
 				'<image></image>' +
-				'</div>'
+				'</div>' +
+				'<listItem></listItem>' +
+				'<listItem></listItem>' +
+				'<listItem></listItem>'
 			);
 
 			root = model.document.getRoot();
@@ -520,6 +526,34 @@ describe( 'Model', () => {
 			const pFoo = root.getChild( 1 );
 
 			expect( model.hasContent( pFoo ) ).to.be.true;
+		} );
+
+		it( 'should return true if given element has text node (ignoreWhitespaces)', () => {
+			const pFoo = root.getChild( 1 );
+
+			expect( model.hasContent( pFoo, { ignoreWhitespaces: true } ) ).to.be.true;
+		} );
+
+		it( 'should return true if given element has text node containing spaces only', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+				writer.insertText( '    ', pEmpty, 'end' );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
+		} );
+
+		it( 'should false true if given element has text node containing spaces only (ignoreWhitespaces)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
+				writer.insertText( '    ', pEmpty, 'end' );
+			} );
+
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
 		} );
 
 		it( 'should return true if given element has element that is an object', () => {
@@ -570,6 +604,113 @@ describe( 'Model', () => {
 			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) );
 
 			expect( model.hasContent( range ) ).to.be.false;
+		} );
+
+		it( 'should return false for empty list items', () => {
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
+
+			expect( model.hasContent( range ) ).to.be.false;
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=false, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return false (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
+
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
+
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.false;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return true (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
+			const pEmpty = root.getChild( 0 ).getChild( 0 );
+
+			model.enqueueChange( 'transparent', writer => {
+				// Insert empty text.
+				const text = writer.createText( '    ', { bold: true } );
+				writer.append( text, pEmpty );
+
+				// Insert marker.
+				const range = ModelRange._createIn( pEmpty );
+				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
+			} );
+
+			expect( model.hasContent( pEmpty ) ).to.be.true;
+			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.true;
 		} );
 	} );
 
