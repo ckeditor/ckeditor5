@@ -39,7 +39,7 @@ describe( 'DeleteCommand integration', () => {
 				// Mock paragraph feature.
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.extend( 'paragraph', { allowIn: '$block' } );
-				model.schema.register( 'softBreak', { allowWhere: '$text' } );
+				model.schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
 
 				model.schema.register( 'img', {
 					allowWhere: '$text',
