@@ -722,26 +722,28 @@ describe( 'Mapper', () => {
 		} );
 	} );
 
-	it( 'findMappedViewAncestor should return for given view position the closest ancestor which is mapped to a model element', () => {
-		const mapper = new Mapper();
+	describe( 'findMappedViewAncestor()', () => {
+		it( 'should return for given view position the closest ancestor which is mapped to a model element', () => {
+			const mapper = new Mapper();
 
-		const modelP = new ModelElement( 'p' );
-		const modelDiv = new ModelElement( 'div' );
+			const modelP = new ModelElement( 'p' );
+			const modelDiv = new ModelElement( 'div' );
 
-		const viewText = new ViewText( 'foo' );
-		const viewSpan = new ViewElement( 'span', null, viewText );
-		const viewP = new ViewElement( 'p', null, viewSpan );
-		const viewDiv = new ViewElement( 'div', null, viewP );
+			const viewText = new ViewText( 'foo' );
+			const viewSpan = new ViewElement( 'span', null, viewText );
+			const viewP = new ViewElement( 'p', null, viewSpan );
+			const viewDiv = new ViewElement( 'div', null, viewP );
 
-		mapper.bindElements( modelP, viewP );
-		mapper.bindElements( modelDiv, viewDiv );
+			mapper.bindElements( modelP, viewP );
+			mapper.bindElements( modelDiv, viewDiv );
 
-		// <div><p><span>f{}oo</span></p></div>.
+			// <div><p><span>f{}oo</span></p></div>
 
-		const viewPosition = new ViewPosition( viewText, 1 );
+			const viewPosition = new ViewPosition( viewText, 1 );
 
-		const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
+			const viewMappedAncestor = mapper.findMappedViewAncestor( viewPosition );
 
-		expect( viewMappedAncestor ).to.equal( viewP );
+			expect( viewMappedAncestor ).to.equal( viewP );
+		} );
 	} );
 } );

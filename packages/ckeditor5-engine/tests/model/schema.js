@@ -2793,35 +2793,35 @@ describe( 'Schema', () => {
 			expect( schema.isLimit( 'paragraph' ) ).to.be.false;
 			expect( schema.isBlock( 'paragraph' ) ).to.be.true;
 			expect( schema.isObject( 'paragraph' ) ).to.be.false;
-			expect( schema.isInline( '$root' ) ).to.be.false;
+			expect( schema.isInline( 'paragraph' ) ).to.be.false;
 		} );
 
 		it( 'heading1 is block', () => {
 			expect( schema.isLimit( 'heading1' ) ).to.be.false;
 			expect( schema.isBlock( 'heading1' ) ).to.be.true;
 			expect( schema.isObject( 'heading1' ) ).to.be.false;
-			expect( schema.isInline( '$root' ) ).to.be.false;
+			expect( schema.isInline( 'heading1' ) ).to.be.false;
 		} );
 
 		it( 'listItem is block', () => {
 			expect( schema.isLimit( 'listItem' ) ).to.be.false;
 			expect( schema.isBlock( 'listItem' ) ).to.be.true;
 			expect( schema.isObject( 'listItem' ) ).to.be.false;
-			expect( schema.isInline( '$root' ) ).to.be.false;
+			expect( schema.isInline( 'lisItem' ) ).to.be.false;
 		} );
 
 		it( 'image is block object', () => {
 			expect( schema.isLimit( 'image' ) ).to.be.true;
 			expect( schema.isBlock( 'image' ) ).to.be.true;
 			expect( schema.isObject( 'image' ) ).to.be.true;
-			expect( schema.isInline( '$root' ) ).to.be.false;
+			expect( schema.isInline( 'image' ) ).to.be.false;
 		} );
 
 		it( 'caption is limit', () => {
 			expect( schema.isLimit( 'caption' ) ).to.be.true;
 			expect( schema.isBlock( 'caption' ) ).to.be.false;
 			expect( schema.isObject( 'caption' ) ).to.be.false;
-			expect( schema.isInline( '$root' ) ).to.be.false;
+			expect( schema.isInline( 'caption' ) ).to.be.false;
 		} );
 	} );
 
