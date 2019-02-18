@@ -89,6 +89,14 @@ export default class View {
 		this.domRoots = new Map();
 
 		/**
+		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isRenderingInProgress
+		 */
+		this.set( 'isRenderingInProgress', false );
+
+		/**
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
 		 * @protected
@@ -123,14 +131,6 @@ export default class View {
 		 * @type {Boolean}
 		 */
 		this._ongoingChange = false;
-
-		/**
-		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._renderingInProgress = false;
 
 		/**
 		 * Used to prevent calling {@link #forceRender} and {@link #change} during rendering view to the DOM.
@@ -434,7 +434,7 @@ export default class View {
 	 * @returns {*} Value returned by the callback.
 	 */
 	change( callback ) {
-		if ( this._renderingInProgress || this._postFixersInProgress ) {
+		if ( this.isRenderingInProgress || this._postFixersInProgress ) {
 			/**
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
@@ -668,11 +668,11 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		this._renderingInProgress = true;
+		this.isRenderingInProgress = true;
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
-		this._renderingInProgress = false;
+		this.isRenderingInProgress = false;
 	}
 
 	/**

@@ -487,6 +487,22 @@ describe( 'view', () => {
 		} );
 	} );
 
+	describe( 'isRenderingInProgress', () => {
+		it( 'should be true while rendering is in progress', () => {
+			expect( view.isRenderingInProgress ).to.equal( false );
+
+			const spy = sinon.spy();
+
+			view.on( 'change:isRenderingInProgress', spy );
+
+			view.fire( 'render' );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWith( spy.firstCall, sinon.match.any, 'isRenderingInProgress', true );
+			sinon.assert.calledWith( spy.secondCall, sinon.match.any, 'isRenderingInProgress', false );
+		} );
+	} );
+
 	describe( 'forceRender()', () => {
 		it( 'disable observers, renders and enable observers', () => {
 			const observerMock = view.addObserver( ObserverMock );
