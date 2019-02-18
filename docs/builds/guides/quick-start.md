@@ -187,11 +187,11 @@ Load the balloon block editor build (here [CDN](https://cdn.ckeditor.com/) locat
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonBlockEditor.create()`} method.
+Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 ```html
 <script>
-	BalloonBlockEditor
+	BalloonEditor
 		.create( document.querySelector( '#editor' ) )
 		.catch( error => {
 			console.error( error );
@@ -217,7 +217,7 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 		<p>This is some sample content.</p>
 	</div>
 	<script>
-		BalloonBlockEditor
+		BalloonEditor
 			.create( document.querySelector( '#editor' ) )
 			.catch( error => {
 				console.error( error );

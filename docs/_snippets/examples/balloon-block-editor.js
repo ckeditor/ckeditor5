@@ -5,11 +5,11 @@
 
 /* globals console, window, document */
 
-import BalloonBlockEditor from '@ckeditor/ckeditor5-build-balloon-block/src/ckeditor';
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block/src/ckeditor';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-BalloonBlockEditor
+BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-block-editor' ), {
 		cloudServices: CS_CONFIG
 	} )
