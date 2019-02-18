@@ -9,11 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { isImage } from '../image/utils';
-import {
-	captionElementCreator,
-	getCaptionFromImage,
-	matchImageCaption
-} from './utils';
+import { captionElementCreator, getCaptionFromImage, matchImageCaption } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -182,40 +178,39 @@ export default class ImageCaptionEditing extends Plugin {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
 
-		let wasFixed = false;
+		const imagesWithoutCaption = [];
 
 		for ( const entry of changes ) {
-			const images = [];
-
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
 				const item = entry.position.nodeAfter;
 
-				if ( item.is( 'image' ) ) {
-					images.push( item );
-				} else if ( item.childCount ) {
+				if ( item.is( 'image' ) && !getCaptionFromImage( item ) ) {
+					imagesWithoutCaption.push( item );
+				}
+
+				// Check elements with children for nested images.
+				if ( !item.is( 'image' ) && item.childCount ) {
+					// Use the walker to find all nested images despite of their nest level.
 					const walker = model.createRangeOn( item ).getWalker();
 
 					for ( const walkerValue of walker ) {
 						if ( walkerValue.type === 'elementStart' ) {
 							const walkerItem = walkerValue.item;
 
-							if ( walkerItem.is( 'image' ) ) {
-								images.push( walkerItem );
+							if ( walkerItem.is( 'image' ) && !getCaptionFromImage( walkerItem ) ) {
+								imagesWithoutCaption.push( walkerItem );
 							}
 						}
 					}
 				}
 			}
-
-			for ( const image of images.filter( image => !getCaptionFromImage( image ) ) ) {
-				writer.appendElement( 'caption', image );
-			}
-
-			// TODO: infinite loop :/
-			wasFixed = false;
 		}
 
-		return wasFixed;
+		for ( const image of imagesWithoutCaption ) {
+			writer.appendElement( 'caption', image );
+		}
+
+		return !!imagesWithoutCaption.length;
 	}
 }
 
