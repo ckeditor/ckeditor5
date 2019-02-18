@@ -976,6 +976,14 @@ describe( 'Selection', () => {
 			expect( selection.getSelectedElement() ).to.equal( b );
 		} );
 
+		it( 'should return selected element if the selection is anchored at the end/at the beginning of a text node', () => {
+			const { selection: docSelection, view } = parse( 'foo {<b>bar</b>} baz' );
+			const b = view.getChild( 1 );
+			const selection = new Selection( docSelection );
+
+			expect( selection.getSelectedElement() ).to.equal( b );
+		} );
+
 		it( 'should return null if there is more than one range', () => {
 			const { selection: docSelection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
 			const selection = new Selection( docSelection );

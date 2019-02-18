@@ -91,14 +91,8 @@ export default class Mapper {
 				return;
 			}
 
-			let viewBlock = data.viewPosition.parent;
-			let modelParent = this._viewToModelMapping.get( viewBlock );
-
-			while ( !modelParent ) {
-				viewBlock = viewBlock.parent;
-				modelParent = this._viewToModelMapping.get( viewBlock );
-			}
-
+			const viewBlock = this.findMappedViewAncestor( data.viewPosition );
+			const modelParent = this._viewToModelMapping.get( viewBlock );
 			const modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
 			data.modelPosition = ModelPosition._createAt( modelParent, modelOffset );
@@ -336,6 +330,23 @@ export default class Mapper {
 	 */
 	registerViewToModelLength( viewElementName, lengthCallback ) {
 		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
+	}
+
+	/**
+	 * For given `viewPosition`, finds and returns the closest ancestor of this position that has a mapping to
+	 * the model.
+	 *
+	 * @param {module:engine/model/view/position~Position} viewPosition Position for which mapped ancestor should be found.
+	 * @returns {module:engine/model/view/element~Element}
+	 */
+	findMappedViewAncestor( viewPosition ) {
+		let parent = viewPosition.parent;
+
+		while ( !this._viewToModelMapping.has( parent ) ) {
+			parent = parent.parent;
+		}
+
+		return parent;
 	}
 
 	/**
