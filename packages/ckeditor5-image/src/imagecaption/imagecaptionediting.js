@@ -9,11 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { isImage } from '../image/utils';
-import {
-	captionElementCreator,
-	getCaptionFromImage,
-	matchImageCaption
-} from './utils';
+import { captionElementCreator, getCaptionFromImage, matchImageCaption } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -182,17 +178,32 @@ export default class ImageCaptionEditing extends Plugin {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
 
+		const imagesWithoutCaption = [];
+
 		for ( const entry of changes ) {
-			if ( entry.type == 'insert' && entry.name == 'image' ) {
+			if ( entry.type == 'insert' && entry.name != '$text' ) {
 				const item = entry.position.nodeAfter;
 
-				if ( !getCaptionFromImage( item ) ) {
-					writer.appendElement( 'caption', item );
+				if ( item.is( 'image' ) && !getCaptionFromImage( item ) ) {
+					imagesWithoutCaption.push( item );
+				}
 
-					return true;
+				// Check elements with children for nested images.
+				if ( !item.is( 'image' ) && item.childCount ) {
+					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
+						if ( nestedItem.is( 'image' ) && !getCaptionFromImage( nestedItem ) ) {
+							imagesWithoutCaption.push( nestedItem );
+						}
+					}
 				}
 			}
 		}
+
+		for ( const image of imagesWithoutCaption ) {
+			writer.appendElement( 'caption', image );
+		}
+
+		return !!imagesWithoutCaption.length;
 	}
 }
 
