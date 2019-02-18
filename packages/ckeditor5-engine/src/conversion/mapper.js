@@ -336,8 +336,8 @@ export default class Mapper {
 	 * For given `viewPosition`, finds and returns the closest ancestor of this position that has a mapping to
 	 * the model.
 	 *
-	 * @param {module:engine/model/view/position~Position} viewPosition Position for which mapped ancestor should be found.
-	 * @returns {module:engine/model/view/element~Element}
+	 * @param {module:engine/view/position~Position} viewPosition Position for which mapped ancestor should be found.
+	 * @returns {module:engine/view/element~Element}
 	 */
 	findMappedViewAncestor( viewPosition ) {
 		let parent = viewPosition.parent;
