@@ -1935,14 +1935,14 @@ describe( 'Renderer', () => {
 
 				let container = document.getSelection().anchorNode;
 
-				expect( container.parentElement ).to.equal( domRoot );
+				expect( domRoot.contains( container ) ).to.be.true;
 
 				selection._setTo( viewEditable, 'in', { fake: true, label: 'fake selection' } );
 				renderer.render();
 
 				container = document.getSelection().anchorNode;
 
-				expect( container.parentElement ).to.equal( domEditable );
+				expect( domEditable.contains( container ) ).to.be.true;
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
