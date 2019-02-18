@@ -185,40 +185,34 @@ export default class ImageCaptionEditing extends Plugin {
 		let wasFixed = false;
 
 		for ( const entry of changes ) {
-			if ( entry.type == 'insert' ) {
-				const images = [];
+			const images = [];
 
+			if ( entry.type == 'insert' && entry.name != '$text' ) {
 				const item = entry.position.nodeAfter;
 
-				if ( item ) {
-					if ( entry.name == 'image' ) {
-						images.push( item );
-					} else {
-						if ( !item.is( 'image' ) && item.childCount ) {
-							const walker = model.createRangeOn( item ).getWalker();
+				if ( item.is( 'image' ) ) {
+					images.push( item );
+				} else if ( item.childCount ) {
+					const walker = model.createRangeOn( item ).getWalker();
 
-							for ( const walkerValue of walker ) {
-								if ( walkerValue.type === 'elementStart' ) {
-									const itemos = walkerValue.item;
+					for ( const walkerValue of walker ) {
+						if ( walkerValue.type === 'elementStart' ) {
+							const walkerItem = walkerValue.item;
 
-									if ( itemos.name === 'image' ) {
-										images.push( itemos );
-									}
-								}
+							if ( walkerItem.is( 'image' ) ) {
+								images.push( walkerItem );
 							}
 						}
 					}
 				}
-
-				for ( const image of images ) {
-					if ( !getCaptionFromImage( image ) ) {
-						writer.appendElement( 'caption', image );
-					}
-				}
-
-				// TODO: infinite loop :/
-				wasFixed = false;
 			}
+
+			for ( const image of images.filter( image => !getCaptionFromImage( image ) ) ) {
+				writer.appendElement( 'caption', image );
+			}
+
+			// TODO: infinite loop :/
+			wasFixed = false;
 		}
 
 		return wasFixed;
