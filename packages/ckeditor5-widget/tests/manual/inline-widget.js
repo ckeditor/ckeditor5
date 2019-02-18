@@ -16,7 +16,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import Widget from '../../src/widget';
 import { toWidget, viewToModelPositionOutsideModelElement } from '../../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';

@@ -272,9 +272,18 @@ export default class Widget extends Plugin {
 
 		if ( objectElement && model.schema.isObject( objectElement ) ) {
 			model.change( writer => {
+				let position = writer.createPositionAt( objectElement, isBackwards ? 'before' : 'after' );
 				const paragraph = writer.createElement( 'paragraph' );
 
-				writer.insert( paragraph, objectElement, isBackwards ? 'before' : 'after' );
+				// Split the parent when inside a block element.
+				// https://github.com/ckeditor/ckeditor5/issues/1529
+				if ( !model.schema.isLimit( objectElement.parent ) ) {
+					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
+
+					position = writer.split( position, paragraphLimit ).position;
+				}
+
+				writer.insert( paragraph, position );
 				writer.setSelection( paragraph, 'in' );
 			} );
 

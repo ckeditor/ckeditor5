@@ -728,6 +728,39 @@ describe( 'Widget', () => {
 				keyCodes.enter,
 				'<paragraph>f[]ar</paragraph>'
 			);
+
+			// https://github.com/ckeditor/ckeditor5/issues/1529
+			it( 'should split parent when widget is inside a block element', () => {
+				model.schema.register( 'allowP', {
+					inheritAllFrom: '$block'
+				} );
+				model.schema.register( 'disallowP', {
+					inheritAllFrom: '$block',
+					allowIn: [ 'allowP' ]
+				} );
+				model.schema.extend( 'widget', {
+					allowIn: [ 'allowP', 'disallowP' ]
+				} );
+				model.schema.extend( 'paragraph', {
+					allowIn: [ 'allowP' ]
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'parent', view: 'parent' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'allowP', view: 'allowP' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'disallowP', view: 'disallowP' } );
+
+				setModelData( model, '<allowP><disallowP>[<widget></widget>]</disallowP></allowP>' );
+
+				viewDocument.fire( 'keydown', new DomEventData(
+					viewDocument,
+					{ target: document.createElement( 'div' ), preventDefault() {} },
+					{ keyCode: keyCodes.enter }
+				) );
+
+				expect( getModelData( model ) ).to.equal(
+					'<allowP><disallowP><widget></widget></disallowP><paragraph>[]</paragraph><disallowP></disallowP></allowP>'
+				);
+			} );
 		} );
 
 		function test( name, data, keyCodeOrMock, expected, expectedView ) {
