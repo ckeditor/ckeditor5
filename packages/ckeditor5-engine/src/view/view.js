@@ -240,6 +240,12 @@ export default class View {
 
 		const updateContenteditableAttribute = () => {
 			this._writer.setAttribute( 'contenteditable', !viewRoot.isReadOnly, viewRoot );
+
+			if ( viewRoot.isReadOnly ) {
+				this._writer.addClass( 'ck-read-only', viewRoot );
+			} else {
+				this._writer.removeClass( 'ck-read-only', viewRoot );
+			}
 		};
 
 		// Set initial value.
