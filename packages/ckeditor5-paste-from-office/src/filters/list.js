@@ -53,7 +53,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 			if ( indentationDifference < 0 ) {
 				currentList = findParentListAtLevel( currentList, indentationDifference );
 
-				// List might have been inserted with different list style (triggered by the item nested inside
+				// List might have been inserted with a different list style (triggered by the item nested inside
 				// it with different list style) so it should be adjusted to the current list item style.
 				if ( !currentList.is( listStyle.type ) ) {
 					currentList = writer.rename( listStyle.type, currentList );
@@ -71,7 +71,7 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 					// First item in the list has indentation.
 					currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer, indentationDifference );
 				}
-			// Current list item (itemLikeElement) has indentation level the same as previous item.
+			// Current list item has indentation level at the same level as previous item.
 			} else {
 				currentList = insertNewEmptyList( listStyle, itemLikeElement.element, writer );
 			}
