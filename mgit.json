@@ -31,16 +31,16 @@
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#22b0b17",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#1e8b746",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#a85a981",
-    "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#04b2c95",
+    "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#1f3e023",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#0a9ace6",
     "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#7fb132f",
-    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#b97bc12",
+    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#58dda03",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#7437fe6",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#67be4e7",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#b994508",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#601f213",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#dfa576c",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#4178ab0",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#40de728"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#10c071d"
   }
 }
