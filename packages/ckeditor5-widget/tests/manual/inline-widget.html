@@ -16,12 +16,12 @@
 		line-height: 1em;
 	}
 
-	placeholder::selection{
+	placeholder::selection {
 		display: none;
 	}
 
 	/* This will show box when the fake selection is active. */
-	.ck.ck-content div[style*="left: -9999px;"]:before {
+	.ck.ck-content div[style*="left: -9999px;"]::before {
 		background: hsla(9,100%,56%,.3);
 		border: 1px dotted hsl(15, 100%, 43%);
 		color: #333;
