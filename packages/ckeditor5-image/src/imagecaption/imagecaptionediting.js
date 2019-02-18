@@ -182,17 +182,46 @@ export default class ImageCaptionEditing extends Plugin {
 		const model = this.editor.model;
 		const changes = model.document.differ.getChanges();
 
+		let wasFixed = false;
+
 		for ( const entry of changes ) {
-			if ( entry.type == 'insert' && entry.name == 'image' ) {
+			if ( entry.type == 'insert' ) {
+				const images = [];
+
 				const item = entry.position.nodeAfter;
 
-				if ( !getCaptionFromImage( item ) ) {
-					writer.appendElement( 'caption', item );
+				if ( item ) {
+					if ( entry.name == 'image' ) {
+						images.push( item );
+					} else {
+						if ( !item.is( 'image' ) && item.childCount ) {
+							const walker = model.createRangeOn( item ).getWalker();
 
-					return true;
+							for ( const walkerValue of walker ) {
+								if ( walkerValue.type === 'elementStart' ) {
+									const itemos = walkerValue.item;
+
+									if ( itemos.name === 'image' ) {
+										images.push( itemos );
+									}
+								}
+							}
+						}
+					}
 				}
+
+				for ( const image of images ) {
+					if ( !getCaptionFromImage( image ) ) {
+						writer.appendElement( 'caption', image );
+					}
+				}
+
+				// TODO: infinite loop :/
+				wasFixed = false;
 			}
 		}
+
+		return wasFixed;
 	}
 }
 

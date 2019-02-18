@@ -252,6 +252,66 @@ describe( 'ImageCaptionEditing', () => {
 			);
 		} );
 
+		it( 'should add caption element if image does not have it (image is nested in inserted element)', () => {
+			model.change( writer => {
+				model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
+				model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+				model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true } );
+				model.schema.extend( '$block', { allowIn: 'tableCell' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
+
+				const table = writer.createElement( 'table' );
+				const tableRow = writer.createElement( 'tableRow' );
+				const tableCell1 = writer.createElement( 'tableCell' );
+				const tableCell2 = writer.createElement( 'tableCell' );
+				const image1 = writer.createElement( 'image', { src: '', alt: '' } );
+				const image2 = writer.createElement( 'image', { src: '', alt: '' } );
+
+				writer.insert( tableRow, table );
+				writer.insert( tableCell1, tableRow );
+				writer.insert( tableCell2, tableRow );
+				writer.insert( image1, tableCell1 );
+				writer.insert( image2, tableCell2 );
+				writer.insert( table, doc.getRoot() );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell><image alt="" src=""><caption></caption></image></tableCell>' +
+						'<tableCell><image alt="" src=""><caption></caption></image></tableCell>' +
+					'</tableRow>' +
+				'</table>]' +
+				'<paragraph></paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'[<table>' +
+					'<tr>' +
+						'<td>' +
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<img alt="" src=""></img>' +
+								'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-hidden ck-placeholder" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
+								'</figcaption>' +
+							'</figure>' +
+						'</td>' +
+						'<td>' +
+							'<figure class="ck-widget image" contenteditable="false">' +
+								'<img alt="" src=""></img>' +
+								'<figcaption class="ck-editor__editable ck-editor__nested-editable ck-hidden ck-placeholder" ' +
+								'contenteditable="true" data-placeholder="Enter image caption">' +
+								'</figcaption>' +
+							'</figure>' +
+						'</td>' +
+					'</tr>' +
+				'</table>]' +
+				'<p></p>'
+			);
+		} );
+
 		it( 'should not add caption element if image already have it', () => {
 			model.change( writer => {
 				const caption = writer.createElement( 'caption' );
@@ -316,6 +376,27 @@ describe( 'ImageCaptionEditing', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<image alt="alt text" src=""><caption>foo bar</caption></image>'
+			);
+		} );
+
+		it( 'should do nothing on $text insert', () => {
+			setModelData( model, '<image src=""><caption>foo bar</caption></image><paragraph>[]</paragraph>' );
+
+			const paragraph = doc.getRoot().getChild( 1 );
+
+			// Simulate typing behavior - second input will generate input change without entry.item in change entry.
+			const batch = model.createBatch();
+
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'f', paragraph, 0 );
+			} );
+
+			model.enqueueChange( batch, writer => {
+				writer.insertText( 'oo', paragraph, 1 );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<image src=""><caption>foo bar</caption></image><paragraph>foo</paragraph>'
 			);
 		} );
 	} );
