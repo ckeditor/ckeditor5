@@ -707,7 +707,10 @@ export default class Renderer {
 			container.appendChild( domDocument.createTextNode( '\u00A0' ) );
 		}
 
-		// Add fake container if not already added.
+		if ( container.parentElement && container.parentElement != domRoot ) {
+			container.remove( container );
+		}
+
 		if ( !container.parentElement ) {
 			domRoot.appendChild( container );
 		}

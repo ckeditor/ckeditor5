@@ -7,6 +7,7 @@
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
+import ViewEditableElement from '../../src/view/editableelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
@@ -112,10 +113,12 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'render', () => {
-		let viewRoot, domRoot, selectionEditable;
+		let viewRoot, domRoot;
 
 		beforeEach( () => {
-			viewRoot = new ViewElement( 'div' );
+			viewRoot = new ViewEditableElement( 'div' );
+			viewRoot.getFillerOffset = () => null;
+
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
 
@@ -127,16 +130,7 @@ describe( 'Renderer', () => {
 
 			selection._setTo( null );
 
-			selectionEditable = viewRoot;
-
 			renderer.isFocused = true;
-
-			// Fake selection editable - it is needed to render selection properly.
-			Object.defineProperty( selection, 'editableElement', {
-				get() {
-					return selectionEditable;
-				}
-			} );
 		} );
 
 		afterEach( () => {
@@ -422,8 +416,6 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not care about filler if there is no DOM', () => {
-			selectionEditable = null;
-
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
@@ -1202,11 +1194,10 @@ describe( 'Renderer', () => {
 			domSelection.removeAllRanges();
 			domSelection.collapse( domDiv, 0 );
 
-			selectionEditable = null;
-
+			const viewDiv = new ViewElement( 'div' );
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
-			viewRoot._appendChild( viewP );
+			viewDiv._appendChild( viewP );
 			selection._setTo( newSelection );
 
 			renderer.render();
@@ -1353,13 +1344,13 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle focusing element', () => {
+			selection._setTo( viewRoot, 0 );
+
 			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const editable = selection.editableElement;
 
 			renderer.render();
 
-			expect( editable ).to.equal( viewRoot );
-			expect( domFocusSpy.calledOnce ).to.be.true;
+			expect( domFocusSpy.called ).to.be.true;
 		} );
 
 		it( 'should not focus editable if isFocues is set to false', () => {
@@ -1926,6 +1917,32 @@ describe( 'Renderer', () => {
 				expect( container.style.position ).to.equal( 'fixed' );
 				expect( container.style.top ).to.equal( '0px' );
 				expect( container.style.left ).to.equal( '-9999px' );
+			} );
+
+			it( 'should move fake selection container between editables', () => {
+				const viewEditable = new ViewEditableElement( 'div' );
+				viewEditable._appendChild( parse( '<container:p>abc xyz</container:p>' ) );
+
+				const domEditable = document.createElement( 'div' );
+
+				document.body.appendChild( domEditable );
+
+				domConverter.bindElements( domEditable, viewEditable );
+
+				renderer.markToSync( 'children', viewEditable );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'fake selection' } );
+				renderer.render();
+
+				let container = document.getSelection().anchorNode;
+
+				expect( container.parentElement ).to.equal( domRoot );
+
+				selection._setTo( viewEditable, 'in', { fake: true, label: 'fake selection' } );
+				renderer.render();
+
+				container = document.getSelection().anchorNode;
+
+				expect( container.parentElement ).to.equal( domEditable );
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
