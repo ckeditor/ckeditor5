@@ -191,7 +191,7 @@ Similarly, when rendered, the template also takes care of DOM events. A binding 
 
 Views are organized into {@link module:ui/viewcollection~ViewCollection collections} which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in the DOM to reflect the position.
 
-Each editor UI has a {@link module:core/editor/editorui~EditorUI#view root view}, which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
+Each editor UI has a "root view" (e.g. {@link e.g. {@link module:editor-classic/classiceditorui~ClassicEditorUI#view `ClassicEditor#view`}), which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
 
 For instance, the `BoxedEditorUiView` class defines two collections:
 * {@link module:ui/editorui/boxed/boxededitoruiview~BoxedEditorUIView#top} &ndash; A collection that hosts the toolbar.

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -60,10 +60,14 @@ function updateYear( err, fileNames ) {
 				// License headers are only required in JS files.
 				// Also, the file might have already been updated.
 				if ( fileName.endsWith( '.js' ) && !data.match( regexp ) ) {
-					console.warn( `The file "${ fileName }" misses a license header.` );
+					console.warn( `The file "${ process.cwd() }/${ fileName }" misses a license header.` );
 				}
 			} else {
-				fs.writeFile( fileName, updatedData );
+				fs.writeFile( fileName, updatedData, err => {
+					if ( err ) {
+						throw err;
+					}
+				} );
 			}
 		} );
 	} );

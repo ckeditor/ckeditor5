@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -27,7 +27,8 @@ module.exports = function snippetAdapter( data ) {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		production: data.options.production
+		production: data.options.production,
+		definitions: data.options.definitions || {}
 	} );
 
 	let promise;
@@ -83,6 +84,14 @@ module.exports = function snippetAdapter( data ) {
 };
 
 function getWebpackConfig( config ) {
+	// Stringify all definitions values. The `DefinePlugin` injects definition values as they are so we need to stringify them,
+	// so they will become real strings in the generated code. See https://webpack.js.org/plugins/define-plugin/ for more information.
+	const definitions = {};
+
+	for ( const definitionKey in config.definitions ) {
+		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
+	}
+
 	return {
 		mode: config.production ? 'production' : 'development',
 
@@ -117,7 +126,8 @@ function getWebpackConfig( config ) {
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
-			} )
+			} ),
+			new webpack.DefinePlugin( definitions )
 		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
