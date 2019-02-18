@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -61,6 +61,10 @@ describe( 'MediaEmbedEditing', () => {
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 	} );
 
+	it( 'should be named', () => {
+		expect( MediaEmbedEditing.pluginName ).to.equal( 'MediaEmbedEditing' );
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {
@@ -75,7 +79,7 @@ describe( 'MediaEmbedEditing', () => {
 					} ).then( () => {
 						expect( logSpy.calledOnce ).to.equal( true );
 						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 
@@ -330,7 +334,7 @@ describe( 'MediaEmbedEditing', () => {
 					} ).then( () => {
 						expect( logSpy.calledOnce ).to.equal( true );
 						expect( logSpy.firstCall.args[ 0 ] ).to.match( /^media-embed-no-provider-name:/ );
-						expect( logSpy.firstCall.args[ 1 ].provider ).to.equal( provider );
+						expect( logSpy.firstCall.args[ 1 ].provider ).to.deep.equal( provider );
 					} );
 				} );
 

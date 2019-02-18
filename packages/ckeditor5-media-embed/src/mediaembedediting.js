@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,8 +13,6 @@ import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
 import MediaRegistry from './mediaregistry';
 import { toMediaWidget, createMediaFigureElement } from './utils';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import '../theme/mediaembedediting.css';
 
@@ -24,6 +22,13 @@ import '../theme/mediaembedediting.css';
  * @extends module:core/plugin~Plugin
  */
 export default class MediaEmbedEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'MediaEmbedEditing';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -170,7 +175,7 @@ export default class MediaEmbedEditing extends Plugin {
 		} );
 
 		// Model -> Data
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
@@ -179,7 +184,7 @@ export default class MediaEmbedEditing extends Plugin {
 					renderMediaPreview: url && renderMediaPreview
 				} );
 			}
-		} ) );
+		} );
 
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add(
@@ -188,7 +193,7 @@ export default class MediaEmbedEditing extends Plugin {
 			} ) );
 
 		// Model -> View (element)
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'media',
 			view: ( modelElement, viewWriter ) => {
 				const url = modelElement.getAttribute( 'url' );
@@ -198,7 +203,7 @@ export default class MediaEmbedEditing extends Plugin {
 
 				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
 			}
-		} ) );
+		} );
 
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' ).add(
@@ -209,7 +214,7 @@ export default class MediaEmbedEditing extends Plugin {
 		// View -> Model (data-oembed-url -> url)
 		conversion.for( 'upcast' )
 			// Upcast semantic media.
-			.add( upcastElementToElement( {
+			.elementToElement( {
 				view: {
 					name: 'oembed',
 					attributes: {
@@ -223,9 +228,9 @@ export default class MediaEmbedEditing extends Plugin {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
-			} ) )
+			} )
 			// Upcast non-semantic media.
-			.add( upcastElementToElement( {
+			.elementToElement( {
 				view: {
 					name: 'div',
 					attributes: {
@@ -239,6 +244,6 @@ export default class MediaEmbedEditing extends Plugin {
 						return modelWriter.createElement( 'media', { url } );
 					}
 				}
-			} ) );
+			} );
 	}
 }

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
@@ -12,6 +12,10 @@ msgstr "Média widget"
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
 msgstr "Média URL"
+
+msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
+msgid "Paste the URL into the content to embed faster."
+msgstr "A gyorsabb beágyazás érdekében illessze be az URL-t."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."

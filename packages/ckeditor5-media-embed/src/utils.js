@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,8 +8,6 @@
  */
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-
-const mediaSymbol = Symbol( 'isMedia' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
@@ -22,19 +20,35 @@ const mediaSymbol = Symbol( 'isMedia' );
  * @returns {module:engine/view/element~Element}
  */
 export function toMediaWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( mediaSymbol, true, viewElement );
+	writer.setCustomProperty( 'media', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
 }
 
-export function isMediaWidgetSelected( viewSelection ) {
-	const viewElement = viewSelection.getSelectedElement();
+/**
+ * Returns a media widget editing view element if one is selected.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function getSelectedMediaViewWidget( selection ) {
+	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isMediaWidget( viewElement ) );
+	if ( viewElement && isMediaWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	return null;
 }
 
+/**
+ * Checks if a given view element is a media widget.
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
 export function isMediaWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( mediaSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( 'media' ) && isWidget( viewElement );
 }
 
 /**
@@ -78,7 +92,7 @@ export function createMediaFigureElement( writer, registry, url, options ) {
  * @param {module:engine/model/selection~Selection} selection
  * @returns {module:engine/model/element~Element|null}
  */
-export function getSelectedMediaElement( selection ) {
+export function getSelectedMediaModelWidget( selection ) {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'media' ) ) {
@@ -86,6 +100,28 @@ export function getSelectedMediaElement( selection ) {
 	}
 
 	return null;
+}
+
+/**
+ * Creates a media element and inserts it into the model.
+ *
+ * **Note**: This method will use {@link module:engine/model/model~Model#insertContent `model.insertContent()`} logic of inserting content
+ * if no `insertPosition` is passed.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @param {String} url An URL of an embeddable media.
+ * @param {module:engine/model/position~Position} [insertPosition] Position to insert media. If not specified,
+ * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
+ * be applied.
+ */
+export function insertMedia( model, url, insertPosition ) {
+	model.change( writer => {
+		const mediaElement = writer.createElement( 'media', { url } );
+
+		model.insertContent( mediaElement, insertPosition );
+
+		writer.setSelection( mediaElement, 'on' );
+	} );
 }
 
 function getFillerOffset() {

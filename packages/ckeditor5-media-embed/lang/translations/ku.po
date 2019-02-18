@@ -1,17 +1,17 @@
 # Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Albanian (https://www.transifex.com/ckeditor/teams/11143/sq/)\n"
-"Language: sq\n"
+"Language-Team: Kurdish (https://www.transifex.com/ckeditor/teams/11143/ku/)\n"
+"Language: ku\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "Vegla e medies"
+msgstr ""
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "URL e Medies"
+msgstr "بەستەری میدیا"
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Paste the URL into the content to embed faster."
@@ -19,12 +19,12 @@ msgstr ""
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "URL nuk duhet të jetë e zbrazët."
+msgstr ""
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "URL e medies nuk mbështetet."
+msgstr ""
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
-msgstr "Shto Medie"
+msgstr "میدیا دابنێ"

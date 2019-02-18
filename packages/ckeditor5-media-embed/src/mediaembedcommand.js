@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
-import { getSelectedMediaElement } from './utils';
+import { getSelectedMediaModelWidget, insertMedia } from './utils';
 
 /**
  * The insert media command.
@@ -31,7 +31,7 @@ export default class MediaEmbedCommand extends Command {
 		const selection = model.document.selection;
 		const schema = model.schema;
 		const position = selection.getFirstPosition();
-		const selectedMedia = getSelectedMediaElement( selection );
+		const selectedMedia = getSelectedMediaModelWidget( selection );
 
 		let parent = position.parent;
 
@@ -55,7 +55,7 @@ export default class MediaEmbedCommand extends Command {
 	execute( url ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const selectedMedia = getSelectedMediaElement( selection );
+		const selectedMedia = getSelectedMediaModelWidget( selection );
 
 		if ( selectedMedia ) {
 			model.change( writer => {
@@ -64,13 +64,7 @@ export default class MediaEmbedCommand extends Command {
 		} else {
 			const insertPosition = findOptimalInsertionPosition( selection, model );
 
-			model.change( writer => {
-				const mediaElement = writer.createElement( 'media', { url } );
-
-				model.insertContent( mediaElement, insertPosition );
-
-				writer.setSelection( mediaElement, 'on' );
-			} );
+			insertMedia( model, url, insertPosition );
 		}
 	}
 }

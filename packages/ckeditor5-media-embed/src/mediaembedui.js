@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -29,18 +29,31 @@ export default class MediaEmbedUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'MediaEmbedUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'mediaEmbed' );
 		const registry = editor.plugins.get( MediaEmbedEditing ).registry;
 
+		/**
+		 * The form view displayed inside the drop-down.
+		 *
+		 * @member {module:media-embed/ui/mediaformview~MediaFormView}
+		 */
+		this.form = new MediaFormView( getFormValidators( editor.t, registry ), editor.locale );
+
 		// Setup `imageUpload` button.
 		editor.ui.componentFactory.add( 'mediaEmbed', locale => {
-			const form = new MediaFormView( getFormValidators( editor.t, registry ), locale );
 			const dropdown = createDropdown( locale );
 
-			this._setUpDropdown( dropdown, form, command, editor );
-			this._setUpForm( form, dropdown, command );
+			this._setUpDropdown( dropdown, this.form, command, editor );
+			this._setUpForm( this.form, dropdown, command );
 
 			return dropdown;
 		} );

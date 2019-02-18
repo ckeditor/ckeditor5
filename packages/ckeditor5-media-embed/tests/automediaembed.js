@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -214,7 +214,33 @@ describe( 'AutoMediaEmbed - integration', () => {
 			clock.tick( 100 );
 
 			expect( getData( editor.model ) ).to.equal(
-				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>For</paragraph>'
+				'<paragraph>Fo</paragraph>[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]<paragraph>r</paragraph>'
+			);
+		} );
+
+		it( 'inserts media in-place (collapsed selection)', () => {
+			setData( editor.model, '<paragraph>Foo []Bar</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>Foo </paragraph>' +
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+				'<paragraph>Bar</paragraph>'
+			);
+		} );
+
+		it( 'inserts media in-place (non-collapsed selection)', () => {
+			setData( editor.model, '<paragraph>Foo [Bar] Baz</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>Foo </paragraph>' +
+				'[<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>]' +
+				'<paragraph> Baz</paragraph>'
 			);
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -134,6 +134,21 @@ export default class MediaFormView extends View {
 				this.cancelButtonView
 			]
 		} );
+
+		/**
+		 * The default info text for the {@link #urlInputView}.
+		 *
+		 * @private
+		 * @member {String} #_urlInputViewInfoDefault
+		 */
+
+		/**
+		 * The info text with an additional tip for the {@link #urlInputView},
+		 * displayed when the input has some value.
+		 *
+		 * @private
+		 * @member {String} #_urlInputViewInfoTip
+		 */
 	}
 
 	/**
@@ -243,7 +258,7 @@ export default class MediaFormView extends View {
 	 */
 	resetFormStatus() {
 		this.urlInputView.errorText = null;
-		this.urlInputView.infoText = null;
+		this.urlInputView.infoText = this._urlInputViewInfoDefault;
 	}
 
 	/**
@@ -258,14 +273,16 @@ export default class MediaFormView extends View {
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
 		const inputView = labeledInput.inputView;
 
+		this._urlInputViewInfoDefault = t( 'Paste the media URL in the input.' );
+		this._urlInputViewInfoTip = t( 'Tip: Paste the URL into the content to embed faster.' );
+
 		labeledInput.label = t( 'Media URL' );
+		labeledInput.infoText = this._urlInputViewInfoDefault;
 		inputView.placeholder = 'https://example.com';
 
 		inputView.on( 'input', () => {
-			// Display the #infoText only when there's some value to hide it when the input
-			// is empty, e.g. user used backspace to clean it up.
-			labeledInput.infoText = inputView.element.value ?
-				t( 'Paste the URL into the content to embed faster.' ) : null;
+			// Display the tip text only when there's some value. Otherwise fall back to the default info text.
+			labeledInput.infoText = inputView.element.value ? this._urlInputViewInfoTip : this._urlInputViewInfoDefault;
 		} );
 
 		return labeledInput;
