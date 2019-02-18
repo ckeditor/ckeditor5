@@ -6,9 +6,9 @@
 /* eslint-env commonjs */
 /* globals window, document, console */
 
-const BalloonBlockEditor = require( '../../build/ckeditor' );
+const BalloonEditor = require( '../../build/ckeditor' );
 
-BalloonBlockEditor.create( document.querySelector( '#editor' ) )
+BalloonEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;
 	} )

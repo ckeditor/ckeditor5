@@ -6,9 +6,9 @@ CKEditor 5 balloon block editor build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block?type=dev)
 
-The balloon editor build for CKEditor 5. Read more about the [balloon editor build](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html).
+The build of CKEditor 5 featuring the balloon and block toolbars. Read more about the [balloon block editor build](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html).
 
-![CKEditor 5 balloon editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-balloon-block.png)
+![CKEditor 5 balloon block editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor5-build-balloon-block.png)
 
 ## Documentation
 
@@ -35,7 +35,7 @@ And use it in your website:
 </div>
 <script src="./node_modules/@ckeditor/ckeditor5-build-balloon-block/build/ckeditor.js"></script>
 <script>
-	BalloonBlockEditor
+	BalloonEditor
 		.create( document.querySelector( '#editor' ) )
 		.then( editor => {
 			window.editor = editor;
@@ -52,9 +52,9 @@ Or in your JavaScript application:
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block';
 
 // Or using the CommonJS version:
-// const BalloonBlockEditor = require( '@ckeditor/ckeditor5-build-balloon-block' );
+// const BalloonEditor = require( '@ckeditor/ckeditor5-build-balloon-block' );
 
-BalloonBlockEditor
+BalloonEditor
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		window.editor = editor;

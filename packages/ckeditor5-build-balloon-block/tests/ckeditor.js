@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import BalloonBlockEditor from '../src/ckeditor';
+import BalloonEditor from '../src/ckeditor';
 import BaseBalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
-describe( 'BalloonBlockEditor build', () => {
+describe( 'BalloonEditor build', () => {
 	let editor, editorElement;
 
 	beforeEach( () => {
@@ -25,21 +25,21 @@ describe( 'BalloonBlockEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( BalloonBlockEditor.builtinPlugins ).to.not.be.empty;
+			expect( BalloonEditor.builtinPlugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( BalloonBlockEditor.defaultConfig.toolbar ).to.not.be.empty;
+			expect( BalloonEditor.defaultConfig.toolbar ).to.not.be.empty;
 		} );
 
 		it( 'contains block toolbar config', () => {
-			expect( BalloonBlockEditor.defaultConfig.blockToolbar ).to.not.be.empty;
+			expect( BalloonEditor.defaultConfig.blockToolbar ).to.not.be.empty;
 		} );
 	} );
 
 	describe( 'create()', () => {
 		beforeEach( () => {
-			return BalloonBlockEditor.create( editorElement )
+			return BalloonEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -49,8 +49,8 @@ describe( 'BalloonBlockEditor build', () => {
 			return editor.destroy();
 		} );
 
-		it( 'creates an instance which inherits from the BalloonBlockEditor', () => {
-			expect( editor ).to.be.instanceof( BalloonBlockEditor );
+		it( 'creates an instance which inherits from the BalloonEditor', () => {
+			expect( editor ).to.be.instanceof( BalloonEditor );
 			expect( editor ).to.be.instanceof( BaseBalloonEditor );
 		} );
 
@@ -61,7 +61,7 @@ describe( 'BalloonBlockEditor build', () => {
 
 	describe( 'destroy()', () => {
 		beforeEach( () => {
-			return BalloonBlockEditor.create( editorElement )
+			return BalloonEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -79,7 +79,7 @@ describe( 'BalloonBlockEditor build', () => {
 
 	describe( 'plugins', () => {
 		beforeEach( () => {
-			return BalloonBlockEditor.create( editorElement )
+			return BalloonEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
@@ -168,6 +168,6 @@ describe( 'BalloonBlockEditor build', () => {
 	describeMemoryUsage( () => {
 		testMemoryUsage(
 			'should not grow on multiple create/destroy',
-			() => BalloonBlockEditor.create( document.querySelector( '#mem-editor' ) ) );
+			() => BalloonEditor.create( document.querySelector( '#mem-editor' ) ) );
 	} );
 } );

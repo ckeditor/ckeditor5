@@ -59,8 +59,8 @@
     "webpack-cli": "^3.0.8"
   },
   "engines": {
-    "node": ">=6.9.0",
-    "npm": ">=3.0.0"
+    "node": ">=8.0.0",
+    "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",

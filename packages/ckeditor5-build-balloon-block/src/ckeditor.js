@@ -31,10 +31,10 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 import '../theme/theme.css';
 
-export default class BalloonBlockEditor extends BalloonEditorBase {}
+export default class BalloonEditor extends BalloonEditorBase {}
 
 // Plugins to include in the build.
-BalloonBlockEditor.builtinPlugins = [
+BalloonEditor.builtinPlugins = [
 	Essentials,
 	UploadAdapter,
 	Autoformat,
@@ -60,7 +60,7 @@ BalloonBlockEditor.builtinPlugins = [
 ];
 
 // Editor configuration.
-BalloonBlockEditor.defaultConfig = {
+BalloonEditor.defaultConfig = {
 	blockToolbar: [
 		'heading',
 		'|',
