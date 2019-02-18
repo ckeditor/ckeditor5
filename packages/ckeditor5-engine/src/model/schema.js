@@ -248,13 +248,13 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 * an inline element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
 	 *
 	 *		schema.isInline( 'paragraph' ); // -> false
 	 *		schema.isInline( 'softBreak' ); // -> true
 	 *
 	 *		const text = writer.createText('foo' );
-	 *		schema.isObject( text ); // -> true
+	 *		schema.isInline( text ); // -> true
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
@@ -933,10 +933,9 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
  * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
  * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
- * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline text. Examples of inline elements:
- * `text`, `softBreak` (`<br>`), etc.
- * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
- * returns `true` for object elements automatically.
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * `$text`, `softBreak` (`<br>`), etc.
  *
  * # Generic items
  *
