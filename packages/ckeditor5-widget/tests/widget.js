@@ -729,6 +729,7 @@ describe( 'Widget', () => {
 				'<paragraph>f[]ar</paragraph>'
 			);
 
+			// https://github.com/ckeditor/ckeditor5/issues/1529
 			it( 'should split parent when widget is inside a block element', () => {
 				model.schema.register( 'allowP', {
 					inheritAllFrom: '$block'

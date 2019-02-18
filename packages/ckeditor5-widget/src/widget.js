@@ -275,6 +275,8 @@ export default class Widget extends Plugin {
 				let position = writer.createPositionAt( objectElement, isBackwards ? 'before' : 'after' );
 				const paragraph = writer.createElement( 'paragraph' );
 
+				// Split the parent when inside a block element.
+				// https://github.com/ckeditor/ckeditor5/issues/1529
 				if ( !model.schema.isLimit( objectElement.parent ) ) {
 					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
 
