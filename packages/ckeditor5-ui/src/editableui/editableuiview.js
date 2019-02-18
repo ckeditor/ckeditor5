@@ -121,11 +121,19 @@ export default class EditableUIView extends View {
 	_updateIsFocusedClasses() {
 		const editingView = this._editingView;
 
-		editingView.change( writer => {
-			const viewRoot = editingView.document.getRoot( this.name );
+		if ( editingView.isRenderingInProgress ) {
+			editingView.once( 'change:isRenderingInProgress', () => update( this ) );
+		} else {
+			update( this );
+		}
 
-			writer.addClass( this.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
-			writer.removeClass( this.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
-		} );
+		function update( view ) {
+			editingView.change( writer => {
+				const viewRoot = editingView.document.getRoot( view.name );
+
+				writer.addClass( view.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
+				writer.removeClass( view.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
+			} );
+		}
 	}
 }

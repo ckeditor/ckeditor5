@@ -78,6 +78,25 @@ describe( 'EditableUIView', () => {
 				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.false;
 				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.true;
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/1530.
+			it( 'should work when update is handled during the rendering phase', () => {
+				view.isFocused = true;
+				editingView.isRenderingInProgress = true;
+
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
+
+				view.isFocused = false;
+
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
+
+				editingView.isRenderingInProgress = false;
+
+				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.true;
+			} );
 		} );
 	} );
 
