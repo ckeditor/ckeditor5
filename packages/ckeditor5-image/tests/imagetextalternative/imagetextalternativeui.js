@@ -15,7 +15,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-describe( 'ImageTextAlternative', () => {
+describe( 'ImageTextAlternativeUI', () => {
 	let editor, model, doc, plugin, command, form, balloon, editorElement, button;
 
 	beforeEach( () => {
@@ -158,6 +158,20 @@ describe( 'ImageTextAlternative', () => {
 
 			button.fire( 'execute' );
 			expect( balloon.visibleView ).to.equal( lastView );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/1501
+		it( 'should blur url input element before hiding the view', () => {
+			setData( model, '[<image src="" alt="foo bar"></image>]' );
+
+			editor.ui.componentFactory.create( 'imageTextAlternative' ).fire( 'execute' );
+
+			const editableFocusSpy = sinon.spy( editor.editing.view, 'focus' );
+			const buttonFocusSpy = sinon.spy( form.saveButtonView, 'focus' );
+
+			form.fire( 'submit' );
+
+			expect( buttonFocusSpy.calledBefore( editableFocusSpy ) ).to.equal( true );
 		} );
 
 		describe( 'integration with the editor selection (ui#update event)', () => {
