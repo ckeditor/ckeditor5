@@ -9,6 +9,7 @@
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon",
+    "@ckeditor/ckeditor5-build-balloon-block": "ckeditor/ckeditor5-build-balloon-block",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
     "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline",
