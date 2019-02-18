@@ -293,6 +293,7 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+				editor.ui.focusTracker.isFocused = true;
 			} );
 	} );
 
@@ -310,8 +311,8 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 
 		const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
 
+		editor.editing.view.document.isFocused = true;
 		setData( model, '[<fake-widget></fake-widget>]<paragraph>foo</paragraph>' );
-		editor.ui.focusTracker.isFocused = true;
 
 		clock.tick( 200 );
 
@@ -324,8 +325,8 @@ describe( 'WidgetToolbarRepository - integration with the BalloonToolbar', () =>
 			getRelatedElement: getSelectedFakeWidget
 		} );
 
-		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 		editor.editing.view.document.isFocused = true;
+		setData( model, '<fake-widget></fake-widget><paragraph>[foo]</paragraph>' );
 
 		clock.tick( 200 );
 
