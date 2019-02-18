@@ -313,6 +313,10 @@ export default class LinkUI extends Plugin {
 	 */
 	_removeFormView() {
 		if ( this._isFormInPanel ) {
+			// Blur the input element before removing it from DOM to prevent issues in some browsers.
+			// See https://github.com/ckeditor/ckeditor5/issues/1501.
+			this.formView.saveButtonView.focus();
+
 			this._balloon.remove( this.formView );
 
 			// Because the form has an input which has focus, the focus must be brought back
@@ -372,14 +376,15 @@ export default class LinkUI extends Plugin {
 
 		this.stopListening( editor.ui, 'update' );
 
+		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
+		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
+		editor.editing.view.focus();
+
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
 
 		// Then remove the actions view because it's beneath the form.
 		this._balloon.remove( this.actionsView );
-
-		// Make sure the focus always gets back to the editable.
-		editor.editing.view.focus();
 	}
 
 	/**
