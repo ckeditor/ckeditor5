@@ -13,9 +13,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 
-const widgetSymbol = Symbol( 'isWidget' );
-const labelSymbol = Symbol( 'label' );
-
 /**
  * CSS class added to each widget element.
  *
@@ -41,7 +38,7 @@ export function isWidget( node ) {
 		return false;
 	}
 
-	return !!node.getCustomProperty( widgetSymbol );
+	return !!node.getCustomProperty( 'widget' );
 }
 
 /* eslint-disable max-len */
@@ -100,7 +97,7 @@ export function toWidget( element, writer, options = {} ) {
 	}
 
 	writer.addClass( WIDGET_CLASS_NAME, element );
-	writer.setCustomProperty( widgetSymbol, true, element );
+	writer.setCustomProperty( 'widget', true, element );
 	element.getFillerOffset = getFillerOffset;
 
 	if ( options.label ) {
@@ -162,7 +159,7 @@ export function setHighlightHandling( element, writer, add, remove ) {
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
  */
 export function setLabel( element, labelOrCreator, writer ) {
-	writer.setCustomProperty( labelSymbol, labelOrCreator, element );
+	writer.setCustomProperty( 'widgetLabel', labelOrCreator, element );
 }
 
 /**
@@ -172,7 +169,7 @@ export function setLabel( element, labelOrCreator, writer ) {
  * @returns {String}
  */
 export function getLabel( element ) {
-	const labelCreator = element.getCustomProperty( labelSymbol );
+	const labelCreator = element.getCustomProperty( 'widgetLabel' );
 
 	if ( !labelCreator ) {
 		return '';
