@@ -180,7 +180,7 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'toWidgetEditable', () => {
+	describe( 'toWidgetEditable()', () => {
 		let viewDocument, element;
 
 		beforeEach( () => {
@@ -455,18 +455,20 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'viewToModelPositionOutsideModelElement', () => {
+	describe( 'viewToModelPositionOutsideModelElement()', () => {
 		let mapper, model, modelP, viewP, viewXyz, modelSpan, viewSpan;
 
 		beforeEach( () => {
 			mapper = new Mapper();
 			model = new Model();
 
+			// MODEL: <p>foo<span></span>bar</p>
 			const modelFoo = new ModelText( 'foo' );
 			modelSpan = new ModelElement( 'span' );
 			const modelBar = new ModelText( 'bar' );
 			modelP = new ModelElement( 'p', null, [ modelFoo, modelSpan, modelBar ] );
 
+			// VIEW: <p>foo<span>xyz</span>bar</p>
 			const viewFoo = new ViewText( 'foo' );
 			viewXyz = new ViewText( 'xyz' );
 			viewSpan = new ViewElement( 'span', null, viewXyz );

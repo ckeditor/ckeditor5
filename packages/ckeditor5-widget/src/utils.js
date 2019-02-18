@@ -290,13 +290,8 @@ export function findOptimalInsertionPosition( selection, model ) {
 }
 
 /**
- * Maps view position to model position if view position is inside a view inline widget which has content while
- * the model element is empty.
- *
- *		editor.editing.mapper.on(
- *			'viewToModelPosition',
- *			viewToModelPositionOutsideModelElement( model, viewElement => viewElement.hasClass( 'placeholder' ) )
- *		);
+ * A util to be used in order to map view positions to correct model positions when implementing a widget
+ * which renders non-empty view element for an empty model element.
  *
  * For example:
  *
@@ -306,7 +301,13 @@ export function findOptimalInsertionPosition( selection, model ) {
  *		// View:
  *		<span class="placeholder">name</span>
  *
- * In such case, view position inside `<span>` could not be correct mapped to the model.
+ * In such case, view positions inside `<span>` cannot be correct mapped to the model (because the model element is empty).
+ * To handle mapping positions inside `<span class="placeholder">` to the model use this util as follows:
+ *
+ *		editor.editing.mapper.on(
+ *			'viewToModelPosition',
+ *			viewToModelPositionOutsideModelElement( model, viewElement => viewElement.hasClass( 'placeholder' ) )
+ *		);
  *
  * The callback will try to map the view offset of selection to an expected model position.
  *
@@ -316,7 +317,7 @@ export function findOptimalInsertionPosition( selection, model ) {
  *		<p>foo <span class="placeholder">name|</span> bar</p>
  *
  *		// Model:
- *		<paragraph>foo <placeholder type="name"></inline-widget>| bar</paragraph>
+ *		<paragraph>foo <placeholder type="name"></placeholder>| bar</paragraph>
  *
  * 2. When the position is at the beginning of the inline widget:
  *
@@ -324,9 +325,7 @@ export function findOptimalInsertionPosition( selection, model ) {
  *		<p>foo <span class="placeholder">|name</span> bar</p>
  *
  *		// Model:
- *		<paragraph>foo |<placeholder type="name"></inline-widget> bar</paragraph>
- *
- * **Note:** remember to {@link module:engine/conversion/mapper~Mapper#bindElements bind} model and view element.
+ *		<paragraph>foo |<placeholder type="name"></placeholder> bar</paragraph>
  *
  * @param {module:engine/model/model~Model} model Model instance on which the callback operates.
  * @param {Function} viewElementMatcher Function that is passed a view element and should return `true` if the custom mapping
