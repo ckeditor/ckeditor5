@@ -190,16 +190,9 @@ export default class ImageCaptionEditing extends Plugin {
 
 				// Check elements with children for nested images.
 				if ( !item.is( 'image' ) && item.childCount ) {
-					// Use the walker to find all nested images despite of their nest level.
-					const walker = model.createRangeOn( item ).getWalker();
-
-					for ( const walkerValue of walker ) {
-						if ( walkerValue.type === 'elementStart' ) {
-							const walkerItem = walkerValue.item;
-
-							if ( walkerItem.is( 'image' ) && !getCaptionFromImage( walkerItem ) ) {
-								imagesWithoutCaption.push( walkerItem );
-							}
+					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
+						if ( nestedItem.is( 'image' ) && !getCaptionFromImage( nestedItem ) ) {
+							imagesWithoutCaption.push( nestedItem );
 						}
 					}
 				}
