@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console, window, document */
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+/* globals console, window, document, ClassicEditor */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-placeholder' ), {
