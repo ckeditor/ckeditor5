@@ -132,6 +132,19 @@ describe( 'view', () => {
 			expect( viewRoot.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 		} );
 
+		it( 'should handle the ".ck-read-only" class management on #isReadOnly change', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+
+			viewRoot.isReadOnly = false;
+			expect( viewRoot.hasClass( 'ck-read-only' ) ).to.be.false;
+
+			viewRoot.isReadOnly = true;
+			expect( viewRoot.hasClass( 'ck-read-only' ) ).to.be.true;
+		} );
+
 		it( 'should call observe on each observer', () => {
 			// The variable will be overwritten.
 			view.destroy();
@@ -219,6 +232,23 @@ describe( 'view', () => {
 			view.detachDomRoot( 'main' );
 
 			expect( domDiv.hasAttribute( 'contenteditable' ) ).to.be.false;
+
+			domDiv.remove();
+		} );
+
+		it( 'should remove the ".ck-read-only" class from the DOM root', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			view.attachDomRoot( domDiv );
+			view.forceRender();
+
+			viewRoot.isReadOnly = true;
+			expect( domDiv.classList.contains( 'ck-read-only' ) ).to.be.true;
+
+			view.detachDomRoot( 'main' );
+
+			expect( domDiv.classList.contains( 'ck-read-only' ) ).to.be.false;
 
 			domDiv.remove();
 		} );
@@ -454,6 +484,22 @@ describe( 'view', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( view._renderer.isFocused ).to.equal( true );
+		} );
+	} );
+
+	describe( 'isRenderingInProgress', () => {
+		it( 'should be true while rendering is in progress', () => {
+			expect( view.isRenderingInProgress ).to.equal( false );
+
+			const spy = sinon.spy();
+
+			view.on( 'change:isRenderingInProgress', spy );
+
+			view.fire( 'render' );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWith( spy.firstCall, sinon.match.any, 'isRenderingInProgress', true );
+			sinon.assert.calledWith( spy.secondCall, sinon.match.any, 'isRenderingInProgress', false );
 		} );
 	} );
 
