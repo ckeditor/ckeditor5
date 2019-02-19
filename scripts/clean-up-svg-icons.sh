@@ -7,7 +7,10 @@
 # The configuration file is located in svgo.config.json.
 #
 # Usage:
-#	npm run clean-up-svg-icons path/to/icons/*.svg
+#	yarn run clean-up-svg-icons path/to/icons/foo.svg
+#
+# To optimize the entire project:
+#	yarn clean-up-svg-icons packages/**/theme/icons
 
 for i in "$@"
 do
