@@ -2,10 +2,10 @@
   "packages": "packages/",
   "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#de88afe",
-    "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#8099f97",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#818eeae",
+    "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#a92c37b",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#5035e48",
-    "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#3a05e87",
+    "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#436d064",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#ebd38b2",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#970b517",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#393c24a",
