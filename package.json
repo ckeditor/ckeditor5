@@ -28,6 +28,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^10.1.0",
     "@ckeditor/ckeditor5-block-quote": "^10.1.1",
     "@ckeditor/ckeditor5-build-balloon": "^11.2.0",
+    "@ckeditor/ckeditor5-build-balloon-block": "0.0.1",
     "@ckeditor/ckeditor5-build-classic": "^11.2.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "^11.2.0",
     "@ckeditor/ckeditor5-build-inline": "^11.2.0",
