@@ -102,8 +102,6 @@ export default class BootstrapEditor extends Editor {
 				editor.initPlugins()
 					// Initialize the UI first. See the BootstrapEditorUI class to learn more.
 					.then( () => editor.ui.init( element ) )
-					// Bind the editor editing layer to the editable in DOM.
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.getEditableElement() ) )
 					// Fill the editable with the initial data.
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					// Fire the `editor#ready` event that announce the editor is complete and ready to use.
@@ -249,7 +247,7 @@ class BootstrapEditorUI extends EditorUI {
 		view.element = $( '.ck-editor' );
 
 		// This is the editable view in the DOM. It will replace the data container in the DOM.
-		view.editable = new InlineEditableUIView( editor.locale );
+		view.editable = new InlineEditableUIView( editor.locale, editor.editing.view );
 
 		// References to the dropdown elements for further usage. See #_setupBootstrapHeadingDropdown.
 		view.dropdownMenu = view.element.find( '.dropdown-menu' );
@@ -273,28 +271,38 @@ class BootstrapEditorUI extends EditorUI {
 	init( replacementElement ) {
 		const editor = this.editor;
 		const view = this.view;
+		const editingView = editor.editing.view;
+
+		// Create an editing root in the editing layer. It will correspond with the
+		// document root created in the constructor().
+		const editingRoot = editingView.document.getRoot();
+
+		// The editable UI and editing root should share the same name.
+		view.editable.name = editingRoot.rootName;
 
 		// Render the editable component in the DOM first.
 		view.editable.render();
 
-		// Create an editing root in the editing layer. It will correspond with the
-		// document root created in the constructor().
-		const editingRoot = editor.editing.view.document.getRoot();
-
-		// Bind the basic attributes of the editable in the DOM with the editing layer.
-		view.editable.bind( 'isReadOnly' ).to( editingRoot );
-		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
-		view.editable.name = editingRoot.rootName;
+		const editableElement = view.editable.element;
 
 		// Register editable element so it is available via getEditableElement() method.
-		this._editableElements.set( view.editable.name, view.editable.element );
+		this._editableElements.set( view.editable.name, editableElement );
+
+		// Let the editable UI element respond to the changes in the global editor focus tracker
+		// and let the focus tracker know about the editable element.
+		this.focusTracker.add( editableElement );
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+
+		// Bind the editable UI element to the editing view, making it an end– and entry–point
+		// of the editor's engine. This is where the engine meets the UI.
+		editingView.attachDomRoot( editableElement );
 
 		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
 		this._setupBootstrapToolbarButtons();
 		this._setupBootstrapHeadingDropdown();
 
 		// Replace the editor#element with editor.editable#element.
-		this._elementReplacer.replace( replacementElement, view.editable.element );
+		this._elementReplacer.replace( replacementElement, editableElement );
 
 		// Tell the world that the UI of the editor is ready to use.
 		this.fire( 'ready' );
