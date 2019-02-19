@@ -2304,9 +2304,7 @@ function _makeMoveOperationsFromRanges( ranges, targetPosition ) {
 		const op = new MoveOperation(
 			range.start,
 			range.end.offset - range.start.offset,
-			// If the target is the end of the move range this operation doesn't really move anything.
-			// In this case, it is better for OT to use range start instead of range end.
-			targetPosition.isEqual( range.end ) ? range.start : targetPosition,
+			targetPosition,
 			0
 		);
 
