@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^10.1.1",
     "@ckeditor/ckeditor5-easy-image": "^10.0.4",
     "eslint": "^5.5.0",
-    "eslint-config-ckeditor5": "^1.0.9",
+    "eslint-config-ckeditor5": "^1.0.11",
     "husky": "^1.3.1",
     "lint-staged": "^7.0.0"
   },
