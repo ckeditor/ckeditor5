@@ -707,11 +707,7 @@ export default class Renderer {
 			container.appendChild( domDocument.createTextNode( '\u00A0' ) );
 		}
 
-		if ( container.parentElement && container.parentElement != domRoot ) {
-			container.remove( container );
-		}
-
-		if ( !container.parentElement ) {
+		if ( !container.parentElement || container.parentElement != domRoot ) {
 			domRoot.appendChild( container );
 		}
 
