@@ -504,7 +504,7 @@ export default class View {
 	 * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
 	 * this event with the default priority.
 	 *
-	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event render
 	 */
