@@ -15,8 +15,6 @@ In this guide, you will learn how to address these integration issues and use th
 
 ## Compatibility with Bootstrap
 
-### Bootstrap modals
-
 We noticed that [Bootstrap](https://getbootstrap.com) modals cover the UI of the rich-text editor and break the input fields. Knowing that, you will need to take the following steps to get CKEditor 5 working in the Bootstrap environment:
 
 * Configure the `z-index` of the floating editor UI (e.g. balloons) so it is displayed over the Bootstrap overlay.
