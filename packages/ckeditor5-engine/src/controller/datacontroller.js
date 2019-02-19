@@ -401,7 +401,7 @@ export default class DataController {
 	 * should be fired manually.
 	 *
 	 * The `init` event is fired by decorated {@link #init} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event init
 	 */
