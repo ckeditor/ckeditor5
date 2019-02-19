@@ -2,7 +2,7 @@
   "packages": "packages/",
   "packagesPrefix": "@ckeditor/ckeditor5-",
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#818eeae",
+    "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#9c3b8b4",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#a92c37b",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#5035e48",
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#436d064",
@@ -15,9 +15,9 @@
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#d04066c",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#5ffbb29",
     "@ckeditor/ckeditor5-cloud-services": "ckeditor/ckeditor5-cloud-services#58decc5",
-    "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#07d258b",
+    "@ckeditor/ckeditor5-ckfinder": "ckeditor/ckeditor5-ckfinder#3318391",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#a8367a5",
-    "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image#c428193",
+    "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image#834ff2b",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon#6ca23c9",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#45d393e",
     "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled#35de99c",
@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#2aca096",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#c28003e",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#0a74553",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#6c9e15c",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#efa80a4",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#b2990a9",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#e38333a",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#6827107",
@@ -40,7 +40,7 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#d3331ac",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#a3afaaa",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#345a34e",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#b0469a8",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#a3412fb",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#bcd2b81",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#dad101f"
   }
