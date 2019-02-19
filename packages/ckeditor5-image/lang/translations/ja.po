@@ -1,4 +1,15 @@
 # Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
 msgid ""
 msgstr ""
 "Language-Team: Japanese (https://www.transifex.com/ckeditor/teams/11143/ja/)\n"
@@ -19,15 +30,15 @@ msgstr "フルサイズ画像"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "左寄せ画像"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "中央寄せ画像"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "右寄せ画像"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
