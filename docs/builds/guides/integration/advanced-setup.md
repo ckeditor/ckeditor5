@@ -408,7 +408,7 @@ However, it may happen that your environment requires ES5. For instance, if you 
 In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babeljs.io/):
 
 ```bash
-npm install --save babel-loader babel-core babel-preset-env regenerator-runtime
+npm install --save babel-loader @babel/core @babel/preset-env regenerator-runtime
 ```
 
 Then, add this item to webpack [`module.rules`](https://webpack.js.org/configuration/module/#module-rules) section:
@@ -422,7 +422,7 @@ module: {
 				{
 					loader: 'babel-loader',
 					options: {
-						presets: [ require( 'babel-preset-env' ) ]
+						presets: [ require( '@babel/preset-env' ) ]
 					}
 				}
 			]
