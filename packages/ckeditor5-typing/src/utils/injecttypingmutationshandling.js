@@ -200,6 +200,11 @@ class MutationHandler {
 		// To have correct `diffResult`, we also compare view node text data with &nbsp; replaced by space.
 		const oldText = mutation.oldText.replace( /\u00A0/g, ' ' );
 
+		// Do nothing if mutations created same text.
+		if ( oldText === newText ) {
+			return;
+		}
+
 		const diffResult = diff( oldText, newText );
 
 		const { firstChangeAt, insertions, deletions } = calculateChanges( diffResult );
