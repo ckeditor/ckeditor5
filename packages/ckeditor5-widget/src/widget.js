@@ -150,7 +150,7 @@ export default class Widget extends Plugin {
 	 */
 	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
-		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
+		const isForward = keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 		let wasHandled = false;
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
