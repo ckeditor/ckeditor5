@@ -1,0 +1,89 @@
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Serbian (https://www.transifex.com/ckeditor/teams/11143/sr/)\n"
+"Language: sr\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Додај табелу"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Колона за заглавље"
+
+msgctxt "Label for the insert table column to the left of the current one button."
+msgid "Insert column left"
+msgstr "Додај колону лево"
+
+msgctxt "Label for the insert table column to the right of the current one button."
+msgid "Insert column right"
+msgstr "Додај колону десно"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Бриши колону"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Колона"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Ред за заглавлје"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Додај ред испод"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Додај ред изнад"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Бриши ред"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Ред"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Спој ћелије на горе"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Спој ћелије на десно"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Спој ћелије на доле"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Cпој ћелије на лево"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Дели ћелије усправно"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Дели ћелије водоравно"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Спој ћелије"
