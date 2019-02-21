@@ -91,7 +91,7 @@ function tableCellPostFixer( writer, model, mapper, view ) {
 	// Selection in the view might not be updated to renamed elements. Happens mostly when other feature inserts paragraph to the table cell
 	// (ie. when deleting table cell contents) and sets selection to it while table-post fixer changes view <p> to <span> element.
 	// The view.selection would have outdated nodes.
-	if ( wasFixed ) {
+	if ( wasFixed && !isSelectionValid( view.document.selection, mapper ) ) {
 		updateRangesInViewSelection( model.document.selection, mapper, writer );
 	}
 
@@ -179,4 +179,14 @@ function updateRangesInViewSelection( selection, mapper, writer ) {
 		.map( range => mapper.toViewRange( range ) );
 
 	writer.setSelection( fixedRanges, { backward: selection.isBackward } );
+}
+
+// Checks if selection needs to be fixed by ensuring that current view selection position's parents are present in the editable view.
+//
+// @param {module:engine/view/selection~Selection} viewSelection
+function isSelectionValid( viewSelection ) {
+	const anchor = viewSelection.anchor;
+	const focus = viewSelection.focus;
+
+	return viewSelection.rangeCount && anchor.root.is( 'rootElement' ) && focus.root.is( 'rootElement' );
 }

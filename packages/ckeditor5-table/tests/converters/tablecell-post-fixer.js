@@ -276,4 +276,37 @@ describe( 'TableCell post-fixer', () => {
 		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
 		expect( () => view.domConverter.viewRangeToDom( viewRange ) ).to.not.throw();
 	} );
+
+	it( 'should not update view selection after other feature set selection', () => {
+		editor.model.schema.register( 'widget', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block'
+		} );
+		editor.conversion.elementToElement( {
+			model: 'widget',
+			view: 'widget'
+		} );
+
+		editor.setData( viewTable( [ [ '<p>foo[]</p>' ] ] ) );
+
+		const spy = sinon.spy();
+
+		view.document.selection.on( 'change', spy );
+
+		// Insert a widget in table cell and select it.
+		model.change( writer => {
+			const widgetElement = writer.createElement( 'widget' );
+			const tableCell = root.getNodeByPath( [ 0, 0, 0, 0 ] );
+
+			writer.insert( widgetElement, writer.createPositionAfter( tableCell ) );
+
+			// Update the selection so it will be set on the widget and not in renamed paragraph.
+			writer.setSelection( widgetElement, 'on' );
+		} );
+
+		// View selection should be updated only twice - will be set to null and then to widget.
+		// If called thrice the selection post fixer for table cell was also called.
+		sinon.assert.calledTwice( spy );
+	} );
 } );
