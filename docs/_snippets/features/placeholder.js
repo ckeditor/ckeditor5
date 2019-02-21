@@ -5,8 +5,11 @@
 
 /* globals console, window, document, ClassicEditor */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-placeholder' ), {
+		cloudServices: CS_CONFIG,
 		placeholder: 'Type the content here!'
 	} )
 	.then( editor => {
