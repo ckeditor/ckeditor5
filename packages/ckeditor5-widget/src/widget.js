@@ -150,7 +150,7 @@ export default class Widget extends Plugin {
 	 */
 	_onKeydown( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
-		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
+		const isForward = keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 		let wasHandled = false;
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
@@ -268,16 +268,16 @@ export default class Widget extends Plugin {
 	_handleEnterKey( isBackwards ) {
 		const model = this.editor.model;
 		const modelSelection = model.document.selection;
-		const objectElement = modelSelection.getSelectedElement();
+		const selectedElement = modelSelection.getSelectedElement();
 
-		if ( objectElement && model.schema.isObject( objectElement ) ) {
+		if ( shouldInsertParagraph( selectedElement, model.schema ) ) {
 			model.change( writer => {
-				let position = writer.createPositionAt( objectElement, isBackwards ? 'before' : 'after' );
+				let position = writer.createPositionAt( selectedElement, isBackwards ? 'before' : 'after' );
 				const paragraph = writer.createElement( 'paragraph' );
 
 				// Split the parent when inside a block element.
 				// https://github.com/ckeditor/ckeditor5/issues/1529
-				if ( !model.schema.isLimit( objectElement.parent ) ) {
+				if ( model.schema.isBlock( selectedElement.parent ) ) {
 					const paragraphLimit = model.schema.findAllowedParent( position, paragraph );
 
 					position = writer.split( position, paragraphLimit ).position;
@@ -450,4 +450,12 @@ function isChild( element, parent ) {
 	}
 
 	return Array.from( element.getAncestors() ).includes( parent );
+}
+
+// Checks if enter key should insert paragraph. This should be done only on elements of type object (excluding inline objects).
+//
+// @param {module:engine/model/element~Element} element And element to check.
+// @param {module:engine/model/schema~Schema} schema
+function shouldInsertParagraph( element, schema ) {
+	return element && schema.isObject( element ) && !schema.isInline( element );
 }

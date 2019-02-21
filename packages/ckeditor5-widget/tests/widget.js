@@ -55,6 +55,11 @@ describe( 'Widget', () => {
 				model.schema.register( 'editable', {
 					allowIn: [ 'widget', '$root' ]
 				} );
+				model.schema.register( 'inline-widget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true
+				} );
 
 				// Image feature.
 				model.schema.register( 'image', {
@@ -88,6 +93,14 @@ describe( 'Widget', () => {
 							viewWriter.insert( viewWriter.createPositionAt( div, 0 ), b );
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
+						}
+					} )
+					.elementToElement( {
+						model: 'inline-widget',
+						view: ( modelItem, viewWriter ) => {
+							const span = viewWriter.createContainerElement( 'span' );
+
+							return toWidget( span, viewWriter );
 						}
 					} )
 					.elementToElement( {
@@ -761,6 +774,27 @@ describe( 'Widget', () => {
 					'<allowP><disallowP><widget></widget></disallowP><paragraph>[]</paragraph><disallowP></disallowP></allowP>'
 				);
 			} );
+
+			test(
+				'should do nothing if selected is inline object',
+				'<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>',
+				keyCodes.enter,
+				'<paragraph>foo[]bar</paragraph>'
+			);
+
+			test(
+				'should insert a paragraph after the selected widget inside an element that is not a block upon Enter',
+				'<blockQuote>[<widget></widget>]</blockQuote>',
+				keyCodes.enter,
+				'<blockQuote><widget></widget><paragraph>[]</paragraph></blockQuote>'
+			);
+
+			test(
+				'should insert a paragraph before the selected widget inside an element that is not a block upon Shift+Enter',
+				'<blockQuote>[<widget></widget>]</blockQuote>',
+				{ keyCode: keyCodes.enter, shiftKey: true },
+				'<blockQuote><paragraph>[]</paragraph><widget></widget></blockQuote>'
+			);
 		} );
 
 		function test( name, data, keyCodeOrMock, expected, expectedView ) {
