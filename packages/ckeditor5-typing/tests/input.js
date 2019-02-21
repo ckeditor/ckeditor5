@@ -647,6 +647,32 @@ describe( 'Input feature', () => {
 
 			expect( getViewData( view ) ).to.equal( '<p>foo<placeholder></placeholder>bar<placeholder></placeholder>baz!{}</p>' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-typing/issues/181
+		it( 'should not crash if the mutation old text is same as new text', () => {
+			// It shouldn't matter what data is here, I am putting it like it is in the test scenario, but it is really about
+			// what mutations are generated.
+			editor.setData( '<p>Foo<strong> </strong>&nbsp;Bar</p>' );
+
+			const p = viewRoot.getChild( 0 );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: ' ',
+					newText: ' ',
+					node: p.getChild( 1 )
+				},
+				{
+					type: 'text',
+					oldText: 'Foo',
+					newText: 'Foox',
+					node: p.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>Foox{}<strong> </strong> Bar</p>' );
+		} );
 	} );
 
 	describe( 'keystroke handling', () => {
