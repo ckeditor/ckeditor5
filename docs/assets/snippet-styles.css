@@ -128,7 +128,11 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	padding: 2rem;
 }
 
-#snippet-inline-editor .ck-content:not(.ck-focused) {
+/* Visually separate inline editors from example description.
+https://github.com/ckeditor/ckeditor5/issues/1545 */
+#snippet-inline-editor .ck-content:not(.ck-focused),
+#snippet-balloon-editor.ck-content:not(.ck-focused),
+#snippet-balloon-block-editor.ck-content:not(.ck-focused) {
 	border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
