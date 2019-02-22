@@ -152,20 +152,20 @@ The project will have a structure as below:
 ```
 ├── app.js
 ├── dist
-│   ├── bundle.js
-│   └── bundle.js.map
+│   ├── bundle.js
+│   └── bundle.js.map
 ├── index.html
 ├── node_modules
 ├── package.json
 ├── placeholder
-│   ├── placeholder.js
-│   ├── placeholdercommand.js
-│   ├── placeholderediting.js
-│   ├── placeholderui.js
-│   └── theme
-│       └── placeholder.css
+│   ├── placeholder.js
+│   ├── placeholdercommand.js
+│   ├── placeholderediting.js
+│   ├── placeholderui.js
+│   └── theme
+│       └── placeholder.css
 │
-│   ... the rest of plugin files go here as well
+│   ... the rest of plugin files go here as well
 │
 └── webpack.config.js
 ```
