@@ -348,11 +348,11 @@ export class MyComponent {
 =======
 ## Accessing the CKEditor API from an Angular Component
 
-The **ckeditor** component will provide all the functionality needed for most use cases.  In 
+The `<ckeditor>` component will provide all the functionality needed for most use cases.  In 
 cases where access to the Javascript-level {@link api CKEditor API} is needed
 it is easy to access with an additional step.
 
-To do this, assign the Angular **ckeditor** component to a locally scoped variable as
+To do this, assign the Angular `<ckeditor>` component to a locally scoped variable as
 follows:
 
 ```html
@@ -378,10 +378,10 @@ In the component the target function will look like this:
 
 The operations performed may be anything that is defined and allowable by the API.
 
-Note that the Angular **editor1** template variable may also be accessed with an
-**@ViewChild**-decorated variable declaration.  The method in the example, however,
-will be preferable in the case where there is more than one **ckeditor** element on
-the page.  Also, if the **ckeditor** element is inside an ***ngIf** structure the **@ViewChild**
+Note that the Angular `editor1` template variable may also be accessed with an
+`@ViewChild`-decorated variable declaration.  The method in the example, however,
+will be preferable in the case where there is more than one `<ckeditor>` element on
+the page.  Also, if the `<ckeditor>` element is inside an `*ngIf` structure the `@ViewChild`
 declared variable may be inadvertently undefined.
 
 
@@ -398,11 +398,11 @@ component that will use it.  Alternatively this can have its own file and be
 imported.
 
 This class will be instantiated each time that CKEditor needs it.  Note that
-the functions in this class will run outside an **NgZone** which means that
+the functions in this class will run outside an `NgZone` which means that
 if it makes changes to variables bound to HTML elements, the shadow-DOM logic
 in the Angular framework won't detect those changes.  
 
-The instance property **loader** is the primary interface between the UploadAdapter
+The instance property `loader` is the primary interface between the UploadAdapter
 and the CKEditor instance.
 
 ```ts
@@ -482,11 +482,11 @@ will generate an UploadAdapter as needed:
 ```
 
 The second parameter is the URL where the image will be sent.  This will need
-to have everything the **imageURL** function in the UploadAdpater needs to 
+to have everything the `imageURL` function in the UploadAdpater needs to 
 generate a complete URL.
 
 Next, we need to tell CKEditor where the Plugin can be found.  This is done
-using the **extraPlugins** element in the configuration object, which can
+using the `extraPlugins` element in the configuration object, which can
 be used without rebuilding the standard build you are using.  The following
 instance variable can be defined:
 
@@ -496,20 +496,20 @@ instance variable can be defined:
   };
 ```
 
-Any other desired configuration settings can be added (such as **toolbar**).
-Then it can be used in the **ckeditor** component as follows:
+Any other desired configuration settings can be added (such as `toolbar`).
+Then it can be used in the `<ckeditor>` component as follows:
 
 ```html
         <ckeditor [editor]="Editor" [config]="ckconfig"
                   [(ngModel)]="text" name="editcontent"></ckeditor>
 ```
 
-Note the use of a closure in the **extraPlugins** array in the configuration.
-This is done so that the **MyUploadAdapterPlugin** function will have access
+Note the use of a closure in the `extraPlugins` array in the configuration.
+This is done so that the `MyUploadAdapterPlugin` function will have access
 to the properties of the component instance that spawned it.  
 
 At this point your UploadAdapter should be invoked any time the user pastes
-or drag-and-drops an image into the **ckeditor** window.
+or drag-and-drops an image into the `<ckeditor>` window.
 
 >>>>>>> Updates to angular.md
 ## Localization
