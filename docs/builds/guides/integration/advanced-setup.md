@@ -291,9 +291,12 @@ ClassicEditor
 			ImageCaptionPlugin,
 			ImageStylePlugin,
 			ImageToolbarPlugin,
+			EasyImagePlugin,
+			ImageUploadPlugin,
 			LinkPlugin,
 			ListPlugin,
-			ParagraphPlugin
+			ParagraphPlugin,
+			UploadAdapterPlugin
 		],
 
 		// So is the rest of the default configuration.
