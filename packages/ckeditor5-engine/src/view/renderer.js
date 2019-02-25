@@ -171,10 +171,6 @@ export default class Renderer {
 	render() {
 		let inlineFillerPosition;
 
-		// Remove unneeded fake selection container from the DOM so it will not affect the DOM nodes diffing.
-		// It will be re-added if needed when rendering the selection.
-		this._removeFakeSelection();
-
 		// Refresh mappings.
 		for ( const element of this.markedChildren ) {
 			this._updateChildrenMappings( element );
@@ -664,6 +660,7 @@ export default class Renderer {
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();
+			this._removeFakeSelection();
 
 			return;
 		}
@@ -679,6 +676,7 @@ export default class Renderer {
 		if ( this.selection.isFake ) {
 			this._updateFakeSelection( domRoot );
 		} else {
+			this._removeFakeSelection();
 			this._updateDomSelection( domRoot );
 		}
 	}

@@ -3320,31 +3320,6 @@ describe( 'Renderer', () => {
 				return viewData.repeat( repeat );
 			}
 		} );
-
-		it( 'should work with fake selection container', () => {
-			let viewString = '';
-
-			for ( let i = 0; i < 151; i++ ) {
-				viewString += '<container:p>foo</container:p>';
-			}
-
-			viewRoot._appendChild( parse( viewString ) );
-
-			// Set fake selection
-			selection._setTo( viewRoot.getChild( 1 ), 'on', { fake: true } );
-
-			renderer.markToSync( 'children', viewRoot );
-			renderer.render();
-
-			viewRoot._removeChildren( 1, 1 );
-			selection._setTo( viewRoot.getChild( 0 ), 'in' );
-
-			renderer.markToSync( 'children', viewRoot );
-
-			expect( () => {
-				renderer.render();
-			} ).to.not.throw();
-		} );
 	} );
 
 	describe( '#922', () => {
