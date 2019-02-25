@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, window, NodeFilter */
+/* globals document, window, NodeFilter, MutationObserver */
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
@@ -2302,7 +2302,7 @@ describe( 'Renderer', () => {
 		} );
 
 		// #1417
-		describe( 'optimal rendering', () => {
+		describe( 'optimal rendering – reusing existing nodes', () => {
 			it( 'should render inline element replacement (before text)', () => {
 				viewRoot._appendChild( parse( '<container:p><attribute:i>A</attribute:i>1</container:p>' ) );
 
@@ -3124,6 +3124,143 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
 			} );
+		} );
+
+		describe( 'optimal (minimal) rendering – minimal children changes', () => {
+			let observer;
+
+			beforeEach( () => {
+				observer = new MutationObserver( () => {} );
+
+				observer.observe( domRoot, {
+					childList: true,
+					attributes: false,
+					subtree: false
+				} );
+			} );
+
+			afterEach( () => {
+				observer.disconnect();
+			} );
+
+			it( 'should add only one child (at the beginning)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 0, parse( '<container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should add only one child (at the end)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._appendChild( parse( '<container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should add only one child (in the middle)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:p>3</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0'
+				] );
+			} );
+
+			it( 'should not touch elements at all (rendering texts is enough)', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:p>3</container:p>' ) );
+				viewRoot._removeChildren( 0, 1 );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.be.empty;
+			} );
+
+			it( 'should add and remove one', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				viewRoot._insertChild( 1, parse( '<container:h1>3</container:h1>' ) );
+				viewRoot._removeChildren( 0, 1 );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 1, removed: 0',
+					'added: 0, removed: 1'
+				] );
+			} );
+
+			it( 'should not touch the FSC when rendering children', () => {
+				viewRoot._appendChild( parse( '<container:p>1</container:p><container:p>2</container:p>' ) );
+
+				// Set fake selection on the second paragraph.
+				selection._setTo( viewRoot.getChild( 1 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+				cleanObserver( observer );
+
+				// Remove the second paragraph.
+				viewRoot._removeChildren( 1, 1 );
+				// And set the fake selection on the first one.
+				selection._setTo( viewRoot.getChild( 0 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 0, removed: 1'
+				] );
+			} );
+
+			function getMutationStats( mutationList ) {
+				return mutationList.map( mutation => {
+					return `added: ${ mutation.addedNodes.length }, removed: ${ mutation.removedNodes.length }`;
+				} );
+			}
+
+			function cleanObserver( observer ) {
+				observer.takeRecords();
+			}
 		} );
 
 		// #1560
