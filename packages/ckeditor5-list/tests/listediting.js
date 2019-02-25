@@ -12,6 +12,7 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -4096,6 +4097,21 @@ describe( 'ListEditing', () => {
 				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'<paragraph>c</paragraph>'
 			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/1572
+		it( 'should not crash if list item contains autoparagraphed block that will be split', () => {
+			// Creating a new editor as we need HeadingEditing. Cannot add HeadingEditing to the `describe` at the beginning of the
+			// test file because other tests assume that headings are not available.
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ListEditing, HeadingEditing ]
+				} )
+				.then( editor => {
+					editor.setData( '<ul><li><div><h2>Foo</h2></div></li></ul>' );
+
+					expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal( '<heading1>Foo</heading1>' );
+				} );
 		} );
 	} );
 

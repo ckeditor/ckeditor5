@@ -8,6 +8,7 @@
  */
 
 import { createViewListItemElement } from './utils';
+import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * A model-to-view converter for `listItem` model element insertion.
@@ -809,52 +810,64 @@ function generateLiInUl( modelItem, conversionApi ) {
 // @param {module:engine/conversion/upcastdispatcher~UpcastConversionApi} conversionApi Conversion interface to be used by the callback.
 // @returns {module:engine/model/position~Position} Position on which next elements should be inserted after children conversion.
 function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conversionApi ) {
-	const writer = conversionApi.writer;
-	let lastListItem = listItemModel;
+	const { writer, schema } = conversionApi;
+
+	// A position after the last inserted `listItem`.
 	let nextPosition = writer.createPositionAfter( listItemModel );
 
 	// Check all children of the converted `<li>`. At this point we assume there are no "whitespace" view text nodes
 	// in view list, between view list items. This should be handled by `<ul>` and `<ol>` converters.
 	for ( const child of viewChildren ) {
-		// If this is a view list element, we will insert its conversion result after currently handled `listItem`.
 		if ( child.name == 'ul' || child.name == 'ol' ) {
-			nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
-		}
-		// If it is not a view list element it is a "regular" list item content. Its conversion result will
-		// be inserted as `listItem` children (block children may split current `listItem`).
-		else {
-			const result = conversionApi.convertItem( child, writer.createPositionAt( lastListItem, 'end' ) );
-			const convertedChild = result.modelRange.start.nodeAfter;
-
-			nextPosition = writer.createPositionAfter( result.modelCursor.parent );
-
-			// If there is a block element child being converted it may split the current list item, for example:
+			// If the children is a list, we will insert its conversion result after currently handled `listItem`.
+			// Then, next insertion position will be set after all the new list items (and maybe other elements if
+			// something split list item).
 			//
-			//		<li><p>Foo</p></li>
+			// If this is a list, we expect that some `listItem`s and possibly other blocks will be inserted, however `.modelCursor`
+			// should be set after last `listItem` (or block). This is why it feels safe to use it as `nextPosition`
+			nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
+		} else {
+			// If this is not a list, try inserting content at the end of the currently handled `listItem`.
+			const result = conversionApi.convertItem( child, writer.createPositionAt( listItemModel, 'end' ) );
+
+			// It may end up that the current `listItem` becomes split (if that content cannot be inside `listItem`). For example:
+			//
+			// <li><p>Foo</p></li>
 			//
 			// will be converted to:
 			//
-			//		<listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
+			// <listItem></listItem><paragraph>Foo</paragraph><listItem></listItem>
 			//
-			// so we need to update reference to `lastListItem`.
-			if ( convertedChild && convertedChild.is( 'element' ) &&
-				!conversionApi.schema.checkChild( lastListItem, convertedChild.name ) ) {
-				lastListItem = result.modelCursor.parent;
+			const convertedChild = result.modelRange.start.nodeAfter;
+			const wasSplit = convertedChild && convertedChild.is( 'element' ) && !schema.checkChild( listItemModel, convertedChild.name );
 
-				// Depending on the used converter for block elements, usually the position (`result.modelCursor`
-				// marked as # below) points to the second list item after conversion:
+			if ( wasSplit ) {
+				// As `lastListItem` got split, we need to update it to the second part of the split `listItem` element.
+				//
+				// `modelCursor` should be set to a position where the conversion should continue. There are multiple possible scenarios
+				// that may happen. Usually, `modelCursor` (marked as `#` below) would point to the second list item after conversion:
 				//
 				//		`<li><p>Foo</p></li>` -> `<listItem></listItem><paragraph>Foo</paragraph><listItem>#</listItem>`
 				//
-				// However, in some cases like autoparagraphing the position is placed on the end of the block element:
+				// However, in some cases, like auto-paragraphing, the position is placed at the end of the block element:
 				//
-				//		`<li><h2>Foo</h2></li>` -> `<listItem></listItem><paragraph>Foo#</paragraph><listItem></listItem>`
+				//		`<li><div>Foo</div></li>` -> `<listItem></listItem><paragraph>Foo#</paragraph><listItem></listItem>`
+				//
+				// or after an element if another element broken auto-paragraphed element:
+				//
+				//		`<li><div><h2>Foo</h2></div></li>` -> `<listItem></listItem><heading1>Foo</heading1>#<listItem></listItem>`
 				//
 				// We need to check for such cases and use proper list item and position based on it.
-				if ( !lastListItem.is( 'listItem' ) && lastListItem.nextSibling && lastListItem.nextSibling.is( 'listItem' ) ) {
-					lastListItem = lastListItem.nextSibling;
-					nextPosition = writer.createPositionAt( lastListItem, 'end' );
+				//
+				if ( result.modelCursor.parent.is( 'listItem' ) ) {
+					// (1).
+					listItemModel = result.modelCursor.parent;
+				} else {
+					// (2), (3).
+					listItemModel = findNextListItem( result.modelCursor );
 				}
+
+				nextPosition = writer.createPositionAfter( listItemModel );
 			}
 		}
 	}
@@ -862,12 +875,25 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 	return nextPosition;
 }
 
-// Helper function that seeks for a list item sibling of given model item (or position) which meets given criteria.
+// Helper function that seeks for a next list item starting from given `startPosition`.
+function findNextListItem( startPosition ) {
+	const treeWalker = new TreeWalker( { startPosition } );
+
+	let value;
+
+	do {
+		value = treeWalker.next();
+	} while ( !value.value.item.is( 'listItem' ) );
+
+	return value.value.item;
+}
+
+// Helper function that seeks for a previous list item sibling of given model item which meets given criteria.
 // `options` object may contain one or more of given values (by default they are `false`):
 // `options.sameIndent` - whether sought sibling should have same indent (default = no),
 // `options.smallerIndent` - whether sought sibling should have smaller indent (default = no).
-// `options.indent` - used as reference item when first parameter is a position
-// Either `options.sameIndent` or `options.biggerIndent` should be set to `true`.
+// `options.listIndent` - the reference indent.
+// Either `options.sameIndent` or `options.smallerIndent` should be set to `true`.
 function getSiblingListItem( modelItem, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
