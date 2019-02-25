@@ -417,7 +417,7 @@ Then, add this item to webpack [`module.rules`](https://webpack.js.org/configura
 module: {
 	rules: [
 		{
-			test: /\.js$/,
+			test: /ckeditor5-[^\/\\]+[\/\\].*\.js$/,
 			use: [
 				{
 					loader: 'babel-loader',
