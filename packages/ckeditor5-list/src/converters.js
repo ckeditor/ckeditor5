@@ -855,7 +855,7 @@ function viewToModelListItemChildrenConverter( listItemModel, viewChildren, conv
 				//
 				// or after an element if another element broken auto-paragraphed element:
 				//
-				//		`<li><div><h2>Foo</h2></div><li>` -> `<listItem></listItem><heading1>Foo</heading1>#<listItem></listItem>`
+				//		`<li><div><h2>Foo</h2></div></li>` -> `<listItem></listItem><heading1>Foo</heading1>#<listItem></listItem>`
 				//
 				// We need to check for such cases and use proper list item and position based on it.
 				//
