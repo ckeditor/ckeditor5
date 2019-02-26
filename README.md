@@ -52,6 +52,7 @@ The following CKEditor 5 Builds are currently available:
 * [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
 * [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
 * [Balloon editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
+* [Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor)
 * [Document editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#document-editor)
 
 #### Example
@@ -280,6 +281,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 	</td>
 	<td>
 		The balloon editor (Medium-like) build.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-build-balloon-block"><code>@ckeditor/ckeditor5-build-balloon-block</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon-block.svg" alt="@ckeditor/ckeditor5-build-balloon-block npm package badge"></a>
+	</td>
+	<td>
+		The balloon editor with a block toolbar (Slack–like) build.
 	</td>
 </tr>
 

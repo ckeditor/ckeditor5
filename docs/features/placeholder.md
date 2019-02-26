@@ -2,6 +2,8 @@
 category: features
 ---
 
+{@snippet build-classic-source}
+
 # Editor placeholder
 
 CKEditor 5 can display a configurable placeholder text when the content is empty. The placeholder helps users locate the editor in the application and prompts to input the content. It works similarly to the native DOM [`placeholder` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#The_placeholder_attribute) used by inputs.
