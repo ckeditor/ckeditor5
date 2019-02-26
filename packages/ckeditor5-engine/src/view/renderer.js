@@ -581,6 +581,8 @@ export default class Renderer {
 	 * @returns {Array.<String>} The list of actions based on the {@link module:utils/diff~diff} function.
 	 */
 	_diffNodeLists( actualDomChildren, expectedDomChildren ) {
+		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
+
 		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFiller ) );
 	}
 
@@ -954,4 +956,20 @@ function fixGeckoSelectionAfterBr( focus, domSelection ) {
 	if ( childAtOffset && childAtOffset.tagName == 'BR' ) {
 		domSelection.addRange( domSelection.getRangeAt( 0 ) );
 	}
+}
+
+function filterOutFakeSelectionContainer( domChildList, fakeSelectionContainer ) {
+	const childList = Array.from( domChildList );
+
+	if ( childList.length == 0 || !fakeSelectionContainer ) {
+		return childList;
+	}
+
+	const last = childList[ childList.length - 1 ];
+
+	if ( last == fakeSelectionContainer ) {
+		childList.pop();
+	}
+
+	return childList;
 }
