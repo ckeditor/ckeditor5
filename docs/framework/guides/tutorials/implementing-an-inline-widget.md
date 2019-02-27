@@ -6,15 +6,15 @@ menu-title: Implementing an inline widget
 
 # Implementing an inline widget
 
-In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert predefined placeholders into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown for the toolbar which will allow to select a placeholder to insert. 
+In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like date or surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown for the toolbar which will allow to select a placeholder to insert. We will also learn how to use editor configuration to pass placeholders types for the feature. 
 
 ## Before you start
 
-This guide assumes that you're familiar with widgets concept introduced in the {@link framework/tutorials/implementing-a-widget Implementing a simple widget} tutorial. We will reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you're familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-widget Implementing a simple widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
 
 ## Bootstrap project
 
-Th overall project structure and concept will be similar as those described in {@link framework/guides/tutorials/implementing-a-widget#lets-start Let's start} & and {@link framework/guides/tutorials/implementing-a-widget#plugin-structure Plugin structure} sections.
+Th overall project structure and concept will be similar as those described in {@link framework/guides/tutorials/implementing-a-widget#lets-start Let's start} and {@link framework/guides/tutorials/implementing-a-widget#plugin-structure Plugin structure} sections.
 
 First, install required dependencies:
 
@@ -357,7 +357,9 @@ export default class PlaceholderEditing extends Plugin {
 		function createPlaceholderView( modelItem, viewWriter ) {
 			const type = modelItem.getAttribute( 'type' );
 
-			const placeholderView = viewWriter.createContainerElement( 'span', { 'data-placeholder': type } );
+			const placeholderView = viewWriter.createContainerElement( 'span', {
+				'data-placeholder': type
+			} );
 
 			// Insert text node with type so the placeholder type will be displayed in the view.
 			const innerText = viewWriter.createText( `{ ${ type } }` );
