@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.1.0...v11.0.0) (2019-02-28)
+
+### Other changes
+
+* Updated translations. ([b96cf6d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/b96cf6d))
+* Updated translations. ([8223ff2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8223ff2))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([5bf6076](https://github.com/ckeditor/ckeditor5-basic-styles/commit/5bf6076))
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.0.3...v10.1.0) (2018-12-05)
 
 ### Features
