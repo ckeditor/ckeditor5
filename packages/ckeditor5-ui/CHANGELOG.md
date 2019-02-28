@@ -18,6 +18,8 @@ Changelog
 * Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `BallonPanelView#className` property was renamed to `#class`.
 * The `ToolbarView#className` property was renamed to `#class`.
+* The `EditableUIView#externalElement` property (which held the element on which the editor was created if it was explicitly passed) was removed.
+* The `EditorUIView#editableElement` property was made private. Use `editor.ui.getEditableElement()` method instead.
 
 
 ## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (2018-12-05)
