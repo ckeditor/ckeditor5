@@ -5,20 +5,20 @@ Changelog
 
 ### Features
 
-* Enabled the decoupled editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([edd400f](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/edd400f))
+* Added support for the `config.placeholder` option which allows configuring the empty editor content placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([edd400f](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/edd400f))
 
 ### Bug fixes
 
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([1e2f912](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/1e2f912))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([1e2f912](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/1e2f912))
 
 ### Other changes
 
-* Adjustments to new editor initialisation events. ([3bb0e40](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/3bb0e40))
-* Editor UI classes API refactoring. ([844ef9a](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/844ef9a))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([ba783cf](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/ba783cf))
+* Adjustments to new editor initialisation events. See breaking changes. ([3bb0e40](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/3bb0e40))
+* Editor UI classes API refactoring. See breaking changes. ([844ef9a](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/844ef9a))
 
 ### BREAKING CHANGES
 
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The second argument of `DecoupledEditorUIView.constructor()` is an editing view instance now.
 * The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
