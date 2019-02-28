@@ -6,10 +6,11 @@ Changelog
 ### Other changes
 
 * Make `BlockQuoteCommand` wrap only top-most blocks. ([17c9d3b](https://github.com/ckeditor/ckeditor5-block-quote/commit/17c9d3b))
-* Updated translations. ([f452b45](https://github.com/ckeditor/ckeditor5-block-quote/commit/f452b45))
-* Updated translations. ([8d8fde2](https://github.com/ckeditor/ckeditor5-block-quote/commit/8d8fde2))
-* Updated translations. ([cb7ec44](https://github.com/ckeditor/ckeditor5-block-quote/commit/cb7ec44))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([4082584](https://github.com/ckeditor/ckeditor5-block-quote/commit/4082584))
+* Updated translations. ([f452b45](https://github.com/ckeditor/ckeditor5-block-quote/commit/f452b45)) ([8d8fde2](https://github.com/ckeditor/ckeditor5-block-quote/commit/8d8fde2)) ([cb7ec44](https://github.com/ckeditor/ckeditor5-block-quote/commit/cb7ec44))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [10.1.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v10.1.0...v10.1.1) (2018-12-05)
