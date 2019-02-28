@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v10.0.4...v11.0.0) (2019-02-28)
+
+### Other changes
+
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([a85a981](https://github.com/ckeditor/ckeditor5-markdown-gfm/commit/a85a981))
+
+
 ## [10.0.4](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v10.0.3...v10.0.4) (2018-12-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
