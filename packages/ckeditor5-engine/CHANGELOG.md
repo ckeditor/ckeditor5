@@ -1,6 +1,65 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v12.0.0...v13.0.0) (2019-02-28)
+
+### Features
+
+* Added an additional event in markers conversion. Improved how MarkerOperation is transformed during undo. Closes [#1604](https://github.com/ckeditor/ckeditor5-engine/issues/1604). ([da5a390](https://github.com/ckeditor/ckeditor5-engine/commit/da5a390))
+* Implemented `Selection#is()` and `DocumentSelection#is()` methods in both the model and the view. Closes [#1663](https://github.com/ckeditor/ckeditor5-engine/issues/1663). ([aac4948](https://github.com/ckeditor/ckeditor5-engine/commit/aac4948))
+* Introduce `selection.getTopMostBlocks()` method. ([a9c41c8](https://github.com/ckeditor/ckeditor5-engine/commit/a9c41c8))
+* Introduce read-only `View#isRenderingInProgress` flag to check if the document is in the rendering phase. Closes https://github.com/ckeditor/ckeditor5/issues/1530. ([6577d04](https://github.com/ckeditor/ckeditor5-engine/commit/6577d04))
+* Introduced `Differ#getChangedMarkers`. Closes [#1658](https://github.com/ckeditor/ckeditor5-engine/issues/1658). ([2e04af7](https://github.com/ckeditor/ckeditor5-engine/commit/2e04af7))
+* Introduced `DocumentSelection#markers` collection. Closes [#1615](https://github.com/ckeditor/ckeditor5-engine/issues/1615). ([b2c1d72](https://github.com/ckeditor/ckeditor5-engine/commit/b2c1d72))
+* Introduced support for inline objects (enables support for inline widgets). Introduced `Schema#isInline()`. Closes [[ckeditor/ckeditor5#1049](https://github.com/ckeditor/ckeditor5/issues/1049)](https://github.com/ckeditor/ckeditor5/issues/1049). Closes [[ckeditor/ckeditor5#1426](https://github.com/ckeditor/ckeditor5/issues/1426)](https://github.com/ckeditor/ckeditor5/issues/1426). ([6b36bf1](https://github.com/ckeditor/ckeditor5-engine/commit/6b36bf1))
+* Introduced whitespace trimming to `Model#hasContent()`. `DataController#get()` method can now trim empty data (so it returns empty string instead of `<p>&nbsp;</p>`). Closes [[ckeditor/ckeditor5#401](https://github.com/ckeditor/ckeditor5/issues/401)](https://github.com/ckeditor/ckeditor5/issues/401). ([2b95dc3](https://github.com/ckeditor/ckeditor5-engine/commit/2b95dc3))
+* Moved the root element DOM attributes management from the UI to the engine. Made it possible to use `addPlaceholder()` (now `enablePlaceholder()`) on the root editable. Introduced the `View.detachDomRoot()` method. Implemented additional placeholder helpers (`showPlaceholder()`, `hidePlaceholder()`, `needsPlaceholder()`) (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). Closes [#899](https://github.com/ckeditor/ckeditor5-engine/issues/899). ([21dee6b](https://github.com/ckeditor/ckeditor5-engine/commit/21dee6b))
+
+### Bug fixes
+
+* `MarkerOperation` OT cases for undo. Closes [#1650](https://github.com/ckeditor/ckeditor5-engine/issues/1650). ([649cae0](https://github.com/ckeditor/ckeditor5-engine/commit/649cae0))
+* `MarkerOperation` transformation in undo. Closes [#1668](https://github.com/ckeditor/ckeditor5-engine/issues/1668). ([c9932b8](https://github.com/ckeditor/ckeditor5-engine/commit/c9932b8))
+* `Selection#getTopMostBlocks()` should not leak from limit elements. Closes [ckeditor/ckeditor5-table#163](https://github.com/ckeditor/ckeditor5-table/issues/163). ([7bc0338](https://github.com/ckeditor/ckeditor5-engine/commit/7bc0338))
+* All content is properly removed after undoing paste in some scenarios. Closes [[ckeditor/ckeditor5#1540](https://github.com/ckeditor/ckeditor5/issues/1540)](https://github.com/ckeditor/ckeditor5/issues/1540). ([08855d3](https://github.com/ckeditor/ckeditor5-engine/commit/08855d3))
+* Converter priority passing in `conversion.attributeToElement()`. Closes [#1617](https://github.com/ckeditor/ckeditor5-engine/issues/1617). ([fe6d17d](https://github.com/ckeditor/ckeditor5-engine/commit/fe6d17d))
+* Fake selection container should be correctly appended to the new editable element when creating a new fake selection in a different editable element than the one which was focused before. Closes [[ckeditor/ckeditor5#1523](https://github.com/ckeditor/ckeditor5/issues/1523)](https://github.com/ckeditor/ckeditor5/issues/1523). ([3b53d5a](https://github.com/ckeditor/ckeditor5-engine/commit/3b53d5a))
+* Filter out fake selection container before comparing DOM view root children in view renderer. Closes [ckeditor/ckeditor5#1578](https://github.com/ckeditor/ckeditor5/issues/1578). ([6591f87](https://github.com/ckeditor/ckeditor5-engine/commit/6591f87))
+* Moving to the same position is not handled by the Differ as a change. ([7dfaae6](https://github.com/ckeditor/ckeditor5-engine/commit/7dfaae6))
+* Prevented `model.Writer` from inserting empty text nodes. Closes [#1320](https://github.com/ckeditor/ckeditor5-engine/issues/1320). ([47070b5](https://github.com/ckeditor/ckeditor5-engine/commit/47070b5))
+* Prevented `View` from firing the `render` event if there were no changes since the last rendering. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). Closes [#1660](https://github.com/ckeditor/ckeditor5-engine/issues/1660). ([558638c](https://github.com/ckeditor/ckeditor5-engine/commit/558638c))
+* Renamed the event during selection attributes conversion. `attribute:key` becomes to `attribute:key:$text`. Closes [#1597](https://github.com/ckeditor/ckeditor5-engine/issues/1597). ([fd7734e](https://github.com/ckeditor/ckeditor5-engine/commit/fd7734e))
+* Stopped invoking `view.render()` by `EditingController` when the model document isn't changed. Closes [#1653](https://github.com/ckeditor/ckeditor5-engine/issues/1653). ([5d97fd6](https://github.com/ckeditor/ckeditor5-engine/commit/5d97fd6))
+* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([bf86ffa](https://github.com/ckeditor/ckeditor5-engine/commit/bf86ffa))
+* Undo and redo no longer crashes in scenarios featuring pasting content into earlier pasted content. Closes [[ckeditor/ckeditor5#1385](https://github.com/ckeditor/ckeditor5/issues/1385)](https://github.com/ckeditor/ckeditor5/issues/1385). ([551ab50](https://github.com/ckeditor/ckeditor5-engine/commit/551ab50))
+* Update model selection attributes and markers after each change that affects the selection. Closes [#1673](https://github.com/ckeditor/ckeditor5-engine/issues/1673). ([4f9ac0e](https://github.com/ckeditor/ckeditor5-engine/commit/4f9ac0e))
+* View#detachDomRoot should not throw because NamedNodeMap is not iterable in MS Edge (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([ae9d2f7](https://github.com/ckeditor/ckeditor5-engine/commit/ae9d2f7))
+
+### Other changes
+
+* Add selection post-fixer improvements. Closes [#1593](https://github.com/ckeditor/ckeditor5-engine/issues/1593). ([7f40831](https://github.com/ckeditor/ckeditor5-engine/commit/7f40831))
+* Added support for handling data in multiple roots in `DataController`. Closes [#1626](https://github.com/ckeditor/ckeditor5-engine/issues/1626). ([0fb4295](https://github.com/ckeditor/ckeditor5-engine/commit/0fb4295))
+* Change `Conversion` class API. Closes [#1640](https://github.com/ckeditor/ckeditor5-engine/issues/1640). ([e7d09cd](https://github.com/ckeditor/ckeditor5-engine/commit/e7d09cd))
+* Introduced `editor.data#ready` event. ([46d9243](https://github.com/ckeditor/ckeditor5-engine/commit/46d9243))
+* Remove wrap from public API. Closes [#1616](https://github.com/ckeditor/ckeditor5-engine/issues/1616). ([1c7ef68](https://github.com/ckeditor/ckeditor5-engine/commit/1c7ef68))
+* Swapped the order of parameters in `Schema#findAllowedParent()`. Now those parameters match to parameters in other methods of the `Schema` class. Closes [#1636](https://github.com/ckeditor/ckeditor5-engine/issues/1636). ([6515558](https://github.com/ckeditor/ckeditor5-engine/commit/6515558))
+* Upcast element to attribute defaults to `low` priority instead of `normal`. Closes [ckeditor/ckeditor5#1399](https://github.com/ckeditor/ckeditor5/issues/1399). ([c33c49c](https://github.com/ckeditor/ckeditor5-engine/commit/c33c49c))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([f579c93](https://github.com/ckeditor/ckeditor5-engine/commit/f579c93))
+
+### BREAKING CHANGES
+
+* `DataController#get()` method now returns an empty string when the editor content is empty (instead of returning e.g. `<p>&nbsp;</p>`).
+* The wrap() conversion helper was removed from public API.
+* The `attachPlaceholder()` has been renamed to `enablePlaceholder()`.
+* `enablePlaceholder()` accepts a configuration object instead of separate parameters.
+* The `detachPlaceholder()` has been renamed to `disablePlaceholder()`.
+* The `Conversion#register()` method was removed from the public API. Use constructor parameters to pass dispatchers and `Conversion#addAlias()` to register an alternative conversion group for registered upcast or downcast dispatchers.
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* Swapped the order of parameters in `Schema#findAllowedParent()`.
+* The second parameter (`rootName`) from `DataController#init()` method has been removed. To initialize data on a root different than default one an object with `rootName` - `data` pair should be passed.
+* The second parameter (`rootName`) from `DataController#set()` method has been removed. To set data on a root different than default one an object with `rootName` - `data` pair should be passed.
+* The `editing.view.render()` method was renamed to `editing.view.forceRender()`. It should be used with caution as it will re-render editing view and repaint the UI.
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (2018-12-05)
 
 ### Features
