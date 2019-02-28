@@ -68,38 +68,6 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor:
 
 Rebuild your application and CKEditor 5 should greet you with "Hello, world!".
 
-### Note: Strict mode type checking
-
-If your IDE or compiler is used strict mode (where all symbol references are
-checked for type and an error is indicated if they do not match or are unknown)
-then it is necessary to add a ```typings.d.ts``` file to your project, similar to 
-to the folloiwng 
-
-```ts
-// Simple typings for editors 
-
-declare module '@ckeditor/ckeditor5-build-classic' {
-  const ClassicEditorBuild: any;
-  export = ClassicEditorBuild;
-}
-
-declare module '@ckeditor/ckeditor5-build-inline' {
-  const InlineEditorBuild: any;
-  export = InlineEditorBuild;
-}
-
-declare module '@ckeditor/ckeditor5-build-balloon' {
-  const BalloonEditorBuild: any;
-  export = BalloonEditorBuild;
-}
-
-declare module '@ckeditor/ckeditor5-build-decoupled-document' {
-  const DecoupledDocumentEditorBuild: any;
-  export = DecoupledDocumentEditorBuild;
-}
-```
-This will elminate the unwanted errors.
-
 ### Note: Using the Document editor build
 
 If you want to use the {@link framework/guides/document-editor Document editor build}, you need to {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create add the toolbar to the DOM manually}.
