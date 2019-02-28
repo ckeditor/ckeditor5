@@ -6,14 +6,15 @@ Changelog
 ### Bug fixes
 
 * Improved the focus management when removing the link form from the DOM. Closes [ckeditor/ckeditor5#1501](https://github.com/ckeditor/ckeditor5/issues/1501). ([9dd756c](https://github.com/ckeditor/ckeditor5-link/commit/9dd756c))
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([bb24b88](https://github.com/ckeditor/ckeditor5-link/commit/bb24b88))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([bb24b88](https://github.com/ckeditor/ckeditor5-link/commit/bb24b88))
 
 ### Other changes
 
-* Updated translations. ([012557b](https://github.com/ckeditor/ckeditor5-link/commit/012557b))
-* Updated translations. ([b2990a9](https://github.com/ckeditor/ckeditor5-link/commit/b2990a9))
-* Updated translations. ([f8573c2](https://github.com/ckeditor/ckeditor5-link/commit/f8573c2))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([7a845a0](https://github.com/ckeditor/ckeditor5-link/commit/7a845a0))
+* Updated translations. ([012557b](https://github.com/ckeditor/ckeditor5-link/commit/012557b)) ([b2990a9](https://github.com/ckeditor/ckeditor5-link/commit/b2990a9)) ([f8573c2](https://github.com/ckeditor/ckeditor5-link/commit/f8573c2))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.4...v10.1.0) (2018-12-05)
