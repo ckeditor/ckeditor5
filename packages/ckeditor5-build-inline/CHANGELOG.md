@@ -3,6 +3,10 @@ Changelog
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-build-inline/compare/v11.2.0...v12.0.0) (2019-02-28)
 
+We are happy to report the release of CKEditor 5 v12.0.0. This release introduces a new editor (called "[Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html)"), the [editor content placeholder](https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html) and support for inline widgets (watch [this PR](https://github.com/ckeditor/ckeditor5/pull/1587) for updates). In addition to that we enabled media embeds and images in tables and resolved the issue where `editor.getData()` returned `<p>&nbsp;</p>` for empty content (now it returns an empty string in this case).
+
+Besides new features, this release contains many improvements to stability, [performance](https://github.com/ckeditor/ckeditor5-utils/issues/269) and API. The last group of changes contain many breaking ones. Make sure to read the [main package's changelog](https://github.com/ckeditor/ckeditor5/releases/tag/v12.0.0).
+
 ### Dependencies
 
 Major releases (contain breaking changes):
