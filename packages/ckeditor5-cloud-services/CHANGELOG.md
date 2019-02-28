@@ -3,9 +3,9 @@ Changelog
 
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.1.1...v11.0.0) (2019-02-28)
 
-### Other changes
+### BREAKING CHANGES
 
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [10.1.1](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v10.1.0...v10.1.1) (2018-12-05)
