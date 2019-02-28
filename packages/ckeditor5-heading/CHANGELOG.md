@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.1...v11.0.0) (2019-02-28)
+
+### Features
+
+* Provided translations and enabled the default icons to make `heading4`, `heading5`, and `heading6` button components usable (as provided by `HeadingButtonUI`). Closes [#121](https://github.com/ckeditor/ckeditor5-heading/issues/121). ([17bea3d](https://github.com/ckeditor/ckeditor5-heading/commit/17bea3d))
+
+### Other changes
+
+* Updated translations. ([b64cedc](https://github.com/ckeditor/ckeditor5-heading/commit/b64cedc))
+* Updated translations. ([c28003e](https://github.com/ckeditor/ckeditor5-heading/commit/c28003e))
+* Updated translations. ([d801159](https://github.com/ckeditor/ckeditor5-heading/commit/d801159))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([e559797](https://github.com/ckeditor/ckeditor5-heading/commit/e559797))
+
+
 ## [10.1.1](https://github.com/ckeditor/ckeditor5-heading/compare/v10.1.0...v10.1.1) (2018-12-05)
 
 ### Other changes
