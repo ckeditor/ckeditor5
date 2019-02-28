@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-balloon-block",
-  "version": "0.0.1",
+  "version": "12.0.0",
   "description": "The balloon editor build of CKEditor 5 with a block toolbar – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
