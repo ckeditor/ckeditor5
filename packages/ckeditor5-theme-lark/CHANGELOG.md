@@ -13,9 +13,9 @@ Changelog
 * The placeholder text should have more contrast to meet the WCAG AA standard. Closes [#213](https://github.com/ckeditor/ckeditor5-theme-lark/issues/213). ([cff6cad](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cff6cad))
 * The table selection handler should not be cropped when a table is a first-child of a blockquote or a root editable. Closes [ckeditor/ckeditor5-block-quote#28](https://github.com/ckeditor/ckeditor5-block-quote/issues/28). ([5110584](https://github.com/ckeditor/ckeditor5-theme-lark/commit/5110584))
 
-### Other changes
+### BREAKING CHANGES
 
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([7437fe6](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7437fe6))
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.1.0...v12.0.0) (2018-12-05)
