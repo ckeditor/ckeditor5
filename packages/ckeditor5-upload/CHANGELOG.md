@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.4...v11.0.0) (2019-02-28)
+
+### Bug fixes
+
+* `FileLoader` now accepts `Promise` instead of a `File` instance. Closes [#87](https://github.com/ckeditor/ckeditor5-upload/issues/87). ([62a8c69](https://github.com/ckeditor/ckeditor5-upload/commit/62a8c69))
+
+### Other changes
+
+* Add catch block for failed file promise in `FileRepository`. ([a2de5d5](https://github.com/ckeditor/ckeditor5-upload/commit/a2de5d5))
+* Updated translations. ([6aaad73](https://github.com/ckeditor/ckeditor5-upload/commit/6aaad73))
+* Updated translations. ([b0469a8](https://github.com/ckeditor/ckeditor5-upload/commit/b0469a8))
+* Updated translations. ([f6e27cb](https://github.com/ckeditor/ckeditor5-upload/commit/f6e27cb))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([dfa576c](https://github.com/ckeditor/ckeditor5-upload/commit/dfa576c))
+
+### BREAKING CHANGES
+
+* The `FileLoader.file` property was changed to a getter which returns a native `Promise` instance instead of a `File` instance. The returned promise resolves to a `File` instance.
+
+
 ## [10.0.4](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.3...v10.0.4) (2018-12-05)
 
 ### Other changes
