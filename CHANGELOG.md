@@ -52,23 +52,16 @@ Major releases (contain breaking changes):
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v11.1.0 => [v12.0.0](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v12.0.0)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v10.3.1 => [v11.0.0](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.0)
 
-### Features
+### BREAKING CHANGES
 
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Introduced the balloon block editor build. See [ckeditor/ckeditor5-build-balloon-block#1](https://github.com/ckeditor/ckeditor5-build-balloon-block/issues/1). ([ae00556](https://github.com/ckeditor/ckeditor5/commit/ae00556))
-
-### Other changes
-
-* Allowed dynamic environment configuration setup for docs by supporting variable injections via `snippetOptions.definitions`. Closes [#1525](https://github.com/ckeditor/ckeditor5/issues/1525). ([4ec0e26](https://github.com/ckeditor/ckeditor5/commit/4ec0e26))
-* Upgraded minimal versions of Node and npm. Closes [#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([c8e5e98](https://github.com/ckeditor/ckeditor5/commit/c8e5e98))
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [11.2.0](https://github.com/ckeditor/ckeditor5/compare/v11.1.1...v11.2.0) (2018-12-05)
 
 We are happy to report the release of CKEditor 5 v11.2.0. This editor version brings the long-awaited [support for paste from Office](https://ckeditor.com/docs/ckeditor5/latest/features/paste-from-word.html) (e.g. from Microsoft Word), [integration with CKFinder file manager](https://ckeditor.com/docs/ckeditor5/latest/features/ckfinder.html), improved [image upload documentation](https://ckeditor.com/docs/ckeditor5/latest/features/image-upload.html), improved [editor UI on mobile devices](https://github.com/ckeditor/ckeditor5/issues/416#issuecomment-430246472), as well as many smaller features and improvements.
 
-Blog post is comming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v11.2.0-with-paste-from-Word-and-file-manager-support-released/
 
 **Important information for plugin developers:** We would like to let you know about imporant breaking changes in the `@ckeditor/ckeditor5-engine` package. Read more about them in the [`@ckeditor/ckeditor5-engine@v12.0.0` release notes](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v12.0.0).
 
