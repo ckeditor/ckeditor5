@@ -5,12 +5,12 @@ Changelog
 
 ### Features
 
-* introduce `Collection.has()` method. Closes [#266](https://github.com/ckeditor/ckeditor5-utils/issues/266). ([312d55e](https://github.com/ckeditor/ckeditor5-utils/commit/312d55e))
+* Introduce `Collection.has()` method. Closes [#266](https://github.com/ckeditor/ckeditor5-utils/issues/266). ([312d55e](https://github.com/ckeditor/ckeditor5-utils/commit/312d55e))
 
 ### Bug fixes
 
 * Prevent infinite loops on `.once()`. Closes [#272](https://github.com/ckeditor/ckeditor5-utils/issues/272). Closes [#204](https://github.com/ckeditor/ckeditor5-utils/issues/204). ([54b8108](https://github.com/ckeditor/ckeditor5-utils/commit/54b8108))
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([94bc59e](https://github.com/ckeditor/ckeditor5-utils/commit/94bc59e))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([94bc59e](https://github.com/ckeditor/ckeditor5-utils/commit/94bc59e))
 
 ### Other changes
 
@@ -18,7 +18,10 @@ Changelog
 * DOM Elements will not be cloned when returned from config.get. Closes [#264](https://github.com/ckeditor/ckeditor5-utils/issues/264). ([4ad23b1](https://github.com/ckeditor/ckeditor5-utils/commit/4ad23b1))
 * Optimized `diff()` function to use `fastDiff()` function internally for large data sets. Closes [#269](https://github.com/ckeditor/ckeditor5-utils/issues/269). ([ee9bed0](https://github.com/ckeditor/ckeditor5-utils/commit/ee9bed0))
 * Replaced `for..of` statement in `EventEmitter` with `Array.prototype.forEach`. This changes allows building a React application using `create-react-app@2`. Closes [ckeditor/ckeditor5-react#40](https://github.com/ckeditor/ckeditor5-react/issues/40). ([900b54b](https://github.com/ckeditor/ckeditor5-utils/commit/900b54b))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([4178ab0](https://github.com/ckeditor/ckeditor5-utils/commit/4178ab0))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [11.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.0.0...v11.1.0) (2018-12-05)
