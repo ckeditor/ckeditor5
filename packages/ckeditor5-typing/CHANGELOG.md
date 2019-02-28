@@ -5,12 +5,15 @@ Changelog
 
 ### Bug fixes
 
-* Mutation handling crashed in particular scenarios (when the old text was the same as the new text). Closes [#181](https://github.com/ckeditor/ckeditor5-typing/issues/181). ([7175b6c](https://github.com/ckeditor/ckeditor5-typing/commit/7175b6c))
+* Fixed mutation handling which crashed when the old text was the same as the new text. Closes [#181](https://github.com/ckeditor/ckeditor5-typing/issues/181). ([7175b6c](https://github.com/ckeditor/ckeditor5-typing/commit/7175b6c))
 
 ### Other changes
 
-* Exposed DeleteCommand#buffer. InputCommand uses Model#deleteContent instead of model.Writer#remove. ([5ab39fc](https://github.com/ckeditor/ckeditor5-typing/commit/5ab39fc))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([bf90b19](https://github.com/ckeditor/ckeditor5-typing/commit/bf90b19))
+* Exposed `DeleteCommand#buffer`. `InputCommand` uses `Model#deleteContent()` instead of `model.Writer#remove()`. ([5ab39fc](https://github.com/ckeditor/ckeditor5-typing/commit/5ab39fc))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-typing/compare/v11.0.1...v11.0.2) (2018-12-05)
