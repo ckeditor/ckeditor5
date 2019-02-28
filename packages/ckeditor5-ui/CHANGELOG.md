@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.2.0...v12.0.0) (2019-02-28)
+
+### Bug fixes
+
+* Prevented from changing the view document during the render phase. Closes https://github.com/ckeditor/ckeditor5/issues/1530. ([7cf835e](https://github.com/ckeditor/ckeditor5-ui/commit/7cf835e))
+* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([fd18fb9](https://github.com/ckeditor/ckeditor5-ui/commit/fd18fb9))
+
+### Other changes
+
+* The "class" property should control the DOM class attribute in all UI components. Closes [#450](https://github.com/ckeditor/ckeditor5-ui/issues/450). ([b9b68c6](https://github.com/ckeditor/ckeditor5-ui/commit/b9b68c6))
+* Updated translations. ([b9caee9](https://github.com/ckeditor/ckeditor5-ui/commit/b9caee9))
+* Updated translations. ([a3afaaa](https://github.com/ckeditor/ckeditor5-ui/commit/a3afaaa))
+* Updated translations. ([909e676](https://github.com/ckeditor/ckeditor5-ui/commit/909e676))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([b994508](https://github.com/ckeditor/ckeditor5-ui/commit/b994508))
+
+### BREAKING CHANGES
+
+* The `BallonPanelView#className` property was renamed to `#class`.
+* The `ToolbarView#className` property was renamed to `#class`.
+
+
 ## [11.2.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.1.0...v11.2.0) (2018-12-05)
 
 ### Features
