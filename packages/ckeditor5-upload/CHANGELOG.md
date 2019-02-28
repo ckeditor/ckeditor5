@@ -10,13 +10,11 @@ Changelog
 ### Other changes
 
 * Add catch block for failed file promise in `FileRepository`. ([a2de5d5](https://github.com/ckeditor/ckeditor5-upload/commit/a2de5d5))
-* Updated translations. ([6aaad73](https://github.com/ckeditor/ckeditor5-upload/commit/6aaad73))
-* Updated translations. ([b0469a8](https://github.com/ckeditor/ckeditor5-upload/commit/b0469a8))
-* Updated translations. ([f6e27cb](https://github.com/ckeditor/ckeditor5-upload/commit/f6e27cb))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([dfa576c](https://github.com/ckeditor/ckeditor5-upload/commit/dfa576c))
+* Updated translations. ([6aaad73](https://github.com/ckeditor/ckeditor5-upload/commit/6aaad73)) ([b0469a8](https://github.com/ckeditor/ckeditor5-upload/commit/b0469a8)) ([f6e27cb](https://github.com/ckeditor/ckeditor5-upload/commit/f6e27cb))
 
 ### BREAKING CHANGES
 
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `FileLoader.file` property was changed to a getter which returns a native `Promise` instance instead of a `File` instance. The returned promise resolves to a `File` instance.
 
 
