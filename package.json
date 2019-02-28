@@ -134,7 +134,8 @@
   ],
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "."
     ],
     "nohoist": [
       "**/husky"
