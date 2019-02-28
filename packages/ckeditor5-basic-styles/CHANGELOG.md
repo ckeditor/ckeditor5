@@ -5,9 +5,11 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([b96cf6d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/b96cf6d))
-* Updated translations. ([8223ff2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8223ff2))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([5bf6076](https://github.com/ckeditor/ckeditor5-basic-styles/commit/5bf6076))
+* Updated translations. ([b96cf6d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/b96cf6d)) ([8223ff2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/8223ff2))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.0.3...v10.1.0) (2018-12-05)
