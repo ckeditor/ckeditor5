@@ -5,27 +5,24 @@ Changelog
 
 ### Features
 
-* Enable image in table cells. ([3a4d2ca](https://github.com/ckeditor/ckeditor5-image/commit/3a4d2ca))
+* Enable images in table cells. ([3a4d2ca](https://github.com/ckeditor/ckeditor5-image/commit/3a4d2ca))
 
 ### Bug fixes
 
 * Insert missing caption for images that are nested in other elements. Closes https://github.com/ckeditor/ckeditor5/issues/1524. ([0e3a7c5](https://github.com/ckeditor/ckeditor5-image/commit/0e3a7c5))
 * The text alternative input should be blurred before the form is removed from the DOM. Closes ckeditor/ckeditor5/issues#1501. ([f89fe04](https://github.com/ckeditor/ckeditor5-image/commit/f89fe04))
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([205f119](https://github.com/ckeditor/ckeditor5-image/commit/205f119))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([205f119](https://github.com/ckeditor/ckeditor5-image/commit/205f119))
 
 ### Other changes
 
-* Align code to the latest changes in editor.plugin API. ([8f2eda8](https://github.com/ckeditor/ckeditor5-image/commit/8f2eda8))
 * Aligned to the new `WidgetToolbarRepository` API. Replaced the `isImageWidgetSelected()` utility with `getSelectedImageWidget()` (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([699d586](https://github.com/ckeditor/ckeditor5-image/commit/699d586))
 * Remove `ImageEditing` plugin from requires method of `ImageStyleEditing`. Closes [#261](https://github.com/ckeditor/ckeditor5-image/issues/261). ([5dea054](https://github.com/ckeditor/ckeditor5-image/commit/5dea054))
 * The image uploading listener for handling `base64/blob` images no longer stops `inputTransformation` event. Closes [#263](https://github.com/ckeditor/ckeditor5-image/issues/263). Closes [ckeditor/ckeditor5-paste-from-office#44](https://github.com/ckeditor/ckeditor5-paste-from-office/issues/44). ([8c5b4fc](https://github.com/ckeditor/ckeditor5-image/commit/8c5b4fc))
-* Updated translations. ([1f4e70d](https://github.com/ckeditor/ckeditor5-image/commit/1f4e70d))
-* Updated translations. ([6c9e15c](https://github.com/ckeditor/ckeditor5-image/commit/6c9e15c))
-* Updated translations. ([a1b03b9](https://github.com/ckeditor/ckeditor5-image/commit/a1b03b9))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([47c1837](https://github.com/ckeditor/ckeditor5-image/commit/47c1837))
+* Updated translations. ([1f4e70d](https://github.com/ckeditor/ckeditor5-image/commit/1f4e70d)) ([6c9e15c](https://github.com/ckeditor/ckeditor5-image/commit/6c9e15c)) ([a1b03b9](https://github.com/ckeditor/ckeditor5-image/commit/a1b03b9))
 
 ### BREAKING CHANGES
 
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `isImageWidgetSelected()` utility has been replaced by `getSelectedImageWidget()` and returns an editing `View` element instead of `Boolean`.
 
 
