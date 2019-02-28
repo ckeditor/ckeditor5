@@ -5,20 +5,20 @@ Changelog
 
 ### Features
 
-* Enabled the balloon editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([7f39e5e](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/7f39e5e))
+* Added support for the `config.placeholder` option which allows configuring the empty editor content placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([7f39e5e](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/7f39e5e))
 
 ### Bug fixes
 
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([c959daf](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/c959daf))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([c959daf](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/c959daf))
 
 ### Other changes
 
-* Adjustments to new editor initialization events. ([1bb0285](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/1bb0285))
-* Editor UI classes API refactoring. ([dd43e7a](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/dd43e7a))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([617f682](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/617f682))
+* Adjustments to new editor initialization events. See breaking changes. ([1bb0285](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/1bb0285))
+* Editor UI classes API refactoring. See breaking changes. ([dd43e7a](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/dd43e7a))
 
 ### BREAKING CHANGES
 
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The second argument of `BalloonEditorUIView.constructor()` is an editing view instance now.
 * The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
