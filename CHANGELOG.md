@@ -3,6 +3,18 @@ Changelog
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5/compare/v11.2.0...v12.0.0) (2019-02-28)
 
+We are happy to report the release of CKEditor 5 v12.0.0. This release introduces a new editor (called "[Balloon block editor](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html)"), the [editor content placeholder](https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html) and support for inline widgets (watch [this PR](https://github.com/ckeditor/ckeditor5/pull/1587) for updates). In addition to that we enabled media embeds and images in tables and resolved the issue where `editor.getData()` returned `<p>&nbsp;</p>` for empty content (now it returns an empty string in this case).
+
+Besides new features, this release contains many improvements to stability, [performance](https://github.com/ckeditor/ckeditor5-utils/issues/269) and API. The last group of changes contain many breaking ones. Make sure to read the notes below.
+
+Blog post coming soon...
+
+**Important information for integration developers:** The `editor.getData()` method will return an empty string if the editor is empty (instead of returning `<p>&nbsp;</p>`). Also, if you relied on `editor.ui.view.editable`, you will now need to use `editor.ui.getEditableElement()` instead. You may also want to read the below sections and the [Migration guide](https://github.com/ckeditor/ckeditor5/issues/1582) to learn more.
+
+**Important information for plugin developers:** The most important change that will affect your plugins is the removal of the `upcast-converters.js` and `downcast-converters.js` modules. You can now find those methods directly on the object returned by [`editor.conversion.for()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_conversion-Conversion.html#function-for). Other than that, see the changes described in the next section, the [engine's changelog](https://github.com/ckeditor/ckeditor5-engine/releases/tag/v13.0.0) and read the [Migration guide](https://github.com/ckeditor/ckeditor5/issues/1582) for the details.
+
+**Important information for custom editor developers:** We cleaned up the base editor interfaces and classes (`EditorWithUI`, `EditorUI`, `EditorUIView`, `EditableUIView`) and straightened responsibilities between the UI and the engine (the engine is now the one responsible for managing editable element classes). These changes means that your custom editor implementations will need to be updated. Read more in the [Migration guide](https://github.com/ckeditor/ckeditor5/issues/1582).
+
 ### Dependencies
 
 New packages:
