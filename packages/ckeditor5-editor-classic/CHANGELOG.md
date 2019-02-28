@@ -1,6 +1,30 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.2...v12.0.0) (2019-02-28)
+
+### Features
+
+* Enabled the classic editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([3450c23](https://github.com/ckeditor/ckeditor5-editor-classic/commit/3450c23))
+
+### Bug fixes
+
+* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([a3c5c82](https://github.com/ckeditor/ckeditor5-editor-classic/commit/a3c5c82))
+
+### Other changes
+
+* Adjustments to new editor initialization events. ([61ccab0](https://github.com/ckeditor/ckeditor5-editor-classic/commit/61ccab0))
+* Editor UI classes API refactoring. ([74e27ae](https://github.com/ckeditor/ckeditor5-editor-classic/commit/74e27ae))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([1450407](https://github.com/ckeditor/ckeditor5-editor-classic/commit/1450407))
+
+### BREAKING CHANGES
+
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
+* Removed `ClassicEditor#element` property. The `ClassicEditorUI#element` property should be used instead.
+* Removed `ClassicEditorUIView#editableElement`. Instead `ClassicEditorUI#getEditableElement()` method should be used.
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v11.0.1...v11.0.2) (2018-12-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
