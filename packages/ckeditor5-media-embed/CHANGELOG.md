@@ -13,14 +13,12 @@ Changelog
 
 * Aligned to the new `WidgetToolbarRepository` API. Replaced the `isMediaWidgetSelected()` utility with `getSelectedMediaViewWidget()`. Renamed `getSelectedMediaElement()` to `getSelectedMediaModelWidget()`. (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([dc89e45](https://github.com/ckeditor/ckeditor5-media-embed/commit/dc89e45))
 * The help text under the media URL input should be displayed when it's empty. The quick insertion tip should pop out when the user started typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
-* Updated translations. ([a07783b](https://github.com/ckeditor/ckeditor5-media-embed/commit/a07783b))
-* Updated translations. ([f7942b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/f7942b5))
-* Updated translations. ([5315b1a](https://github.com/ckeditor/ckeditor5-media-embed/commit/5315b1a))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([f8caac3](https://github.com/ckeditor/ckeditor5-media-embed/commit/f8caac3))
+* Updated translations. ([a07783b](https://github.com/ckeditor/ckeditor5-media-embed/commit/a07783b)) ([f7942b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/f7942b5)) ([5315b1a](https://github.com/ckeditor/ckeditor5-media-embed/commit/5315b1a))
 
 ### BREAKING CHANGES
 
-* The `isMediaWidgetSelected()` utility has been replaced by `getSelectedMediaViewWidget()` and returns an editing `View` element instead of `Boolean`.
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `isMediaWidgetSelected()` utility has been replaced by `getSelectedMediaViewWidget()` and returns an editing `View` element instead of a `Boolean`.
 * The `getSelectedMediaElement()` utility has been renamed to `getSelectedMediaModelWidget()`.
 
 
