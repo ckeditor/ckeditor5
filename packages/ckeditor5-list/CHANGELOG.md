@@ -1,16 +1,31 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.3...v12.0.0) (2019-02-28)
+
+### Bug fixes
+
+* Editor was crashing if multiple, specific block elements were inside list item in loaded/pasted data. Closes [[ckeditor/ckeditor5#1572](https://github.com/ckeditor/ckeditor5/issues/1572)](https://github.com/ckeditor/ckeditor5/issues/1572). ([788eea3](https://github.com/ckeditor/ckeditor5-list/commit/788eea3))
+* Some specific content resulted in creating additional, incorrect list items when loaded. Closes [#121](https://github.com/ckeditor/ckeditor5-list/issues/121). ([50ec81d](https://github.com/ckeditor/ckeditor5-list/commit/50ec81d))
+
+### Other changes
+
+* Updated translations. ([c61b7fc](https://github.com/ckeditor/ckeditor5-list/commit/c61b7fc))
+* Updated translations. ([e38333a](https://github.com/ckeditor/ckeditor5-list/commit/e38333a))
+* Updated translations. ([f26a79c](https://github.com/ckeditor/ckeditor5-list/commit/f26a79c))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([1e8b746](https://github.com/ckeditor/ckeditor5-list/commit/1e8b746))
+
+
 ## [11.0.3](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.2...v11.0.3) (2018-12-05)
 
 ### Bug fixes
 
 * Block filler will be inserted into the list item if its last child is a `<br>` element. Closes [ckeditor/ckeditor5#1312](https://github.com/ckeditor/ckeditor5/issues/1312). ([cb6708e](https://github.com/ckeditor/ckeditor5-list/commit/cb6708e))
-* Preserve correct order of block elements inside list items during the view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
+* Preserve the correct order of block elements inside list items during the view to model conversion. Closes [ckeditor/ckeditor5#1263](https://github.com/ckeditor/ckeditor5/issues/1263). ([abccef4](https://github.com/ckeditor/ckeditor5-list/commit/abccef4))
 
 ### Other changes
 
-* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([d424329](https://github.com/ckeditor/ckeditor5-list/commit/d424329))
+* Optimized SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([d424329](https://github.com/ckeditor/ckeditor5-list/commit/d424329))
 
 
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-list/compare/v11.0.1...v11.0.2) (2018-10-08)
