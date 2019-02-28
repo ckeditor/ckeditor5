@@ -5,12 +5,12 @@ Changelog
 
 ### Features
 
-* `BlockAutoformatEditing` will not format if the command is disabled. `InlineAutoformatEditing` will not format if the callback returned `false`. Closes [#64](https://github.com/ckeditor/ckeditor5-autoformat/issues/64). ([cc7f454](https://github.com/ckeditor/ckeditor5-autoformat/commit/cc7f454))
+* `BlockAutoformatEditing` will not format the text if the command is disabled. `InlineAutoformatEditing` will not format the text if the callback returned `false`. Closes [#64](https://github.com/ckeditor/ckeditor5-autoformat/issues/64). ([cc7f454](https://github.com/ckeditor/ckeditor5-autoformat/commit/cc7f454))
 * Cancel `BlockAutoformatEditing` autoformatting if given callback returned `false`. Closes [#66](https://github.com/ckeditor/ckeditor5-autoformat/issues/66). ([9b066f1](https://github.com/ckeditor/ckeditor5-autoformat/commit/9b066f1))
 
-### Other changes
+### BREAKING CHANGES
 
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([369424e](https://github.com/ckeditor/ckeditor5-autoformat/commit/369424e))
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 
 
 ## [10.0.4](https://github.com/ckeditor/ckeditor5-autoformat/compare/v10.0.3...v10.0.4) (2018-12-05)
