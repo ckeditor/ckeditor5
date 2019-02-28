@@ -1,6 +1,31 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.2...v12.0.0) (2019-02-28)
+
+### Features
+
+* Enabled the inline editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([24016bd](https://github.com/ckeditor/ckeditor5-editor-inline/commit/24016bd))
+
+### Bug fixes
+
+* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([dd2bb90](https://github.com/ckeditor/ckeditor5-editor-inline/commit/dd2bb90))
+
+### Other changes
+
+* Adjustments to new editor initialization events. ([9536767](https://github.com/ckeditor/ckeditor5-editor-inline/commit/9536767))
+* Editor UI classes API refactoring. ([f8195da](https://github.com/ckeditor/ckeditor5-editor-inline/commit/f8195da))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([f277c18](https://github.com/ckeditor/ckeditor5-editor-inline/commit/f277c18))
+
+### BREAKING CHANGES
+
+* The second argument of `InlineEditorUIView.constructor()` is an editing view instance now.
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
+* Removed `InlineEditor#element` property. The `InlineEditorUI#element` property should be used instead.
+* Removed `InlineEditorUIView#editableElement`. Instead `InlineEditorUI#getEditableElement()` method should be used.
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.1...v11.0.2) (2018-12-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
