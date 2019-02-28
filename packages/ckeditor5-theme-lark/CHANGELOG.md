@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v12.0.0...v13.0.0) (2019-02-28)
+
+### Features
+
+* Introduced a custom CSS property for an "active" `box-shadow`, a more visible shadow to put emphasis on the active element in some UI context. ([c5917bf](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c5917bf))
+
+### Bug fixes
+
+* The background color of a hovered list item should have a proper contrast. Closes [#219](https://github.com/ckeditor/ckeditor5-theme-lark/issues/219). ([b6486c1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/b6486c1))
+* The placeholder text should have more contrast to meet the WCAG AA standard. Closes [#213](https://github.com/ckeditor/ckeditor5-theme-lark/issues/213). ([cff6cad](https://github.com/ckeditor/ckeditor5-theme-lark/commit/cff6cad))
+* The table selection handler should not be cropped when a table is a first-child of a blockquote or a root editable. Closes [ckeditor/ckeditor5-block-quote#28](https://github.com/ckeditor/ckeditor5-block-quote/issues/28). ([5110584](https://github.com/ckeditor/ckeditor5-theme-lark/commit/5110584))
+
+### Other changes
+
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([7437fe6](https://github.com/ckeditor/ckeditor5-theme-lark/commit/7437fe6))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v11.1.0...v12.0.0) (2018-12-05)
 
 ### Features
