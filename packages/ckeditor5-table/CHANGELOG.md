@@ -5,27 +5,25 @@ Changelog
 
 ### Features
 
-* Allowed media embeds in table cells. Closes [#161](https://github.com/ckeditor/ckeditor5-table/issues/161). ([9ace3ba](https://github.com/ckeditor/ckeditor5-table/commit/9ace3ba))
-* Introduce images in tables. Closes [#99](https://github.com/ckeditor/ckeditor5-table/issues/99). ([39c09e6](https://github.com/ckeditor/ckeditor5-table/commit/39c09e6))
+* Enabled media embeds in table cells. Closes [#161](https://github.com/ckeditor/ckeditor5-table/issues/161). ([9ace3ba](https://github.com/ckeditor/ckeditor5-table/commit/9ace3ba))
+* Enabled images in table cells. Closes [#99](https://github.com/ckeditor/ckeditor5-table/issues/99). ([39c09e6](https://github.com/ckeditor/ckeditor5-table/commit/39c09e6))
 
 ### Bug fixes
 
 * Autoparagraph text nodes in table cells. Closes [#134](https://github.com/ckeditor/ckeditor5-table/issues/134). ([5863307](https://github.com/ckeditor/ckeditor5-table/commit/5863307))
-* Make table a block element in the schema for quoting. Closes [#126](https://github.com/ckeditor/ckeditor5-table/issues/126). ([85719af](https://github.com/ckeditor/ckeditor5-table/commit/85719af))
+* Make `<table>` a block element in the schema. Closes [#126](https://github.com/ckeditor/ckeditor5-table/issues/126). ([85719af](https://github.com/ckeditor/ckeditor5-table/commit/85719af))
 
 ### Other changes
 
 * Aligned to the new `WidgetToolbarRepository` API. Replaced the `isTableWidgetSelected()` utility with `getSelectedTableWidget()`. Replaced `isTableContentSelected()` with `getTableWidgetAncestor()` (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([e3a5c09](https://github.com/ckeditor/ckeditor5-table/commit/e3a5c09))
-* Change to string reference for TableUtils when using editor.plugins.get. ([ce09c39](https://github.com/ckeditor/ckeditor5-table/commit/ce09c39))
-* Updated translations. ([370d494](https://github.com/ckeditor/ckeditor5-table/commit/370d494))
-* Updated translations. ([5a47b95](https://github.com/ckeditor/ckeditor5-table/commit/5a47b95))
-* Updated translations. ([5e20d54](https://github.com/ckeditor/ckeditor5-table/commit/5e20d54))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([1becdce](https://github.com/ckeditor/ckeditor5-table/commit/1becdce))
+* Use `TableUtils` by a string when using `editor.plugins.get()`. ([ce09c39](https://github.com/ckeditor/ckeditor5-table/commit/ce09c39))
+* Updated translations. ([370d494](https://github.com/ckeditor/ckeditor5-table/commit/370d494)) ([5a47b95](https://github.com/ckeditor/ckeditor5-table/commit/5a47b95)) ([5e20d54](https://github.com/ckeditor/ckeditor5-table/commit/5e20d54))
 
 ### BREAKING CHANGES
 
-* The `isTableWidgetSelected()` utility has been replaced by `getSelectedTableWidget()` and returns an editing `View` element instead of `Boolean`.
-* The `isTableContentSelected()` utility has been replaced by `getTableWidgetAncestor()` and returns an editing `View` element instead of `Boolean`.
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `isTableWidgetSelected()` utility has been replaced by `getSelectedTableWidget()` and returns an editing `View` element instead of a `Boolean`.
+* The `isTableContentSelected()` utility has been replaced by `getTableWidgetAncestor()` and returns an editing `View` element instead of a `Boolean`.
 
 
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.0...v11.0.1) (2018-12-05)
