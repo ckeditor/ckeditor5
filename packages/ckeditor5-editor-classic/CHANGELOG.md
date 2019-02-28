@@ -5,20 +5,20 @@ Changelog
 
 ### Features
 
-* Enabled the classic editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([3450c23](https://github.com/ckeditor/ckeditor5-editor-classic/commit/3450c23))
+* Added support for the `config.placeholder` option which allows configuring the empty editor content placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([3450c23](https://github.com/ckeditor/ckeditor5-editor-classic/commit/3450c23))
 
 ### Bug fixes
 
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([a3c5c82](https://github.com/ckeditor/ckeditor5-editor-classic/commit/a3c5c82))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([a3c5c82](https://github.com/ckeditor/ckeditor5-editor-classic/commit/a3c5c82))
 
 ### Other changes
 
-* Adjustments to new editor initialization events. ([61ccab0](https://github.com/ckeditor/ckeditor5-editor-classic/commit/61ccab0))
-* Editor UI classes API refactoring. ([74e27ae](https://github.com/ckeditor/ckeditor5-editor-classic/commit/74e27ae))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([1450407](https://github.com/ckeditor/ckeditor5-editor-classic/commit/1450407))
+* Adjustments to new editor initialization events. See breaking changes. ([61ccab0](https://github.com/ckeditor/ckeditor5-editor-classic/commit/61ccab0))
+* Editor UI classes API refactoring. See breaking changes. ([74e27ae](https://github.com/ckeditor/ckeditor5-editor-classic/commit/74e27ae))
 
 ### BREAKING CHANGES
 
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
 * The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
 * The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
 * Removed `ClassicEditor#element` property. The `ClassicEditorUI#element` property should be used instead.
