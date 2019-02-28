@@ -10,7 +10,7 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^2.0.0",
+    "@ckeditor/ckeditor-cloud-services-core": "^2.0.1",
     "@ckeditor/ckeditor5-cloud-services": "^10.1.1",
     "@ckeditor/ckeditor5-core": "^11.1.0",
     "@ckeditor/ckeditor5-image": "^12.0.0",
