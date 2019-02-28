@@ -1,6 +1,31 @@
 Changelog
 =========
 
+## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v11.0.2...v12.0.0) (2019-02-28)
+
+### Features
+
+* Enabled the balloon editor placeholder (see [ckeditor/ckeditor5#479](https://github.com/ckeditor/ckeditor5/issues/479)). ([7f39e5e](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/7f39e5e))
+
+### Bug fixes
+
+* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([c959daf](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/c959daf))
+
+### Other changes
+
+* Adjustments to new editor initialization events. ([1bb0285](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/1bb0285))
+* Editor UI classes API refactoring. ([dd43e7a](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/dd43e7a))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([617f682](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/617f682))
+
+### BREAKING CHANGES
+
+* The second argument of `BalloonEditorUIView.constructor()` is an editing view instance now.
+* The `editor#dataReady` event was removed. The `editor.data#ready` event has been introduced and should be used instead.
+* The `editor#pluginsReady` event was removed. Use plugin `afterInit()` method instead.
+* Removed `BalloonEditor#element` property. The `BalloonEditorUI#element` property should be used instead.
+* Removed `BalloonEditorUIView#editableElement`. Instead `BalloonEditorUI#getEditableElement()` method should be used.
+
+
 ## [11.0.2](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v11.0.1...v11.0.2) (2018-12-05)
 
 Internal changes only (updated dependencies, documentation, etc.).
