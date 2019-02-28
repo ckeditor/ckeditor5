@@ -5,22 +5,21 @@ Changelog
 
 ### Bug fixes
 
-* Editor crashes after Enter key on an image that is inside a blockquote. Closes [ckeditor/ckeditor5#1555](https://github.com/ckeditor/ckeditor5/issues/1555). ([8a8842b](https://github.com/ckeditor/ckeditor5-widget/commit/8a8842b))
+* Editor crashes after <kbd>Enter</kbd> key on an image that is inside a blockquote. Closes [ckeditor/ckeditor5#1555](https://github.com/ckeditor/ckeditor5/issues/1555). ([8a8842b](https://github.com/ckeditor/ckeditor5-widget/commit/8a8842b))
 * Ensured only the widget toolbar attached to the view element which is deepest in the view tree will show up. Code and documentation refactoring in the `WidgetToolbarRepository`. Closes [#60](https://github.com/ckeditor/ckeditor5-widget/issues/60). ([7e11a24](https://github.com/ckeditor/ckeditor5-widget/commit/7e11a24))
 * Make widget in editable clickable. Closes [ckeditor/ckeditor5-table#98](https://github.com/ckeditor/ckeditor5-table/issues/98). ([8226829](https://github.com/ckeditor/ckeditor5-widget/commit/8226829))
 * Pressing <kbd>Enter</kbd> should split parent element when the inline widget is inside a `$block`. Closes [ckeditor/ckeditor5#1529](https://github.com/ckeditor/ckeditor5/issues/1529). ([847d2ab](https://github.com/ckeditor/ckeditor5-widget/commit/847d2ab))
-* There should be no memory leaks when the editor is created and destroyed (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([2e8f20d](https://github.com/ckeditor/ckeditor5-widget/commit/2e8f20d))
+* Fixed memory leaks during editor initialization and destruction (see [ckeditor/ckeditor5#1341](https://github.com/ckeditor/ckeditor5/issues/1341)). ([2e8f20d](https://github.com/ckeditor/ckeditor5-widget/commit/2e8f20d))
 
 ### Other changes
 
-* Align code to the latest changes in editor.plugin API. ([148391f](https://github.com/ckeditor/ckeditor5-widget/commit/148391f))
 * Introduce support and utils for creating inline widgets. Closes [[ckeditor/ckeditor5#1096](https://github.com/ckeditor/ckeditor5/issues/1096)](https://github.com/ckeditor/ckeditor5/issues/1096). ([38fa159](https://github.com/ckeditor/ckeditor5-widget/commit/38fa159))
-* Renamed the .ck-widget_selectable class to .ck-widget_with-selection-handler for better semantics. Closes [#66](https://github.com/ckeditor/ckeditor5-widget/issues/66). ([178ad5f](https://github.com/ckeditor/ckeditor5-widget/commit/178ad5f))
-* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([40de728](https://github.com/ckeditor/ckeditor5-widget/commit/40de728))
+* Renamed the `.ck-widget_selectable` class to `.ck-widget_with-selection-handler` for better semantics. Closes [#66](https://github.com/ckeditor/ckeditor5-widget/issues/66). ([178ad5f](https://github.com/ckeditor/ckeditor5-widget/commit/178ad5f))
 
 ### BREAKING CHANGES
 
-* The .ck-widget_selectable class has been renamed to .ck-widget_with-selection-handler for better semantics.
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `.ck-widget_selectable` class has been renamed to `.ck-widget_with-selection-handler` for better semantics.
 * The `visibleWhen()` function, a property of an object passed into `WidgetToolbarRepository.register()`, has been renamed to `getRelatedElement()` and must return an editing `View` element the toolbar should be attached to (instead of `Boolean`).
 
 
