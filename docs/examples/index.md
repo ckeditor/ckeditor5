@@ -2,6 +2,7 @@
 category: examples
 order: 10
 toc: false
+feedback-widget: false
 meta-title: CKEditor 5 documentation - online examples
 meta-description: Navigate through CKEditor 5 examples to see what you are able to create using this rich text editing framework.
 ---
