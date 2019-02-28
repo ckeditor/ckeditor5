@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.1.0...v11.0.0) (2019-02-28)
+
+### Bug fixes
+
+* Added `min-width` to `.ck-content .media` to allow integration with tables. Closes [#44](https://github.com/ckeditor/ckeditor5-media-embed/issues/44). ([01129fe](https://github.com/ckeditor/ckeditor5-media-embed/commit/01129fe))
+* Media embed figures should have `display: block` in the content styles to prevent Bootstrap from changing their appearance. Closes [ckeditor/ckeditor5#1373](https://github.com/ckeditor/ckeditor5/issues/1373). ([71b2933](https://github.com/ckeditor/ckeditor5-media-embed/commit/71b2933))
+* The `AutoMediaEmbed` feature should insert media in place of a pasted link. Closes [#36](https://github.com/ckeditor/ckeditor5-media-embed/issues/36). Closes [#49](https://github.com/ckeditor/ckeditor5-media-embed/issues/49). ([5f79878](https://github.com/ckeditor/ckeditor5-media-embed/commit/5f79878))
+
+### Other changes
+
+* Aligned to the new `WidgetToolbarRepository` API. Replaced the `isMediaWidgetSelected()` utility with `getSelectedMediaViewWidget()`. Renamed `getSelectedMediaElement()` to `getSelectedMediaModelWidget()`. (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([dc89e45](https://github.com/ckeditor/ckeditor5-media-embed/commit/dc89e45))
+* The help text under the media URL input should be displayed when it's empty. The quick insertion tip should pop out when the user started typing in the input (see [#5](https://github.com/ckeditor/ckeditor5-media-embed/issues/5)). ([55396b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/55396b5))
+* Updated translations. ([a07783b](https://github.com/ckeditor/ckeditor5-media-embed/commit/a07783b))
+* Updated translations. ([f7942b5](https://github.com/ckeditor/ckeditor5-media-embed/commit/f7942b5))
+* Updated translations. ([5315b1a](https://github.com/ckeditor/ckeditor5-media-embed/commit/5315b1a))
+* Upgraded minimal versions of Node and npm. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([f8caac3](https://github.com/ckeditor/ckeditor5-media-embed/commit/f8caac3))
+
+### BREAKING CHANGES
+
+* The `isMediaWidgetSelected()` utility has been replaced by `getSelectedMediaViewWidget()` and returns an editing `View` element instead of `Boolean`.
+* The `getSelectedMediaElement()` utility has been renamed to `getSelectedMediaModelWidget()`.
+
+
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.0.0...v10.1.0) (2018-12-05)
 
 ### Features
