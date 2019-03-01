@@ -210,8 +210,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disableNativeSpellChecker">disableNativeSpellChecker</a></td>
 			<td>
-				<p>Unavailable, however, in case of Inline and Balloon editors can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
-				<p>For Classic editor, call <code>editor.ui.getEditableElement().setAttribute(&apos;spellcheck&apos;, &apos;false&apos;);</code> after creating the editor.</p>
+				<p>Unavailable, however, in case of inline and balloon editors can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
+				<p>For the classic and decoupled editors, call:</p>
+				<pre><code>editor.editing.view.change( writer => {
+	writer.setAttribute( 'spellcheck', 'false', editor.editing.view.document.getRoot() );
+} );</code></pre>
 			</td>
 		</tr>
 		<tr>
