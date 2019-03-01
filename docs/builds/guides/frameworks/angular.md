@@ -318,18 +318,32 @@ export class MyComponent {
 
 The `<ckeditor>` component will provide all the functionality needed for most use cases.  In 
 cases where access to the Javascript-level {@link api CKEditor API} is needed
-it is easy to access with an additional step.
+it there are multiple methods.
 
-To do this, assign the Angular `<ckeditor>` component to a locally scoped variable as
-follows:
+The primary method is to provide a hook into the `<ckeditor>`'s `(onReady)' event as follows:
+
+```html
+<ckeditor (ready)="onReady($event)">
+```
+and in the Component:
+
+```ts
+onReady( editor ) {
+	editor.model.insertContent('>> Editor is ready!');
+	this.editor = editor;   // for access by other instance functions
+}
+````
+
+Alternatively the editor can be accessed using a variable scoped to the Angular `<ckeditor>` 
+component as follows:
 
 ```html
 	<ckeditor #editor1 [editor]="Editor" [config]="ckconfig"
 			  [(ngModel)]="text" name="editcontent"></ckeditor>
 ```
 
-You can then refer to that variable as needed in any method call within the component
-such as:
+The `editor1` variable can then be referenced to other component events such as when a
+related button is clicked:
 
 ```html
 	<button type="button" (click)="doPasteSomething(editor1)">Do Someting</button>
@@ -344,13 +358,14 @@ In the component the target function will look like this:
   }
 ```
 
-The operations performed may be anything that is defined and allowable by the API.
+This method may be convienent in the case where the template has multiple `<ckeditor>`
+components on it.
 
-Note that the Angular `editor1` template variable may also be accessed with an
-`@ViewChild`-decorated variable declaration.  The method in the example, however,
-will be preferable in the case where there is more than one `<ckeditor>` element on
-the page.  Also, if the `<ckeditor>` element is inside an `*ngIf` structure the `@ViewChild`
-declared variable may be inadvertently undefined.
+Also the Angular `editor1` template variable may also be accessed with an
+`@ViewChild`-decorated variable declaration. 
+
+Regardless of the method by which it is obtained, the resulting `editor` object may
+be used as documented by the API.
 
 
 ## Implementing an Upload Adapter in an Angular Application
@@ -377,12 +392,14 @@ and the CKEditor instance.
 class UploadAdapter {
   private loader;
   private url;
+  private http: HttpClient;
 
   private sub: Subscription;
 
-  constructor(loader, url) {
+  constructor(loader, url, http) {
     this.loader = loader;
     this.url = url;
+    this.http = http; 
   }
 
   upload() {
@@ -428,7 +445,7 @@ class UploadAdapter {
       };
       const request = new HttpRequest(
         'POST', this.url, formReq, options);
-      return this.http.request(request);
+      return this.http.request(request);  `
     }
 
   abort() {
@@ -444,7 +461,7 @@ will generate an UploadAdapter as needed:
 ```ts
   MyUploadAdapterPlugin(editor) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      return new UploadAdapter(loader, '/image');  // MODIFY FOR YOUR SERVER
+      return new UploadAdapter(loader, '/image', http);  // MODIFY FOR YOUR SERVER
     };
   }
 ```
@@ -452,6 +469,10 @@ will generate an UploadAdapter as needed:
 The second parameter is the URL where the image will be sent.  This will need
 to have everything the `imageURL` function in the UploadAdpater needs to 
 generate a complete URL.
+
+The third parameter `http` needs to be an instance of of `HttpClient` imported
+from `@angular/common/http`.  This object will be used by the upload adapter
+to communicate to the back end server.
 
 Next, we need to tell CKEditor where the Plugin can be found.  This is done
 using the `extraPlugins` element in the configuration object, which can
@@ -474,7 +495,8 @@ Then it can be used in the `<ckeditor>` component as follows:
 
 Note the use of a closure in the `extraPlugins` array in the configuration.
 This is done so that the `MyUploadAdapterPlugin` function will have access
-to the properties of the component instance that spawned it.  
+to the properties of the component instance that spawned it.  Most important
+to this is the instance of `HttpClient` that the upload adapter will use.
 
 At this point your UploadAdapter should be invoked any time the user pastes
 or drag-and-drops an image into the `<ckeditor>` window.
