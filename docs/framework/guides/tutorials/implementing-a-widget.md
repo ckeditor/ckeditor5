@@ -486,9 +486,15 @@ The HTML that you have added to the `index.html` file is your editor's data. Thi
 
 However, what's in the model?
 
-To inspect the model structure you can use the {@link module:engine/dev-utils/model~getData `getData()`} dev util. It returns a stringified version of the model structure. It looks like an HTML string, however, with a couple additions such as text attributes and selection markers.
+To inspect the model structure you can use the [`@ckeditor/ckeditor5-inspector`](https://www.npmjs.com/package/@ckeditor/ckeditor5-inspector) util. It allows browsing the model and view structures as well as the list of commands.
 
-In order to print out the model's structure change the `app.js` file:
+In order to enable CKEditor 5 Inspector for your editor, you need to first install it:
+
+```
+npm install --save-dev @ckeditor/ckeditor5-inspector
+```
+
+And now you need to load it in the `app.js` file:
 
 ```js
 // app.js
@@ -503,9 +509,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 import SimpleBox from './simplebox/simplebox';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';      // ADDED
-
-window.getData = getData;                                                      // ADDED
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';                 // ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -518,6 +522,8 @@ ClassicEditor
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
 
+		CKEditorInspector.attach( 'editor', editor );
+
 		window.editor = editor;
 	} )
 	.catch( error => {
@@ -525,13 +531,11 @@ ClassicEditor
 	} );
 ```
 
-After rebuilding your project and refreshing the page, execute this command in JS console:
+After rebuilding your project and refreshing the page you will see the inspector:
 
-```js
-console.log( getData( editor.model ) );
-```
+{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor 5 Inspector.}
 
-It will output the following HTML-like string:
+You will see the following HTML-like string:
 
 ```html
 <paragraph>[]This is a simple box:</paragraph>
@@ -550,7 +554,7 @@ As you can see, this structure is quite different than the HTML input/output. If
 Play a bit with editor features (bold, italic, headings, lists, selection) to see how the model structure changes.
 
 <info-box>
-	See also {@link module:engine/dev-utils/model~setData `setData()`} and the respective {@link module:engine/dev-utils/view view dev utils}.
+	Another useful helpers are the `getData()` and `setData()` functions exposed by {@link module:engine/dev-utils/model model dev utils} and {@link module:engine/dev-utils/view view dev utils}. They allow stringifying the model/view structures, selections, ranges and positions as well as loading them from string. They are often use when writing tests.
 
 	Both tools are designed for prototyping, debugging, and testing purposes. Do not use them in production-grade code.
 </info-box>
@@ -593,7 +597,7 @@ Before we start coding, we need to install the {@link api/widget `@ckeditor/cked
 npm install --save @ckeditor/ckeditor5-widget
 ```
 
-Now, let's revisit the `_defineConverters()` method that we defined earlier. We will use {@link module:engine/conversion/upcast-converters~upcastElementToElement `upcastElementToElement()`} and {@link module:engine/conversion/downcast-converters~downcastElementToElement `downcastElementToElement()`} converters instead of the two-way `elementToElement()` converter.
+Now, let's revisit the `_defineConverters()` method that we defined earlier. We will use {@link module:engine/conversion/upcasthelpers~elementToElement `elementToElement()`} upcast helper and {@link module:engine/conversion/downcasthelpers~elementToElement `elementToElement()`} downcast helper instead of the two-way `elementToElement()` converter helper.
 
 Additionally, we need to ensure that the {@link module:widget/widget~Widget `Widget`} plugin is loaded. If you omit it, the elements in the view will have all the classes (e.g. `ck-widget`) but there will be no "behaviors" loaded (e.g. clicking a widget will not select it).
 
@@ -602,10 +606,7 @@ Additionally, we need to ensure that the {@link module:widget/widget~Widget `Wid
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-// ADDED 4 imports
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
+// ADDED 2 imports
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
@@ -629,45 +630,45 @@ export default class SimpleBoxEditing extends Plugin {
 		const conversion = this.editor.conversion;
 
 		// <simpleBox> converters
-		conversion.for( 'upcast' ).add( upcastElementToElement( {
+		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBox',
 			view: {
 				name: 'section',
 				classes: 'simple-box'
 			}
-		} ) );
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'simpleBox',
 			view: {
 				name: 'section',
 				classes: 'simple-box'
 			}
-		} ) );
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBox',
 			view: ( modelElement, viewWriter ) => {
 				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
 
 				return toWidget( section, viewWriter, { label: 'simple box widget' } );
 			}
-		} ) );
+		} );
 
 		// <simpleBoxTitle> converters
-		conversion.for( 'upcast' ).add( upcastElementToElement( {
+		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBoxTitle',
 			view: {
 				name: 'h1',
 				classes: 'simple-box-title'
 			}
-		} ) );
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
 			view: {
 				name: 'h1',
 				classes: 'simple-box-title'
 			}
-		} ) );
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
 			view: ( modelElement, viewWriter ) => {
 				// Note: we use a more specialized createEditableElement() method here.
@@ -675,24 +676,24 @@ export default class SimpleBoxEditing extends Plugin {
 
 				return toWidgetEditable( h1, viewWriter );
 			}
-		} ) );
+		} );
 
 		// <simpleBoxDescription> converters
-		conversion.for( 'upcast' ).add( upcastElementToElement( {
+		conversion.for( 'upcast' ).elementToElement( {
 			model: 'simpleBoxDescription',
 			view: {
 				name: 'div',
 				classes: 'simple-box-description'
 			}
-		} ) );
-		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
 			view: {
 				name: 'div',
 				classes: 'simple-box-description'
 			}
-		} ) );
-		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		} );
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
 			view: ( modelElement, viewWriter ) => {
 				// Note: we use a more specialized createEditableElement() method here.
@@ -700,15 +701,13 @@ export default class SimpleBoxEditing extends Plugin {
 
 				return toWidgetEditable( div, viewWriter );
 			}
-		} ) );
+		} );
 	}
 }
 ```
 
 <info-box>
 	As you can see, the code became much more verbose and far longer. This is because we used lower-level converters. We plan to provide more handy widget conversion utils in the future. Read more (and 👍) in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1228).
-
-	Additionally, starting from the next release of CKEditor 5, you will not need to import `downcastElementToElement()` and `upcastElementToElement()` helpers manually (they will be available in the `editor.conversion.for()` object.
 </info-box>
 
 ### Behavior after "widgetizing" simple box
@@ -750,7 +749,7 @@ export default class InsertSimpleBoxCommand extends Command {
 		this.editor.model.change( writer => {
 			// Insert <simpleBox>*</simpleBox> at the current selection position
 			// in a way which will result in creating a valid model structure.
-			editor.model.insertContent( createSimpleBox( writer ) );
+			this.editor.model.insertContent( createSimpleBox( writer ) );
 		} );
 	}
 
@@ -785,9 +784,6 @@ Import the command and register it in the `SimpleBoxEditing` plugin:
 // simplebox/simpleboxediting.js
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
@@ -829,7 +825,7 @@ Should result in:
 
 {@img assets/img/tutorial-implementing-a-widget-6.png Screenshot of a simple box instance inserted at the beginning of the editor content.}
 
-You can also try inspecting the `isEnabled` property value:
+You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor 5 Inspector):
 
 ```js
 console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
