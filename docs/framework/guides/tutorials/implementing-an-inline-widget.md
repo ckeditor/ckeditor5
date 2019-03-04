@@ -35,7 +35,8 @@ npm install --save \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-ui \
 	@ckeditor/ckeditor5-utils \
-	@ckeditor/ckeditor5-widget
+	@ckeditor/ckeditor5-widget \
+	@ckeditor/ckeditor5-inspector
 ```
 
 Create minimal webpack configuration:
@@ -98,23 +99,25 @@ Add and `index.html` page:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>CKEditor 5 Framework – Implementing a simple widget</title>
-</head>
-<body>
-<div id="editor">
-	<p>Editor content goes here.</p>
-</div>
+	<head>
+		<meta charset="utf-8">
+		<title>CKEditor 5 Framework – Implementing a simple widget</title>
+	</head>
+	<body>
+		<div id="editor">
+			<p>Editor content goes here.</p>
+		</div>
 
-<script src="dist/bundle.js"></script>
-</body>
+		<script src="dist/bundle.js"></script>
+	</body>
 </html>
 ```
 
 The application entry point (`app.js`):
 
 ```js
+// app.js
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -122,17 +125,20 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import Placeholder from './placeholder/placeholder';
 
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Widget, Placeholder ],
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
+
+		CKEditorInspector.attach( 'editor', editor );
 
 		// Expose for playing in the console.
 		window.editor = editor;
@@ -188,10 +194,12 @@ export default class Placeholder extends Plugin {
 }
 ```
 
-The ui (empty for now):
+The UI part (empty for now):
 
 ```js
 // placeholder/placeholderui.js
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class PlaceholderUI extends Plugin {
 	init() {
@@ -205,6 +213,8 @@ And the editing part (empty for now):
 ```js
 // placeholder/placeholderediting.js
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
 export default class PlaceholderEditing extends Plugin {
 	init() {
 		console.log( 'PlaceholderEditing#init() got called' );
@@ -216,125 +226,106 @@ At this stage we can build the project and open it in the browser to verify if i
 
 ## The model and the view layers
 
-The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as  an inline} (text-like) widget so it will be inserted in other editor blocks, like `<paragraph>`, that allow text. The placeholder will have `type` attribute.
+The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as  an inline} (text-like) element so it will be inserted in other editor blocks, like `<paragraph>`, that allow text. The placeholder will have `name` attribute. This means that the model containing some text and a placeholder will look like this:
 
 ```html
 <paragraph>
-	Hello <placeholder typte="name"></placeholder>!
+	Hello <placeholder name="name"></placeholder>!
 </paragraph>
 ```
 
 ### Defining the schema
 
-The inline widget's `<placeholder>` element should be treated as `$text` so it must be defined with `isInline = true`. Also we want to put it wherever the `$text` is allowed so we add `allowWhere = '$text'`. Also the attribute `type` must be allowed for the `placeholder` element.
+The `<placeholder>` element should be treated as `$text` so it must be defined with `isInline: true`. We want to allow it wherever the `$text` is allowed so we add `allowWhere: '$text'`. Finally, we will also need the `name` attribute.
+
+We will also use this occasion to import the theme file (`theme/placeholder.css`).
 
 ```js
+// placeholder/placeholderediting.js
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import './theme/placeholder.css';
+import './theme/placeholder.css';                                              // ADDED
 
 export default class PlaceholderEditing extends Plugin {
-	constructor( editor ) {
-		super( editor );
+	init() {
+		console.log( 'PlaceholderEditing#init() got called' );
 
-		this._defineSchema();
+		this._defineSchema();                                                  // ADDED
 	}
 
-	_defineSchema() {
+	_defineSchema() {                                                          // ADDED
 		const schema = this.editor.model.schema;
 
 		schema.register( 'placeholder', {
-			// We want that our placeholder feature be allowed anywhere user can type:
+			// Allow wherever text is allowed:
 			allowWhere: '$text',
 
-			// The placeholder will acts as text (single character):
+			// The placeholder will acts as an inline node:
 			isInline: true,
 
 			// The inline-widget is self-contained so cannot be split by the caret and can be selected:
 			isObject: true,
 
 			// The placeholder can have many types, like date, name, surname, etc:
-			allowAttributes: [ 'type' ]
+			allowAttributes: [ 'name' ]
 		} );
 	}
 }
 ```
 
-The schema is defined but we mast also add the converters for it.
+The schema is defined so now we can define the model-view converters.
 
 ### Defining converters
 
-The HTML structure of the converter will be a `<span>` with `data-placeholder` attribute:
+The HTML structure (data output) of the converter will be a `<span>` with a `placeholder` class. The text inside the `<span>` will the placeholder's name.
 
 ```html
-<span data-placeholder="name">{name}</span>
+<span class="placeholder">{name}</span>
 ```
 
-The `data-placeholder` attribute holds the type of the placeholder and holds information of its type. The text inside `<span>` will be ignored during view-to-model conversion and will be generated based on placeholder's type in model-to-view conversion.
-
-#### The "upcast" conversion
-
-In the view-to-model conversion we define converter that will create a model element. This converter will read the `data-placeholder` attribute value and create a `placeholder` element with a `type` attribute.
+* **Upcast conversion**. This view-to-model converter will look for `<span>`s with class `placeholder`, read the `<span>`'s text and create a model `<placeholder>` elements with the `name` attribute set accordingly.
+* **Downcast conversion**. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget specific behavior in the editing view. In both pipelines the element will be rendered using the same structure.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-// Added theme file.
+// ADDED 2 imports
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
+	static get requires() {                                                    // ADDED
+		return [ Widget ];
+	}
+
 	constructor( editor ) {
 		super( editor );
 
 		this._defineSchema();
-		this._defineConverters();                                                   // ADDED
-	}
-
-	_defineConverters() {                                                           // ADDED
-		const conversion = this.editor.conversion;
-
-		conversion.for( 'upcast' ).elementToElement( {
-			view: {
-				name: 'span',
-				attributes: [ 'data-placeholder' ]
-			},
-			model: ( viewElement, modelWriter ) => {
-				const type = viewElement.getAttribute( 'data-placeholder' ) || 'general';
-
-				return modelWriter.createElement( 'placeholder', { type } );
-			}
-		} );
+		this._defineConverters();                                              // ADDED
 	}
 
 	_defineSchema() {
 		// ...
 	}
-}
-```
 
-#### The "downcast" conversion
-
-The view-to-model conversion will be different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget specific behavior in the editing view. In both pipelines the element will be rendered as using the same utility function.
-
-```js
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-// Added theme file.
-import './theme/placeholder.css';
-
-export default class PlaceholderEditing extends Plugin {
-	constructor( editor ) {
-		super( editor );
-
-		this._defineSchema();
-		this._defineConverters();
-	}
-
-	_defineConverters() {
+	_defineConverters() {                                                      // ADDED
 		const conversion = this.editor.conversion;
 
 		conversion.for( 'upcast' ).elementToElement( {
-			// ...
+			view: {
+				name: 'span',
+				classes: [ 'placeholder' ]
+			},
+			model: ( viewElement, modelWriter ) => {
+				// Extract the "name" from "{name}".
+				const name = viewElement.getChild( 0 ).data.slice( 1, -1 );
+
+				return modelWriter.createElement( 'placeholder', { name } );
+			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
@@ -354,25 +345,23 @@ export default class PlaceholderEditing extends Plugin {
 
 		// Helper method for both downcast converters.
 		function createPlaceholderView( modelItem, viewWriter ) {
-			const type = modelItem.getAttribute( 'type' );
+			const name = modelItem.getAttribute( 'name' );
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
-				'data-placeholder': type
+				class: 'placeholder'
 			} );
 
 			// Insert text node with type so the placeholder type will be displayed in the view.
-			const innerText = viewWriter.createText( `{ ${ type } }` );
+			const innerText = viewWriter.createText( '{' + name + '}' );
 			viewWriter.insert( viewWriter.createPositionAt( placeholderView, 0 ), innerText );
 
 			return placeholderView;
 		}
 	}
-
-	_defineSchema() {
-		// ...
-	}
 }
 ```
+
+### Feature styles
 
 As you could notice the editing part imports the `./theme/placeholder.css` CSS file which describes how the placeholder is displayed in th editing view:
 
@@ -394,9 +383,11 @@ As you could notice the editing part imports the `./theme/placeholder.css` CSS f
 
 ### Command
 
-A {@link framework/guides/architecture/core-editor-architecture#commands command} for placeholder feature will insert a `<placeholder>` element (if allowed by schema) at the selection. The command will accept `options.value` parameter (other CKEditor 5's'commands also uses this pattern) to set a type of placeholder.
+A {@link framework/guides/architecture/core-editor-architecture#commands command} for placeholder feature will insert a `<placeholder>` element (if allowed by the schema) at the selection. The command will accept `options.value` parameter (other CKEditor 5's commands also uses this pattern) to set the placeholder's name.
 
 ```js
+// placeholder/placeholdercommand.js
+
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 export default class PlaceholderCommand extends Command {
@@ -404,8 +395,8 @@ export default class PlaceholderCommand extends Command {
 		const editor = this.editor;
 
 		editor.model.change( writer => {
-			// Create 'placeholder' elment with type attribute...
-			const placeholder = writer.createElement( 'placeholder', { type: value } );
+			// Create <placeholder> elment with name attribute...
+			const placeholder = writer.createElement( 'placeholder', { name: value } );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -431,12 +422,10 @@ Import the created command and add it to editor's commands:
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import PlaceholderCommand from './placeholdercommand';                              // ADDED
+import PlaceholderCommand from './placeholdercommand';                         // ADDED
 
 import './theme/placeholder.css';
 
@@ -449,17 +438,19 @@ export default class PlaceholderEditing extends Plugin {
 		this.editor.commands.add( 'placeholder', new PlaceholderCommand( this.editor ) );
 	}
 
-	_defineConverters() {
+	_defineSchema() {
 		// ...
 	}
 
-	_defineSchema() {
+	_defineConverters() {
 		// ...
 	}
 }
 ```
 
-The command can be executed in the editor:
+### Let's see it!
+
+You can rebuild the project now and you should be able to execute the `placeholder` command to insert a new placeholder:
 
 ```js
 editor.execute( 'placeholder', { value: 'time' } );
@@ -467,15 +458,73 @@ editor.execute( 'placeholder', { value: 'time' } );
 
 This should result in:
 
-@TODO inserted "time" placeholder
+{@img assets/img/tutorial-implementing-an-inline-widget-1.png Screenshot of a placeholder widget in action.}
 
-The command should be enebled anywhere a text can be placed. You can check this by logging it value:
+### Fixing position mapping
 
-```js
-console.log( editor.log( editor.commands.get( 'placeholder' ).isEnabled ) );
+If you play now more with the widget (e.g. try to select it by dragging the mouse from its right to left edge) you will see the following error logged on the console:
+
+```
+Uncaught CKEditorError: model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.
 ```
 
-## Adding UI
+This error is thrown because there is a difference in text node mapping between the model and the view due to the different structures:
+
+```html
+model:
+
+foo<placeholder name="time"></placeholder>bar
+
+view:
+
+foo<span class="placeholder">{name}</span>bar
+```
+
+You can say that in the view there is "more" text than in the model. This means that some positions in the view cannot automatically map to positions in the model. Namely &mdash; those are positions inside the `<span>` element.
+
+Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use util {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} which we can use here like that:
+
+```js
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+// MODIFIED
+import {
+	toWidget,
+	viewToModelPositionOutsideModelElement
+} from '@ckeditor/ckeditor5-widget/src/utils';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+
+import PlaceholderCommand from './placeholdercommand';
+
+import './theme/placeholder.css';
+
+export default class PlaceholderEditing extends Plugin {
+	init() {
+		this._defineSchema();
+		this._defineConverters();
+
+		this.editor.commands.add( 'placeholder', new PlaceholderCommand( this.editor ) );
+
+		// ADDED
+		this.editor.editing.mapper.on(
+			'viewToModelPosition',
+			viewToModelPositionOutsideModelElement( this.editor.model, viewElement => viewElement.hasClass( 'placeholder' ) )
+		);
+	}
+
+	_defineSchema() {
+		// ...
+	}
+
+	_defineConverters() {
+		// ...
+	}
+}
+```
+
+After adding the custom mapping, the mapping will work perfectly. Every position inside the view `<span>` element will be mapped to a position outside `<placeholder>` in the model.
+
+## Creating the UI
 
 The UI part will provide a dropdown button from which user can select a placeholder to insert into the editor.
 
@@ -551,17 +600,22 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import Placeholder from './placeholder/placeholder';
 
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Widget, Placeholder ],
-		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]            // MODIFIED
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
+
+		// MODIFIED
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
+
+		CKEditorInspector.attach( 'editor', editor );
 
 		// Expose for playing in the console.
 		window.editor = editor;

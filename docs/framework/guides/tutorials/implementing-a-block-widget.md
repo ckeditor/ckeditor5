@@ -598,7 +598,7 @@ Before we start coding, we need to install the {@link api/widget `@ckeditor/cked
 npm install --save @ckeditor/ckeditor5-widget
 ```
 
-Now, let's revisit the `_defineConverters()` method that we defined earlier. We will use {@link module:engine/conversion/upcasthelpers~elementToElement `elementToElement()`} upcast helper and {@link module:engine/conversion/downcasthelpers~elementToElement `elementToElement()`} downcast helper instead of the two-way `elementToElement()` converter helper.
+Now, let's revisit the `_defineConverters()` method that we defined earlier. We will use {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToElement `elementToElement()` upcast helper} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()` downcast helper} instead of the two-way `elementToElement()` converter helper.
 
 Additionally, we need to ensure that the {@link module:widget/widget~Widget `Widget`} plugin is loaded. If you omit it, the elements in the view will have all the classes (e.g. `ck-widget`) but there will be no "behaviors" loaded (e.g. clicking a widget will not select it).
 
