@@ -5,15 +5,15 @@ order: 10
 
 # Implementing an inline widget
 
-In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like date or surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown for the toolbar which will allow to select a placeholder to insert. We will also learn how to use editor configuration to pass placeholders types for the feature.
+In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like a date or a surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown which will allow inserting new placeholders. We will also learn how to use the editor configuration to define allowed placeholder names.
 
-## Before you start
+## Before you start ⚠️
 
-This guide assumes that you're familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a simple widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you are familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
 
-## Bootstrap project
+## Bootstrapping the project
 
-Th overall project structure and concept will be similar as those described in {@link framework/guides/tutorials/implementing-a-block-widget#lets-start Let's start} and {@link framework/guides/tutorials/implementing-a-block-widget#plugin-structure Plugin structure} sections.
+The overall project structure will be similar to this described in {@link framework/guides/tutorials/implementing-a-block-widget#lets-start Let's start} and {@link framework/guides/tutorials/implementing-a-block-widget#plugin-structure Plugin structure} sections.
 
 First, install required dependencies:
 
@@ -39,7 +39,7 @@ npm install --save \
 	@ckeditor/ckeditor5-inspector
 ```
 
-Create minimal webpack configuration:
+Create a minimal webpack configuration:
 
 ```js
 // webpack.config.js
@@ -94,7 +94,7 @@ module.exports = {
 };
 ```
 
-Add and `index.html` page:
+Add an `index.html` page:
 
 ```html
 <!DOCTYPE html>
@@ -148,11 +148,7 @@ ClassicEditor
 	} );
 ```
 
-Before building the project we still need to define `Placeholder` plugin.
-
-### Project structure
-
-The project will have a structure as below:
+Before building the project we still need to define `Placeholder` plugin. The project will have a structure as below:
 
 ```
 ├── app.js
@@ -175,7 +171,7 @@ The project will have a structure as below:
 └── webpack.config.js
 ```
 
-You can see that the `/placeholder` feature has an established plugin structure: the master (glue) plugin (`placeholder/placeholder.js`), the "editing" (`placeholder/placeholderediting.js`) and the "ui" (`placeholder/placeholderui.js`) parts.
+You can see that the placeholder feature has an established plugin structure: the master (glue) plugin (`placeholder/placeholder.js`), the "editing" (`placeholder/placeholderediting.js`) and the "ui" (`placeholder/placeholderui.js`) parts.
 
 The master (glue) plugin:
 
@@ -351,7 +347,7 @@ export default class PlaceholderEditing extends Plugin {
 				class: 'placeholder'
 			} );
 
-			// Insert text node with type so the placeholder type will be displayed in the view.
+			// Insert the placeholder name (as a text).
 			const innerText = viewWriter.createText( '{' + name + '}' );
 			viewWriter.insert( viewWriter.createPositionAt( placeholderView, 0 ), innerText );
 
