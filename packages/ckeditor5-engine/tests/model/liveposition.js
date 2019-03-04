@@ -78,14 +78,23 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( '_createBefore should return LivePosition', () => {
-		const position = LivePosition._createBefore( ul );
+		const position = LivePosition._createBefore( ul, 'toPrevious' );
 		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAfter should return LivePosition', () => {
-		const position = LivePosition._createAfter( ul );
+		const position = LivePosition._createAfter( ul, 'toPrevious' );
 		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
+		position.detach();
+	} );
+
+	it( '_createAt should return LivePosition', () => {
+		const position = LivePosition._createAt( ul, 'end', 'toPrevious' );
+		expect( position ).to.be.instanceof( LivePosition );
+		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 
