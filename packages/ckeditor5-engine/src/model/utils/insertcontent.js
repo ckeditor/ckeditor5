@@ -22,6 +22,8 @@ import Selection from '../selection';
  * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
  *
+ * If `selectable` is not passed, the content will be inserted using the current selection of the model document.
+ *
  * **Note:** Use {@link module:engine/model/model~Model#insertContent} instead of this function.
  * This function is only exposed to be reusable in algorithms which change the {@link module:engine/model/model~Model#insertContent}
  * method's behavior.
@@ -32,9 +34,12 @@ import Selection from '../selection';
  * @param {module:engine/model/selection~Selectable} [selectable=model.document.selection]
  * Selection into which the content should be inserted.
  * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+ * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
+ * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
+ * at the insertion position.
  */
 export default function insertContent( model, content, selectable, placeOrOffset ) {
-	model.change( writer => {
+	return model.change( writer => {
 		let selection;
 
 		if ( !selectable ) {
@@ -45,11 +50,13 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
+		const insertionPosition = selection.anchor.clone();
+
 		if ( !selection.isCollapsed ) {
-			model.deleteContent( selection );
+			model.deleteContent( selection, { doNotAutoparagraph: true } );
 		}
 
-		const insertion = new Insertion( model, writer, selection.anchor );
+		const insertion = new Insertion( model, writer, insertionPosition );
 
 		let nodesToInsert;
 
@@ -86,6 +93,12 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			 */
 			log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
 		}
+
+		const affectedRange = insertion.getAffectedRange() || model.createRange( insertionPosition );
+
+		insertion.destroy();
+
+		return affectedRange;
 	} );
 }
 
@@ -138,6 +151,22 @@ class Insertion {
 		this.schema = model.schema;
 
 		this._filterAttributesOf = [];
+
+		/**
+		 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
+		 *
+		 * @private
+		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedStart
+		 */
+		this._affectedStart = null;
+
+		/**
+		 * End of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
+		 *
+		 * @private
+		 * @member {module:engine/model/liveposition~LivePosition|null} #_affectedEnd
+		 */
+		this._affectedEnd = null;
 	}
 
 	/**
@@ -166,7 +195,7 @@ class Insertion {
 
 	/**
 	 * Returns range to be selected after insertion.
-	 * Returns null if there is no valid range to select after insertion.
+	 * Returns `null` if there is no valid range to select after insertion.
 	 *
 	 * @returns {module:engine/model/range~Range|null}
 	 */
@@ -176,6 +205,33 @@ class Insertion {
 		}
 
 		return this.model.schema.getNearestSelectionRange( this.position );
+	}
+
+	/**
+	 * Returns a range which contains all the performed changes. This is a range that, if removed, would return the model to the state
+	 * before the insertion. Returns `null` if no changes were done.
+	 *
+	 * @returns {module:engine/model/range~Range|null}
+	 */
+	getAffectedRange() {
+		if ( !this._affectedStart ) {
+			return null;
+		}
+
+		return new Range( this._affectedStart, this._affectedEnd );
+	}
+
+	/**
+	 * Destroys `Insertion` instance.
+	 */
+	destroy() {
+		if ( this._affectedStart ) {
+			this._affectedStart.detach();
+		}
+
+		if ( this._affectedEnd ) {
+			this._affectedEnd.detach();
+		}
 	}
 
 	/**
@@ -217,10 +273,10 @@ class Insertion {
 		// E.g.:
 		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
 		// and:
-		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>y</p><p>z</p> => <p>xy[]z</p>
+		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>z</p><p>y</p> => <p>xz[]y</p>
 		// but:
 		// <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
-		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deletetContents
+		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deleteContents
 		//																	 it's exactly the same case as above)
 		this._mergeSiblingsOf( node, context );
 	}
@@ -276,6 +332,7 @@ class Insertion {
 
 		const livePos = LivePosition.fromPosition( this.position, 'toNext' );
 
+		this._setAffectedBoundaries( this.position );
 		this.writer.insert( node, this.position );
 
 		this.position = livePos.toPosition();
@@ -289,6 +346,34 @@ class Insertion {
 		}
 
 		this._filterAttributesOf.push( node );
+	}
+
+	/**
+	 * Sets `_affectedStart` and `_affectedEnd` to the given `position`. Should be used before change is done during insertion process to
+	 * mark the affected range.
+	 *
+	 * @private
+	 * @param {module:engine/model/position~Position} position
+	 */
+	_setAffectedBoundaries( position ) {
+		// Set affected boundaries stickiness so that those position will "expand" when something is inserted in between them:
+		// <paragraph>Foo][bar</paragraph> -> <paragraph>Foo]xx[bar</paragraph>
+		// This is why it cannot be a range but two separate positions.
+		if ( !this._affectedStart ) {
+			this._affectedStart = LivePosition.fromPosition( position, 'toPrevious' );
+		}
+
+		// If `_affectedEnd` is before the new boundary position, expand `_affectedEnd`. This can happen if first inserted node was
+		// inserted into the parent but the next node is moved-out of that parent:
+		// (1) <paragraph>Foo][</paragraph> -> <paragraph>Foo]xx[</paragraph>
+		// (2) <paragraph>Foo]xx[</paragraph> -> <paragraph>Foo]xx</paragraph><widget></widget>[
+		if ( !this._affectedEnd || this._affectedEnd.isBefore( position ) ) {
+			if ( this._affectedEnd ) {
+				this._affectedEnd.detach();
+			}
+
+			this._affectedEnd = LivePosition.fromPosition( position, 'toNext' );
+		}
 	}
 
 	/**
@@ -312,7 +397,31 @@ class Insertion {
 			const livePosition = LivePosition.fromPosition( this.position );
 			livePosition.stickiness = 'toNext';
 
+			// If `_affectedStart` is sames as merge position, it means that the element "marked" by `_affectedStart` is going to be
+			// removed and its contents will be moved. This won't transform `LivePosition` so `_affectedStart` needs to be moved
+			// by hand to properly reflect affected range. (Due to `_affectedStart` and `_affectedEnd` stickiness, the "range" is
+			// shown as `][`).
+			//
+			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>   -->
+			// <paragraph>Foo]Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>
+			//
+			// Note, that if we are here then something must have been inserted, so `_affectedStart` and `_affectedEnd` have to be set.
+			if ( this._affectedStart.isEqual( mergePosLeft ) ) {
+				this._affectedStart.detach();
+				this._affectedStart = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toPrevious' );
+			}
+
 			this.writer.merge( mergePosLeft );
+
+			// If only one element (the merged one) is in the "affected range", also move the affected range end appropriately.
+			//
+			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph>[<paragraph>Bar</paragraph>   -->
+			// <paragraph>Foo]Abc</paragraph>[<paragraph>Bar</paragraph>   -->
+			// <paragraph>Foo]Abc[</paragraph><paragraph>Bar</paragraph>
+			if ( mergePosLeft.isEqual( this._affectedEnd ) && context.isLast ) {
+				this._affectedEnd.detach();
+				this._affectedEnd = LivePosition._createAt( mergePosLeft.nodeBefore, 'end', 'toNext' );
+			}
 
 			this.position = livePosition.toPosition();
 			livePosition.detach();
@@ -333,9 +442,21 @@ class Insertion {
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const livePosition = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
+			const livePosition = LivePosition.fromPosition( this.position, 'toPrevious' );
+
+			// See comment above on moving `_affectedStart`.
+			if ( this._affectedEnd.isEqual( mergePosRight ) ) {
+				this._affectedEnd.detach();
+				this._affectedEnd = LivePosition._createAt( mergePosRight.nodeBefore, 'end', 'toNext' );
+			}
 
 			this.writer.merge( mergePosRight );
+
+			// See comment above on moving `_affectedStart`.
+			if ( mergePosRight.getShiftedBy( -1 ).isEqual( this._affectedStart ) && context.isFirst ) {
+				this._affectedStart.detach();
+				this._affectedStart = LivePosition._createAt( mergePosRight.nodeBefore, 0, 'toPrevious' );
+			}
 
 			this.position = livePosition.toPosition();
 			livePosition.detach();
@@ -424,19 +545,25 @@ class Insertion {
 			}
 
 			if ( this.position.isAtStart ) {
+				// If insertion position is at the beginning of the parent, move it out instead of splitting.
+				// <p>^Foo</p> -> ^<p>Foo</p>
 				const parent = this.position.parent;
+
 				this.position = this.writer.createPositionBefore( parent );
 
-				// Special case – parent is empty (<p>^</p>) so isAtStart == isAtEnd == true.
-				// We can remove the element after moving selection out of it.
+				// Special case – parent is empty (<p>^</p>).
+				// We can remove the element after moving insertion position out of it.
 				if ( parent.isEmpty ) {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
+				// If insertion position is at the end of the parent, move it out instead of splitting.
+				// <p>Foo^</p> -> <p>Foo</p>^
 				this.position = this.writer.createPositionAfter( this.position.parent );
 			} else {
 				const tempPos = this.writer.createPositionAfter( this.position.parent );
 
+				this._setAffectedBoundaries( this.position );
 				this.writer.split( this.position );
 
 				this.position = tempPos;
