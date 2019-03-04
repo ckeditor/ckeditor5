@@ -373,6 +373,18 @@ export default class Model {
 	 *
 	 * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
 	 * * `<heading1>^</heading1>` with enabled (`doNotResetEntireContent == true`)
+	 *
+	 * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
+	 * to a place where text cannot be inserted.
+	 *
+	 * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+	 *
+	 * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
+	 * * `<paragraph>x[]</paragraph>` with the option enabled (`doNotAutoparagraph == true`).
+	 *
+	 * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+	 *
+	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
 	 */
 	deleteContent( selection, options ) {
 		deleteContent( this, selection, options );
