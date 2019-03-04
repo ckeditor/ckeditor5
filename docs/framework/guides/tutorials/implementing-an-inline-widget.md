@@ -1,42 +1,41 @@
 ---
 category: framework-tutorials
 order: 10
-menu-title: Implementing an inline widget
 ---
 
 # Implementing an inline widget
 
-In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like date or surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown for the toolbar which will allow to select a placeholder to insert. We will also learn how to use editor configuration to pass placeholders types for the feature. 
+In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like date or surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown for the toolbar which will allow to select a placeholder to insert. We will also learn how to use editor configuration to pass placeholders types for the feature.
 
 ## Before you start
 
-This guide assumes that you're familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-widget Implementing a simple widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
+This guide assumes that you're familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a simple widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
 
 ## Bootstrap project
 
-Th overall project structure and concept will be similar as those described in {@link framework/guides/tutorials/implementing-a-widget#lets-start Let's start} and {@link framework/guides/tutorials/implementing-a-widget#plugin-structure Plugin structure} sections.
+Th overall project structure and concept will be similar as those described in {@link framework/guides/tutorials/implementing-a-block-widget#lets-start Let's start} and {@link framework/guides/tutorials/implementing-a-block-widget#plugin-structure Plugin structure} sections.
 
 First, install required dependencies:
 
 ```bash
 npm install --save \
-    postcss-loader \
-    raw-loader \
-    style-loader \
-    webpack@4 \
-    webpack-cli@3 \
-    @ckeditor/ckeditor5-basic-styles \
-    @ckeditor/ckeditor5-core \
-    @ckeditor/ckeditor5-dev-utils \
-    @ckeditor/ckeditor5-editor-classic \
-    @ckeditor/ckeditor5-essentials \
-    @ckeditor/ckeditor5-heading \
-    @ckeditor/ckeditor5-list \
-    @ckeditor/ckeditor5-paragraph \
-    @ckeditor/ckeditor5-theme-lark \
-    @ckeditor/ckeditor5-ui \
-    @ckeditor/ckeditor5-utils \
-    @ckeditor/ckeditor5-widget
+	postcss-loader \
+	raw-loader \
+	style-loader \
+	webpack@4 \
+	webpack-cli@3 \
+	@ckeditor/ckeditor5-basic-styles \
+	@ckeditor/ckeditor5-core \
+	@ckeditor/ckeditor5-dev-utils \
+	@ckeditor/ckeditor5-editor-classic \
+	@ckeditor/ckeditor5-essentials \
+	@ckeditor/ckeditor5-heading \
+	@ckeditor/ckeditor5-list \
+	@ckeditor/ckeditor5-paragraph \
+	@ckeditor/ckeditor5-theme-lark \
+	@ckeditor/ckeditor5-ui \
+	@ckeditor/ckeditor5-utils \
+	@ckeditor/ckeditor5-widget
 ```
 
 Create minimal webpack configuration:
@@ -50,47 +49,47 @@ const path = require( 'path' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
-    entry: './app.js',
+	entry: './app.js',
 
-    output: {
-        path: path.resolve( __dirname, 'dist' ),
-        filename: 'bundle.js'
-    },
+	output: {
+		path: path.resolve( __dirname, 'dist' ),
+		filename: 'bundle.js'
+	},
 
-    module: {
-        rules: [
-            {
-                test: /\.svg$/,
-                use: [ 'raw-loader' ]
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    {
-                        loader: 'style-loader',
-                        options: {
-                            singleton: true
-                        }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: styles.getPostCssConfig( {
-                            themeImporter: {
-                                themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-                            },
-                            minify: true
-                        } )
-                    },
-                ]
-            }
-        ]
-    },
+	module: {
+		rules: [
+			{
+				test: /\.svg$/,
+				use: [ 'raw-loader' ]
+			},
+			{
+				test: /\.css$/,
+				use: [
+					{
+						loader: 'style-loader',
+						options: {
+							singleton: true
+						}
+					},
+					{
+						loader: 'postcss-loader',
+						options: styles.getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					},
+				]
+			}
+		]
+	},
 
-    // Useful for debugging.
-    devtool: 'source-map',
+	// Useful for debugging.
+	devtool: 'source-map',
 
-    // By default webpack logs warnings if the bundle is bigger than 200kb.
-    performance: { hints: false }
+	// By default webpack logs warnings if the bundle is bigger than 200kb.
+	performance: { hints: false }
 };
 ```
 
@@ -221,7 +220,7 @@ The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefi
 
 ```html
 <paragraph>
-    Hello <placeholder typte="name"></placeholder>!
+	Hello <placeholder typte="name"></placeholder>!
 </paragraph>
 ```
 
@@ -247,13 +246,13 @@ export default class PlaceholderEditing extends Plugin {
 		schema.register( 'placeholder', {
 			// We want that our placeholder feature be allowed anywhere user can type:
 			allowWhere: '$text',
-			
+
 			// The placeholder will acts as text (single character):
 			isInline: true,
-			
+
 			// The inline-widget is self-contained so cannot be split by the caret and can be selected:
 			isObject: true,
-			
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'type' ]
 		} );
@@ -271,7 +270,7 @@ The HTML structure of the converter will be a `<span>` with `data-placeholder` a
 <span data-placeholder="name">{name}</span>
 ```
 
-The `data-placeholder` attribute holds the type of the placeholder and holds information of its type. The text inside `<span>` will be ignored during view-to-model conversion and will be generated based on placeholder's type in model-to-view conversion. 
+The `data-placeholder` attribute holds the type of the placeholder and holds information of its type. The text inside `<span>` will be ignored during view-to-model conversion and will be generated based on placeholder's type in model-to-view conversion.
 
 #### The "upcast" conversion
 
@@ -301,7 +300,7 @@ export default class PlaceholderEditing extends Plugin {
 			},
 			model: ( viewElement, modelWriter ) => {
 				const type = viewElement.getAttribute( 'data-placeholder' ) || 'general';
-        
+
 				return modelWriter.createElement( 'placeholder', { type } );
 			}
 		} );
@@ -395,7 +394,7 @@ As you could notice the editing part imports the `./theme/placeholder.css` CSS f
 
 ### Command
 
-A {@link framework/guides/architecture/core-editor-architecture#commands command} for placeholder feature will insert a `<placeholder>` element (if allowed by schema) at the selection. The command will accept `options.value` parameter (other CKEditor 5's'commands also uses this pattern) to set a type of placeholder. 
+A {@link framework/guides/architecture/core-editor-architecture#commands command} for placeholder feature will insert a `<placeholder>` element (if allowed by schema) at the selection. The command will accept `options.value` parameter (other CKEditor 5's'commands also uses this pattern) to set a type of placeholder.
 
 ```js
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -468,7 +467,7 @@ editor.execute( 'placeholder', { value: 'time' } );
 
 This should result in:
 
-@TODO inserted "time" placeholder 
+@TODO inserted "time" placeholder
 
 The command should be enebled anywhere a text can be placed. You can check this by logging it value:
 
@@ -542,7 +541,7 @@ function _prepareDropdownOptions( placeholderTypes ) {
 }
 ```
 
-Add the dropdown to the toolbar: 
+Add the dropdown to the toolbar:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

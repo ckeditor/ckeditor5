@@ -1,12 +1,13 @@
 ---
 category: framework-tutorials
 order: 10
-menu-title: Implementing a simple widget
 ---
 
-# Implementing a simple widget
+# Implementing a block widget
 
-In this tutorial you will learn how to implement a more complex CKEditor 5 plugin. We will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. We will use the widget utils and work with the model-view conversion in order to properly setup the behavior of this feature. Later on, we will create a UI which will allow to insert new simple boxes into the document via the toolbar button and allow controlling simple box properties such as alignment and width.
+In this tutorial you will learn how to implement a more complex CKEditor 5 plugin. We will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. We will use the widget utils and work with the model-view conversion in order to properly setup the behavior of this feature. Later on, we will create a UI which will allow to insert new simple boxes into the document via the toolbar button.
+
+<!-- TODO: and allow controlling simple box properties such as alignment and width. -->
 
 ## Before you start
 
