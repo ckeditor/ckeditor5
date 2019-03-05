@@ -39,11 +39,10 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule( {
 	imports: [
-		...
 		CKEditorModule,
-		...
+		// ...
 	],
-	...
+	// ...
 } )
 ```
 
@@ -53,11 +52,11 @@ Import the editor build in your Angular component and assign it to a `public` pr
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
-	...
+	// ...
 }
 ```
 
@@ -77,8 +76,7 @@ If you want to use the {@link framework/guides/document-editor Document editor b
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
-	...
-} )
+	// ...
 export class MyComponent {
 	public Editor = DecoupledEditor;
 
@@ -105,13 +103,13 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 	```ts
 	@Component( {
-		...
+		// ...
 	} )
 	export class MyComponent {
 		public model = {
 			editorData: '<p>Hello, world!</p>'
 		};
-		...
+		// ...
 	}
 	```
 
@@ -153,11 +151,11 @@ or a shared parent component's property
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public editorData = '<p>Hello, world!</p>';
-	...
+	// ...
 }
 ```
 
@@ -181,11 +179,11 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public isDisabled = false;
-	...
+	// ...
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled
 	}
@@ -348,7 +346,7 @@ Then, you need to configure the editor to use the given language:
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
