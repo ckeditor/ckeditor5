@@ -952,7 +952,7 @@ The last thing you need to do is tell the editor to display the button in the to
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
-		// Insert the "simpleBox" in the editor toolbar.
+		// Insert the "simpleBox" to the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]
 	} )
 	.then( editor => {

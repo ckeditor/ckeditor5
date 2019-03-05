@@ -416,13 +416,14 @@ export default class PlaceholderCommand extends Command {
 Import the created command and add it to editor's commands:
 
 ```js
+// placeholder/placeholderediting.js
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import PlaceholderCommand from './placeholdercommand';                         // ADDED
-
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
@@ -481,6 +482,8 @@ You can say that in the view there is "more" text than in the model. This means 
 Fortunately, CKEditor 5 {@link module:engine/conversion/mapper~Mapper#viewToModelPosition allows customizing the mapping logic}. Also, since mapping to an empty model element is a pretty common scenario, there is a ready-to-use util {@link module:widget/utils~viewToModelPositionOutsideModelElement `viewToModelPositionOutsideModelElement()`} which we can use here like that:
 
 ```js
+// placeholder/placeholderediting.js
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 // MODIFIED
@@ -529,6 +532,8 @@ The CKEditor 5 framework features helpers to create different {@link framework/g
 In this tutorial we will create a dropdown with list of available placeholders.
 
 ```js
+// placeholder/placeholderui.js
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -540,20 +545,25 @@ export default class PlaceholderUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
+		const placeholderNames = [ 'date', 'first name', 'surname' ];
 
-		const placeholderTypes = [ 'date', 'first name', 'surname' ];
-
+		// The "placeholder" dropdown must be registered among UI components of the editor
+		// to be displayed in the toolbar.
 		editor.ui.componentFactory.add( 'placeholder', locale => {
 			const dropdownView = createDropdown( locale );
 
-			addListToDropdown( dropdownView, _prepareDropdownOptions( placeholderTypes ) );
+			// Populate the list in the dropdown with items.
+			addListToDropdown( dropdownView, getDropdownItemsDefinitions( placeholderNames ) );
 
 			dropdownView.buttonView.set( {
+				// The t() function helps localize the editor. All strings enclosed in t() can be
+				// translated and change when the language of the editor changes.
 				label: t( 'Placeholder' ),
 				tooltip: true,
 				withText: true
 			} );
 
+			// Execute the command when the dropdown items is clicked (executed).
 			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( 'placeholder', { value: evt.source.commandParam } );
 				editor.editing.view.focus();
@@ -564,22 +574,21 @@ export default class PlaceholderUI extends Plugin {
 	}
 }
 
-function _prepareDropdownOptions( placeholderTypes ) {
+function getDropdownItemsDefinitions( placeholderNames ) {
 	const itemDefinitions = new Collection();
 
-	for ( const option of placeholderTypes ) {
-		const def = {
+	for ( const name of placeholderNames ) {
+		const definition = {
 			type: 'button',
 			model: new Model( {
-				commandParam: option,
-				label: option,
-				class: 'ck-fontsize-option',
+				commandParam: name,
+				label: name,
 				withText: true
 			} )
 		};
 
-		// Add the option to the collection.
-		itemDefinitions.add( def );
+		// Add the item definition to the collection.
+		itemDefinitions.add( definition );
 	}
 
 	return itemDefinitions;
@@ -589,6 +598,8 @@ function _prepareDropdownOptions( placeholderTypes ) {
 Add the dropdown to the toolbar:
 
 ```js
+// app.js
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -605,25 +616,20 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Placeholder ],
 
-		// MODIFIED
+		// Insert the "placeholder" dropdown to the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ]
 	} )
 	.then( editor => {
-		console.log( 'Editor was initialized', editor );
-
-		CKEditorInspector.attach( 'editor', editor );
-
-		// Expose for playing in the console.
-		window.editor = editor;
+		// ...
 	} )
 	.catch( error => {
-		console.error( error.stack );
+		// ...
 	} );
 ```
 
-To make this plugin extensible the types of placeholders will be read from editor configuration.
+To make this plugin extensible, the types of placeholders will be read from editor configuration.
 
-First step is to define placeholder configuration in the editing plugin:
+The first step is to define placeholder configuration in the editing plugin:
 
 ```js
 // ... imports
@@ -655,11 +661,13 @@ export default class PlaceholderEditing extends Plugin {
 Now let's modify the UI plugin so it will read placeholder types from the configuration:
 
 ```js
+// placeholder/placeholderui.js
+
 export default class PlaceholderUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const placeholderTypes = editor.config.get( 'placeholder.types' );                  // CHANGED
+		const placeholderNames = editor.config.get( 'placeholder.types' );                  // CHANGED
 
 		editor.ui.componentFactory.add( 'placeholder', locale => {
 			// ...
@@ -686,4 +694,4 @@ ClassicEditor
 
 Now if you open the dropdown in the toolbar you'll see new list of placeholders to insert.
 
-@todo Screenshoot of the editor with update toolbar.
+{@img assets/img/tutorial-implementing-an-inline-widget-2.gif An animation of the placeholder widgets being inserted using the dropdown.}
