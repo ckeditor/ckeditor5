@@ -220,7 +220,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 @Component( {
-	//...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
@@ -303,7 +303,7 @@ To display {@link features/editor-placeholder the placeholder} in the main edita
 
 ```ts
 @Component( {
-	//...
+	// ...
 } )
 export class MyComponent {
 	public config = {
