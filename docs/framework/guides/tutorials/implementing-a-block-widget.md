@@ -900,4 +900,69 @@ Now, the command should be disabled also when the selection is inside the descri
 
 ## Creating a button
 
-TODO...
+It is time to allow editor users insert the widget into the content. The best way to do that is through a UI button in the toolbar. You can quickly create one using the {@link module:ui/button/buttonview~ButtonView `ButtonView`} class brought by the {@link framework/guides/architecture/ui-library UI framework} of CKEditor 5.
+
+The button should execute the [command](#creating-a-command) when clicked and become inactive if the widget cannot be inserted in some particular position of the selection ([as defined in the schema](#defining-the-schema)).
+
+Let us see what it looks like in practice and extend the `SimpleBoxUI` plugin [created earlier](#plugin-structure):
+
+```js
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+export default class SimpleBoxUI extends Plugin {
+	init() {
+		console.log( 'SimpleBoxUI#init() got called' );
+
+		const editor = this.editor;
+		const t = editor.t;
+
+		// The "simpleBox" button must be registered among UI components of the editor
+		// to be displayed in the toolbar.
+		editor.ui.componentFactory.add( 'simpleBox', locale => {
+			// The state of the button will be bound to the widget command.
+			const command = editor.commands.get( 'insertSimpleBox' );
+
+			// The button will be an instance of ButtonView.
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				// The t() function helps localize the editor. All strings enclosed in t() can be
+				// translated and change when the language of the editor changes.
+				label: t( 'Simple Box' ),
+				withText: true,
+				tooltip: true
+			} );
+
+			// Bind the state of the button to the command.
+			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute the command when the button is clicked (executed).
+			this.listenTo( buttonView, 'execute', () => editor.execute( 'insertSimpleBox' ) );
+
+			return buttonView;
+		} );
+	}
+}
+```
+
+The last thing you need to do is tell the editor to display the button in the toolbar. To do that, you will need to slightly modify the code that runs the editor instance and include the button in the {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+		// Insert the "simpleBox" in the editor toolbar.
+		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]
+	} )
+	.then( editor => {
+		// ...
+	} )
+	.catch( error => {
+		// ...
+	} );
+```
+
+Refresh the web page and try it yourself:
+
+{@img assets/img/tutorial-implementing-a-widget-7.gif An animation of the simple box widget being inserted using the toolbar button.}
