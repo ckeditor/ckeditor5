@@ -965,4 +965,4 @@ ClassicEditor
 
 Refresh the web page and try it yourself:
 
-{@img assets/img/tutorial-implementing-a-widget-7.gif An animation of the simple box widget being inserted using the toolbar button.}
+{@img assets/img/tutorial-implementing-a-widget-7.png Screenshot of the simple box widget being inserted using the toolbar button.}
