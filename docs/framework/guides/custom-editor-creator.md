@@ -1,15 +1,18 @@
 ---
+menu-title: Creating custom editor
 category: framework-deep-dive-ui
 order: 40
 ---
 
-# Custom editor creator
+# Implementing a custom editor creator
 
-The flexible architecture of CKEditor 5 allows the editor to be customized in many ways. Not only the {@link examples/theme-customization theme styling can be changed} or {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Apart from the standard builds (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like {@link examples/framework/multiple-root-editor **multiple root editor**} can be created.
+The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/framework/multiple-root-editor **multi-root editor**} can be created.
+
+This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/framework/multiple-root-editor demo of the multi-root editor} too.
 
 ## Editor class
 
-The `Editor` class is the main class of each creator which initializes the whole editor and its UI parts. The custom creator class should extend {@link module:core/editor/editor~Editor Editor class}. In case of multiple root editor it may look like below:
+The `*Editor` class is the main class of each editor type. It initializes the whole editor and its UI parts. The custom creator class should extend the {@link module:core/editor/editor~Editor base `Editor` class}. In case of a multi-root editor it may look like below:
 
 ```js
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
@@ -20,7 +23,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * The multiroot editor implementation. It provides an inline editables and a toolbar.
+ * The multi-root editor implementation. It provides an inline editables and a toolbar.
  *
  * Unlike other editors, the toolbar is not rendered automatically and needs to be attached to the DOM manually.
  *
@@ -33,7 +36,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  */
 class MultirootEditor extends Editor {
 	/**
-	 * Creates an instance of the multiroot editor.
+	 * Creates an instance of the multi-root editor.
 	 *
 	 * **Note:** Do not use the constructor to create editor instances. Use the static `MultirootEditor.create()` method instead.
 	 *
@@ -82,12 +85,12 @@ class MultirootEditor extends Editor {
 	}
 
 	/**
-	 * Creates a multiroot editor instance.
+	 * Creates a multi-root editor instance.
 	 *
 	 * @param {Object.<String,HTMLElement>} sourceElements The list of DOM elements that will be the source
 	 * for the created editor (on which the editor will be initialized).
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready. The promise returns the created multiroot editor instance.
+	 * @returns {Promise} A promise resolved once the editor is ready. The promise returns the created multi-root editor instance.
 	 */
 	static create( sourceElements, config ) {
 		return new Promise( resolve => {
@@ -118,7 +121,7 @@ mix( MultirootEditor, DataApiMixin );
 
 ## EditorUI class
 
-The `EditorUI` class is the main UI class which initializes UI components (view and toolbar) and sets up mechanisms like focus tracker or placeholder management. The custom `EditorUI` class should extend {@link module:core/editor/editorui~EditorUI EditorUI class} like below:
+The `*EditorUI` class is the main UI class which initializes UI components (the main view and the toolbar) and sets up mechanisms like focus tracker or placeholder management. The custom `*EditorUI` class should extend the {@link module:core/editor/editorui~EditorUI base `EditorUI` class} like below:
 
 ```js
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
@@ -127,13 +130,13 @@ import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalize
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 
 /**
- * The multiroot editor UI class.
+ * The multi-root editor UI class.
  *
  * @extends module:core/editor/editorui~EditorUI
  */
 class MultirootEditorUI extends EditorUI {
 	/**
-	 * Creates an instance of the multiroot editor UI class.
+	 * Creates an instance of the multi-root editor UI class.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
@@ -268,7 +271,7 @@ class MultirootEditorUI extends EditorUI {
 
 ## EditorUIView class
 
-Finally, the `EditorUIView` class is responsible for registering and handling all editables and creating the editor toolbar. The custom `EditorUIView` class should extend {@link module:ui/editorui/editoruiview~EditorUIView EditorUIView class}:
+Finally, the `*EditorUIView` class is responsible for registering and handling all editables and creating the editor toolbar. The custom `*EditorUIView` class should extend the {@link module:ui/editorui/editoruiview~EditorUIView base `EditorUIView` class}:
 
 ```js
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
@@ -277,14 +280,14 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * The multiroot editor UI view. It is a virtual view providing an inline editable, but without
+ * The multi-root editor UI view. It is a virtual view providing an inline editable, but without
  * any specific arrangement of the components in the DOM.
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
 class MultirootEditorUIView extends EditorUIView {
 	/**
-	 * Creates an instance of the multiroot editor UI view.
+	 * Creates an instance of the multi-root editor UI view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
@@ -303,7 +306,7 @@ class MultirootEditorUIView extends EditorUIView {
 		this.toolbar = new ToolbarView( locale );
 
 		/**
-		 * The editables of the multiroot editor UI.
+		 * The editables of the multi-root editor UI.
 		 *
 		 * @readonly
 		 * @member {Array.<module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView>}
@@ -344,7 +347,9 @@ class MultirootEditorUIView extends EditorUIView {
 
 ## Initializing custom editor instance
 
-Now with the multiple root custom editor creator ready, the fully usable editor instance can be created. With HTML like:
+Now with the multi-root editor creator ready, the fully usable editor instance can be created.
+
+With HTML like:
 
 ```html
 <div id="toolbar"></div>
@@ -384,7 +389,7 @@ Now with the multiple root custom editor creator ready, the fully usable editor 
 </div>
 ```
 
-Editor can be initialized with the code below:
+The editor can be initialized with the code below:
 
 ```js
 MultirootEditor
@@ -421,4 +426,4 @@ MultirootEditor
 	} );
 ```
 
-This will create the exact same editor as one used on {@link examples/framework/multiple-root-editor multiple root editor example page}.
+This will create the exact same editor as the one used on the {@link examples/framework/multiple-root-editor multi-root editor editor example page}.
