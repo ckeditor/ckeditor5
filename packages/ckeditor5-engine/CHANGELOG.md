@@ -43,6 +43,7 @@ Changelog
 * Removed `wrap()` from public API. Closes [#1616](https://github.com/ckeditor/ckeditor5-engine/issues/1616). ([1c7ef68](https://github.com/ckeditor/ckeditor5-engine/commit/1c7ef68))
 * Swapped the order of parameters in `Schema#findAllowedParent()`. Now those parameters match to parameters in other methods of the `Schema` class. Closes [#1636](https://github.com/ckeditor/ckeditor5-engine/issues/1636). ([6515558](https://github.com/ckeditor/ckeditor5-engine/commit/6515558))
 * Upcast element to attribute defaults to `low` priority instead of `normal`. Closes [ckeditor/ckeditor5#1399](https://github.com/ckeditor/ckeditor5/issues/1399). ([c33c49c](https://github.com/ckeditor/ckeditor5-engine/commit/c33c49c))
+* Expose conversion utilities. Closes [#1556](https://github.com/ckeditor/ckeditor5-engine/issues/1556). ([9306c22](https://github.com/ckeditor/ckeditor5-engine/commit/9306c22))
 
 ### BREAKING CHANGES
 
@@ -58,6 +59,20 @@ Changelog
 * The second parameter (`rootName`) from `DataController#init()` method has been removed. To initialize data on a root different than default one an object with `rootName` - `data` pair should be passed.
 * The second parameter (`rootName`) from `DataController#set()` method has been removed. To set data on a root different than default one an object with `rootName` - `data` pair should be passed.
 * The `editing.view.render()` method was renamed to `editing.view.forceRender()`. It should be used with caution as it will re-render editing view and repaint the UI.
+* The `conversion.register()` method now accepts single options object as a parameter.
+* The `downcastElementToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).elementToElement()` instead.
+* The `downcastAttributeToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).attributeToElement()` instead.
+* The `downcastAttributeToAttribute()` helper was removed from public API. Use `conversion.for( 'downcast' ).attributeToAttribute()` instead.
+* The `downcastMarkerToElement()` helper was removed from public API. Use `conversion.for( 'downcast' ).markerToElement()` instead.
+* The `downcastMarkerToHighlight()` helper was removed from public API. Use `conversion.for( 'downcast' ).markerToHighlight()` instead.
+* The `upcastElementToElement()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToElement()` instead.
+* The `upcastElementToAttribute()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToAttribute()` instead.
+* The `upcastAttributeToAttribute()` helper was removed from public API. Use `conversion.for( 'upcast' ).attributeToAttribute()` instead.
+* The `upcastElementToMarker()` helper was removed from public API. Use `conversion.for( 'upcast' ).elementToMarker()` instead.
+* The `insertUIElement()` and `removeUIElement()` downcast converters were removed from public API. Use `conversion.for( 'downcast' ).markerToElement()` instead.
+* The `highlightText()`, `highlightElement()` and `removeHighlight()` downcast converters were removed from public API. Use `conversion.for( 'downcast' ).markerToHighlight()` instead.
+* The `insertElement()` downcast converter was removed from public API. Use `conversion.for( 'downcast' ).elementToElement()` instead.
+* The `changeAttribute()` downcast converter was removed from public API. Use `conversion.for( 'downcast' ).attributeToAttribute()` instead.
 
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v11.0.0...v12.0.0) (2018-12-05)
