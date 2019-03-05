@@ -6,9 +6,9 @@ order: 40
 
 # Implementing a custom editor creator
 
-The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/framework/multiple-root-editor **multi-root editor**} can be created.
+The flexible architecture of CKEditor 5 allows creating completely custom editors. Not only the {@link examples/theme-customization theme styling can be changed} or the {@link examples/custom-ui UI redesigned} but also the entire editor initialization process can be modified allowing to create new editor types. Thanks to that, apart from the standard editors (like {@link examples/builds/classic-editor classic}, {@link examples/builds/inline-editor inline}, {@link examples/builds/balloon-editor balloon} or {@link examples/builds/document-editor document}), custom types like a {@link examples/framework/multi-root-editor **multi-root editor**} can be created.
 
-This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/framework/multiple-root-editor demo of the multi-root editor} too.
+This guide goes through the process of implementing a custom, multi-root editor. You can check out the {@link examples/framework/multi-root-editor demo of the multi-root editor} too.
 
 ## Editor class
 
@@ -426,4 +426,4 @@ MultirootEditor
 	} );
 ```
 
-This will create the exact same editor as the one used on the {@link examples/framework/multiple-root-editor multi-root editor editor example page}.
+This will create the exact same editor as the one used on the {@link examples/framework/multi-root-editor multi-root editor editor example page}.
