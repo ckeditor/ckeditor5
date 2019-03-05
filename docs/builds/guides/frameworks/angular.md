@@ -222,7 +222,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 @Component( {
-	...
+	//...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
@@ -299,9 +299,24 @@ Then, add it in the `angular.json` configuration file.
 }
 ```
 
+### Setting the placeholder
+
+To display {@link features/editor-placeholder the placeholder} in the main editable element simply set the `placeholder` field in the CKEditor 5 component configuration:
+
+```ts
+@Component( {
+	//...
+} )
+export class MyComponent {
+	public config = {
+		placeholder: 'Type the content here!'
+	}
+}
+```
+
 ## Localization
 
-CKEditor 5 can be localized in two steps.
+The CKEditor 5 component can be localized in two steps.
 
 ### 1. Loading translation files
 
