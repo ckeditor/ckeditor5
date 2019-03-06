@@ -126,6 +126,13 @@
 							"order": 100
 						},
 						{
+							"name": "Tutorials",
+							"id": "framework-tutorials",
+							"slug": "tutorials",
+							"order": 200
+						},
+
+						{
 							"name": "Deep dive",
 							"id": "framework-deep-dive",
 							"slug": "deep-dive",
