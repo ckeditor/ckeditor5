@@ -308,7 +308,7 @@ class MultirootEditorUI extends EditorUI {
 			const editingRoot = editingView.document.getRoot( editable.name );
 			const sourceElement = this.getEditableElement( editable.name );
 
-			const placeholderText = editor.config.get( 'placeholder' ) ||
+			const placeholderText = editor.config.get( 'placeholder' )[ editable.name ] ||
 				sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.getAttribute( 'placeholder' );
 
 			if ( placeholderText ) {
@@ -411,7 +411,12 @@ MultirootEditor
 				'mergeTableCells'
 			]
 		},
-		placeholder: 'Type your text here...',
+		placeholder: {
+			header: 'Header text goes here',
+			content: 'Type content here',
+			footerleft: 'Left footer content',
+			footerright: 'Right footer content'
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( newEditor => {
