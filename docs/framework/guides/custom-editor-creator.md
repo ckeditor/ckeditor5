@@ -169,7 +169,32 @@ class MultirootEditorUI extends EditorUI {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		let lastFocusedEditableElement;
+
 		view.render();
+
+		// Keep track of the last focused editable element. Knowing which one was focused
+		// is useful when the focus moves from editable to other UI components like balloons
+		// (especially inputs) but the editable remains the "focus context" (e.g. link balloon
+		// attached to a link in an editable). In this case, the editable should preserve visual
+		// focus styles.
+		this.focusTracker.on( 'change:focusedElement', ( evt, name, focusedElement ) => {
+			for ( const editable of this.view.editables ) {
+				if ( editable.element === focusedElement ) {
+					lastFocusedEditableElement = editable.element;
+				}
+			}
+		} );
+
+		// If the focus tracker loses focus, stop tracking the last focused editable element.
+		// Wherever the focus is restored, it will no longer be in the context of that editable
+		// because the focus "came from the outside", as opposed to the focus moving from one element
+		// to another withing the editor UI.
+		this.focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( !isFocused ) {
+				lastFocusedEditableElement = null;
+			}
+		} );
 
 		for ( const editable of this.view.editables ) {
 			// The editable UI element in DOM is available for sure only after the editor UI view has been rendered.
@@ -192,7 +217,29 @@ class MultirootEditorUI extends EditorUI {
 			// it isn't), e.g. by setting the proper CSS class, visually announcing focus to the user.
 			// Doing otherwise will result in editable focus styles disappearing, once e.g. the
 			// toolbar gets focused.
-			editable.bind( 'isFocused' ).to( this.focusTracker );
+			editable.bind( 'isFocused' ).to( this.focusTracker, 'isFocused', this.focusTracker, 'focusedElement',
+				( isFocused, focusedElement ) => {
+					// When the focus tracker is blurred, it means the focus moved out of the editor UI.
+					// No editable will maintain focus then.
+					if ( !isFocused ) {
+						return false;
+					}
+
+					// If the focus tracker says the editor UI is focused and currently focused element
+					// is the editable, then the editable should be visually marked as focused too.
+					if ( focusedElement === editableElement ) {
+						return true;
+					}
+					// If the focus tracker says the editor UI is focused but the focused element is
+					// not an editable, it is possible that the editable is still (context–)focused.
+					// For instance, the focused element could be an input inside of a balloon attached
+					// to the content in the editable. In such case, the editable should remain _visually_
+					// focused even though technically the focus is somewhere else. The focus moved from
+					// the editable to the input but the focus context remained the same.
+					else {
+						return lastFocusedEditableElement === editableElement;
+					}
+				} );
 
 			// Bind the editable UI element to the editing view, making it an end– and entry–point
 			// of the editor's engine. This is where the engine meets the UI.
