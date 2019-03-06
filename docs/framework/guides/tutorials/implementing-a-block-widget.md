@@ -907,6 +907,8 @@ The button should execute the [command](#creating-a-command) when clicked and be
 Let us see what it looks like in practice and extend the `SimpleBoxUI` plugin [created earlier](#plugin-structure):
 
 ```js
+// simplebox/simpleboxui.js
+
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
