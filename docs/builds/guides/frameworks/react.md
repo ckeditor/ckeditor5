@@ -147,10 +147,134 @@ Integrating the rich text editor from source allows you to use the full power of
 
 This guide assumes that you are using [Create React App CLI](https://github.com/facebook/create-react-app) as your boilerplate and it goes through adjusting it to fit CKEditor 5 needs. If you use your custom webpack setup, please read more about {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source including CKEditor 5 built from source}.
 
+### `create-react-app@2`
+
+If you're using `npm@^5.2.0`, you can use [`npx`](https://github.com/npm/npm/releases/tag/v5.2.0) in order to create an application:
+
+```bash
+npx create-react-app ckeditor5-react-example && cd ckeditor5-react-example
+```
+
+For older versions, firstly you need to install the boilerplate globally:
+
+```bash
+npm install -g create-react-app@^1.0.0
+```
+
+Then:
+
+```bash
+create-react-app ckeditor5-react-example && cd ckeditor5-react-example
+```
+
+Now you can eject the configuration:
+
+```bash
+npm run eject
+```
+
+The configuration needs to be ejected in order to be able to customize webpack configuration. To build CKEditor 5 from source you must load inline SVG images and handle CKEditor 5's CSS.
+
+<info-box>
+	You can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject).
+</info-box>
+
+#### Changes required in webpack's configuration
+
+`CRA@2` comes with single webpack (instead of two as it was in `CRA@1`) config so all changes must be applied only once.
+
+You need to modify the webpack configuration to load CKEditor 5 SVG icons properly.
+
+First, import an object that creates the configuration for PostCSS:
+
+```js
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+```
+
+Then add two new elements to the exported object under the `module.rules` array (as new items for the `oneOf` array). These are SVG and CSS loaders only for CKEditor 5 code:
+
+```js
+{
+  test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+  use: [ 'raw-loader' ]
+},
+{
+  test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+  use: [
+    {
+      loader: 'style-loader',
+      options: {
+        singleton: true
+      }
+    },
+    {
+      loader: 'postcss-loader',
+      options: styles.getPostCssConfig( {
+        themeImporter: {
+          themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+        },
+        minify: true
+      } )
+    }
+  ]
+},
+```
+
+Exclude CSS files used by CKEditor 5 from project's CSS loader. 
+Find a loader that starts its definition with the following code: `test: cssRegex` and modify it:
+
+```js
+{
+  test: cssRegex,
+  exclude: [
+    cssModuleRegex,
+    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+  ],
+  // (...)
+}
+```
+
+Below should be located another loader that handles CSS files. We need to disable it for CKEditor 5 CSS as well. 
+Its definition starts with `test: cssModuleRegex`:
+
+```js
+{
+  test: cssModuleRegex,
+  exclude: [
+    /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+  ],
+  // (...)
+}
+```
+
+And exclude CKEditor 5 SVG and CSS files from `file-loader` because these files will be handled by the loaders added previously (usually the last item in the `module.rules` array is the `file-loader`) so it looks like this:
+
+```js
+{
+  loader: require.resolve('file-loader'),
+  // Exclude `js` files to keep "css" loader working as it injects
+  // its runtime that would otherwise be processed through "file" loader.
+  // Also exclude `html` and `json` extensions so they get processed
+  // by webpacks internal loaders.
+  exclude: [
+  /\.(js|mjs|jsx|ts|tsx)$/,
+  /\.html$/,
+  /\.json$/,
+  /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+  /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
+  ],
+  options: {
+    name: 'static/media/[name].[hash:8].[ext]',
+  }
+}
+```
+
+### `create-react-app@1`
+
 Install React CLI:
 
 ```bash
-npm install -g create-react-app
+npm install -g create-react-app@^1.0.0
 ```
 
 Create your project using the CLI and go to the project's directory:
@@ -171,7 +295,7 @@ The configuration needs to be ejected in order to be able to customize webpack c
 	You can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject).
 </info-box>
 
-### Changes required in webpack's production configuration
+#### Changes required in webpack's production configuration
 
 At this stage, if you tried to build your application with CKEditor 5 source included, you would get the following error:
 
@@ -233,7 +357,7 @@ new UglifyJsWebpackPlugin( {
 } )
 ```
 
-### Changes required in both webpack configurations
+#### Changes required in both webpack configurations
 
 In order to build your application properly, you need to modify your webpack configuration files. After ejecting they are located at:
 
