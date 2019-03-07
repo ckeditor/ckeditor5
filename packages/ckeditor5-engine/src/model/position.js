@@ -828,11 +828,13 @@ export default class Position {
 	 * * {@link module:engine/model/position~Position._createAfter}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when the
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness. Used only when the
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 * @protected
 	 */
-	static _createAt( itemOrPosition, offset ) {
+	static _createAt( itemOrPosition, offset, stickiness = 'toNone' ) {
 		if ( itemOrPosition instanceof Position ) {
 			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
@@ -841,9 +843,9 @@ export default class Position {
 			if ( offset == 'end' ) {
 				offset = node.maxOffset;
 			} else if ( offset == 'before' ) {
-				return this._createBefore( node );
+				return this._createBefore( node, stickiness );
 			} else if ( offset == 'after' ) {
-				return this._createAfter( node );
+				return this._createAfter( node, stickiness );
 			} else if ( offset !== 0 && !offset ) {
 				/**
 				 * {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}
@@ -869,7 +871,7 @@ export default class Position {
 
 			path.push( offset );
 
-			return new this( node.root, path );
+			return new this( node.root, path, stickiness );
 		}
 	}
 
@@ -877,10 +879,11 @@ export default class Position {
 	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
 	 * @returns {module:engine/model/position~Position}
 	 * @protected
 	 */
-	static _createAfter( item ) {
+	static _createAfter( item, stickiness ) {
 		if ( !item.parent ) {
 			/**
 			 * You can not make a position after a root element.
@@ -891,17 +894,18 @@ export default class Position {
 			throw new CKEditorError( 'model-position-after-root: You cannot make a position after root.', { root: item } );
 		}
 
-		return this._createAt( item.parent, item.endOffset );
+		return this._createAt( item.parent, item.endOffset, stickiness );
 	}
 
 	/**
 	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
 	 *
 	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness='toNone'] Position stickiness.
 	 * @returns {module:engine/model/position~Position}
 	 * @protected
 	 */
-	static _createBefore( item ) {
+	static _createBefore( item, stickiness ) {
 		if ( !item.parent ) {
 			/**
 			 * You can not make a position before a root element.
@@ -912,7 +916,7 @@ export default class Position {
 			throw new CKEditorError( 'model-position-before-root: You cannot make a position before root.', { root: item } );
 		}
 
-		return this._createAt( item.parent, item.startOffset );
+		return this._createAt( item.parent, item.startOffset, stickiness );
 	}
 
 	/**
@@ -943,10 +947,7 @@ export default class Position {
 			);
 		}
 
-		const pos = new Position( doc.getRoot( json.root ), json.path );
-		pos.stickiness = json.stickiness;
-
-		return pos;
+		return new Position( doc.getRoot( json.root ), json.path, json.stickiness );
 	}
 }
 
