@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-color-table .ck-color-table__table {
+	margin: 0.5em 0.5em 0 0.5em;
+	width: 14em;
+	border-collapse: separate;
+	border-spacing: 0.2em;
+}
+
+.ck-color-table .ck-color-table__cell-color {
+	width: 2em;
+	height: 2em;
+	border: 0.1em solid #000;
+	transition-property: border-width;
+	transition-duration: 0.1s;
+	transition-timing-function: ease;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 0;
+}
+
+.ck-color-table .ck-color-table__cell-color:hover {
+	border-width: 0.2em;
+}
+
+.ck-color-table .ck-color-table__cell-color_active::before {
+	content: "✓";
+	font-size: 1.2em;
+	color: white;
+	text-shadow: -1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+.ck-color-table .ck-color-table__remove-color {
+	margin: 0.5em;
+}

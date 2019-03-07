@@ -12,8 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import fontColorIcon from '../../theme/icons/font-family.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { normalizeOptions } from './utils';
-import InsertColorView from '../ui/insertcolorview';
-
+import ColorTableView from '../ui/colortableview';
 export default class FontColorUI extends Plugin {
 	/**
 	 * @inheritDoc
@@ -29,10 +28,14 @@ export default class FontColorUI extends Plugin {
 		editor.ui.componentFactory.add( 'fontColor', locale => {
 			const dropdownView = createDropdown( locale );
 
-			const insertColorView = new InsertColorView( locale, options );
-			dropdownView.panelView.children.add( insertColorView );
+			const colorTableView = new ColorTableView( locale, {
+				colors: options.map( item => ( { name: item.label, color: item.model } ) )
+			} );
 
-			insertColorView.delegate( 'execute' ).to( dropdownView );
+			dropdownView.panelView.children.add( colorTableView );
+
+			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
+			colorTableView.delegate( 'colorPicked' ).to( dropdownView, 'execute' );
 
 			dropdownView.buttonView.set( {
 				label: t( 'Font Color' ),
