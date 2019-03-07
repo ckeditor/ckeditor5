@@ -17,9 +17,7 @@ export function normalizeOptions( configuredOptions ) {
 
 export function renderUpcastAttribute( viewElement ) {
 	const fontColor = viewElement.getStyle( 'color' );
-	const value = fontColor;
-
-	return value;
+	return normalizeColorCode( fontColor );
 }
 
 export function renderDowncastElement( modelAttributeValue, viewWriter ) {
@@ -41,4 +39,8 @@ function getOptionDefinition( option ) {
 			priority: 5
 		}
 	};
+}
+
+function normalizeColorCode( color ) {
+	return color.replace( /\s/g, '' );
 }

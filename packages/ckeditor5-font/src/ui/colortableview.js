@@ -8,15 +8,16 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import '../../theme/fontcolor.css';
-
 export default class ColorTableView extends View {
 	constructor( locale, { colors, columns = 6 } ) {
 		super( locale );
+		const bind = this.bindTemplate;
 
 		this.COLUMNS = columns;
 		this.colorsDefinition = colors;
 
 		this.set( 'selectedColor' );
+		this.set( 'hoveredColor' );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -25,7 +26,10 @@ export default class ColorTableView extends View {
 			},
 			children: [
 				this.createColorTableTemplate(),
-				this.removeColorButton()
+				this.removeColorButton(),
+				{
+					text: bind.to( 'hoveredColor' )
+				}
 			]
 		} );
 	}
@@ -89,6 +93,12 @@ export default class ColorTableView extends View {
 				on: {
 					click: bind.to( () => {
 						this.fire( 'colorPicked', { value: this.colorsDefinition[ index * this.COLUMNS + i ].color } );
+					} ),
+					mouseover: bind.to( () => {
+						this.set( 'hoveredColor', this.colorsDefinition[ index * this.COLUMNS + i ].name );
+					} ),
+					mouseout: bind.to( () => {
+						this.set( 'hoveredColor', undefined );
 					} )
 				}
 			} ) );
