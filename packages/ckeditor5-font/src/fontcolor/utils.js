@@ -21,7 +21,7 @@ function getOptionDefinition( option ) {
 		view: {
 			name: 'span',
 			styles: {
-				color: `#${ option.color }`
+				color: `${ option.color }`
 			},
 			priority: 5
 		}

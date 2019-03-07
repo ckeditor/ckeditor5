@@ -73,7 +73,7 @@ export default class ColorTableView extends View {
 				tag: 'td',
 				attributes: {
 					style: {
-						backgroundColor: `#${ this.colorsDefinition[ index * this.COLUMNS + i ].color }`
+						backgroundColor: `${ this.colorsDefinition[ index * this.COLUMNS + i ].color }`
 					},
 					class: [
 						'ck-color-table__cell-color',

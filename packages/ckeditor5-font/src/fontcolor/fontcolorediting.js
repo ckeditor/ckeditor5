@@ -24,99 +24,99 @@ export default class FontColorEditing extends Plugin {
 			options: [
 				{
 					label: 'Strong Cyan',
-					color: '1ABC9C'
+					color: '#1ABC9C'
 				},
 				{
 					label: 'Emerald',
-					color: '2ECC71'
+					color: '#2ECC71'
 				},
 				{
 					label: 'Bright Blue',
-					color: '3498DB'
+					color: '#3498DB'
 				},
 				{
 					label: 'Amethyst',
-					color: '9B59B6'
+					color: '#9B59B6'
 				},
 				{
 					label: 'Grayish Blue',
-					color: '4E5F70'
+					color: '#4E5F70'
 				},
 				{
 					label: 'Vivid Yellow',
-					color: 'F1C40F'
+					color: '#F1C40F'
 				},
 				{
 					label: 'Dark Cyan',
-					color: '16A085'
+					color: '#16A085'
 				},
 				{
 					label: 'Dark Emerald',
-					color: '27AE60'
+					color: '#27AE60'
 				},
 				{
 					label: 'Strong Blue',
-					color: '2980B9'
+					color: '#2980B9'
 				},
 				{
 					label: 'Dark Violet',
-					color: '8E44AD'
+					color: '#8E44AD'
 				},
 				{
 					label: 'Desaturated Blue',
-					color: '2C3E50'
+					color: '#2C3E50'
 				},
 				{
 					label: 'Orange',
-					color: 'F39C12'
+					color: '#F39C12'
 				},
 				{
 					label: 'Carrot',
-					color: 'E67E22'
+					color: '#E67E22'
 				},
 				{
 					label: 'Pale Red',
-					color: 'E74C3C'
+					color: '#E74C3C'
 				},
 				{
 					label: 'Bright Silver',
-					color: 'ECF0F1'
+					color: '#ECF0F1'
 				},
 				{
 					label: 'Light Grayish Cyan',
-					color: '95A5A6'
+					color: '#95A5A6'
 				},
 				{
 					label: 'Light Gray',
-					color: 'DDD'
+					color: '#DDD'
 				},
 				{
 					label: 'White',
-					color: 'FFF'
+					color: '#FFF'
 				},
 				{
 					label: 'Pumpkin',
-					color: 'D35400'
+					color: '#D35400'
 				},
 				{
 					label: 'Strong Red',
-					color: 'C0392B'
+					color: '#C0392B'
 				},
 				{
 					label: 'Silver',
-					color: 'BDC3C7'
+					color: '#BDC3C7'
 				},
 				{
 					label: 'Grayish Cyan',
-					color: '7F8C8D'
+					color: '#7F8C8D'
 				},
 				{
 					label: 'Dark Gray',
-					color: '999'
+					color: '#999'
 				},
 				{
 					label: 'Black',
-					color: '000'
+					color: '#000'
 				}
 			]
 		} );
@@ -155,13 +155,13 @@ export default class FontColorEditing extends Plugin {
 
 function _renderUpcastAttribute( viewElement ) {
 	const fontColor = viewElement.getStyle( 'color' );
-	const value = fontColor.replace( '#', '' );
+	const value = fontColor;
 
 	return value;
 }
 
 function _renderDowncastElement( modelAttributeValue, viewWriter ) {
 	return viewWriter.createAttributeElement( 'span', {
-		style: 'color:#' + modelAttributeValue
+		style: 'color:' + modelAttributeValue
 	} );
 }
