@@ -7,10 +7,25 @@
  * @module font/fontcolor/utils
  */
 
+export const FONT_COLOR = 'fontColor';
+
 export function normalizeOptions( configuredOptions ) {
 	return configuredOptions
 		.map( getOptionDefinition )
 		.filter( option => !!option );
+}
+
+export function renderUpcastAttribute( viewElement ) {
+	const fontColor = viewElement.getStyle( 'color' );
+	const value = fontColor;
+
+	return value;
+}
+
+export function renderDowncastElement( modelAttributeValue, viewWriter ) {
+	return viewWriter.createAttributeElement( 'span', {
+		style: 'color:' + modelAttributeValue
+	} );
 }
 
 function getOptionDefinition( option ) {

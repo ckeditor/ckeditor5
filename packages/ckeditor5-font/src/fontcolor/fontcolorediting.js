@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontColorCommand from './fontcolorcommand';
 
-const FONT_COLOR = 'fontColor';
+import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from './utils';
 
 export default class FontColorEditing extends Plugin {
 	/**
@@ -125,18 +125,18 @@ export default class FontColorEditing extends Plugin {
 			view: {
 				name: 'span',
 				styles: {
-					'color': /#\d+/
+					'color': /[\s\S]+/
 				}
 			},
 			model: {
-				key: 'fontColor',
-				value: _renderUpcastAttribute
+				key: FONT_COLOR,
+				value: renderUpcastAttribute
 			}
 		} );
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
-			model: 'fontColor',
-			view: _renderDowncastElement
+			model: FONT_COLOR,
+			view: renderDowncastElement
 		} );
 
 		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
@@ -151,17 +151,4 @@ export default class FontColorEditing extends Plugin {
 		// Allow fontColor attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );
 	}
-}
-
-function _renderUpcastAttribute( viewElement ) {
-	const fontColor = viewElement.getStyle( 'color' );
-	const value = fontColor;
-
-	return value;
-}
-
-function _renderDowncastElement( modelAttributeValue, viewWriter ) {
-	return viewWriter.createAttributeElement( 'span', {
-		style: 'color:' + modelAttributeValue
-	} );
 }

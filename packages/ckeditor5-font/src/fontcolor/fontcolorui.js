@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import fontColorIcon from '../../theme/icons/font-family.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { normalizeOptions } from './utils';
+import { normalizeOptions, FONT_COLOR } from './utils';
 import ColorTableView from '../ui/colortableview';
 export default class FontColorUI extends Plugin {
 	/**
@@ -20,12 +20,12 @@ export default class FontColorUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const command = editor.commands.get( 'fontColor' );
+		const command = editor.commands.get( FONT_COLOR );
 
 		const options = this._getLocalizedOptions();
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'fontColor', locale => {
+		editor.ui.componentFactory.add( FONT_COLOR, locale => {
 			const dropdownView = createDropdown( locale );
 
 			const colorTableView = new ColorTableView( locale, {
@@ -52,7 +52,7 @@ export default class FontColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			dropdownView.on( 'execute', ( evt, val ) => {
-				editor.execute( 'fontColor', val );
+				editor.execute( FONT_COLOR, val );
 			} );
 
 			return dropdownView;
@@ -72,7 +72,7 @@ export default class FontColorUI extends Plugin {
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
-		const options = normalizeOptions( editor.config.get( 'fontColor.options' ) );
+		const options = normalizeOptions( editor.config.get( `${ FONT_COLOR }.options` ) );
 
 		return options;
 	}

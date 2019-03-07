@@ -8,12 +8,12 @@
  */
 
 import FontCommand from '../fontcommand';
-
+import { FONT_COLOR } from './utils';
 export default class FontColorCommand extends FontCommand {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( editor ) {
-		super( editor, 'fontColor' );
+		super( editor, FONT_COLOR );
 	}
 }
