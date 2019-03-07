@@ -349,8 +349,11 @@ class Insertion {
 	}
 
 	/**
-	 * Sets `_affectedStart` and `_affectedEnd` to the given `position`. Should be used before change is done during insertion process to
+	 * Sets `_affectedStart` and `_affectedEnd` to the given `position`. Should be used before a change is done during insertion process to
 	 * mark the affected range.
+	 *
+	 * This method is used before inserting a node or splitting a parent node. `_affectedStart` and `_affectedEnd` are also changed
+	 * during merging, but the logic there is more complicated so it is left out of this function.
 	 *
 	 * @private
 	 * @param {module:engine/model/position~Position} position
@@ -402,6 +405,9 @@ class Insertion {
 			// by hand to properly reflect affected range. (Due to `_affectedStart` and `_affectedEnd` stickiness, the "range" is
 			// shown as `][`).
 			//
+			// Example - insert `<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>` at the end of `<paragraph>Foo^</paragraph>`:
+			//
+			// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
 			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>   -->
 			// <paragraph>Foo]Abc</paragraph><paragraph>Xyz</paragraph>[<paragraph>Bar</paragraph>
 			//
@@ -415,6 +421,9 @@ class Insertion {
 
 			// If only one element (the merged one) is in the "affected range", also move the affected range end appropriately.
 			//
+			// Example - insert `<paragraph>Abc</paragraph>` at the of `<paragraph>Foo^</paragraph>`:
+			//
+			// <paragraph>Foo</paragraph><paragraph>Bar</paragraph>   -->
 			// <paragraph>Foo</paragraph>]<paragraph>Abc</paragraph>[<paragraph>Bar</paragraph>   -->
 			// <paragraph>Foo]Abc</paragraph>[<paragraph>Bar</paragraph>   -->
 			// <paragraph>Foo]Abc[</paragraph><paragraph>Bar</paragraph>
