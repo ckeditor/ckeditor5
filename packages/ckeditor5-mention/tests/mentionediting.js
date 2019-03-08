@@ -6,6 +6,8 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import MentionEditing from '../src/mentionediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'MentionEditing', () => {
 	testUtils.createSinonSandbox();
@@ -15,6 +17,8 @@ describe( 'MentionEditing', () => {
 	} );
 
 	describe( 'init()', () => {
+		let editor, model;
+
 		it( 'should be loaded', () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -25,7 +29,7 @@ describe( 'MentionEditing', () => {
 		it( 'should set proper schema rules', () => {
 			return createTestEditor()
 				.then( newEditor => {
-					const model = newEditor.model;
+					model = newEditor.model;
 
 					expect( model.schema.checkAttribute( [ '$root', '$text' ], 'mention' ) ).to.be.true;
 
@@ -35,12 +39,31 @@ describe( 'MentionEditing', () => {
 					expect( model.schema.checkAttribute( [ '$block' ], 'mention' ) ).to.be.false;
 				} );
 		} );
+
+		describe( 'conversion in the data pipeline', () => {
+			beforeEach( () => {
+				return createTestEditor()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+					} );
+			} );
+
+			it( 'should convert <span class="mention" data-mention="John"> to mention attribute', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo <$text mention="John">John</$text> bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+			} );
+		} );
 	} );
 
 	function createTestEditor( mentionConfig ) {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ MentionEditing ],
+				plugins: [ Paragraph, MentionEditing ],
 				mention: mentionConfig
 			} );
 	}
