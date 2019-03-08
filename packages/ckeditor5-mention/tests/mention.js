@@ -4,8 +4,10 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Mention from '../src/mention';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+import Mention from '../src/mention';
+import MentionEditing from '../src/mentionediting';
 
 describe( 'Mention', () => {
 	let editorElement, editor;
@@ -35,5 +37,9 @@ describe( 'Mention', () => {
 
 	it( 'has proper name', () => {
 		expect( Mention.pluginName ).to.equal( 'Mention' );
+	} );
+
+	it( 'should load MentionEditing plugin', () => {
+		expect( editor.plugins.get( MentionEditing ) ).to.instanceOf( MentionEditing );
 	} );
 } );

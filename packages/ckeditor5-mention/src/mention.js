@@ -9,6 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import MentionEditing from './mentionediting';
+
 /**
  * The mention plugin.
  *
@@ -22,5 +24,12 @@ export default class Mention extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Mention';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ MentionEditing ];
 	}
 }
