@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FontColorEditing from './fontcolor/fontcolorediting';
 import FontColorUI from './fontcolor/fontcolorui';
 
-export default class FontFamily extends Plugin {
+export default class FontColor extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

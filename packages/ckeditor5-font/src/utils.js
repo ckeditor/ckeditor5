@@ -35,3 +35,44 @@ export function buildDefinition( modelAttributeKey, options ) {
 
 	return definition;
 }
+
+export const FONT_COLOR = 'fontColor';
+export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
+
+export function renderUpcastAttribute( styleAttr ) {
+	return viewElement => {
+		const fontColor = viewElement.getStyle( styleAttr );
+		return normalizeColorCode( fontColor );
+	};
+}
+
+export function renderDowncastElement( styleAttr ) {
+	return ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'span', {
+		style: `${ styleAttr }:${ modelAttributeValue }`
+	} );
+}
+
+function normalizeColorCode( value ) {
+	return value.replace( /\s/g, '' );
+}
+
+export function normalizeOptions( configuredOptions ) {
+	return configuredOptions
+		.map( getOptionDefinition )
+		.filter( option => !!option );
+}
+
+function getOptionDefinition( option ) {
+	return {
+		title: option.label,
+		model: option.color,
+		label: option.label,
+		view: {
+			name: 'span',
+			styles: {
+				color: `${ option.color }`
+			},
+			priority: 5
+		}
+	};
+}

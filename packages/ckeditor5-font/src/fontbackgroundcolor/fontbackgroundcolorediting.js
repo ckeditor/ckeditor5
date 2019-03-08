@@ -9,18 +9,18 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import FontColorCommand from './fontcolorcommand';
+import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
 
-import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
+import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 
-export default class FontColorEditing extends Plugin {
+export default class FontBackgroundColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( FONT_COLOR, {
+		editor.config.define( FONT_BACKGROUND_COLOR, {
 			options: [
 				{
 					label: 'Strong Cyan',
@@ -125,21 +125,21 @@ export default class FontColorEditing extends Plugin {
 			view: {
 				name: 'span',
 				styles: {
-					'color': /[\s\S]+/
+					'background-color': /[\s\S]+/
 				}
 			},
 			model: {
-				key: FONT_COLOR,
-				value: renderUpcastAttribute( 'color' )
+				key: FONT_BACKGROUND_COLOR,
+				value: renderUpcastAttribute( 'background-color' )
 			}
 		} );
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
-			model: FONT_COLOR,
-			view: renderDowncastElement( 'color' )
+			model: FONT_BACKGROUND_COLOR,
+			view: renderDowncastElement( 'background-color' )
 		} );
 
-		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
+		editor.commands.add( FONT_BACKGROUND_COLOR, new FontBackgroundColorCommand( editor ) );
 	}
 
 	/**
@@ -148,7 +148,7 @@ export default class FontColorEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Allow fontColor attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );
+		// Allow fontBackgroundColor attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: FONT_BACKGROUND_COLOR } );
 	}
 }

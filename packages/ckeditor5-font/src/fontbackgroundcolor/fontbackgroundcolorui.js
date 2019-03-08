@@ -4,28 +4,28 @@
  */
 
 /**
- * @module font/fontcolor/fontcolorui
+ * @module font/fontbackgroundcolor/fontbackgroundolorui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import fontColorIcon from '../../theme/icons/font-family.svg';
+import fontBackgroundColorIcon from '../../theme/icons/font-family.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { FONT_COLOR, normalizeOptions } from '../utils';
+import { FONT_BACKGROUND_COLOR, normalizeOptions } from '../utils';
 import ColorTableView from '../ui/colortableview';
-export default class FontColorUI extends Plugin {
+export default class FontBackgroundColorUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const command = editor.commands.get( FONT_COLOR );
+		const command = editor.commands.get( FONT_BACKGROUND_COLOR );
 
 		const options = this._getLocalizedOptions();
 
 		// Register UI component.
-		editor.ui.componentFactory.add( FONT_COLOR, locale => {
+		editor.ui.componentFactory.add( FONT_BACKGROUND_COLOR, locale => {
 			const dropdownView = createDropdown( locale );
 
 			const colorTableView = new ColorTableView( locale, {
@@ -38,8 +38,8 @@ export default class FontColorUI extends Plugin {
 			colorTableView.delegate( 'colorPicked' ).to( dropdownView, 'execute' );
 
 			dropdownView.buttonView.set( {
-				label: t( 'Font Color' ),
-				icon: fontColorIcon,
+				label: t( 'Font Background Color' ),
+				icon: fontBackgroundColorIcon,
 				tooltip: true
 			} );
 
@@ -52,7 +52,7 @@ export default class FontColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			dropdownView.on( 'execute', ( evt, val ) => {
-				editor.execute( FONT_COLOR, val );
+				editor.execute( FONT_BACKGROUND_COLOR, val );
 			} );
 
 			return dropdownView;
@@ -72,7 +72,7 @@ export default class FontColorUI extends Plugin {
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
-		const options = normalizeOptions( editor.config.get( `${ FONT_COLOR }.options` ) );
+		const options = normalizeOptions( editor.config.get( `${ FONT_BACKGROUND_COLOR }.options` ) );
 
 		return options;
 	}

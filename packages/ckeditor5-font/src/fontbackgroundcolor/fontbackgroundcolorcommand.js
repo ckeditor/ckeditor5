@@ -4,16 +4,16 @@
  */
 
 /**
- * @module font/fontcolor/fontcolorcommand
+ * @module font/fontbackgroundcolor/fontbackgroundcolorcommand
  */
 
 import FontCommand from '../fontcommand';
-import { FONT_COLOR } from '../utils';
-export default class FontColorCommand extends FontCommand {
+import { FONT_BACKGROUND_COLOR } from '../utils';
+export default class FontBackgroundColorCommand extends FontCommand {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( editor ) {
-		super( editor, FONT_COLOR );
+		super( editor, FONT_BACKGROUND_COLOR );
 	}
 }
