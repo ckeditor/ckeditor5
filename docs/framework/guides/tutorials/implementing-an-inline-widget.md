@@ -297,8 +297,8 @@ export default class PlaceholderEditing extends Plugin {
 		return [ Widget ];
 	}
 
-	constructor( editor ) {
-		super( editor );
+	init() {
+		console.log( 'PlaceholderEditing#init() got called' );
 
 		this._defineSchema();
 		this._defineConverters();                                              // ADDED
@@ -428,6 +428,8 @@ import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
 	init() {
+		console.log( 'PlaceholderEditing#init() got called' );
+
 		this._defineSchema();
 		this._defineConverters();
 
@@ -499,6 +501,8 @@ import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
 	init() {
+		console.log( 'PlaceholderEditing#init() got called' );
+
 		this._defineSchema();
 		this._defineConverters();
 
@@ -635,13 +639,18 @@ The first step is to define placeholder configuration in the editing plugin:
 // ... imports
 
 export default class PlaceholderEditing extends Plugin {
-	constructor( editor ) {
-		super( editor );
+	init() {
+		console.log( 'PlaceholderEditing#init() got called' );
 
 		this._defineSchema();
 		this._defineConverters();
 
 		this.editor.commands.add( 'placeholder', new PlaceholderCommand( this.editor ) );
+
+		this.editor.editing.mapper.on(
+			'viewToModelPosition',
+			viewToModelPositionOutsideModelElement( this.editor.model, viewElement => viewElement.hasClass( 'placeholder' ) )
+		);
 
 		this.editor.config.define( 'placeholder', {                                 // ADDED
 			types: [ 'date', 'first name', 'surname' ]
