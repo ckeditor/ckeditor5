@@ -21,6 +21,20 @@ describe( 'MentionEditing', () => {
 					expect( newEditor.plugins.get( MentionEditing ) ).to.be.instanceOf( MentionEditing );
 				} );
 		} );
+
+		it( 'should set proper schema rules', () => {
+			return createTestEditor()
+				.then( newEditor => {
+					const model = newEditor.model;
+
+					expect( model.schema.checkAttribute( [ '$root', '$text' ], 'mention' ) ).to.be.true;
+
+					expect( model.schema.checkAttribute( [ '$block', '$text' ], 'mention' ) ).to.be.true;
+					expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'mention' ) ).to.be.true;
+
+					expect( model.schema.checkAttribute( [ '$block' ], 'mention' ) ).to.be.false;
+				} );
+		} );
 	} );
 
 	function createTestEditor( mentionConfig ) {

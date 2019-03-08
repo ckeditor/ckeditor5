@@ -21,4 +21,14 @@ export default class MentionEditing extends Plugin {
 	static get pluginName() {
 		return 'MentionEditing';
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+
+		// Allow fontSize attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'mention' } );
+	}
 }
