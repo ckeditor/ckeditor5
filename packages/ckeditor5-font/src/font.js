@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontFamily from './fontfamily';
 import FontSize from './fontsize';
+import FontColor from './fontcolor';
+import FontBackgroundColor from './fontbackgroundcolor';
 
 /**
  * A plugin that enables a set of text styling features:
@@ -28,7 +30,7 @@ export default class Font extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FontFamily, FontSize ];
+		return [ FontFamily, FontSize, FontColor, FontBackgroundColor ];
 	}
 
 	/**
