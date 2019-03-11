@@ -87,6 +87,23 @@ describe( 'MentionEditing', () => {
 				expect( editor.getData() ).to.equal( '<p>foo Jhn bar</p>' );
 			} );
 
+			it( 'should remove mention on removing a text at the and of a mention', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				// Set selection at the end of a John.
+				model.change( writer => {
+					writer.setSelection( paragraph, 8 );
+				} );
+
+				model.change( writer => {
+					writer.remove( writer.createRange( writer.createPositionAt( paragraph, 7 ), writer.createPositionAt( paragraph, 8 ) ) );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo Joh bar</p>' );
+			} );
+
 			it( 'should work on insert text to an empty node', () => {
 				editor.setData( '<p></p>' );
 
