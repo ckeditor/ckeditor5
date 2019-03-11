@@ -195,6 +195,24 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
+	describe( '_refresh()', () => {
+		it( 'should fire update:<markerName> event', () => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+
+			markers._refresh( 'name' );
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range, false, false );
+		} );
+
+		it( 'should throw if marker does not exist', () => {
+			expect( () => {
+				markers._refresh( 'name' );
+			} ).to.throw( CKEditorError, 'markers-refresh-marker-not-exists: Marker with provided name does not exists.' );
+		} );
+	} );
+
 	describe( 'getMarkersGroup', () => {
 		it( 'returns all markers which names start on given prefix', () => {
 			const markerFooA = markers._set( 'foo:a', range );

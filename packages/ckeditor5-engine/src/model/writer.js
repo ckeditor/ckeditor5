@@ -939,12 +939,37 @@ export default class Writer {
 	}
 
 	/**
-	 * Adds or updates a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
+	 * Adds updates or refreshes a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
 	 * changes in the document and updates its range automatically, when model tree changes. Still, it is possible to change the
 	 * marker's range directly using this method.
 	 *
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
+	 *
+	 * As the second parameter you can set the new marker data or leave this parameter as empty what will only refresh
+	 * the marker by triggering downcast conversion for it. Refreshing the marker is useful when you want to change
+	 * the marker {@link module:engine/view/element~Element view element} without changing any marker data.
+	 *
+	 * 		let isCommentActive = false;
+	 *
+	 * 		model.conversion.markerToHighlight( {
+	 * 			model: 'comment',
+	 *			view: data => {
+	 *				const classes = [ 'comment-marker' ];
+	 *
+	 *				if ( isCommentActive ) {
+	 *					classes.push( 'comment-marker--active' );
+	 *				}
+	 *
+	 *				return { classes };
+	 *			}
+	 * 		} );
+	 *
+	 * 		// Change the property that indicates if marker is displayed as active or not.
+	 * 		isCommentActive = true;
+	 *
+	 * 		// And refresh the marker to convert it with additional class.
+	 * 		model.change( writer => writer.updateMarker( 'comment' ) );
 	 *
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
@@ -975,13 +1000,14 @@ export default class Writer {
 	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
-	 * @param {Object} options
+	 * @param {Object} [options] If options object is not defined then marker will be refreshed by triggering
+	 * downcast conversion for this marker with the same data.
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
 	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the editor data.
 	 */
-	updateMarker( markerOrName, options = {} ) {
+	updateMarker( markerOrName, options ) {
 		this._assertWriterUsedCorrectly();
 
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -994,6 +1020,12 @@ export default class Writer {
 			 * @error writer-updateMarker-marker-not-exists
 			 */
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
+		}
+
+		if ( !options ) {
+			this.model.markers._refresh( currentMarker );
+
+			return;
 		}
 
 		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';

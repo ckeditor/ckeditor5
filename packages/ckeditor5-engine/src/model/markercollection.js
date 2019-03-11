@@ -154,6 +154,27 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Fires an {@link module:engine/model/markercollection~MarkerCollection#event:update} event for the given {@link ~Marker marker}
+	 * but does not change the marker. Useful to force {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast
+	 * conversion} for the marker.
+	 *
+	 * @protected
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
+	 * @param {String} markerOrName Marker or name of a marker to refresh.
+	 */
+	_refresh( markerOrName ) {
+		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
+		const marker = this._markers.get( markerName );
+
+		if ( !marker ) {
+			throw new CKEditorError( 'markers-refresh-marker-not-exists: Marker with provided name does not exists.' );
+		}
+
+		const range = marker.getRange();
+		this.fire( 'update:' + markerName, marker, range, range, marker.managedUsingOperations, marker.affectsData );
+	}
+
+	/**
 	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position
