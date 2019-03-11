@@ -29,10 +29,10 @@ export default class FontColorUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 
 			const colorTableView = new ColorTableView( locale, {
-				colors: options.map( item => ( { name: item.label, color: item.model } ) ),
-				removeButtonTooltip: t( 'Remove text color' )
+				colors: options.map( item => ( { name: item.label, color: item.model } ) )
 			} );
 
+			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 			dropdownView.panelView.children.add( colorTableView );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );

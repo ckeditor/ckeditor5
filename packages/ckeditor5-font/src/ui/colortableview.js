@@ -9,16 +9,16 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import '../../theme/fontcolor.css';
 export default class ColorTableView extends View {
-	constructor( locale, { colors, removeButtonTooltip, columns = 6 } ) {
+	constructor( locale, { colors } ) {
 		super( locale );
 		const bind = this.bindTemplate;
 
-		this.COLUMNS = columns;
+		this.COLUMNS = 6;
 		this.colorsDefinition = colors;
-		this.removeButtonTooltip = removeButtonTooltip;
 
 		this.set( 'selectedColor' );
 		this.set( 'hoveredColor' );
+		this.set( 'removeButtonTooltip' );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -39,9 +39,9 @@ export default class ColorTableView extends View {
 		const btnView = new ButtonView();
 		btnView.set( {
 			label: 'X',
-			tooltip: this.removeButtonTooltip,
 			withText: true
 		} );
+		btnView.bind( 'tooltip' ).to( this, 'removeButtonTooltip' );
 		btnView.class = 'ck-color-table__remove-color';
 		btnView.on( 'execute', () => {
 			this.fire( 'colorPicked', { value: null } );

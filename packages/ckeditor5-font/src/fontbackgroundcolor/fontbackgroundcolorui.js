@@ -29,9 +29,9 @@ export default class FontBackgroundColorUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 
 			const colorTableView = new ColorTableView( locale, {
-				colors: options.map( item => ( { name: item.label, color: item.model } ) ),
-				removeButtonTooltip: t( 'Remove background color' )
+				colors: options.map( item => ( { name: item.label, color: item.model } ) )
 			} );
+			colorTableView.set( 'removeButtonTooltip', t( 'Remove background color' ) );
 
 			dropdownView.panelView.children.add( colorTableView );
 
