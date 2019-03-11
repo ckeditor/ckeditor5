@@ -54,5 +54,16 @@ export default class MentionEditing extends Plugin {
 
 		// Allow fontSize attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'mention' } );
+
+		// Remove mention attribute if text was edited.
+		editor.model.document.registerPostFixer( writer => {
+			const changes = editor.model.document.differ.getChanges();
+
+			for ( const change of changes ) {
+				if ( change.name == '$text' && change.position.textNode.hasAttribute( 'mention' ) ) {
+					writer.removeAttribute( 'mention', change.position.textNode );
+				}
+			}
+		} );
 	}
 }

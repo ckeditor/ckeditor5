@@ -17,7 +17,7 @@ describe( 'MentionEditing', () => {
 	} );
 
 	describe( 'init()', () => {
-		let editor, model;
+		let editor, model, doc;
 
 		it( 'should be loaded', () => {
 			return createTestEditor()
@@ -46,6 +46,7 @@ describe( 'MentionEditing', () => {
 					.then( newEditor => {
 						editor = newEditor;
 						model = editor.model;
+						doc = model.document;
 					} );
 			} );
 
@@ -56,6 +57,34 @@ describe( 'MentionEditing', () => {
 					.to.equal( '<paragraph>foo <$text mention="John">John</$text> bar</paragraph>' );
 
 				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+			} );
+
+			it( 'should remove mention on adding a text inside mention', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+
+				model.change( writer => {
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					writer.setSelection( paragraph, 5 );
+
+					writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo Joahn bar</p>' );
+			} );
+
+			it( 'should remove mention on removing a text inside mention', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+
+				model.change( writer => {
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					writer.setSelection( paragraph, 5 );
+
+					writer.remove( writer.createRange( writer.createPositionAt( paragraph, 5 ), writer.createPositionAt( paragraph, 6 ) ) );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo Jhn bar</p>' );
 			} );
 		} );
 	} );
