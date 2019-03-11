@@ -86,6 +86,44 @@ describe( 'MentionEditing', () => {
 
 				expect( editor.getData() ).to.equal( '<p>foo Jhn bar</p>' );
 			} );
+
+			it( 'should work on insert text to an empty node', () => {
+				editor.setData( '<p></p>' );
+
+				model.change( writer => {
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					writer.insertText( 'foo', paragraph, 0 );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should remove mention attribute from a selection if selection is on right side of a mention', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span>bar</p>' );
+
+				model.change( writer => {
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					writer.setSelection( paragraph, 8 );
+				} );
+
+				expect( Array.from( doc.selection.getAttributes() ) ).to.deep.equal( [] );
+			} );
+
+			it( 'should allow to type after a mention', () => {
+				editor.setData( '<p>foo <span class="mention" data-mention="John">John</span>bar</p>' );
+
+				model.change( writer => {
+					const paragraph = doc.getRoot().getChild( 0 );
+
+					writer.setSelection( paragraph, 8 );
+
+					writer.insertText( ' ', paragraph, 8 );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">John</span> bar</p>' );
+			} );
 		} );
 	} );
 

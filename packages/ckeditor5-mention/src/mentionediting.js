@@ -57,11 +57,26 @@ export default class MentionEditing extends Plugin {
 
 		// Remove mention attribute if text was edited.
 		editor.model.document.registerPostFixer( writer => {
+			const selection = editor.model.document.selection;
+			const focus = selection.focus;
+
+			if ( selection.hasAttribute( 'mention' ) && selection.isCollapsed && focus.nodeBefore && focus.nodeBefore.is( 'text' ) ) {
+				writer.removeSelectionAttribute( 'mention' );
+
+				return true;
+			}
+		} );
+
+		editor.model.document.registerPostFixer( writer => {
 			const changes = editor.model.document.differ.getChanges();
 
 			for ( const change of changes ) {
-				if ( change.name == '$text' && change.position.textNode.hasAttribute( 'mention' ) ) {
-					writer.removeAttribute( 'mention', change.position.textNode );
+				if ( change.type == 'insert' || change.type == 'remove' ) {
+					const textNode = change.position.textNode;
+
+					if ( change.name == '$text' && textNode && textNode.hasAttribute( 'mention' ) ) {
+						writer.removeAttribute( 'mention', textNode );
+					}
 				}
 			}
 		} );
