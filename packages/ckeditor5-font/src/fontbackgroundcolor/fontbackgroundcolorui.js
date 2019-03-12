@@ -46,7 +46,7 @@ export default class FontBackgroundColorUI extends Plugin {
 
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: 'ck-font-family-dropdown'
+					class: 'ck-font-background-color-dropdown'
 				}
 			} );
 
