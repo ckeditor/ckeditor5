@@ -141,7 +141,7 @@ export default class Command {
 	/**
 	 * Disables the command.
 	 *
-	 * Command may become disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
+	 * Command may be disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
 	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
 	 * The command becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
 	 *
