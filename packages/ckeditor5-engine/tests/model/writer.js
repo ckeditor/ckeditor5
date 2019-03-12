@@ -2402,7 +2402,7 @@ describe( 'Writer', () => {
 		it( 'should throw when range and usingOperations were not provided', () => {
 			expect( () => {
 				addMarker( 'name', { range, usingOperation: false } );
-				updateMarker( 'name' );
+				updateMarker( 'name', {} );
 			} ).to.throw( CKEditorError, /^writer-updateMarker-wrong-options/ );
 		} );
 
@@ -2410,6 +2410,21 @@ describe( 'Writer', () => {
 			expect( () => {
 				updateMarker( 'name', { usingOperation: false } );
 			} ).to.throw( CKEditorError, /^writer-updateMarker-marker-not-exists/ );
+		} );
+
+		it( 'should only refresh the marker when there is no provided options to update', () => {
+			const marker = addMarker( 'name', { range, usingOperation: true } );
+			const spy = sinon.spy( model.markers, '_refresh' );
+
+			updateMarker( marker );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, marker );
+
+			updateMarker( 'name' );
+
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWithExactly( spy.secondCall, marker );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
