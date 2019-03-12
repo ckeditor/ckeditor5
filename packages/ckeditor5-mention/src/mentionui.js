@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ListView from '@ckeditor/ckeditor5-ui/src/list/listview';
 import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -34,29 +33,18 @@ export default class MentionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requries() {
-		return [ ContextualBalloon ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 
 		const locale = editor.locale;
 
-		// this._panel = editor.plugins.get( 'ContextualBalloon' );
-
 		this._panel = new BalloonPanelView( locale );
 		this._panel.withArrow = false;
 		this._panel.render();
 
-		// document.body.appendChild( this._panel.element );
 		this.editor.ui.view.body.add( this._panel );
 
 		this._mentions = new MentionsView( locale );
-		// this._mentions.render();
 
 		const items = new Collection();
 
@@ -216,8 +204,6 @@ class TextWatcher {
 				this.fire( 'matched', { text } );
 			}
 		} );
-
-		this._panel = this.editor.plugins.get( 'ContextualBalloon' );
 	}
 
 	_getText() {

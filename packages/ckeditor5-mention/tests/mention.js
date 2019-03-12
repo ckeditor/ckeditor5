@@ -8,6 +8,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import Mention from '../src/mention';
 import MentionEditing from '../src/mentionediting';
+import MentionUI from '../src/mentionui';
 
 describe( 'Mention', () => {
 	let editorElement, editor;
@@ -41,5 +42,9 @@ describe( 'Mention', () => {
 
 	it( 'should load MentionEditing plugin', () => {
 		expect( editor.plugins.get( MentionEditing ) ).to.instanceOf( MentionEditing );
+	} );
+
+	it( 'should load MentionUI plugin', () => {
+		expect( editor.plugins.get( MentionUI ) ).to.instanceOf( MentionUI );
 	} );
 } );
