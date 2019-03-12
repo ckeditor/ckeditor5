@@ -120,9 +120,9 @@ export default class Command {
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.disable( 'readOnlyMode' );
+				this.forceDisabled( 'readOnlyMode' );
 			} else {
-				this.enable( 'readOnlyMode' );
+				this.clearForceDisabled( 'readOnlyMode' );
 			}
 		} );
 	}
@@ -141,19 +141,40 @@ export default class Command {
 	/**
 	 * Disables the command.
 	 *
-	 * "Disable stack" is supported through identifiers. Command may be disabled by a multiple features/algorithms (at once).
-	 * When disabling a command, identifier is passed (and added to "disable stack"). The identifier is then used when
-	 * {@link #enable enabling back} the command. The command is actually enabled only after all features {@link #enable enabled it back}.
+	 * Command may be disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
+	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
+	 * The command becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
 	 *
-	 * Multiple disabling with the same identifier is redundant.
+	 * Disabling and enabling a command:
 	 *
-	 * **Note:** some algorithms may have more complex logic when it comes to enabling or disabling certain commands. Keep in mind
-	 * that disabling command is also possible through listening to {@link #isEnabled} change, so the command might be still disabled
-	 * even though "disable stack" is empty.
+	 *		command.isEnabled; // -> true
+	 *		command.forceDisabled( 'MyFeature' );
+	 *		command.isEnabled; // -> false
+	 *		command.clearForceDisabled( 'MyFeature' );
+	 *		command.isEnabled; // -> true
 	 *
-	 * @param {String} id "Disable stack" identifier. Use the same identifier when {@link #enable enabling back} the command.
+	 * Command disabled by multiple features:
+	 *
+	 *		command.forceDisabled( 'MyFeature' );
+	 *		command.forceDisabled( 'OtherFeature' );
+	 *		command.clearForceDisabled( 'MyFeature' );
+	 *		command.isEnabled; // -> false
+	 *		command.clearForceDisabled( 'OtherFeature' );
+	 *		command.isEnabled; // -> true
+	 *
+	 * Multiple disabling with the same identifier is redundant:
+	 *
+	 *		command.forceDisabled( 'MyFeature' );
+	 *		command.forceDisabled( 'MyFeature' );
+	 *		command.clearForceDisabled( 'MyFeature' );
+	 *		command.isEnabled; // -> true
+	 *
+	 * **Note:** some commands or algorithms may have more complex logic when it comes to enabling or disabling certain commands,
+	 * so the command might be still disabled after {@link #clearForceDisabled} was used.
+	 *
+	 * @param {String} id Unique identifier for disabling. Use the same id when {@link #clearForceDisabled enabling back} the command.
 	 */
-	disable( id ) {
+	forceDisabled( id ) {
 		this._disableStack.add( id );
 
 		if ( this._disableStack.size == 1 ) {
@@ -163,11 +184,11 @@ export default class Command {
 	}
 
 	/**
-	 * Enables the command previously disabled through {@link #disable}. See {@link #disable}.
+	 * Clears forced disable previously set through {@link #clearForceDisabled}. See {@link #clearForceDisabled}.
 	 *
-	 * @param {String} id "Disable stack" identifier.
+	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
-	enable( id ) {
+	clearForceDisabled( id ) {
 		this._disableStack.delete( id );
 
 		if ( this._disableStack.size == 0 ) {
