@@ -96,6 +96,14 @@ export default class Command {
 		 */
 		this.set( 'isEnabled', false );
 
+		/**
+		 * Holds identifiers for {@link #disable}/{@link #enable} mechanism.
+		 *
+		 * @type {Set.<String>}
+		 * @private
+		 */
+		this._disableStack = new Set();
+
 		this.decorate( 'execute' );
 
 		// By default every command is refreshed when changes are applied to the model.
@@ -112,11 +120,9 @@ export default class Command {
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
-				this.isEnabled = false;
+				this.disable( 'readOnlyMode' );
 			} else {
-				this.off( 'set:isEnabled', forceDisable );
-				this.refresh();
+				this.enable( 'readOnlyMode' );
 			}
 		} );
 	}
@@ -130,6 +136,44 @@ export default class Command {
 	 */
 	refresh() {
 		this.isEnabled = true;
+	}
+
+	/**
+	 * Disables the command.
+	 *
+	 * "Disable stack" is supported through identifiers. Command may be disabled by a multiple features/algorithms (at once).
+	 * When disabling a command, identifier is passed (and added to "disable stack"). The identifier is then used when
+	 * {@link #enable enabling back} the command. The command is actually enabled only after all features {@link #enable enabled it back}.
+	 *
+	 * Multiple disabling with the same identifier is redundant.
+	 *
+	 * **Note:** some algorithms may have more complex logic when it comes to enabling or disabling certain commands. Keep in mind
+	 * that disabling command is also possible through listening to {@link #isEnabled} change, so the command might be still disabled
+	 * even though "disable stack" is empty.
+	 *
+	 * @param {String} id "Disable stack" identifier. Use the same identifier when {@link #enable enabling back} the command.
+	 */
+	disable( id ) {
+		this._disableStack.add( id );
+
+		if ( this._disableStack.size == 1 ) {
+			this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
+			this.isEnabled = false;
+		}
+	}
+
+	/**
+	 * Enables the command previously disabled through {@link #disable}. See {@link #disable}.
+	 *
+	 * @param {String} id "Disable stack" identifier.
+	 */
+	enable( id ) {
+		this._disableStack.delete( id );
+
+		if ( this._disableStack.size == 0 ) {
+			this.off( 'set:isEnabled', forceDisable );
+			this.refresh();
+		}
 	}
 
 	/**

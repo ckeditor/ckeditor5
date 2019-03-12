@@ -183,4 +183,49 @@ describe( 'Command', () => {
 			}
 		} );
 	} );
+
+	describe( 'disable() / enable()', () => {
+		it( 'disable() should disable the command', () => {
+			command.disable( 'foo' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'enable() should enable the command', () => {
+			command.disable( 'foo' );
+			command.enable( 'foo' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'enable() used with wrong identifier should not enable the command', () => {
+			command.disable( 'foo' );
+			command.enable( 'bar' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'using disable() twice with the same identifier should not have any effect', () => {
+			command.disable( 'foo' );
+			command.disable( 'foo' );
+			command.enable( 'foo' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'command is enabled only after whole disable stack is empty', () => {
+			command.disable( 'foo' );
+			command.disable( 'bar' );
+			command.enable( 'foo' );
+			command.isEnabled = true;
+
+			expect( command.isEnabled ).to.be.false;
+
+			command.enable( 'bar' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+	} );
 } );
