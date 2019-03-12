@@ -167,7 +167,7 @@ export default class MarkerCollection {
 		const marker = this._markers.get( markerName );
 
 		if ( !marker ) {
-			throw new CKEditorError( 'markers-refresh-marker-not-exists: Marker with provided name does not exists.' );
+			throw new CKEditorError( 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
 		const range = marker.getRange();

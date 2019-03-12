@@ -209,7 +209,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker does not exist', () => {
 			expect( () => {
 				markers._refresh( 'name' );
-			} ).to.throw( CKEditorError, 'markers-refresh-marker-not-exists: Marker with provided name does not exists.' );
+			} ).to.throw( CKEditorError, 'markercollection-refresh-marker-not-exists: Marker with provided name does not exists.' );
 		} );
 	} );
 
