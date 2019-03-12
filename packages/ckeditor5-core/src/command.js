@@ -120,9 +120,9 @@ export default class Command {
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.disable( 'readOnlyMode' );
+				this.forceDisabled( 'Command:readOnlyMode' );
 			} else {
-				this.enable( 'readOnlyMode' );
+				this.clearForceDisabled( 'Command:readOnlyMode' );
 			}
 		} );
 	}
@@ -141,7 +141,7 @@ export default class Command {
 	/**
 	 * Disables the command.
 	 *
-	 * Command may become disabled by a multiple features/algorithms (at once). When disabling a command, unique id should be passed
+	 * Command may become disabled by multiple features or algorithms (at once). When disabling a command, unique id should be passed
 	 * (e.g. feature name). The same identifier should be used when {@link #clearForceDisabled enabling back} the command.
 	 * The command becomes enabled only after all features {@link #clearForceDisabled enabled it back}.
 	 *
