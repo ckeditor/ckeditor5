@@ -11,8 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import fontColorIcon from '../../theme/icons/font-family.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { FONT_COLOR, normalizeOptions } from '../utils';
-import ColorTableView from '../ui/colortableview';
+import { FONT_COLOR, normalizeOptions, colorUI } from '../utils';
 export default class FontColorUI extends Plugin {
 	/**
 	 * @inheritDoc
@@ -27,16 +26,13 @@ export default class FontColorUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_COLOR, locale => {
 			const dropdownView = createDropdown( locale );
-
-			const colorTableView = new ColorTableView( locale, {
-				colors: options.map( item => ( { name: item.label, color: item.model } ) )
-			} );
-
-			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
-			dropdownView.panelView.children.add( colorTableView );
+			const colorTableView = colorUI.addColorsToDropdown(
+				dropdownView,
+				options.map( item => ( { name: item.label, color: item.model } ) )
+			);
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
-			colorTableView.delegate( 'colorPicked' ).to( dropdownView, 'execute' );
+			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
 			dropdownView.buttonView.set( {
 				label: t( 'Font Color' ),

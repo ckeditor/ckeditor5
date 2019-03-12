@@ -7,6 +7,8 @@
  * @module font/utils
  */
 
+import ColorTableView from './ui/colortableview';
+
 /**
  * Builds a proper {@link module:engine/conversion/conversion~ConverterDefinition converter definition} out of input data.
  *
@@ -76,3 +78,15 @@ function getOptionDefinition( option ) {
 		}
 	};
 }
+
+export const colorUI = {
+	addColorsToDropdown( dropdownView, colors ) {
+		const locale = dropdownView.locale;
+		const colorTableView = new ColorTableView( locale, { colors } );
+
+		dropdownView.panelView.children.add( colorTableView );
+
+		colorTableView.delegate( 'colorPicked' ).to( dropdownView, 'execute' );
+		return colorTableView;
+	}
+};
