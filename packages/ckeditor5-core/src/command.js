@@ -97,7 +97,7 @@ export default class Command {
 		this.set( 'isEnabled', false );
 
 		/**
-		 * Holds identifiers for {@link #disable}/{@link #enable} mechanism.
+		 * Holds identifiers for {@link #forceDisabled} mechanism.
 		 *
 		 * @type {Set.<String>}
 		 * @private
