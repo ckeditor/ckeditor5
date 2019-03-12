@@ -757,7 +757,7 @@ export default class InsertSimpleBoxCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const allowedIn = model.schema.findAllowedParent( 'simpleBox', selection.getFirstPosition() );
+		const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'simpleBox' );
 
 		this.isEnabled = allowedIn !== null;
 	}
