@@ -437,10 +437,10 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';;
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg'
+import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 
 class InsertImage extends Plugin {
 	init() {
@@ -487,3 +487,11 @@ ClassicEditor
 	} );
 ```
 
+## What's next?
+
+If you would like to read more tutorials check out the following one:
+
+* {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
+* {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget}
+
+If you are more into reading about CKEditor 5's architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
