@@ -186,7 +186,7 @@ export default class Command {
 	/**
 	 * Clears forced disable previously set through {@link #clearForceDisabled}. See {@link #clearForceDisabled}.
 	 *
-	 * @param {String} id "Disable stack" identifier.
+	 * @param {String} id Unique identifier, equal to the one passed in {@link #forceDisabled} call.
 	 */
 	clearForceDisabled( id ) {
 		this._disableStack.delete( id );
