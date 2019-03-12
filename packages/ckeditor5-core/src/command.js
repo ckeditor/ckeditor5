@@ -120,9 +120,9 @@ export default class Command {
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.forceDisabled( 'Command:readOnlyMode' );
+				this.forceDisabled( 'readOnlyMode' );
 			} else {
-				this.clearForceDisabled( 'Command:readOnlyMode' );
+				this.clearForceDisabled( 'readOnlyMode' );
 			}
 		} );
 	}
