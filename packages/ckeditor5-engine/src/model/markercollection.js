@@ -171,6 +171,7 @@ export default class MarkerCollection {
 		}
 
 		const range = marker.getRange();
+
 		this.fire( 'update:' + markerName, marker, range, range, marker.managedUsingOperations, marker.affectsData );
 	}
 

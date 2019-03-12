@@ -939,14 +939,14 @@ export default class Writer {
 	}
 
 	/**
-	 * Adds updates or refreshes a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
+	 * Adds, updates or refreshes a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
 	 * changes in the document and updates its range automatically, when model tree changes. Still, it is possible to change the
 	 * marker's range directly using this method.
 	 *
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * As the second parameter you can set the new marker data or leave this parameter as empty what will only refresh
+	 * As the second parameter you can set the new marker data or leave this parameter as empty which will just refresh
 	 * the marker by triggering downcast conversion for it. Refreshing the marker is useful when you want to change
 	 * the marker {@link module:engine/view/element~Element view element} without changing any marker data.
 	 *
