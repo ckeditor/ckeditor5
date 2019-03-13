@@ -757,7 +757,7 @@ export default class InsertSimpleBoxCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const allowedIn = model.schema.findAllowedParent( 'simpleBox', selection.getFirstPosition() );
+		const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'simpleBox' );
 
 		this.isEnabled = allowedIn !== null;
 	}
@@ -842,6 +842,10 @@ Let's change one more thing before we will move forward &mdash; let's disallow `
 // ... imports
 
 export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'SimpleBoxEditing#init() got called' );
 

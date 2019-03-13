@@ -427,6 +427,10 @@ import PlaceholderCommand from './placeholdercommand';                         /
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'PlaceholderEditing#init() got called' );
 
@@ -500,6 +504,10 @@ import PlaceholderCommand from './placeholdercommand';
 import './theme/placeholder.css';
 
 export default class PlaceholderEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'PlaceholderEditing#init() got called' );
 
@@ -639,6 +647,10 @@ The first step is to define placeholder configuration in the editing plugin:
 // ... imports
 
 export default class PlaceholderEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'PlaceholderEditing#init() got called' );
 
