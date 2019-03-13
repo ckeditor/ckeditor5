@@ -86,7 +86,7 @@ export const colorUI = {
 
 		dropdownView.panelView.children.add( colorTableView );
 
-		colorTableView.delegate( 'colorPicked' ).to( dropdownView, 'execute' );
+		colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
 		return colorTableView;
 	}
 };

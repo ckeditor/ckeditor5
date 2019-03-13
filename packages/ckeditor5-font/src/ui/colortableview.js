@@ -44,7 +44,7 @@ export default class ColorTableView extends View {
 		btnView.bind( 'tooltip' ).to( this, 'removeButtonTooltip' );
 		btnView.class = 'ck-color-table__remove-color';
 		btnView.on( 'execute', () => {
-			this.fire( 'colorPicked', { value: null } );
+			this.fire( 'execute', { value: null } );
 		} );
 		return btnView;
 	}
@@ -93,7 +93,7 @@ export default class ColorTableView extends View {
 				},
 				on: {
 					click: bind.to( () => {
-						this.fire( 'colorPicked', { value: this.colorsDefinition[ index * this.COLUMNS + i ].color } );
+						this.fire( 'execute', { value: this.colorsDefinition[ index * this.COLUMNS + i ].color } );
 					} ),
 					mouseover: bind.to( () => {
 						this.set( 'hoveredColor', this.colorsDefinition[ index * this.COLUMNS + i ].name );
