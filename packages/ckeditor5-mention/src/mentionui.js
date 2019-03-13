@@ -16,6 +16,7 @@ import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 /**
  * The mention ui feature.
@@ -138,12 +139,37 @@ export default class MentionUI extends Plugin {
 			// return;
 		}
 
-		const editor = this.editor;
-
 		// Pin the panel to an element with the "target" id DOM.
-		this._panel.pin( getBalloonPositionData( editor ) );
+		this._panel.pin( this._getBalloonPositionData() );
 
 		this._panel.show();
+	}
+
+	// TODO copied from balloontoolbar
+	_getBalloonPositionData() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
+		const viewSelection = viewDocument.selection;
+
+		return {
+			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
+			// as the window scrolls. To let the BalloonPanelView follow such Rect, is must be continuously
+			// computed and hence, the target is defined as a function instead of a static value.
+			// https://github.com/ckeditor/ckeditor5-ui/issues/195
+			target: () => {
+				const range = viewSelection.getLastRange();
+				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
+
+				// Select the proper range rect depending on the direction of the selection.
+				if ( rangeRects.length > 1 && rangeRects[ rangeRects.length - 1 ].width === 0 ) {
+					rangeRects.pop();
+				}
+
+				return rangeRects[ rangeRects.length - 1 ];
+			},
+			positions: getBalloonPositions()
+		};
 	}
 
 	_hideForm() {
@@ -248,24 +274,11 @@ class MentionsView extends View {
 	}
 }
 
-function getBalloonPositionData( editor ) {
-	const editingView = editor.editing.view;
+function getBalloonPositions() {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
-	return {
-		target: () => {
-			// const text = editingView.domConverter.findCorrespondingDomText( editingView.document.selection.focus.parent );
-			const textParent = editingView.domConverter.viewToDom( editingView.document.selection.focus.parent.parent );
-
-			return textParent;
-		},
-		positions: [
-			defaultPositions.northArrowSouth,
-			defaultPositions.northArrowSouthWest,
-			defaultPositions.northArrowSouthEast,
-			defaultPositions.southArrowNorth,
-			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast
-		]
-	};
+	return [
+		defaultPositions.northArrowSouthWest,
+		defaultPositions.southArrowNorthWest
+	];
 }
