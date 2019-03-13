@@ -842,6 +842,10 @@ Let's change one more thing before we will move forward &mdash; let's disallow `
 // ... imports
 
 export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'SimpleBoxEditing#init() got called' );
 
