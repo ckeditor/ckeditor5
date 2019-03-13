@@ -37,24 +37,22 @@ export default class MentionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const locale = editor.locale;
+		this.panelView = new BalloonPanelView( editor.locale );
+		this.panelView.withArrow = false;
+		this.panelView.render();
 
-		this._panel = new BalloonPanelView( locale );
-		this._panel.withArrow = false;
-		this._panel.render();
+		this.editor.ui.view.body.add( this.panelView );
 
-		this.editor.ui.view.body.add( this._panel );
-
-		this._mentions = new MentionsView( locale );
+		const mentionView = new MentionsView( editor.locale );
 
 		const items = new Collection();
 
-		this._panel.content.add( this._mentions );
+		this.panelView.content.add( mentionView );
 
-		this._mentions.listView.items.bindTo( items ).using( item => {
+		mentionView.listView.items.bindTo( items ).using( item => {
 			const { label } = item;
-			const listItemView = new ListItemView( locale );
-			const buttonView = new ButtonView( locale );
+			const listItemView = new ListItemView( editor.locale );
+			const buttonView = new ButtonView( editor.locale );
 
 			buttonView.label = label;
 			buttonView.withText = true;
@@ -62,7 +60,7 @@ export default class MentionUI extends Plugin {
 
 			listItemView.children.add( buttonView );
 
-			buttonView.delegate( 'execute' ).to( this._mentions );
+			buttonView.delegate( 'execute' ).to( mentionView );
 
 			return listItemView;
 		} );
@@ -71,7 +69,7 @@ export default class MentionUI extends Plugin {
 
 		const watcher = new TextWatcher( editor, testCallback );
 
-		this._mentions.on( 'execute', evt => {
+		mentionView.on( 'execute', evt => {
 			const label = evt.source.label;
 
 			const text = watcher.last;
@@ -144,9 +142,9 @@ export default class MentionUI extends Plugin {
 		}
 
 		// Pin the panel to an element with the "target" id DOM.
-		this._panel.pin( this._getBalloonPositionData() );
+		this.panelView.pin( this._getBalloonPositionData() );
 
-		this._panel.show();
+		this.panelView.show();
 	}
 
 	// TODO copied from balloontoolbar
@@ -177,7 +175,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	_hideForm() {
-		this._panel.hide();
+		this.panelView.hide();
 	}
 }
 
