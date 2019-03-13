@@ -126,7 +126,11 @@ export default class MentionUI extends Plugin {
 				items.add( { label: item } );
 			}
 
-			this._showForm();
+			if ( items.length ) {
+				this._showForm();
+			} else {
+				this._hideForm();
+			}
 		} );
 
 		watcher.on( 'unmatched', () => {
