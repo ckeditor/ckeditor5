@@ -55,6 +55,12 @@ describe( 'BalloonToolbar', () => {
 		expect( mentionUI ).to.instanceOf( MentionUI );
 	} );
 
+	describe( 'pluginName', () => {
+		it( 'should return plugin by its name', () => {
+			expect( editor.plugins.get( 'MentionUI' ) ).to.equal( mentionUI );
+		} );
+	} );
+
 	describe( 'child views', () => {
 		describe( 'panelView', () => {
 			it( 'should be added to the ui.view.body collection', () => {
