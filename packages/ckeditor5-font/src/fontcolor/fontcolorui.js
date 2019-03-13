@@ -32,9 +32,9 @@ export default class FontColorUI extends Plugin {
 				dropdownView,
 				options.map( item => ( { name: item.label, color: item.model } ) )
 			);
+			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
-			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
 			dropdownView.set( 'lastlySelectedColor', { value: options[ 0 ].model } );
 
