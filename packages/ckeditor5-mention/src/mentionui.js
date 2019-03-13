@@ -216,7 +216,7 @@ class TextWatcher {
 			const entry = changes[ 0 ];
 
 			// Typing is represented by only a single change.
-			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
+			if ( changes.length != 1 || entry.name != '$text' || entry.length != 1 ) {
 				return undefined;
 			}
 
