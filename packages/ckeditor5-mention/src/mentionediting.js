@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import MentionCommand from './mentioncommand';
 
 /**
  * The mention editing feature.
@@ -97,5 +98,7 @@ export default class MentionEditing extends Plugin {
 				return true;
 			}
 		} );
+
+		editor.commands.add( 'mention', new MentionCommand( editor ) );
 	}
 }

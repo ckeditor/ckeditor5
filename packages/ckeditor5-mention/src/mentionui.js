@@ -80,18 +80,18 @@ export default class MentionUI extends Plugin {
 
 			const matched = getMatchedText( text );
 
-			editor.model.change( writer => {
-				const end = writer.createPositionAt( editor.model.document.selection.focus );
-				const start = end.getShiftedBy( -( 1 + matched.feedText.length ) );
+			const end = editor.model.createPositionAt( editor.model.document.selection.focus );
+			const start = end.getShiftedBy( -( 1 + matched.feedText.length ) );
 
-				const range = writer.createRange( start, end );
+			const range = editor.model.createRange( start, end );
 
-				writer.setAttribute( 'mention', label, range );
-				writer.remove( range );
-
-				writer.insertText( `@${ label }`, { mention: 'label' }, start );
-				writer.insertText( ' ', editor.model.document.selection.focus );
+			editor.execute( 'mention', {
+				mention: label,
+				marker: '@',
+				range
 			} );
+
+			this._hideForm();
 		} );
 
 		function testCallback( text ) {
