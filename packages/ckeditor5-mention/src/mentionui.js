@@ -10,13 +10,12 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ListView from '@ckeditor/ckeditor5-ui/src/list/listview';
 import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import MentionsView from './ui/mentionsview';
 
 /**
  * The mention ui feature.
@@ -250,31 +249,6 @@ class TextWatcher {
 }
 
 mix( TextWatcher, EmitterMixin );
-
-class MentionsView extends View {
-	constructor( locale ) {
-		super( locale );
-
-		this.listView = new ListView( locale );
-
-		this.setTemplate( {
-			tag: 'div',
-
-			attributes: {
-				class: [
-					'ck',
-					'ck-mention'
-				],
-
-				tabindex: '-1'
-			},
-
-			children: [
-				this.listView
-			]
-		} );
-	}
-}
 
 function getBalloonPositions() {
 	const defaultPositions = BalloonPanelView.defaultPositions;

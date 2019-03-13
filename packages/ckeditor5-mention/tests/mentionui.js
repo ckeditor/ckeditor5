@@ -8,11 +8,13 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
+import MentionsView from '../src/ui/mentionsview';
 
 describe( 'BalloonToolbar', () => {
 	let editor, editingView, mentionUI, editorElement;
@@ -63,8 +65,20 @@ describe( 'BalloonToolbar', () => {
 
 	describe( 'child views', () => {
 		describe( 'panelView', () => {
+			it( 'should create a view instance', () => {
+				expect( mentionUI.panelView ).to.instanceof( BalloonPanelView );
+			} );
+
 			it( 'should be added to the ui.view.body collection', () => {
 				expect( Array.from( editor.ui.view.body ) ).to.include( mentionUI.panelView );
+			} );
+
+			it( 'should have disabled arrow', () => {
+				expect( mentionUI.panelView.withArrow ).to.be.false;
+			} );
+
+			it( 'should have added MentionView as a child', () => {
+				expect( mentionUI.panelView.content.get( 0 ) ).to.be.instanceof( MentionsView );
 			} );
 		} );
 	} );
