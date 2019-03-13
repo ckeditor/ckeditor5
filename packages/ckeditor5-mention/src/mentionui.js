@@ -42,34 +42,55 @@ export default class MentionUI extends Plugin {
 
 		this.editor.ui.view.body.add( this.panelView );
 
-		const mentionView = new MentionsView( editor.locale );
+		this._createMentionView( editor );
 
-		const items = new Collection();
+		this._watchers = new Map();
+		this._feeds = new Map();
 
-		this.panelView.content.add( mentionView );
+		// @todo read from config.
+		this._addTextWatcher( '@' );
+		this._addFeed( '@', feedText => {
+			const items = [ 'Jodator', 'Foo', 'Bar' ];
 
-		mentionView.listView.items.bindTo( items ).using( item => {
+			return items.filter( item => {
+				return item.toLowerCase().startsWith( feedText.toLowerCase() );
+			} );
+		} );
+	}
+
+	_createMentionView( editor ) {
+		this._mentionsView = new MentionsView( editor.locale );
+
+		this._items = new Collection();
+
+		this.panelView.content.add( this._mentionsView );
+
+		this._mentionsView.listView.items.bindTo( this._items ).using( data => {
+			const { item, marker } = data;
 			const { label } = item;
+
 			const listItemView = new ListItemView( editor.locale );
 			const buttonView = new ButtonView( editor.locale );
 
+			// TODO: might be better - pass as params.
 			buttonView.label = label;
 			buttonView.withText = true;
 			buttonView.item = item;
+			buttonView.marker = marker;
 
 			listItemView.children.add( buttonView );
 
-			buttonView.delegate( 'execute' ).to( mentionView );
+			buttonView.delegate( 'execute' ).to( this._mentionsView );
 
 			return listItemView;
 		} );
 
-		const regExp = / (@)([\w]*?)$/;
-
-		const watcher = new TextWatcher( editor, testCallback );
-
-		mentionView.on( 'execute', evt => {
+		this._mentionsView.on( 'execute', evt => {
+			// @todo use event data
 			const label = evt.source.label;
+			const marker = evt.source.marker;
+
+			const watcher = this._getWatcher( marker );
 
 			const text = watcher.last;
 
@@ -77,7 +98,8 @@ export default class MentionUI extends Plugin {
 				return;
 			}
 
-			const matched = getMatchedText( text );
+			const textMatcher = createTextMatcher( marker );
+			const matched = textMatcher( text );
 
 			const end = editor.model.createPositionAt( editor.model.document.selection.focus );
 			const start = end.getShiftedBy( -( 1 + matched.feedText.length ) );
@@ -86,44 +108,45 @@ export default class MentionUI extends Plugin {
 
 			editor.execute( 'mention', {
 				mention: label,
-				marker: '@',
+				marker,
 				range
 			} );
 
 			this._hideForm();
 		} );
+	}
 
-		function testCallback( text ) {
-			return regExp.test( text );
-		}
+	_addFeed( marker, callback ) {
+		this._feeds.set( marker, callback );
+	}
 
-		function getMatchedText( text ) {
-			const match = text.match( regExp );
+	_getFeed( marker, feedText ) {
+		return this._feeds.get( marker )( feedText );
+	}
 
-			const marker = match[ 1 ];
-			const feedText = match[ 2 ];
+	_addTextWatcher( marker ) {
+		const editor = this.editor;
 
-			return { marker, feedText };
-		}
+		const watcher = new TextWatcher( editor, createTestCallback( marker ), createTextMatcher( marker ) );
+
+		this._watchers.set( marker, watcher );
 
 		watcher.on( 'matched', ( evt, data ) => {
-			const text = data.text;
+			const matched = data.matched;
 
-			const matched = getMatchedText( text );
+			const { feedText, marker } = matched;
 
-			items.clear();
+			this._items.clear();
 
-			const feed = [ 'Jodator', 'Foo', 'Bar' ];
+			const feed = this._getFeed( marker, feedText );
 
-			const strings = feed.filter( item => {
-				return item.toLowerCase().startsWith( matched.feedText.toLowerCase() );
-			} );
+			for ( const label of feed ) {
+				const item = { label };
 
-			for ( const item of strings ) {
-				items.add( { label: item } );
+				this._items.add( { item, marker } );
 			}
 
-			if ( items.length ) {
+			if ( this._items.length ) {
 				this._showForm();
 			} else {
 				this._hideForm();
@@ -133,6 +156,10 @@ export default class MentionUI extends Plugin {
 		watcher.on( 'unmatched', () => {
 			this._hideForm();
 		} );
+	}
+
+	_getWatcher( marker ) {
+		return this._watchers.get( marker );
 	}
 
 	_showForm() {
@@ -179,7 +206,8 @@ export default class MentionUI extends Plugin {
 }
 
 // Returns whole text from parent element by adding all data from text nodes together.
-//
+// @todo copied from autoformat...
+
 // @private
 // @param {module:engine/model/element~Element} element
 // @returns {String}
@@ -188,9 +216,10 @@ function getText( element ) {
 }
 
 class TextWatcher {
-	constructor( editor, callbackOrRegex ) {
+	constructor( editor, callbackOrRegex, textMatcher ) {
 		this.editor = editor;
 		this.testCallback = callbackOrRegex;
+		this.textMatcher = textMatcher;
 
 		this.hasMatch = false;
 
@@ -228,7 +257,9 @@ class TextWatcher {
 			this.hasMatch = textHasMatch;
 
 			if ( textHasMatch ) {
-				this.fire( 'matched', { text } );
+				const matched = this.textMatcher( text );
+
+				this.fire( 'matched', { text, matched } );
 			}
 		} );
 	}
@@ -257,4 +288,27 @@ function getBalloonPositions() {
 		defaultPositions.northArrowSouthWest,
 		defaultPositions.southArrowNorthWest
 	];
+}
+
+function createPattern( marker ) {
+	return ` (${ marker })([\\w]*?)$`;
+}
+
+function createTestCallback( marker ) {
+	const regExp = new RegExp( createPattern( marker ) );
+
+	return text => regExp.test( text );
+}
+
+function createTextMatcher( marker ) {
+	const regExp = new RegExp( createPattern( marker ) );
+
+	return text => {
+		const match = text.match( regExp );
+
+		const marker = match[ 1 ];
+		const feedText = match[ 2 ];
+
+		return { marker, feedText };
+	};
 }
