@@ -10,7 +10,9 @@
     "ckeditor5-plugin"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^12.0.0"
+    "@ckeditor/ckeditor5-core": "^12.0.0",
+    "@ckeditor/ckeditor5-ui": "^12.0.0",
+    "@ckeditor/ckeditor5-utils": "^12.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^11.0.0",
