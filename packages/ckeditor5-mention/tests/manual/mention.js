@@ -26,7 +26,12 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table, Mention ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
+		mention: [
+			{
+				feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+			}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

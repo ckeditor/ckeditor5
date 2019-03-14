@@ -29,6 +29,12 @@ export default class MentionUI extends Plugin {
 		return 'MentionUI';
 	}
 
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'mention', [] );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -46,15 +52,18 @@ export default class MentionUI extends Plugin {
 		this._watchers = new Map();
 		this._feeds = new Map();
 
-		// @todo read from config.
-		this._addTextWatcher( '@' );
-		this._addFeed( '@', feedText => {
-			const items = [ 'Jodator', 'Foo', 'Bar' ];
+		const config = this.editor.config.get( 'mention' );
 
-			return items.filter( item => {
-				return item.toLowerCase().startsWith( feedText.toLowerCase() );
-			} );
-		} );
+		for ( const mentionDescription of config ) {
+			const feed = mentionDescription.feed;
+
+			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
+
+			const marker = mentionDescription.marker || '@';
+
+			this._addTextWatcher( marker );
+			this._addFeed( marker, feedCallback );
+		}
 	}
 
 	_createMentionView( editor ) {
@@ -135,21 +144,24 @@ export default class MentionUI extends Plugin {
 
 			const { feedText, marker } = matched;
 
-			this._items.clear();
+			// TODO: show panel {loading: true}
+			// TODO: then show panel with items
+			this._getFeed( marker, feedText )
+				.then( feed => {
+					this._items.clear();
 
-			const feed = this._getFeed( marker, feedText );
+					for ( const label of feed ) {
+						const item = { label };
 
-			for ( const label of feed ) {
-				const item = { label };
+						this._items.add( { item, marker } );
+					}
 
-				this._items.add( { item, marker } );
-			}
-
-			if ( this._items.length ) {
-				this._showPanel();
-			} else {
-				this._hidePanel();
-			}
+					if ( this._items.length ) {
+						this._showPanel();
+					} else {
+						this._hidePanel();
+					}
+				} );
 		} );
 
 		watcher.on( 'unmatched', () => {
@@ -231,5 +243,16 @@ function createTextMatcher( marker ) {
 		const feedText = match[ 2 ];
 
 		return { marker, feedText };
+	};
+}
+
+// Default feed callback
+function createFeedCallback( feedItems ) {
+	return feedText => {
+		const filteredItems = feedItems.filter( item => {
+			return item.toLowerCase().startsWith( feedText.toLowerCase() );
+		} );
+
+		return Promise.resolve( filteredItems );
 	};
 }

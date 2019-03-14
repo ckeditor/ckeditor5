@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document */
+/* global window, document, setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -20,32 +20,15 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 describe( 'BalloonToolbar', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement;
 
+	const staticConfig = [
+		{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
+	];
+
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
-
-		return ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ Paragraph, MentionEditing, MentionUI ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-				editingView = editor.editing.view;
-				mentionUI = editor.plugins.get( MentionUI );
-
-				editingView.attachDomRoot( editorElement );
-
-				// Focus the engine.
-				editingView.document.isFocused = true;
-				editingView.getDomRoot().focus();
-
-				// Remove all selection ranges from DOM before testing.
-				window.getSelection().removeAllRanges();
-			} );
 	} );
 
 	afterEach( () => {
@@ -56,17 +39,23 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	it( 'should create a plugin instance', () => {
-		expect( mentionUI ).to.instanceOf( Plugin );
-		expect( mentionUI ).to.instanceOf( MentionUI );
+		return createClassicTestEditor().then( () => {
+			expect( mentionUI ).to.instanceOf( Plugin );
+			expect( mentionUI ).to.instanceOf( MentionUI );
+		} );
 	} );
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
-			expect( editor.plugins.get( 'MentionUI' ) ).to.equal( mentionUI );
+			return createClassicTestEditor().then( () => {
+				expect( editor.plugins.get( 'MentionUI' ) ).to.equal( mentionUI );
+			} );
 		} );
 	} );
 
 	describe( 'child views', () => {
+		beforeEach( () => createClassicTestEditor() );
+
 		describe( 'panelView', () => {
 			it( 'should create a view instance', () => {
 				expect( mentionUI.panelView ).to.instanceof( BalloonPanelView );
@@ -86,70 +75,91 @@ describe( 'BalloonToolbar', () => {
 		} );
 	} );
 
-	describe( 'triggers', () => {
-		it( 'should show panel for matched marker', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
+	describe( 'typing integration', () => {
+		describe( 'static list with default trigger', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( staticConfig );
 			} );
 
-			expect( mentionUI.panelView.isVisible ).to.be.true;
-			expect( mentionUI._mentionsView.listView.items ).to.have.length( 3 );
-		} );
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
 
-		it( 'should show filtered results for matched text', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
 
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
+				return waitForDebounce()
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.true;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 5 );
+					} );
 			} );
 
-			model.change( writer => {
-				writer.insertText( 'f', doc.selection.getFirstPosition() );
+			it( 'should show filtered results for matched text', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( 'T', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.true;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
+					} );
 			} );
 
-			expect( mentionUI.panelView.isVisible ).to.be.true;
-			expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
-		} );
+			it( 'should hide panel if no matched items', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
 
-		it( 'should hide panel if no matched items', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
 
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
+				return waitForDebounce()
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => {
+						model.change( writer => {
+							writer.insertText( 'x', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.false;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
+					} );
 			} );
 
-			expect( mentionUI.panelView.isVisible ).to.be.true;
+			it( 'should hide panel when text was unmatched', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
 
-			model.change( writer => {
-				writer.insertText( 'x', doc.selection.getFirstPosition() );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => {
+						model.change( writer => {
+							const end = doc.selection.getFirstPosition();
+							const start = end.getShiftedBy( -1 );
+
+							writer.remove( writer.createRange( start, end ) );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
 			} );
-
-			expect( mentionUI.panelView.isVisible ).to.be.false;
-			expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
-		} );
-
-		it( 'should hide panel when text was unmatched', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
-
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
-			} );
-
-			expect( mentionUI.panelView.isVisible ).to.be.true;
-
-			model.change( writer => {
-				const end = doc.selection.getFirstPosition();
-				const start = end.getShiftedBy( -1 );
-
-				writer.remove( writer.createRange( start, end ) );
-			} );
-
-			expect( mentionUI.panelView.isVisible ).to.be.false;
 		} );
 	} );
 
 	describe( 'execute', () => {
+		beforeEach( () => createClassicTestEditor( staticConfig ) );
+
 		it( 'should call the mention command with proper options', () => {
 			setData( model, '<paragraph>foo []</paragraph>' );
 
@@ -160,20 +170,23 @@ describe( 'BalloonToolbar', () => {
 			const command = editor.commands.get( 'mention' );
 			const spy = testUtils.sinon.spy( command, 'execute' );
 
-			mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+			return waitForDebounce()
+				.then( () => {
+					mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+					sinon.assert.calledOnce( spy );
 
-			const commandOptions = spy.getCall( 0 ).args[ 0 ];
+					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-			expect( commandOptions ).to.have.property( 'mention', 'Jodator' );
-			expect( commandOptions ).to.have.property( 'marker', '@' );
-			expect( commandOptions ).to.have.property( 'range' );
+					expect( commandOptions ).to.have.property( 'mention', 'Barney' );
+					expect( commandOptions ).to.have.property( 'marker', '@' );
+					expect( commandOptions ).to.have.property( 'range' );
 
-			const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-			const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
 
-			expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+					expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+				} );
 		} );
 
 		it( 'should hide panel on execute', () => {
@@ -183,9 +196,44 @@ describe( 'BalloonToolbar', () => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 
-			mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+			return waitForDebounce()
+				.then( () => {
+					mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
-			expect( mentionUI.panelView.isVisible ).to.be.false;
+					expect( mentionUI.panelView.isVisible ).to.be.false;
+				} );
 		} );
 	} );
+
+	function createClassicTestEditor( mentionConfig ) {
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, MentionEditing, MentionUI ],
+				mention: mentionConfig
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
+				editingView = editor.editing.view;
+				mentionUI = editor.plugins.get( MentionUI );
+
+				editingView.attachDomRoot( editorElement );
+
+				// Focus the engine.
+				editingView.document.isFocused = true;
+				editingView.getDomRoot().focus();
+
+				// Remove all selection ranges from DOM before testing.
+				window.getSelection().removeAllRanges();
+			} );
+	}
+
+	function waitForDebounce() {
+		return new Promise( resolve => {
+			setTimeout( () => {
+				resolve();
+			} );
+		} );
+	}
 } );
