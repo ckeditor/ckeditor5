@@ -186,7 +186,7 @@ class MyUploadAdapter {
 		return this.loader.file
 			.then( file => new Promise( ( resolve, reject ) => {
 				this._initRequest();
-				this._initListeners( file, resolve, reject );
+				this._initListeners( resolve, reject, file );
 				this._sendRequest( file );
 			} ) );
 	}
@@ -239,7 +239,7 @@ class MyUploadAdapter {
 	// ...
 
 	// Initializes XMLHttpRequest listeners.
-	_initListeners( file, resolve, reject ) {
+	_initListeners( resolve, reject, file ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
 		const genericErrorText = `Couldn't upload file: ${ file.name }.`;
@@ -417,7 +417,7 @@ class MyUploadAdapter {
 		return this.loader.file
 			.then( file => new Promise( ( resolve, reject ) => {
 				this._initRequest();
-				this._initListeners( file, resolve, reject );
+				this._initListeners( resolve, reject, file );
 				this._sendRequest( file );
 			} ) );
 	}
@@ -442,7 +442,7 @@ class MyUploadAdapter {
 	}
 
 	// Initializes XMLHttpRequest listeners.
-	_initListeners( file, resolve, reject ) {
+	_initListeners( resolve, reject, file ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
 		const genericErrorText = `Couldn't upload file: ${ file.name }.`;
