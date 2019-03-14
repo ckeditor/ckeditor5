@@ -206,10 +206,14 @@ describe( 'MediaEmbedEditing', () => {
 								'https://www.youtube.com/watch?v=foo',
 								'www.youtube.com/watch?v=foo',
 								'youtube.com/watch?v=foo',
+								'https://m.youtube.com/watch?v=foo',
+								'm.youtube.com/watch?v=foo',
 
 								'https://www.youtube.com/v/foo',
 								'www.youtube.com/v/foo',
 								'youtube.com/v/foo',
+								'https://m.youtube.com/v/foo',
+								'm.youtube.com/v/foo',
 
 								'https://www.youtube.com/embed/foo',
 								'www.youtube.com/embed/foo',
