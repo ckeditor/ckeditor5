@@ -112,7 +112,7 @@ export default class MentionUI extends Plugin {
 				range
 			} );
 
-			this._hideForm();
+			this._hidePanel();
 		} );
 	}
 
@@ -147,14 +147,14 @@ export default class MentionUI extends Plugin {
 			}
 
 			if ( this._items.length ) {
-				this._showForm();
+				this._showPanel();
 			} else {
-				this._hideForm();
+				this._hidePanel();
 			}
 		} );
 
 		watcher.on( 'unmatched', () => {
-			this._hideForm();
+			this._hidePanel();
 		} );
 	}
 
@@ -162,15 +162,18 @@ export default class MentionUI extends Plugin {
 		return this._watchers.get( marker );
 	}
 
-	_showForm() {
-		if ( this._isVisible ) {
-			// return;
+	_showPanel() {
+		if ( this.panelView.isVisible ) {
+			return;
 		}
 
-		// Pin the panel to an element with the "target" id DOM.
 		this.panelView.pin( this._getBalloonPositionData() );
 
 		this.panelView.show();
+	}
+
+	_hidePanel() {
+		this.panelView.hide();
 	}
 
 	// TODO copied from balloontoolbar
@@ -189,7 +192,6 @@ export default class MentionUI extends Plugin {
 				const range = viewSelection.getLastRange();
 				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
 
-				// Select the proper range rect depending on the direction of the selection.
 				if ( rangeRects.length > 1 && rangeRects[ rangeRects.length - 1 ].width === 0 ) {
 					rangeRects.pop();
 				}
@@ -198,10 +200,6 @@ export default class MentionUI extends Plugin {
 			},
 			positions: getBalloonPositions()
 		};
-	}
-
-	_hideForm() {
-		this.panelView.hide();
 	}
 }
 

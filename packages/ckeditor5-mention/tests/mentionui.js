@@ -148,4 +148,44 @@ describe( 'BalloonToolbar', () => {
 			expect( mentionUI.panelView.isVisible ).to.be.false;
 		} );
 	} );
+
+	describe( 'execute', () => {
+		it( 'should call the mention command with proper options', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			const command = editor.commands.get( 'mention' );
+			const spy = testUtils.sinon.spy( command, 'execute' );
+
+			mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+
+			sinon.assert.calledOnce( spy );
+
+			const commandOptions = spy.getCall( 0 ).args[ 0 ];
+
+			expect( commandOptions ).to.have.property( 'mention', 'Jodator' );
+			expect( commandOptions ).to.have.property( 'marker', '@' );
+			expect( commandOptions ).to.have.property( 'range' );
+
+			const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+			const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+
+			expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+		} );
+
+		it( 'should hide panel on execute', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+
+			expect( mentionUI.panelView.isVisible ).to.be.false;
+		} );
+	} );
 } );
