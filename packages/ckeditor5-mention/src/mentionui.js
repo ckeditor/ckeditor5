@@ -156,6 +156,7 @@ export default class MentionUI extends Plugin {
 						this._items.add( { item, marker } );
 					}
 
+					// todo: Debounce...
 					if ( this._items.length ) {
 						this._showPanel();
 					} else {
@@ -174,16 +175,12 @@ export default class MentionUI extends Plugin {
 	}
 
 	_showPanel() {
-		if ( this.panelView.isVisible ) {
-			return;
-		}
-
 		this.panelView.pin( this._getBalloonPositionData() );
-
 		this.panelView.show();
 	}
 
 	_hidePanel() {
+		this.panelView.unpin();
 		this.panelView.hide();
 	}
 

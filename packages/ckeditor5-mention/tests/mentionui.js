@@ -155,6 +155,99 @@ describe( 'BalloonToolbar', () => {
 					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
 			} );
 		} );
+
+		describe( 'asynchronous list with custom trigger', () => {
+			beforeEach( () => {
+				const issuesNumbers = [ '100', '101', '102', '103' ];
+
+				return createClassicTestEditor( [
+					{
+						marker: '#',
+						feed: feedText => {
+							return new Promise( resolve => {
+								setTimeout( () => {
+									resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
+								}, 20 );
+							} );
+						}
+					}
+				] );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.true;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 4 );
+					} );
+			} );
+
+			it( 'should show filtered results for matched text', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '2', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.true;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
+					} );
+			} );
+
+			it( 'should hide panel if no matched items', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => {
+						model.change( writer => {
+							writer.insertText( 'x', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( mentionUI.panelView.isVisible ).to.be.false;
+						expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
+					} );
+			} );
+
+			it( 'should hide panel when text was unmatched', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => {
+						model.change( writer => {
+							const end = doc.selection.getFirstPosition();
+							const start = end.getShiftedBy( -1 );
+
+							writer.remove( writer.createRange( start, end ) );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {
@@ -233,7 +326,7 @@ describe( 'BalloonToolbar', () => {
 		return new Promise( resolve => {
 			setTimeout( () => {
 				resolve();
-			} );
+			}, 50 );
 		} );
 	}
 } );
