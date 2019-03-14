@@ -171,10 +171,24 @@ describe( 'FontColorEditing', () => {
 			} )
 		);
 
-		it( 'should convert fontColor attribute to proper style value.', () => {
-			setModelData( doc, '<paragraph>fo<$text fontColor="#000">o b</$text>ar</paragraph>' );
+		describe( 'convert different color version', () => {
+			const tests = [
+				'#000',
+				'green',
+				'rgb( 0, 10, 20 )',
+				'rgba( 20, 30, 50, 0.4)',
+				'hsl( 10, 20%, 30%)',
+				'hsla( 300, 50%, 100%, .3)',
+				'rgb( 20%, 30%, 40% )',
+				'#345678'
+			];
+			tests.forEach( test => {
+				it( `should convert fontColor attribute: "${ test }" to proper style value.`, () => {
+					setModelData( doc, `<paragraph>fo<$text fontColor="${ test }">o b</$text>ar</paragraph>` );
 
-			expect( editor.getData() ).to.equal( '<p>fo<span style="color:#000;">o b</span>ar</p>' );
+					expect( editor.getData() ).to.equal( `<p>fo<span style="color:${ test };">o b</span>ar</p>` );
+				} );
+			} );
 		} );
 	} );
 } );

@@ -78,12 +78,22 @@ describe( 'FontColorUI', () => {
 			expect( dropdown.element.classList.contains( 'ck-font-color-dropdown' ) ).to.be.true;
 		} );
 
-		it( 'should focus view after command execution', () => {
+		it( 'should focus view after command execution from dropdown', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.commandName = 'fontColor';
 			dropdown.fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'should focus view after command execution from splitbutton', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+
+			dropdown.commandName = 'fontColor';
+			dropdown.buttonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
@@ -112,11 +122,7 @@ describe( 'FontColorUI', () => {
 
 			it( 'works for the colorTableView#items in the panel', () => {
 				const colorTableView = dropdown.colorTableView;
-
-				expect( colorTableView.items.map( item => item.children.first.label ) ).to.deep.equal( [
-					'Domyślna',
-					'Arial'
-				] );
+				expect( colorTableView.removeButtonTooltip ).to.equal( 'Usuń kolor tekstu' );
 			} );
 
 			function localizedEditor() {

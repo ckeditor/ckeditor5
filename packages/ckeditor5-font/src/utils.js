@@ -83,7 +83,7 @@ export const colorUI = {
 	addColorsToDropdown( dropdownView, colors ) {
 		const locale = dropdownView.locale;
 		const colorTableView = new ColorTableView( locale, { colors } );
-
+		dropdownView.colorTableView = colorTableView;
 		dropdownView.panelView.children.add( colorTableView );
 
 		colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
