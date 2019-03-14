@@ -8,14 +8,13 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import MentionsView from './ui/mentionsview';
+import TextWatcher from './textwatcher';
 
 /**
  * The mention ui feature.
@@ -202,82 +201,6 @@ export default class MentionUI extends Plugin {
 		};
 	}
 }
-
-// Returns whole text from parent element by adding all data from text nodes together.
-// @todo copied from autoformat...
-
-// @private
-// @param {module:engine/model/element~Element} element
-// @returns {String}
-function getText( element ) {
-	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
-}
-
-class TextWatcher {
-	constructor( editor, callbackOrRegex, textMatcher ) {
-		this.editor = editor;
-		this.testCallback = callbackOrRegex;
-		this.textMatcher = textMatcher;
-
-		this.hasMatch = false;
-
-		this._startListening();
-	}
-
-	get last() {
-		return this._getText();
-	}
-
-	_startListening() {
-		const editor = this.editor;
-
-		editor.model.document.on( 'change', ( evt, batch ) => {
-			if ( batch.type == 'transparent' ) {
-				return;
-			}
-
-			const changes = Array.from( editor.model.document.differ.getChanges() );
-			const entry = changes[ 0 ];
-
-			// Typing is represented by only a single change.
-			if ( changes.length != 1 || entry.name != '$text' || entry.length != 1 ) {
-				return undefined;
-			}
-
-			const text = this._getText();
-
-			const textHasMatch = this.testCallback( text );
-
-			if ( !textHasMatch && this.hasMatch ) {
-				this.fire( 'unmatched' );
-			}
-
-			this.hasMatch = textHasMatch;
-
-			if ( textHasMatch ) {
-				const matched = this.textMatcher( text );
-
-				this.fire( 'matched', { text, matched } );
-			}
-		} );
-	}
-
-	_getText() {
-		const editor = this.editor;
-		const selection = editor.model.document.selection;
-
-		// Do nothing if selection is not collapsed.
-		if ( !selection.isCollapsed ) {
-			return undefined;
-		}
-
-		const block = selection.focus.parent;
-
-		return getText( block ).slice( 0, selection.focus.offset );
-	}
-}
-
-mix( TextWatcher, EmitterMixin );
 
 function getBalloonPositions() {
 	const defaultPositions = BalloonPanelView.defaultPositions;
