@@ -957,7 +957,7 @@ The last thing you need to do is tell the editor to display the button in the to
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic ],
+		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, SimpleBox ],
 		// Insert the "simpleBox" to the editor toolbar.
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]
 	} )
@@ -972,3 +972,8 @@ ClassicEditor
 Refresh the web page and try it yourself:
 
 {@img assets/img/tutorial-implementing-a-widget-7.png Screenshot of the simple box widget being inserted using the toolbar button.}
+
+
+## Demo
+
+{@snippet framework/tutorials/block-widget}
