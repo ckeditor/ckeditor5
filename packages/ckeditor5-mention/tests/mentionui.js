@@ -15,9 +15,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'BalloonToolbar', () => {
-	let editor, editingView, mentionUI, editorElement;
+	let editor, model, doc, editingView, mentionUI, editorElement;
 
 	testUtils.createSinonSandbox();
 
@@ -31,6 +32,8 @@ describe( 'BalloonToolbar', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
 				editingView = editor.editing.view;
 				mentionUI = editor.plugins.get( MentionUI );
 
@@ -80,6 +83,69 @@ describe( 'BalloonToolbar', () => {
 			it( 'should have added MentionView as a child', () => {
 				expect( mentionUI.panelView.content.get( 0 ) ).to.be.instanceof( MentionsView );
 			} );
+		} );
+	} );
+
+	describe( 'triggers', () => {
+		it( 'should show panel for matched marker', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.true;
+			expect( mentionUI._mentionsView.listView.items ).to.have.length( 3 );
+		} );
+
+		it( 'should show filtered results for matched text', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'f', doc.selection.getFirstPosition() );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.true;
+			expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
+		} );
+
+		it( 'should hide panel if no matched items', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.true;
+
+			model.change( writer => {
+				writer.insertText( 'x', doc.selection.getFirstPosition() );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.false;
+			expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
+		} );
+
+		it( 'should hide panel when text was unmatched', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.true;
+
+			model.change( writer => {
+				const end = doc.selection.getFirstPosition();
+				const start = end.getShiftedBy( -1 );
+
+				writer.remove( writer.createRange( start, end ) );
+			} );
+
+			expect( mentionUI.panelView.isVisible ).to.be.false;
 		} );
 	} );
 } );
