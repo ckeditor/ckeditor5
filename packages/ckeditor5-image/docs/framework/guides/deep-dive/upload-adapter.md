@@ -127,7 +127,8 @@ class MyUploadAdapter {
 		} );
 
 		// Return a promise that will be resolved when the file is uploaded.
-		return server.upload( loader.file );
+		return loader.file
+			.then( file => server.upload( file ) );
 	}
 
 	// Aborts the upload process.
@@ -182,11 +183,12 @@ class MyUploadAdapter {
 
 	// Starts the upload process.
 	upload() {
-		return new Promise( ( resolve, reject ) => {
-			this._initRequest();
-			this._initListeners( resolve, reject );
-			this._sendRequest( reject );
-		} );
+		return this.loader.file
+			.then( file => new Promise( ( resolve, reject ) => {
+				this._initRequest();
+				this._initListeners( file, resolve, reject );
+				this._sendRequest( file );
+			} ) );
 	}
 
 	// Aborts the upload process.
@@ -237,10 +239,10 @@ class MyUploadAdapter {
 	// ...
 
 	// Initializes XMLHttpRequest listeners.
-	_initListeners( resolve, reject ) {
+	_initListeners( file, resolve, reject ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
-		const genericErrorText = 'Couldn\'t upload file:' + ` ${ loader.file.name }.`;
+		const genericErrorText = `Couldn't upload file: ${ file.name }.`;
 
 		xhr.addEventListener( 'error', () => reject( genericErrorText ) );
 		xhr.addEventListener( 'abort', () => reject() );
@@ -292,23 +294,19 @@ class MyUploadAdapter {
 	// ...
 
 	// Prepares the data and sends the request.
-	_sendRequest( reject ) {
-		this.loader.file
-			.then( file => {
-				// Prepare the form data.
-				const data = new FormData();
+	_sendRequest( file ) {
+		// Prepare the form data.
+		const data = new FormData();
 
-				data.append( 'upload', file );
+		data.append( 'upload', file );
 
-				// Important note: This is the right place to implement security mechanisms
-				// like authentication and CSRF protection. For instance, you can use
-				// XMLHttpRequest.setRequestHeader() to set the request headers containing
-				// the CSRF token generated earlier by your application.
+		// Important note: This is the right place to implement security mechanisms
+		// like authentication and CSRF protection. For instance, you can use
+		// XMLHttpRequest.setRequestHeader() to set the request headers containing
+		// the CSRF token generated earlier by your application.
 
-				// Send the request.
-				this.xhr.send( data );
-			} )
-			.catch( reject );
+		// Send the request.
+		this.xhr.send( data );
 	}
 }
 ```
@@ -416,11 +414,12 @@ class MyUploadAdapter {
 
 	// Starts the upload process.
 	upload() {
-		return new Promise( ( resolve, reject ) => {
-			this._initRequest();
-			this._initListeners( resolve, reject );
-			this._sendRequest( reject );
-		} );
+		return this.loader.file
+			.then( file => new Promise( ( resolve, reject ) => {
+				this._initRequest();
+				this._initListeners( file, resolve, reject );
+				this._sendRequest( file );
+			} ) );
 	}
 
 	// Aborts the upload process.
@@ -443,10 +442,10 @@ class MyUploadAdapter {
 	}
 
 	// Initializes XMLHttpRequest listeners.
-	_initListeners( resolve, reject ) {
+	_initListeners( file, resolve, reject ) {
 		const xhr = this.xhr;
 		const loader = this.loader;
-		const genericErrorText = 'Couldn\'t upload file:' + ` ${ loader.file.name }.`;
+		const genericErrorText = `Couldn't upload file: ${ file.name }.`;
 
 		xhr.addEventListener( 'error', () => reject( genericErrorText ) );
 		xhr.addEventListener( 'abort', () => reject() );
@@ -486,23 +485,19 @@ class MyUploadAdapter {
 	}
 
 	// Prepares the data and sends the request.
-	_sendRequest( reject ) {
-		this.loader.file
-			.then( file => {
-				// Prepare the form data.
-				const data = new FormData();
+	_sendRequest( file ) {
+		// Prepare the form data.
+		const data = new FormData();
 
-				data.append( 'upload', file );
+		data.append( 'upload', file );
 
-				// Important note: This is the right place to implement security mechanisms
-				// like authentication and CSRF protection. For instance, you can use
-				// XMLHttpRequest.setRequestHeader() to set the request headers containing
-				// the CSRF token generated earlier by your application.
+		// Important note: This is the right place to implement security mechanisms
+		// like authentication and CSRF protection. For instance, you can use
+		// XMLHttpRequest.setRequestHeader() to set the request headers containing
+		// the CSRF token generated earlier by your application.
 
-				// Send the request.
-				this.xhr.send( data );
-			} )
-			.catch( reject );
+		// Send the request.
+		this.xhr.send( data );
 	}
 }
 
