@@ -103,12 +103,15 @@ export default class Model {
 		} );
 		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 
-		// Element needed by `upcastElementToMarker` converter.
-		// This element temporarily represents marker bound during conversion process and is removed
-		// at the end of conversion. `UpcastDispatcher` or at least `Conversion` class looks like a better for this
-		// registration but both know nothing about Schema.
-		this.schema.register( '$marker', {
-			allowIn: [ '$root', '$block' ]
+		// An element needed by the `upcastElementToMarker` converter.
+		// This element temporarily represents marker bound during the conversion process and is removed
+		// at the end of the conversion. `UpcastDispatcher` or at least `Conversion` class looks like a
+		// better place for this registration but both know nothing about the Schema.
+		this.schema.register( '$marker' );
+		this.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( childDefinition.name === '$marker' ) {
+				return true;
+			}
 		} );
 
 		injectSelectionPostFixer( this );

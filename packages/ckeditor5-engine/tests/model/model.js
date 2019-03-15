@@ -51,9 +51,14 @@ describe( 'Model', () => {
 		} );
 
 		it( 'registers $marker to the schema', () => {
+			model.document.createRoot( '$anywhere', 'anywhere' );
+			schema.register( 'anything' );
+
 			expect( schema.isRegistered( '$marker' ) ).to.be.true;
-			expect( schema.checkChild( [ '$root' ], '$marker' ), 1 ).to.be.true;
-			expect( schema.checkChild( [ '$block' ], '$marker' ), 1 ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ '$block' ], '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ '$anywhere' ], '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ 'anything' ], '$marker' ) ).to.be.true;
 		} );
 	} );
 
