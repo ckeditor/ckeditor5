@@ -10,15 +10,19 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
-describe( 'BalloonToolbar', () => {
+describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
 
 	const staticConfig = [
@@ -266,6 +270,135 @@ describe( 'BalloonToolbar', () => {
 		} );
 	} );
 
+	describe( 'keys', () => {
+		beforeEach( () => {
+			return createClassicTestEditor( staticConfig );
+		} );
+
+		describe( 'arrows', () => {
+			it( 'should cycle down on arrow down', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+
+						const keyEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false, false, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, true, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+					} );
+			} );
+
+			it( 'should cycle up on arrow up', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+
+						const keyEvtData = {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, true, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false, false, false ] );
+
+						fireKeyDownEvent( keyEvtData );
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+					} );
+			} );
+		} );
+
+		describe( 'enter', () => {
+			it( 'should execute selected button', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				const command = editor.commands.get( 'mention' );
+				const spy = testUtils.sinon.spy( command, 'execute' );
+
+				return waitForDebounce()
+					.then( () => {
+						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.enter,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.calledOnce( spy );
+
+						const commandOptions = spy.getCall( 0 ).args[ 0 ];
+
+						expect( commandOptions ).to.have.property( 'mention', 'Ted' );
+						expect( commandOptions ).to.have.property( 'marker', '@' );
+						expect( commandOptions ).to.have.property( 'range' );
+
+						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+
+						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+					} );
+			} );
+		} );
+
+		describe.skip( 'tab', () => {} );
+	} );
+
 	describe( 'itemRenderer', () => {
 		beforeEach( () => {
 			const issues = [
@@ -387,5 +520,17 @@ describe( 'BalloonToolbar', () => {
 				resolve();
 			}, 50 );
 		} );
+	}
+
+	// TODO copied
+	function fireKeyDownEvent( options ) {
+		const eventInfo = new EventInfo( editingView.document, 'keydown' );
+		const eventData = new DomEventData( editingView.document, {
+			target: document.body
+		}, options );
+
+		// sinon.stub( eventInfo, 'stop' ).callsFake( evtStopSpy );
+
+		editingView.document.fire( eventInfo, eventData );
 	}
 } );

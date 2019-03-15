@@ -79,10 +79,6 @@ export default class MentionsView extends View {
 	}
 
 	executeSelected() {
-		if ( !this.selected ) {
-			return;
-		}
-
 		this.selected.fire( 'execute' );
 	}
 }
