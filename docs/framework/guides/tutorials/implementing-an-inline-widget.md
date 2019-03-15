@@ -716,3 +716,7 @@ ClassicEditor
 Now if you open the dropdown in the toolbar you'll see new list of placeholders to insert.
 
 {@img assets/img/tutorial-implementing-an-inline-widget-2.png Screenshot of the placeholder widgets being inserted using the dropdown.}
+
+## Demo
+
+{@snippet framework/tutorials/inline-widget}
