@@ -364,7 +364,7 @@ As you could notice the editing part imports the `./theme/placeholder.css` CSS f
 ```css
 /* placeholder/theme/placeholder.css */
 
-[data-placeholder] {
+.placeholder {
 	background: #ffff00;
 	padding: 4px 2px;
 	outline-offset: -2px;
@@ -372,7 +372,7 @@ As you could notice the editing part imports the `./theme/placeholder.css` CSS f
 	margin: 0 1px;
 }
 
-[data-placeholder]::selection {
+.placeholder::selection {
 	display: none;
 }
 ```
@@ -664,7 +664,7 @@ export default class PlaceholderEditing extends Plugin {
 			viewToModelPositionOutsideModelElement( this.editor.model, viewElement => viewElement.hasClass( 'placeholder' ) )
 		);
 
-		this.editor.config.define( 'placeholder', {                                 // ADDED
+		this.editor.config.define( 'placeholderConfig', {                           // ADDED
 			types: [ 'date', 'first name', 'surname' ]
 		} );
 	}
@@ -688,7 +688,7 @@ export default class PlaceholderUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const placeholderNames = editor.config.get( 'placeholder.types' );                  // CHANGED
+		const placeholderNames = editor.config.get( 'placeholderConfig.types' );            // CHANGED
 
 		editor.ui.componentFactory.add( 'placeholder', locale => {
 			// ...
@@ -706,8 +706,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, Widget, Placeholder ],
 		toolbar: [ 'heading', 'bold', 'italic', 'numberedList', 'bulletedList', '|', 'placeholder' ],
-		placeholder: {
-			types: [ 'model', 'make', 'color' ]                                             // ADDED
+		placeholderConfig: {
+			types: [ 'date', 'color', 'first name', 'surname' ]                             // ADDED
 		}
 	} )
 	// ...
