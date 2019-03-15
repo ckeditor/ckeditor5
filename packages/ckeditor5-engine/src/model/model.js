@@ -104,7 +104,7 @@ export default class Model {
 		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
 
 		// An element needed by the `upcastElementToMarker` converter.
-		// This element temporarily represents marker bound during the conversion process and is removed
+		// This element temporarily represents a marker boundary during the conversion process and is removed
 		// at the end of the conversion. `UpcastDispatcher` or at least `Conversion` class looks like a
 		// better place for this registration but both know nothing about `Schema`.
 		this.schema.register( '$marker' );
