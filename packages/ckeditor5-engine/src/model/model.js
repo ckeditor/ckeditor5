@@ -749,18 +749,6 @@ export default class Model {
 	}
 
 	/**
-	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
-	 * {@link module:engine/model/model~Model#change} block.
-	 *
-	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
-	 *
-	 * @deprecated
-	 * @protected
-	 * @event _change
-	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
-	 */
-
-	/**
 	 * Fired when entering the outermost {@link module:engine/model/model~Model#enqueueChange} or
 	 * {@link module:engine/model/model~Model#change} block.
 	 *
