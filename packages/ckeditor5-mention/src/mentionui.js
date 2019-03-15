@@ -13,9 +13,11 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+
 import MentionsView from './ui/mentionsview';
 import TextWatcher from './textwatcher';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 
 /**
  * The mention ui feature.
@@ -50,6 +52,25 @@ export default class MentionUI extends Plugin {
 
 		this._createMentionView( editor );
 
+		this.editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+			if ( isHandledKey( data.keyCode ) && this.panelView.isVisible ) {
+				data.preventDefault();
+				evt.stop(); // Required for enter overriding.
+
+				if ( data.keyCode == keyCodes.arrowdown ) {
+					this._mentionsView.selectNext();
+				}
+
+				if ( data.keyCode == keyCodes.arrowup ) {
+					this._mentionsView.selectPrevious();
+				}
+
+				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
+					this._mentionsView.executeSelected();
+				}
+			}
+		}, { priority: 'highest' } ); // priority highest required for enter overriding.
+
 		this._mentionsConfigurations = new Map();
 
 		const config = this.editor.config.get( 'mention' );
@@ -83,32 +104,43 @@ export default class MentionUI extends Plugin {
 
 			const renderer = this._getItemRenderer( marker );
 
-			const listItemView = new ListItemView( editor.locale );
+			const listItemView = new MentionListItemView( editor.locale );
 
 			if ( renderer ) {
 				const domNode = renderer( item );
 
-				listItemView.children.add( new DomWrapperView( editor.locale, domNode ) );
+				const domWrapperView = new DomWrapperView( editor.locale, domNode );
+				domWrapperView.delegate( 'execute' ).to( listItemView );
+				listItemView.children.add( domWrapperView );
 			} else {
 				const buttonView = new ButtonView( editor.locale );
 
 				buttonView.label = label;
 				buttonView.withText = true;
-				buttonView.item = item;
-				buttonView.marker = marker;
 
 				listItemView.children.add( buttonView );
 
-				buttonView.delegate( 'execute' ).to( this._mentionsView );
+				buttonView.delegate( 'execute' ).to( listItemView );
 			}
+
+			listItemView.item = item;
+			listItemView.marker = marker;
+
+			// TODO maybe delegate would be better.
+			listItemView.on( 'execute', () => {
+				this._mentionsView.fire( 'execute', {
+					item,
+					marker
+				} );
+			} );
 
 			return listItemView;
 		} );
 
-		this._mentionsView.on( 'execute', evt => {
-			// @todo use event data
-			const label = evt.source.label;
-			const marker = evt.source.marker;
+		this._mentionsView.on( 'execute', ( evt, data ) => {
+			const item = data.item;
+			const label = item.label || item;
+			const marker = data.marker;
 
 			const watcher = this._getWatcher( marker );
 
@@ -195,6 +227,7 @@ export default class MentionUI extends Plugin {
 	_showPanel() {
 		this.panelView.pin( this._getBalloonPositionData() );
 		this.panelView.show();
+		this._mentionsView.selectFirst();
 	}
 
 	_hidePanel() {
@@ -233,8 +266,8 @@ function getBalloonPositions() {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return [
-		defaultPositions.northArrowSouthWest,
-		defaultPositions.southArrowNorthWest
+		defaultPositions.southArrowNorthWest,
+		defaultPositions.northArrowSouthWest
 	];
 }
 
@@ -265,7 +298,7 @@ function createTextMatcher( marker ) {
 function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems.filter( item => {
-			return item.toLowerCase().startsWith( feedText.toLowerCase() );
+			return item.toLowerCase().includes( feedText.toLowerCase() );
 		} );
 
 		return Promise.resolve( filteredItems );
@@ -278,11 +311,51 @@ class DomWrapperView extends View {
 
 		this.template = false;
 		this.domNode = domNode;
+
+		this.domNode.classList.add( 'ck-button' );
+
+		this.set( 'isOn', false );
+
+		this.on( 'change:isOn', ( evt, name, isOn ) => {
+			if ( isOn ) {
+				this.domNode.classList.add( 'ck-on' );
+				this.domNode.classList.remove( 'ck-off' );
+			} else {
+				this.domNode.classList.add( 'ck-off' );
+				this.domNode.classList.remove( 'ck-on' );
+			}
+		} );
 	}
 
 	render() {
 		super.render();
 
 		this.element = this.domNode;
+	}
+}
+
+function isHandledKey( keyCode ) {
+	const handledKeyCodes = [
+		keyCodes.arrowup,
+		keyCodes.arrowdown,
+		keyCodes.arrowleft,
+		keyCodes.arrowright,
+		keyCodes.enter,
+		keyCodes.tab
+	];
+	return handledKeyCodes.includes( keyCode );
+}
+
+class MentionListItemView extends ListItemView {
+	highlight() {
+		const child = this.children.first;
+
+		child.isOn = true;
+	}
+
+	removeHighlight() {
+		const child = this.children.first;
+
+		child.isOn = false;
 	}
 }

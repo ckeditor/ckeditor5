@@ -1,10 +1,27 @@
 <div id="editor">
-	<p>Hello <span class="mention" data-mention="Ted">@Ted</span>.</p>
+	<p>Have you met... </p>
 </div>
 
 <style>
 	.mention {
 		background: hsla(341, 100%, 87%, 0.4);
 		color: hsl(340, 100%, 31%);
+	}
+
+	.custom-item {
+		display: block;
+		padding: 1em;
+	}
+
+	.custom-item.ck-on {
+		color: white;
+	}
+
+	.custom-item .custom-item-username {
+		color: #666;
+	}
+
+	.custom-item.ck-on .custom-item-username{
+		color: #ddd;
 	}
 </style>

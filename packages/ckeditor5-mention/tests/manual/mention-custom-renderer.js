@@ -29,19 +29,14 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
 		mention: [
 			{
-				feed: feedText => Promise.resolve( [
-					{ id: '1', label: 'Barney' },
-					{ id: '2', label: 'Lily' },
-					{ id: '3', label: 'Marshall' },
-					{ id: '4', label: 'Robin' },
-					{ id: '5', label: 'Ted' }
-				].filter( item => item.label.toLowerCase().includes( feedText ) ) ),
+				feed: getFeed,
 				itemRenderer: item => {
 					const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-					span.innerHTML = `<span id="${ item.id }">@${ item.label }</span>`;
+					span.classList.add( 'custom-item' );
+					span.id = `mention-list-item-id-${ item.id }`;
 
-					console.log( 'rendered node: ', span, item );
+					span.innerHTML = `${ item.label } <span class="custom-item-username">@${ item.username }</span>`;
 
 					return span;
 				}
@@ -54,3 +49,17 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function getFeed( feedText ) {
+	return Promise.resolve( [
+		{ id: '1', label: 'Barney Stinson', username: 'swarley' },
+		{ id: '2', label: 'Lily Aldrin', username: 'lilypad' },
+		{ id: '3', label: 'Marshall Eriksen', username: 'marshmallow' },
+		{ id: '4', label: 'Robin Scherbatsky', username: 'rsparkles' },
+		{ id: '5', label: 'Ted Mosby', username: 'tdog' }
+	].filter( item => {
+		const searchString = feedText.toLowerCase();
+
+		return item.label.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
+	} ) );
+}

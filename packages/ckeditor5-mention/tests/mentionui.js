@@ -19,7 +19,7 @@ import MentionsView from '../src/ui/mentionsview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'BalloonToolbar', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
 
 	const staticConfig = [
 		{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
@@ -59,19 +59,19 @@ describe( 'BalloonToolbar', () => {
 
 		describe( 'panelView', () => {
 			it( 'should create a view instance', () => {
-				expect( mentionUI.panelView ).to.instanceof( BalloonPanelView );
+				expect( panelView ).to.instanceof( BalloonPanelView );
 			} );
 
 			it( 'should be added to the ui.view.body collection', () => {
-				expect( Array.from( editor.ui.view.body ) ).to.include( mentionUI.panelView );
+				expect( Array.from( editor.ui.view.body ) ).to.include( panelView );
 			} );
 
 			it( 'should have disabled arrow', () => {
-				expect( mentionUI.panelView.withArrow ).to.be.false;
+				expect( panelView.withArrow ).to.be.false;
 			} );
 
 			it( 'should have added MentionView as a child', () => {
-				expect( mentionUI.panelView.content.get( 0 ) ).to.be.instanceof( MentionsView );
+				expect( panelView.content.get( 0 ) ).to.be.instanceof( MentionsView );
 			} );
 		} );
 	} );
@@ -91,8 +91,8 @@ describe( 'BalloonToolbar', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.true;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 5 );
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -109,8 +109,23 @@ describe( 'BalloonToolbar', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.true;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 1 );
+					} );
+			} );
+
+			it( 'should focus the first item in panel', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const button = listView.items.get( 0 ).children.get( 0 );
+
+						expect( button.isOn ).to.be.true;
 					} );
 			} );
 
@@ -122,7 +137,7 @@ describe( 'BalloonToolbar', () => {
 				} );
 
 				return waitForDebounce()
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => expect( panelView.isVisible ).to.be.true )
 					.then( () => {
 						model.change( writer => {
 							writer.insertText( 'x', doc.selection.getFirstPosition() );
@@ -130,8 +145,8 @@ describe( 'BalloonToolbar', () => {
 					} )
 					.then( waitForDebounce )
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.false;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
+						expect( panelView.isVisible ).to.be.false;
+						expect( listView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -143,7 +158,7 @@ describe( 'BalloonToolbar', () => {
 				} );
 
 				return waitForDebounce()
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => expect( panelView.isVisible ).to.be.true )
 					.then( () => {
 						model.change( writer => {
 							const end = doc.selection.getFirstPosition();
@@ -153,7 +168,7 @@ describe( 'BalloonToolbar', () => {
 						} );
 					} )
 					.then( waitForDebounce )
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
+					.then( () => expect( panelView.isVisible ).to.be.false );
 			} );
 		} );
 
@@ -184,8 +199,8 @@ describe( 'BalloonToolbar', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.true;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 4 );
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 4 );
 					} );
 			} );
 
@@ -202,8 +217,8 @@ describe( 'BalloonToolbar', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.true;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 1 );
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 1 );
 					} );
 			} );
 
@@ -215,7 +230,7 @@ describe( 'BalloonToolbar', () => {
 				} );
 
 				return waitForDebounce()
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => expect( panelView.isVisible ).to.be.true )
 					.then( () => {
 						model.change( writer => {
 							writer.insertText( 'x', doc.selection.getFirstPosition() );
@@ -223,8 +238,8 @@ describe( 'BalloonToolbar', () => {
 					} )
 					.then( waitForDebounce )
 					.then( () => {
-						expect( mentionUI.panelView.isVisible ).to.be.false;
-						expect( mentionUI._mentionsView.listView.items ).to.have.length( 0 );
+						expect( panelView.isVisible ).to.be.false;
+						expect( listView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -236,7 +251,7 @@ describe( 'BalloonToolbar', () => {
 				} );
 
 				return waitForDebounce()
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.true )
+					.then( () => expect( panelView.isVisible ).to.be.true )
 					.then( () => {
 						model.change( writer => {
 							const end = doc.selection.getFirstPosition();
@@ -246,7 +261,7 @@ describe( 'BalloonToolbar', () => {
 						} );
 					} )
 					.then( waitForDebounce )
-					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
+					.then( () => expect( panelView.isVisible ).to.be.false );
 			} );
 		} );
 	} );
@@ -285,8 +300,8 @@ describe( 'BalloonToolbar', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					expect( mentionUI.panelView.isVisible ).to.be.true;
-					expect( mentionUI._mentionsView.listView.items ).to.have.length( 3 );
+					expect( panelView.isVisible ).to.be.true;
+					expect( listView.items ).to.have.length( 3 );
 				} );
 		} );
 	} );
@@ -306,7 +321,7 @@ describe( 'BalloonToolbar', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					sinon.assert.calledOnce( spy );
 
@@ -332,9 +347,9 @@ describe( 'BalloonToolbar', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					mentionUI._mentionsView.listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
-					expect( mentionUI.panelView.isVisible ).to.be.false;
+					expect( panelView.isVisible ).to.be.false;
 				} );
 		} );
 	} );
@@ -351,6 +366,9 @@ describe( 'BalloonToolbar', () => {
 				doc = model.document;
 				editingView = editor.editing.view;
 				mentionUI = editor.plugins.get( MentionUI );
+				panelView = mentionUI.panelView;
+				mentionsView = mentionUI._mentionsView;
+				listView = mentionsView.listView;
 
 				editingView.attachDomRoot( editorElement );
 
