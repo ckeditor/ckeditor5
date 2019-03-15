@@ -15,6 +15,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import MentionsView from './ui/mentionsview';
 import TextWatcher from './textwatcher';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 /**
  * The mention ui feature.
@@ -49,20 +50,21 @@ export default class MentionUI extends Plugin {
 
 		this._createMentionView( editor );
 
-		this._watchers = new Map();
-		this._feeds = new Map();
+		this._mentionsConfigurations = new Map();
 
 		const config = this.editor.config.get( 'mention' );
 
 		for ( const mentionDescription of config ) {
 			const feed = mentionDescription.feed;
 
-			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
-
 			const marker = mentionDescription.marker || '@';
+			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
+			const watcher = this._addTextWatcher( marker );
+			const itemRenderer = mentionDescription.itemRenderer;
 
-			this._addTextWatcher( marker );
-			this._addFeed( marker, feedCallback );
+			const definition = { watcher, marker, feedCallback, itemRenderer };
+
+			this._mentionsConfigurations.set( marker, definition );
 		}
 	}
 
@@ -73,22 +75,32 @@ export default class MentionUI extends Plugin {
 
 		this.panelView.content.add( this._mentionsView );
 
+		// TODO this is huge rewrite:
 		this._mentionsView.listView.items.bindTo( this._items ).using( data => {
+			// itemRenderer
 			const { item, marker } = data;
 			const { label } = item;
 
+			const renderer = this._getItemRenderer( marker );
+
 			const listItemView = new ListItemView( editor.locale );
-			const buttonView = new ButtonView( editor.locale );
 
-			// TODO: might be better - pass as params.
-			buttonView.label = label;
-			buttonView.withText = true;
-			buttonView.item = item;
-			buttonView.marker = marker;
+			if ( renderer ) {
+				const domNode = renderer( item );
 
-			listItemView.children.add( buttonView );
+				listItemView.children.add( new DomWrapperView( editor.locale, domNode ) );
+			} else {
+				const buttonView = new ButtonView( editor.locale );
 
-			buttonView.delegate( 'execute' ).to( this._mentionsView );
+				buttonView.label = label;
+				buttonView.withText = true;
+				buttonView.item = item;
+				buttonView.marker = marker;
+
+				listItemView.children.add( buttonView );
+
+				buttonView.delegate( 'execute' ).to( this._mentionsView );
+			}
 
 			return listItemView;
 		} );
@@ -124,20 +136,22 @@ export default class MentionUI extends Plugin {
 		} );
 	}
 
-	_addFeed( marker, callback ) {
-		this._feeds.set( marker, callback );
+	_getItemRenderer( marker ) {
+		const { itemRenderer } = this._mentionsConfigurations.get( marker );
+
+		return itemRenderer;
 	}
 
 	_getFeed( marker, feedText ) {
-		return this._feeds.get( marker )( feedText );
+		const { feedCallback } = this._mentionsConfigurations.get( marker );
+
+		return feedCallback( feedText );
 	}
 
 	_addTextWatcher( marker ) {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor, createTestCallback( marker ), createTextMatcher( marker ) );
-
-		this._watchers.set( marker, watcher );
 
 		watcher.on( 'matched', ( evt, data ) => {
 			const matched = data.matched;
@@ -151,7 +165,7 @@ export default class MentionUI extends Plugin {
 					this._items.clear();
 
 					for ( const label of feed ) {
-						const item = { label };
+						const item = typeof label != 'object' ? { label } : label;
 
 						this._items.add( { item, marker } );
 					}
@@ -168,10 +182,14 @@ export default class MentionUI extends Plugin {
 		watcher.on( 'unmatched', () => {
 			this._hidePanel();
 		} );
+
+		return watcher;
 	}
 
 	_getWatcher( marker ) {
-		return this._watchers.get( marker );
+		const { watcher } = this._mentionsConfigurations.get( marker );
+
+		return watcher;
 	}
 
 	_showPanel() {
@@ -252,4 +270,19 @@ function createFeedCallback( feedItems ) {
 
 		return Promise.resolve( filteredItems );
 	};
+}
+
+class DomWrapperView extends View {
+	constructor( locale, domNode ) {
+		super( locale );
+
+		this.template = false;
+		this.domNode = domNode;
+	}
+
+	render() {
+		super.render();
+
+		this.element = this.domNode;
+	}
 }

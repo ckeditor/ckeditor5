@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
@@ -247,6 +248,46 @@ describe( 'BalloonToolbar', () => {
 					.then( waitForDebounce )
 					.then( () => expect( mentionUI.panelView.isVisible ).to.be.false );
 			} );
+		} );
+	} );
+
+	describe( 'itemRenderer', () => {
+		beforeEach( () => {
+			const issues = [
+				{ id: '1002', title: 'Some bug in editor.' },
+				{ id: '1003', title: 'Introduce this feature.' },
+				{ id: '1004', title: 'Missing docs.' }
+			];
+
+			return createClassicTestEditor( [
+				{
+					marker: '#',
+					feed: feedText => {
+						return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
+					},
+					itemRenderer: item => {
+						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+
+						span.innerHTML = `<span id="${ item.id }">@${ item.title }</span>`;
+
+						return span;
+					}
+				}
+			] );
+		} );
+
+		it( 'should show panel for matched marker', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '#', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					expect( mentionUI.panelView.isVisible ).to.be.true;
+					expect( mentionUI._mentionsView.listView.items ).to.have.length( 3 );
+				} );
 		} );
 	} );
 
