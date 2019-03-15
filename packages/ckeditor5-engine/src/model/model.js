@@ -106,7 +106,7 @@ export default class Model {
 		// An element needed by the `upcastElementToMarker` converter.
 		// This element temporarily represents marker bound during the conversion process and is removed
 		// at the end of the conversion. `UpcastDispatcher` or at least `Conversion` class looks like a
-		// better place for this registration but both know nothing about the Schema.
+		// better place for this registration but both know nothing about `Schema`.
 		this.schema.register( '$marker' );
 		this.schema.addChildCheck( ( context, childDefinition ) => {
 			if ( childDefinition.name === '$marker' ) {
