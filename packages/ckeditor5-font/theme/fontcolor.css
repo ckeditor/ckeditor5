@@ -5,14 +5,14 @@
 
 .ck-color-table .ck-color-table__table {
 	margin: 0.5em 0.5em 0 0.5em;
-	width: 14em;
+	width: 100%;
 	border-collapse: separate;
 	border-spacing: 0.2em;
 }
 
 .ck-color-table .ck-color-table__cell-color {
-	width: 2em;
-	height: 2em;
+	width: 20px;
+	height: 20px;
 	border: 0.1em solid #000;
 	transition-property: border-width;
 	transition-duration: 0.1s;

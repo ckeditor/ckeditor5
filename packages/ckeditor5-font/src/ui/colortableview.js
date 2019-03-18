@@ -47,38 +47,31 @@ export default class ColorTableView extends View {
 
 	createColorTableTemplate() {
 		return new Template( {
-			tag: 'table',
-			children: this._colorRows( this.colorsDefinition ),
+			tag: 'div',
+			children: this._colorElements( this.colorsDefinition ),
 			attributes: {
-				class: 'ck-color-table__table'
+				class: 'ck-color-table__main-container'
 			}
 		} );
 	}
 
-	_colorRows( colorTable ) {
-		return colorTable.map( rowArr => new Template( {
-			tag: 'tr',
-			children: this._colorElements( rowArr )
-		} ) );
-	}
+	// _colorRows( colorTable ) {
+	// 	return colorTable.map( rowArr => new Template( {
+	// 		tag: 'tr',
+	// 		children: this._colorElements( rowArr )
+	// 	} ) );
+	// }
 
-	_colorElements( rowArr ) {
+	_colorElements( colorArr ) {
 		const bind = this.bindTemplate;
-		return rowArr.map( element => new Template( {
-			tag: 'td',
+		return colorArr.map( element => new Template( {
+			tag: 'span',
 			attributes: {
 				style: {
 					backgroundColor: element.color
 				},
 				class: [
-					'ck-color-table__cell-color',
-					bind.if(
-						'selectedColor',
-						'ck-color-table__cell-color_active',
-						value => {
-							return value === element.color;
-						}
-					)
+					'ck-color-table__cell-color'
 				]
 			},
 			on: {

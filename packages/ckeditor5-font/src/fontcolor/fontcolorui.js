@@ -30,14 +30,14 @@ export default class FontColorUI extends Plugin {
 			const splitButtonView = dropdownView.buttonView;
 			const colorTableView = colorUI.addColorsToDropdown(
 				dropdownView,
-				options.map( row => row.map( element => ( { name: element.label, color: element.model } ) ) )
+				options.map( element => ( { name: element.label, color: element.model } ) )
 			);
 			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
 			// Preselect first element on color list.
-			dropdownView.set( 'lastlySelectedColor', { value: options[ 0 ][ 0 ].model } );
+			dropdownView.set( 'lastlySelectedColor', { value: options[ 0 ].model } );
 
 			dropdownView.buttonView.set( {
 				label: t( 'Font Color' ),
@@ -79,7 +79,7 @@ export default class FontColorUI extends Plugin {
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
-		const colors = editor.config.get( `${ FONT_COLOR }.colors` ).map( colorRow => normalizeOptions( colorRow ) );
+		const colors = normalizeOptions( editor.config.get( `${ FONT_COLOR }.colors` ) );
 		return colors;
 	}
 }
