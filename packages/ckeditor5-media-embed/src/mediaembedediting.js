@@ -78,8 +78,8 @@ export default class MediaEmbedEditing extends Plugin {
 				{
 					name: 'youtube',
 					url: [
-						/^youtube\.com\/watch\?v=([\w-]+)/,
-						/^youtube\.com\/v\/([\w-]+)/,
+						/^(?:m\.)?youtube\.com\/watch\?v=([\w-]+)/,
+						/^(?:m\.)?youtube\.com\/v\/([\w-]+)/,
 						/^youtube\.com\/embed\/([\w-]+)/,
 						/^youtu\.be\/([\w-]+)/
 					],
