@@ -11,7 +11,6 @@ import '../../theme/fontcolor.css';
 export default class ColorTableView extends View {
 	constructor( locale, { colors } ) {
 		super( locale );
-		const bind = this.bindTemplate;
 
 		this.COLUMNS = 6;
 		this.colorsDefinition = colors;
@@ -27,10 +26,7 @@ export default class ColorTableView extends View {
 			},
 			children: [
 				this.createColorTableTemplate(),
-				this.removeColorButton(),
-				{
-					text: bind.to( 'hoveredColor' )
-				}
+				this.removeColorButton()
 			]
 		} );
 	}
@@ -52,58 +48,44 @@ export default class ColorTableView extends View {
 	createColorTableTemplate() {
 		return new Template( {
 			tag: 'table',
-			children: this._colorRows(),
+			children: this._colorRows( this.colorsDefinition ),
 			attributes: {
 				class: 'ck-color-table__table'
 			}
 		} );
 	}
 
-	_colorRows() {
-		const rows = [];
-		for ( let i = 0; i < Math.ceil( this.colorsDefinition.length / this.COLUMNS ); i++ ) {
-			rows.push( new Template( {
-				tag: 'tr',
-				children: this._colorElements( i )
-			} ) );
-		}
-		return rows;
+	_colorRows( colorTable ) {
+		return colorTable.map( rowArr => new Template( {
+			tag: 'tr',
+			children: this._colorElements( rowArr )
+		} ) );
 	}
 
-	_colorElements( index ) {
-		const elements = [];
+	_colorElements( rowArr ) {
 		const bind = this.bindTemplate;
-		for ( let i = 0; i < this.COLUMNS; i++ ) {
-			elements.push( new Template( {
-				tag: 'td',
-				attributes: {
-					style: {
-						backgroundColor: `${ this.colorsDefinition[ index * this.COLUMNS + i ].color }`
-					},
-					class: [
-						'ck-color-table__cell-color',
-						bind.if(
-							'selectedColor',
-							'ck-color-table__cell-color_active',
-							value => {
-								return value === this.colorsDefinition[ index * this.COLUMNS + i ].color;
-							}
-						)
-					]
+		return rowArr.map( element => new Template( {
+			tag: 'td',
+			attributes: {
+				style: {
+					backgroundColor: element.color
 				},
-				on: {
-					click: bind.to( () => {
-						this.fire( 'execute', { value: this.colorsDefinition[ index * this.COLUMNS + i ].color } );
-					} ),
-					mouseover: bind.to( () => {
-						this.set( 'hoveredColor', this.colorsDefinition[ index * this.COLUMNS + i ].name );
-					} ),
-					mouseout: bind.to( () => {
-						this.set( 'hoveredColor', undefined );
-					} )
-				}
-			} ) );
-		}
-		return elements;
+				class: [
+					'ck-color-table__cell-color',
+					bind.if(
+						'selectedColor',
+						'ck-color-table__cell-color_active',
+						value => {
+							return value === element.color;
+						}
+					)
+				]
+			},
+			on: {
+				click: bind.to( () => {
+					this.fire( 'execute', { value: element.color } );
+				} )
+			}
+		} ) );
 	}
 }

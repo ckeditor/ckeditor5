@@ -21,103 +21,28 @@ export default class FontBackgroundColorEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( FONT_BACKGROUND_COLOR, {
-			options: [
-				{
-					label: 'Strong Cyan',
-					color: '#1ABC9C'
-				},
-				{
-					label: 'Emerald',
-					color: '#2ECC71'
-				},
-				{
-					label: 'Bright Blue',
-					color: '#3498DB'
-				},
-				{
-					label: 'Amethyst',
-					color: '#9B59B6'
-				},
-				{
-					label: 'Grayish Blue',
-					color: '#4E5F70'
-				},
-				{
-					label: 'Vivid Yellow',
-					color: '#F1C40F'
-				},
-				{
-					label: 'Dark Cyan',
-					color: '#16A085'
-				},
-				{
-					label: 'Dark Emerald',
-					color: '#27AE60'
-				},
-				{
-					label: 'Strong Blue',
-					color: '#2980B9'
-				},
-				{
-					label: 'Dark Violet',
-					color: '#8E44AD'
-				},
-				{
-					label: 'Desaturated Blue',
-					color: '#2C3E50'
-				},
-				{
-					label: 'Orange',
-					color: '#F39C12'
-				},
-				{
-					label: 'Carrot',
-					color: '#E67E22'
-				},
-				{
-					label: 'Pale Red',
-					color: '#E74C3C'
-				},
-				{
-					label: 'Bright Silver',
-					color: '#ECF0F1'
-				},
-				{
-					label: 'Light Grayish Cyan',
-					color: '#95A5A6'
-				},
-				{
-					label: 'Light Gray',
-					color: '#DDD'
-				},
-				{
-					label: 'White',
-					color: '#FFF'
-				},
-				{
-					label: 'Pumpkin',
-					color: '#D35400'
-				},
-				{
-					label: 'Strong Red',
-					color: '#C0392B'
-				},
-				{
-					label: 'Silver',
-					color: '#BDC3C7'
-				},
-				{
-					label: 'Grayish Cyan',
-					color: '#7F8C8D'
-				},
-				{
-					label: 'Dark Gray',
-					color: '#999'
-				},
-				{
-					label: 'Black',
-					color: '#000'
-				}
+			colors: [
+				[
+					'hsl(0, 0%, 0%)',
+					'hsl(0, 0%, 30%)',
+					'hsl(0, 0%, 60%)',
+					'hsl(0, 0%, 90%)',
+					'hsl(0, 0%, 100%)'
+				],
+				[
+					'hsl(360, 75%, 60%)',
+					'hsl(30, 75%, 60%)',
+					'hsl(60, 75%, 60%)',
+					'hsl(90, 75%, 60%)',
+					'hsl(120, 75%, 60%)'
+				],
+				[
+					'hsl(150, 75%, 60%)',
+					'hsl(180, 75%, 60%)',
+					'hsl(210, 75%, 60%)',
+					'hsl(240, 75%, 60%)',
+					'hsl(270, 75%, 60%)'
+				]
 			]
 		} );
 

@@ -58,25 +58,37 @@ function normalizeColorCode( value ) {
 	return value.replace( /\s/g, '' );
 }
 
-export function normalizeOptions( configuredOptions ) {
-	return configuredOptions
-		.map( getOptionDefinition )
+export function normalizeOptions( colorRow ) {
+	return colorRow
+		.map( getColorsDefinition )
 		.filter( option => !!option );
 }
 
-function getOptionDefinition( option ) {
-	return {
-		title: option.label,
-		model: option.color,
-		label: option.label,
-		view: {
-			name: 'span',
-			styles: {
-				color: `${ option.color }`
-			},
-			priority: 5
-		}
-	};
+function getColorsDefinition( color ) {
+	if ( typeof color === 'string' ) {
+		return {
+			model: color,
+			view: {
+				name: 'span',
+				styles: {
+					color
+				},
+				priority: 5
+			}
+		};
+	} else {
+		return {
+			model: color.color,
+			label: color.label,
+			view: {
+				name: 'span',
+				styles: {
+					color: `${ color.color }`
+				},
+				priority: 5
+			}
+		};
+	}
 }
 
 export const colorUI = {
