@@ -15,6 +15,7 @@ import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -112,12 +113,14 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
 			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
 		);
+		expect( eventInfo.stop.called ).to.be.true;
 	} );
 
 	it( 'should insert image at optimized position when is pasted', () => {
@@ -219,9 +222,11 @@ describe( 'ImageUploadEditing', () => {
 		const targetRange = doc.selection.getFirstRange();
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
-		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+		viewDocument.fire( eventInfo, { dataTransfer, targetRanges: [ targetViewRange ] } );
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+		expect( eventInfo.stop.called ).to.be.undefined;
 	} );
 
 	it( 'should not insert image when file is null', () => {
