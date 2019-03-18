@@ -737,9 +737,6 @@ export default class Model {
 			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
 			ret.push( callbackReturnValue );
 
-			// Fire '_change' event before resetting differ.
-			this.fire( '_change', this._currentWriter );
-
 			this.document._handleChangeBlock( this._currentWriter );
 
 			this._pendingChanges.shift();
@@ -750,18 +747,6 @@ export default class Model {
 
 		return ret;
 	}
-
-	/**
-	 * Fired after leaving each {@link module:engine/model/model~Model#enqueueChange} block or outermost
-	 * {@link module:engine/model/model~Model#change} block.
-	 *
-	 * **Note:** This is an internal event! Use {@link module:engine/model/document~Document#event:change} instead.
-	 *
-	 * @deprecated
-	 * @protected
-	 * @event _change
-	 * @param {module:engine/model/writer~Writer} writer `Writer` instance that has been used in the change block.
-	 */
 
 	/**
 	 * Fired when entering the outermost {@link module:engine/model/model~Model#enqueueChange} or

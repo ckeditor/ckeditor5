@@ -206,95 +206,85 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should be possible to nest enqueueChange in enqueueChange event', () => {
-			model.once( '_change', () => {
-				changes += 'B';
-			} );
-
 			model.enqueueChange( () => {
+				changes += 'A';
+
 				model.enqueueChange( () => {
 					changes += 'C';
 				} );
 
-				changes += 'A';
+				changes += 'B';
 			} );
 
 			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should be possible to nest enqueueChange in changes event', () => {
-			model.once( '_change', () => {
-				changes += 'B';
-			} );
-
 			model.change( () => {
+				changes += 'A';
+
 				model.enqueueChange( () => {
 					changes += 'C';
 				} );
 
-				changes += 'A';
+				changes += 'B';
 			} );
 
 			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should be possible to nest changes in enqueueChange event', () => {
-			model.once( '_change', () => {
-				changes += 'C';
-			} );
-
 			model.enqueueChange( () => {
+				changes += 'A';
+
 				model.change( () => {
-					changes += 'A';
+					changes += 'B';
 				} );
 
-				changes += 'B';
+				changes += 'C';
 			} );
 
 			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should be possible to nest changes in changes event', () => {
-			model.once( '_change', () => {
-				changes += 'C';
-			} );
-
 			model.change( () => {
+				changes += 'A';
+
 				model.change( () => {
-					changes += 'A';
+					changes += 'B';
 				} );
 
-				changes += 'B';
+				changes += 'C';
 			} );
 
 			expect( changes ).to.equal( 'ABC' );
 		} );
 
 		it( 'should let mix blocks', () => {
-			model.once( '_change', () => {
-				model.change( () => {
-					changes += 'B';
-
-					nestedEnqueue();
-				} );
-
-				model.change( () => {
-					changes += 'C';
-				} );
-
-				changes += 'D';
-			} );
-
 			model.change( () => {
 				changes += 'A';
+
+				model.enqueueChange( () => {
+					changes += 'C';
+
+					model.change( () => {
+						changes += 'D';
+
+						model.enqueueChange( () => {
+							changes += 'F';
+						} );
+					} );
+
+					model.change( () => {
+						changes += 'E';
+					} );
+				} );
+
+				changes += 'B';
 			} );
 
-			expect( changes ).to.equal( 'ABCDE' );
-
-			function nestedEnqueue() {
-				model.enqueueChange( () => {
-					changes += 'E';
-				} );
-			}
+			expect( changes ).to.equal( 'ABCDEF' );
 		} );
 
 		it( 'should use the same writer in all change blocks (change & change)', () => {
