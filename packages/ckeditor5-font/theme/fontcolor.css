@@ -4,13 +4,9 @@
  */
 
 :root {
-	/* 	--grid-size: 20px; */
 	--grid-size: 25px;
 
 	--grid-columns-max: 5;
-	/* 	 Test it and uncomment variable. */
-	/* --grid-columns-max: 8; */
-	/* --grid-columns-max: 3; */
 }
 
 .ck-color-table div.ck-color-table__main-container {
@@ -26,6 +22,9 @@
 	border-radius: 3px;
 	cursor: pointer;
 	transition: 300ms ease all;
+}
+.ck-color-table__main-container span.ck-color-table__color-item.ck-color-table__color-item_bordered {
+	box-shadow: 0 0 1px hsl( 0,0%,60%);
 }
 
 .ck-color-table__main-container span.ck-color-table__color-item:hover {

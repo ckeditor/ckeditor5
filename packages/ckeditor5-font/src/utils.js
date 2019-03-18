@@ -68,6 +68,7 @@ function getColorsDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
 			model: color,
+			label: color,
 			view: {
 				name: 'span',
 				styles: {
@@ -80,6 +81,7 @@ function getColorsDefinition( color ) {
 		return {
 			model: color.color,
 			label: color.label,
+			hasBorder: color.hasBorder,
 			view: {
 				name: 'span',
 				styles: {

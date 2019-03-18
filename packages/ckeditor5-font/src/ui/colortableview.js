@@ -58,30 +58,27 @@ export default class ColorTableView extends View {
 		} );
 	}
 
-	// _colorRows( colorTable ) {
-	// 	return colorTable.map( rowArr => new Template( {
-	// 		tag: 'tr',
-	// 		children: this._colorElements( rowArr )
-	// 	} ) );
-	// }
-
 	_colorElements( colorArr ) {
 		const bind = this.bindTemplate;
-		return colorArr.map( element => new Template( {
-			tag: 'span',
-			attributes: {
-				style: {
-					backgroundColor: element.color
-				},
-				class: [
-					'ck-color-table__color-item'
-				]
-			},
-			on: {
-				click: bind.to( () => {
-					this.fire( 'execute', { value: element.color } );
-				} )
+		return colorArr.map( element => {
+			const classNames = [ 'ck-color-table__color-item' ];
+			if ( element.options.hasBorder ) {
+				classNames.push( 'ck-color-table__color-item_bordered' );
 			}
-		} ) );
+			return new Template( {
+				tag: 'span',
+				attributes: {
+					style: {
+						backgroundColor: element.color
+					},
+					class: classNames
+				},
+				on: {
+					click: bind.to( () => {
+						this.fire( 'execute', { value: element.color } );
+					} )
+				}
+			} );
+		} );
 	}
 }

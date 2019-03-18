@@ -26,7 +26,10 @@ export default class FontColorEditing extends Plugin {
 				'hsl(0, 0%, 30%)',
 				'hsl(0, 0%, 60%)',
 				'hsl(0, 0%, 90%)',
-				'hsl(0, 0%, 100%)',
+				{
+					color: 'hsl(0, 0%, 100%)',
+					hasBorder: true
+				},
 				'hsl(360, 75%, 60%)',
 				'hsl(30, 75%, 60%)',
 				'hsl(60, 75%, 60%)',

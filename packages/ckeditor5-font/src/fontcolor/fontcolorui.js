@@ -30,7 +30,13 @@ export default class FontColorUI extends Plugin {
 			const splitButtonView = dropdownView.buttonView;
 			const colorTableView = colorUI.addColorsToDropdown(
 				dropdownView,
-				options.map( element => ( { name: element.label, color: element.model } ) )
+				options.map( element => ( {
+					name: element.label,
+					color: element.model,
+					options: {
+						hasBorder: element.hasBorder
+					}
+				} ) )
 			);
 			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
