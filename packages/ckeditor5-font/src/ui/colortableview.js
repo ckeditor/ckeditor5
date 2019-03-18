@@ -6,8 +6,10 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import removeButtonIcon from '../../theme/icons/eraser.svg';
 
 import '../../theme/fontcolor.css';
+
 export default class ColorTableView extends View {
 	constructor( locale, { colors } ) {
 		super( locale );
@@ -25,8 +27,8 @@ export default class ColorTableView extends View {
 				class: [ 'ck-color-table' ]
 			},
 			children: [
-				this.createColorTableTemplate(),
-				this.removeColorButton()
+				this.removeColorButton(),
+				this.createColorTableTemplate()
 			]
 		} );
 	}
@@ -34,10 +36,11 @@ export default class ColorTableView extends View {
 	removeColorButton() {
 		const btnView = new ButtonView();
 		btnView.set( {
-			label: 'X',
-			withText: true
+			withText: true,
+			icon: removeButtonIcon,
+			tooltip: true
 		} );
-		btnView.bind( 'tooltip' ).to( this, 'removeButtonTooltip' );
+		btnView.bind( 'label' ).to( this, 'removeButtonTooltip' );
 		btnView.class = 'ck-color-table__remove-color';
 		btnView.on( 'execute', () => {
 			this.fire( 'execute', { value: null } );
@@ -71,7 +74,7 @@ export default class ColorTableView extends View {
 					backgroundColor: element.color
 				},
 				class: [
-					'ck-color-table__cell-color'
+					'ck-color-table__color-item'
 				]
 			},
 			on: {
