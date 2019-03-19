@@ -28,10 +28,13 @@ import MentionUI from '../../src/mentionui';
 // eslint-disable-next-line no-unused-vars
 import MentionEditing from '../../src/mentionediting';
 // eslint-disable-next-line no-unused-vars
-import MentionElementEditing from '../../src/mentioneditingElement';
+import MentionElementEditing from '../../src/mentioneditingelement';
+// eslint-disable-next-line no-unused-vars
+import MentionMarkerEditing from '../../src/mentioneditingmarker';
 
 const HIGHER_THEN_HIGHEST = priorities.highest + 50;
 
+// eslint-disable-next-line no-unused-vars
 class CustomMentionAttributeView extends Plugin {
 	init() {
 		const editor = this.editor;
@@ -130,12 +133,14 @@ ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
 			// 1. Using attributes
-			MentionEditing,
-			CustomMentionAttributeView,
+			// MentionEditing,
+			// CustomMentionAttributeView,
 
 			// 2. Using Element - buggy
 			// MentionElementEditing,
 			// CustomMentionElementView,
+
+			MentionMarkerEditing,
 
 			// Common: ui
 			MentionUI
@@ -164,6 +169,6 @@ function getFeed( feedText ) {
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.label.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
+		return item.label.toLowerCase().includes( searchString );
 	} ) );
 }
