@@ -18,13 +18,17 @@ import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Table from '@ckeditor/ckeditor5-table/src/table';
-import Mention from '../../src/mention';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+
+import MentionUI from '../../src/mentionui';
+// eslint-disable-next-line no-unused-vars
+import MentionEditing from '../../src/mentionediting';
+// eslint-disable-next-line no-unused-vars
+import MentionElementEditing from '../../src/mentioneditingElement';
 
 const HIGHER_THEN_HIGHEST = priorities.highest + 50;
 
@@ -73,11 +77,68 @@ class CustomMentionAttributeView extends Plugin {
 	}
 }
 
+// eslint-disable-next-line no-unused-vars
+class CustomMentionElementView extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToElement( {
+			view: {
+				name: 'a',
+				classes: 'mention',
+				attributes: {
+					href: true
+				}
+			},
+			model: ( viewItem, modelWriter ) => {
+				const item = {
+					label: viewItem.getAttribute( 'data-mention' ),
+					link: viewItem.getAttribute( 'href' )
+				};
+
+				const frag = modelWriter.createDocumentFragment();
+				const mention = modelWriter.createElement( 'mention', { item } );
+
+				modelWriter.insert( mention, frag, 0 );
+
+				modelWriter.insertText( item.label, mention, 0 );
+
+				return mention;
+			},
+			converterPriority: HIGHER_THEN_HIGHEST
+		} );
+
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'mentionElement',
+			view: ( modelElement, viewWriter ) => {
+				const item = modelElement.getAttribute( 'item' );
+
+				const link = viewWriter.createContainerElement( 'a', {
+					class: 'mention',
+					'data-mention': item.label,
+					'href': item.link
+				} );
+
+				return link;
+			},
+			converterPriority: HIGHER_THEN_HIGHEST
+		} );
+	}
+}
+
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
-			Mention,
-			CustomMentionAttributeView
+		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
+			// 1. Using attributes
+			MentionEditing,
+			CustomMentionAttributeView,
+
+			// 2. Using Element - buggy
+			// MentionElementEditing,
+			// CustomMentionElementView,
+
+			// Common: ui
+			MentionUI
 		],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
 		mention: [

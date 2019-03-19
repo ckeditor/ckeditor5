@@ -29,6 +29,9 @@ export default class MentionEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		// Allow mention attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'mention' } );
+
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',
@@ -52,9 +55,6 @@ export default class MentionEditing extends Plugin {
 				} );
 			}
 		} );
-
-		// Allow fontSize attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: 'mention' } );
 
 		// Remove mention attribute if text was edited.
 		editor.model.document.registerPostFixer( writer => {
