@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import fontColorIcon from '../../theme/icons/font-family.svg';
+import fontColorIcon from '../../theme/icons/font-color.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { FONT_COLOR, normalizeOptions, colorUI } from '../utils';
 export default class FontColorUI extends Plugin {
