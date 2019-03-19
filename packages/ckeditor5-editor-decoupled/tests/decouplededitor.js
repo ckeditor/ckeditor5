@@ -114,6 +114,26 @@ describe( 'DecoupledEditor', () => {
 			test( () => editableElement );
 		} );
 
+		it( 'initializes with config.initialData', () => {
+			return DecoupledEditor.create( document.createElement( 'div' ), {
+				initialData: '<p>Hello world!</p>',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
+			DecoupledEditor.create( '<p>Hello world!</p>', {
+				initialData: '<p>I am evil!</p>',
+				plugins: [ Paragraph ]
+			} ).catch( () => {
+				done();
+			} );
+		} );
+
 		function test( getElementOrData ) {
 			it( 'creates an instance which inherits from the DecoupledEditor', () => {
 				return DecoupledEditor
@@ -132,6 +152,19 @@ describe( 'DecoupledEditor', () => {
 					.create( getElementOrData(), {
 						plugins: [ Paragraph, Bold ]
 					} )
+					.then( newEditor => {
+						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			it( 'should not require config object', () => {
+				// Just being safe with `builtinPlugins` static property.
+				class CustomDecoupledEditor extends DecoupledEditor {}
+				CustomDecoupledEditor.builtinPlugins = [ Paragraph, Bold ];
+
+				return CustomDecoupledEditor.create( getElementOrData() )
 					.then( newEditor => {
 						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 

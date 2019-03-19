@@ -16,6 +16,7 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
@@ -151,8 +152,8 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * **Note**: It is possible to create the editor out of a pure data string. The editor will then render
-	 * an editable element that must be inserted into the DOM for the editor to work properly:
+	 * Creating an instance when using initial data instead of a DOM element.
+	 * The editor will then render an editable element that must be inserted into the DOM for the editor to work properly:
 	 *
 	 *		DecoupledEditor
 	 *			.create( '<p>Editor data</p>' )
@@ -169,6 +170,22 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
+	 * Creating an instance on an existing DOM element using external initial content (specified in config):
+	 *
+	 *		DecoupledEditor
+	 *			.create( document.querySelector( '#editor' ), {
+	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 *			} )
+	 *			.then( editor => {
+	 *				// Append the toolbar to the <body> element.
+	 *				document.body.appendChild( editor.ui.view.toolbar.element );
+	 *
+	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor.
 	 *
@@ -178,11 +195,11 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * If data is provided, then `editor.ui.view.editable.element` will be created automatically and needs to be added
 	 * to the DOM manually.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-decoupled/decouplededitor~DecoupledEditor} instance.
 	 */
-	static create( sourceElementOrData, config ) {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
@@ -192,9 +209,14 @@ export default class DecoupledEditor extends Editor {
 						editor.ui.init();
 					} )
 					.then( () => {
-						const initialData = isElement( sourceElementOrData ) ?
-							getDataFromElement( sourceElementOrData ) :
-							sourceElementOrData;
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+							);
+						}
+
+						const initialData = config.initialData || getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )
@@ -206,3 +228,7 @@ export default class DecoupledEditor extends Editor {
 }
 
 mix( DecoupledEditor, DataApiMixin );
+
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
