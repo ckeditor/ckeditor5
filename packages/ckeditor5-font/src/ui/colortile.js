@@ -14,6 +14,7 @@ export default class ColorTile extends View {
 		this.set( 'color' );
 		this.set( 'label' );
 		this.set( 'hasBorder' );
+		this.set( 'isEnabled', true );
 
 		this.setTemplate( {
 			tag: 'span',
@@ -28,7 +29,9 @@ export default class ColorTile extends View {
 			},
 			on: {
 				click: bind.to( () => {
-					this.fire( 'execute', { value: this.color, hasBorder: this.hasBorder } );
+					if ( this.isEnabled ) {
+						this.fire( 'execute', { value: this.color, hasBorder: this.hasBorder } );
+					}
 				} )
 			}
 		} );

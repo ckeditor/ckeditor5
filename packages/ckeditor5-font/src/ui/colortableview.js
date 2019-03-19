@@ -24,6 +24,7 @@ export default class ColorTableView extends View {
 		this.set( 'removeButtonTooltip' );
 		this.set( 'colorColumns', 5 );
 		this.set( 'recentlyUsedColors', new Collection() );
+
 		this.initRecentCollection();
 
 		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
@@ -95,6 +96,9 @@ export default class ColorTableView extends View {
 					color: colorObj.color,
 					hasBorder: true
 				} );
+				if ( colorObj.isEnabled === false ) {
+					colorTile.set( 'isEnabled', false );
+				}
 				colorTile.delegate( 'execute' ).to( this );
 				return colorTile;
 			}
@@ -111,7 +115,8 @@ export default class ColorTableView extends View {
 	initRecentCollection() {
 		for ( let i = 0; i < this.colorColumns; i++ ) {
 			this.recentlyUsedColors.add( {
-				color: 'hsla( 0, 0%, 0%, 0 )'
+				color: 'hsla( 0, 0%, 0%, 0 )',
+				isEnabled: false
 			} );
 		}
 	}
