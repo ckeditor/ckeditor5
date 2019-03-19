@@ -7,10 +7,10 @@ The mention configuration with custom balloon panel item renderer.
 The list is returned in promise (no timeout) and is filtered for any match of `label` and `username` (custom feed):
 
 The feed:
-- `{ id: '1', label: 'Barney Stinson', username: 'swarley' },`
-- `{ id: '2', label: 'Lily Aldrin', username: 'lilypad' },`
-- `{ id: '3', label: 'Marshall Eriksen', username: 'marshmallow' },`
-- `{ id: '4', label: 'Robin Scherbatsky', username: 'rsparkles' },`
+- `{ id: '1', label: 'Barney Stinson', username: 'swarley' }`
+- `{ id: '2', label: 'Lily Aldrin', username: 'lilypad' }`
+- `{ id: '3', label: 'Marshall Eriksen', username: 'marshmallow' }`
+- `{ id: '4', label: 'Robin Scherbatsky', username: 'rsparkles' }`
 - `{ id: '5', label: 'Ted Mosby', username: 'tdog' }`
 
 The item is rendered as `<span>` instead of default button.
