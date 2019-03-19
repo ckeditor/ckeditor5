@@ -149,7 +149,8 @@ class CustomMentionMarkerView extends Plugin {
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( 'addMarker:mention', ( evt, data, conversionApi ) => {
-				const { id } = data.markerName.split( ':' )[ 1 ];
+				const label = data.markerName.split( ':' )[ 1 ];
+				const id = data.markerName.split( ':' )[ 2 ];
 
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -157,11 +158,22 @@ class CustomMentionMarkerView extends Plugin {
 
 				const viewWriter = conversionApi.writer;
 
-				// OMG I just wanted to change `<span>` to `<a>`...
-				const viewElement = viewWriter.createAttributeElement( 'a', {
+				const item = getFeed( label.replace( '-', ' ' ) )[ 0 ];
+
+				const attributes = {
 					class: [ 'mention' ],
-					'data-mention': id
-				} );
+					'data-mention': label,
+					id
+				};
+
+				if ( item ) {
+					attributes.href = item.link;
+					attributes.title = item.label;
+				}
+
+				// OMG I just wanted to change `<span>` to `<a>`...
+				const viewElement = viewWriter.createAttributeElement( 'a', attributes );
+
 				const viewSelection = viewWriter.document.selection;
 
 				if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
@@ -218,7 +230,7 @@ ClassicEditor
 	} );
 
 function getFeed( feedText ) {
-	return Promise.resolve( [
+	return [
 		{ id: '1', label: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
 		{ id: '2', label: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
 		{ id: '3', label: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
@@ -228,5 +240,5 @@ function getFeed( feedText ) {
 		const searchString = feedText.toLowerCase();
 
 		return item.label.toLowerCase().includes( searchString );
-	} ) );
+	} );
 }

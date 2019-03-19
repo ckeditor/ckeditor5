@@ -11,7 +11,10 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 export function createMentionMarkerId( someString ) {
-	return 'mention:' + someString.toLowerCase().replace( ' ', '-' ) + parseInt( Math.random() * 10000 );
+	const randId = parseInt( Math.random() * 10000 );
+	const normalizedString = someString.toLowerCase().replace( ' ', '-' );
+
+	return `mention:${ normalizedString }:${ randId }`;
 }
 
 class MentionCommand extends Command {

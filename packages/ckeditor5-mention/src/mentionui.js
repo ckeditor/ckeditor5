@@ -178,7 +178,7 @@ export default class MentionUI extends Plugin {
 	_getFeed( marker, feedText ) {
 		const { feedCallback } = this._mentionsConfigurations.get( marker );
 
-		return feedCallback( feedText );
+		return Promise.resolve().then( () => feedCallback( feedText ) );
 	}
 
 	_addTextWatcher( marker ) {
