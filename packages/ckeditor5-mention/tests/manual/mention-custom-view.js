@@ -200,17 +200,20 @@ class CustomMentionMarkerView extends Plugin {
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
+
+			// Uncomment below groups while commenting other to change model behavior.
+
 			// 1. Using attributes
-			// MentionEditing,
-			// CustomMentionAttributeView,
+			MentionEditing,
+			CustomMentionAttributeView,
 
 			// 2. Using Element - buggy
 			// MentionElementEditing,
 			// CustomMentionElementView,
 
 			// 3. Using marker - promising
-			MentionMarkerEditing,
-			CustomMentionMarkerView,
+			// MentionMarkerEditing,
+			// CustomMentionMarkerView,
 
 			// Common: ui
 			MentionUI

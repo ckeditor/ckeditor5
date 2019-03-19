@@ -2,11 +2,21 @@
 
 **NOTE**: Playground for testing model implementation.
 
-### Configuration
+Use the code of this manual sample to change bahavior of the feature.
 
-The mention with custom feed and view representation.
+### Attribute (default)
+- works kinda OK - should use objects to store mention data
+- some quirks with undo (probably the break attribute on edit is wrongly written)
+- easy to change conversion
 
-The list is returned in promise (no timeout) and is filtered for any match of `label` and `username` (custom feed):
+### Inline Element in model
+- I didn't make it to work and to change the conversion
+
+### Marker
+- works also OK - some quirks might be due to limited time to create (ie editing breaks the editor)
+- harder to overwrite the mention output (easy to customize the `<span>` but to create a link required custom listener)
+
+### Data
 
 The feed:
 - `{ label: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
@@ -18,6 +28,8 @@ The feed:
 The mention is converted to link (`<a>`) with additional data of default span.
 
 ### Interaction
+
+**Note** Not everything works with every setup.
 
 You can interact with mention panel with keyboard:
 
