@@ -22,10 +22,63 @@ import Mention from '../../src/mention';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+
+const HIGHER_THEN_HIGHEST = priorities.highest + 50;
+
+class CustomMentionAttributeView extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'a',
+				key: 'data-mention',
+				classes: 'mention',
+				attributes: {
+					href: true
+				}
+			},
+			model: {
+				key: 'mention',
+				value: viewItem => {
+					const mentionValue = {
+						label: viewItem.getAttribute( 'data-mention' ),
+						link: viewItem.getAttribute( 'href' )
+					};
+
+					return mentionValue;
+				}
+			},
+			converterPriority: HIGHER_THEN_HIGHEST
+		} );
+
+		editor.conversion.for( 'downcast' ).attributeToElement( {
+			model: 'mention',
+			view: ( modelAttributeValue, viewWriter ) => {
+				if ( !modelAttributeValue ) {
+					return;
+				}
+
+				return viewWriter.createAttributeElement( 'a', {
+					class: 'mention',
+					'data-mention': modelAttributeValue.label,
+					'href': modelAttributeValue.link
+				} );
+			},
+			converterPriority: HIGHER_THEN_HIGHEST
+		} );
+	}
+}
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table, Mention ],
+		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
+			Mention,
+			CustomMentionAttributeView
+		],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
 		mention: [
 			{
@@ -43,7 +96,7 @@ ClassicEditor
 function getFeed( feedText ) {
 	return Promise.resolve( [
 		{ id: '1', label: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-		{ id: '2', label: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989?ref_=tt_cl_t5' },
+		{ id: '2', label: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
 		{ id: '3', label: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
 		{ id: '4', label: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
 		{ id: '5', label: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }

@@ -141,7 +141,6 @@ export default class MentionUI extends Plugin {
 
 		this._mentionsView.on( 'execute', ( evt, data ) => {
 			const item = data.item;
-			const label = item.label || item;
 			const marker = data.marker;
 
 			const watcher = this._getWatcher( marker );
@@ -161,7 +160,7 @@ export default class MentionUI extends Plugin {
 			const range = editor.model.createRange( start, end );
 
 			editor.execute( 'mention', {
-				mention: label,
+				mention: item,
 				marker,
 				range
 			} );

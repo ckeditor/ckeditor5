@@ -15,7 +15,7 @@ The feed:
 - `{ label: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
 - `{ label: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
 
-The item is rendered as `<span>` instead of default button.
+The mention is converted to link (`<a>`) with additional data of default span.
 
 ### Interaction
 
