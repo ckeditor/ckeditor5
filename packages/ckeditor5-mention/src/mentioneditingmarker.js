@@ -10,6 +10,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
+export function createMentionMarkerId( someString ) {
+	return 'mention:' + someString.toLowerCase().replace( ' ', '-' ) + parseInt( Math.random() * 10000 );
+}
+
 class MentionCommand extends Command {
 	/**
 	 * @inheritDoc
@@ -47,7 +51,7 @@ class MentionCommand extends Command {
 			writer.insert( text, selection.focus );
 
 			// TODO dumb
-			const name = 'mention:' + label.toLowerCase().replace( ' ', '-' );
+			const name = createMentionMarkerId( label );
 
 			writer.addMarker( name, {
 				range: writer.createRange( selection.focus.getShiftedBy( -text.data.length ), selection.focus ),
