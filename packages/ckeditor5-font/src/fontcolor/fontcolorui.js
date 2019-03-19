@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 import fontColorIcon from '../../theme/icons/font-family.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -26,8 +25,7 @@ export default class FontColorUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_COLOR, locale => {
-			const dropdownView = createDropdown( locale, SplitButtonView );
-			const splitButtonView = dropdownView.buttonView;
+			const dropdownView = createDropdown( locale );
 			const colorTableView = colorUI.addColorsToDropdown(
 				dropdownView,
 				options.map( element => ( {
@@ -41,9 +39,6 @@ export default class FontColorUI extends Plugin {
 			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
-
-			// Preselect first element on color list.
-			dropdownView.set( 'lastlySelectedColor', { value: options[ 0 ].model } );
 
 			dropdownView.buttonView.set( {
 				label: t( 'Font Color' ),
@@ -60,15 +55,10 @@ export default class FontColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			dropdownView.on( 'execute', ( evt, val ) => {
-				dropdownView.set( 'lastlySelectedColor', val );
 				if ( val.value !== null ) {
 					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder }, 0 );
 				}
 				editor.execute( FONT_COLOR, val );
-			} );
-
-			splitButtonView.on( 'execute', () => {
-				editor.execute( FONT_COLOR, dropdownView.lastlySelectedColor );
 			} );
 
 			return dropdownView;
