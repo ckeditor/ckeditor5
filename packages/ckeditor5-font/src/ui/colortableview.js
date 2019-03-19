@@ -6,20 +6,25 @@
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import ColorTile from './colortile';
+
 import removeButtonIcon from '../../theme/icons/eraser.svg';
 
 import '../../theme/fontcolor.css';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 export default class ColorTableView extends View {
 	constructor( locale, { colors } ) {
 		super( locale );
 
-		this.COLUMNS = 6;
 		this.colorsDefinition = colors;
 
 		this.set( 'selectedColor' );
 		this.set( 'hoveredColor' );
 		this.set( 'removeButtonTooltip' );
+		this.set( 'colorColumns', 5 );
+		this.set( 'recentlyUsedColors', new Collection() );
+		this.initRecentCollection();
 
 		this.setTemplate( {
 			tag: 'div',
@@ -28,7 +33,8 @@ export default class ColorTableView extends View {
 			},
 			children: [
 				this.removeColorButton(),
-				this.createColorTableTemplate()
+				this.createColorTableTemplate(),
+				this.recentlyUsed()
 			]
 		} );
 	}
@@ -49,36 +55,54 @@ export default class ColorTableView extends View {
 	}
 
 	createColorTableTemplate() {
+		const colorCollection = this.createCollection();
+		this.colorsDefinition.forEach( item => {
+			const colorTile = new ColorTile();
+			colorTile.set( {
+				color: item.color,
+				hasBorder: item.hasBorder
+			} );
+			colorTile.delegate( 'execute' ).to( this );
+			colorCollection.add( colorTile );
+		} );
+
 		return new Template( {
 			tag: 'div',
-			children: this._colorElements( this.colorsDefinition ),
+			children: colorCollection,
 			attributes: {
-				class: 'ck-color-table__main-container'
+				class: 'ck-color-table__grid-container'
 			}
 		} );
 	}
 
-	_colorElements( colorArr ) {
-		const bind = this.bindTemplate;
-		return colorArr.map( element => {
-			const classNames = [ 'ck-color-table__color-item' ];
-			if ( element.options.hasBorder ) {
-				classNames.push( 'ck-color-table__color-item_bordered' );
+	recentlyUsed() {
+		this.recentlyUsedViews = this.createCollection();
+
+		this.recentlyUsedViews.bindTo( this.recentlyUsedColors ).using(
+			storegColor => {
+				const colorTile = new ColorTile();
+				colorTile.set( {
+					color: storegColor.color,
+					hasBorder: true
+				} );
+				colorTile.delegate( 'execute' ).to( this );
+				return colorTile;
 			}
-			return new Template( {
-				tag: 'span',
-				attributes: {
-					style: {
-						backgroundColor: element.color
-					},
-					class: classNames
-				},
-				on: {
-					click: bind.to( () => {
-						this.fire( 'execute', { value: element.color } );
-					} )
-				}
-			} );
+		);
+		return new Template( {
+			tag: 'div',
+			children: this.recentlyUsedViews,
+			attributes: {
+				class: [ 'ck-color-table__grid-container' ]
+			}
 		} );
+	}
+
+	initRecentCollection() {
+		for ( let i = 0; i < this.colorColumns; i++ ) {
+			this.recentlyUsedColors.add( {
+				color: 'hsla( 0, 0%, 0%, 0 )'
+			} );
+		}
 	}
 }

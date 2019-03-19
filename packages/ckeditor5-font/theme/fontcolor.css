@@ -9,25 +9,25 @@
 	--grid-columns-max: 5;
 }
 
-.ck-color-table div.ck-color-table__main-container {
+.ck-color-table div.ck-color-table__grid-container {
 	display: grid;
 	grid-template-columns: repeat( var(--grid-columns-max), 1fr);
 	grid-gap: 5px;
 	padding: 10px;
 }
 
-.ck-color-table__main-container span.ck-color-table__color-item {
+.ck-color-table__grid-container span.ck-color-table__color-tile {
 	width: var(--grid-size);
 	height: var(--grid-size);
 	border-radius: 3px;
 	cursor: pointer;
 	transition: 300ms ease all;
 }
-.ck-color-table__main-container span.ck-color-table__color-item.ck-color-table__color-item_bordered {
+.ck-color-table__grid-container span.ck-color-table__color-tile.ck-color-table__color-tile_bordered {
 	box-shadow: 0 0 1px hsl( 0,0%,60%);
 }
 
-.ck-color-table__main-container span.ck-color-table__color-item:hover {
+.ck-color-table__grid-container span.ck-color-table__color-tile:hover {
 	box-shadow: 0 0 0 2px hsl(184, 80%, 50%);
 }
 
