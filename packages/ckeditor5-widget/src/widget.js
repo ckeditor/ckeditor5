@@ -114,8 +114,18 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element = domEventData.target;
 
-		// Do nothing if inside nested editable.
+		// Do nothing for single or double click inside nested editable.
 		if ( isInsideNestedEditable( element ) ) {
+			// But at least triple click inside nested editable causes broken selection in Safari.
+			// For such event, we select the entire nested editable element.
+			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
+			if ( domEventData.domEvent.detail >= 3 ) {
+				this.editor.editing.view.change( writer => {
+					domEventData.preventDefault();
+					writer.setSelection( element, 'in' );
+				} );
+			}
+
 			return;
 		}
 
