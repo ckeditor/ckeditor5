@@ -18,6 +18,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -152,6 +153,19 @@ export default class InlineEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
+	 * Creating an instance on an existing DOM element using external initial content (specified in config):
+	 *
+	 *		InlineEditor
+	 *			.create( document.querySelector( '#editor' ), {
+	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or the initial data for the editor.
 	 *
@@ -161,11 +175,11 @@ export default class InlineEditor extends Editor {
 	 *
 	 * If data is provided, then `editor.element` will be created automatically and needs to be added
 	 * to the DOM manually.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
 	 */
-	static create( sourceElementOrData, config ) {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
@@ -175,9 +189,14 @@ export default class InlineEditor extends Editor {
 						editor.ui.init();
 					} )
 					.then( () => {
-						const initialData = isElement( sourceElementOrData ) ?
-							getDataFromElement( sourceElementOrData ) :
-							sourceElementOrData;
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+							);
+						}
+
+						const initialData = config.initialData || getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )
@@ -190,3 +209,7 @@ export default class InlineEditor extends Editor {
 
 mix( InlineEditor, DataApiMixin );
 mix( InlineEditor, ElementApiMixin );
+
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
