@@ -80,6 +80,101 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
+	describe( 'position', () => {
+		let pinSpy;
+
+		const caretRect = {
+			bottom: 118,
+			height: 18,
+			left: 500,
+			right: 501,
+			top: 100,
+			width: 1
+		};
+
+		const balloonRect = {
+			bottom: 150,
+			height: 150,
+			left: 0,
+			right: 200,
+			top: 0,
+			width: 200
+		};
+
+		beforeEach( () => {
+			return createClassicTestEditor( staticConfig ).then( () => {
+				pinSpy = sinon.spy( panelView, 'pin' );
+			} );
+		} );
+
+		it( 'should properly calculate position data', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+			stubSelectionRects( [ caretRect ] );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					const pinArgument = pinSpy.firstCall.args[ 0 ];
+					const { target, positions } = pinArgument;
+
+					expect( target() ).to.deep.equal( caretRect );
+					expect( positions ).to.have.length( 4 );
+
+					const caretSouthEast = positions[ 0 ];
+					const caretNorthEast = positions[ 1 ];
+					const caretSouthWest = positions[ 2 ];
+					const caretNorthWest = positions[ 3 ];
+
+					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
+						left: 501,
+						name: 'caret_se',
+						top: 123
+					} );
+
+					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
+						left: 501,
+						name: 'caret_ne',
+						top: -55
+					} );
+
+					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
+						left: 301,
+						name: 'caret_sw',
+						top: 123
+					} );
+
+					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
+						left: 301,
+						name: 'caret_nw',
+						top: -55
+					} );
+				} );
+		} );
+
+		it( 'should re-calculate position on typing', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+			stubSelectionRects( [ caretRect ] );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					sinon.assert.calledOnce( pinSpy );
+
+					model.change( writer => {
+						writer.insertText( 't', doc.selection.getFirstPosition() );
+					} );
+				} ).then( () => {
+					sinon.assert.calledTwice( pinSpy );
+				} );
+		} );
+	} );
+
 	describe( 'typing integration', () => {
 		describe( 'static list with default trigger', () => {
 			beforeEach( () => {
@@ -522,15 +617,26 @@ describe( 'MentionUI', () => {
 		} );
 	}
 
-	// TODO copied
 	function fireKeyDownEvent( options ) {
 		const eventInfo = new EventInfo( editingView.document, 'keydown' );
 		const eventData = new DomEventData( editingView.document, {
 			target: document.body
 		}, options );
 
-		// sinon.stub( eventInfo, 'stop' ).callsFake( evtStopSpy );
-
 		editingView.document.fire( eventInfo, eventData );
+	}
+
+	function stubSelectionRects( rects ) {
+		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
+
+		// Mock selection rect.
+		sinon.stub( editingView.domConverter, 'viewRangeToDom' ).callsFake( ( ...args ) => {
+			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
+
+			sinon.stub( domRange, 'getClientRects' )
+				.returns( rects );
+
+			return domRange;
+		} );
 	}
 } );

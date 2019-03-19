@@ -11,13 +11,15 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import MentionsView from './ui/mentionsview';
 import TextWatcher from './textwatcher';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+
+const VERTICAL_SPACING = 5;
 
 /**
  * The mention ui feature.
@@ -225,7 +227,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	_showPanel() {
-		this.panelView.pin( this._getBalloonPositionData() );
+		this.panelView.pin( this._getBalloonPanelPositionData() );
 		this.panelView.show();
 		this._mentionsView.selectFirst();
 	}
@@ -235,39 +237,69 @@ export default class MentionUI extends Plugin {
 		this.panelView.hide();
 	}
 
-	// TODO copied from balloontoolbar
-	_getBalloonPositionData() {
+	/**
+	 * @return {module:utils/dom/position~Options}
+	 * @private
+	 */
+	_getBalloonPanelPositionData() {
 		const editor = this.editor;
 		const view = editor.editing.view;
+		const domConverter = view.domConverter;
 		const viewDocument = view.document;
 		const viewSelection = viewDocument.selection;
 
 		return {
-			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
-			// as the window scrolls. To let the BalloonPanelView follow such Rect, is must be continuously
-			// computed and hence, the target is defined as a function instead of a static value.
-			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
 				const range = viewSelection.getLastRange();
-				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
-
-				if ( rangeRects.length > 1 && rangeRects[ rangeRects.length - 1 ].width === 0 ) {
-					rangeRects.pop();
-				}
+				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( range ) );
 
 				return rangeRects[ rangeRects.length - 1 ];
 			},
-			positions: getBalloonPositions()
+			positions: getBalloonPanelPositions()
 		};
 	}
 }
 
-function getBalloonPositions() {
-	const defaultPositions = BalloonPanelView.defaultPositions;
-
+// Returns balloon positions data callbacks.
+//
+// @returns {Array.<module:utils/dom/position~Position>}
+function getBalloonPanelPositions() {
 	return [
-		defaultPositions.southArrowNorthWest,
-		defaultPositions.northArrowSouthWest
+		// Positions panel to the south of caret rect.
+		targetRect => {
+			return {
+				top: targetRect.bottom + VERTICAL_SPACING,
+				left: targetRect.right,
+				name: 'caret_se'
+			};
+		},
+
+		// Positions panel to the north of caret rect.
+		( targetRect, balloonRect ) => {
+			return {
+				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
+				left: targetRect.right,
+				name: 'caret_ne'
+			};
+		},
+
+		// Positions panel to the south of caret rect.
+		( targetRect, balloonRect ) => {
+			return {
+				top: targetRect.bottom + VERTICAL_SPACING,
+				left: targetRect.right - balloonRect.width,
+				name: 'caret_sw'
+			};
+		},
+
+		// Positions panel to the north of caret rect.
+		( targetRect, balloonRect ) => {
+			return {
+				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
+				left: targetRect.right - balloonRect.width,
+				name: 'caret_nw'
+			};
+		}
 	];
 }
 
