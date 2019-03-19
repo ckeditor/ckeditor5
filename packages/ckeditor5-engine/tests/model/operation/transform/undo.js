@@ -616,15 +616,13 @@ describe( 'transform', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/1540
 	it( 'paste, select all, paste, undo, undo, redo, redo, redo', () => {
-		const model = john.editor.model;
-
 		john.setData( '<paragraph>[]</paragraph>' );
 
-		model.insertContent( getPastedContent() );
+		pasteContent();
 
 		john.setSelection( [ 0, 0 ], [ 1, 3 ] );
 
-		model.insertContent( getPastedContent() );
+		pasteContent();
 
 		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
 
@@ -644,11 +642,48 @@ describe( 'transform', () => {
 
 		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
 
-		function getPastedContent() {
-			return new DocumentFragment( [
-				new Element( 'heading1', null, new Text( 'Foo' ) ),
-				new Element( 'paragraph', null, new Text( 'Bar' ) )
-			] );
+		function pasteContent() {
+			john.editor.model.insertContent(
+				new DocumentFragment( [
+					new Element( 'heading1', null, new Text( 'Foo' ) ),
+					new Element( 'paragraph', null, new Text( 'Bar' ) )
+				] )
+			);
 		}
+	} );
+
+	// Happens in track changes. Emulated here.
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1701
+	it( 'paste, remove, undo, undo, redo, redo', () => {
+		john.setData( '<paragraph>Ab[]cd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.editor.model.insertContent(
+			new DocumentFragment( [
+				new Element( 'paragraph', null, new Text( 'Foo' ) ),
+				new Element( 'paragraph', null, new Text( 'Bar' ) )
+			] )
+		);
+
+		john.setSelection( [ 1, 3 ], [ 2, 2 ] );
+
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Barcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Abcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Barcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
 	} );
 } );
