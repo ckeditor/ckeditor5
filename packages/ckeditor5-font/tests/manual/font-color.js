@@ -8,20 +8,28 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import FontColor from '../../src/fontcolor';
-// import FontBackgroundColor from '../../src/fontbackgroundcolor';
+import FontBackgroundColor from '../../src/fontbackgroundcolor';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet,
 			FontColor,
-			// FontBackgroundColor
+			FontBackgroundColor
 		],
 		toolbar: [
-			'heading', '|',
+			'heading',
+			'|',
 			'fontColor',
-			// 'fontBackgroundColor',
-			'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+			'fontBackgroundColor',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'undo',
+			'redo'
 		]
 	} )
 	.then( editor => {

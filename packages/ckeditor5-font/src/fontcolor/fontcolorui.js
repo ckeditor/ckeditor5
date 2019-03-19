@@ -36,7 +36,7 @@ export default class FontColorUI extends Plugin {
 					}
 				} ) )
 			);
-			colorTableView.set( 'removeButtonTooltip', t( 'Remove text color' ) );
+			colorTableView.set( 'removeButtonTooltip', t( 'Remove color' ) );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
