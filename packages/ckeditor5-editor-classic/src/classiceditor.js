@@ -17,6 +17,7 @@ import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
@@ -125,7 +126,8 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating an instance when using initial data instead of a DOM element:
+	 * Creating an instance when using initial data instead of a DOM element.
+	 * The editor will then render an editable element that must be inserted into the DOM for the editor to work properly:
 	 *
 	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -140,6 +142,19 @@ export default class ClassicEditor extends Editor {
 	 *
 	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
 	 *				document.body.appendChild( editor.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * Creating an instance on an existing DOM element using external initial content (specified in config):
+	 *
+	 *		ClassicEditor
+	 *			.create( document.querySelector( '#editor' ), {
+	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
@@ -162,11 +177,11 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * See the examples above to learn more.
 	 *
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
 	 */
-	static create( sourceElementOrData, config ) {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
@@ -174,9 +189,14 @@ export default class ClassicEditor extends Editor {
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
-						const initialData = isElement( sourceElementOrData ) ?
-							getDataFromElement( sourceElementOrData ) :
-							sourceElementOrData;
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+							);
+						}
+
+						const initialData = config.initialData || getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )
@@ -189,3 +209,7 @@ export default class ClassicEditor extends Editor {
 
 mix( ClassicEditor, DataApiMixin );
 mix( ClassicEditor, ElementApiMixin );
+
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
