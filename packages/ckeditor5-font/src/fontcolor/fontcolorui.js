@@ -61,6 +61,9 @@ export default class FontColorUI extends Plugin {
 
 			dropdownView.on( 'execute', ( evt, val ) => {
 				dropdownView.set( 'lastlySelectedColor', val );
+				if ( val.value !== null ) {
+					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder }, 0 );
+				}
 				editor.execute( FONT_COLOR, val );
 			} );
 

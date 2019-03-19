@@ -28,7 +28,7 @@ export default class ColorTile extends View {
 			},
 			on: {
 				click: bind.to( () => {
-					this.fire( 'execute', { value: this.color } );
+					this.fire( 'execute', { value: this.color, hasBorder: this.hasBorder } );
 				} )
 			}
 		} );

@@ -26,6 +26,16 @@ export default class ColorTableView extends View {
 		this.set( 'recentlyUsedColors', new Collection() );
 		this.initRecentCollection();
 
+		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
+			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
+			if ( duplicates.length === 2 ) {
+				this.recentlyUsedColors.remove( duplicates[ 1 ] );
+			}
+			if ( this.recentlyUsedColors.length > this.colorColumns ) {
+				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
+			}
+		} );
+
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -60,7 +70,7 @@ export default class ColorTableView extends View {
 			const colorTile = new ColorTile();
 			colorTile.set( {
 				color: item.color,
-				hasBorder: item.hasBorder
+				hasBorder: item.options.hasBorder
 			} );
 			colorTile.delegate( 'execute' ).to( this );
 			colorCollection.add( colorTile );
@@ -79,10 +89,10 @@ export default class ColorTableView extends View {
 		this.recentlyUsedViews = this.createCollection();
 
 		this.recentlyUsedViews.bindTo( this.recentlyUsedColors ).using(
-			storegColor => {
+			colorObj => {
 				const colorTile = new ColorTile();
 				colorTile.set( {
-					color: storegColor.color,
+					color: colorObj.color,
 					hasBorder: true
 				} );
 				colorTile.delegate( 'execute' ).to( this );
