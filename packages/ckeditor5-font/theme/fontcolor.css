@@ -4,46 +4,47 @@
  */
 
 :root {
-	--grid-size: 25px;
+	--ck-table-color-tile-size: 20px;
+	--ck-table-color-max-columns: 5;
+	--ck-table-color-padding: 10px;
 
-	--grid-columns-max: 5;
+	--ck-color-table-color-tile-border: hsl(0, 0%, 90%);
+	--ck-color-table-color-tile-border-active: hsl(184, 80%, 50%);
 }
 
-.ck-color-table div.ck-color-table__grid-container {
+.ck .ck-color-table__grid-container {
 	display: grid;
-	grid-template-columns: repeat( var(--grid-columns-max), 1fr);
-	grid-gap: 5px;
-	padding: 10px;
+	grid-template-columns: repeat( var(--ck-table-color-max-columns), 1fr);
+	grid-gap: calc( var(--ck-table-color-padding) / 2 );
+	padding: var(--ck-table-color-padding);
 }
 
-.ck-color-table__grid-container span.ck-color-table__color-tile {
-	width: var(--grid-size);
-	height: var(--grid-size);
-	border-radius: 3px;
+.ck .ck-color-table__color-tile {
+	width: var(--ck-table-color-tile-size);
+	height: var(--ck-table-color-tile-size);
+	border-radius: var(--ck-border-radius);
 	cursor: pointer;
-	transition: 300ms ease all;
-}
-.ck-color-table__grid-container span.ck-color-table__color-tile.ck-color-table__color-tile_bordered {
-	box-shadow: 0 0 1px hsl( 0,0%,60%);
+	transition: 200ms ease box-shadow;
 }
 
-.ck-color-table__grid-container span.ck-color-table__color-tile:hover {
-	box-shadow: 0 0 0 2px hsl(184, 80%, 50%);
+.ck .ck-color-table__color-tile_bordered {
+	box-shadow: 0 0 0 1px var(--ck-color-table-color-tile-border);
 }
 
-.ck-color-table button.ck-color-table__remove-color svg {
-	width: 24px;
-	margin-right: 10px;
+.ck .ck-color-table__color-tile:hover {
+	box-shadow: 0 0 0 2px var(--ck-color-table-color-tile-border-active);
 }
 
-.ck-color-table button.ck-color-table__remove-color {
+/* If we change it to list element this CSS will be obsolete. */
+.ck .ck-button.ck-color-table__remove-color {
 	display: flex;
 	align-items: center;
-	text-align: left;
-	font-size: 16px;
-	border: 0;
 	width: 100%;
-	border-bottom: 1px solid hsl(0, 0%, 87%);
-	padding: 10px;
-	cursor: pointer;
+	border-bottom: 1px solid var(--ck-color-base-border);
+	padding: calc(var(--ck-table-color-padding) / 2 ) var(--ck-table-color-padding);
+}
+
+.ck .ck-button.ck-button_with-text.ck-color-table__remove-color svg {
+	width: var(--ck-table-color-tile-size);
+	margin-right: var(--ck-spacing-large);
 }
