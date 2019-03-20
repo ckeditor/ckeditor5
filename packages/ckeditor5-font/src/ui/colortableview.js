@@ -13,6 +13,7 @@ import removeButtonIcon from '../../theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 export default class ColorTableView extends View {
@@ -41,9 +42,22 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
-		this.items.add( this.removeColorButton() );
 		this.items.add( this.createColorTableTemplate() );
 		this.items.add( this.recentlyUsed() );
+		this.items.add( this.removeColorButton() );
+
+		this._focusCycler = new FocusCycler( {
+			focusables: this.items,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate list items backwards using the arrowup key.
+				focusPrevious: 'arrowup',
+
+				// Navigate toolbar items forwards using the arrowdown key.
+				focusNext: 'arrowdown',
+			}
+		} );
 	}
 
 	removeColorButton() {
@@ -127,7 +141,15 @@ export default class ColorTableView extends View {
 			this.focusTracker.remove( item.element );
 		} );
 
-		// // Start listening for the keystrokes coming from #element.
-		// this.keystrokes.listenTo( this.element );
+		// Start listening for the keystrokes coming from #element.
+		this.keystrokes.listenTo( this.element );
+	}
+
+	focus() {
+		this._focusCycler.focusFirst();
+	}
+
+	focusLast() {
+		this._focusCycler.focusLast();
 	}
 }

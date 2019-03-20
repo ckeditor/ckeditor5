@@ -3,21 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-
-export default class ColorTile extends View {
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+export default class ColorTile extends ButtonView {
 	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
 		this.set( 'color' );
-		this.set( 'label' );
 		this.set( 'hasBorder' );
-		this.set( 'isEnabled', true );
 
-		this.setTemplate( {
-			tag: 'span',
+		this.extendTemplate( {
 			attributes: {
 				style: {
 					backgroundColor: bind.to( 'color' )
