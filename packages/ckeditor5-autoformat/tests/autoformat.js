@@ -117,6 +117,15 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. []</listItem>' );
 		} );
+
+		it( 'should not replace digit with numbered list item when digit is different than "1"', () => {
+			setData( model, '<paragraph>3.[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>3. []</paragraph>' );
+		} );
 	} );
 
 	describe( 'Heading', () => {
