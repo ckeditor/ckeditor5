@@ -13,9 +13,9 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import MentionsView from './ui/mentionsview';
+import DomWrapperView from './ui/domwrapperview';
 import TextWatcher from './textwatcher';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
@@ -334,35 +334,6 @@ function createFeedCallback( feedItems ) {
 
 		return Promise.resolve( filteredItems );
 	};
-}
-
-class DomWrapperView extends View {
-	constructor( locale, domNode ) {
-		super( locale );
-
-		this.template = false;
-		this.domNode = domNode;
-
-		this.domNode.classList.add( 'ck-button' );
-
-		this.set( 'isOn', false );
-
-		this.on( 'change:isOn', ( evt, name, isOn ) => {
-			if ( isOn ) {
-				this.domNode.classList.add( 'ck-on' );
-				this.domNode.classList.remove( 'ck-off' );
-			} else {
-				this.domNode.classList.add( 'ck-off' );
-				this.domNode.classList.remove( 'ck-on' );
-			}
-		} );
-	}
-
-	render() {
-		super.render();
-
-		this.element = this.domNode;
-	}
 }
 
 function isHandledKey( keyCode ) {
