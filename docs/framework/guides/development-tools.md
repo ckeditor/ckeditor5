@@ -5,13 +5,13 @@ order: 40
 
 # Development tools
 
-In this you will learn about developer tools that will help you develop and debug editor plugins and features.
+In this guide you will learn about developer tools that will help you develop and debug editor plugins and features.
 
 ## CKEditor 5 inspector
 
 The official [editor instance inspector](https://github.com/ckeditor/ckeditor5-inspector) provides rich debugging tools for editor internals like {@link framework/guides/architecture/editing-engine#model model}, {@link framework/guides/architecture/editing-engine#view view}, and  {@link framework/guides/architecture/core-editor-architecture#commands commands}.
 
-It allows observing changes to the data structures and the selection live in editor instances which is particularly helpful when developing new editor features or getting to understand the existing ones.
+It allows observing changes to the data structures and the selection live in the editor which is particularly helpful when developing new editor features or getting to understand the existing ones.
 
 {@img assets/img/framework-development-tools-inspector.jpg Screenshot of a CKEditor 5 inspector attached to an editor instance.}
 
@@ -50,9 +50,7 @@ ClassicEditor
 	} );
 ```
 
-The inspector will show up at the bottom of the screen. Click the button below the editor to see the inspector in action:
-
-{@snippet framework/development-tools/inspector}
+The inspector will show up at the bottom of the screen.
 
 ### Inspecting multiple editors
 
@@ -66,13 +64,19 @@ CKEditorInspector.attach( 'header-editor' editor );
 CKEditorInspector.attach( 'body-editor' editor );
 ```
 
-The editor switcher is displayed in the upper–right corner of the inspector.
+The editor switcher is in the upper–right corner of the inspector panel.
+
+### Demo
+
+Click the <b>"Inspect editor"</b> button below to attache the inspector to the editor:
+
+{@snippet framework/development-tools/inspector}
 
 ## Testing helpers
 
 The `getData()` and `setData()` functions exposed by {@link module:engine/dev-utils/model model dev utils} and {@link module:engine/dev-utils/view view dev utils} are useful development helpers.
 
-They allow "stringifying" {@link framework/guides/architecture/editing-engine#model model} and {@link framework/guides/architecture/editing-engine#view view} structures, selections, ranges and positions as well as loading them from string. They are often use when writing tests.
+They allow "stringifying" {@link framework/guides/architecture/editing-engine#model model} and {@link framework/guides/architecture/editing-engine#view view} structures, selections, ranges, and positions as well as loading them from a string. They are often used when writing tests.
 
 <info-box>
 	Both tools are designed for prototyping, debugging, and testing purposes. Do not use them in production-grade code.
