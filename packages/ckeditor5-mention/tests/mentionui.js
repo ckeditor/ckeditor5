@@ -382,9 +382,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 						const keyEvtData = {
 							keyCode: keyCodes.arrowdown,
@@ -393,19 +391,19 @@ describe( 'MentionUI', () => {
 						};
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false, false, false ] );
+						expectChildViewsIsOnState( [ false, true, false, false, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
+						expectChildViewsIsOnState( [ false, false, true, false, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, true, false ] );
+						expectChildViewsIsOnState( [ false, false, false, true, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 					} );
 			} );
 
@@ -418,9 +416,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 						const keyEvtData = {
 							keyCode: keyCodes.arrowup,
@@ -429,19 +425,19 @@ describe( 'MentionUI', () => {
 						};
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, true, false ] );
+						expectChildViewsIsOnState( [ false, false, false, true, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
+						expectChildViewsIsOnState( [ false, false, true, false, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false, false, false ] );
+						expectChildViewsIsOnState( [ false, true, false, false, false ] );
 
 						fireKeyDownEvent( keyEvtData );
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 					} );
 			} );
 		} );
@@ -459,9 +455,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.arrowup,
@@ -469,7 +463,7 @@ describe( 'MentionUI', () => {
 							stopPropagation: sinon.spy()
 						} );
 
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.enter,
@@ -506,9 +500,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.arrowup,
@@ -516,7 +508,7 @@ describe( 'MentionUI', () => {
 							stopPropagation: sinon.spy()
 						} );
 
-						expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, false, false, true ] );
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.tab,
@@ -591,9 +583,7 @@ describe( 'MentionUI', () => {
 
 					return waitForDebounce()
 						.then( () => {
-							const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 
 							const keyEvtData = {
 								keyCode: keyCodes.arrowdown,
@@ -602,13 +592,13 @@ describe( 'MentionUI', () => {
 							};
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false ] );
+							expectChildViewsIsOnState( [ false, true, false ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, true ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 						} );
 				} );
 
@@ -621,9 +611,7 @@ describe( 'MentionUI', () => {
 
 					return waitForDebounce()
 						.then( () => {
-							const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 
 							const keyEvtData = {
 								keyCode: keyCodes.arrowup,
@@ -632,13 +620,13 @@ describe( 'MentionUI', () => {
 							};
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, true ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, true, false ] );
+							expectChildViewsIsOnState( [ false, true, false ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 						} );
 				} );
 			} );
@@ -656,9 +644,7 @@ describe( 'MentionUI', () => {
 
 					return waitForDebounce()
 						.then( () => {
-							const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 
 							fireKeyDownEvent( {
 								keyCode: keyCodes.arrowup,
@@ -666,7 +652,7 @@ describe( 'MentionUI', () => {
 								stopPropagation: sinon.spy()
 							} );
 
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, true ] );
 
 							fireKeyDownEvent( {
 								keyCode: keyCodes.enter,
@@ -706,9 +692,7 @@ describe( 'MentionUI', () => {
 
 					return waitForDebounce()
 						.then( () => {
-							const buttons = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
-
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false ] );
 
 							fireKeyDownEvent( {
 								keyCode: keyCodes.arrowup,
@@ -716,7 +700,7 @@ describe( 'MentionUI', () => {
 								stopPropagation: sinon.spy()
 							} );
 
-							expect( buttons.map( b => b.isOn ) ).to.deep.equal( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, true ] );
 
 							fireKeyDownEvent( {
 								keyCode: keyCodes.tab,
@@ -849,5 +833,11 @@ describe( 'MentionUI', () => {
 
 			return domRange;
 		} );
+	}
+
+	function expectChildViewsIsOnState( expectedState ) {
+		const childViews = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+
+		expect( childViews.map( child => child.isOn ) ).to.deep.equal( expectedState );
 	}
 } );
