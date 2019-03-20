@@ -762,7 +762,7 @@
     rimraf "^2.6.2"
     webpack-sources "^1.1.0"
 
-"@ckeditor/ckeditor5-inspector@^1.0.0":
+"@ckeditor/ckeditor5-inspector@^1.0.0", "@ckeditor/ckeditor5-inspector@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-inspector/-/ckeditor5-inspector-1.2.0.tgz#b12798363a6ccfae60a1e88727fb8e90e8739bae"
   integrity sha512-d8gHCD4sNxrs2Rrs+2UBUOcFWOyLmhnom5bRFOOOQXulJ50xDjsgh76cpZwT2fUfv245V/jIW1PpyxpgkVTm9A==
