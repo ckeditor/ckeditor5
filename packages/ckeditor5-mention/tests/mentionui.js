@@ -368,29 +368,49 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'panel behavior', () => {
-		describe( 'on esc', () => {
-			it( 'should close the opened panel', () => {
-				return createClassicTestEditor( staticConfig )
-					.then( () => {
-						setData( model, '<paragraph>foo []</paragraph>' );
+		it( 'should close the opened panel on esc', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
 
-						model.change( writer => {
-							writer.insertText( '@', doc.selection.getFirstPosition() );
-						} );
-					} )
-					.then( waitForDebounce )
-					.then( () => {
-						expect( panelView.isVisible ).to.be.true;
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.esc,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						expect( panelView.isVisible ).to.be.false;
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
 					} );
-			} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+
+					fireKeyDownEvent( {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					expect( panelView.isVisible ).to.be.false;
+				} );
+		} );
+
+		it( 'should hide the panel when click outside', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+
+					model.change( writer => {
+						// Place position at the begging of a paragraph.
+						writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+					} );
+
+					expect( panelView.isVisible ).to.be.false;
+				} );
 		} );
 
 		describe( 'default list item', () => {

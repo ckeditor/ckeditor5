@@ -40,8 +40,12 @@ export default class TextWatcher {
 			const entry = changes[ 0 ];
 
 			// Typing is represented by only a single change.
-			if ( changes.length != 1 || entry.name != '$text' || entry.length != 1 ) {
-				return undefined;
+			const isTypingChange = changes.length == 1 && entry.name == '$text' && entry.length == 1;
+			// Selection is represented by empty changes.
+			const isSelectionChange = changes.length == 0;
+
+			if ( !isTypingChange && !isSelectionChange ) {
+				return;
 			}
 
 			const text = this._getText();
@@ -68,7 +72,7 @@ export default class TextWatcher {
 
 		// Do nothing if selection is not collapsed.
 		if ( !selection.isCollapsed ) {
-			return undefined;
+			return;
 		}
 
 		const block = selection.focus.parent;
