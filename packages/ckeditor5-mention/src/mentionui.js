@@ -67,7 +67,7 @@ export default class MentionUI extends Plugin {
 					this._mentionsView.selectPrevious();
 				}
 
-				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
+				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab || data.keyCode == keyCodes.space ) {
 					this._mentionsView.executeSelected();
 				}
 
@@ -348,6 +348,7 @@ function isHandledKey( keyCode ) {
 		keyCodes.arrowright,
 		keyCodes.enter,
 		keyCodes.tab,
+		keyCodes.space,
 		keyCodes.esc
 	];
 	return handledKeyCodes.includes( keyCode );

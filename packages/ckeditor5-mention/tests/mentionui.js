@@ -532,6 +532,51 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'space', () => {
+			it( 'should execute selected button', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				const command = editor.commands.get( 'mention' );
+				const spy = testUtils.sinon.spy( command, 'execute' );
+
+				return waitForDebounce()
+					.then( () => {
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.space,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.calledOnce( spy );
+
+						const commandOptions = spy.getCall( 0 ).args[ 0 ];
+
+						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
+						expect( commandOptions ).to.have.property( 'marker', '@' );
+						expect( commandOptions ).to.have.property( 'range' );
+
+						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+
+						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+					} );
+			} );
+		} );
+
 		describe( 'esc', () => {
 			it( 'should close the opened panel', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
