@@ -29,7 +29,7 @@ export default class FontColorUI extends Plugin {
 			const colorTableView = colorUI.addColorsToDropdown(
 				dropdownView,
 				options.map( element => ( {
-					name: element.label,
+					label: element.label,
 					color: element.model,
 					options: {
 						hasBorder: element.hasBorder
@@ -56,7 +56,7 @@ export default class FontColorUI extends Plugin {
 
 			dropdownView.on( 'execute', ( evt, val ) => {
 				if ( val.value !== null ) {
-					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder }, 0 );
+					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder, label: val.label }, 0 );
 				}
 				editor.execute( FONT_COLOR, val );
 				editor.editing.view.focus();

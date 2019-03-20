@@ -91,11 +91,17 @@ export default class ColorTableView extends View {
 					color: colorObj.color,
 					hasBorder: colorObj.hasBorder
 				} );
+				if ( colorObj.label ) {
+					colorTile.set( {
+						label: colorObj.label,
+						tooltip: true
+					} );
+				}
 				if ( colorObj.isEnabled === false ) {
 					colorTile.set( 'isEnabled', false );
 				}
 				colorTile.on( 'execute', () => {
-					this.fire( 'execute', { value: colorObj.color, hasBorder: colorObj.hasBorder } );
+					this.fire( 'execute', { value: colorObj.color, hasBorder: colorObj.hasBorder, label: colorObj.label } );
 				} );
 				return colorTile;
 			}
