@@ -307,7 +307,9 @@ function getBalloonPanelPositions() {
 }
 
 function createPattern( marker ) {
-	return ` (${ marker })([\\w]*?)$`;
+	const numberOfCharacters = '*';
+
+	return `(^| )(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 function createTestCallback( marker ) {
@@ -322,8 +324,8 @@ function createTextMatcher( marker ) {
 	return text => {
 		const match = text.match( regExp );
 
-		const marker = match[ 1 ];
-		const feedText = match[ 2 ];
+		const marker = match[ 2 ];
+		const feedText = match[ 3 ];
 
 		return { marker, feedText };
 	};

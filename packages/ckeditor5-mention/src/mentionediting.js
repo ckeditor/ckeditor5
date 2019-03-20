@@ -82,7 +82,7 @@ export default class MentionEditing extends Plugin {
 
 						const mention = nodeBefore.getAttribute( 'mention' );
 
-						const name = mention.name || mention;
+						const name = mention.name;
 
 						const textName = text.slice( 1 );
 

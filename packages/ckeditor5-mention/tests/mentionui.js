@@ -197,6 +197,33 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
+			it( 'should show panel for matched marker at the beginning of paragraph', () => {
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			it( 'should not show panel for marker in the middle of other word', () => {
+				setData( model, '<paragraph>foo[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
 			it( 'should show filtered results for matched text', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
