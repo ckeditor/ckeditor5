@@ -89,12 +89,14 @@ export default class ColorTableView extends View {
 				const colorTile = new ColorTile();
 				colorTile.set( {
 					color: colorObj.color,
-					hasBorder: true
+					hasBorder: colorObj.hasBorder
 				} );
 				if ( colorObj.isEnabled === false ) {
 					colorTile.set( 'isEnabled', false );
 				}
-				colorTile.delegate( 'execute' ).to( this );
+				colorTile.on( 'execute', () => {
+					this.fire( 'execute', { value: colorObj.color, hasBorder: colorObj.hasBorder } );
+				} );
 				return colorTile;
 			}
 		);

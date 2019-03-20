@@ -22,13 +22,6 @@ export default class ColorTile extends ButtonView {
 					'ck-color-table__color-tile',
 					bind.if( 'hasBorder', 'ck-color-table__color-tile_bordered' )
 				]
-			},
-			on: {
-				click: bind.to( () => {
-					if ( this.isEnabled ) {
-						this.fire( 'execute', { value: this.color, hasBorder: this.hasBorder } );
-					}
-				} )
 			}
 		} );
 	}
