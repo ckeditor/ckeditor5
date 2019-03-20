@@ -8,7 +8,7 @@ import FontColorEditing from './../../src/fontcolor/fontcolorediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontColorEditing', () => {
 	let editor, doc;
@@ -38,103 +38,25 @@ describe( 'FontColorEditing', () => {
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontColor.options' ) ).to.deep.equal( [
+				expect( editor.config.get( 'fontColor.colors' ) ).to.deep.equal( [
+					'hsl(0, 0%, 0%)',
+					'hsl(0, 0%, 30%)',
+					'hsl(0, 0%, 60%)',
+					'hsl(0, 0%, 90%)',
 					{
-						label: 'Strong Cyan',
-						color: '#1ABC9C'
+						color: 'hsl(0, 0%, 100%)',
+						hasBorder: true
 					},
-					{
-						label: 'Emerald',
-						color: '#2ECC71'
-					},
-					{
-						label: 'Bright Blue',
-						color: '#3498DB'
-					},
-					{
-						label: 'Amethyst',
-						color: '#9B59B6'
-					},
-					{
-						label: 'Grayish Blue',
-						color: '#4E5F70'
-					},
-					{
-						label: 'Vivid Yellow',
-						color: '#F1C40F'
-					},
-					{
-						label: 'Dark Cyan',
-						color: '#16A085'
-					},
-					{
-						label: 'Dark Emerald',
-						color: '#27AE60'
-					},
-					{
-						label: 'Strong Blue',
-						color: '#2980B9'
-					},
-					{
-						label: 'Dark Violet',
-						color: '#8E44AD'
-					},
-					{
-						label: 'Desaturated Blue',
-						color: '#2C3E50'
-					},
-					{
-						label: 'Orange',
-						color: '#F39C12'
-					},
-					{
-						label: 'Carrot',
-						color: '#E67E22'
-					},
-					{
-						label: 'Pale Red',
-						color: '#E74C3C'
-					},
-					{
-						label: 'Bright Silver',
-						color: '#ECF0F1'
-					},
-					{
-						label: 'Light Grayish Cyan',
-						color: '#95A5A6'
-					},
-					{
-						label: 'Light Gray',
-						color: '#DDD'
-					},
-					{
-						label: 'White',
-						color: '#FFF'
-					},
-					{
-						label: 'Pumpkin',
-						color: '#D35400'
-					},
-					{
-						label: 'Strong Red',
-						color: '#C0392B'
-					},
-					{
-						label: 'Silver',
-						color: '#BDC3C7'
-					},
-					{
-						label: 'Grayish Cyan',
-						color: '#7F8C8D'
-					},
-					{
-						label: 'Dark Gray',
-						color: '#999'
-					},
-					{
-						label: 'Black',
-						color: '#000'
-					}
+					'hsl(360, 75%, 60%)',
+					'hsl(30, 75%, 60%)',
+					'hsl(60, 75%, 60%)',
+					'hsl(90, 75%, 60%)',
+					'hsl(120, 75%, 60%)',
+					'hsl(150, 75%, 60%)',
+					'hsl(180, 75%, 60%)',
+					'hsl(210, 75%, 60%)',
+					'hsl(240, 75%, 60%)',
+					'hsl(270, 75%, 60%)'
 				] );
 			} );
 		} );
@@ -145,7 +67,7 @@ describe( 'FontColorEditing', () => {
 			.create( {
 				plugins: [ FontColorEditing, Paragraph ],
 				fontColor: {
-					options: [
+					colors: [
 						{
 							label: 'Color1',
 							color: '#000'
@@ -155,10 +77,9 @@ describe( 'FontColorEditing', () => {
 						}, {
 							label: 'Color3',
 							color: 'rgb( 0, 10, 20 )'
-						}, {
-							label: 'Color4',
-							color: 'hsl( 200,100%,50%)'
-						}, {
+						},
+						'hsl( 200,100%,50%)',
+						{
 							label: 'Color5 - Light Green',
 							color: 'lightgreen'
 						}
@@ -189,6 +110,97 @@ describe( 'FontColorEditing', () => {
 					expect( editor.getData() ).to.equal( `<p>fo<span style="color:${ test };">o b</span>ar</p>` );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'data pipeline conversions', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ FontColorEditing, Paragraph ],
+					fontColor: {
+						colors: [
+							{
+								label: 'Color1',
+								color: '#000'
+							}, {
+								label: 'Color2',
+								color: '#123456'
+							}, {
+								label: 'Color3',
+								color: 'rgb( 0, 10, 20 )'
+							},
+							'hsl( 200,100%,50%)',
+							{
+								label: 'Color5 - Light Green',
+								color: 'lightgreen'
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					doc = editor.model;
+				} );
+		} );
+
+		it( 'should convert from element with defined style when with other styles', () => {
+			const data = '<p>f<span style="font-size: 18px;color: rgb(10, 20, 30);">o</span>o</p>';
+
+			editor.setData( data );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>f<span style="color:rgb(10,20,30);">o</span>o</p>' );
+		} );
+
+		describe( 'should convert from different color versions', () => {
+			const tests = [
+				'#000',
+				'green',
+				'rgb( 0, 10, 20 )',
+				'rgba( 20, 30, 50, 0.4)',
+				'hsl( 10, 20%, 30%)',
+				'hsla( 300, 50%, 100%, .3)',
+				'rgb( 20%, 30%, 40% )',
+				'#345678'
+			];
+
+			tests.forEach( test => {
+				it( `should convert fontColor attribute: "${ test }" to proper style value.`, () => {
+					const data = `<p>f<span style="color: ${ test }">o</span>o</p>`;
+					editor.setData( data );
+
+					expect( getModelData( doc ) )
+						.to.equal( `<paragraph>[]f<$text fontColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
+
+					expect( editor.getData() ).to.equal( `<p>f<span style="color:${ test.replace( / /g, '' ) };">o</span>o</p>` );
+				} );
+			} );
+		} );
+
+		it( 'should convert from complex definition', () => {
+			editor.setData(
+				'<p>f<span style="color: lightgreen;">o</span>o</p>' +
+				'<p>f<span style="color: hsl( 200, 100%, 50% );">o</span>o</p>' +
+				'<p>b<span style="color: rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="color:#fff;">a</span>z</p>'
+			);
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>[]f<$text fontColor="lightgreen">o</$text>o</paragraph>' +
+				'<paragraph>f<$text fontColor="hsl(200,100%,50%)">o</$text>o</paragraph>' +
+				'<paragraph>b<$text fontColor="rgba(1,2,3,.4)">a</$text>r</paragraph>' +
+				'<paragraph>b<$text fontColor="#fff">a</$text>z</paragraph>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p>f<span style="color:lightgreen;">o</span>o</p>' +
+				'<p>f<span style="color:hsl(200,100%,50%);">o</span>o</p>' +
+				'<p>b<span style="color:rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="color:#fff;">a</span>z</p>'
+			);
 		} );
 	} );
 } );

@@ -8,7 +8,7 @@
 import FontColorEditing from '../../src/fontcolor/fontcolorediting';
 import FontColorUI from '../../src/fontcolor/fontcolorui';
 
-import fontColorIcon from '../../theme/icons/font-family.svg';
+import fontColorIcon from '../../theme/icons/font-color.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -22,12 +22,12 @@ describe( 'FontColorUI', () => {
 	before( () => {
 		addTranslations( 'en', {
 			'Font Color': 'Font Color',
-			'Remove text color': 'Remove text color'
+			'Remove color': 'Remove text color'
 		} );
 
 		addTranslations( 'pl', {
 			'Font Color': 'Kolor czcionki',
-			'Remove text color': 'Usuń kolor tekstu'
+			'Remove color': 'Usuń kolor'
 		} );
 	} );
 
@@ -83,17 +83,7 @@ describe( 'FontColorUI', () => {
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 
 			dropdown.commandName = 'fontColor';
-			dropdown.fire( 'execute' );
-
-			sinon.assert.calledOnce( focusSpy );
-		} );
-
-		it( 'should focus view after command execution from splitbutton', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
-
-			dropdown.commandName = 'fontColor';
-			dropdown.buttonView.fire( 'execute' );
+			dropdown.fire( 'execute', { value: null } );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
@@ -122,7 +112,8 @@ describe( 'FontColorUI', () => {
 
 			it( 'works for the colorTableView#items in the panel', () => {
 				const colorTableView = dropdown.colorTableView;
-				expect( colorTableView.removeButtonTooltip ).to.equal( 'Usuń kolor tekstu' );
+				expect( colorTableView.removeButtonTooltip ).to.equal( 'Usuń kolor' );
+				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
 			function localizedEditor() {
