@@ -4,20 +4,26 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTile from './colortile';
+import ColorGrid from './colorgrid';
 
 import removeButtonIcon from '../../theme/icons/eraser.svg';
 
 import '../../theme/fontcolor.css';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 export default class ColorTableView extends View {
 	constructor( locale, { colors } ) {
 		super( locale );
+		this.locale = locale;
+		this.items = this.createCollection();
 
 		this.colorsDefinition = colors;
+		this.focusTracker = new FocusTracker();
+		this.keystrokes = new KeystrokeHandler();
 
 		this.set( 'selectedColor' );
 		this.set( 'hoveredColor' );
@@ -27,27 +33,17 @@ export default class ColorTableView extends View {
 
 		this.initRecentCollection();
 
-		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
-			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
-			if ( duplicates.length === 2 ) {
-				this.recentlyUsedColors.remove( duplicates[ 1 ] );
-			}
-			if ( this.recentlyUsedColors.length > this.colorColumns ) {
-				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
-			}
-		} );
-
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
 				class: [ 'ck-color-table' ]
 			},
-			children: [
-				this.removeColorButton(),
-				this.createColorTableTemplate(),
-				this.recentlyUsed()
-			]
+			children: this.items
 		} );
+
+		this.items.add( this.removeColorButton() );
+		this.items.add( this.createColorTableTemplate() );
+		this.items.add( this.recentlyUsed() );
 	}
 
 	removeColorButton() {
@@ -66,30 +62,15 @@ export default class ColorTableView extends View {
 	}
 
 	createColorTableTemplate() {
-		const colorCollection = this.createCollection();
-		this.colorsDefinition.forEach( item => {
-			const colorTile = new ColorTile();
-			colorTile.set( {
-				color: item.color,
-				hasBorder: item.options.hasBorder
-			} );
-			colorTile.delegate( 'execute' ).to( this );
-			colorCollection.add( colorTile );
-		} );
-
-		return new Template( {
-			tag: 'div',
-			children: colorCollection,
-			attributes: {
-				class: 'ck-color-table__grid-container'
-			}
-		} );
+		const colorGrid = new ColorGrid( this.locale, { colorsDefinition: this.colorsDefinition } );
+		colorGrid.delegate( 'execute' ).to( this );
+		return colorGrid;
 	}
 
 	recentlyUsed() {
-		this.recentlyUsedViews = this.createCollection();
+		const recentViews = new ColorGrid( this.locale );
 
-		this.recentlyUsedViews.bindTo( this.recentlyUsedColors ).using(
+		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
 				const colorTile = new ColorTile();
 				colorTile.set( {
@@ -103,13 +84,19 @@ export default class ColorTableView extends View {
 				return colorTile;
 			}
 		);
-		return new Template( {
-			tag: 'div',
-			children: this.recentlyUsedViews,
-			attributes: {
-				class: [ 'ck-color-table__grid-container' ]
+
+		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
+			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
+			if ( duplicates.length === 2 ) {
+				this.recentlyUsedColors.remove( duplicates[ 1 ] );
+			}
+			if ( this.recentlyUsedColors.length > this.colorColumns ) {
+				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
 			}
 		} );
+
+		recentViews.delegate( 'execute' ).to( this );
+		return recentViews;
 	}
 
 	initRecentCollection() {
@@ -119,5 +106,28 @@ export default class ColorTableView extends View {
 				isEnabled: false
 			} );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		// Items added before rendering should be known to the #focusTracker.
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
+		this.items.on( 'add', ( evt, item ) => {
+			this.focusTracker.add( item.element );
+		} );
+
+		this.items.on( 'remove', ( evt, item ) => {
+			this.focusTracker.remove( item.element );
+		} );
+
+		// // Start listening for the keystrokes coming from #element.
+		// this.keystrokes.listenTo( this.element );
 	}
 }
