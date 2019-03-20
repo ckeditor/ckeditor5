@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ListItemView from '@ckeditor/ckeditor5-ui/src/list/listitemview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
@@ -18,6 +17,7 @@ import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import TextWatcher from './textwatcher';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 5;
 
@@ -346,18 +346,4 @@ function isHandledKey( keyCode ) {
 		keyCodes.tab
 	];
 	return handledKeyCodes.includes( keyCode );
-}
-
-class MentionListItemView extends ListItemView {
-	highlight() {
-		const child = this.children.first;
-
-		child.isOn = true;
-	}
-
-	removeHighlight() {
-		const child = this.children.first;
-
-		child.isOn = false;
-	}
 }
