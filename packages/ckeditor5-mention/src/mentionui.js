@@ -344,12 +344,11 @@ function isHandledKey( keyCode ) {
 	const handledKeyCodes = [
 		keyCodes.arrowup,
 		keyCodes.arrowdown,
-		keyCodes.arrowleft,
-		keyCodes.arrowright,
 		keyCodes.enter,
 		keyCodes.tab,
 		keyCodes.space,
 		keyCodes.esc
 	];
+
 	return handledKeyCodes.includes( keyCode );
 }
