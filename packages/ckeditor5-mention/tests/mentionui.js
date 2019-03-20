@@ -367,225 +367,18 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
-	describe( 'keys', () => {
-		beforeEach( () => {
-			return createClassicTestEditor( staticConfig );
-		} );
-
-		describe( 'arrows', () => {
-			it( 'should cycle down on arrow down', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-						const keyEvtData = {
-							keyCode: keyCodes.arrowdown,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, true, false, false, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, true, false, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, false, true, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, false, false, true ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-					} );
-			} );
-
-			it( 'should cycle up on arrow up', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-						const keyEvtData = {
-							keyCode: keyCodes.arrowup,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, false, false, true ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, false, true, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, false, true, false, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ false, true, false, false, false ] );
-
-						fireKeyDownEvent( keyEvtData );
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-					} );
-			} );
-		} );
-
-		describe( 'enter', () => {
-			it( 'should execute selected button', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				const command = editor.commands.get( 'mention' );
-				const spy = testUtils.sinon.spy( command, 'execute' );
-
-				return waitForDebounce()
-					.then( () => {
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.arrowup,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						expectChildViewsIsOnState( [ false, false, false, false, true ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.enter,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						sinon.assert.calledOnce( spy );
-
-						const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
-						expect( commandOptions ).to.have.property( 'marker', '@' );
-						expect( commandOptions ).to.have.property( 'range' );
-
-						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
-
-						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
-					} );
-			} );
-		} );
-
-		describe( 'tab', () => {
-			it( 'should execute selected button', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				const command = editor.commands.get( 'mention' );
-				const spy = testUtils.sinon.spy( command, 'execute' );
-
-				return waitForDebounce()
-					.then( () => {
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.arrowup,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						expectChildViewsIsOnState( [ false, false, false, false, true ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.tab,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						sinon.assert.calledOnce( spy );
-
-						const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
-						expect( commandOptions ).to.have.property( 'marker', '@' );
-						expect( commandOptions ).to.have.property( 'range' );
-
-						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
-
-						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
-					} );
-			} );
-		} );
-
-		describe( 'space', () => {
-			it( 'should execute selected button', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				const command = editor.commands.get( 'mention' );
-				const spy = testUtils.sinon.spy( command, 'execute' );
-
-				return waitForDebounce()
-					.then( () => {
-						expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.arrowup,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						expectChildViewsIsOnState( [ false, false, false, false, true ] );
-
-						fireKeyDownEvent( {
-							keyCode: keyCodes.space,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						} );
-
-						sinon.assert.calledOnce( spy );
-
-						const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
-						expect( commandOptions ).to.have.property( 'marker', '@' );
-						expect( commandOptions ).to.have.property( 'range' );
-
-						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
-
-						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
-					} );
-			} );
-		} );
-
-		describe( 'esc', () => {
+	describe( 'panel behavior', () => {
+		describe( 'on esc', () => {
 			it( 'should close the opened panel', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
+				return createClassicTestEditor( staticConfig )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 
@@ -599,59 +392,25 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
-	} );
 
-	describe( 'itemRenderer', () => {
-		beforeEach( () => {
-			const issues = [
-				{ id: '1002', title: 'Some bug in editor.' },
-				{ id: '1003', title: 'Introduce this feature.' },
-				{ id: '1004', title: 'Missing docs.' }
-			];
+		describe( 'default list item', () => {
+			const feedItems = staticConfig[ 0 ].feed.map( name => ( { name } ) );
 
-			return createClassicTestEditor( [
-				{
-					marker: '#',
-					feed: feedText => {
-						return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
-					},
-					itemRenderer: item => {
-						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
-
-						span.innerHTML = `<span id="${ item.id }">@${ item.title }</span>`;
-
-						return span;
-					}
-				}
-			] );
-		} );
-
-		it( 'should show panel for matched marker', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
-
-			model.change( writer => {
-				writer.insertText( '#', doc.selection.getFirstPosition() );
+			beforeEach( () => {
+				return createClassicTestEditor( staticConfig );
 			} );
 
-			return waitForDebounce()
-				.then( () => {
-					expect( panelView.isVisible ).to.be.true;
-					expect( listView.items ).to.have.length( 3 );
-				} );
-		} );
-
-		describe( 'keys', () => {
-			describe( 'arrows', () => {
+			describe( 'on arrows', () => {
 				it( 'should cycle down on arrow down', () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
-						writer.insertText( '#', doc.selection.getFirstPosition() );
+						writer.insertText( '@', doc.selection.getFirstPosition() );
 					} );
 
 					return waitForDebounce()
 						.then( () => {
-							expectChildViewsIsOnState( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 							const keyEvtData = {
 								keyCode: keyCodes.arrowdown,
@@ -660,13 +419,19 @@ describe( 'MentionUI', () => {
 							};
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ false, true, false ] );
+							expectChildViewsIsOnState( [ false, true, false, false, false ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, true, false, false ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ true, false, false ] );
+							expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+							fireKeyDownEvent( keyEvtData );
+							expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+							fireKeyDownEvent( keyEvtData );
+							expectChildViewsIsOnState( [ true, false, false, false, false ] );
 						} );
 				} );
 
@@ -674,12 +439,12 @@ describe( 'MentionUI', () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
 
 					model.change( writer => {
-						writer.insertText( '#', doc.selection.getFirstPosition() );
+						writer.insertText( '@', doc.selection.getFirstPosition() );
 					} );
 
 					return waitForDebounce()
 						.then( () => {
-							expectChildViewsIsOnState( [ true, false, false ] );
+							expectChildViewsIsOnState( [ true, false, false, false, false ] );
 
 							const keyEvtData = {
 								keyCode: keyCodes.arrowup,
@@ -688,113 +453,200 @@ describe( 'MentionUI', () => {
 							};
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ false, false, true ] );
+							expectChildViewsIsOnState( [ false, false, false, false, true ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ false, true, false ] );
+							expectChildViewsIsOnState( [ false, false, false, true, false ] );
 
 							fireKeyDownEvent( keyEvtData );
-							expectChildViewsIsOnState( [ true, false, false ] );
+							expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+							fireKeyDownEvent( keyEvtData );
+							expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+							fireKeyDownEvent( keyEvtData );
+							expectChildViewsIsOnState( [ true, false, false, false, false ] );
 						} );
 				} );
 			} );
 
-			describe( 'enter', () => {
-				it( 'should execute selected item', () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+			describe( 'on "execute" keys', () => {
+				testExecuteKey( 'enter', keyCodes.enter, feedItems );
 
-					model.change( writer => {
-						writer.insertText( '#', doc.selection.getFirstPosition() );
-					} );
+				testExecuteKey( 'tab', keyCodes.tab, feedItems );
 
-					const command = editor.commands.get( 'mention' );
-					const spy = testUtils.sinon.spy( command, 'execute' );
+				testExecuteKey( 'space', keyCodes.space, feedItems );
+			} );
+		} );
 
-					return waitForDebounce()
-						.then( () => {
-							expectChildViewsIsOnState( [ true, false, false ] );
+		describe( 'custom list item', () => {
+			const issues = [
+				{ id: '1002', title: 'Some bug in editor.' },
+				{ id: '1003', title: 'Introduce this feature.' },
+				{ id: '1004', title: 'Missing docs.' },
+				{ id: '1005', title: 'Another bug.' },
+				{ id: '1006', title: 'More bugs' }
+			];
 
-							fireKeyDownEvent( {
-								keyCode: keyCodes.arrowup,
-								preventDefault: sinon.spy(),
-								stopPropagation: sinon.spy()
-							} );
+			beforeEach( () => {
+				return createClassicTestEditor( [
+					{
+						marker: '@',
+						feed: feedText => {
+							return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
+						},
+						itemRenderer: item => {
+							const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-							expectChildViewsIsOnState( [ false, false, true ] );
+							span.innerHTML = `<span id="${ item.id }">@${ item.title }</span>`;
 
-							fireKeyDownEvent( {
-								keyCode: keyCodes.enter,
-								preventDefault: sinon.spy(),
-								stopPropagation: sinon.spy()
-							} );
-
-							sinon.assert.calledOnce( spy );
-
-							const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-							expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( {
-								id: '1004',
-								title: 'Missing docs.'
-							} );
-							expect( commandOptions ).to.have.property( 'marker', '#' );
-							expect( commandOptions ).to.have.property( 'range' );
-
-							const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-							const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
-
-							expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
-						} );
-				} );
+							return span;
+						}
+					}
+				] );
 			} );
 
-			describe( 'tab', () => {
-				it( 'should execute selected item', () => {
-					setData( model, '<paragraph>foo []</paragraph>' );
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
 
-					model.change( writer => {
-						writer.insertText( '#', doc.selection.getFirstPosition() );
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			describe( 'keys', () => {
+				describe( 'on arrows', () => {
+					it( 'should cycle down on arrow down', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowdown,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
 					} );
 
-					const command = editor.commands.get( 'mention' );
-					const spy = testUtils.sinon.spy( command, 'execute' );
+					it( 'should cycle up on arrow up', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
 
-					return waitForDebounce()
-						.then( () => {
-							expectChildViewsIsOnState( [ true, false, false ] );
-
-							fireKeyDownEvent( {
-								keyCode: keyCodes.arrowup,
-								preventDefault: sinon.spy(),
-								stopPropagation: sinon.spy()
-							} );
-
-							expectChildViewsIsOnState( [ false, false, true ] );
-
-							fireKeyDownEvent( {
-								keyCode: keyCodes.tab,
-								preventDefault: sinon.spy(),
-								stopPropagation: sinon.spy()
-							} );
-
-							sinon.assert.calledOnce( spy );
-
-							const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-							expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( {
-								id: '1004',
-								title: 'Missing docs.'
-							} );
-							expect( commandOptions ).to.have.property( 'marker', '#' );
-							expect( commandOptions ).to.have.property( 'range' );
-
-							const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
-							const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
-
-							expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
 						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowup,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+				} );
+
+				describe( 'on "execute" keys', () => {
+					testExecuteKey( 'enter', keyCodes.enter, issues );
+
+					testExecuteKey( 'tab', keyCodes.tab, issues );
+
+					testExecuteKey( 'space', keyCodes.space, issues );
 				} );
 			} );
 		} );
+
+		function testExecuteKey( name, keyCode, feedItems ) {
+			it( 'should execute selected button on ' + name, () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				const command = editor.commands.get( 'mention' );
+				const spy = testUtils.sinon.spy( command, 'execute' );
+
+				return waitForDebounce()
+					.then( () => {
+						expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+						fireKeyDownEvent( {
+							keyCode,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.calledOnce( spy );
+
+						const commandOptions = spy.getCall( 0 ).args[ 0 ];
+
+						const item = feedItems[ 4 ];
+
+						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( item );
+						expect( commandOptions ).to.have.property( 'marker', '@' );
+						expect( commandOptions ).to.have.property( 'range' );
+
+						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+
+						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+					} );
+			} );
+		}
 	} );
 
 	describe( 'execute', () => {
