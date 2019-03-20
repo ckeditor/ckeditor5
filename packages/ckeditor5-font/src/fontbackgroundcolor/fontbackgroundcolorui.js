@@ -59,6 +59,7 @@ export default class FontBackgroundColorUI extends Plugin {
 					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder }, 0 );
 				}
 				editor.execute( FONT_BACKGROUND_COLOR, val );
+				editor.editing.view.focus();
 			} );
 
 			return dropdownView;
