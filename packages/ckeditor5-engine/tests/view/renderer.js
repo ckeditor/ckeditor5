@@ -3252,6 +3252,43 @@ describe( 'Renderer', () => {
 				] );
 			} );
 
+			it( 'should not incorrectly remove element which is not a FSC when rendering children', () => {
+				// This test's purpose is mostly reaching 100% CC.
+				observer = new MutationObserver( () => {} );
+
+				viewRoot._appendChild( parse( '<container:div><container:p>1</container:p><container:p>2</container:p></container:div>' ) );
+
+				const viewDiv = viewRoot.getChild( 0 );
+
+				// Set fake selection on the second paragraph.
+				selection._setTo( viewDiv.getChild( 1 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewDiv );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				observer.observe( domRoot.childNodes[ 0 ], {
+					childList: true,
+					attributes: false,
+					subtree: false
+				} );
+
+				// Remove the second paragraph.
+				viewDiv._removeChildren( 1, 1 );
+				// And set the fake selection on the first one.
+				selection._setTo( viewDiv.getChild( 0 ), 'on', { fake: true } );
+
+				renderer.markToSync( 'children', viewDiv );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
+					'added: 0, removed: 1'
+				] );
+
+				observer.disconnect();
+			} );
+
 			describe( 'using fastDiff() - significant number of nodes in the editor', () => {
 				it( 'should add only one child (at the beginning)', () => {
 					viewRoot._appendChild( parse( makeContainers( 151 ) ) );
