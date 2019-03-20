@@ -104,9 +104,9 @@ export default class MentionUI extends Plugin {
 			const { item, marker } = data;
 			const { label } = item;
 
-			const renderer = this._getItemRenderer( marker );
-
 			const listItemView = new MentionListItemView( editor.locale );
+
+			const renderer = this._getItemRenderer( marker );
 
 			if ( renderer ) {
 				const domNode = renderer( item );
