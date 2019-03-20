@@ -22,6 +22,8 @@
 .ck .ck-color-table__color-tile {
 	width: var(--ck-table-color-tile-size);
 	height: var(--ck-table-color-tile-size);
+	min-width: var(--ck-table-color-tile-size);
+	min-height: var(--ck-table-color-tile-size);
 	border-radius: var(--ck-border-radius);
 	cursor: pointer;
 	transition: 200ms ease box-shadow;
