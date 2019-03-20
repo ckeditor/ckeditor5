@@ -4,7 +4,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#5cfa668",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#fc603f7",
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#c7741f7",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#c7c4662",
     "@ckeditor/ckeditor5-autosave": "ckeditor/ckeditor5-autosave#643bbff",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#326ca8a",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#c4532e8",
