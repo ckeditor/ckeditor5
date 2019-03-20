@@ -54,7 +54,7 @@ class CustomMentionAttributeView extends Plugin {
 				key: 'mention',
 				value: viewItem => {
 					const mentionValue = {
-						label: viewItem.getAttribute( 'data-mention' ),
+						name: viewItem.getAttribute( 'data-mention' ),
 						link: viewItem.getAttribute( 'href' )
 					};
 
@@ -73,7 +73,7 @@ class CustomMentionAttributeView extends Plugin {
 
 				return viewWriter.createAttributeElement( 'a', {
 					class: 'mention',
-					'data-mention': modelAttributeValue.label,
+					'data-mention': modelAttributeValue.name,
 					'href': modelAttributeValue.link
 				} );
 			},
@@ -97,7 +97,7 @@ class CustomMentionElementView extends Plugin {
 			},
 			model: ( viewItem, modelWriter ) => {
 				const item = {
-					label: viewItem.getAttribute( 'data-mention' ),
+					name: viewItem.getAttribute( 'data-mention' ),
 					link: viewItem.getAttribute( 'href' )
 				};
 
@@ -106,7 +106,7 @@ class CustomMentionElementView extends Plugin {
 
 				modelWriter.insert( mention, frag, 0 );
 
-				modelWriter.insertText( item.label, mention, 0 );
+				modelWriter.insertText( item.name, mention, 0 );
 
 				return mention;
 			},
@@ -120,7 +120,7 @@ class CustomMentionElementView extends Plugin {
 
 				const link = viewWriter.createContainerElement( 'a', {
 					class: 'mention',
-					'data-mention': item.label,
+					'data-mention': item.name,
 					'href': item.link
 				} );
 
@@ -149,7 +149,7 @@ class CustomMentionMarkerView extends Plugin {
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( 'addMarker:mention', ( evt, data, conversionApi ) => {
-				const label = data.markerName.split( ':' )[ 1 ];
+				const name = data.markerName.split( ':' )[ 1 ];
 				const id = data.markerName.split( ':' )[ 2 ];
 
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
@@ -158,17 +158,17 @@ class CustomMentionMarkerView extends Plugin {
 
 				const viewWriter = conversionApi.writer;
 
-				const item = getFeed( label.replace( '-', ' ' ) )[ 0 ];
+				const item = getFeed( name.replace( '-', ' ' ) )[ 0 ];
 
 				const attributes = {
 					class: [ 'mention' ],
-					'data-mention': label,
+					'data-mention': name,
 					id
 				};
 
 				if ( item ) {
 					attributes.href = item.link;
-					attributes.title = item.label;
+					attributes.title = item.name;
 				}
 
 				// OMG I just wanted to change `<span>` to `<a>`...
@@ -234,14 +234,14 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return [
-		{ id: '1', label: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-		{ id: '2', label: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-		{ id: '3', label: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-		{ id: '4', label: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-		{ id: '5', label: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+		{ id: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+		{ id: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+		{ id: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+		{ id: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+		{ id: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.label.toLowerCase().includes( searchString );
+		return item.name.toLowerCase().includes( searchString );
 	} );
 }

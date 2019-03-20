@@ -44,19 +44,19 @@ class MentionCommand extends Command {
 		const item = options.mention;
 		const range = options.range || selection.getFirstRange();
 
-		const label = item.label || item;
+		const name = item.name || item;
 
 		model.change( writer => {
 			writer.remove( range );
 
-			const text = writer.createText( '@' + label );
+			const text = writer.createText( '@' + name );
 
 			writer.insert( text, selection.focus );
 
 			// TODO dumb
-			const name = createMentionMarkerId( label );
+			const markerName = createMentionMarkerId( name );
 
-			writer.addMarker( name, {
+			writer.addMarker( markerName, {
 				range: writer.createRange( selection.focus.getShiftedBy( -text.data.length ), selection.focus ),
 				usingOperation: true,
 				affectData: true

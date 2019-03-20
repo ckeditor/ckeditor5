@@ -36,7 +36,7 @@ ClassicEditor
 					span.classList.add( 'custom-item' );
 					span.id = `mention-list-item-id-${ item.id }`;
 
-					span.innerHTML = `${ item.label } <span class="custom-item-username">@${ item.username }</span>`;
+					span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
 
 					return span;
 				}
@@ -52,14 +52,14 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return Promise.resolve( [
-		{ id: '1', label: 'Barney Stinson', username: 'swarley' },
-		{ id: '2', label: 'Lily Aldrin', username: 'lilypad' },
-		{ id: '3', label: 'Marshall Eriksen', username: 'marshmallow' },
-		{ id: '4', label: 'Robin Scherbatsky', username: 'rsparkles' },
-		{ id: '5', label: 'Ted Mosby', username: 'tdog' }
+		{ id: '1', name: 'Barney Stinson', username: 'swarley' },
+		{ id: '2', name: 'Lily Aldrin', username: 'lilypad' },
+		{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow' },
+		{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles' },
+		{ id: '5', name: 'Ted Mosby', username: 'tdog' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.label.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
+		return item.name.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
 	} ) );
 }

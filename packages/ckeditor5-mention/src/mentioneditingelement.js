@@ -38,12 +38,12 @@ class MentionCommand extends Command {
 		const item = options.mention;
 		const range = options.range || selection.getFirstRange();
 
-		const label = item.label || item;
+		const name = item.name || item;
 
 		model.change( writer => {
 			writer.remove( range );
 
-			const mention = writer.createElement( 'mentionElement', { label, item } );
+			const mention = writer.createElement( 'mentionElement', { name, item } );
 
 			model.insertContent( mention );
 			writer.insertText( ' ', model.document.selection.focus );
@@ -74,7 +74,7 @@ export default class MentionElementEditing extends Plugin {
 			allowWhere: '$text',
 			isObject: true,
 			isInline: true,
-			allowAttributes: [ 'label', 'item' ]
+			allowAttributes: [ 'name', 'item' ]
 		} );
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
@@ -82,7 +82,7 @@ export default class MentionElementEditing extends Plugin {
 			view: ( modelItem, viewWriter ) => {
 				const mentionElement = viewWriter.createContainerElement( 'span', { class: 'mention' } );
 
-				const viewText = viewWriter.createText( modelItem.getAttribute( 'label' ) );
+				const viewText = viewWriter.createText( modelItem.getAttribute( 'name' ) );
 
 				viewWriter.insert( viewWriter.createPositionAt( mentionElement, 0 ), viewText );
 
@@ -93,17 +93,17 @@ export default class MentionElementEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: 'mentionElement',
 			model: ( viewElement, modelWriter ) => {
-				let label = 'general';
+				let name = 'general';
 
 				if ( viewElement.childCount ) {
 					const text = viewElement.getChild( 0 );
 
 					if ( text.is( 'text' ) ) {
-						label = text;
+						name = text;
 					}
 				}
 
-				return modelWriter.createElement( 'mentionElement', { label } );
+				return modelWriter.createElement( 'mentionElement', { name } );
 			}
 		} );
 

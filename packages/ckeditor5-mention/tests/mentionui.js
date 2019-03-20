@@ -475,7 +475,7 @@ describe( 'MentionUI', () => {
 
 						const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { label: 'Ted' } );
+						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
 						expect( commandOptions ).to.have.property( 'marker', '@' );
 						expect( commandOptions ).to.have.property( 'range' );
 
@@ -520,7 +520,7 @@ describe( 'MentionUI', () => {
 
 						const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { label: 'Ted' } );
+						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Ted' } );
 						expect( commandOptions ).to.have.property( 'marker', '@' );
 						expect( commandOptions ).to.have.property( 'range' );
 
@@ -750,7 +750,7 @@ describe( 'MentionUI', () => {
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { label: 'Barney' } );
+					expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Barney' } );
 					expect( commandOptions ).to.have.property( 'marker', '@' );
 					expect( commandOptions ).to.have.property( 'range' );
 

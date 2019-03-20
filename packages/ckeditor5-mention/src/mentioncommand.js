@@ -43,12 +43,12 @@ export default class MentionCommand extends Command {
 		const mention = options.mention;
 		const range = options.range || selection.getFirstRange();
 
-		const label = mention.label || mention;
+		const name = mention.name || mention;
 
 		model.change( writer => {
 			writer.remove( range );
 
-			writer.insertText( `${ marker }${ label }`, { mention }, range.start );
+			writer.insertText( `${ marker }${ name }`, { mention }, range.start );
 			writer.insertText( ' ', model.document.selection.focus );
 		} );
 	}

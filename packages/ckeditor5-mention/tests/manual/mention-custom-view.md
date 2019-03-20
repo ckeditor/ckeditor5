@@ -19,11 +19,11 @@ Use the code of this manual sample to change bahavior of the feature.
 ### Data
 
 The feed:
-- `{ label: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
-- `{ label: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989?ref_=tt_cl_t5' }`
-- `{ label: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' }`
-- `{ label: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
-- `{ label: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
+- `{ name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
+- `{ name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989?ref_=tt_cl_t5' }`
+- `{ name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' }`
+- `{ name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
+- `{ name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
 
 The mention is converted to link (`<a>`) with additional data of default span.
 

@@ -40,18 +40,20 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: viewItem => {
-					return viewItem.getAttribute( 'data-mention' );
-				}
+				value: viewItem => ( {
+					name: viewItem.getAttribute( 'data-mention' )
+				} )
 			}
 		} );
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'mention',
 			view: ( modelAttributeValue, viewWriter ) => {
+				const mention = modelAttributeValue && modelAttributeValue.name || modelAttributeValue;
+
 				return viewWriter.createAttributeElement( 'span', {
 					class: 'mention',
-					'data-mention': modelAttributeValue
+					'data-mention': mention
 				} );
 			}
 		} );
@@ -77,7 +79,14 @@ export default class MentionEditing extends Plugin {
 
 					if ( nodeBefore && nodeBefore.hasAttribute( 'mention' ) ) {
 						const text = nodeBefore.data;
-						if ( text != nodeBefore.getAttribute( 'mention' ) ) {
+
+						const mention = nodeBefore.getAttribute( 'mention' );
+
+						const name = mention.name || mention;
+
+						const textName = text.slice( 1 );
+
+						if ( textName != name ) {
 							writer.removeAttribute( 'mention', nodeBefore );
 							wasChanged = true;
 						}

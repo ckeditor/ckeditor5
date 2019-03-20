@@ -102,7 +102,7 @@ export default class MentionUI extends Plugin {
 		this._mentionsView.listView.items.bindTo( this._items ).using( data => {
 			// itemRenderer
 			const { item, marker } = data;
-			const { label } = item;
+			const { name } = item;
 
 			const listItemView = new MentionListItemView( editor.locale );
 
@@ -117,7 +117,7 @@ export default class MentionUI extends Plugin {
 			} else {
 				const buttonView = new ButtonView( editor.locale );
 
-				buttonView.label = label;
+				buttonView.label = name;
 				buttonView.withText = true;
 
 				listItemView.children.add( buttonView );
@@ -197,8 +197,8 @@ export default class MentionUI extends Plugin {
 				.then( feed => {
 					this._items.clear();
 
-					for ( const label of feed ) {
-						const item = typeof label != 'object' ? { label } : label;
+					for ( const name of feed ) {
+						const item = typeof name != 'object' ? { name } : name;
 
 						this._items.add( { item, marker } );
 					}
