@@ -487,15 +487,7 @@ The HTML that you have added to the `index.html` file is your editor's data. Thi
 
 However, what's in the model?
 
-To inspect the model structure you can use the [`@ckeditor/ckeditor5-inspector`](https://www.npmjs.com/package/@ckeditor/ckeditor5-inspector) util. It allows browsing the model and view structures as well as the list of commands.
-
-In order to enable CKEditor 5 Inspector for your editor, you need to first install it:
-
-```
-npm install --save-dev @ckeditor/ckeditor5-inspector
-```
-
-And now you need to load it in the `app.js` file:
+To learn that, we recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector instance inspector}. Once {@link framework/guides/development-tools#ckeditor-5-inspector#installing-the-inspector installed}, you need to load it in the `app.js` file:
 
 ```js
 // app.js
@@ -555,9 +547,7 @@ As you can see, this structure is quite different than the HTML input/output. If
 Play a bit with editor features (bold, italic, headings, lists, selection) to see how the model structure changes.
 
 <info-box>
-	Another useful helpers are the `getData()` and `setData()` functions exposed by {@link module:engine/dev-utils/model model dev utils} and {@link module:engine/dev-utils/view view dev utils}. They allow stringifying the model/view structures, selections, ranges and positions as well as loading them from string. They are often use when writing tests.
-
-	Both tools are designed for prototyping, debugging, and testing purposes. Do not use them in production-grade code.
+	You can also use some {@link framework/guides/development-tools#testing-helpers useful helpers like `getData()` and `setData()`} to learn more about the state of the editor model or write assertions in tests.
 </info-box>
 
 ### Behavior before "widgetizing" simple box
