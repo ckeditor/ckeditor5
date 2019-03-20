@@ -42,9 +42,9 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
+		this.items.add( this.removeColorButton() );
 		this.items.add( this.createColorTableTemplate() );
 		this.items.add( this.recentlyUsed() );
-		this.items.add( this.removeColorButton() );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this.items,
@@ -119,7 +119,8 @@ export default class ColorTableView extends View {
 		for ( let i = 0; i < this.colorColumns; i++ ) {
 			this.recentlyUsedColors.add( {
 				color: 'hsla( 0, 0%, 0%, 0 )',
-				isEnabled: false
+				isEnabled: false,
+				hasBorder: true
 			} );
 		}
 	}
