@@ -38,7 +38,7 @@
 	box-shadow: 0 0 0 1px var(--ck-color-table-color-tile-border);
 }
 
-.ck .ck-color-table__color-tile:hover :not( .ck-disabled ) {
+.ck .ck-color-table__color-tile:hover:not( .ck-disabled ) {
 	box-shadow: 0 0 0 2px var(--ck-color-table-color-tile-border-active);
 }
 
