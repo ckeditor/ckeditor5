@@ -8,7 +8,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTile from './colortile';
 import ColorGrid from './colorgrid';
 
-import removeButtonIcon from '../../theme/icons/eraser.svg';
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import '../../theme/fontcolor.css';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
