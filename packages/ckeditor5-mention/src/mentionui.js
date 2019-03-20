@@ -70,6 +70,10 @@ export default class MentionUI extends Plugin {
 				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
 					this._mentionsView.executeSelected();
 				}
+
+				if ( data.keyCode == keyCodes.esc ) {
+					this._hidePanel();
+				}
 			}
 		}, { priority: 'highest' } ); // priority highest required for enter overriding.
 
@@ -343,7 +347,8 @@ function isHandledKey( keyCode ) {
 		keyCodes.arrowleft,
 		keyCodes.arrowright,
 		keyCodes.enter,
-		keyCodes.tab
+		keyCodes.tab,
+		keyCodes.esc
 	];
 	return handledKeyCodes.includes( keyCode );
 }

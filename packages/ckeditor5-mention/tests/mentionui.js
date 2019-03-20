@@ -531,6 +531,29 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
+
+		describe( 'esc', () => {
+			it( 'should close the opened panel', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.esc,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'itemRenderer', () => {
