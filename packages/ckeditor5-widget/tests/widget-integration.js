@@ -67,9 +67,7 @@ describe( 'Widget - integration', () => {
 					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, viewWriter ) => {
-							const b = viewWriter.createAttributeElement( 'b' );
 							const div = viewWriter.createContainerElement( 'div' );
-							viewWriter.insert( viewWriter.createPositionAt( div, 0 ), b );
 
 							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
@@ -115,7 +113,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.notCalled( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption><b></b></div>'
+			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
 		);
 	} );
 
@@ -136,7 +134,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption><b></b></div>'
+			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption></div>'
 		);
 	} );
 
@@ -159,7 +157,7 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
-				'<figcaption contenteditable="true">[bar]</figcaption><b></b>' +
+				'<figcaption contenteditable="true">[bar]</figcaption>' +
 			'</div>'
 		);
 	} );
@@ -182,7 +180,7 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption><b></b></div>'
+			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption></div>'
 		);
 	} );
 
