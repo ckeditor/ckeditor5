@@ -169,7 +169,9 @@ describe( 'MentionUI', () => {
 					model.change( writer => {
 						writer.insertText( 't', doc.selection.getFirstPosition() );
 					} );
-				} ).then( () => {
+				} )
+				.then( waitForDebounce )
+				.then( () => {
 					sinon.assert.calledTwice( pinSpy );
 				} );
 		} );
