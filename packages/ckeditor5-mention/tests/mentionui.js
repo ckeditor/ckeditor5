@@ -257,11 +257,15 @@ describe( 'MentionUI', () => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
 				} );
 
-				model.change( () => {
-					model.modifySelection( doc.selection, { direction: 'backward', unit: 'codePoint' } );
-				} );
-
 				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+
+						model.change( () => {
+							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 					} );
