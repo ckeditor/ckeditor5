@@ -508,6 +508,10 @@ class ContextFactory {
 							this._setRelation( opA, opB, 'mergeTargetNotMoved' );
 						}
 
+						if ( opA.sourcePosition.isEqual( opB.targetPosition ) ) {
+							this._setRelation( opA, opB, 'mergeSourceNotMoved' );
+						}
+
 						if ( opA.sourcePosition.isEqual( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'mergeSameElement' );
 						}
@@ -1434,19 +1438,34 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 
 	// Case 2:
 	//
-	// Merge source is at the same position as split position. This sometimes happen during undo. This merge operation
-	// might have been earlier transformed by a merge operation which both merged the same element. See case in
-	// `MergeOperation` x `MergeOperation` transformation. In that case, if the merge operation has been undone, the special
-	// case is not applied.
+	// Merge source is at the same position as split position. This sometimes happen, mostly during undo.
+	// The decision here is mostly to choose whether merge source position should stay where it is (so it will be at the end of the
+	// split element) or should be move to the beginning of the new element.
 	//
-	// In this scenario the merge operation is now transformed by the split which has undone the previous merge operation.
-	// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
-	//
-	if ( a.sourcePosition.isEqual( b.splitPosition ) && ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) ) {
-		a.sourcePosition = b.moveTargetPosition.clone();
-		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+	if ( a.sourcePosition.isEqual( b.splitPosition ) ) {
+		// Use context to check if `SplitOperation` is not undoing a merge operation, that didn't change the `a` operation.
+		// This scenario happens the undone merge operation moved nodes at the source position of `a` operation.
+		// In that case `a` operation source position should stay where it is.
+		if ( context.abRelation == 'mergeSourceNotMoved' ) {
+			a.howMany = 0;
+			a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
-		return [ a ];
+			return [ a ];
+		}
+
+		// This merge operation might have been earlier transformed by a merge operation which both merged the same element.
+		// See that case in `MergeOperation` x `MergeOperation` transformation. In that scenario, if the merge operation has been undone,
+		// the special case is not applied.
+		//
+		// Now, the merge operation is transformed by the split which has undone that previous merge operation.
+		// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
+		//
+		if ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) {
+			a.sourcePosition = b.moveTargetPosition.clone();
+			a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+
+			return [ a ];
+		}
 	}
 
 	// The default case.
@@ -2165,6 +2184,9 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// So we cancel split operation only if it was really identical.
 	//
+	// Also, there is additional case, where split operations aren't identical and should not be cancelled, however the
+	// default transformation is incorrect too.
+	//
 	if ( a.splitPosition.isEqual( b.splitPosition ) ) {
 		if ( !a.graveyardPosition && !b.graveyardPosition ) {
 			return [ new NoOperation( 0 ) ];
@@ -2172,6 +2194,20 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 
 		if ( a.graveyardPosition && b.graveyardPosition && a.graveyardPosition.isEqual( b.graveyardPosition ) ) {
 			return [ new NoOperation( 0 ) ];
+		}
+
+		// Use context to know that the `a.splitPosition` should stay where it is.
+		// This happens during undo when first a merge operation moved nodes to `a.splitPosition` and now `b` operation undoes that merge.
+		if ( context.abRelation == 'splitBefore' ) {
+			// Since split is at the same position, there are no nodes left to split.
+			a.howMany = 0;
+
+			// Note: there was `if ( a.graveyardPosition )` here but it was uncovered in tests and I couldn't find any scenarios for now.
+			// That would have to be a `SplitOperation` that didn't come from undo but is transformed by operations that were undone.
+			// It could happen if `context` is enabled in collaboration.
+			a.graveyardPosition = a.graveyardPosition._getTransformedBySplitOperation( b );
+
+			return [ a ];
 		}
 	}
 
