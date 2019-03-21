@@ -80,7 +80,7 @@ function getColorsDefinition( color ) {
 	} else {
 		return {
 			model: color.color,
-			label: color.label,
+			label: color.label || color.color,
 			hasBorder: color.hasBorder,
 			view: {
 				name: 'span',
