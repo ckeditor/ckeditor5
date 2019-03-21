@@ -465,6 +465,25 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
+		it( 'should close the opened panel when click outside the panel', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+
+					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+					expect( panelView.isVisible ).to.be.false;
+				} );
+		} );
+
 		it( 'should hide the panel when click outside', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {

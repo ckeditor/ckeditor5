@@ -12,6 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
@@ -81,6 +82,14 @@ export default class MentionUI extends Plugin {
 
 		const config = this.editor.config.get( 'mention' );
 
+		// Close the #panelView upon clicking outside of the plugin UI.
+		clickOutsideHandler( {
+			emitter: this.panelView,
+			contextElements: [ this.panelView.element ],
+			activator: () => this.panelView.isVisible,
+			callback: () => this._hidePanel()
+		} );
+
 		for ( const mentionDescription of config ) {
 			const feed = mentionDescription.feed;
 
@@ -93,6 +102,16 @@ export default class MentionUI extends Plugin {
 
 			this._mentionsConfigurations.set( marker, definition );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
+		this.panelView.destroy();
 	}
 
 	_createMentionView( editor ) {
