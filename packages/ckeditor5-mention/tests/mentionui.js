@@ -224,6 +224,49 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
+			it( 'should not show panel when selection is inside a mention', () => {
+				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is at the end of a mention', () => {
+				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is not collapsed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( () => {
+					model.modifySelection( doc.selection, { direction: 'backward', unit: 'codePoint' } );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
 			it( 'should show filtered results for matched text', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 

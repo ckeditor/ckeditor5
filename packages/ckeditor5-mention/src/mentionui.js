@@ -193,6 +193,15 @@ export default class MentionUI extends Plugin {
 		watcher.on( 'matched', ( evt, data ) => {
 			const matched = data.matched;
 
+			const selection = editor.model.document.selection;
+
+			const hasMention = selection.hasAttribute( 'mention' );
+			const nodeBefore = selection.focus.nodeBefore;
+
+			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
+				return;
+			}
+
 			const { feedText, marker } = matched;
 
 			// TODO: show panel {loading: true}
