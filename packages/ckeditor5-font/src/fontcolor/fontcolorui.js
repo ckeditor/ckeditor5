@@ -29,7 +29,7 @@ export default class FontColorUI extends Plugin {
 			const colorTableView = colorUI.addColorsToDropdown(
 				dropdownView,
 				options.map( element => ( {
-					label: element.label,
+					label: t( element.label ),
 					color: element.model,
 					options: {
 						hasBorder: element.hasBorder
@@ -66,17 +66,6 @@ export default class FontColorUI extends Plugin {
 		} );
 	}
 
-	/**
-	 * Returns options as defined in `config.fontFamily.options` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontfamily~FontFamilyOption}
-	 * in the correct language.
-	 *
-	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
-	 * when the user configuration is defined because the editor does not exist yet.
-	 *
-	 * @private
-	 * @returns {Array.<module:font/fontfamily~FontFamilyOption>}.
-	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
 		const colors = normalizeOptions( editor.config.get( `${ FONT_COLOR }.colors` ) );
