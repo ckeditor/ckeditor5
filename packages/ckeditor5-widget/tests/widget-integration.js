@@ -25,6 +25,7 @@ describe( 'Widget - integration', () => {
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+		testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
 
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
@@ -202,6 +203,30 @@ describe( 'Widget - integration', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'
+		);
+	} );
+
+	it( 'should does nothing for non-Safari browser', () => {
+		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
+
+		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		const viewFigcaption = viewDiv.getChild( 0 );
+
+		const preventDefault = sinon.spy();
+
+		const domEventDataMock = new DomEventData( view, {
+			target: view.domConverter.mapViewToDom( viewFigcaption ),
+			preventDefault,
+			detail: 4
+		} );
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		sinon.assert.notCalled( preventDefault );
+
+		expect( getViewData( view ) ).to.equal(
+			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
 		);
 	} );
 } );
