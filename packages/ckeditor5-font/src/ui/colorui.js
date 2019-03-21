@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/fontcolor/fontcolorui
+ * @module font/ui/colorui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -12,17 +12,47 @@ import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { normalizeOptions, addColorsToDropdown } from '../utils';
 
 /**
- * The font background color UI plugin. It introduces the `'fontBackgroundColor'` dropdown.
+ * The color UI plugin. It's template for creating the `'fontBackgroundColor'` and the `'fotnColor'` dropdown.
+ * Plugin separates common logic responsible for displaying dropdown with color grids.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class ColorUI extends Plugin {
+	/**
+	 * Creates plugin which adds UI with {@link module:font/ui/colortableview~ColorTableView} with proper configuration.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Object} config Configuration object
+	 * @param {String} config.commandName Name of command which will be execute after click into selected color tile.config.
+	 * @param {String} config.componentName Name of this component in {@link module:ui/componentfactory~ComponentFactory}
+	 * @param {String} config.icon SVG icon used in toolbar for displaying this UI element.
+	 * @param {String} config.dropdownLabel Label used for icon in toolbar for this element.
+	 */
 	constructor( editor, { commandName, icon, componentName, dropdownLabel } ) {
 		super( editor );
 
+		/**
+		 * Name of command which will be execute after click into selected color tile.config.
+		 * @type {String}
+		 */
 		this.commandName = commandName;
-		this.icon = icon;
+
+		/**
+		 * Name of this component in {@link module:ui/componentfactory~ComponentFactory}.
+		 * @type {String}
+		 */
 		this.componentName = componentName;
+
+		/**
+		 * SVG icon used in toolbar for displaying this UI element.
+		 * @type {String}
+		 */
+		this.icon = icon;
+
+		/**
+		 * Label used for icon in toolbar for this element.
+		 * @type {String}
+		 */
 		this.dropdownLabel = dropdownLabel;
 	}
 
@@ -80,9 +110,9 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Returns options as defined in `config.fontColor.colors` but processed to account for
+	 * Returns options as defined in `config` but processed to account for
 	 * editor localization, i.e. to display {@link module:font/fontColor~FontColorOption}
-	 * in the correct language.
+	 * or {@link module:font/fontBackgroundColor~FontBackgroundColorOption} in the correct language.
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
 	 * when the user configuration is defined because the editor does not exist yet.
