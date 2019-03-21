@@ -29,6 +29,10 @@ export default class DomWrapperView extends View {
 				this.domNode.classList.remove( 'ck-on' );
 			}
 		} );
+
+		this.listenTo( this.domNode, 'click', () => {
+			this.fire( 'execute' );
+		} );
 	}
 
 	render() {

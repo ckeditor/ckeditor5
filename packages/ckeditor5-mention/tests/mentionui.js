@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document, setTimeout */
+/* global window, document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -592,7 +592,7 @@ describe( 'MentionUI', () => {
 						itemRenderer: item => {
 							const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-							span.innerHTML = `<span id="${ item.id }">@${ item.title }</span>`;
+							span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
 
 							return span;
 						}
@@ -691,6 +691,42 @@ describe( 'MentionUI', () => {
 					testExecuteKey( 'tab', keyCodes.tab, issues );
 
 					testExecuteKey( 'space', keyCodes.space, issues );
+				} );
+
+				describe( 'mouse', () => {
+					it( 'should execute selected button on mouse click', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						const command = editor.commands.get( 'mention' );
+						const spy = testUtils.sinon.spy( command, 'execute' );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const element = panelView.element.querySelector( '#issue-1004' );
+								element.dispatchEvent( new Event( 'click', { bubbles: true } ) );
+
+								sinon.assert.calledOnce( spy );
+
+								const commandOptions = spy.getCall( 0 ).args[ 0 ];
+
+								const item = issues[ 2 ];
+
+								expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( item );
+								expect( commandOptions ).to.have.property( 'marker', '@' );
+								expect( commandOptions ).to.have.property( 'range' );
+
+								const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
+								const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
+
+								expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+							} );
+					} );
 				} );
 			} );
 		} );
