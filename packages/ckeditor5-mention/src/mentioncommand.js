@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
  * The mention command.
@@ -48,8 +49,13 @@ export default class MentionCommand extends Command {
 		model.change( writer => {
 			writer.remove( range );
 
-			writer.insertText( `${ marker }${ name }`, { mention }, range.start );
-			writer.insertText( ' ', model.document.selection.focus );
+			const selectionAttributes = toMap( selection.getAttributes() );
+			const attributes = new Map( selectionAttributes.entries() );
+
+			attributes.set( 'mention', mention );
+
+			writer.insertText( `${ marker }${ name }`, attributes, range.start );
+			writer.insertText( ' ', selectionAttributes, model.document.selection.focus );
 		} );
 	}
 }

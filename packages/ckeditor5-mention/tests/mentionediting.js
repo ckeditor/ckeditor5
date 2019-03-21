@@ -6,7 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import MentionEditing from '../src/mentionediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'MentionEditing', () => {
@@ -131,6 +131,29 @@ describe( 'MentionEditing', () => {
 
 				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
 			} );
+
+			it( 'should set also other styles in inserted text', () => {
+				model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+				editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+				setModelData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
+
+				const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 3 );
+
+				editor.execute( 'mention', {
+					mention: { name: 'John' },
+					range: model.createRange( start, start.getShiftedBy( 5 ) )
+				} );
+
+				expect( editor.getData() ).to.equal(
+					'<p>' +
+					'<strong>foo</strong>' +
+					'<span class="mention" data-mention="John">' +
+						'<strong>@John</strong>' +
+					'</span>' +
+					'<strong> bar</strong>' +
+					'</p>'
+				);
+			} );
 		} );
 
 		describe( 'typing integration', () => {
@@ -163,6 +186,11 @@ describe( 'MentionEditing', () => {
 
 		describe( 'postFixer', () => {
 			it( 'should..', () => {} );
+		} );
+
+		describe( 'integration', () => {
+			describe( 'basic styles', () => {
+			} );
 		} );
 	} );
 
