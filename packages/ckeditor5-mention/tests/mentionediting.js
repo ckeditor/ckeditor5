@@ -6,7 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import MentionEditing from '../src/mentionediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'MentionEditing', () => {
@@ -63,6 +63,38 @@ describe( 'MentionEditing', () => {
 				expect( textNode.getAttribute( 'mention' ) ).to.deep.equal( { name: 'John' } );
 
 				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			} );
+
+			it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
+				editor.setData(
+					'<p>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'</p>'
+				);
+
+				// getModelData() merges text blocks with "same" attributes:
+				// So expected: <$text mention="{"name":"John"}">@John</$text><$text mention="{"name":"John"}">@John</$text>'
+				// Is returned as: <$text mention="{"name":"John"}">@John@John</$text>'
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				expect( paragraph.childCount ).to.equal( 2 );
+
+				assertTextNode( paragraph.getChild( 1 ) );
+				assertTextNode( paragraph.getChild( 1 ) );
+
+				expect( editor.getData() ).to.equal(
+					'<p>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'</p>'
+				);
+
+				function assertTextNode( textNode ) {
+					expect( textNode ).to.not.be.null;
+					expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+					expect( textNode.getAttribute( 'mention' ) ).to.deep.equal( { name: 'John' } );
+				}
 			} );
 
 			it( 'should remove mention on adding a text inside mention', () => {
@@ -135,6 +167,7 @@ describe( 'MentionEditing', () => {
 			it( 'should set also other styles in inserted text', () => {
 				model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
 				editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
 				setModelData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
 
 				const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 3 );
@@ -153,6 +186,14 @@ describe( 'MentionEditing', () => {
 					'<strong> bar</strong>' +
 					'</p>'
 				);
+			} );
+
+			it( 'should not convert partial mentions', () => {
+				editor.setData( '<p><span class="mention" data-mention="John">@Jo</span></p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>@Jo</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p>@Jo</p>' );
 			} );
 		} );
 

@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MentionCommand from './mentioncommand';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * The mention editing feature.
@@ -40,9 +41,26 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: viewItem => ( {
-					name: viewItem.getAttribute( 'data-mention' )
-				} )
+				value: viewItem => {
+					const dataMention = viewItem.getAttribute( 'data-mention' );
+
+					const textNode = viewItem.getChild( 0 );
+
+					if ( !textNode || !textNode.is( 'text' ) ) {
+						return;
+					}
+
+					const mentionString = textNode.data;
+
+					// const marker = mentionString.slice( 0, 1 );
+					const name = mentionString.slice( 1 );
+
+					if ( name != dataMention ) {
+						return;
+					}
+
+					return { name: dataMention };
+				}
 			}
 		} );
 
@@ -51,10 +69,16 @@ export default class MentionEditing extends Plugin {
 			view: ( modelAttributeValue, viewWriter ) => {
 				const mention = modelAttributeValue && modelAttributeValue.name || modelAttributeValue;
 
-				return viewWriter.createAttributeElement( 'span', {
+				const attributes = {
 					class: 'mention',
 					'data-mention': mention
-				} );
+				};
+
+				const options = {
+					id: uid() // Set unique identifier as id option to not merge view attribute elements.
+				};
+
+				return viewWriter.createAttributeElement( 'span', attributes, options );
 			}
 		} );
 
