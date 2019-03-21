@@ -38,7 +38,7 @@ export default class RemoveFormatUI extends Plugin {
 		const t = editor.t;
 
 		editor.ui.componentFactory.add( REMOVE_FORMAT, locale => {
-			// const command = editor.commands.get( BOLD );
+			const command = editor.commands.get( REMOVE_FORMAT );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -46,6 +46,11 @@ export default class RemoveFormatUI extends Plugin {
 				icon: eraseIcon,
 				tooltip: true
 			} );
+
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => editor.execute( REMOVE_FORMAT ) );
 
 			return view;
 		} );
