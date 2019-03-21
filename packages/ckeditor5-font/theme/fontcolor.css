@@ -55,3 +55,7 @@
 	width: var(--ck-table-color-tile-size);
 	margin-right: var(--ck-spacing-large);
 }
+
+.ck .ck-color-table__remove-color {
+	cursor: pointer;
+}
