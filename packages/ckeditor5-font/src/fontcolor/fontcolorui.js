@@ -8,10 +8,15 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import fontColorIcon from '../../theme/icons/font-color.svg';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { FONT_COLOR, normalizeOptions, colorUI } from '../utils';
+import { FONT_COLOR, normalizeOptions, addColorsToDropdown } from '../utils';
+import fontColorIcon from '../../theme/icons/font-color.svg';
+
+/**
+ * The font background color UI plugin. It introduces the `'fontBackgroundColor'` dropdown.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class FontColorUI extends Plugin {
 	/**
 	 * @inheritDoc
@@ -26,10 +31,10 @@ export default class FontColorUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( FONT_COLOR, locale => {
 			const dropdownView = createDropdown( locale );
-			const colorTableView = colorUI.addColorsToDropdown(
+			const colorTableView = addColorsToDropdown(
 				dropdownView,
 				options.map( element => ( {
-					label: t( element.label ),
+					label: element.label,
 					color: element.model,
 					options: {
 						hasBorder: element.hasBorder
@@ -66,9 +71,24 @@ export default class FontColorUI extends Plugin {
 		} );
 	}
 
+	/**
+	 * Returns options as defined in `config.fontColor.colors` but processed to account for
+	 * editor localization, i.e. to display {@link module:font/fontColor~FontColorOption}
+	 * in the correct language.
+	 *
+	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
+	 * when the user configuration is defined because the editor does not exist yet.
+	 *
+	 * @private
+	 * @returns {Array.<module:font/fontbackgroundcolor~FontBackgroundColorOption>}.
+	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
-		const colors = normalizeOptions( editor.config.get( `${ FONT_COLOR }.colors` ) );
-		return colors;
+		const t = editor.t;
+		const options = normalizeOptions( editor.config.get( `${ FONT_COLOR }.colors` ) );
+		options.forEach( option => {
+			option.label = t( option.label );
+		} );
+		return options;
 	}
 }

@@ -4,6 +4,7 @@
  */
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
 export default class ColorTile extends ButtonView {
 	constructor( locale ) {
 		super( locale );

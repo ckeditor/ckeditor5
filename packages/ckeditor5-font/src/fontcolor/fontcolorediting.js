@@ -4,15 +4,23 @@
  */
 
 /**
- * @module font/fontfamily/fontfamilyediting
+ * @module font/fontcolor/fontcolorediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import FontColorCommand from './fontcolorcommand';
-
 import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 
+/**
+ * The font color editing feature.
+ *
+ * It introduces the {@link module:font/fontcolor/fontcolorcommand~FontColorCommand command} and
+ * the `fontColor` attribute in the {@link module:engine/model/model~Model model} which renders
+ * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="color: hsl(0, 0%, 100%)">`),
+ * depending on the {@link module:font/fontcolor~FontColortConfig configuration}.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class FontColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
@@ -91,13 +99,6 @@ export default class FontColorEditing extends Plugin {
 		} );
 
 		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
 
 		// Allow fontColor attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_COLOR } );

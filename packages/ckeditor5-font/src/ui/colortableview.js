@@ -7,14 +7,12 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTile from './colortile';
 import ColorGrid from './colorgrid';
-
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-
-import '../../theme/fontcolor.css';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import '../../theme/fontcolor.css';
 
 export default class ColorTableView extends View {
 	constructor( locale, { colors } ) {
@@ -27,7 +25,6 @@ export default class ColorTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		this.set( 'selectedColor' );
-		this.set( 'hoveredColor' );
 		this.set( 'removeButtonTooltip' );
 		this.set( 'colorColumns', 5 );
 		this.set( 'recentlyUsedColors', new Collection() );

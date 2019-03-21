@@ -4,15 +4,23 @@
  */
 
 /**
- * @module font/fontfamily/fontfamilyediting
+ * @module font/fontbackgroundcolor/fontbackgroundcolorediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
-
 import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
 
+/**
+ * The font background color editing feature.
+ *
+ * It introduces the {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand command} and
+ * the `fontBackgroundColor` attribute in the {@link module:engine/model/model~Model model} which renders
+ * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="background-color: hsl(0, 0%, 100%)">`),
+ * depending on the {@link module:font/fontbackgroundcolor~FontBackgroundColortConfig configuration}.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class FontBackgroundColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
@@ -91,13 +99,6 @@ export default class FontBackgroundColorEditing extends Plugin {
 		} );
 
 		editor.commands.add( FONT_BACKGROUND_COLOR, new FontBackgroundColorCommand( editor ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
 
 		// Allow fontBackgroundColor attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_BACKGROUND_COLOR } );

@@ -26,7 +26,11 @@ export default class ColorGrid extends View {
 				hasBorder: item.options.hasBorder
 			} );
 			colorTile.on( 'execute', () => {
-				this.fire( 'execute', { value: item.color, hasBorder: item.options.hasBorder, label: item.label } );
+				this.fire( 'execute', {
+					value: item.color,
+					hasBorder: item.options.hasBorder,
+					label: item.label
+				} );
 			} );
 			this.items.add( colorTile );
 		} );
