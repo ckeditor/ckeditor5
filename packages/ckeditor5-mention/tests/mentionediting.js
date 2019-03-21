@@ -53,14 +53,12 @@ describe( 'MentionEditing', () => {
 			it( 'should convert <span class="mention" data-mention="John"> to mention attribute', () => {
 				editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph>foo <$text mention="{"name":"John"}">@John</$text> bar</paragraph>' );
-
 				const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 
 				expect( textNode ).to.not.be.null;
 				expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-				expect( textNode.getAttribute( 'mention' ) ).to.deep.equal( { name: 'John' } );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 
 				expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 			} );
@@ -80,8 +78,13 @@ describe( 'MentionEditing', () => {
 
 				expect( paragraph.childCount ).to.equal( 2 );
 
+				assertTextNode( paragraph.getChild( 0 ) );
 				assertTextNode( paragraph.getChild( 1 ) );
-				assertTextNode( paragraph.getChild( 1 ) );
+
+				const firstMentionId = paragraph.getChild( 0 ).getAttribute( 'mention' )._id;
+				const secondMentionId = paragraph.getChild( 1 ).getAttribute( 'mention' )._id;
+
+				expect( firstMentionId ).to.not.equal( secondMentionId );
 
 				expect( editor.getData() ).to.equal(
 					'<p>' +
@@ -93,12 +96,20 @@ describe( 'MentionEditing', () => {
 				function assertTextNode( textNode ) {
 					expect( textNode ).to.not.be.null;
 					expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-					expect( textNode.getAttribute( 'mention' ) ).to.deep.equal( { name: 'John' } );
+					expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+					expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 				}
 			} );
 
 			it( 'should remove mention on adding a text inside mention', () => {
 				editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+				const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+
+				expect( textNode ).to.not.be.null;
+				expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 
 				model.change( writer => {
 					const paragraph = doc.getRoot().getChild( 0 );
@@ -107,6 +118,9 @@ describe( 'MentionEditing', () => {
 
 					writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
 				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph>foo @Jaohn bar</paragraph>' );
 
 				expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
 			} );

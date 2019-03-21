@@ -59,23 +59,25 @@ export default class MentionEditing extends Plugin {
 						return;
 					}
 
-					return { name: dataMention };
+					return { name: dataMention, _id: uid() };
 				}
 			}
 		} );
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'mention',
-			view: ( modelAttributeValue, viewWriter ) => {
-				const mention = modelAttributeValue && modelAttributeValue.name || modelAttributeValue;
+			view: ( mention, viewWriter ) => {
+				if ( !mention ) {
+					return;
+				}
 
 				const attributes = {
 					class: 'mention',
-					'data-mention': mention
+					'data-mention': mention.name
 				};
 
 				const options = {
-					id: uid() // Set unique identifier as id option to not merge view attribute elements.
+					id: mention._id
 				};
 
 				return viewWriter.createAttributeElement( 'span', attributes, options );
