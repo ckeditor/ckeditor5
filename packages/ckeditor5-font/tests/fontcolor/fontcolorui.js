@@ -22,12 +22,25 @@ describe( 'FontColorUI', () => {
 	before( () => {
 		addTranslations( 'en', {
 			'Font Color': 'Font Color',
-			'Remove color': 'Remove text color'
+			'Remove color': 'Remove text color',
+			'Black': 'Black',
+			'White': 'White',
+			'Red': 'Red',
+			'Orange': 'Orange',
+			'Blue': 'Blue',
+			'Green': 'Green'
 		} );
 
 		addTranslations( 'pl', {
 			'Font Color': 'Kolor czcionki',
-			'Remove color': 'Usuń kolor'
+			'Remove color': 'Usuń kolor',
+			'Black': 'Czarny',
+			'White': 'Biały',
+			'Red': 'Czerwony',
+			'Orange': 'Pomarańczowy',
+			'Blue': 'Niebieski',
+			'Green': 'Zielony',
+			'Yellow': 'Żółty'
 		} );
 	} );
 
@@ -116,6 +129,40 @@ describe( 'FontColorUI', () => {
 				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
+			describe( 'works for', () => {
+				const colors = [
+					{
+						color: 'hsl(0, 0%, 0%)',
+						label: 'Czarny'
+					}, {
+						color: 'hsl(0, 0%, 100%)',
+						label: 'Biały'
+					}, {
+						color: 'hsl(0, 75%, 60%)',
+						label: 'Czerwony'
+					}, {
+						color: 'hsl(30, 75%, 60%)',
+						label: 'Pomarańczowy'
+					}, {
+						color: 'hsl(240, 75%, 60%)',
+						label: 'Niebieski'
+					}, {
+						color: 'hsl(120, 75%, 60%)',
+						label: 'Zielony'
+					}, {
+						color: 'hsl(60, 75%, 60%)',
+						label: 'Żółty'
+					}
+				];
+
+				colors.forEach( test => {
+					it( `tested color ${ test.color } with name ${ test.label }.`, () => {
+						const colorGrid = dropdown.colorTableView.items.get( 1 );
+						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
+						expect( tile.label ).to.equal( test.label );
+					} );
+				} );
+			} );
 			function localizedEditor() {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
