@@ -10,20 +10,21 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+
+import TextWatcher from './textwatcher';
 
 import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
-import TextWatcher from './textwatcher';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 5;
 
 /**
- * The mention ui feature.
+ * The mention UI feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,8 +36,34 @@ export default class MentionUI extends Plugin {
 		return 'MentionUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
+
+		/**
+		 * The balloon panel view, containing the mention view.
+		 *
+		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+		 */
+		this.panelView = this._creatPanelView();
+
+		/**
+		 * The mentions view.
+		 *
+		 * @type {module:mention/ui/mentionsview~MentionsView}
+		 * @private
+		 */
+		this._mentionsView = this._createMentionView();
+
+		/**
+		 * Stores mentions feeds configurations.
+		 *
+		 * @type {Map<String, Object>}
+		 * @private
+		 */
+		this._mentionsConfigurations = new Map();
 
 		editor.config.define( 'mention', [] );
 	}
@@ -45,16 +72,7 @@ export default class MentionUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-
-		this.panelView = new BalloonPanelView( editor.locale );
-		this.panelView.withArrow = false;
-		this.panelView.render();
-
-		this.editor.ui.view.body.add( this.panelView );
-
-		this._createMentionView( editor );
-
+		// Key listener that handles navigation in mention view.
 		this.editor.editing.view.document.on( 'keydown', ( evt, data ) => {
 			if ( isHandledKey( data.keyCode ) && this.panelView.isVisible ) {
 				data.preventDefault();
@@ -78,10 +96,6 @@ export default class MentionUI extends Plugin {
 			}
 		}, { priority: 'highest' } ); // priority highest required for enter overriding.
 
-		this._mentionsConfigurations = new Map();
-
-		const config = this.editor.config.get( 'mention' );
-
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
@@ -90,12 +104,14 @@ export default class MentionUI extends Plugin {
 			callback: () => this._hidePanel()
 		} );
 
+		const config = this.editor.config.get( 'mention' );
+
 		for ( const mentionDescription of config ) {
 			const feed = mentionDescription.feed;
 
 			const marker = mentionDescription.marker || '@';
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
-			const watcher = this._addTextWatcher( marker );
+			const watcher = this._setupTextWatcherForFeed( marker );
 			const itemRenderer = mentionDescription.itemRenderer;
 
 			const definition = { watcher, marker, feedCallback, itemRenderer };
@@ -114,46 +130,52 @@ export default class MentionUI extends Plugin {
 		this.panelView.destroy();
 	}
 
-	_createMentionView( editor ) {
-		this._mentionsView = new MentionsView( editor.locale );
+	/**
+	 * Creates the {@link #panelView}.
+	 *
+	 * @private
+	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+	 */
+	_creatPanelView() {
+		const panelView = new BalloonPanelView( this.editor.locale );
+
+		panelView.withArrow = false;
+		panelView.render();
+
+		this.editor.ui.view.body.add( panelView );
+
+		return panelView;
+	}
+
+	/**
+	 * Creates the {@link #_mentionsView}.
+	 *
+	 * @private
+	 * @returns {module:mention/ui/mentionsview~MentionsView}
+	 */
+	_createMentionView() {
+		const locale = this.editor.locale;
+
+		const mentionsView = new MentionsView( locale );
 
 		this._items = new Collection();
 
-		this.panelView.content.add( this._mentionsView );
+		this.panelView.content.add( mentionsView );
 
-		// TODO this is huge rewrite:
-		this._mentionsView.listView.items.bindTo( this._items ).using( data => {
-			// itemRenderer
+		mentionsView.listView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
-			const { name } = item;
 
-			const listItemView = new MentionListItemView( editor.locale );
+			const listItemView = new MentionListItemView( locale );
 
-			const renderer = this._getItemRenderer( marker );
+			const view = this._renderItem( item, marker );
+			view.delegate( 'execute' ).to( listItemView );
 
-			if ( renderer ) {
-				const domNode = renderer( item );
-
-				const domWrapperView = new DomWrapperView( editor.locale, domNode );
-				domWrapperView.delegate( 'execute' ).to( listItemView );
-				listItemView.children.add( domWrapperView );
-			} else {
-				const buttonView = new ButtonView( editor.locale );
-
-				buttonView.label = name;
-				buttonView.withText = true;
-
-				listItemView.children.add( buttonView );
-
-				buttonView.delegate( 'execute' ).to( listItemView );
-			}
-
+			listItemView.children.add( view );
 			listItemView.item = item;
 			listItemView.marker = marker;
 
-			// TODO maybe delegate would be better.
 			listItemView.on( 'execute', () => {
-				this._mentionsView.fire( 'execute', {
+				mentionsView.fire( 'execute', {
 					item,
 					marker
 				} );
@@ -162,7 +184,10 @@ export default class MentionUI extends Plugin {
 			return listItemView;
 		} );
 
-		this._mentionsView.on( 'execute', ( evt, data ) => {
+		mentionsView.on( 'execute', ( evt, data ) => {
+			const editor = this.editor;
+			const model = editor.model;
+
 			const item = data.item;
 			const marker = data.marker;
 
@@ -170,17 +195,14 @@ export default class MentionUI extends Plugin {
 
 			const text = watcher.last;
 
-			if ( !text ) {
-				return;
-			}
-
 			const textMatcher = createTextMatcher( marker );
 			const matched = textMatcher( text );
+			const matchedTextLength = matched.marker.length + matched.feedText.length;
 
-			const end = editor.model.createPositionAt( editor.model.document.selection.focus );
-			const start = end.getShiftedBy( -( 1 + matched.feedText.length ) );
-
-			const range = editor.model.createRange( start, end );
+			// Create a range on matched text.
+			const end = model.createPositionAt( model.document.selection.focus );
+			const start = end.getShiftedBy( -matchedTextLength );
+			const range = model.createRange( start, end );
 
 			editor.execute( 'mention', {
 				mention: item,
@@ -190,6 +212,8 @@ export default class MentionUI extends Plugin {
 
 			this._hidePanel();
 		} );
+
+		return mentionsView;
 	}
 
 	_getItemRenderer( marker ) {
@@ -204,7 +228,7 @@ export default class MentionUI extends Plugin {
 		return Promise.resolve().then( () => feedCallback( feedText ) );
 	}
 
-	_addTextWatcher( marker ) {
+	_setupTextWatcherForFeed( marker ) {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor, createTestCallback( marker ), createTextMatcher( marker ) );
@@ -223,8 +247,6 @@ export default class MentionUI extends Plugin {
 
 			const { feedText, marker } = matched;
 
-			// TODO: show panel {loading: true}
-			// TODO: then show panel with items
 			this._getFeed( marker, feedText )
 				.then( feed => {
 					this._items.clear();
@@ -235,7 +257,6 @@ export default class MentionUI extends Plugin {
 						this._items.add( { item, marker } );
 					}
 
-					// todo: Debounce...
 					if ( this._items.length ) {
 						this._showPanel();
 					} else {
@@ -257,27 +278,58 @@ export default class MentionUI extends Plugin {
 		return watcher;
 	}
 
+	/**
+	 * Shows the {@link #panelView}. If panel is already visible it will reposition it.
+	 *
+	 * @private
+	 */
 	_showPanel() {
 		this.panelView.pin( this._getBalloonPanelPositionData() );
 		this.panelView.show();
 		this._mentionsView.selectFirst();
 	}
 
+	/**
+	 * Hides the {@link #panelView}.
+	 *
+	 * @private
+	 */
 	_hidePanel() {
 		this.panelView.unpin();
 		this.panelView.hide();
 	}
 
+	_renderItem( item, marker ) {
+		const editor = this.editor;
+
+		let view;
+
+		const renderer = this._getItemRenderer( marker );
+
+		if ( renderer ) {
+			const domNode = renderer( item );
+
+			view = new DomWrapperView( editor.locale, domNode );
+		} else {
+			const buttonView = new ButtonView( editor.locale );
+
+			buttonView.label = item.name;
+			buttonView.withText = true;
+
+			view = buttonView;
+		}
+
+		return view;
+	}
+
 	/**
-	 * @return {module:utils/dom/position~Options}
+	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
 	_getBalloonPanelPositionData() {
-		const editor = this.editor;
-		const view = editor.editing.view;
+		const view = this.editor.editing.view;
 		const domConverter = view.domConverter;
-		const viewDocument = view.document;
-		const viewSelection = viewDocument.selection;
+		const viewSelection = view.document.selection;
 
 		return {
 			target: () => {

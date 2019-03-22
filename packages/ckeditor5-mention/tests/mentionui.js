@@ -9,18 +9,16 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
