@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import FontColorUI from './../../src/fontcolor/fontcolorui';
+import FontBackgroundColorUI from './../../src/fontbackgroundcolor/fontbackgroundcolorui';
 import ColorUI from './../../src/ui/colorui';
 
-describe( 'FontColorUI', () => {
+describe( 'FontBackgroundColorUI', () => {
 	it( 'is ColorUI', () => {
-		expect( FontColorUI.prototype ).to.be.instanceOf( ColorUI );
+		expect( FontBackgroundColorUI.prototype ).to.be.instanceOf( ColorUI );
 	} );
 } );

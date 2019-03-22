@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import FontColorEditing from './../../src/fontcolor/fontcolorediting';
+import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'FontColorEditing', () => {
+describe( 'FontBackgroundColorEditing', () => {
 	let editor, doc;
 
 	beforeEach( () => VirtualTestEditor
 		.create( {
-			plugins: [ FontColorEditing, Paragraph ]
+			plugins: [ FontBackgroundColorEditing, Paragraph ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -29,16 +29,16 @@ describe( 'FontColorEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontColor' ) ).to.be.true;
-		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontColor' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontBackgroundColor' ) ).to.be.true;
+		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontBackgroundColor' ) ).to.be.true;
 
-		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontColor' ) ).to.be.false;
+		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontBackgroundColor' ) ).to.be.false;
 	} );
 
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontColor.colors' ) ).to.deep.equal( [
+				expect( editor.config.get( 'fontBackgroundColor.colors' ) ).to.deep.equal( [
 					{
 						color: 'hsl(0, 0%, 0%)',
 						label: 'Black'
@@ -87,7 +87,7 @@ describe( 'FontColorEditing', () => {
 						label: 'Purple'
 					}
 				] );
-				expect( editor.config.get( 'fontColor.columns' ) ).to.equal( 5 );
+				expect( editor.config.get( 'fontBackgroundColor.columns' ) ).to.equal( 5 );
 			} );
 		} );
 	} );
@@ -95,8 +95,8 @@ describe( 'FontColorEditing', () => {
 	describe( 'editing pipeline conversion', () => {
 		beforeEach( () => VirtualTestEditor
 			.create( {
-				plugins: [ FontColorEditing, Paragraph ],
-				fontColor: {
+				plugins: [ FontBackgroundColorEditing, Paragraph ],
+				fontBackgroundColor: {
 					colors: [
 						{
 							label: 'Color1',
@@ -134,10 +134,10 @@ describe( 'FontColorEditing', () => {
 				'#345678'
 			];
 			tests.forEach( test => {
-				it( `should convert fontColor attribute: "${ test }" to proper style value.`, () => {
-					setModelData( doc, `<paragraph>fo<$text fontColor="${ test }">o b</$text>ar</paragraph>` );
+				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
+					setModelData( doc, `<paragraph>fo<$text fontBackgroundColor="${ test }">o b</$text>ar</paragraph>` );
 
-					expect( editor.getData() ).to.equal( `<p>fo<span style="color:${ test };">o b</span>ar</p>` );
+					expect( editor.getData() ).to.equal( `<p>fo<span style="background-color:${ test };">o b</span>ar</p>` );
 				} );
 			} );
 		} );
@@ -147,8 +147,8 @@ describe( 'FontColorEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ FontColorEditing, Paragraph ],
-					fontColor: {
+					plugins: [ FontBackgroundColorEditing, Paragraph ],
+					fontBackgroundColor: {
 						colors: [
 							{
 								label: 'Color1',
@@ -176,13 +176,13 @@ describe( 'FontColorEditing', () => {
 		} );
 
 		it( 'should convert from element with defined style when with other styles', () => {
-			const data = '<p>f<span style="font-size: 18px;color: rgb(10, 20, 30);">o</span>o</p>';
+			const data = '<p>f<span style="font-size: 18px;background-color: rgb(10, 20, 30);">o</span>o</p>';
 
 			editor.setData( data );
 
-			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontColor="rgb(10,20,30)">o</$text>o</paragraph>' );
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontBackgroundColor="rgb(10,20,30)">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<span style="color:rgb(10,20,30);">o</span>o</p>' );
+			expect( editor.getData() ).to.equal( '<p>f<span style="background-color:rgb(10,20,30);">o</span>o</p>' );
 		} );
 
 		describe( 'should convert from different color versions', () => {
@@ -198,38 +198,39 @@ describe( 'FontColorEditing', () => {
 			];
 
 			tests.forEach( test => {
-				it( `should convert fontColor attribute: "${ test }" to proper style value.`, () => {
-					const data = `<p>f<span style="color: ${ test }">o</span>o</p>`;
+				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
+					const data = `<p>f<span style="background-color: ${ test }">o</span>o</p>`;
 					editor.setData( data );
 
 					expect( getModelData( doc ) )
-						.to.equal( `<paragraph>[]f<$text fontColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
+						.to.equal( `<paragraph>[]f<$text fontBackgroundColor="${ test.replace( / /g, '' ) }">o</$text>o</paragraph>` );
 
-					expect( editor.getData() ).to.equal( `<p>f<span style="color:${ test.replace( / /g, '' ) };">o</span>o</p>` );
+					expect( editor.getData() )
+						.to.equal( `<p>f<span style="background-color:${ test.replace( / /g, '' ) };">o</span>o</p>` );
 				} );
 			} );
 		} );
 
 		it( 'should convert from complex definition', () => {
 			editor.setData(
-				'<p>f<span style="color: lightgreen;">o</span>o</p>' +
-				'<p>f<span style="color: hsl( 200, 100%, 50% );">o</span>o</p>' +
-				'<p>b<span style="color: rgba(1,2,3,.4);">a</span>r</p>' +
-				'<p>b<span style="color:#fff;">a</span>z</p>'
+				'<p>f<span style="background-color: lightgreen;">o</span>o</p>' +
+				'<p>f<span style="background-color: hsl( 200, 100%, 50% );">o</span>o</p>' +
+				'<p>b<span style="background-color: rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="background-color:#fff;">a</span>z</p>'
 			);
 
 			expect( getModelData( doc ) ).to.equal(
-				'<paragraph>[]f<$text fontColor="lightgreen">o</$text>o</paragraph>' +
-				'<paragraph>f<$text fontColor="hsl(200,100%,50%)">o</$text>o</paragraph>' +
-				'<paragraph>b<$text fontColor="rgba(1,2,3,.4)">a</$text>r</paragraph>' +
-				'<paragraph>b<$text fontColor="#fff">a</$text>z</paragraph>'
+				'<paragraph>[]f<$text fontBackgroundColor="lightgreen">o</$text>o</paragraph>' +
+				'<paragraph>f<$text fontBackgroundColor="hsl(200,100%,50%)">o</$text>o</paragraph>' +
+				'<paragraph>b<$text fontBackgroundColor="rgba(1,2,3,.4)">a</$text>r</paragraph>' +
+				'<paragraph>b<$text fontBackgroundColor="#fff">a</$text>z</paragraph>'
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<p>f<span style="color:lightgreen;">o</span>o</p>' +
-				'<p>f<span style="color:hsl(200,100%,50%);">o</span>o</p>' +
-				'<p>b<span style="color:rgba(1,2,3,.4);">a</span>r</p>' +
-				'<p>b<span style="color:#fff;">a</span>z</p>'
+				'<p>f<span style="background-color:lightgreen;">o</span>o</p>' +
+				'<p>f<span style="background-color:hsl(200,100%,50%);">o</span>o</p>' +
+				'<p>b<span style="background-color:rgba(1,2,3,.4);">a</span>r</p>' +
+				'<p>b<span style="background-color:#fff;">a</span>z</p>'
 			);
 		} );
 	} );
