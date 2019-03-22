@@ -12,8 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import MentionCommand from '../src/mentioncommand';
 
-describe( 'MentionEditing', () => {
-	testUtils.createSinonSandbox();
+describe.only( 'MentionEditing', () => {
 	let editor, model, doc;
 
 	testUtils.createSinonSandbox();
@@ -76,6 +75,7 @@ describe( 'MentionEditing', () => {
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
@@ -115,6 +115,7 @@ describe( 'MentionEditing', () => {
 				expect( textNode ).to.not.be.null;
 				expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
 				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
 				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 			}
 		} );
@@ -183,6 +184,7 @@ describe( 'MentionEditing', () => {
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 
 			model.change( writer => {

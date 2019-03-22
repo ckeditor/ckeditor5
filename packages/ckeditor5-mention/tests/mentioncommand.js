@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MentionCommand from '../src/mentioncommand';
 
@@ -62,7 +62,7 @@ describe( 'MentionCommand', () => {
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo <$text mention="{"name":"John"}">@John</$text> []bar</paragraph>' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
 		} );
 
 		it( 'inserts mention object if mention was passed as string', () => {
@@ -73,7 +73,7 @@ describe( 'MentionCommand', () => {
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo <$text mention="{"name":"John"}">@John</$text> []bar</paragraph>' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
 		} );
 
 		it( 'inserts mention attribute with passed marker for given range', () => {
@@ -88,7 +88,7 @@ describe( 'MentionCommand', () => {
 				marker: '#'
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo <$text mention="{"name":"John"}">#John</$text> []bar</paragraph>' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#', 'John' );
 		} );
 
 		it( 'inserts mention attribute at current selection if no range was passed', () => {
@@ -98,7 +98,7 @@ describe( 'MentionCommand', () => {
 				mention: { name: 'John' }
 			} );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo <$text mention="{"name":"John"}">@John</$text> []bar</paragraph>' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
 		} );
 
 		it( 'should set also other styles in inserted text', () => {
@@ -111,13 +111,16 @@ describe( 'MentionCommand', () => {
 				range: model.createRange( selection.focus.getShiftedBy( -5 ), selection.focus )
 			} );
 
-			expect( getData( model ) ).to.equal(
-				'<paragraph>' +
-					'<$text bold="true">foo</$text>' +
-					'<$text bold="true" mention="{"name":"John"}">@John</$text>' +
-					'<$text bold="true"> []bar</$text>' +
-				'</paragraph>'
-			);
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+			assertMention( textNode, '@', 'John' );
+			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
 		} );
 	} );
+
+	function assertMention( textNode, marker, name ) {
+		expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', marker );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', name );
+	}
 } );

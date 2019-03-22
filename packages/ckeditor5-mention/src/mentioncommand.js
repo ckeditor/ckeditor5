@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * The mention command.
@@ -60,6 +61,10 @@ export default class MentionCommand extends Command {
 		const marker = options.marker || '@';
 
 		const mention = typeof options.mention == 'string' ? { name: options.mention } : options.mention;
+
+		// Set internal attributes on mention object.
+		mention._id = uid();
+		mention._marker = marker;
 
 		const range = options.range || selection.getFirstRange();
 
