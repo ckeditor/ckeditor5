@@ -7,7 +7,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import MentionEditing from '../src/mentionediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'MentionEditing', () => {
 	testUtils.createSinonSandbox();
@@ -18,6 +20,12 @@ describe( 'MentionEditing', () => {
 
 	describe( 'init()', () => {
 		let editor, model, doc;
+
+		afterEach( () => {
+			if ( editor ) {
+				return editor.destroy();
+			}
+		} );
 
 		it( 'should be loaded', () => {
 			return createTestEditor()
@@ -244,7 +252,66 @@ describe( 'MentionEditing', () => {
 		} );
 
 		describe( 'integration', () => {
-			describe( 'basic styles', () => {
+			describe( 'undo', () => {
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, MentionEditing, UndoEditing ]
+						} ).then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							doc = model.document;
+						} );
+				} );
+
+				// Failing test. See ckeditor/ckeditor5#1645.
+				it( 'should restore removed mention on adding a text inside mention', () => {
+					editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+					model.change( writer => {
+						const paragraph = doc.getRoot().getChild( 0 );
+
+						writer.setSelection( paragraph, 6 );
+
+						writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jaohn bar</p>' );
+
+					editor.execute( 'undo' );
+
+					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' )
+					expect( getViewData( editor.editing.view ) )
+						.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );;
+				} );
+
+				// Failing test. See ckeditor/ckeditor5#1645.
+				it( 'should restore removed mention on removing a text inside mention', () => {
+					editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+					model.change( writer => {
+						const paragraph = doc.getRoot().getChild( 0 );
+
+						writer.setSelection( paragraph, 7 );
+
+						model.modifySelection( doc.selection, { direction: 'backward', unit: 'codepoint' } );
+						model.deleteContent( doc.selection );
+					} );
+
+					expect( editor.getData() ).to.equal( '<p>foo @Jhn bar</p>' );
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jhn bar</p>' );
+
+					editor.execute( 'undo' );
+
+					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+					expect( getViewData( editor.editing.view ) )
+						.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+				} );
 			} );
 		} );
 	} );
