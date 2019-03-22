@@ -220,6 +220,15 @@ describe( 'MentionEditing', () => {
 		} );
 
 		describe( 'typing integration', () => {
+			beforeEach( () => {
+				return createTestEditor()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						doc = model.document;
+					} );
+			} );
+
 			it( 'should remove mention attribute from a selection if selection is on right side of a mention', () => {
 				editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
 
@@ -283,9 +292,9 @@ describe( 'MentionEditing', () => {
 
 					editor.execute( 'undo' );
 
-					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' )
+					expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 					expect( getViewData( editor.editing.view ) )
-						.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );;
+						.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 				} );
 
 				// Failing test. See ckeditor/ckeditor5#1645.
