@@ -8,10 +8,6 @@
 import RemoveFormat from '../src/removeformat';
 import RemoveFormatUi from '../src/removeformatui';
 
-// import markerIcon from '../theme/icons/marker.svg';
-// import penIcon from '../theme/icons/pen.svg';
-// import eraserIcon from '../theme/icons/eraser.svg';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import {
