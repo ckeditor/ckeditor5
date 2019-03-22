@@ -66,7 +66,7 @@ The `<CKEditor>` component supports the following properties:
 
 * `editor` (required) &ndash; The {@link module:core/editor/editor~Editor `Editor`} constructor to use.
 * `data` &ndash; The initial data for the created editor. See the {@link builds/guides/integration/basic-api#interacting-with-the-editor Basic API} guide.
-* `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide.
+* `config` &ndash; The editor configuration. See the {@link builds/guides/integration/configuration Configuration} guide. *Note: You can use `refs` created using `React#createRef()` in the place where CKEditor5 configuration requires an `HTMLElement`*.
 * `onChange` &ndash; A function called when the editor's data has changed. See the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
 
 	The callback receives two parameters:
