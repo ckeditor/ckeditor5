@@ -91,6 +91,8 @@ export default class RemoveFormatCommand extends Command {
 					writer.removeAttribute( attributeName, curRange );
 				}
 			}
+
+			writer.removeSelectionAttribute( removedAttributes );
 		} );
 	}
 }

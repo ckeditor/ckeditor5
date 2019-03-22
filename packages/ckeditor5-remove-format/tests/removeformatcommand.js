@@ -27,6 +27,14 @@ describe( 'RemoveFormatCommand', () => {
 				model.schema.register( 'p', {
 					inheritAllFrom: '$block'
 				} );
+
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+					// Text attribtue "irrelevant" will be used to make sure that non-formatting
+					// is note being removed.
+					if ( ctx.endsWith( 'p $text' ) && attributeName == 'irrelevant' ) {
+						return true;
+					}
+				} );
 			} );
 	} );
 
@@ -71,7 +79,8 @@ describe( 'RemoveFormatCommand', () => {
 				input: '<p>fo[]o</p>',
 				setDataOptions: {
 					selectionAttributes: {
-						bold: true
+						bold: true,
+						irrelevant: true
 					}
 				},
 				assert: () => expectEnabledPropertyToBe( true )
@@ -91,7 +100,7 @@ describe( 'RemoveFormatCommand', () => {
 
 			'state with collapsed selection in formatting markup': {
 				input: '<p>f<$text bold="true">o[]o</$text></p>',
-				assert: () => expectModelToBeEqual( '<p>f<$text bold="true">o[]o</$text></p>' )
+				assert: () => expectModelToBeEqual( '<p>f<$text bold="true">o</$text>[]<$text bold="true">o</$text></p>' )
 			},
 
 			'state with selection containing formatting in the middle': {
@@ -113,10 +122,14 @@ describe( 'RemoveFormatCommand', () => {
 				input: '<p>fo[]o</p>',
 				setDataOptions: {
 					selectionAttributes: {
-						bold: true
+						bold: true,
+						irrelevant: true
 					}
 				},
-				assert: () => expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false )
+				assert: () => {
+					expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false );
+					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).to.equal( true );
+				}
 			}
 		};
 
