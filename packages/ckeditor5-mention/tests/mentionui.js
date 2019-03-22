@@ -781,18 +781,12 @@ describe( 'MentionUI', () => {
 
 						sinon.assert.calledOnce( spy );
 
-						const commandOptions = spy.getCall( 0 ).args[ 0 ];
-
-						const item = feedItems[ 4 ];
-
-						expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( item );
-						expect( commandOptions ).to.have.property( 'marker', '@' );
-						expect( commandOptions ).to.have.property( 'range' );
+						assertCommandOptions( spy.getCall( 0 ).args[ 0 ], '@', feedItems[ 4 ] );
 
 						const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 						const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
 
-						expect( commandOptions.range.isEqual( expectedRange ) ).to.be.true;
+						expect( spy.getCall( 0 ).args[ 0 ].range.isEqual( expectedRange ) ).to.be.true;
 					} );
 			} );
 		}
@@ -819,9 +813,7 @@ describe( 'MentionUI', () => {
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					expect( commandOptions ).to.have.property( 'mention' ).that.deep.equal( { name: 'Barney' } );
-					expect( commandOptions ).to.have.property( 'marker', '@' );
-					expect( commandOptions ).to.have.property( 'range' );
+					assertCommandOptions( commandOptions, '@', { name: 'Barney' } );
 
 					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
@@ -908,5 +900,17 @@ describe( 'MentionUI', () => {
 		const childViews = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
 
 		expect( childViews.map( child => child.isOn ) ).to.deep.equal( expectedState );
+	}
+
+	function assertCommandOptions( commandOptions, marker, item ) {
+		expect( commandOptions ).to.have.property( 'marker', marker );
+		expect( commandOptions ).to.have.property( 'range' );
+		expect( commandOptions ).to.have.property( 'mention' );
+
+		const mentionForCommand = commandOptions.mention;
+
+		for ( const key of Object.keys( item ) ) {
+			expect( mentionForCommand[ key ] ).to.equal( item[ key ] );
+		}
 	}
 } );
