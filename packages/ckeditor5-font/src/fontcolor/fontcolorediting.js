@@ -17,7 +17,7 @@ import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../uti
  * It introduces the {@link module:font/fontcolor/fontcolorcommand~FontColorCommand command} and
  * the `fontColor` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="color: hsl(0, 0%, 100%)">`),
- * depending on the {@link module:font/fontcolor~FontColortConfig configuration}.
+ * depending on the {@link module:font/fontcolor~FontColorConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -77,7 +77,8 @@ export default class FontColorEditing extends Plugin {
 					color: 'hsl(270, 75%, 60%)',
 					label: 'Purple'
 				}
-			]
+			],
+			columns: 5
 		} );
 
 		editor.conversion.for( 'upcast' ).elementToAttribute( {

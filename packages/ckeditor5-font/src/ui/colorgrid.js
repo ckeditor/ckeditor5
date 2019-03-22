@@ -15,6 +15,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * It keeps nicely collection of {@link module:font/ui/colortile~ColorTile}.
+ *
+ * @extends module:ui/view~View
  */
 export default class ColorGrid extends View {
 	/**
@@ -22,7 +24,7 @@ export default class ColorGrid extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} config Configuration
-	 * @param {Array.<module:font/ui/colorgrid~colorsDefinition} colorsDefinition Array with definitions
+	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} colorsDefinition Array with definitions
 	 * required to build {@link module:font/ui/colortile~ColorTile}.
 	 */
 	constructor( locale, { colorsDefinition = [] } = {} ) {
@@ -158,7 +160,7 @@ export default class ColorGrid extends View {
  * 			}
  * 		}
  *
- * @typedef module:font/ui/colorgrid~colorsDefinition
+ * @typedef {Object} module:font/ui/colorgrid~ColorDefinition
  * @type Object
  *
  * @property {String} color String representing inserted color.

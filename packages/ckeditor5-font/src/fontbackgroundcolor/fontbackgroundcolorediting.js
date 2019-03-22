@@ -17,7 +17,7 @@ import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } f
  * It introduces the {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand command} and
  * the `fontBackgroundColor` attribute in the {@link module:engine/model/model~Model model} which renders
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="background-color: hsl(0, 0%, 100%)">`),
- * depending on the {@link module:font/fontbackgroundcolor~FontBackgroundColortConfig configuration}.
+ * depending on the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -77,7 +77,8 @@ export default class FontBackgroundColorEditing extends Plugin {
 					color: 'hsl(270, 75%, 60%)',
 					label: 'Purple'
 				}
-			]
+			],
+			columns: 5
 		} );
 
 		editor.conversion.for( 'upcast' ).elementToAttribute( {

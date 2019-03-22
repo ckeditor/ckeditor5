@@ -4,7 +4,7 @@
  */
 
 /**
- * @module font/fontcolor/fontcolorui
+ * @module font/fontbackgroundcolor/fontbackgroundcolorui
  */
 
 import ColorUI from '../ui/colorui';
@@ -16,7 +16,7 @@ import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class FontColorUI extends ColorUI {
+export default class FontBackgroundColorUI extends ColorUI {
 	constructor( editor ) {
 		super( editor, {
 			commandName: FONT_BACKGROUND_COLOR,

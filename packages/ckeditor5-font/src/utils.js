@@ -38,9 +38,23 @@ export function buildDefinition( modelAttributeKey, options ) {
 	return definition;
 }
 
+/**
+ * Name of font color plugin
+ */
 export const FONT_COLOR = 'fontColor';
+
+/**
+ * Name of font background color plugin.
+ */
 export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
+/**
+ * Function for font color and font background color plugins
+ * which is responsible for upcasting data to model.
+ * styleAttr should eqaul to `'color'` or `'background-color'`.
+ *
+ * @param {String} styleAttr
+ */
 export function renderUpcastAttribute( styleAttr ) {
 	return viewElement => {
 		const fontColor = viewElement.getStyle( styleAttr );
@@ -48,6 +62,13 @@ export function renderUpcastAttribute( styleAttr ) {
 	};
 }
 
+/**
+ * Function for font color and font background color plugins
+ * which is responsible for downcasting color attribute to span element.
+ * styleAttr should eqaul to `'color'` or `'background-color'`.
+ *
+ * @param {String} styleAttr
+ */
 export function renderDowncastElement( styleAttr ) {
 	return ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'span', {
 		style: `${ styleAttr }:${ modelAttributeValue }`
@@ -58,6 +79,12 @@ function normalizeColorCode( value ) {
 	return value.replace( /\s/g, '' );
 }
 
+/**
+ * Creates model of color from configuration option. It keeps them coherent,
+ * regardles how user define them in config.
+ *
+ * @param {String|Object} colorRow
+ */
 export function normalizeOptions( colorRow ) {
 	return colorRow
 		.map( getColorsDefinition )
@@ -93,9 +120,16 @@ function getColorsDefinition( color ) {
 	}
 }
 
-export function addColorsToDropdown( dropdownView, colors ) {
+/**
+ * Helper which add {@link module:font/ui/colortableview~ColorTableView} to dropdown with proper initial values.
+ * @param {Object} config Configuration object
+ * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
+ * will be added {@link module:font/ui/colortableview~ColorTableView}.
+ * @param {Array.<Object>}  Array with objects representing color to be drawn in color grid.
+ */
+export function addColorsToDropdown( { dropdownView, colors, colorColumns, removeButtonTooltip } ) {
 	const locale = dropdownView.locale;
-	const colorTableView = new ColorTableView( locale, { colors } );
+	const colorTableView = new ColorTableView( locale, { colors, colorColumns, removeButtonTooltip } );
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );
 

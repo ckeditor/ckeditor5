@@ -54,6 +54,12 @@ export default class ColorUI extends Plugin {
 		 * @type {String}
 		 */
 		this.dropdownLabel = dropdownLabel;
+
+		/**
+		 * Number of columns in color grid. Determines how many recent color will be displayed.
+		 * @type {Number}
+		 */
+		this.colorColumns = editor.config.get( `${ this.componentName }.columns` );
 	}
 
 	/**
@@ -69,17 +75,18 @@ export default class ColorUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
-			const colorTableView = addColorsToDropdown(
+			const colorTableView = addColorsToDropdown( {
 				dropdownView,
-				options.map( element => ( {
+				colors: options.map( element => ( {
 					label: element.label,
 					color: element.model,
 					options: {
 						hasBorder: element.hasBorder
 					}
-				} ) )
-			);
-			colorTableView.set( 'removeButtonTooltip', t( 'Remove color' ) );
+				} ) ),
+				colorColumns: this.colorColumns,
+				removeButtonTooltip: t( 'Remove color' )
+			} );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
@@ -111,14 +118,14 @@ export default class ColorUI extends Plugin {
 
 	/**
 	 * Returns options as defined in `config` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontColor~FontColorOption}
-	 * or {@link module:font/fontBackgroundColor~FontBackgroundColorOption} in the correct language.
+	 * editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
+	 * or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig} in the correct language.
 	 *
 	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
 	 * when the user configuration is defined because the editor does not exist yet.
 	 *
 	 * @private
-	 * @returns {Array.<module:font/fontbackgroundcolor~FontBackgroundColorOption>}.
+	 * @returns {Array.<module:font/fontbackgroundcolor~FontBackgroundColorConfig>|Array.<module:font/fontcolor~FontColorConfig>}.
 	 */
 	_getLocalizedOptions() {
 		const editor = this.editor;
