@@ -87,11 +87,11 @@ function normalizeColorCode( value ) {
  */
 export function normalizeOptions( colorRow ) {
 	return colorRow
-		.map( getColorsDefinition )
+		.map( normalizeSingleColorDefinition )
 		.filter( option => !!option );
 }
 
-function getColorsDefinition( color ) {
+function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
 			model: color,

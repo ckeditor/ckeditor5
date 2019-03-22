@@ -25,7 +25,6 @@
 	min-width: var(--ck-table-color-tile-size);
 	min-height: var(--ck-table-color-tile-size);
 	border-radius: var(--ck-border-radius);
-	cursor: pointer;
 	transition: 200ms ease box-shadow;
 }
 
@@ -54,8 +53,4 @@
 .ck .ck-button.ck-button_with-text.ck-color-table__remove-color svg {
 	width: var(--ck-table-color-tile-size);
 	margin-right: var(--ck-spacing-large);
-}
-
-.ck .ck-color-table__remove-color {
-	cursor: pointer;
 }
