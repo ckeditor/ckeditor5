@@ -96,6 +96,7 @@ function normalizeSingleColorDefinition( color ) {
 		return {
 			model: color,
 			label: color,
+			hasBorder: false,
 			view: {
 				name: 'span',
 				styles: {
@@ -108,7 +109,7 @@ function normalizeSingleColorDefinition( color ) {
 		return {
 			model: color.color,
 			label: color.label || color.color,
-			hasBorder: color.hasBorder,
+			hasBorder: color.hasBorder === undefined ? false : color.hasBorder,
 			view: {
 				name: 'span',
 				styles: {

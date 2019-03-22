@@ -25,4 +25,11 @@ export default class FontBackgroundColorUI extends ColorUI {
 			dropdownLabel: 'Font Background Color'
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'FontBackgroundColorUI';
+	}
 }
