@@ -13,6 +13,22 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 /**
  * The mention command.
  *
+ * The command is registered by the {@link module:mention/mentionediting~MentionEditing} as `'mention'`.
+ *
+ * To insert mention on range, execute the command and specify, mention object and range to replace:
+ *
+ *		const focus = editor.model.document.selection.focus;
+ *
+ *		editor.execute( 'mention', {
+ *			mention: {
+ *				name: 'Foo',
+ *				id: '1234',
+ *				title: 'Big Foo'
+ *			},
+ *			marker: '#',
+ *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *		} );
+ *
  * @extends module:core/command~Command
  */
 export default class MentionCommand extends Command {
@@ -20,42 +36,46 @@ export default class MentionCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		// @todo implement refresh
-		this.isEnabled = true;
+		const model = this.editor.model;
+		const doc = model.document;
+
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'mention' );
 	}
 
 	/**
 	 * Executes the command.
 	 *
-	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.marker='@'] The mention marker.
-	 * @param {String} options.mention.
-	 * @param {String} [options.range].
+	 * @param {Object|String} options.mention Mention object to insert. If passed a string it will be used to create a plain object with
+	 * name attribute equal to passed string.
+	 * @param {String} [options.marker='@'] The mention marker to insert.
+	 * @param {String} [options.range] Range to replace. Note that replace range might be shorter then inserted text with mention attribute.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute( options ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
 
 		const marker = options.marker || '@';
 
-		const mention = options.mention;
+		const mention = typeof options.mention == 'string' ? { name: options.mention } : options.mention;
+
 		const range = options.range || selection.getFirstRange();
 
-		const name = mention.name || mention;
-
 		model.change( writer => {
+			const currentAttributes = toMap( selection.getAttributes() );
+			const attributesWithMention = new Map( currentAttributes.entries() );
+			attributesWithMention.set( 'mention', mention );
+
+			const mentionText = `${ marker }${ mention.name }`;
+
+			// Replace range with a text with mention.
 			writer.remove( range );
+			writer.insertText( mentionText, attributesWithMention, range.start );
 
-			const selectionAttributes = toMap( selection.getAttributes() );
-			const attributes = new Map( selectionAttributes.entries() );
-
-			attributes.set( 'mention', mention );
-
-			writer.insertText( `${ marker }${ name }`, attributes, range.start );
-			writer.insertText( ' ', selectionAttributes, model.document.selection.focus );
+			// Insert space after a mention.
+			writer.insertText( ' ', currentAttributes, model.document.selection.focus );
 		} );
 	}
 }
