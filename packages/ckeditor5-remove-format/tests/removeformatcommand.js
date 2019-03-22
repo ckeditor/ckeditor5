@@ -78,40 +78,35 @@ describe( 'RemoveFormatCommand', () => {
 			}
 		};
 
-		for ( const [ key, testConfig ] of Object.entries( cases ) ) {
-			it( key, () => {
-				setData( model, testConfig.input, testConfig.setDataOptions );
-
-				testConfig.assert();
-			} );
-		}
+		generateTypicalUseCases( cases );
 	} );
 
 	describe( 'execute()', () => {
+		const expectModelToBeEqual = expectedValue => expect( getData( model ) ).to.equal( expectedValue );
 		const cases = {
 			'state when in non-formatting markup': {
 				input: '<p>fo[]o</p>',
-				assert: '<p>fo[]o</p>'
+				assert: () => expectModelToBeEqual( '<p>fo[]o</p>' )
 			},
 
 			'state with collapsed selection in formatting markup': {
 				input: '<p>f<$text bold="true">o[]o</$text></p>',
-				assert: '<p>f<$text bold="true">o[]o</$text></p>'
+				assert: () => expectModelToBeEqual( '<p>f<$text bold="true">o[]o</$text></p>' )
 			},
 
 			'state with selection containing formatting in the middle': {
 				input: '<p>f[oo <$text bold="true">bar</$text> ba]z</p>',
-				assert: '<p>f[oo bar ba]z</p>'
+				assert: () => expectModelToBeEqual( '<p>f[oo bar ba]z</p>' )
 			},
 
 			'state with partially selected formatting at the start': {
 				input: '<p><$text bold="true">b[ar</$text> ba]z</p>',
-				assert: '<p><$text bold="true">b</$text>[ar ba]z</p>',
+				assert: () => expectModelToBeEqual( '<p><$text bold="true">b</$text>[ar ba]z</p>' )
 			},
 
 			'state with partially selected formatting at the end': {
 				input: '<p>f[oo <$text bold="true">ba]z</$text></p>',
-				assert: '<p>f[oo ba]<$text bold="true">z</$text></p>'
+				assert: () => expectModelToBeEqual( '<p>f[oo ba]<$text bold="true">z</$text></p>' )
 			},
 
 			'state with formatted selection alone': {
@@ -121,24 +116,26 @@ describe( 'RemoveFormatCommand', () => {
 						bold: true
 					}
 				},
-				assert: () => {
-					expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false );
-				}
+				assert: () => expect( model.document.selection.hasAttribute( 'bold' ) ).to.equal( false )
 			}
 		};
 
-		for ( const [ key, testConfig ] of Object.entries( cases ) ) {
+		generateTypicalUseCases( cases, {
+			beforeAssert: () => command.execute()
+		} );
+	} );
+
+	function generateTypicalUseCases( useCases, options ) {
+		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
 			it( key, () => {
 				setData( model, testConfig.input, testConfig.setDataOptions );
 
-				command.execute();
-
-				if ( typeof testConfig.assert == 'string' ) {
-					expect( getData( model ) ).to.equal( testConfig.assert );
-				} else {
-					testConfig.assert();
+				if ( options && options.beforeAssert ) {
+					options.beforeAssert();
 				}
+
+				testConfig.assert();
 			} );
 		}
-	} );
+	}
 } );
