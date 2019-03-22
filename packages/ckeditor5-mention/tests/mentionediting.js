@@ -16,6 +16,8 @@ describe( 'MentionEditing', () => {
 	testUtils.createSinonSandbox();
 	let editor, model, doc;
 
+	testUtils.createSinonSandbox();
+
 	afterEach( () => {
 		if ( editor ) {
 			return editor.destroy();
@@ -82,8 +84,8 @@ describe( 'MentionEditing', () => {
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
 			editor.setData(
 				'<p>' +
-				'<span class="mention" data-mention="John">@John</span>' +
-				'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
 				'</p>'
 			);
 
@@ -104,8 +106,8 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-				'<span class="mention" data-mention="John">@John</span>' +
-				'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="John">@John</span>' +
 				'</p>'
 			);
 
