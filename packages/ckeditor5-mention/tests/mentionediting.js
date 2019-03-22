@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import MentionEditing from '../src/mentionediting';
@@ -56,7 +57,7 @@ describe( 'MentionEditing', () => {
 			} );
 	} );
 
-	describe( 'conversion in the data pipeline', () => {
+	describe( 'conversion', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -77,7 +78,10 @@ describe( 'MentionEditing', () => {
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			const expectedView = '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
@@ -103,12 +107,11 @@ describe( 'MentionEditing', () => {
 
 			expect( firstMentionId ).to.not.equal( secondMentionId );
 
-			expect( editor.getData() ).to.equal(
-				'<p>' +
-					'<span class="mention" data-mention="John">@John</span>' +
-					'<span class="mention" data-mention="John">@John</span>' +
-				'</p>'
-			);
+			const expectedView = '<p><span class="mention" data-mention="John">@John</span>' +
+				'<span class="mention" data-mention="John">@John</span></p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 
 			function assertTextNode( textNode ) {
 				expect( textNode ).to.not.be.null;
@@ -124,7 +127,10 @@ describe( 'MentionEditing', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>@Jo</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>@Jo</p>' );
+			const expectedView = '<p>@Jo</p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 	} );
 
