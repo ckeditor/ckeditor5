@@ -16,6 +16,9 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import RemoveFormat from '../../src/removeformat';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -23,8 +26,10 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Bold, Clipboard, Enter, Highlight, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing, Underline, Undo ],
-		toolbar: [ 'removeformat', 'italic', 'bold', 'link', 'underline', 'highlight', '|', 'undo', 'redo' ]
+		plugins: [ Bold, Clipboard, Enter, Highlight, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
+			Underline, Undo, Image, Image, ImageCaption, ImageToolbar
+		],
+		toolbar: [ 'removeformat', 'italic', 'bold', 'link', 'underline', 'highlight', 'image', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

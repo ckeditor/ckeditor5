@@ -84,7 +84,7 @@ export default class RemoveFormatCommand extends Command {
 			const document = model.document;
 			const selection = document.selection;
 
-			const ranges = selection.getRanges();
+			const ranges = model.schema.getValidRanges( selection.getRanges(), 'bold' );
 
 			for ( const curRange of ranges ) {
 				for ( const attributeName of removedAttributes ) {

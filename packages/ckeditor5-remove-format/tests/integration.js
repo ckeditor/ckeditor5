@@ -20,7 +20,7 @@ import {
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Highlight', () => {
+describe( 'RemoveFormat', () => {
 	let editor, model, element;
 
 	beforeEach( () => {
@@ -55,24 +55,25 @@ describe( 'Highlight', () => {
 		} );
 
 		it( 'does not touch non-formatting markup', () => {
-			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><image src="foo.png">' +
+			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><image src="assets/sample.png">' +
 				'<caption>caption</caption></image><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'removeformat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>[<$text linkHref="url">foo</$text></paragraph>' +
-					'<image src="foo.png"><caption>caption</caption></image><paragraph>bar]</paragraph>' );
+					'<image src="assets/sample.png"><caption>caption</caption></image><paragraph>bar]</paragraph>' );
 		} );
 
 		it( 'removes the content from within widget editable', () => {
-			setModelData( model, '<paragraph>[</paragraph><image src="foo.png"><caption><$text bold="true">foo</$text></caption></image>' +
-				'<paragraph>bar]</paragraph>' );
+			setModelData( model, '<paragraph>[</paragraph>' +
+				'<image src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></image><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'removeformat' );
 
 			expect( getModelData( model ) )
-				.to.equal( '<paragraph>[</paragraph><image src="foo.png"><caption>foo</caption></image><paragraph>bar]</paragraph>' );
+				.to.equal( '<paragraph>' +
+					'[</paragraph><image src="assets/sample.png"><caption>foo</caption></image><paragraph>bar]</paragraph>' );
 		} );
 	} );
 } );

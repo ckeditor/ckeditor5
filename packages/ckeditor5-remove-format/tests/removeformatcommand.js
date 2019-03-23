@@ -29,6 +29,13 @@ describe( 'RemoveFormatCommand', () => {
 				} );
 
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+					// Bold will be used as an example formatting attribute.
+					if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
+						return true;
+					}
+				} );
+
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
 					// Text attribtue "irrelevant" will be used to make sure that non-formatting
 					// is note being removed.
 					if ( ctx.endsWith( 'p $text' ) && attributeName == 'irrelevant' ) {
