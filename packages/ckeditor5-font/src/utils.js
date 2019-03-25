@@ -94,7 +94,7 @@ export function normalizeOptions( colorRow ) {
 function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
-			model: color,
+			model: color.replace( / /g, '' ),
 			label: color,
 			hasBorder: false,
 			view: {
@@ -107,7 +107,7 @@ function normalizeSingleColorDefinition( color ) {
 		};
 	} else {
 		return {
-			model: color.color,
+			model: color.color.replace( / /g, '' ),
 			label: color.label || color.color,
 			hasBorder: color.hasBorder === undefined ? false : color.hasBorder,
 			view: {
