@@ -110,8 +110,9 @@ export default class MentionUI extends Plugin {
 			const feed = mentionDescription.feed;
 
 			const marker = mentionDescription.marker || '@';
+			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
-			const watcher = this._setupTextWatcherForFeed( marker );
+			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
 			const itemRenderer = mentionDescription.itemRenderer;
 
 			const definition = { watcher, marker, feedCallback, itemRenderer };
@@ -248,12 +249,13 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @private
 	 * @param {String} marker
+	 * @param {Number} minimumCharacters
 	 * @returns {TextWatcher}
 	 */
-	_setupTextWatcherForFeed( marker ) {
+	_setupTextWatcherForFeed( marker, minimumCharacters ) {
 		const editor = this.editor;
 
-		const watcher = new TextWatcher( editor, createTestCallback( marker ), createTextMatcher( marker ) );
+		const watcher = new TextWatcher( editor, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
 			const matched = data.matched;
@@ -426,9 +428,10 @@ function getBalloonPanelPositions() {
 // Creates a regex pattern for marker.
 //
 // @param {String} marker
+// @param {Number} minimumCharacters
 // @returns {String}
-function createPattern( marker ) {
-	const numberOfCharacters = '*';
+function createPattern( marker, minimumCharacters ) {
+	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
 	return `(^| )(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
@@ -436,9 +439,10 @@ function createPattern( marker ) {
 // Creates a test callback for marker to be used in text watcher instance.
 //
 // @param {String} marker
+// @param {Number} minimumCharacters
 // @returns {Function}
-function createTestCallback( marker ) {
-	const regExp = new RegExp( createPattern( marker ) );
+function createTestCallback( marker, minimumCharacters ) {
+	const regExp = new RegExp( createPattern( marker, minimumCharacters ) );
 
 	return text => regExp.test( text );
 }
@@ -448,7 +452,7 @@ function createTestCallback( marker ) {
 // @param {String} marker
 // @returns {Function}
 function createTextMatcher( marker ) {
-	const regExp = new RegExp( createPattern( marker ) );
+	const regExp = new RegExp( createPattern( marker, 0 ) );
 
 	return text => {
 		const match = text.match( regExp );

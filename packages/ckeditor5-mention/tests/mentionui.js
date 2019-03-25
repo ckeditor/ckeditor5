@@ -176,6 +176,46 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'typing integration', () => {
+		it( 'should show panel for matched marker after typing minimum characters', () => {
+			return createClassicTestEditor( [ Object.assign( { minimumCharacters: 2 }, staticConfig[ 0 ] ) ] )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( () => {
+					model.change( writer => {
+						writer.insertText( 'B', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.false;
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					model.change( writer => {
+						writer.insertText( 'a', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( listView.items ).to.have.length( 1 );
+
+					model.change( writer => {
+						writer.insertText( 'r', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( listView.items ).to.have.length( 1 );
+				} );
+		} );
+
 		describe( 'static list with default trigger', () => {
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
