@@ -6,7 +6,7 @@ category: features
 
 # Mention
 
-The {@link module:mention/mention~Mention} feature brings support for smart completion based on user input. When user types a pre-configured marker, such as `@` or `#`, they get an autocomplete suggestions in a balloon panel displayed next to a caret. The selected suggestion is inserted to the content.
+The {@link module:mention/mention~Mention} feature brings support for smart completion based on user input. When user types a pre-configured marker, such as `@` or `#`, they get an autocomplete suggestions in a balloon panel displayed next to the caret. The selected suggestion is then inserted into the content.
 
 ## Demo
 
