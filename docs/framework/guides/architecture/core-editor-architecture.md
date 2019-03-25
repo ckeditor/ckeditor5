@@ -71,7 +71,7 @@ You can see how to implement a simple plugin in the {@link framework/guides/quic
 A command is a combination of an action (a callback) and a state (a set of properties). For instance, the `bold` command applies or removes the bold attribute from the selected text. If the text in which the selection is placed has bold applied already, the value of the command is `true`, `false` otherwise. If the `bold` command can be executed on the current selection, it is enabled. If not (because, for example, bold is not allowed in this place), it is disabled.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector instance inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 All commands need to inherit from the {@link module:core/command~Command} class. Commands need to be added to the editor's {@link module:core/editor/editor~Editor#commands command collection} so they can be executed by using the {@link module:core/editor/editor~Editor#execute `Editor#execute()`} method.

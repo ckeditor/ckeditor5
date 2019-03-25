@@ -16,7 +16,7 @@ CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface
 The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button that will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector instance inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## Step 1. Installing dependencies

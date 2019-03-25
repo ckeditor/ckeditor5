@@ -9,7 +9,7 @@ In this guide you will learn about developer tools that will help you develop an
 
 ## CKEditor 5 inspector
 
-The official [editor instance inspector](https://github.com/ckeditor/ckeditor5-inspector) provides rich debugging tools for editor internals like {@link framework/guides/architecture/editing-engine#model model}, {@link framework/guides/architecture/editing-engine#view view}, and  {@link framework/guides/architecture/core-editor-architecture#commands commands}.
+The official [CKEditor 5 inspector](https://github.com/ckeditor/ckeditor5-inspector) provides rich debugging tools for editor internals like {@link framework/guides/architecture/editing-engine#model model}, {@link framework/guides/architecture/editing-engine#view view}, and  {@link framework/guides/architecture/core-editor-architecture#commands commands}.
 
 It allows observing changes to the data structures and the selection live in the editor which is particularly helpful when developing new editor features or getting to understand the existing ones.
 
@@ -20,7 +20,7 @@ It allows observing changes to the data structures and the selection live in the
 You can import the inspector as an [`@ckeditor/ckeditor5-inspector`](https://www.npmjs.com/package/@ckeditor/ckeditor5-inspector) package into your project:
 
 ```
-yarn add --dev @ckeditor/ckeditor5-inspector
+npm install --save-dev @ckeditor/ckeditor5-inspector
 ```
 
 and then either import it as a module:
@@ -68,9 +68,13 @@ The editor switcher is in the upper–right corner of the inspector panel.
 
 ### Demo
 
-Click the <b>"Inspect editor"</b> button below to attache the inspector to the editor:
+Click the <b>"Inspect editor"</b> button below to attach the inspector to the editor:
 
 {@snippet framework/development-tools/inspector}
+
+### Contributing to the inspector
+
+The source code of CKEditor 5 inspector and its issue tracker is available on GitHub in https://github.com/ckeditor/ckeditor5-inspector.
 
 ## Testing helpers
 
@@ -92,8 +96,9 @@ import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 ClassicEditor
 	.create( '<p>Hello <b>world</b>!</p>' )
 	.then( editor => {
-		// '<paragraph>[]Hello <$text bold="true">world</$text>!</paragraph>'
 		console.log( getData( editor.model ) );
+
+		// -> '<paragraph>[]Hello <$text bold="true">world</$text>!</paragraph>'
 	} );
 ```
 

@@ -219,7 +219,7 @@ Open this page in your browser and you should see the editor up and running. Mak
 {@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of a classic editor with bold and italic features.}
 
 <info-box>
-	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector instance inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
 ## What's next?
