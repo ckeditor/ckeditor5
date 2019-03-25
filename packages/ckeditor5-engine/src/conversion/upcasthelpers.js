@@ -570,7 +570,7 @@ function prepareToElementConverter( config ) {
 		// Set conversion result range.
 		data.modelRange = new ModelRange(
 			conversionApi.writer.createPositionBefore( modelElement ),
-			conversionApi.writer.createPositionAfter( parts.last )
+			conversionApi.writer.createPositionAfter( parts[ parts.length - 1 ] )
 		);
 
 		// Now we need to check where the `modelCursor` should be.

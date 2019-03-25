@@ -626,7 +626,6 @@ describe( 'UpcastDispatcher', () => {
 					const parts = conversionApi.getSplitParts( modelElement );
 
 					expect( parts ).to.deep.equal( [ modelElement ] );
-					expect( parts.last ).to.equal( modelElement );
 
 					spy();
 
@@ -689,7 +688,6 @@ describe( 'UpcastDispatcher', () => {
 					expect( parts[ 2 ].getChild( 0 ).data ).to.equal( 'xyz' );
 
 					expect( parts[ 0 ] ).to.equal( modelElement );
-					expect( parts.last ).to.equal( parts[ 2 ] );
 
 					spy();
 

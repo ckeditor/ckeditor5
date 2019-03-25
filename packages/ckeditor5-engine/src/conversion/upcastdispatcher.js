@@ -349,8 +349,6 @@ export default class UpcastDispatcher {
 			parts = this._splitParts.get( element );
 		}
 
-		parts.last = parts[ parts.length - 1 ];
-
 		return parts;
 	}
 
@@ -569,8 +567,6 @@ function createContextTree( contextDefinition, writer ) {
  * For a reference to any of above paragraphs, the function will return all three paragraphs (the original element included),
  * sorted in the order of their creation (the original element is the first one).
  *
- * The function returns `Array` with elements. Additionally, `.last` property is set on the array for an easy access to the last split part.
- *
  * If given `element` was not split, an array with single element is returned.
  *
  * Example of a usage in a converter code:
@@ -580,6 +576,7 @@ function createContextTree( contextDefinition, writer ) {
  *		conversionApi.convertChildren( myElement, modelCursor );
  *		// ...
  *		const splitParts = conversionApi.getSplitParts( myElement );
+ *		const lastSplitPart = splitParts[ splitParts.length - 1 ];
  *
  *		// Additional processing on all the parts after the children are converted and the original element might be split.
  *		for ( const element of splitParts ) {
@@ -589,11 +586,11 @@ function createContextTree( contextDefinition, writer ) {
  *		// Setting `data.modelRange` basing on split parts:
  *		data.modelRange = conversionApi.writer.createRange(
  *			conversionApi.writer.createPositionBefore( myElement ),
- *			conversionApi.writer.createPositionAfter( splitParts.last )
+ *			conversionApi.writer.createPositionAfter( lastSplitPart )
  *		);
  *
  *		// Setting `data.modelCursor` to continue after the last split element:
- *		data.modelCursor = conversionApi.writer.createPositionAfter( splitParts.last );
+ *		data.modelCursor = conversionApi.writer.createPositionAfter( lastSplitPart );
  *
  * **Tip:** if you are unable to get a reference to the original element (for example because the code is split into multiple converters
  * or even classes) but it was already converted, you might want to check first element in `data.modelRange`. This is a common situation
