@@ -125,7 +125,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * This let's you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
 	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
