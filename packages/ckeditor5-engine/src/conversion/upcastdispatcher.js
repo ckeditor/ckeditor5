@@ -283,6 +283,19 @@ export default class UpcastDispatcher {
 		// Split element to allowed parent.
 		const splitResult = this.conversionApi.writer.split( modelCursor, allowedParent );
 
+		// Using the range returned by `model.Writer#split`, pair original elements with their split parts.
+		// The range returned from the writer spans "between" the split or precisely saying, from the end of the split element
+		// to the beginning of the other part of the split element:
+		//
+		// <limit><a><b><c>X[]Y</c></b><a></limit> ->
+		// <limit><a><b><c>X[</c></b></a><a><b><c>]Y</c></b></a>
+		//
+		// After the split no meaningful content can be between the positions in `splitRange` - they have to be touching.
+		// Also, because of how splitting works, it is easy to notice, that "closing tags" are in the reverse order than "opening tags".
+		// Also, since we split all those elements, each of them has to have the other part.
+		//
+		// With those observations in mind, we will pair the original elements with their split parts by saving "closing tags" and matching
+		// them with "opening tags" in the reverse order. For that we can use a stack.
 		const stack = [];
 
 		for ( const treeWalkerValue of splitResult.range.getWalker() ) {
