@@ -375,7 +375,7 @@ export default class MentionUI extends Plugin {
 				const range = viewSelection.getLastRange();
 				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( range ) );
 
-				return rangeRects[ rangeRects.length - 1 ];
+				return rangeRects.pop();
 			},
 			positions: getBalloonPanelPositions()
 		};
