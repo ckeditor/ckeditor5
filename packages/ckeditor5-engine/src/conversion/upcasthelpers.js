@@ -560,32 +560,30 @@ function prepareToElementConverter( config ) {
 		conversionApi.writer.insert( modelElement, splitResult.position );
 
 		// Convert children and insert to element.
-		const childrenResult = conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
+		conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelElement, 0 ) );
 
 		// Consume appropriate value from consumable values list.
-		conversionApi.consumable.consume( data.viewItem, match.match );
+		conversionApi.consumable.consume( data.viewItem, match );
+
+		const parts = conversionApi.getSplitParts( modelElement );
 
 		// Set conversion result range.
 		data.modelRange = new ModelRange(
-			// Range should start before inserted element
 			conversionApi.writer.createPositionBefore( modelElement ),
-			// Should end after but we need to take into consideration that children could split our
-			// element, so we need to move range after parent of the last converted child.
-			// before: <allowed>[]</allowed>
-			// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-			conversionApi.writer.createPositionAfter( childrenResult.modelCursor.parent )
+			conversionApi.writer.createPositionAfter( parts.last )
 		);
 
-		// Now we need to check where the modelCursor should be.
-		// If we had to split parent to insert our element then we want to continue conversion inside split parent.
-		//
-		// before: <allowed><notAllowed>[]</notAllowed></allowed>
-		// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
+		// Now we need to check where the `modelCursor` should be.
 		if ( splitResult.cursorParent ) {
-			data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
+			// If we split parent to insert our element then we want to continue conversion in the new part of the split parent.
+			//
+			// before: <allowed><notAllowed>foo[]</notAllowed></allowed>
+			// after:  <allowed><notAllowed>foo</notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 
-			// Otherwise just continue after inserted element.
+			data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
 		} else {
+			// Otherwise just continue after inserted element.
+
 			data.modelCursor = data.modelRange.end;
 		}
 	};
