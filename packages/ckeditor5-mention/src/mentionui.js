@@ -216,18 +216,40 @@ export default class MentionUI extends Plugin {
 		return mentionsView;
 	}
 
+	/**
+	 * Returns item renderer for marker.
+	 *
+	 * @private
+	 * @param {String} marker
+	 * @returns {Function|null}
+	 */
 	_getItemRenderer( marker ) {
 		const { itemRenderer } = this._mentionsConfigurations.get( marker );
 
 		return itemRenderer;
 	}
 
+	/**
+	 * Returns a promise that resolves with autocomplete items for given text.
+	 *
+	 * @param {String} marker
+	 * @param {String} feedText
+	 * @return {Promise<module:mention/mention~MentionFeedItem>}
+	 * @private
+	 */
 	_getFeed( marker, feedText ) {
 		const { feedCallback } = this._mentionsConfigurations.get( marker );
 
 		return Promise.resolve().then( () => feedCallback( feedText ) );
 	}
 
+	/**
+	 * Registers a text watcher for marker.
+	 *
+	 * @private
+	 * @param {String} marker
+	 * @returns {TextWatcher}
+	 */
 	_setupTextWatcherForFeed( marker ) {
 		const editor = this.editor;
 
@@ -272,6 +294,13 @@ export default class MentionUI extends Plugin {
 		return watcher;
 	}
 
+	/**
+	 * Returns registered text watcher for marker.
+	 *
+	 * @private
+	 * @param {String} marker
+	 * @returns {TextWatcher}
+	 */
 	_getWatcher( marker ) {
 		const { watcher } = this._mentionsConfigurations.get( marker );
 
@@ -299,6 +328,14 @@ export default class MentionUI extends Plugin {
 		this.panelView.hide();
 	}
 
+	/**
+	 * Renders the single item in autocomplete list.
+	 *
+	 * @private
+	 * @param {module:mention/mention~MentionFeedItem} item
+	 * @param {String} marker
+	 * @returns {module:ui/button/buttonview~ButtonView|module:mention/ui/domwrapperview~DomWrapperView}
+	 */
 	_renderItem( item, marker ) {
 		const editor = this.editor;
 
@@ -386,18 +423,30 @@ function getBalloonPanelPositions() {
 	];
 }
 
+// Creates a regex pattern for marker.
+//
+// @param {String} marker
+// @returns {String}
 function createPattern( marker ) {
 	const numberOfCharacters = '*';
 
 	return `(^| )(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
+// Creates a test callback for marker to be used in text watcher instance.
+//
+// @param {String} marker
+// @returns {Function}
 function createTestCallback( marker ) {
 	const regExp = new RegExp( createPattern( marker ) );
 
 	return text => regExp.test( text );
 }
 
+// Creates a text watcher matcher for marker.
+//
+// @param {String} marker
+// @returns {Function}
 function createTextMatcher( marker ) {
 	const regExp = new RegExp( createPattern( marker ) );
 
@@ -422,6 +471,10 @@ function createFeedCallback( feedItems ) {
 	};
 }
 
+// Checks if given key code is handled by the mention ui.
+//
+// @param {Number}
+// @returns {Boolean}
 function isHandledKey( keyCode ) {
 	const handledKeyCodes = [
 		keyCodes.arrowup,

@@ -12,22 +12,39 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * Text watcher feature.
+ * @private
  */
 export default class TextWatcher {
-	constructor( editor, callbackOrRegex, textMatcher ) {
+	/**
+	 * Creates a text watcher instance.
+	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Function} testCallback Function used to match the text.
+	 * @param {Function} textMatcherCallback Function used to process matched text.
+	 */
+	constructor( editor, testCallback, textMatcherCallback ) {
 		this.editor = editor;
-		this.testCallback = callbackOrRegex;
-		this.textMatcher = textMatcher;
+		this.testCallback = testCallback;
+		this.textMatcher = textMatcherCallback;
 
 		this.hasMatch = false;
 
 		this._startListening();
 	}
 
+	/**
+	 * Last matched text.
+	 *
+	 * @property {String}
+	 */
 	get last() {
 		return this._getText();
 	}
 
+	/**
+	 * Starts listening the editor for typing & selection events.
+	 *
+	 * @private
+	 */
 	_startListening() {
 		const editor = this.editor;
 
@@ -66,6 +83,12 @@ export default class TextWatcher {
 		} );
 	}
 
+	/**
+	 * Returns the text before the caret from the current selection block.
+	 *
+	 * @returns {String|undefined} Text from block or undefined if selection is not collapsed.
+	 * @private
+	 */
 	_getText() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
