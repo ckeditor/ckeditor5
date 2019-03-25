@@ -214,6 +214,19 @@ describe( 'DeleteObserver', () => {
 			sinon.assert.notCalled( keydownSpy );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-typing/issues/186
+		it( 'should stop keydown event when delete event is stopped (delete event with highest priority)', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'delete', evt => evt.stop(), { priority: 'highest' } );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'delete' )
+			} ) );
+
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
 		it( 'should not stop keydown event when delete event is not stopped', () => {
 			const keydownSpy = sinon.spy();
 			viewDocument.on( 'keydown', keydownSpy );

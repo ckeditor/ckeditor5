@@ -49,9 +49,10 @@ export default class DeleteObserver extends Observer {
 
 			// Save the event object to check later if it was stopped or not.
 			let event;
-			document.once( 'delete', evt => ( event = evt ), { priority: 'highest' } );
+			document.once( 'delete', evt => ( event = evt ), { priority: Number.POSITIVE_INFINITY } );
 
-			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
+			const domEvtData = new DomEventData( document, data.domEvent, deleteData );
+			document.fire( 'delete', domEvtData );
 
 			// Stop `keydown` event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
