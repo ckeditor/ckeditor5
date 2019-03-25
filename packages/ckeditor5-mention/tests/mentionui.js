@@ -787,6 +787,40 @@ describe( 'MentionUI', () => {
 						expect( spy.getCall( 0 ).args[ 0 ].range.isEqual( expectedRange ) ).to.be.true;
 					} );
 			} );
+
+			it( 'should do nothing if panel is not visible on ' + name, () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				const command = editor.commands.get( 'mention' );
+				const spy = testUtils.sinon.spy( command, 'execute' );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.esc,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						expect( panelView.isVisible ).to.be.false;
+
+						fireKeyDownEvent( {
+							keyCode,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.notCalled( spy );
+
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
 		}
 	} );
 
