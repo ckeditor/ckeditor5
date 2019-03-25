@@ -1,22 +1,8 @@
 ## Mention
 
-**NOTE**: Playground for testing model implementation.
+This sample overrides default mention conversion to `<span>`. The mention is converted to a link (`<a>`).
 
-Use the code of this manual sample to change bahavior of the feature.
-
-### Attribute (default)
-- works kinda OK - should use objects to store mention data
-- some quirks with undo (probably the break attribute on edit is wrongly written)
-- easy to change conversion
-
-### Inline Element in model
-- I didn't make it to work and to change the conversion
-
-### Marker
-- works also OK - some quirks might be due to limited time to create (ie editing breaks the editor)
-- harder to overwrite the mention output (easy to customize the `<span>` but to create a link required custom listener)
-
-### Data
+### Configuration
 
 The feed:
 - `{ name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
@@ -25,15 +11,23 @@ The feed:
 - `{ name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
 - `{ name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
 
-The mention is converted to link (`<a>`) with additional data of default span.
-
 ### Interaction
-
-**Note** Not everything works with every setup.
 
 You can interact with mention panel with keyboard:
 
-- move arrows up/down to select item
-- use <kbd>enter</kbd> or <kbd>tab</kbd> to select item.
+- Move arrows up/down to select an item.
+- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation. 
+- The <kbd>esc</kbd> should close the panel.
 
-**Note**: Mouse trigger not yet implemented.
+Mention panel should be closed on:
+- Click outside the panel view.
+- Changing selection - like placing it in other part of text.
+
+### Editing behavior:
+
+The mention should be removed from the text when:
+
+- typing inside a mention
+- removing characters from a mention
+- breaking the mention (<kbd>enter</kbd>)
+- pasting part of a mention
