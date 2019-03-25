@@ -250,7 +250,7 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 * @param {String} marker
 	 * @param {Number} minimumCharacters
-	 * @returns {TextWatcher}
+	 * @returns {module:mention/textwatcher~TextWatcher}
 	 */
 	_setupTextWatcherForFeed( marker, minimumCharacters ) {
 		const editor = this.editor;
@@ -301,7 +301,7 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @private
 	 * @param {String} marker
-	 * @returns {TextWatcher}
+	 * @returns {module:mention/textwatcher~TextWatcher}
 	 */
 	_getWatcher( marker ) {
 		const { watcher } = this._mentionsConfigurations.get( marker );

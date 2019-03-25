@@ -40,6 +40,8 @@ ClassicEditor
 	.catch( ... );
 ```
 
+## Configuration
+
 ## Common API
 
 The {@link module:mention/mention~Mention} plugin registers:

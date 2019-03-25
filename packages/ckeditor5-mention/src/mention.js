@@ -59,7 +59,7 @@ export default class Mention extends Plugin {
  * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed The auto complete feed items. Provide an array for
  * static configuration or a function that returns a promise for asynchronous feeds.
  * @property {Number} [minimumCharacters=0] Specifies after how many characters show the autocomplete panel.
- * @property {Function} [itemRenderer] Function that renders {module:mention/mention~MentionFeedItem}
+ * @property {Function} [itemRenderer] Function that renders {@link module:mention/mention~MentionFeedItem}
  * to the autocomplete list to a DOM elemnt.
  */
 
