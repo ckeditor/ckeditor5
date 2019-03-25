@@ -13,7 +13,7 @@
  * An object defining the editor configuration can be passed when initializing the editor:
  *
  *		EditorClass
- *			.create( document.querySelector( '#editor' ), {
+ *			.create( {
  * 				toolbar: [ 'bold', 'italic' ],
  *				image: {
  *					styles: [
@@ -33,7 +33,7 @@
 /**
  * The initial editor data to be used instead of the provided element's HTML content.
  *
- *      EditorClass
+ *      ClassicEditor
  *          .create( document.querySelector( '#editor' ), {
  *              initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
  *          } )
