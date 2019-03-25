@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 
 const removedAttributes = [
 	'bold',
@@ -33,42 +34,28 @@ export default class RemoveFormatCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.model.document;
+		const selection = this.editor.model.document.selection;
 
-		let commandEnabled = false;
-
-		for ( const range of doc.selection.getRanges() ) {
-			if ( this._containsRemovableFormat( range ) ) {
-				commandEnabled = true;
-				continue;
-			}
-		}
-
-		if ( !commandEnabled ) {
-			for ( const attribute of removedAttributes ) {
-				if ( doc.selection.hasAttribute( attribute ) ) {
-					commandEnabled = true;
-					continue;
-				}
-			}
-		}
-
-		this.isEnabled = commandEnabled;
+		this.isEnabled = !this._getStylableElements( selection ).next().done;
 	}
 
-	// Tells whether provided range contains any removable format.
-	_containsRemovableFormat( range ) {
-		const walker = range.getWalker();
+	/**
+	 * @inheritdoc
+	 */
+	execute() {
+		const model = this.editor.model;
 
-		for ( const value of walker ) {
-			for ( const attribute of removedAttributes ) {
-				if ( value.item.hasAttribute( attribute ) ) {
-					return true;
+		model.change( writer => {
+			for ( const item of this._getStylableElements( model.document.selection ) ) {
+				for ( const attributeName of removedAttributes ) {
+					if ( item instanceof DocumentSelection ) {
+						writer.removeSelectionAttribute( attributeName );
+					} else {
+						writer.removeAttribute( attributeName, item );
+					}
 				}
 			}
-		}
-
-		return false;
+		} );
 	}
 
 	/**
@@ -77,24 +64,26 @@ export default class RemoveFormatCommand extends Command {
 	 * @protected
 	 * @fires execute
 	 */
-	execute() {
-		const model = this.editor.model;
-
-		model.change( writer => {
-			const document = model.document;
-			const selection = document.selection;
-
-			for ( const curRange of selection.getRanges() ) {
-				for ( const item of curRange.getItems() ) {
-					for ( const attributeName of removedAttributes ) {
-						if ( item.hasAttribute( attributeName ) ) {
-							writer.removeAttribute( attributeName, item );
-						}
-					}
+	* _getStylableElements( selection ) {
+		for ( const curRange of selection.getRanges() ) {
+			for ( const item of curRange.getItems() ) {
+				if ( itemHasRemovableFormatting( item ) ) {
+					yield item;
 				}
 			}
+		}
 
-			writer.removeSelectionAttribute( removedAttributes );
-		} );
+		// Finally the selection might be styles as well, so make sure to check it.
+		if ( itemHasRemovableFormatting( selection ) ) {
+			yield selection;
+		}
+
+		function itemHasRemovableFormatting( item ) {
+			for ( const attributeName of removedAttributes ) {
+				if ( item.hasAttribute( attributeName ) ) {
+					return true;
+				}
+			}
+		}
 	}
 }
