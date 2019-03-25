@@ -43,49 +43,33 @@ export default class Paragraph extends Plugin {
 
 		// Content autoparagraphing. --------------------------------------------------
 
-		// Handles elements not converted by plugins and checks if would be converted if
-		// we wraps them by a paragraph or changes them to a paragraph.
-		data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
-			const writer = conversionApi.writer;
+		// Handles element which has not been converted by any plugin and checks if it would be converted if
+		// we wrap it in a paragraph or change it to a paragraph.
+		editor.conversion.for( 'upcast' ).elementToElement( {
+			model: ( viewElement, modelWriter ) => {
+				if ( !Paragraph.paragraphLikeElements.has( viewElement.name ) ) {
+					return null;
+				}
 
-			// When element is already consumed by higher priority converters then do nothing.
+				// Do not auto-paragraph empty elements.
+				if ( viewElement.isEmpty ) {
+					return null;
+				}
+
+				return modelWriter.createElement( 'paragraph' );
+			},
+			converterPriority: 'low'
+		} );
+
+		data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
+			// Do not try auto-paragraphing if the element was already converted.
 			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
 				return;
 			}
 
-			// When element is paragraph-like lets try to change it into a paragraph.
-			if ( Paragraph.paragraphLikeElements.has( data.viewItem.name ) ) {
-				if ( data.viewItem.isEmpty ) {
-					return;
-				}
-
-				const paragraph = writer.createElement( 'paragraph' );
-
-				// Find allowed parent for paragraph that we are going to insert.
-				// If current parent does not allow to insert paragraph but one of the ancestors does
-				// then split nodes to allowed parent.
-				const splitResult = conversionApi.splitToAllowedParent( paragraph, data.modelCursor );
-
-				// When there is no split result it means that we can't insert paragraph in this position.
-				if ( !splitResult ) {
-					return;
-				}
-
-				// Insert paragraph in allowed position.
-				writer.insert( paragraph, splitResult.position );
-
-				// Convert children to paragraph.
-				const { modelRange } = conversionApi.convertChildren( data.viewItem, writer.createPositionAt( paragraph, 0 ) );
-
-				// Output range starts before paragraph but ends inside it after last child.
-				// This is because we want to keep siblings inside the same paragraph as long as it is possible.
-				// When next node won't be allowed in a paragraph it will split this paragraph anyway.
-				data.modelRange = writer.createRange( writer.createPositionBefore( paragraph ), modelRange.end );
-				data.modelCursor = data.modelRange.end;
-
-			// When element is not paragraph-like lets try to wrap it by a paragraph.
-			} else if ( isParagraphable( data.viewItem, data.modelCursor, conversionApi.schema ) ) {
-				data = Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
+			// If the element is not paragraph-like try wrapping it in a paragraph.
+			if ( isParagraphable( data.viewItem, data.modelCursor, conversionApi.schema ) ) {
+				Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
 			}
 		}, { priority: 'low' } );
 
@@ -97,7 +81,7 @@ export default class Paragraph extends Plugin {
 			}
 
 			if ( isParagraphable( data.viewItem, data.modelCursor, conversionApi.schema ) ) {
-				data = Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
+				Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
 			}
 		}, { priority: 'lowest' } );
 
