@@ -66,7 +66,8 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
-	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
+	 * @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
+	 * set, the converter will fire for every view element.
 	 * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
 	 * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
@@ -393,7 +394,8 @@ export function convertSelectionChange( model, mapper ) {
 // See {@link ~UpcastHelpers#elementToElement `.elementToElement()` upcast helper} for examples.
 //
 // @param {Object} config Conversion configuration.
-// @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
+// @param {module:engine/view/matcher~MatcherPattern} [config.view] Pattern matching all view elements which should be converted. If not
+// set, the converter will fire for every view element.
 // @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
 // instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
 // @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
@@ -510,19 +512,26 @@ function getViewElementNameFromConfig( config ) {
 // @param {Object} config Conversion configuration.
 // @returns {Function} View to model converter.
 function prepareToElementConverter( config ) {
-	const matcher = new Matcher( config.view );
+	const matcher = config.view ? new Matcher( config.view ) : null;
 
 	return ( evt, data, conversionApi ) => {
-		// This will be usually just one pattern but we support matchers with many patterns too.
-		const match = matcher.match( data.viewItem );
+		let match = {};
 
-		// If there is no match, this callback should not do anything.
-		if ( !match ) {
-			return;
+		// If `config.view` has not been passed do not try matching. In this case, the converter should fire for all elements.
+		if ( matcher ) {
+			// This will be usually just one pattern but we support matchers with many patterns too.
+			const matcherResult = matcher.match( data.viewItem );
+
+			// If there is no match, this callback should not do anything.
+			if ( !matcherResult ) {
+				return;
+			}
+
+			match = matcherResult.match;
 		}
 
 		// Force consuming element's name.
-		match.match.name = true;
+		match.name = true;
 
 		// Create model element basing on config.
 		const modelElement = getModelElement( config.model, data.viewItem, conversionApi.writer );
@@ -533,7 +542,7 @@ function prepareToElementConverter( config ) {
 		}
 
 		// When element was already consumed then skip it.
-		if ( !conversionApi.consumable.test( data.viewItem, match.match ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, match ) ) {
 			return;
 		}
 
