@@ -113,91 +113,87 @@ export default class DecoupledEditor extends Editor {
 	}
 
 	/**
-	 * Creates a decoupled editor instance.
+	 * Creates a `DecoupledEditor` instance.
 	 *
-	 * Creating an instance when using a {@glink builds/index CKEditor 5 build}:
+	 * There are two general ways how the editor can be initialized. Remember that `DecoupledEditor` do not append the toolbar element
+	 * to your web page so you have to do it manually after the editor has been initialized.
+	 *
+	 * You can initialize the editor using an existing DOM element:
 	 *
 	 *		DecoupledEditor
 	 *			.create( document.querySelector( '#editor' ) )
 	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
 	 *				// Append the toolbar to the <body> element.
 	 *				document.body.appendChild( editor.ui.view.toolbar.element );
-	 *
-	 *				console.log( 'Editor was initialized', editor );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * The element's content will be used as the editor data. The editable element will replace the source element on your web page.
 	 *
-	 *		import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-	 *		import ...
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
+	 * In this case, you will have to manually append to your web page both the toolbar element and the editable element.
 	 *
 	 *		DecoupledEditor
-	 *			.create( document.querySelector( '#editor' ), {
-	 *				plugins: [ Essentials, Bold, Italic, ... ],
-	 *				toolbar: [ 'bold', 'italic', ... ]
-	 *			} )
+	 *			.create( '<p>Hello world!</p>' )
 	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
 	 *				// Append the toolbar to the <body> element.
 	 *				document.body.appendChild( editor.ui.view.toolbar.element );
 	 *
-	 *				console.log( 'Editor was initialized', editor );
+	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.ui.element );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating an instance when using initial data instead of a DOM element.
-	 * The editor will then render an editable element that must be inserted into the DOM for the editor to work properly:
+	 * This let's you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 *		DecoupledEditor
-	 *			.create( '<p>Editor data</p>' )
-	 *			.then( editor => {
-	 *				// Append the toolbar to the <body> element.
-	 *				document.body.appendChild( editor.ui.view.toolbar.element );
-	 *
-	 *				// Append the editable to the <body> element.
-	 *				document.body.appendChild( editor.ui.view.editable.element );
-	 *
-	 *				console.log( 'Editor was initialized', editor );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
-	 *
-	 * Creating an instance on an existing DOM element using external initial content (specified in config):
+	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
 	 *
 	 *		DecoupledEditor
 	 *			.create( document.querySelector( '#editor' ), {
 	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
 	 *			} )
 	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
 	 *				// Append the toolbar to the <body> element.
 	 *				document.body.appendChild( editor.ui.view.toolbar.element );
-	 *
-	 *				console.log( 'Editor was initialized', editor );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
+	 * This method can be used to initialize the editor on an existing element with specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * Note that an error will be thrown if you pass initial data both as the first parameter and also in the config.
+	 *
+	 * See also the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and other.
+	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized) or initial data for the editor.
+	 * or the editor's initial data.
 	 *
-	 * If a source element is passed, then its contents will be automatically
-	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#setData loaded} to the editor on startup and the element
-	 * itself will be used as the editor's editable element.
+	 * If a DOM element is passed, its content will be automatically
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#setData loaded} to the editor upon initialization
+	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editable element} will replace the passed element in the DOM
+	 * (the original element will be hidden and the editor will be injected next to it).
 	 *
-	 * If data is provided, then `editor.ui.view.editable.element` will be created automatically and needs to be added
-	 * to the DOM manually.
+	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
+	 *
+	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 * It is available under {@link module:editor-classic/classiceditorui~DecoupledEditorUI#element `editor.ui.element`} property.
+	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * The promise returns the created {@link module:editor-decoupled/decouplededitor~DecoupledEditor} instance.
+	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
