@@ -207,7 +207,7 @@ export default class ColorTableView extends View {
 	initRecentCollection() {
 		for ( let i = 0; i < this.colorColumns; i++ ) {
 			this.recentlyUsedColors.add( {
-				color: 'hsla( 0, 0%, 0%, 0 )',
+				color: 'hsla(0, 0%, 0%, 0)',
 				isEnabled: false,
 				hasBorder: true
 			} );
@@ -224,14 +224,6 @@ export default class ColorTableView extends View {
 		for ( const item of this.items ) {
 			this.focusTracker.add( item.element );
 		}
-
-		this.items.on( 'add', ( evt, item ) => {
-			this.focusTracker.add( item.element );
-		} );
-
-		this.items.on( 'remove', ( evt, item ) => {
-			this.focusTracker.remove( item.element );
-		} );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );

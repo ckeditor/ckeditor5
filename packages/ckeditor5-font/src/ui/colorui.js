@@ -104,11 +104,15 @@ export default class ColorUI extends Plugin {
 
 			dropdownView.bind( 'isEnabled' ).to( command );
 
-			dropdownView.on( 'execute', ( evt, val ) => {
-				if ( val.value !== null ) {
-					colorTableView.recentlyUsedColors.add( { color: val.value, hasBorder: val.hasBorder, label: val.label }, 0 );
+			dropdownView.on( 'execute', ( evt, data ) => {
+				if ( data.value !== null ) {
+					colorTableView.recentlyUsedColors.add( {
+						color: data.value,
+						hasBorder: data.hasBorder,
+						label: data.label },
+					0 );
 				}
-				editor.execute( this.commandName, val );
+				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
 			} );
 
