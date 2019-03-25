@@ -331,7 +331,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Renders the single item in autocomplete list.
+	 * Renders a single item in the autocomplete list.
 	 *
 	 * @private
 	 * @param {module:mention/mention~MentionFeedItem} item
