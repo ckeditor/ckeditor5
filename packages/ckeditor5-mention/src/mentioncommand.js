@@ -16,7 +16,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
  *
  * The command is registered by the {@link module:mention/mentionediting~MentionEditing} as `'mention'`.
  *
- * To insert mention on range, execute the command and specify, mention object and range to replace:
+ * To insert a mention on a range, execute the command and specify a mention object and a range to replace:
  *
  *		const focus = editor.model.document.selection.focus;
  *
