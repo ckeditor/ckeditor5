@@ -132,6 +132,17 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
+
+		it( 'should not convert empty mentions', () => {
+			editor.setData( '<p><span class="mention" data-mention="John"></span></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+
+			const expectedView = '<p></p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
 	} );
 
 	describe( 'selection post fixer', () => {
