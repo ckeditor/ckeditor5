@@ -115,13 +115,7 @@ export default class ColorGrid extends View {
 	 */
 	focusLast() {
 		if ( this.items.length ) {
-			const lastChild = this.children.last;
-
-			if ( typeof lastChild.focusLast === 'function' ) {
-				lastChild.focusLast();
-			} else {
-				lastChild.focus();
-			}
+			this.items.last.focus();
 		}
 	}
 
