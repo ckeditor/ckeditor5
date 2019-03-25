@@ -18,14 +18,10 @@ const removedAttributes = [
 ];
 
 /**
- * The removeformat command. It is used by the {@link module:removeformat/removeformatediting~HighlightEditing removeformat feature}
- * to apply the text removeformating.
+ * The removeformat command. It is used by the {@link module:removeformat/removeformat~RemoveFormat remove format feature}
+ * to clear formatting form current user selection.
  *
- *		editor.execute( 'removeformat', { value: 'greenMarker' } );
- *
- * **Note**: Executing the command without a value removes the attribute from the model. If the selection is collapsed
- * inside a text with the removeformat attribute, the command will remove the attribute from the entire range
- * of that text.
+ *		editor.execute( 'removeformat' );
  *
  * @extends module:core/command~Command
  */
@@ -59,10 +55,14 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
+	 * Yields elements from a selection range that contains styles to be removed by remove format feature.
+	 *
+	 * Finds any stylable items (including selection itself) in a given selection that contains any formatting that
+	 * could be removed by remove format feature.
 	 *
 	 * @protected
-	 * @fires execute
+	 * @param {module:engine/model/documentselection~DocumentSelection} selection
+	 * @returns {Iterable.<module:engine/model/item~Item>|module:engine/model/documentselection~DocumentSelection}
 	 */
 	* _getStylableElements( selection ) {
 		for ( const curRange of selection.getRanges() ) {

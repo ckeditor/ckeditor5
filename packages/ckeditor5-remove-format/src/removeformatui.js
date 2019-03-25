@@ -17,9 +17,6 @@ const REMOVE_FORMAT = 'removeformat';
 /**
  * The default remove format UI plugin.
  *
- * See the {@link module:removeformat/removeformat~RemoveFormatConfig#options configuration} to learn more
- * about the defaults.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class RemoveFormatUI extends Plugin {
