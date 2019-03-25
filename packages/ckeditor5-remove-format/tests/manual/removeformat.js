@@ -29,7 +29,7 @@ ClassicEditor
 		plugins: [ Bold, Clipboard, Enter, Highlight, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
 			Underline, Undo, Image, Image, ImageCaption, ImageToolbar
 		],
-		toolbar: [ 'removeformat', 'italic', 'bold', 'link', 'underline', 'highlight', 'image', '|', 'undo', 'redo' ]
+		toolbar: [ 'removeformat', 'italic', 'bold', 'link', 'underline', 'highlight', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
