@@ -3,44 +3,75 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global document, Event */
 
-import FontColorEditing from '../../src/fontcolor/fontcolorediting';
-import FontColorUI from '../../src/fontcolor/fontcolorui';
-
-import fontColorIcon from '../../theme/icons/font-color.svg';
+import ColorUI from './../../src/ui/colorui';
+import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
-describe.skip( 'ColorUI', () => {
-	let editor, command, element;
+describe( 'ColorUI', () => {
+	class TestColorPlugin extends ColorUI {
+		constructor( editor ) {
+			super( editor, {
+				commandName: 'testColorCommand',
+				componentName: 'testColor',
+				icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>',
+				dropdownLabel: 'Test Color'
+			} );
+			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		static get pluginName() {
+			return 'TestColorPlugin';
+		}
+	}
+
+	const testColorConfig = {
+		colors: [
+			'yellow',
+			{
+				color: '#000',
+			}, {
+				color: 'rgb(255, 255, 255)',
+				label: 'White',
+				hasBorder: true
+			}, {
+				color: 'red',
+				label: 'RED'
+			}, {
+				color: '#00FF00',
+				label: 'Green',
+				hasBorder: false
+			}
+		],
+		columns: 3
+	};
 
 	testUtils.createSinonSandbox();
 
 	before( () => {
 		addTranslations( 'en', {
-			'Font Color': 'Font Color',
-			'Remove color': 'Remove text color',
-			'Black': 'Black',
+			'Test Color': 'Test Color',
+			'Remove color': 'Remove color',
+			'yellow': 'yellow',
 			'White': 'White',
-			'Red': 'Red',
-			'Orange': 'Orange',
-			'Blue': 'Blue',
+			'RED': 'RED',
 			'Green': 'Green'
 		} );
 
 		addTranslations( 'pl', {
-			'Font Color': 'Kolor czcionki',
+			'Test Color': 'Testowy plugin do kolorów',
 			'Remove color': 'Usuń kolor',
-			'Black': 'Czarny',
+			'yellow': 'żółty',
 			'White': 'Biały',
-			'Red': 'Czerwony',
-			'Orange': 'Pomarańczowy',
-			'Blue': 'Niebieski',
-			'Green': 'Zielony',
-			'Yellow': 'Żółty'
+			'RED': 'CZERWONY',
+			'Green': 'Zielony'
 		} );
 	} );
 
@@ -48,16 +79,20 @@ describe.skip( 'ColorUI', () => {
 		clearTranslations();
 	} );
 
+	let editor, element, testColorPlugin, command;
+
 	beforeEach( () => {
 		element = document.createElement( 'div' );
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ FontColorEditing, FontColorUI ]
+				plugins: [ TestColorPlugin ],
+				testColor: testColorConfig
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
 			} );
 	} );
 
@@ -67,38 +102,83 @@ describe.skip( 'ColorUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'fontColor Dropdown', () => {
+	describe( 'constructor()', () => {
+		it( 'has assigned proper commandName', () => {
+			expect( testColorPlugin.commandName ).to.equal( 'testColorCommand' );
+		} );
+
+		it( 'has assigned proper componentName', () => {
+			expect( testColorPlugin.componentName ).to.equal( 'testColor' );
+		} );
+
+		it( 'has assigned proper icon', () => {
+			expect( testColorPlugin.icon ).to.equal( '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
+		} );
+
+		it( 'has assigned proper dropdownLabel', () => {
+			expect( testColorPlugin.dropdownLabel ).to.equal( 'Test Color' );
+		} );
+
+		it( 'has assigned proper amount of columns', () => {
+			// Value taken from editor's config above.
+			expect( testColorPlugin.colorColumns ).to.equal( 3 );
+		} );
+	} );
+
+	describe( 'testColor Dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
-			command = editor.commands.get( 'fontColor' );
-			dropdown = editor.ui.componentFactory.create( 'fontColor' );
+			command = editor.commands.get( 'testColorCommand' );
+			dropdown = editor.ui.componentFactory.create( 'testColor' );
 		} );
 
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Font Color' );
+			expect( button ).to.have.property( 'label', 'Test Color' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', fontColorIcon );
+			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 			dropdown.render();
 
-			expect( dropdown.element.classList.contains( 'ck-font-color-dropdown' ) ).to.be.true;
+			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).to.be.true;
 		} );
 
 		it( 'should focus view after command execution from dropdown', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
+			const dropdown = editor.ui.componentFactory.create( 'testColor' );
 
-			dropdown.commandName = 'fontColor';
+			dropdown.commandName = 'testColorCommand';
 			dropdown.fire( 'execute', { value: null } );
 
 			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'static color grid should impact on recent colors', () => {
+			const firstStaticTile = dropdown.colorTableView.items.get( 1 ).items.first;
+			const recentColorsModel = dropdown.colorTableView.recentlyUsedColors;
+			const spy = sinon.spy();
+
+			dropdown.on( 'execute', spy );
+
+			firstStaticTile.element.dispatchEvent( new Event( 'click' ) );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, sinon.match.any, {
+				value: 'yellow',
+				label: 'yellow',
+				hasBorder: false
+			} );
+			expect( recentColorsModel.get( 0 ) ).to.include( {
+				color: 'yellow',
+				label: 'yellow',
+				hasBorder: false
+			} );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -120,7 +200,7 @@ describe.skip( 'ColorUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.label ).to.equal( 'Kolor czcionki' );
+				expect( buttonView.label ).to.equal( 'Testowy plugin do kolorów' );
 			} );
 
 			it( 'works for the colorTableView#items in the panel', () => {
@@ -132,26 +212,20 @@ describe.skip( 'ColorUI', () => {
 			describe( 'works for', () => {
 				const colors = [
 					{
-						color: 'hsl(0, 0%, 0%)',
-						label: 'Czarny'
+						color: 'yellow',
+						label: 'żółty'
 					}, {
-						color: 'hsl(0, 0%, 100%)',
+						color: '#000',
+						label: '#000'
+					}, {
+						color: 'rgb(255, 255, 255)',
 						label: 'Biały'
 					}, {
-						color: 'hsl(0, 75%, 60%)',
-						label: 'Czerwony'
+						color: 'red',
+						label: 'CZERWONY'
 					}, {
-						color: 'hsl(30, 75%, 60%)',
-						label: 'Pomarańczowy'
-					}, {
-						color: 'hsl(240, 75%, 60%)',
-						label: 'Niebieski'
-					}, {
-						color: 'hsl(120, 75%, 60%)',
+						color: '#00FF00',
 						label: 'Zielony'
-					}, {
-						color: 'hsl(60, 75%, 60%)',
-						label: 'Żółty'
 					}
 				];
 
@@ -169,14 +243,15 @@ describe.skip( 'ColorUI', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ FontColorEditing, FontColorUI ],
-						toolbar: [ 'fontColor' ],
+						plugins: [ TestColorPlugin ],
+						testColor: testColorConfig,
+						toolbar: [ 'testColor' ],
 						language: 'pl',
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'fontColor' );
-						command = editor.commands.get( 'fontColor' );
+						dropdown = editor.ui.componentFactory.create( 'testColor' );
+						command = editor.commands.get( 'testColorCommand' );
 
 						editorElement.remove();
 

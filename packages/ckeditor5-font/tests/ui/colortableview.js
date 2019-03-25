@@ -257,7 +257,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		describe( 'events', () => {
-			it( 'added colors delegates eexecute to parent', () => {
+			it( 'added colors delegates execute to parent', () => {
 				const spy = sinon.spy();
 				colorTableView.on( 'execute', spy );
 
