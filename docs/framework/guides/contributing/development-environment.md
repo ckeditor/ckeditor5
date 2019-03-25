@@ -139,13 +139,19 @@ git pull
 
 # To update pull changes to all the packages:
 mgit sync
-```
 
-From time to time, if the list of dependencies in any of the packages changed, you will need to call Yarn again to symlink them:
-
-```bash
+# To install missing dependencies:
 yarn install
 ```
+
+From time to time, if the list of dependencies in any of the packages changed, new package has been added to `ckeditor5` or you just want to make sure that you have the repository up to date, run the `reinstall` script:
+
+```bash
+git pull
+yarn run reinstall
+```
+
+The `reinstall` script first calls `yarn run clean` to remove `node_modules/` directories from all packages (including `ckeditor5`) and then `yarn run bootstrap` which is a shorthand for `mgit sync && yarn install`.
 
 ### Working with multiple repositories
 
