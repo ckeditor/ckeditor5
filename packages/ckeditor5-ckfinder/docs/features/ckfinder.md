@@ -199,6 +199,10 @@ Additionally, in the "image upload only" integration, you can use the following 
 * The `'imageUpload'` UI button component.
 * The `'imageUpload'` command implemented by the {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand}.
 
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-ckfinder.
