@@ -134,11 +134,11 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should not convert empty mentions', () => {
-			editor.setData( '<p><span class="mention" data-mention="John"></span></p>' );
+			editor.setData( '<p>foo<span class="mention" data-mention="John"></span></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 
-			const expectedView = '<p></p>';
+			const expectedView = '<p>foo</p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
