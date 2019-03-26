@@ -17,6 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
+
 	const colorsDefinition = [
 		{
 			color: '#000',
@@ -142,6 +143,7 @@ describe( 'ColorTableView', () => {
 
 	describe( 'static colors grid', () => {
 		let staticColorTable;
+
 		beforeEach( () => {
 			staticColorTable = colorTableView.items.get( 1 );
 		} );
@@ -187,6 +189,7 @@ describe( 'ColorTableView', () => {
 			isEnabled: false,
 			hasBorder: true
 		};
+
 		let recentColorsGridView, recentColorModel;
 
 		beforeEach( () => {
@@ -198,10 +201,12 @@ describe( 'ColorTableView', () => {
 			it( 'has proper length of populated items', () => {
 				expect( recentColorModel.length ).to.equal( 5 );
 			} );
+
 			for ( let i = 0; i < 5; i++ ) {
 				it( `initialized item with index: "${ i }" has proper attributes`, () => {
 					const modelItem = recentColorModel.get( i );
 					const viewItem = recentColorsGridView.items.get( i );
+
 					expect( modelItem.color ).to.equal( 'hsla(0, 0%, 0%, 0)' );
 					expect( modelItem.isEnabled ).to.be.false;
 					expect( modelItem.hasBorder ).to.be.true;

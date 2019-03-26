@@ -21,12 +21,10 @@ describe( 'ColorUI', () => {
 				icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>',
 				dropdownLabel: 'Test Color'
 			} );
+
 			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
 		}
 
-		/**
-		 * @inheritDoc
-		 */
 		static get pluginName() {
 			return 'TestColorPlugin';
 		}
@@ -37,14 +35,17 @@ describe( 'ColorUI', () => {
 			'yellow',
 			{
 				color: '#000',
-			}, {
+			},
+			{
 				color: 'rgb(255, 255, 255)',
 				label: 'White',
 				hasBorder: true
-			}, {
+			},
+			{
 				color: 'red',
 				label: 'RED'
-			}, {
+			},
+			{
 				color: '#00FF00',
 				label: 'Green',
 				hasBorder: false
@@ -194,7 +195,7 @@ describe( 'ColorUI', () => {
 
 		describe( 'localization', () => {
 			beforeEach( () => {
-				return localizedEditor();
+				return createLocalizedEditor();
 			} );
 
 			it( 'works for the #buttonView', () => {
@@ -214,16 +215,20 @@ describe( 'ColorUI', () => {
 					{
 						color: 'yellow',
 						label: 'żółty'
-					}, {
+					},
+					{
 						color: '#000',
 						label: '#000'
-					}, {
+					},
+					{
 						color: 'rgb(255,255,255)',
 						label: 'Biały'
-					}, {
+					},
+					{
 						color: 'red',
 						label: 'CZERWONY'
-					}, {
+					},
+					{
 						color: '#00FF00',
 						label: 'Zielony'
 					}
@@ -233,11 +238,13 @@ describe( 'ColorUI', () => {
 					it( `tested color ${ test.color } with name ${ test.label }.`, () => {
 						const colorGrid = dropdown.colorTableView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
+
 						expect( tile.label ).to.equal( test.label );
 					} );
 				} );
 			} );
-			function localizedEditor() {
+
+			function createLocalizedEditor() {
 				const editorElement = document.createElement( 'div' );
 				document.body.appendChild( editorElement );
 

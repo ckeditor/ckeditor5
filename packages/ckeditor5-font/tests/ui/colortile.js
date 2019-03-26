@@ -7,14 +7,14 @@ import ColorTile from './../../src/ui/colortile';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 describe( 'ColorTile', () => {
-	it( 'inhertence from ButtonView', () => {
-		const colorTile = new ColorTile();
-		expect( colorTile ).to.be.instanceOf( ButtonView );
+	it( 'inherits from ButtonView', () => {
+		expect( new ColorTile() ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'has proper attributes and classes', () => {
 		const colorTile = new ColorTile();
 		colorTile.render();
+
 		expect( colorTile.color ).to.be.undefined;
 		expect( colorTile.hasBorder ).to.be.undefined;
 

@@ -11,10 +11,11 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ColorTile from '../../src/ui/colortile';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorGrid', () => {
+	let locale, colorGrid;
+
 	const colorsDefinition = [
 		{
 			color: '#000',
@@ -36,7 +37,6 @@ describe( 'ColorGrid', () => {
 			}
 		}
 	];
-	let locale, colorGrid;
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -145,6 +145,7 @@ describe( 'ColorGrid', () => {
 				expect( colorGrid.items.length ).to.equal( 4 );
 				sinon.assert.calledOnce( spy );
 			} );
+
 			it( 'removes element', () => {
 				const spy = sinon.spy( colorGrid.focusTracker, 'remove' );
 
