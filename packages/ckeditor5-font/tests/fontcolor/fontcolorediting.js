@@ -4,11 +4,12 @@
  */
 
 import FontColorEditing from './../../src/fontcolor/fontcolorediting';
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	getData as getModelData,
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontColorEditing', () => {
 	let editor, doc;
@@ -31,7 +32,6 @@ describe( 'FontColorEditing', () => {
 	it( 'should set proper schema rules', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block', '$text' ], 'fontColor' ) ).to.be.true;
 		expect( editor.model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'fontColor' ) ).to.be.true;
-
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontColor' ) ).to.be.false;
 	} );
 
@@ -181,7 +181,6 @@ describe( 'FontColorEditing', () => {
 			editor.setData( data );
 
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]f<$text fontColor="rgb(10,20,30)">o</$text>o</paragraph>' );
-
 			expect( editor.getData() ).to.equal( '<p>f<span style="color:rgb(10,20,30);">o</span>o</p>' );
 		} );
 

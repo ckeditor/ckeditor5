@@ -8,9 +8,7 @@
 import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting';
 import FontBackgroundColorUI from './../../src/fontbackgroundcolor/fontbackgroundcolorui';
 import ColorUI from './../../src/ui/colorui';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
 import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
 
 describe( 'FontBckgroundColorUI', () => {

@@ -5,7 +5,6 @@
 
 import FontColorCommand from '../../src/fontcolor/fontcolorcommand';
 import FontCommand from '../../src/fontcommand';
-
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 describe( 'FontColorCommand', () => {

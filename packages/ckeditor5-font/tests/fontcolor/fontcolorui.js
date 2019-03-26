@@ -8,9 +8,7 @@
 import FontColorEditing from './../../src/fontcolor/fontcolorediting';
 import FontColorUI from './../../src/fontcolor/fontcolorui';
 import ColorUI from './../../src/ui/colorui';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
 import fontColorIcon from '../../theme/icons/font-color.svg';
 
 describe( 'FontColorUI', () => {

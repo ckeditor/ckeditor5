@@ -4,11 +4,12 @@
  */
 
 import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting';
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	getData as getModelData,
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'FontBackgroundColorEditing', () => {
 	let editor, doc;
@@ -133,6 +134,7 @@ describe( 'FontBackgroundColorEditing', () => {
 				'rgb( 20%, 30%, 40% )',
 				'#345678'
 			];
+
 			tests.forEach( test => {
 				it( `should convert fontBackgroundColor attribute: "${ test }" to proper style value.`, () => {
 					setModelData( doc, `<paragraph>fo<$text fontBackgroundColor="${ test }">o b</$text>ar</paragraph>` );

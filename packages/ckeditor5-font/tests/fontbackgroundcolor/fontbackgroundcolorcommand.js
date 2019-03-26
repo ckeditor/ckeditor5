@@ -5,7 +5,6 @@
 
 import FontBackgroundColorCommand from '../../src/fontbackgroundcolor/fontbackgroundcolorcommand';
 import FontCommand from '../../src/fontcommand';
-
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 
 describe( 'FontBackgroundColorCommand', () => {
