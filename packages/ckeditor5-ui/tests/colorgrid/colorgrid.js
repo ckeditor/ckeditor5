@@ -14,7 +14,7 @@ import FocusCycler from '../../src/focuscycler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorGrid', () => {
-	let locale, colorGrid;
+	let locale, view;
 
 	const colorDefinitions = [
 		{
@@ -42,37 +42,66 @@ describe( 'ColorGrid', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		colorGrid = new ColorGrid( locale, { colorDefinitions } );
-		colorGrid.render();
+		view = new ColorGrid( locale, { colorDefinitions } );
+		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
+		it( 'creates element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-color-grid' ) ).to.be.true;
+		} );
+
+		it( 'uses the options#columns to control the grid', () => {
+			const view = new ColorGrid( locale, { columns: 3 } );
+			view.render();
+
+			expect( view.element.style.gridTemplateColumns ).to.equal( '1fr 1fr 1fr' );
+
+			view.destroy();
+		} );
+
+		it( 'creates the view without provided color definitions', () => {
+			const view = new ColorGrid( locale );
+			view.render();
+
+			expect( view.items ).to.have.length( 0 );
+
+			view.destroy();
+		} );
+
 		it( 'creates view collection with children', () => {
-			expect( colorGrid.items ).to.be.instanceOf( ViewCollection );
+			expect( view.items ).to.be.instanceOf( ViewCollection );
 		} );
 
 		it( 'creates focus tracker', () => {
-			expect( colorGrid.focusTracker ).to.be.instanceOf( FocusTracker );
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
 		it( 'creates keystroke handler', () => {
-			expect( colorGrid.keystrokes ).to.be.instanceOf( KeystrokeHandler );
+			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
 		it( 'creates focus cycler', () => {
-			expect( colorGrid._focusCycler ).to.be.instanceOf( FocusCycler );
+			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
 		describe( 'add colors from definition as child items', () => {
 			it( 'has proper number of elements', () => {
-				expect( colorGrid.items.length ).to.equal( 3 );
+				expect( view.items.length ).to.equal( 3 );
 			} );
+
 			colorDefinitions.forEach( ( color, index ) => {
 				describe( 'child items has proper attributes', () => {
 					it( `for (index: ${ index }, color: ${ color.color }) child`, () => {
-						const colorTile = colorGrid.items.get( index );
+						const colorTile = view.items.get( index );
+
 						expect( colorTile ).to.be.instanceOf( ColorTile );
 						expect( colorTile.color ).to.equal( color.color );
 					} );
@@ -84,9 +113,9 @@ describe( 'ColorGrid', () => {
 	describe( 'execute()', () => {
 		it( 'fires event for rendered tiles', () => {
 			const spy = sinon.spy();
-			const firstTile = colorGrid.items.first;
+			const firstTile = view.items.first;
 
-			colorGrid.on( 'execute', spy );
+			view.on( 'execute', spy );
 
 			firstTile.isEnabled = true;
 
@@ -102,36 +131,36 @@ describe( 'ColorGrid', () => {
 
 	describe( 'focus', () => {
 		it( 'focuses the tile in DOM', () => {
-			const spy = sinon.spy( colorGrid.items.first, 'focus' );
+			const spy = sinon.spy( view.items.first, 'focus' );
 
-			colorGrid.focus();
+			view.focus();
 
 			sinon.assert.calledOnce( spy );
 
-			colorGrid.items.clear();
-			colorGrid.focus();
+			view.items.clear();
+			view.focus();
 
-			expect( colorGrid.items.length ).to.equal( 0 );
+			expect( view.items.length ).to.equal( 0 );
 			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'focuses last the tile in DOM', () => {
-			const spy = sinon.spy( colorGrid.items.last, 'focus' );
+			const spy = sinon.spy( view.items.last, 'focus' );
 
-			colorGrid.focusLast();
+			view.focusLast();
 
 			sinon.assert.calledOnce( spy );
 
-			colorGrid.items.clear();
-			colorGrid.focusLast();
+			view.items.clear();
+			view.focusLast();
 
-			expect( colorGrid.items.length ).to.equal( 0 );
+			expect( view.items.length ).to.equal( 0 );
 			sinon.assert.calledOnce( spy );
 		} );
 
 		describe( 'update elements in focus tracker', () => {
 			it( 'adding new element', () => {
-				const spy = sinon.spy( colorGrid.focusTracker, 'add' );
+				const spy = sinon.spy( view.focusTracker, 'add' );
 
 				const colorTile = new ColorTile();
 				colorTile.set( {
@@ -142,18 +171,18 @@ describe( 'ColorGrid', () => {
 						hasBorder: false
 					}
 				} );
-				colorGrid.items.add( colorTile );
+				view.items.add( colorTile );
 
-				expect( colorGrid.items.length ).to.equal( 4 );
+				expect( view.items.length ).to.equal( 4 );
 				sinon.assert.calledOnce( spy );
 			} );
 
 			it( 'removes element', () => {
-				const spy = sinon.spy( colorGrid.focusTracker, 'remove' );
+				const spy = sinon.spy( view.focusTracker, 'remove' );
 
-				colorGrid.items.remove( colorGrid.items.length - 1 );
+				view.items.remove( view.items.length - 1 );
 
-				expect( colorGrid.items.length ).to.equal( 2 );
+				expect( view.items.length ).to.equal( 2 );
 				sinon.assert.calledOnce( spy );
 			} );
 		} );

@@ -32,6 +32,13 @@ export default class ColorGrid extends View {
 	constructor( locale, options ) {
 		super( locale );
 
+		const colorDefinitions = options && options.colorDefinitions || [];
+		const viewStyleAttribute = {};
+
+		if ( options && options.columns ) {
+			viewStyleAttribute.gridTemplateColumns = `repeat( ${ options.columns }, 1fr)`;
+		}
+
 		/**
 		 * Collection of the child tile views.
 		 *
@@ -76,28 +83,26 @@ export default class ColorGrid extends View {
 			}
 		} );
 
-		if ( options.colorDefinitions ) {
-			options.colorDefinitions.forEach( item => {
-				const colorTile = new ColorTile();
+		colorDefinitions.forEach( item => {
+			const colorTile = new ColorTile();
 
-				colorTile.set( {
-					color: item.color,
-					label: item.label,
-					tooltip: true,
-					hasBorder: item.options.hasBorder
-				} );
-
-				colorTile.on( 'execute', () => {
-					this.fire( 'execute', {
-						value: item.color,
-						hasBorder: item.options.hasBorder,
-						label: item.label
-					} );
-				} );
-
-				this.items.add( colorTile );
+			colorTile.set( {
+				color: item.color,
+				label: item.label,
+				tooltip: true,
+				hasBorder: item.options.hasBorder
 			} );
-		}
+
+			colorTile.on( 'execute', () => {
+				this.fire( 'execute', {
+					value: item.color,
+					hasBorder: item.options.hasBorder,
+					label: item.label
+				} );
+			} );
+
+			this.items.add( colorTile );
+		} );
 
 		this.setTemplate( {
 			tag: 'div',
@@ -107,9 +112,7 @@ export default class ColorGrid extends View {
 					'ck',
 					'ck-color-grid'
 				],
-				style: {
-					gridTemplateColumns: `repeat( ${ options.columns }, 1fr)`
-				}
+				style: viewStyleAttribute
 			}
 		} );
 	}
