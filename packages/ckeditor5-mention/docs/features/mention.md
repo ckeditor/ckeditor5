@@ -16,7 +16,7 @@ You can type `'@'` character to invoke mention auto-complete UI. The below demo 
 
 ## Configuration
 
-The minimal configuration of a mention requires defining a {@link module:mention/mention~MentionFeed#feed} and a {@link module:mention/mention~MentionFeed#marker} (if not using the default `@` character). You can define also `minimumCharacters` after which the auto-complete panel will be shown. 
+The minimal configuration of a mention requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`} (if not using the default `@` character). You can define also `minimumCharacters` after which the auto-complete panel will be shown. 
 
 ```js
 ClassicEditor
@@ -42,7 +42,7 @@ Additionally you can configure:
 
 ### Providing the feed
 
-The {@link module:mention/mention~MentionFeed#feed} can be provided as:
+The {@link module:mention/mention~MentionFeed `feed`} can be provided as:
 
 - static array - good for scenarios with relatively small set of auto-complete items.
 - a callback - which provides more control over the returned list of items.
@@ -105,7 +105,7 @@ The mention feature does not limit items displayed in the mention suggestion lis
 
 ### Customizing the auto-complete list
 
-The items displayed in auto-complete list can be customized by defining the {@link module:mention/mention~MentionFeed#itemRenderer} callback.
+The items displayed in auto-complete list can be customized by defining the {@link module:mention/mention~MentionFeed `itemRenderer`} callback.
 
 This callback takes a plain object feed item (at least with `name` parameter - even when feed items are defined as strings). The item renderer function must return a new DOM element.
 
