@@ -285,8 +285,8 @@ export default class UpcastDispatcher {
 
 		// Using the range returned by `model.Writer#split`, we will pair original elements with their split parts.
 		//
-		// The range returned from the writer spans "over the split" or, precisely saying, from the end of the original (split) element
-		// to the beginning of the other (new) part of that element:
+		// The range returned from the writer spans "over the split" or, precisely saying, from the end of the original element (the one
+		// that got split) to the beginning of the other part of that element:
 		//
 		// <limit><a><b><c>X[]Y</c></b><a></limit> ->
 		// <limit><a><b><c>X[</c></b></a><a><b><c>]Y</c></b></a>
