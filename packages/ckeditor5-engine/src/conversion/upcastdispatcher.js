@@ -303,10 +303,10 @@ export default class UpcastDispatcher {
 				stack.push( treeWalkerValue.item );
 			} else {
 				// There should not be any text nodes after the element is split, so the only other value is `elementStart`.
-				const originalElement = stack.pop();
-				const splitElement = treeWalkerValue.item;
+				const originalPart = stack.pop();
+				const splitPart = treeWalkerValue.item;
 
-				this._registerSplitPair( originalElement, splitElement );
+				this._registerSplitPair( originalPart, splitPart );
 			}
 		}
 
@@ -317,23 +317,23 @@ export default class UpcastDispatcher {
 	}
 
 	/**
-	 * Registers that `split` element is a split part of the `original` element.
+	 * Registers that `splitPart` element is a split part of the `originalPart` element.
 	 *
-	 * Data set by this method is then used by {@link #_getSplitParts} and {@link #_removeEmptyElements}
+	 * Data set by this method is used by {@link #_getSplitParts} and {@link #_removeEmptyElements}.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} original The original element.
-	 * @param {module:engine/model/element~Element} split The split part element.
+	 * @param {module:engine/model/element~Element} originalPart
+	 * @param {module:engine/model/element~Element} splitPart
 	 */
-	_registerSplitPair( original, split ) {
-		if ( !this._splitParts.has( original ) ) {
-			this._splitParts.set( original, [ original ] );
+	_registerSplitPair( originalPart, splitPart ) {
+		if ( !this._splitParts.has( originalPart ) ) {
+			this._splitParts.set( originalPart, [ originalPart ] );
 		}
 
-		const list = this._splitParts.get( original );
+		const list = this._splitParts.get( originalPart );
 
-		this._splitParts.set( split, list );
-		list.push( split );
+		this._splitParts.set( splitPart, list );
+		list.push( splitPart );
 	}
 
 	/**
