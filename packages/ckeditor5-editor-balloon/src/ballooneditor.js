@@ -122,7 +122,7 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * This is the most convenient and common way to initialize the editor. The element's content will be used as the editor data.
+	 * The element's content will be used as the editor data.
 	 *
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
@@ -167,13 +167,8 @@ export default class BalloonEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically
-	 * {@link module:editor-balloon/ballooneditor~BalloonEditor#setData loaded} to the editor upon initialization
-	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
-	 * (the original one will be hidden and the editor will be injected next to it).
-	 *
-	 * Moreover, the editor data will be set back to the original element once the editor is destroyed and when a form, in which
-	 * this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration with native
-	 * web forms.
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor#initData loaded} to the editor upon initialization.
+	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
 	 * It is available under {@link module:editor-classic/classiceditorui~BalloonEditorUI#element `editor.ui.element`} property.
