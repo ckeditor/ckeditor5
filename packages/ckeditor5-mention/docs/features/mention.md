@@ -49,6 +49,10 @@ The {@link module:mention/mention~MentionFeed#feed} can be provided as:
 
 If using a callback you can return a `Promise` that resolves with list of {@link module:mention/mention~MentionFeedItem mention feed items}. Those can be simple stings used as mention text or plain objects with at least one `name` property. The other parameters can be used either when {@link features/mention#customizing-the-auto-complete-list customizing the auto-complete list} {@link features/mention#customizing-the-output customizing the output}.
 
+<info-box>
+When using external resources to obtain the feed it is recommended to add some caching mechanism so subsequent calls for the same suggestoin would load faster.
+</info-box>
+
 The callback receives a matched text which should be used to filter item suggestions. It should return a `Promise` and resolve it with an array of items that match to the feed text.
 
 <info-box>
