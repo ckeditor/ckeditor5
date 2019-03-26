@@ -573,16 +573,12 @@ function createContextTree( contextDefinition, writer ) {
  * Example of a usage in a converter code:
  *
  *		const myElement = conversionApi.writer.createElement( 'myElement' );
- *		// ...
+ *
+ *		// Children conversion may split `myElement`.
  *		conversionApi.convertChildren( myElement, modelCursor );
- *		// ...
+ *
  *		const splitParts = conversionApi.getSplitParts( myElement );
  *		const lastSplitPart = splitParts[ splitParts.length - 1 ];
- *
- *		// Additional processing on all the parts after the children are converted and the original element might be split.
- *		for ( const element of splitParts ) {
- *			// ...
- *		}
  *
  *		// Setting `data.modelRange` basing on split parts:
  *		data.modelRange = conversionApi.writer.createRange(
