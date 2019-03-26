@@ -10,7 +10,7 @@ import HighlightUI from '../src/highlightui';
 
 import markerIcon from '../theme/icons/marker.svg';
 import penIcon from '../theme/icons/pen.svg';
-import eraserIcon from '../theme/icons/eraser.svg';
+import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
