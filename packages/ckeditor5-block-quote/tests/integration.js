@@ -13,6 +13,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -31,7 +32,7 @@ describe( 'BlockQuote integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
+				plugins: [ BlockQuote, Paragraph, Bold, Image, ImageCaption, List, Enter, Delete, Heading, Table ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -640,6 +641,93 @@ describe( 'BlockQuote integration', () => {
 				'</tableCell>' +
 				'</tableRow>' +
 				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'autoparagraphing', () => {
+		it( 'text in block quote in div', () => {
+			const data =
+				'<blockquote>' +
+					'<div>foo<strong>bar</strong></div>' +
+				'</blockquote>' +
+				'xyz';
+
+			editor.setData( data );
+
+			expect( editor.getData() ).to.equal(
+				'<blockquote>' +
+					'<p>foo<strong>bar</strong></p>' +
+				'</blockquote>' +
+				'<p>xyz</p>'
+			);
+		} );
+
+		it( 'text directly in block quote', () => {
+			const data =
+				'<blockquote>' +
+					'foo<strong>bar</strong>' +
+				'</blockquote>' +
+				'xyz';
+
+			editor.setData( data );
+
+			expect( editor.getData() ).to.equal(
+				'<blockquote>' +
+					'<p>foo<strong>bar</strong></p>' +
+				'</blockquote>' +
+				'<p>xyz</p>'
+			);
+		} );
+
+		it( 'text after block quote in div', () => {
+			const data =
+				'<blockquote>' +
+					'foo<strong>bar</strong>' +
+				'</blockquote>' +
+				'<div>xyz</div>';
+
+			editor.setData( data );
+
+			expect( editor.getData() ).to.equal(
+				'<blockquote>' +
+					'<p>foo<strong>bar</strong></p>' +
+				'</blockquote>' +
+				'<p>xyz</p>'
+			);
+		} );
+
+		it( 'text inside block quote in and after div', () => {
+			const data =
+				'<blockquote>' +
+					'<div>foo</div><strong>bar</strong>' +
+				'</blockquote>' +
+				'xyz';
+
+			editor.setData( data );
+
+			expect( editor.getData() ).to.equal(
+				'<blockquote>' +
+					'<p>foo</p><p><strong>bar</strong></p>' +
+				'</blockquote>' +
+				'<p>xyz</p>'
+			);
+		} );
+
+		it( 'text inside block quote in div split by heading', () => {
+			const data =
+				'<blockquote>' +
+					'<div>foo<h2>bar</h2><strong>baz</strong></div>' +
+				'</blockquote>' +
+				'xyz';
+
+			editor.setData( data );
+
+			expect( editor.getData() ).to.equal(
+				'<blockquote>' +
+					'<p>foo</p><h2>bar</h2><p><strong>baz</strong></p>' +
+				'</blockquote>' +
+				'<p>xyz</p>'
 			);
 		} );
 	} );
