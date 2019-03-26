@@ -10,6 +10,16 @@
 import ColorTableView from './ui/colortableview';
 
 /**
+ * Name of font color plugin.
+ */
+export const FONT_COLOR = 'fontColor';
+
+/**
+ * Name of font background color plugin.
+ */
+export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
+
+/**
  * Builds a proper {@link module:engine/conversion/conversion~ConverterDefinition converter definition} out of input data.
  *
  * @param {String} modelAttributeKey Key
@@ -39,16 +49,6 @@ export function buildDefinition( modelAttributeKey, options ) {
 }
 
 /**
- * Name of font color plugin
- */
-export const FONT_COLOR = 'fontColor';
-
-/**
- * Name of font background color plugin.
- */
-export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
-
-/**
  * Function for font color and font background color plugins
  * which is responsible for upcasting data to model.
  * styleAttr should eqaul to `'color'` or `'background-color'`.
@@ -56,10 +56,7 @@ export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
  * @param {String} styleAttr
  */
 export function renderUpcastAttribute( styleAttr ) {
-	return viewElement => {
-		const fontColor = viewElement.getStyle( styleAttr );
-		return normalizeColorCode( fontColor );
-	};
+	return viewElement => normalizeColorCode( viewElement.getStyle( styleAttr ) );
 }
 
 /**
@@ -91,6 +88,25 @@ export function normalizeOptions( colorRow ) {
 		.filter( option => !!option );
 }
 
+/**
+ * Helper which add {@link module:font/ui/colortableview~ColorTableView} to dropdown with proper initial values.
+ * @param {Object} config Configuration object
+ * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
+ * will be added {@link module:font/ui/colortableview~ColorTableView}.
+ * @param {Array.<Object>}  Array with objects representing color to be drawn in color grid.
+ */
+export function addColorsToDropdown( { dropdownView, colors, colorColumns, removeButtonLabel } ) {
+	const locale = dropdownView.locale;
+	const colorTableView = new ColorTableView( locale, { colors, colorColumns, removeButtonLabel } );
+
+	dropdownView.colorTableView = colorTableView;
+	dropdownView.panelView.children.add( colorTableView );
+
+	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
+
+	return colorTableView;
+}
+
 function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
@@ -119,21 +135,4 @@ function normalizeSingleColorDefinition( color ) {
 			}
 		};
 	}
-}
-
-/**
- * Helper which add {@link module:font/ui/colortableview~ColorTableView} to dropdown with proper initial values.
- * @param {Object} config Configuration object
- * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
- * will be added {@link module:font/ui/colortableview~ColorTableView}.
- * @param {Array.<Object>}  Array with objects representing color to be drawn in color grid.
- */
-export function addColorsToDropdown( { dropdownView, colors, colorColumns, removeButtonTooltip } ) {
-	const locale = dropdownView.locale;
-	const colorTableView = new ColorTableView( locale, { colors, colorColumns, removeButtonTooltip } );
-	dropdownView.colorTableView = colorTableView;
-	dropdownView.panelView.children.add( colorTableView );
-
-	colorTableView.delegate( 'execute' ).to( dropdownView, 'execute' );
-	return colorTableView;
 }
