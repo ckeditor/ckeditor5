@@ -487,15 +487,7 @@ The HTML that you have added to the `index.html` file is your editor's data. Thi
 
 However, what's in the model?
 
-To inspect the model structure you can use the [`@ckeditor/ckeditor5-inspector`](https://www.npmjs.com/package/@ckeditor/ckeditor5-inspector) util. It allows browsing the model and view structures as well as the list of commands.
-
-In order to enable CKEditor 5 Inspector for your editor, you need to first install it:
-
-```
-npm install --save-dev @ckeditor/ckeditor5-inspector
-```
-
-And now you need to load it in the `app.js` file:
+To learn that, we recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector}. Once {@link framework/guides/development-tools#ckeditor-5-inspector#installing-the-inspector installed}, you need to load it in the `app.js` file:
 
 ```js
 // app.js
@@ -534,7 +526,7 @@ ClassicEditor
 
 After rebuilding your project and refreshing the page you will see the inspector:
 
-{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor 5 Inspector.}
+{@img assets/img/tutorial-implementing-a-widget-4b.png Screenshot of a the simple box widget's structure displayed by CKEditor 5 inspector.}
 
 You will see the following HTML-like string:
 
@@ -555,9 +547,7 @@ As you can see, this structure is quite different than the HTML input/output. If
 Play a bit with editor features (bold, italic, headings, lists, selection) to see how the model structure changes.
 
 <info-box>
-	Another useful helpers are the `getData()` and `setData()` functions exposed by {@link module:engine/dev-utils/model model dev utils} and {@link module:engine/dev-utils/view view dev utils}. They allow stringifying the model/view structures, selections, ranges and positions as well as loading them from string. They are often use when writing tests.
-
-	Both tools are designed for prototyping, debugging, and testing purposes. Do not use them in production-grade code.
+	You can also use some {@link framework/guides/development-tools#testing-helpers useful helpers like `getData()` and `setData()`} to learn more about the state of the editor model or write assertions in tests.
 </info-box>
 
 ### Behavior before "widgetizing" simple box
@@ -757,7 +747,7 @@ export default class InsertSimpleBoxCommand extends Command {
 	refresh() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const allowedIn = model.schema.findAllowedParent( 'simpleBox', selection.getFirstPosition() );
+		const allowedIn = model.schema.findAllowedParent( selection.getFirstPosition(), 'simpleBox' );
 
 		this.isEnabled = allowedIn !== null;
 	}
@@ -826,7 +816,7 @@ Should result in:
 
 {@img assets/img/tutorial-implementing-a-widget-6.png Screenshot of a simple box instance inserted at the beginning of the editor content.}
 
-You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor 5 Inspector):
+You can also try inspecting the `isEnabled` property value (or just checking it in CKEditor 5 inspector):
 
 ```js
 console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
@@ -842,6 +832,10 @@ Let's change one more thing before we will move forward &mdash; let's disallow `
 // ... imports
 
 export default class SimpleBoxEditing extends Plugin {
+	static get requires() {
+		return [ Widget ];
+	}
+
 	init() {
 		console.log( 'SimpleBoxEditing#init() got called' );
 
