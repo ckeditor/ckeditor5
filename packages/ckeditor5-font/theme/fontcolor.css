@@ -6,16 +6,14 @@
 :root {
 	--ck-table-color-tile-size: 20px;
 	--ck-table-color-max-columns: 5;
-	--ck-table-color-padding: 10px;
-
 	--ck-color-table-color-tile-border: hsl(0, 0%, 90%);
 	--ck-color-table-color-tile-border-active: hsl(184, 80%, 50%);
 }
 
 .ck .ck-color-table__grid-container {
 	display: grid;
-	grid-gap: calc( var(--ck-table-color-padding) / 2 );
-	padding: var(--ck-table-color-padding);
+	grid-gap: calc( var(--ck-spacing-standard) / 2 );
+	padding: var(--ck-spacing-standard);
 }
 
 .ck .ck-color-table__color-tile {
@@ -46,10 +44,9 @@
 	align-items: center;
 	width: 100%;
 	border-bottom: 1px solid var(--ck-color-base-border);
-	padding: calc(var(--ck-table-color-padding) / 2 ) var(--ck-table-color-padding);
+	padding: calc(var(--ck-spacing-standard) / 2 ) var(--ck-spacing-standard);
 }
 
 .ck .ck-button.ck-button_with-text.ck-color-table__remove-color svg {
-	width: var(--ck-table-color-tile-size);
-	margin-right: var(--ck-spacing-large);
+	margin-right: var(--ck-spacing-standard);
 }
