@@ -16,7 +16,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'ColorGrid', () => {
 	let locale, colorGrid;
 
-	const colorsDefinition = [
+	const colorDefinitions = [
 		{
 			color: '#000',
 			label: 'Black',
@@ -42,7 +42,7 @@ describe( 'ColorGrid', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		colorGrid = new ColorGrid( locale, { colorsDefinition } );
+		colorGrid = new ColorGrid( locale, { colorDefinitions } );
 		colorGrid.render();
 	} );
 
@@ -69,7 +69,7 @@ describe( 'ColorGrid', () => {
 			it( 'has proper number of elements', () => {
 				expect( colorGrid.items.length ).to.equal( 3 );
 			} );
-			colorsDefinition.forEach( ( color, index ) => {
+			colorDefinitions.forEach( ( color, index ) => {
 				describe( 'child items has proper attributes', () => {
 					it( `for (index: ${ index }, color: ${ color.color }) child`, () => {
 						const colorTile = colorGrid.items.get( index );

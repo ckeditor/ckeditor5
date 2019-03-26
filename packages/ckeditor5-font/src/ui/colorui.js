@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import {
-	addColorsToDropdown,
+	addColorTableToDropdown,
 	getLocalizedColorOptions
 } from '../utils';
 
@@ -64,7 +64,7 @@ export default class ColorUI extends Plugin {
 		 * Number of columns in color grid. Determines the number of recent colors to be displayed.
 		 * @type {Number}
 		 */
-		this.colorColumns = editor.config.get( `${ this.componentName }.columns` );
+		this.columns = editor.config.get( `${ this.componentName }.columns` );
 	}
 
 	/**
@@ -79,7 +79,7 @@ export default class ColorUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
-			const colorTableView = addColorsToDropdown( {
+			const colorTableView = addColorTableToDropdown( {
 				dropdownView,
 				colors: options.map( option => ( {
 					label: option.label,
@@ -88,7 +88,7 @@ export default class ColorUI extends Plugin {
 						hasBorder: option.hasBorder
 					}
 				} ) ),
-				colorColumns: this.colorColumns,
+				columns: this.columns,
 				removeButtonLabel: t( 'Remove color' )
 			} );
 

@@ -17,7 +17,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
 
-	const colorsDefinition = [
+	const colorDefinitions = [
 		{
 			color: '#000',
 			label: 'Black',
@@ -43,8 +43,8 @@ describe( 'ColorTableView', () => {
 	beforeEach( () => {
 		locale = { t() {} };
 		colorTableView = new ColorTableView( locale, {
-			colors: colorsDefinition,
-			colorColumns: 5,
+			colors: colorDefinitions,
+			columns: 5,
 			removeButtonLabel: 'Remove color'
 		} );
 		colorTableView.render();
@@ -78,7 +78,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'sets number of drawed columns', () => {
-			expect( colorTableView.colorColumns ).to.equal( 5 );
+			expect( colorTableView.columns ).to.equal( 5 );
 		} );
 
 		it( 'creaets collection of recently used colors', () => {
@@ -152,7 +152,7 @@ describe( 'ColorTableView', () => {
 			expect( staticColorTable.items.length ).to.equal( 3 );
 		} );
 
-		colorsDefinition.forEach( ( item, index ) => {
+		colorDefinitions.forEach( ( item, index ) => {
 			it( `dispatch event to parent element for color: ${ item.color }`, () => {
 				const spy = sinon.spy();
 				colorTableView.on( 'execute', spy );

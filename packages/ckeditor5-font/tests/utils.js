@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { FONT_COLOR, FONT_BACKGROUND_COLOR, normalizeOptions, addColorsToDropdown } from './../src/utils';
+import { FONT_COLOR, FONT_BACKGROUND_COLOR, normalizeOptions, addColorTableToDropdown } from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 
@@ -103,7 +103,7 @@ describe( 'utils', () => {
 			const dropdown = createDropdown();
 			dropdown.render();
 
-			addColorsToDropdown( {
+			addColorTableToDropdown( {
 				dropdownView: dropdown,
 				colors: [
 					{
@@ -121,7 +121,7 @@ describe( 'utils', () => {
 						}
 					}
 				],
-				colorColumns: 2,
+				columns: 2,
 				removeButtonTooltip: 'Remove Color'
 			} );
 

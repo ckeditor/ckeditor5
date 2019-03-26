@@ -14,7 +14,7 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
- * A grid of {@link module:font/ui/colortile~ColorTile}.
+ * A grid of {@link module:font/ui/colortile~ColorTile color tiles}.
  *
  * @extends module:ui/view~View
  */
@@ -24,9 +24,9 @@ export default class ColorGrid extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options Component configuration
-	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} [options.colorsDefinition] Array with definitions
+	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} [options.colorDefinitions] Array with definitions
 	 * required to create the {@link module:font/ui/colortile~ColorTile tiles}.
-	 * @param {Number} options.colorColumns A number of columns to display the tiles.
+	 * @param {Number} options.columns A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -75,8 +75,8 @@ export default class ColorGrid extends View {
 			}
 		} );
 
-		if ( options.colorsDefinition ) {
-			options.colorsDefinition.forEach( item => {
+		if ( options.colorDefinitions ) {
+			options.colorDefinitions.forEach( item => {
 				const colorTile = new ColorTile();
 
 				colorTile.set( {
@@ -104,7 +104,7 @@ export default class ColorGrid extends View {
 			attributes: {
 				class: 'ck-color-table__grid-container',
 				style: {
-					gridTemplateColumns: `repeat( ${ options.colorColumns }, 1fr)`
+					gridTemplateColumns: `repeat( ${ options.columns }, 1fr)`
 				}
 			}
 		} );

@@ -90,14 +90,17 @@ export function normalizeOptions( colorRow ) {
 
 /**
  * Helper which add {@link module:font/ui/colortableview~ColorTableView} to dropdown with proper initial values.
+ *
  * @param {Object} config Configuration object
  * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
  * will be added {@link module:font/ui/colortableview~ColorTableView}.
- * @param {Array.<Object>}  Array with objects representing color to be drawn in color grid.
+ * @param {Array.<module:font/ui/colorgrid~ColorDefinition>}  Array with definitions representing colors to be displayed
+ * in the color table.
+ * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */
-export function addColorsToDropdown( { dropdownView, colors, colorColumns, removeButtonLabel } ) {
+export function addColorTableToDropdown( { dropdownView, colors, columns, removeButtonLabel } ) {
 	const locale = dropdownView.locale;
-	const colorTableView = new ColorTableView( locale, { colors, colorColumns, removeButtonLabel } );
+	const colorTableView = new ColorTableView( locale, { colors, columns, removeButtonLabel } );
 
 	dropdownView.colorTableView = colorTableView;
 	dropdownView.panelView.children.add( colorTableView );

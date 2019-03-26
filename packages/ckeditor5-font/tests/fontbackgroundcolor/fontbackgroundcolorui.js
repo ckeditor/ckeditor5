@@ -44,6 +44,6 @@ describe( 'FontBckgroundColorUI', () => {
 		expect( fontBackgroundColorUIPlugin.componentName ).to.equal( 'fontBackgroundColor' );
 		expect( fontBackgroundColorUIPlugin.icon ).to.equal( fontBackgroundColorIcon );
 		expect( fontBackgroundColorUIPlugin.dropdownLabel ).to.equal( 'Font Background Color' );
-		expect( fontBackgroundColorUIPlugin.colorColumns ).to.equal( 5 );
+		expect( fontBackgroundColorUIPlugin.columns ).to.equal( 5 );
 	} );
 } );

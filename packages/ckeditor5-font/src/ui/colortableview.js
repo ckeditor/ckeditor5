@@ -19,8 +19,11 @@ import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 
 /**
- * Class which represents a view with {@link module:font/ui/colorgrid~ColorGrid}
- * and remove color buttons.
+ * Class which represents a view with the following sub–components:
+ *
+ * * a remove color button,
+ * * a {@link module:font/ui/colorgrid~ColorGrid},
+ * * a grid of recently used colors.
  *
  * @extends module:ui/view~View
  */
@@ -30,12 +33,13 @@ export default class ColorTableView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} config Configuration object
-	 * @param {Array.<Object>} config.colors Array with definitions of colors to be displayed in the table.
-	 * @param {Number} config.colorColumns Number of columns in the color grid.
+	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} config.colors Array with definitions of colors to
+	 * be displayed in the table.
+	 * @param {Number} config.columns Number of columns in the color grid.
 	 * Also determines how many recent color will be displayed.
 	 * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
 	 */
-	constructor( locale, { colors, colorColumns, removeButtonLabel } ) {
+	constructor( locale, { colors, columns, removeButtonLabel } ) {
 		super( locale );
 
 		/**
@@ -49,9 +53,9 @@ export default class ColorTableView extends View {
 		/**
 		 * An array with objects representing colors to be displayed in the grid.
 		 *
-		 * @type {Arrray.<Object>}
+		 * @type {Arrray.<module:font/ui/colorgrid~ColorDefinition>}
 		 */
-		this.colorsDefinition = colors;
+		this.colorDefinitions = colors;
 
 		/**
 		 * Tracks information about DOM focus in the list.
@@ -88,7 +92,7 @@ export default class ColorTableView extends View {
 		 *
 		 * @type {Number}
 		 */
-		this.colorColumns = colorColumns;
+		this.columns = columns;
 
 		/**
 		 * A collection storing definitions of recently used colors.
@@ -162,8 +166,8 @@ export default class ColorTableView extends View {
 	 */
 	createStaticColorTable() {
 		const colorGrid = new ColorGrid( this.locale, {
-			colorsDefinition: this.colorsDefinition,
-			colorColumns: this.colorColumns
+			colorDefinitions: this.colorDefinitions,
+			columns: this.columns
 		} );
 
 		colorGrid.delegate( 'execute' ).to( this );
@@ -177,7 +181,7 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	recentlyUsed() {
-		const recentViews = new ColorGrid( this.locale, { colorColumns: this.colorColumns } );
+		const recentViews = new ColorGrid( this.locale, { columns: this.columns } );
 
 		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
@@ -218,7 +222,7 @@ export default class ColorTableView extends View {
 				this.recentlyUsedColors.remove( duplicates[ 1 ] );
 			}
 
-			if ( this.recentlyUsedColors.length > this.colorColumns ) {
+			if ( this.recentlyUsedColors.length > this.columns ) {
 				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
 			}
 		} );
@@ -235,7 +239,7 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	initRecentCollection() {
-		for ( let i = 0; i < this.colorColumns; i++ ) {
+		for ( let i = 0; i < this.columns; i++ ) {
 			this.recentlyUsedColors.add( {
 				color: 'hsla(0, 0%, 0%, 0)',
 				isEnabled: false,

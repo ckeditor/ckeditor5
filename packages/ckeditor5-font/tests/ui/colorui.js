@@ -113,7 +113,7 @@ describe( 'ColorUI', () => {
 
 		it( 'has assigned proper amount of columns', () => {
 			// Value taken from editor's config above.
-			expect( testColorPlugin.colorColumns ).to.equal( 3 );
+			expect( testColorPlugin.columns ).to.equal( 3 );
 		} );
 	} );
 
