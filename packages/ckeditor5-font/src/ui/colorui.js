@@ -9,54 +9,59 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { normalizeOptions, addColorsToDropdown } from '../utils';
+import {
+	normalizeOptions,
+	addColorsToDropdown
+} from '../utils';
 
 /**
- * The color UI plugin. It's template for creating the `'fontBackgroundColor'` and the `'fotnColor'` dropdown.
- * Plugin separates common logic responsible for displaying dropdown with color grids.
+ * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
+ * It is used to create the `'fontBackgroundColor'` and the `'fontColor'` dropdowns.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class ColorUI extends Plugin {
 	/**
-	 * Creates plugin which adds UI with {@link module:font/ui/colortableview~ColorTableView} with proper configuration.
+	 * Creates a plugin which brings dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Object} config Configuration object
-	 * @param {String} config.commandName Name of command which will be execute after click into selected color tile.config.
-	 * @param {String} config.componentName Name of this component in {@link module:ui/componentfactory~ComponentFactory}
-	 * @param {String} config.icon SVG icon used in toolbar for displaying this UI element.
-	 * @param {String} config.dropdownLabel Label used for icon in toolbar for this element.
+	 * @param {String} config.commandName Name of command which will be executed when a color tile is clicked.
+	 * @param {String} config.componentName Name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
+	 * and the configuration scope name in `editor.config`.
+	 * @param {String} config.icon SVG icon used by the dropdown.
+	 * @param {String} config.dropdownLabel Label used by the dropdown.
 	 */
 	constructor( editor, { commandName, icon, componentName, dropdownLabel } ) {
 		super( editor );
 
 		/**
-		 * Name of command which will be execute after click into selected color tile.config.
+		 * Name of the command which will be executed when a color tile is clicked.
 		 * @type {String}
 		 */
 		this.commandName = commandName;
 
 		/**
-		 * Name of this component in {@link module:ui/componentfactory~ComponentFactory}.
+		 * Name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
+		 * Also the configuration scope name in `editor.config`.
 		 * @type {String}
 		 */
 		this.componentName = componentName;
 
 		/**
-		 * SVG icon used in toolbar for displaying this UI element.
+		 * SVG icon used by the dropdown.
 		 * @type {String}
 		 */
 		this.icon = icon;
 
 		/**
-		 * Label used for icon in toolbar for this element.
+		 * Label used by the dropdown.
 		 * @type {String}
 		 */
 		this.dropdownLabel = dropdownLabel;
 
 		/**
-		 * Number of columns in color grid. Determines how many recent color will be displayed.
+		 * Number of columns in color grid. Determines the number of recent colors to be displayed.
 		 * @type {Number}
 		 */
 		this.colorColumns = editor.config.get( `${ this.componentName }.columns` );
@@ -69,7 +74,6 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( this.commandName );
-
 		const options = this._getLocalizedOptions();
 
 		// Register UI component.
@@ -85,13 +89,13 @@ export default class ColorUI extends Plugin {
 					}
 				} ) ),
 				colorColumns: this.colorColumns,
-				removeButtonTooltip: t( 'Remove color' )
+				removeButtonLabel: t( 'Remove color' )
 			} );
 
 			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
 			dropdownView.buttonView.set( {
-				label: t( this.dropdownLabel ),
+				label: this.dropdownLabel,
 				icon: this.icon,
 				tooltip: true
 			} );
@@ -109,9 +113,10 @@ export default class ColorUI extends Plugin {
 					colorTableView.recentlyUsedColors.add( {
 						color: data.value,
 						hasBorder: data.hasBorder,
-						label: data.label },
-					0 );
+						label: data.label
+					}, 0 );
 				}
+
 				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
 			} );
@@ -121,7 +126,7 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Returns options as defined in `config` but processed to account for
+	 * Returns options as defined in the `editor.config` but processed to account for
 	 * editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
 	 * or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig} in the correct language.
 	 *
@@ -135,9 +140,11 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const options = normalizeOptions( editor.config.get( `${ this.componentName }.colors` ) );
+
 		options.forEach( option => {
 			option.label = t( option.label );
 		} );
+
 		return options;
 	}
 }

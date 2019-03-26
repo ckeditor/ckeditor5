@@ -41,7 +41,7 @@ export default class FontColor extends Plugin {
  *
  *		ClassicEditor
  *			.create( {
- * 				fontColor: ... // Font family feature configuration.
+ *				fontColor: ... // Font color feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -52,7 +52,9 @@ export default class FontColor extends Plugin {
  */
 
 /**
- * Available 'font color' colors defined as an array of strings or objects. The default value is:
+ * Available font colors defined as an array of strings or objects.
+ *
+ * The default value registers 15 colors:
  *
  *		const fontColorConfig = {
  *			colors: [
@@ -106,18 +108,18 @@ export default class FontColor extends Plugin {
  *			]
  *		};
  *
- * which configures 15 default colors. Each color is used in dropdown as available color to choose from dropdown.
+ * *Note*: The colors are displayed in the `'fontColor'` dropdown.
  *
  * @member {Array.<String|Object>} module:font/fontcolor~FontColorConfig#colors
  */
 
 /**
- * Value represent amount of drawn columns in color panel. It also represents amount of visible recently used colors.
- * The default value is:
+ * Represents the amount of columns in the dropdown. It also represents the number of font colors
+ * recently used by the user displayed in the dropdown. The default value is:
  *
- * 		const fontColorConfig = {
- * 			columns: 5
- * 		}
+ *		const fontColorConfig = {
+ *			columns: 5
+ *		}
  *
  * @member {Numebr} module:font/fontcolor~FontColorConfig#columns
  */

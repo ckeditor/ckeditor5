@@ -12,17 +12,19 @@ import { FONT_COLOR } from '../utils';
 import fontColorIcon from '../../theme/icons/font-color.svg';
 
 /**
- * The font background color UI plugin. It introduces the `'fontBackgroundColor'` dropdown.
+ * The font background color UI plugin. It introduces the `'fontColor'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class FontColorUI extends ColorUI {
 	constructor( editor ) {
+		const t = editor.locale.t;
+
 		super( editor, {
 			commandName: FONT_COLOR,
 			componentName: FONT_COLOR,
 			icon: fontColorIcon,
-			dropdownLabel: 'Font Color'
+			dropdownLabel: t( 'Font Color' )
 		} );
 	}
 

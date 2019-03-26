@@ -11,13 +11,13 @@ import FontCommand from '../fontcommand';
 import { FONT_BACKGROUND_COLOR } from '../utils';
 
 /**
- * The font background color command. It's used by
+ * The font background color command. It's used by the
  * {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing}
  * to apply the font background color.
  *
- * 		editor.execute( 'fontBackgroundColor', { value: 'rgb(250, 20, 20)' } );
+ *		editor.execute( 'fontBackgroundColor', { value: 'rgb(250, 20, 20)' } );
  *
- * **Note**: Executing the command with value equal null removes the attribute from the model.
+ * **Note**: Executing the command with the `null` value removes the attribute from the model.
  *
  * @extends module:font/fontcommand~FontCommand
  */

@@ -42,7 +42,7 @@ export default class FontBackgroundColor extends Plugin {
  *
  *		ClassicEditor
  *			.create( {
- * 				fontBackgroundColor: ... // Font family feature configuration.
+ *				fontBackgroundColor: ... // Font background color feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -53,7 +53,9 @@ export default class FontBackgroundColor extends Plugin {
  */
 
 /**
- * Available 'font background color' colors defined as an array of strings or objects. The default value is:
+ * Available font background colors defined as an array of strings or objects.
+ *
+ * The default value registers 15 colors:
  *
  *		const fontBackgroundColorConfig = {
  *			colors: [
@@ -107,18 +109,18 @@ export default class FontBackgroundColor extends Plugin {
  *			]
  *		};
  *
- * which configures 15 default colors. Each color is used in dropdown as available color to choose from dropdown.
+ * *Note*: The colors are displayed in the `'fontBackgroundColor'` dropdown.
  *
  * @member {Array.<String|Object>} module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors
  */
 
 /**
- * Value represent amount of drawn columns in color panel. It also represent amount of visible recently used colors.
- * The default value is:
+ * Represents the amount of columns in the dropdown. It also represents the number of background colors
+ * recently used by the user displayed in the dropdown. The default value is:
  *
- * 		const fontBackgroundColorConfig = {
- * 			columns: 5
- * 		}
+ *		const fontBackgroundColorConfig = {
+ *			columns: 5
+ *		}
  *
  * @member {Numebr} module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns
  */

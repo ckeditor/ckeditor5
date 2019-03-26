@@ -16,7 +16,7 @@ import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } f
  *
  * It introduces the {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand command} and
  * the `fontBackgroundColor` attribute in the {@link module:engine/model/model~Model model} which renders
- * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="background-color: hsl(0, 0%, 100%)">`),
+ * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="background-color: ...">`),
  * depending on the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig configuration}.
  *
  * @extends module:core/plugin~Plugin

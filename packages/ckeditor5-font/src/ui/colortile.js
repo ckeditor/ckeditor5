@@ -10,25 +10,25 @@
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
- * Class represents single color tile possible to click in dropdown. Element was designed
- * for being used in {@link module:font/ui/colorgrid~ColorGrid}.
+ * This class represents a single color tile in the {@link module:font/ui/colorgrid~ColorGrid}.
  *
  * @extends module:ui/button/buttonview~ButtonView
  */
 export default class ColorTile extends ButtonView {
 	constructor( locale ) {
 		super( locale );
+
 		const bind = this.bindTemplate;
 
 		/**
-		 * String representing color which will be shown as tile's background.
+		 * String representing a color shown as tile's background.
 		 * @type {String}
 		 */
 		this.set( 'color' );
 
 		/**
-		 * Parameter which trigger adding special CSS class to button.
-		 * This class is responsible for displaying border around button.
+		 * A flag that toggles a special CSS class responsible for displaying
+		 * a border around the button.
 		 * @type {Boolean}
 		 */
 		this.set( 'hasBorder' );

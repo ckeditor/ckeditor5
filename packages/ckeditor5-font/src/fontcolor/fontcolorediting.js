@@ -16,7 +16,7 @@ import { FONT_COLOR, renderDowncastElement, renderUpcastAttribute } from '../uti
  *
  * It introduces the {@link module:font/fontcolor/fontcolorcommand~FontColorCommand command} and
  * the `fontColor` attribute in the {@link module:engine/model/model~Model model} which renders
- * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="color: hsl(0, 0%, 100%)">`),
+ * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="color: ...">`),
  * depending on the {@link module:font/fontcolor~FontColorConfig configuration}.
  *
  * @extends module:core/plugin~Plugin

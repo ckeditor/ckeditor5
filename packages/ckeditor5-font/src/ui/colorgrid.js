@@ -14,13 +14,13 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
- * It keeps nicely collection of {@link module:font/ui/colortile~ColorTile}.
+ * A grid of {@link module:font/ui/colortile~ColorTile}.
  *
  * @extends module:ui/view~View
  */
 export default class ColorGrid extends View {
 	/**
-	 * Construct instance of color grid used to display {@link module:font/ui/colortile~ColorTile} in drop down.
+	 * Creates an instance of a color grid containing {@link module:font/ui/colortile~ColorTile}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} config Configuration
@@ -31,7 +31,7 @@ export default class ColorGrid extends View {
 		super( locale );
 
 		/**
-		 * Collection of the child list views.
+		 * Collection of the child tile views.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -39,7 +39,7 @@ export default class ColorGrid extends View {
 		this.items = this.createCollection();
 
 		/**
-		 * Tracks information about DOM focus in the list.
+		 * Tracks information about DOM focus in the grid.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -55,7 +55,7 @@ export default class ColorGrid extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Helps cycling over focusable {@link #items} in the list.
+		 * Helps cycling over focusable {@link #items} in the grid.
 		 *
 		 * @readonly
 		 * @protected
@@ -66,22 +66,24 @@ export default class ColorGrid extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate list items backwards using the arrowup key.
+				// Navigate grid items backwards using the arrowup key.
 				focusPrevious: 'arrowleft',
 
-				// Navigate toolbar items forwards using the arrowdown key.
+				// Navigate grid items forwards using the arrowdown key.
 				focusNext: 'arrowright',
 			}
 		} );
 
 		colorsDefinition.forEach( item => {
 			const colorTile = new ColorTile();
+
 			colorTile.set( {
 				color: item.color,
 				label: item.label,
 				tooltip: true,
 				hasBorder: item.options.hasBorder
 			} );
+
 			colorTile.on( 'execute', () => {
 				this.fire( 'execute', {
 					value: item.color,
@@ -89,6 +91,7 @@ export default class ColorGrid extends View {
 					label: item.label
 				} );
 			} );
+
 			this.items.add( colorTile );
 		} );
 
@@ -147,26 +150,23 @@ export default class ColorGrid extends View {
 }
 
 /**
- * Color definition used to build {@link module:font/ui/colortile~ColorTile}.
+ * A color definition used to create a {@link module:font/ui/colortile~ColorTile}.
  *
- * 		{
- * 			color: hsl(0, 0%, 75%),
- * 			label: 'Light Grey',
- * 			options: {
- * 				hasBorder: true
- * 			}
- * 		}
+ *		{
+ *			color: hsl(0, 0%, 75%),
+ *			label: 'Light Grey',
+ *			options: {
+ *				hasBorder: true
+ *			}
+ *		}
  *
  * @typedef {Object} module:font/ui/colorgrid~ColorDefinition
  * @type Object
  *
- * @property {String} color String representing inserted color.
- * It's used as value of background-color style in {@link module:font/ui/colortile~ColorTile}.
- *
+ * @property {String} color String representing a color.
+ * It is used as value of background-color style in {@link module:font/ui/colortile~ColorTile}.
  * @property {String} label String used as label for {@link module:font/ui/colortile~ColorTile}.
- *
- * @property {Object} options Additional options passed to build {@link module:font/ui/colortile~ColorTile}.
- *
- * @property {Boolean} options.hasBorder Flag indicates if special CSS class should be added
- * to {@link module:font/ui/colortile~ColorTile}, which draw border around it.
+ * @property {Object} options Additional options passed to create a {@link module:font/ui/colortile~ColorTile}.
+ * @property {Boolean} options.hasBorder A flag that indicates if special a CSS class should be added
+ * to {@link module:font/ui/colortile~ColorTile}, which renders a border around it.
  */

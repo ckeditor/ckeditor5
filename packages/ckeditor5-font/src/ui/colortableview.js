@@ -19,25 +19,27 @@ import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 
 /**
- * Class which represents view with {@link module:font/ui/colorgrid~ColorGrid}
- * and remove buttons inside {@link module:ui/dropdown/dropdownview~DropdownView}.
+ * Class which represents a view with {@link module:font/ui/colorgrid~ColorGrid}
+ * and remove color buttons.
  *
  * @extends module:ui/view~View
  */
 export default class ColorTableView extends View {
 	/**
-	 * Construct view which will be inserted as child of {@link module:ui/dropdown/dropdownview~DropdownView}
+	 * Creates a view to be inserted as child of {@link module:ui/dropdown/dropdownview~DropdownView}.
+	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} config Configuration object
-	 * @param {Array.<Object>} config.colors Array with objects drawn as static set of available colors in color table.
-	 * @param {Number} config.colorColumns Number of columns in color grid. Determines how many recent color will be displayed.
-	 * @param {String} config.removeButtonTooltip Description of button responsible for removing color attributes.
+	 * @param {Array.<Object>} config.colors Array with definitions of colors to be displayed in the table.
+	 * @param {Number} config.colorColumns Number of columns in the color grid.
+	 * Also determines how many recent color will be displayed.
+	 * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
 	 */
-	constructor( locale, { colors, colorColumns, removeButtonTooltip } ) {
+	constructor( locale, { colors, colorColumns, removeButtonLabel } ) {
 		super( locale );
 
 		/**
-		 * Collection of the child list views.
+		 * Collection of the children of the table.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -45,7 +47,8 @@ export default class ColorTableView extends View {
 		this.items = this.createCollection();
 
 		/**
-		 * Array with objects representing color to be drawn in color grid.
+		 * An array with objects representing colors to be displayed in the grid.
+		 *
 		 * @type {Arrray.<Object>}
 		 */
 		this.colorsDefinition = colors;
@@ -67,25 +70,28 @@ export default class ColorTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Keeps value of command for current selection.
+		 * Keeps value of the command associated with the table for current selection.
+		 *
 		 * @type {String}
 		 */
 		this.set( 'selectedColor' );
 
 		/**
-		 * Description of button responsible for removing color attributes.
+		 * A label of the button responsible for removing color attributes.
+		 *
 		 * @type {String}
 		 */
-		this.removeButtonTooltip = removeButtonTooltip;
+		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * Number of columns in color grid. Determines how many recent color will be displayed.
+		 * The number of columns in color grid. Also determines the number of recent color to be displayed.
+		 *
 		 * @type {Number}
 		 */
 		this.colorColumns = colorColumns;
 
 		/**
-		 * Collection kept model of colors used for Recent Colors section.
+		 * A collection storing definitions of recently used colors.
 		 *
 		 * @readonly
 		 * @member {module:utils/collection~Collection}
@@ -107,7 +113,7 @@ export default class ColorTableView extends View {
 				// Navigate list items backwards using the arrowup key.
 				focusPrevious: 'arrowup',
 
-				// Navigate toolbar items forwards using the arrowdown key.
+				// Navigate list items forwards using the arrowdown key.
 				focusNext: 'arrowdown',
 			}
 		} );
@@ -127,27 +133,31 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Adds remove color button as child for current view.
+	 * Adds the remove color button as child for current view.
 	 *
 	 * @private
 	 */
 	removeColorButton() {
-		const btnView = new ButtonView();
-		btnView.set( {
+		const buttonView = new ButtonView();
+
+		buttonView.set( {
 			withText: true,
 			icon: removeButtonIcon,
 			tooltip: true,
-			label: this.removeButtonTooltip
+			label: this.removeButtonLabel
 		} );
-		btnView.class = 'ck-color-table__remove-color';
-		btnView.on( 'execute', () => {
+
+		buttonView.class = 'ck-color-table__remove-color';
+		buttonView.on( 'execute', () => {
 			this.fire( 'execute', { value: null } );
 		} );
-		return btnView;
+
+		return buttonView;
 	}
 
 	/**
-	 * Creates static color table grid based on editor config.
+	 * Creates a static color table grid based on editor config.
+	 *
 	 * @private
 	 */
 	createStaticColorTable() {
@@ -155,12 +165,15 @@ export default class ColorTableView extends View {
 			colorsDefinition: this.colorsDefinition,
 			colorColumns: this.colorColumns
 		} );
+
 		colorGrid.delegate( 'execute' ).to( this );
+
 		return colorGrid;
 	}
 
 	/**
-	 * Adds recently used color section view and bind it to {@link #recentlyUsedColors}.
+	 * Adds recently used colors section view and binds it to {@link #recentlyUsedColors}.
+	 *
 	 * @private
 	 */
 	recentlyUsed() {
@@ -169,42 +182,56 @@ export default class ColorTableView extends View {
 		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
 				const colorTile = new ColorTile();
+
 				colorTile.set( {
 					color: colorObj.color,
 					hasBorder: colorObj.hasBorder
 				} );
+
 				if ( colorObj.label ) {
 					colorTile.set( {
 						label: colorObj.label,
 						tooltip: true
 					} );
 				}
+
 				if ( colorObj.isEnabled === false ) {
 					colorTile.set( 'isEnabled', false );
 				}
+
 				colorTile.on( 'execute', () => {
-					this.fire( 'execute', { value: colorObj.color, hasBorder: colorObj.hasBorder, label: colorObj.label } );
+					this.fire( 'execute', {
+						value: colorObj.color,
+						hasBorder: colorObj.hasBorder,
+						label: colorObj.label
+					} );
 				} );
+
 				return colorTile;
 			}
 		);
 
 		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
 			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
+
 			if ( duplicates.length === 2 ) {
 				this.recentlyUsedColors.remove( duplicates[ 1 ] );
 			}
+
 			if ( this.recentlyUsedColors.length > this.colorColumns ) {
 				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
 			}
 		} );
 
 		recentViews.delegate( 'execute' ).to( this );
+
 		return recentViews;
 	}
 
 	/**
-	 * Populate {@link #recentlyUsedColors} with empty non-clickable buttons, which represents space for colors.
+	 * Populates {@link #recentlyUsedColors} with empty non-clickable buttons, which represent placeholders
+	 * for colors.
+	 *
 	 * @private
 	 */
 	initRecentCollection() {

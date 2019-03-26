@@ -11,12 +11,12 @@ import FontCommand from '../fontcommand';
 import { FONT_COLOR } from '../utils';
 
 /**
- * The font color command. It's used by {@link module:font/fontcolor/fontcolorediting~FontColorEditing}
+ * The font color command. It's used by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing}
  * to apply the font color.
  *
- * 		editor.execute( 'fontColor', { value: 'rgb(250, 20, 20)' } );
+ *		editor.execute( 'fontColor', { value: 'rgb(250, 20, 20)' } );
  *
- * **Note**: Executing the command with value equal null removes the attribute from the model.
+ * **Note**: Executing the command with the `null` value removes the attribute from the model.
  *
  * @extends module:font/fontcommand~FontCommand
  */

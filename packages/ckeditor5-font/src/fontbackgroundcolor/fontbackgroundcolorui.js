@@ -18,11 +18,13 @@ import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
  */
 export default class FontBackgroundColorUI extends ColorUI {
 	constructor( editor ) {
+		const t = editor.locale.t;
+
 		super( editor, {
 			commandName: FONT_BACKGROUND_COLOR,
 			componentName: FONT_BACKGROUND_COLOR,
 			icon: fontBackgroundColorIcon,
-			dropdownLabel: 'Font Background Color'
+			dropdownLabel: t( 'Font Background Color' )
 		} );
 	}
 
