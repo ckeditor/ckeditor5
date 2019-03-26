@@ -189,7 +189,7 @@ describe( 'Paragraph feature', () => {
 			// This test was taken from the list package.
 			it( 'does not break when some converter returns nothing', () => {
 				editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.input, { name: true } );
+					conversionApi.consumable.consume( data.viewItem, { name: true } );
 				}, { priority: 'highest' } );
 
 				const modelFragment = editor.data.parse( '<ul><li></li></ul>' );
