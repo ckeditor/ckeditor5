@@ -14,34 +14,6 @@ You can type `'@'` character to invoke mention auto-complete UI. The below demo 
 
 {@snippet features/mention}
 
-## Installation
-
-<info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-mention
-```
-
-Then add `Mention` to your plugin list and {@link module:mention/mention~MentionConfig configure} the feature (if needed):
-
-```js
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, ... ],
-		mention: {
-			// configuration...
-		}
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
 ## Configuration
 
 The minimal configuration of a mention requires defining a feed and optionally a marker (if not using the default `@` character).
@@ -208,6 +180,34 @@ function CustomMention( editor ) {
 		converterPriority: HIGHER_THEN_HIGHEST
 	} );
 }
+```
+
+## Installation
+
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-mention`](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention) package:
+
+```bash
+npm install --save @ckeditor/ckeditor5-mention
+```
+
+Then add `Mention` to your plugin list and {@link module:mention/mention~MentionConfig configure} the feature (if needed):
+
+```js
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, ... ],
+		mention: {
+			// configuration...
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
 ## Common API
