@@ -23,13 +23,15 @@ describe( 'ColorGrid', () => {
 			options: {
 				hasBorder: false
 			}
-		}, {
+		},
+		{
 			color: 'rgb(255, 255, 255)',
 			label: 'White',
 			options: {
 				hasBorder: true
 			}
-		}, {
+		},
+		{
 			color: 'red',
 			label: 'Red',
 			options: {

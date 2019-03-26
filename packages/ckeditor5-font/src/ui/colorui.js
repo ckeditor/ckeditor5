@@ -10,8 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import {
-	normalizeOptions,
-	addColorsToDropdown
+	addColorsToDropdown,
+	getLocalizedColorOptions
 } from '../utils';
 
 /**
@@ -74,18 +74,18 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( this.commandName );
-		const options = this._getLocalizedOptions();
+		const options = getLocalizedColorOptions( editor, this.componentName );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
 			const colorTableView = addColorsToDropdown( {
 				dropdownView,
-				colors: options.map( element => ( {
-					label: element.label,
-					color: element.model,
+				colors: options.map( option => ( {
+					label: option.label,
+					color: option.model,
 					options: {
-						hasBorder: element.hasBorder
+						hasBorder: option.hasBorder
 					}
 				} ) ),
 				colorColumns: this.colorColumns,
@@ -123,28 +123,5 @@ export default class ColorUI extends Plugin {
 
 			return dropdownView;
 		} );
-	}
-
-	/**
-	 * Returns options as defined in the `editor.config` but processed to account for
-	 * editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
-	 * or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig} in the correct language.
-	 *
-	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
-	 * when the user configuration is defined because the editor does not exist yet.
-	 *
-	 * @private
-	 * @returns {Array.<module:font/fontbackgroundcolor~FontBackgroundColorConfig>|Array.<module:font/fontcolor~FontColorConfig>}.
-	 */
-	_getLocalizedOptions() {
-		const editor = this.editor;
-		const t = editor.t;
-		const options = normalizeOptions( editor.config.get( `${ this.componentName }.colors` ) );
-
-		options.forEach( option => {
-			option.label = t( option.label );
-		} );
-
-		return options;
 	}
 }

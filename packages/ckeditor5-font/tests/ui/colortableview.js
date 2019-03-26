@@ -12,7 +12,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ColorTableView', () => {
@@ -25,7 +24,8 @@ describe( 'ColorTableView', () => {
 			options: {
 				hasBorder: false
 			}
-		}, {
+		},
+		{
 			color: 'rgb(255, 255, 255)',
 			label: 'White',
 			options: {
@@ -45,7 +45,7 @@ describe( 'ColorTableView', () => {
 		colorTableView = new ColorTableView( locale, {
 			colors: colorsDefinition,
 			colorColumns: 5,
-			removeButtonTooltip: 'Remove color'
+			removeButtonLabel: 'Remove color'
 		} );
 		colorTableView.render();
 	} );
@@ -73,11 +73,11 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.selectedColor ).to.equal( 'white' );
 		} );
 
-		it( 'keep tooltip for remove color button', () => {
-			expect( colorTableView.removeButtonTooltip ).to.equal( 'Remove color' );
+		it( 'sets tooltip for the remove color button', () => {
+			expect( colorTableView.removeButtonLabel ).to.equal( 'Remove color' );
 		} );
 
-		it( 'keep number of drawed columns', () => {
+		it( 'sets number of drawed columns', () => {
 			expect( colorTableView.colorColumns ).to.equal( 5 );
 		} );
 

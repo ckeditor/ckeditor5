@@ -19,14 +19,17 @@ describe( 'utils', () => {
 				'black',
 				{
 					color: 'black'
-				}, {
+				},
+				{
 					color: 'black',
 					label: 'Black'
-				}, {
+				},
+				{
 					color: 'black',
 					label: 'Black',
 					hasBorder: true
-				}, {
+				},
+				{
 					color: 'black',
 					hasBorder: true
 				}
@@ -44,7 +47,8 @@ describe( 'utils', () => {
 						},
 						priority: 5
 					}
-				}, {
+				},
+				{
 					model: 'black',
 					label: 'black',
 					hasBorder: false,
@@ -55,7 +59,8 @@ describe( 'utils', () => {
 						},
 						priority: 5
 					}
-				}, {
+				},
+				{
 					model: 'black',
 					label: 'Black',
 					hasBorder: false,
@@ -107,7 +112,8 @@ describe( 'utils', () => {
 						options: {
 							hasBorder: false
 						}
-					}, {
+					},
+					{
 						label: 'White',
 						color: '#FFFFFF',
 						options: {

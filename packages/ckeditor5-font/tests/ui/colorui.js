@@ -19,7 +19,7 @@ describe( 'ColorUI', () => {
 				commandName: 'testColorCommand',
 				componentName: 'testColor',
 				icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>',
-				dropdownLabel: 'Test Color'
+				dropdownLabel: editor.locale.t( 'Test Color' )
 			} );
 
 			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
@@ -43,7 +43,7 @@ describe( 'ColorUI', () => {
 			},
 			{
 				color: 'red',
-				label: 'RED'
+				label: 'Red'
 			},
 			{
 				color: '#00FF00',
@@ -57,21 +57,12 @@ describe( 'ColorUI', () => {
 	testUtils.createSinonSandbox();
 
 	before( () => {
-		addTranslations( 'en', {
-			'Test Color': 'Test Color',
-			'Remove color': 'Remove color',
-			'yellow': 'yellow',
-			'White': 'White',
-			'RED': 'RED',
-			'Green': 'Green'
-		} );
-
 		addTranslations( 'pl', {
-			'Test Color': 'Testowy plugin do kolorów',
+			'Test Color': 'Testowy plugin',
 			'Remove color': 'Usuń kolor',
-			'yellow': 'żółty',
+			'Yellow': 'Żółty',
 			'White': 'Biały',
-			'RED': 'CZERWONY',
+			'Red': 'Czerwony',
 			'Green': 'Zielony'
 		} );
 	} );
@@ -117,7 +108,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'has assigned proper dropdownLabel', () => {
-			expect( testColorPlugin.dropdownLabel ).to.equal( 'Test Color' );
+			expect( testColorPlugin.dropdownLabel ).to.equal( 'Testowy plugin' );
 		} );
 
 		it( 'has assigned proper amount of columns', () => {
@@ -137,7 +128,7 @@ describe( 'ColorUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Test Color' );
+			expect( button ).to.have.property( 'label', 'Testowy plugin' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
@@ -194,19 +185,28 @@ describe( 'ColorUI', () => {
 		} );
 
 		describe( 'localization', () => {
+			let editor, editorElement;
+
 			beforeEach( () => {
-				return createLocalizedEditor();
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return createLocalizedEditor( editorElement )
+					.then( localizedEditor => {
+						editor = localizedEditor;
+					} );
 			} );
 
-			it( 'works for the #buttonView', () => {
-				const buttonView = dropdown.buttonView;
+			afterEach( () => {
+				editorElement.remove();
 
-				expect( buttonView.label ).to.equal( 'Testowy plugin do kolorów' );
+				return editor.destroy();
 			} );
 
 			it( 'works for the colorTableView#items in the panel', () => {
 				const colorTableView = dropdown.colorTableView;
-				expect( colorTableView.removeButtonTooltip ).to.equal( 'Usuń kolor' );
+
+				expect( colorTableView.removeButtonLabel ).to.equal( 'Usuń kolor' );
 				expect( colorTableView.items.first.label ).to.equal( 'Usuń kolor' );
 			} );
 
@@ -214,7 +214,7 @@ describe( 'ColorUI', () => {
 				const colors = [
 					{
 						color: 'yellow',
-						label: 'żółty'
+						label: 'yellow'
 					},
 					{
 						color: '#000',
@@ -226,7 +226,7 @@ describe( 'ColorUI', () => {
 					},
 					{
 						color: 'red',
-						label: 'CZERWONY'
+						label: 'Czerwony'
 					},
 					{
 						color: '#00FF00',
@@ -235,7 +235,7 @@ describe( 'ColorUI', () => {
 				];
 
 				colors.forEach( test => {
-					it( `tested color ${ test.color } with name ${ test.label }.`, () => {
+					it( `tested color "${ test.color }" translated to "${ test.label }".`, () => {
 						const colorGrid = dropdown.colorTableView.items.get( 1 );
 						const tile = colorGrid.items.find( colorTile => test.color === colorTile.color );
 
@@ -244,10 +244,7 @@ describe( 'ColorUI', () => {
 				} );
 			} );
 
-			function createLocalizedEditor() {
-				const editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
-
+			function createLocalizedEditor( editorElement ) {
 				return ClassicTestEditor
 					.create( editorElement, {
 						plugins: [ TestColorPlugin ],
@@ -260,9 +257,7 @@ describe( 'ColorUI', () => {
 						dropdown = editor.ui.componentFactory.create( 'testColor' );
 						command = editor.commands.get( 'testColorCommand' );
 
-						editorElement.remove();
-
-						return editor.destroy();
+						return editor;
 					} );
 			}
 		} );

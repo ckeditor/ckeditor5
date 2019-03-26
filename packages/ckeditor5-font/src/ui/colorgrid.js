@@ -23,11 +23,12 @@ export default class ColorGrid extends View {
 	 * Creates an instance of a color grid containing {@link module:font/ui/colortile~ColorTile}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} config Configuration
-	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} colorsDefinition Array with definitions
-	 * required to build {@link module:font/ui/colortile~ColorTile}.
+	 * @param {Object} options Component configuration
+	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} [options.colorsDefinition] Array with definitions
+	 * required to create the {@link module:font/ui/colortile~ColorTile tiles}.
+	 * @param {Number} options.colorColumns A number of columns to display the tiles.
 	 */
-	constructor( locale, { colorsDefinition = [], colorColumns } = {} ) {
+	constructor( locale, options ) {
 		super( locale );
 
 		/**
@@ -74,26 +75,28 @@ export default class ColorGrid extends View {
 			}
 		} );
 
-		colorsDefinition.forEach( item => {
-			const colorTile = new ColorTile();
+		if ( options.colorsDefinition ) {
+			options.colorsDefinition.forEach( item => {
+				const colorTile = new ColorTile();
 
-			colorTile.set( {
-				color: item.color,
-				label: item.label,
-				tooltip: true,
-				hasBorder: item.options.hasBorder
-			} );
-
-			colorTile.on( 'execute', () => {
-				this.fire( 'execute', {
-					value: item.color,
-					hasBorder: item.options.hasBorder,
-					label: item.label
+				colorTile.set( {
+					color: item.color,
+					label: item.label,
+					tooltip: true,
+					hasBorder: item.options.hasBorder
 				} );
-			} );
 
-			this.items.add( colorTile );
-		} );
+				colorTile.on( 'execute', () => {
+					this.fire( 'execute', {
+						value: item.color,
+						hasBorder: item.options.hasBorder,
+						label: item.label
+					} );
+				} );
+
+				this.items.add( colorTile );
+			} );
+		}
 
 		this.setTemplate( {
 			tag: 'div',
@@ -101,7 +104,7 @@ export default class ColorGrid extends View {
 			attributes: {
 				class: 'ck-color-table__grid-container',
 				style: {
-					gridTemplateColumns: `repeat( ${ colorColumns }, 1fr)`
+					gridTemplateColumns: `repeat( ${ options.colorColumns }, 1fr)`
 				}
 			}
 		} );
