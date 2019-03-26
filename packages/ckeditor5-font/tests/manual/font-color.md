@@ -17,7 +17,7 @@ Color 9-10 mixes colors from predefined palette and custom one.
 ### Testing
 
 Try to:
-- Change font by selecting many paragraphs.
-- Change font by selecting some text.
-- Change to default font by selecting many paragraphs.
-- Change to default font by selecting some text.
+- Change color and background color by selecting many paragraphs.
+- Change color and background color by selecting some text.
+- Check if chosen colors from dropdown are added to recent color list.
+- Try to re-apply color from Recent Color list - check if it moves to it beginning.
