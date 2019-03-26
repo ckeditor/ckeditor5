@@ -69,8 +69,6 @@ export default class Mention extends Plugin {
  *
  * *Note* When defining feed item as a plain object you must provide the at least the `name` property.
  *
- * Used in {@link module:mention/mention~MentionFeed#feed} or* Used in {@link module:mention/mention~MentionFeed.feed}
- *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
  * @property {String} name Name of the mention.
  */
