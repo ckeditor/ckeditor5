@@ -8,6 +8,7 @@
 import FocusTracker from '../src/focustracker';
 import CKEditorError from '../src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'FocusTracker', () => {
 	let focusTracker, container, containerFirstInput, containerSecondInput;
@@ -43,6 +44,22 @@ describe( 'FocusTracker', () => {
 				expect( observableSpy.calledOnce ).to.true;
 			} );
 		} );
+
+		describe( 'focusedElement', () => {
+			it( 'should be null at default', () => {
+				expect( focusTracker.focusedElement ).to.be.null;
+			} );
+
+			it( 'should be observable', () => {
+				const observableSpy = testUtils.sinon.spy();
+
+				focusTracker.listenTo( focusTracker, 'change:focusedElement', observableSpy );
+
+				focusTracker.focusedElement = global.document.body;
+
+				expect( observableSpy.calledOnce ).to.true;
+			} );
+		} );
 	} );
 
 	describe( 'add', () => {
@@ -63,16 +80,20 @@ describe( 'FocusTracker', () => {
 				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.true;
+				expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
 			} );
 
 			it( 'should start listening on element blur and update `isFocused` property', () => {
 				focusTracker.add( containerFirstInput );
-				focusTracker.isFocused = true;
+				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+
+				expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
 
 				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
 				testUtils.sinon.clock.tick( 0 );
 
 				expect( focusTracker.isFocused ).to.false;
+				expect( focusTracker.focusedElement ).to.be.null;
 			} );
 		} );
 
@@ -85,16 +106,20 @@ describe( 'FocusTracker', () => {
 				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.true;
+				expect( focusTracker.focusedElement ).to.equal( container );
 			} );
 
 			it( 'should start listening on element blur using event capturing and update `isFocused` property', () => {
 				focusTracker.add( container );
-				focusTracker.isFocused = true;
+				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+
+				expect( focusTracker.focusedElement ).to.equal( container );
 
 				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
 				testUtils.sinon.clock.tick( 0 );
 
 				expect( focusTracker.isFocused ).to.false;
+				expect( focusTracker.focusedElement ).to.be.null;
 			} );
 
 			it( 'should not change `isFocused` property when focus is going between child elements', () => {
@@ -103,15 +128,16 @@ describe( 'FocusTracker', () => {
 				focusTracker.add( container );
 
 				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+				expect( focusTracker.focusedElement ).to.equal( container );
+				expect( focusTracker.isFocused ).to.true;
 
 				focusTracker.listenTo( focusTracker, 'change:isFocused', changeSpy );
-
-				expect( focusTracker.isFocused ).to.true;
 
 				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
 				containerSecondInput.dispatchEvent( new Event( 'focus' ) );
 				testUtils.sinon.clock.tick( 0 );
 
+				expect( focusTracker.focusedElement ).to.equal( container );
 				expect( focusTracker.isFocused ).to.true;
 				expect( changeSpy.notCalled ).to.true;
 			} );
@@ -119,7 +145,9 @@ describe( 'FocusTracker', () => {
 			// https://github.com/ckeditor/ckeditor5-utils/issues/159
 			it( 'should keep `isFocused` synced when multiple blur events are followed by the focus', () => {
 				focusTracker.add( container );
-				focusTracker.isFocused = true;
+				container.dispatchEvent( new Event( 'focus' ) );
+
+				expect( focusTracker.focusedElement ).to.equal( container );
 
 				container.dispatchEvent( new Event( 'blur' ) );
 				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
@@ -127,6 +155,7 @@ describe( 'FocusTracker', () => {
 				testUtils.sinon.clock.tick( 0 );
 
 				expect( focusTracker.isFocused ).to.be.true;
+				expect( focusTracker.focusedElement ).to.equal( container );
 			} );
 		} );
 	} );
@@ -145,6 +174,7 @@ describe( 'FocusTracker', () => {
 			containerFirstInput.dispatchEvent( new Event( 'focus' ) );
 
 			expect( focusTracker.isFocused ).to.false;
+			expect( focusTracker.focusedElement ).to.be.null;
 		} );
 
 		it( 'should stop listening on element blur', () => {
@@ -161,6 +191,7 @@ describe( 'FocusTracker', () => {
 		it( 'should blur element before removing when is focused', () => {
 			focusTracker.add( containerFirstInput );
 			containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+			expect( focusTracker.focusedElement ).to.equal( containerFirstInput );
 
 			expect( focusTracker.isFocused ).to.true;
 
@@ -168,6 +199,7 @@ describe( 'FocusTracker', () => {
 			testUtils.sinon.clock.tick( 0 );
 
 			expect( focusTracker.isFocused ).to.false;
+			expect( focusTracker.focusedElement ).to.be.null;
 		} );
 	} );
 
