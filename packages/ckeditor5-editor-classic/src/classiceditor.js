@@ -108,7 +108,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * This is the most convenient and common way to initialize the editor. The element's content will be used as the editor data.
+	 * The element's content will be used as the editor data.
 	 *
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
@@ -153,7 +153,7 @@ export default class ClassicEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically
-	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor upon initialization
+	 * {@link module:editor-classic/classiceditor~ClassicEditor#initData loaded} to the editor upon initialization
 	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
 	 * (the original one will be hidden and the editor will be injected next to it).
 	 *
