@@ -115,8 +115,10 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates a `DecoupledEditor` instance.
 	 *
-	 * There are two general ways how the editor can be initialized. Remember that `DecoupledEditor` do not append the toolbar element
-	 * to your web page so you have to do it manually after the editor has been initialized.
+	 * Remember that `DecoupledEditor` do not append the toolbar element to your web page so you have to do it manually after the editor
+	 * has been initialized.
+	 *
+	 * There are two general ways how the editor can be initialized.
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
@@ -183,10 +185,7 @@ export default class DecoupledEditor extends Editor {
 	 * or the editor's initial data.
 	 *
 	 * If a DOM element is passed, its content will be automatically
-	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#setData loaded} to the editor upon initialization
-	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editable element} will replace the passed element in the DOM
-	 * (the original element will be hidden and the editor will be injected next to it).
-	 *
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#initData loaded} to the editor upon initialization.
 	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
