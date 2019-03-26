@@ -3,50 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-:root {
-	--ck-table-color-tile-size: 20px;
-	--ck-table-color-max-columns: 5;
-	--ck-color-table-color-tile-border: hsl(0, 0%, 90%);
-	--ck-color-table-color-tile-border-active: hsl(184, 80%, 50%);
-}
-
-.ck .ck-color-table__grid-container {
-	display: grid;
-	grid-gap: calc( var(--ck-spacing-standard) / 2 );
-	padding: var(--ck-spacing-standard);
-}
-
-.ck .ck-color-table__color-tile {
-	width: var(--ck-table-color-tile-size);
-	height: var(--ck-table-color-tile-size);
-	min-width: var(--ck-table-color-tile-size);
-	min-height: var(--ck-table-color-tile-size);
-	border-radius: var(--ck-border-radius);
-	transition: 200ms ease box-shadow;
-}
-
-.ck .ck-disabled.ck-color-table__color-tile {
-	cursor: unset;
-	transition: unset;
-}
-
-.ck .ck-color-table__color-tile_bordered {
-	box-shadow: 0 0 0 1px var(--ck-color-table-color-tile-border);
-}
-
-.ck .ck-color-table__color-tile:hover:not( .ck-disabled ) {
-	box-shadow: 0 0 0 2px var(--ck-color-table-color-tile-border-active);
-}
-
-/* If we change it to list element this CSS will be obsolete. */
 .ck .ck-button.ck-color-table__remove-color {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	border-bottom: 1px solid var(--ck-color-base-border);
-	padding: calc(var(--ck-spacing-standard) / 2 ) var(--ck-spacing-standard);
-}
-
-.ck .ck-button.ck-button_with-text.ck-color-table__remove-color svg {
-	margin-right: var(--ck-spacing-standard);
 }

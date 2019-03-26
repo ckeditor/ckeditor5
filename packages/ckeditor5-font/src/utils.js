@@ -94,7 +94,7 @@ export function normalizeOptions( colorRow ) {
  * @param {Object} config Configuration object
  * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
  * will be added {@link module:font/ui/colortableview~ColorTableView}.
- * @param {Array.<module:font/ui/colorgrid~ColorDefinition>}  Array with definitions representing colors to be displayed
+ * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}  Array with definitions representing colors to be displayed
  * in the color table.
  * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */

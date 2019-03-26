@@ -9,8 +9,8 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ColorTile from './colortile';
-import ColorGrid from './colorgrid';
+import ColorTile from '@ckeditor/ckeditor5-ui/src/colorgrid/colortile';
+import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgrid';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
@@ -22,7 +22,7 @@ import '../../theme/fontcolor.css';
  * Class which represents a view with the following sub–components:
  *
  * * a remove color button,
- * * a {@link module:font/ui/colorgrid~ColorGrid},
+ * * a {@link module:ui/colorgrid/colorgrid~ColorGrid},
  * * a grid of recently used colors.
  *
  * @extends module:ui/view~View
@@ -33,7 +33,7 @@ export default class ColorTableView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} config Configuration object
-	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} config.colors Array with definitions of colors to
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors Array with definitions of colors to
 	 * be displayed in the table.
 	 * @param {Number} config.columns Number of columns in the color grid.
 	 * Also determines how many recent color will be displayed.
@@ -53,7 +53,7 @@ export default class ColorTableView extends View {
 		/**
 		 * An array with objects representing colors to be displayed in the grid.
 		 *
-		 * @type {Arrray.<module:font/ui/colorgrid~ColorDefinition>}
+		 * @type {Arrray.<module:ui/colorgrid/colorgrid~ColorDefinition>}
 		 */
 		this.colorDefinitions = colors;
 
