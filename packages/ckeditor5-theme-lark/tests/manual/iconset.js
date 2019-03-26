@@ -23,6 +23,7 @@ import superscript from '@ckeditor/ckeditor5-basic-styles/theme/icons/superscrip
 
 import cancel from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import check from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import eraser from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import lowVision from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import image from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import objectLeft from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
@@ -35,6 +36,8 @@ import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
 import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
+import fontColor from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
+import fontBackground from '@ckeditor/ckeditor5-font/theme/icons/font-background.svg';
 
 import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
 import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
@@ -45,7 +48,6 @@ import heading6 from '@ckeditor/ckeditor5-heading/theme/icons/heading6.svg';
 
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
-import eraser from '@ckeditor/ckeditor5-highlight/theme/icons/eraser.svg';
 
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
@@ -75,16 +77,16 @@ const icons = {
 	bold, italic, underline, code, strikethrough, subscript, superscript,
 
 	// core
-	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,
+	check, cancel, eraser, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,
 
 	// font
-	fontFamily, fontSize,
+	fontFamily, fontSize, fontColor, fontBackground,
 
 	// heading
 	heading1, heading2, heading3, heading4, heading5, heading6,
 
 	// highlight
-	marker, pen, eraser,
+	marker, pen,
 
 	// link
 	link, unlink,
