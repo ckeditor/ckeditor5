@@ -27,11 +27,11 @@ ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table, Mention ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
-		mention: [
-			{
-				feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
-			}
-		]
+		mention: {
+			feeds: [
+				{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] },
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

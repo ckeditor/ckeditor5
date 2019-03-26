@@ -65,7 +65,7 @@ export default class MentionUI extends Plugin {
 		 */
 		this._mentionsConfigurations = new Map();
 
-		editor.config.define( 'mention', [] );
+		editor.config.define( 'mention', { feeds: [] } );
 	}
 
 	/**
@@ -104,9 +104,9 @@ export default class MentionUI extends Plugin {
 			callback: () => this._hidePanel()
 		} );
 
-		const config = this.editor.config.get( 'mention' );
+		const feeds = this.editor.config.get( 'mention.feeds' );
 
-		for ( const mentionDescription of config ) {
+		for ( const mentionDescription of feeds ) {
 			const feed = mentionDescription.feed;
 
 			const marker = mentionDescription.marker || '@';

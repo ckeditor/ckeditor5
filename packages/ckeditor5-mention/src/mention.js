@@ -49,13 +49,13 @@ export default class Mention extends Plugin {
  *
  * See {@link module:mention/mention~MentionConfig} to learn more.
  *
- *		{
+ *		const mentionFeed = {
  *			marker: '@',
- *			feed: [ 'Alice', 'Bob', ... ],
+ *			feed: [ 'Alice', 'Bob', ... ]
  *		}
  *
  * @typedef {Object} module:mention/mention~MentionFeed
- * @property {String} [marker='@'] The character which triggers auto-completion for mention.
+ * @property {String} [marker=''] The character which triggers auto-completion for mention.
  * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed The auto complete feed items. Provide an array for
  * static configuration or a function that returns a promise for asynchronous feeds.
  * @property {Number} [minimumCharacters=0] Specifies after how many characters show the autocomplete panel.
@@ -69,8 +69,34 @@ export default class Mention extends Plugin {
  *
  * *Note* When defining feed item as a plain object you must provide the at least the `name` property.
  *
+ * Used in {@link module:mention/mention~MentionFeed#feed} or* Used in {@link module:mention/mention~MentionFeed.feed}
+ *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
  * @property {String} name Name of the mention.
+ */
+
+/**
+ * The list fo mention feeds supported by the editor.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *					feeds: [
+ *						{
+ *							marker: '@',
+ *							feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+ *						},
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * You can provide as many mention feeds but they must have different `marker` defined.
+ *
+ * @member {Array.<module:mention/mention~MentionFeed>} module:mention/mention~MentionConfig#feeds
  */
 
 /**

@@ -23,9 +23,11 @@ import MentionsView from '../src/ui/mentionsview';
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
 
-	const staticConfig = [
-		{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
-	];
+	const staticConfig = {
+		feeds: [
+			{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
+		]
+	};
 
 	testUtils.createSinonSandbox();
 
@@ -177,7 +179,7 @@ describe( 'MentionUI', () => {
 
 	describe( 'typing integration', () => {
 		it( 'should show panel for matched marker after typing minimum characters', () => {
-			return createClassicTestEditor( [ Object.assign( { minimumCharacters: 2 }, staticConfig[ 0 ] ) ] )
+			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
 
@@ -389,18 +391,20 @@ describe( 'MentionUI', () => {
 			beforeEach( () => {
 				const issuesNumbers = [ '100', '101', '102', '103' ];
 
-				return createClassicTestEditor( [
-					{
-						marker: '#',
-						feed: feedText => {
-							return new Promise( resolve => {
-								setTimeout( () => {
-									resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
-								}, 20 );
-							} );
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '#',
+							feed: feedText => {
+								return new Promise( resolve => {
+									setTimeout( () => {
+										resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
+									}, 20 );
+								} );
+							}
 						}
-					}
-				] );
+					]
+				} );
 			} );
 
 			it( 'should show panel for matched marker', () => {
@@ -545,7 +549,7 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'default list item', () => {
-			const feedItems = staticConfig[ 0 ].feed.map( name => ( { name } ) );
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( name => ( { name } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -640,21 +644,23 @@ describe( 'MentionUI', () => {
 			];
 
 			beforeEach( () => {
-				return createClassicTestEditor( [
-					{
-						marker: '@',
-						feed: feedText => {
-							return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
-						},
-						itemRenderer: item => {
-							const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: feedText => {
+								return Promise.resolve( issues.filter( issue => issue.id.includes( feedText ) ) );
+							},
+							itemRenderer: item => {
+								const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-							span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
+								span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
 
-							return span;
+								return span;
+							}
 						}
-					}
-				] );
+					]
+				} );
 			} );
 
 			it( 'should show panel for matched marker', () => {

@@ -27,21 +27,23 @@ ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table, Mention ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
-		mention: [
-			{
-				feed: getFeed,
-				itemRenderer: item => {
-					const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+		mention: {
+			feeds: [
+				{
+					feed: getFeed,
+					itemRenderer: item => {
+						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-					span.classList.add( 'custom-item' );
-					span.id = `mention-list-item-id-${ item.id }`;
+						span.classList.add( 'custom-item' );
+						span.id = `mention-list-item-id-${ item.id }`;
 
-					span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
+						span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
 
-					return span;
+						return span;
+					}
 				}
-			}
-		]
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

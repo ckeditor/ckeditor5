@@ -79,11 +79,11 @@ ClassicEditor
 		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
 			MentionEditing, CustomMentionAttributeView, MentionUI ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
-		mention: [
-			{
-				feed: getFeed
-			}
-		]
+		mention: {
+			feeds: [
+				{ feed: getFeed }
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
