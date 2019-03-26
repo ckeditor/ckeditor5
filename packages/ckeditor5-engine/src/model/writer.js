@@ -717,8 +717,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 * @param {module:engine/model/node~Node} [limitElement] Stop splitting when this element will be reached.
 	 * @returns {Object} result Split result.
-	 * @returns {module:engine/model/position~Position} result.position between split elements.
-	 * @returns {module:engine/model/range~Range} result.range Range that stars from the end of the first split element and ands
+	 * @returns {module:engine/model/position~Position} result.position Position between split elements.
+	 * @returns {module:engine/model/range~Range} result.range Range that stars from the end of the first split element and ends
 	 * at the beginning of the first copy element.
 	 */
 	split( position, limitElement ) {

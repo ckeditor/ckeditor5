@@ -112,6 +112,15 @@ describe( 'UpcastHelpers', () => {
 			expectResult( new ViewContainerElement( 'p', { 'data-level': 2 } ), '' );
 		} );
 
+		it( 'config.view is not set - should fire conversion for every element', () => {
+			upcastHelpers.elementToElement( {
+				model: 'paragraph'
+			} );
+
+			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
+			expectResult( new ViewContainerElement( 'foo' ), '<paragraph></paragraph>' );
+		} );
+
 		it( 'should fire conversion of the element children', () => {
 			upcastHelpers.elementToElement( { view: 'p', model: 'paragraph' } );
 
