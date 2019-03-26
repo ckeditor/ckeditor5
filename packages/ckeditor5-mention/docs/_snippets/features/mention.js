@@ -14,14 +14,14 @@ ClassicEditor
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
-			viewportTopOffset: window.getViewportTopOffsetConfig(),
-			mention: [
-				{
-					marker: '@',
-					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
-				}
-			]
-		}
+			viewportTopOffset: window.getViewportTopOffsetConfig()
+		},
+		mention: [
+			{
+				marker: '@',
+				feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+			}
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;
