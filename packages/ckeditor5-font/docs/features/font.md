@@ -8,6 +8,8 @@ category: features
 The {@link module:font/font~Font} plugin enables the following features in the editor:
 * {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
 * {@link module:font/fontsize~FontSize} &ndash; Allows to control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
+* {@link module:font/fontcolor~FontColor} &ndash; Allows to control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
+* {@link module:font/fontbackgroundcolor~FontBackgroundColor} &ndash; Allows to control the font background color by applying inline `<span>` elements with a `background-color` in the `style` attribute.
 
 ## Demo
 
@@ -145,6 +147,77 @@ ClassicEditor
 
 {@snippet features/custom-font-size-numeric-options}
 
+## Configuring font color and font background color
+
+Plugin enables `font color` and `font background color`. Which allows on using style `color` and `background-color` over text.
+<info-box info>
+	Please notice that you can turn on only one of those plugins. As well as configure them separately.
+</info-box>
+
+### Dropdown
+
+It is possible to configure which colors are available in dropdown in the editor. Use the `fontColor.colors` or `fontBackgroundColor.colors` configuration option to do so.
+
+It is possible to configure how many columns is shown in color dropdown. Use the `fontColor.columns` or `fontBackgroundColor.columns` configuration option to do so. This option also reflects to number of recently used colors section, which always have 1 row with amount of columns equal to `columns` configuration option.
+Default colors configuration is presented below:
+
+```js
+fontColor = {
+	colors: [
+		{
+			color: 'hsl(0, 0%, 0%)',
+			label: 'Black'
+		}, {
+			color: 'hsl(0, 0%, 30%)',
+			label: 'Dim grey'
+		}, {
+			color: 'hsl(0, 0%, 60%)',
+			label: 'Grey'
+		}, {
+			color: 'hsl(0, 0%, 90%)',
+			label: 'Light grey'
+		}, {
+			color: 'hsl(0, 0%, 100%)',
+			label: 'White',
+			hasBorder: true
+		}, {
+			color: 'hsl(0, 75%, 60%)',
+			label: 'Red'
+		}, {
+			color: 'hsl(30, 75%, 60%)',
+			label: 'Orange'
+		}, {
+			color: 'hsl(60, 75%, 60%)',
+			label: 'Yellow'
+		}, {
+			color: 'hsl(90, 75%, 60%)',
+			label: 'Light green'
+		}, {
+			color: 'hsl(120, 75%, 60%)',
+			label: 'Green'
+		}, {
+			color: 'hsl(150, 75%, 60%)',
+			label: 'Aquamarine'
+		}, {
+			color: 'hsl(180, 75%, 60%)',
+			label: 'Turquoise'
+		}, {
+			color: 'hsl(210, 75%, 60%)',
+			label: 'Light blue'
+		}, {
+			color: 'hsl(240, 75%, 60%)',
+			label: 'Blue'
+		}, {
+			color: 'hsl(270, 75%, 60%)',
+			label: 'Purple'
+		}
+	],
+	columns: 5
+}
+```
+
+{@snippet features/custom-font-color-and-background-color-options}
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
@@ -161,7 +234,7 @@ import Font from '@ckeditor/ckeditor5-font/src/font';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Font, ... ],
-		toolbar: [ 'fontSize', 'fontFamily', ... ]
+		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -255,6 +328,39 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	```js
 	editor.execute( 'fontSize' );
 	```
+
+The {@link module:font/fontcolor~FontColor} plugin registers the following components:
+
+* The `'fontColor'` dropdown,
+* The {@link module:font/fontcolor/fontcolorcommand~FontColorCommand `'fontColor'`} command.
+
+	The number of options and their names correspond to the {@link module:font/fontcolor~FontColorConfig#colors `fontColor.colors`}
+	and {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} configuration options.
+
+	You can change the font color of the current selection by executing the command with a desired value:
+
+	```js
+	editor.execute( 'fontColor', { value: rgb(30, 188, 97) } );
+	```
+
+	The `'fontColor'` command will accept any strings as values.
+
+The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers the following components:
+
+* The `'fontColor'` dropdown,
+* The {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand `'fontBackgroundColor'`} command.
+
+	The number of options and their names correspond to the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors `fontBackgroundColor.colors`}
+	and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} configuration options.
+
+	You can change the font background color of the current selection by executing the command with a desired value:
+
+	```js
+	editor.execute( 'fontBackgroundColor', { value: rgb(30, 188, 97) } );
+	```
+
+	The `'fontBackgroundColor'` command will accept any strings as values.
+
 
 ## Contribute
 
