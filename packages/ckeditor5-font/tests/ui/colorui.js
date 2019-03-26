@@ -218,7 +218,7 @@ describe( 'ColorUI', () => {
 						color: '#000',
 						label: '#000'
 					}, {
-						color: 'rgb(255, 255, 255)',
+						color: 'rgb(255,255,255)',
 						label: 'Biały'
 					}, {
 						color: 'red',

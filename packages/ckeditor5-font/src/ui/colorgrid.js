@@ -27,7 +27,7 @@ export default class ColorGrid extends View {
 	 * @param {Array.<module:font/ui/colorgrid~ColorDefinition>} colorsDefinition Array with definitions
 	 * required to build {@link module:font/ui/colortile~ColorTile}.
 	 */
-	constructor( locale, { colorsDefinition = [] } = {} ) {
+	constructor( locale, { colorsDefinition = [], colorColumns } = {} ) {
 		super( locale );
 
 		/**
@@ -96,7 +96,10 @@ export default class ColorGrid extends View {
 			tag: 'div',
 			children: this.items,
 			attributes: {
-				class: 'ck-color-table__grid-container'
+				class: 'ck-color-table__grid-container',
+				style: {
+					gridTemplateColumns: `repeat( ${ colorColumns }, 1fr)`
+				}
 			}
 		} );
 	}

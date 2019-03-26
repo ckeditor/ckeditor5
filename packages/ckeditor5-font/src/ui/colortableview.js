@@ -151,7 +151,10 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	createStaticColorTable() {
-		const colorGrid = new ColorGrid( this.locale, { colorsDefinition: this.colorsDefinition } );
+		const colorGrid = new ColorGrid( this.locale, {
+			colorsDefinition: this.colorsDefinition,
+			colorColumns: this.colorColumns
+		} );
 		colorGrid.delegate( 'execute' ).to( this );
 		return colorGrid;
 	}
@@ -161,7 +164,7 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	recentlyUsed() {
-		const recentViews = new ColorGrid( this.locale );
+		const recentViews = new ColorGrid( this.locale, { colorColumns: this.colorColumns } );
 
 		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
