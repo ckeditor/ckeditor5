@@ -77,7 +77,7 @@ Each time the `label` property changes, the view fires the `change:label` event 
 ```js
 const view = new Button();
 
-view.on( 'change:label', ( evt, propertyName, newLabel, oldLabel ) => {
+view.on( 'change:label', ( evt, propertyName, newValue, oldValue ) => {
     console.log(
         `#${ propertyName } has changed from "${ oldValue }" to "${ newValue }"`
     );
