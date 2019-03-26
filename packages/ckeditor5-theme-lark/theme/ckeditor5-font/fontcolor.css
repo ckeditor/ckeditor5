@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck .ck-button.ck-color-table__remove-color {
+	border-bottom: 1px solid var(--ck-color-base-border);
+	padding: calc(var(--ck-spacing-standard) / 2 ) var(--ck-spacing-standard);
+
+	& .ck.ck-icon {
+		margin-right: var(--ck-spacing-standard);
+	}
+}
+
