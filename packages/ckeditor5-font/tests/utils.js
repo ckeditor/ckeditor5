@@ -3,7 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import { FONT_COLOR, FONT_BACKGROUND_COLOR, normalizeOptions, addColorTableToDropdown } from './../src/utils';
+import {
+	FONT_COLOR,
+	FONT_BACKGROUND_COLOR,
+	normalizeColorOptions,
+	addColorTableToDropdown
+} from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
 
@@ -14,8 +19,8 @@ describe( 'utils', () => {
 			expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
 		} );
 
-		it( 'normalizeOptions can produce the same output object', () => {
-			const normalizedArray = normalizeOptions( [
+		it( 'normalizeColorOptions can produce the same output object', () => {
+			const normalizedArray = normalizeColorOptions( [
 				'black',
 				{
 					color: 'black'
