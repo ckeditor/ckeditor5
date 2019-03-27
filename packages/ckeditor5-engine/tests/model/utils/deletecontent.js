@@ -29,6 +29,29 @@ describe( 'DataController utils', () => {
 			} );
 		} );
 
+		it( 'should not do anything if the selection is already in graveyard', () => {
+			model = new Model();
+			doc = model.document;
+
+			const gy = model.document.graveyard;
+
+			gy._appendChild( new Element( 'paragraph' ) );
+
+			const baseVersion = model.document.baseVersion;
+
+			model.change( writer => {
+				sinon.spy( writer, 'remove' );
+
+				const selection = writer.createSelection( writer.createRangeIn( gy ) );
+
+				deleteContent( model, selection );
+
+				expect( writer.remove.called ).to.be.false;
+			} );
+
+			expect( model.document.baseVersion ).to.equal( baseVersion );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
