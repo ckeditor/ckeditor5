@@ -35,6 +35,11 @@ import ModelRange from '../model/range';
  * * downcast converters,
  * * upcast converters.
  *
+ * An instance of the data controller is always available in the {@link module:core/editor/editor~Editor#data `editor.data`}
+ * property:
+ *
+ *		editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
+ *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class DataController {
