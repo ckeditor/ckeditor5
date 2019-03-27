@@ -115,7 +115,7 @@ export default class InlineEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * The element's content will be used as the editor data.
+	 * The element's content will be used as the editor data and it will become the editable element.
 	 *
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
