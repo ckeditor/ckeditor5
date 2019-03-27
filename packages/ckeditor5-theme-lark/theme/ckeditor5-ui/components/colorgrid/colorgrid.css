@@ -21,6 +21,7 @@
 	height: var(--ck-color-grid-tile-size);
 	min-width: var(--ck-color-grid-tile-size);
 	min-height: var(--ck-color-grid-tile-size);
+	padding: 0;
 	transition: 200ms ease box-shadow;
 
 	&.ck-disabled {
@@ -30,6 +31,19 @@
 
 	&.ck-color-table__color-tile_bordered {
 		box-shadow: 0 0 0 1px var(--ck-color-base-border);
+	}
+
+	& .ck.ck-icon {
+		display: none;
+		filter: drop-shadow(0 0 1px var(--ck-color-base-background));
+	}
+
+	&.ck-on {
+		box-shadow: 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);
+
+		& .ck.ck-icon {
+			display: block;
+		}
 	}
 
 	&:hover:not( .ck-disabled ) {
