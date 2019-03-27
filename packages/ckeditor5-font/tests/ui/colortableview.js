@@ -31,7 +31,8 @@ describe( 'ColorTableView', () => {
 			options: {
 				hasBorder: true
 			}
-		}, {
+		},
+		{
 			color: 'red',
 			label: 'Red',
 			options: {
@@ -90,6 +91,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'has proper class', () => {
+			expect( colorTableView.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( colorTableView.element.classList.contains( 'ck-color-table' ) ).to.be.true;
 		} );
 	} );

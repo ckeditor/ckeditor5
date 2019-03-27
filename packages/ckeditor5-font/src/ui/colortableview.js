@@ -126,7 +126,10 @@ export default class ColorTableView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [ 'ck-color-table' ]
+				class: [
+					'ck',
+					'ck-color-table'
+				]
 			},
 			children: this.items
 		} );
