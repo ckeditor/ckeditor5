@@ -4,7 +4,7 @@
  */
 
 /**
- * @module removeformat/removeformat
+ * @module remove-format/removeformat
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -18,8 +18,8 @@ const removedAttributes = [
 ];
 
 /**
- * The removeformat command. It is used by the {@link module:removeformat/removeformat~RemoveFormat remove format feature}
- * to clear formatting form current user selection.
+ * The removeformat command. It is used by the {@link module:remove-format/removeformat~RemoveFormat remove format feature}
+ * to clear the formatting form current user selection.
  *
  *		editor.execute( 'removeformat' );
  *
@@ -36,7 +36,7 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	execute() {
 		const model = this.editor.model;

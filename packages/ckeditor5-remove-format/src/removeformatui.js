@@ -4,7 +4,7 @@
  */
 
 /**
- * @module removeformat/removeformatui
+ * @module remove-format/removeformatui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

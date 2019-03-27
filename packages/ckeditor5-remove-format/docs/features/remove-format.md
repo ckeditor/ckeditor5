@@ -3,7 +3,7 @@ title: Remove Format
 category: features
 ---
 
-The {@link module:removeformat/removeformat~RemoveFormat} feature allow to easily remove any formatting.
+The {@link module:remove-format/removeformat~RemoveFormat} feature allow to easily remove any formatting.
 
 Since it only clears formatting markup, this means that items like links, tables or images will not be removed.
 
