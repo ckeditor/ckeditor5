@@ -8,7 +8,24 @@
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
-			items: [ 'removeformat', 'italic', 'bold', 'link', '|', 'undo', 'redo' ],
+			items: [
+				'bold',
+				'italic',
+				'underline',
+				'strikethrough',
+				'code',
+				'subscript',
+				'superscript',
+				'fontSize',
+				'fontFamily',
+				'alignment',
+				'link',
+				'|',
+				'removeformat',
+				'|',
+				'undo',
+				'redo'
+			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
