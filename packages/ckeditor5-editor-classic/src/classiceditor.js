@@ -152,10 +152,9 @@ export default class ClassicEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
-	 * If a DOM element is passed, its content will be automatically
-	 * {@link module:editor-classic/classiceditor~ClassicEditor#initData loaded} to the editor upon initialization
-	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
-	 * (the original one will be hidden and the editor will be injected next to it).
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
+	 * and the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element editor element} will replace the passed element
+	 * in the DOM (the original one will be hidden and the editor will be injected next to it).
 	 *
 	 * Moreover, the editor data will be set back to the original element once the editor is destroyed and when a form, in which
 	 * this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration with native
