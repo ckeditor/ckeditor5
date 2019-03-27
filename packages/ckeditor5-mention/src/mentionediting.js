@@ -12,6 +12,8 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import MentionCommand from './mentioncommand';
 
+import '../theme/mentionediting.css';
+
 /**
  * The mention editing feature.
  *
