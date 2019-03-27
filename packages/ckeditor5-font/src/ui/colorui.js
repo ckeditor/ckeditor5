@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import {
 	addColorTableToDropdown,
-	normalizeOptions,
+	normalizeColorOptions,
 	getLocalizedColorOptions
 } from '../utils';
 
@@ -77,7 +77,7 @@ export default class ColorUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( this.commandName );
-		const colorsConfig = normalizeOptions( editor.config.get( this.componentName ).colors );
+		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
 		const localizedColors = getLocalizedColorOptions( editor, colorsConfig );
 
 		// Register UI component.

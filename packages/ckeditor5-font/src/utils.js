@@ -49,9 +49,11 @@ export function buildDefinition( modelAttributeKey, options ) {
 }
 
 /**
- * Function for font color and font background color plugins
- * which is responsible for upcasting data to model.
- * styleAttr should eqaul to `'color'` or `'background-color'`.
+ * A {@link module:font/fontcolor~FontColor font color} and
+ * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
+ * responsible for upcasting data to model.
+ *
+ * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
  *
  * @param {String} styleAttr
  */
@@ -60,9 +62,11 @@ export function renderUpcastAttribute( styleAttr ) {
 }
 
 /**
- * Function for font color and font background color plugins
- * which is responsible for downcasting color attribute to span element.
- * styleAttr should eqaul to `'color'` or `'background-color'`.
+ * A {@link module:font/fontcolor~FontColor font color} and
+ * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
+ * responsible for downcasting a color attribute to a span element.
+ *
+ * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
  *
  * @param {String} styleAttr
  */
@@ -72,18 +76,14 @@ export function renderDowncastElement( styleAttr ) {
 	} );
 }
 
-function normalizeColorCode( value ) {
-	return value.replace( /\s/g, '' );
-}
-
 /**
- * Creates model of color from configuration option. It keeps them coherent,
- * regardles how user define them in config.
+ * Creates a unified color definition object from color configuration options.
+ * The object contains both the information necessary to render the UI and initialize a conversion.
  *
- * @param {String|Object} colorRow
+ * @param {module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors} options
  */
-export function normalizeOptions( colorRow ) {
-	return colorRow
+export function normalizeColorOptions( options ) {
+	return options
 		.map( normalizeSingleColorDefinition )
 		.filter( option => !!option );
 }
@@ -151,6 +151,10 @@ export function getLocalizedColorOptions( editor, options ) {
 
 		return colorOption;
 	} );
+}
+
+function normalizeColorCode( value ) {
+	return value.replace( /\s/g, '' );
 }
 
 function normalizeSingleColorDefinition( color ) {
