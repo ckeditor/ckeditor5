@@ -8,25 +8,25 @@
  */
 
 import View from '../view';
-import ColorTile from './colortile';
+import ColorTileView from './colortileview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import '../../theme/components/colorgrid/colorgrid.css';
 
 /**
- * A grid of {@link module:ui/colorgrid/colortile~ColorTile color tiles}.
+ * A grid of {@link module:ui/colorgrid/colortile~ColorTileView color tiles}.
  *
  * @extends module:ui/view~View
  */
-export default class ColorGrid extends View {
+export default class ColorGridView extends View {
 	/**
-	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTile tiles}.
+	 * Creates an instance of a color grid containing {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
 	 * @param {Object} options Component configuration
 	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} [options.colorDefinitions] Array with definitions
-	 * required to create the {@link module:ui/colorgrid/colortile~ColorTile tiles}.
+	 * required to create the {@link module:ui/colorgrid/colortile~ColorTileView tiles}.
 	 * @param {Number} options.columns A number of columns to display the tiles.
 	 */
 	constructor( locale, options ) {
@@ -84,7 +84,7 @@ export default class ColorGrid extends View {
 		} );
 
 		colorDefinitions.forEach( item => {
-			const colorTile = new ColorTile();
+			const colorTile = new ColorTileView();
 
 			colorTile.set( {
 				color: item.color,
@@ -160,7 +160,7 @@ export default class ColorGrid extends View {
 }
 
 /**
- * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTile}.
+ * A color definition used to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
  *
  *		{
  *			color: hsl(0, 0%, 75%),
@@ -174,9 +174,9 @@ export default class ColorGrid extends View {
  * @type Object
  *
  * @property {String} color String representing a color.
- * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTile}.
- * @property {String} label String used as label for {@link module:ui/colorgrid/colortile~ColorTile}.
- * @property {Object} options Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTile}.
+ * It is used as value of background-color style in {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * @property {String} label String used as label for {@link module:ui/colorgrid/colortile~ColorTileView}.
+ * @property {Object} options Additional options passed to create a {@link module:ui/colorgrid/colortile~ColorTileView}.
  * @property {Boolean} options.hasBorder A flag that indicates if special a CSS class should be added
- * to {@link module:ui/colorgrid/colortile~ColorTile}, which renders a border around it.
+ * to {@link module:ui/colorgrid/colortile~ColorTileView}, which renders a border around it.
  */

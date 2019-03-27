@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import ColorTile from '../../src/colorgrid/colortile';
+import ColorTileView from '../../src/colorgrid/colortileview';
 import ButtonView from '../../src/button/buttonview';
 
-describe( 'ColorTile', () => {
+describe( 'ColorTileView', () => {
 	it( 'inherits from ButtonView', () => {
-		expect( new ColorTile() ).to.be.instanceOf( ButtonView );
+		expect( new ColorTileView() ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'has proper attributes and classes', () => {
-		const colorTile = new ColorTile();
+		const colorTile = new ColorTileView();
 		colorTile.render();
 
 		expect( colorTile.color ).to.be.undefined;

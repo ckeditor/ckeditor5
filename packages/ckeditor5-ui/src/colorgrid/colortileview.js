@@ -10,11 +10,11 @@
 import ButtonView from '../button/buttonview';
 
 /**
- * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGrid}.
+ * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
  *
  * @extends module:ui/button/buttonview~ButtonView
  */
-export default class ColorTile extends ButtonView {
+export default class ColorTileView extends ButtonView {
 	constructor( locale ) {
 		super( locale );
 

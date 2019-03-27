@@ -5,15 +5,15 @@
 
 /* globals Event */
 
-import ColorGrid from './../../src/colorgrid/colorgrid';
-import ColorTile from '../../src/colorgrid/colortile';
+import ColorGridView from './../../src/colorgrid/colorgridview';
+import ColorTileView from '../../src/colorgrid/colortileview';
 import ViewCollection from '../../src/viewcollection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '../../src/focuscycler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'ColorGrid', () => {
+describe( 'ColorGridView', () => {
 	let locale, view;
 
 	const colorDefinitions = [
@@ -42,7 +42,7 @@ describe( 'ColorGrid', () => {
 
 	beforeEach( () => {
 		locale = { t() {} };
-		view = new ColorGrid( locale, { colorDefinitions } );
+		view = new ColorGridView( locale, { colorDefinitions } );
 		view.render();
 	} );
 
@@ -59,7 +59,7 @@ describe( 'ColorGrid', () => {
 		} );
 
 		it( 'uses the options#columns to control the grid', () => {
-			const view = new ColorGrid( locale, { columns: 3 } );
+			const view = new ColorGridView( locale, { columns: 3 } );
 			view.render();
 
 			expect( view.element.style.gridTemplateColumns ).to.equal( '1fr 1fr 1fr' );
@@ -68,7 +68,7 @@ describe( 'ColorGrid', () => {
 		} );
 
 		it( 'creates the view without provided color definitions', () => {
-			const view = new ColorGrid( locale );
+			const view = new ColorGridView( locale );
 			view.render();
 
 			expect( view.items ).to.have.length( 0 );
@@ -102,7 +102,7 @@ describe( 'ColorGrid', () => {
 					it( `for (index: ${ index }, color: ${ color.color }) child`, () => {
 						const colorTile = view.items.get( index );
 
-						expect( colorTile ).to.be.instanceOf( ColorTile );
+						expect( colorTile ).to.be.instanceOf( ColorTileView );
 						expect( colorTile.color ).to.equal( color.color );
 					} );
 				} );
@@ -162,7 +162,7 @@ describe( 'ColorGrid', () => {
 			it( 'adding new element', () => {
 				const spy = sinon.spy( view.focusTracker, 'add' );
 
-				const colorTile = new ColorTile();
+				const colorTile = new ColorTileView();
 				colorTile.set( {
 					color: 'yellow',
 					label: 'Yellow',
