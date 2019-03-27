@@ -1,8 +1,13 @@
 ### Loading
 
-The data should be loaded with different text and background colors with followed order. Colors 1-5 use predefined palette. Colors 6-8 use any css color not defined in configuration.
-Color 9-10 mixes colors from predefined palette and custom one.
-( First is font color, last is background color )
+The data should be loaded with different text and background colors in the following order:
+
+* Colors 1-5 use the predefined palette,
+* Colors 6-8 use custom CSS colors, not defined in the configuration,
+* Color 9-10 use a mix from the predefined palette and custom ones.
+
+The format is the editor content is `N. [font color]; [background color]`.
+
 1. no-color; no-color
 2. White; Black
 3. Red; no-color
@@ -16,8 +21,7 @@ Color 9-10 mixes colors from predefined palette and custom one.
 
 ### Testing
 
-Try to:
-- Change color and background color by selecting many paragraphs.
-- Change color and background color by selecting some text.
-- Check if chosen colors from dropdown are added to recent color list.
-- Try to re-apply color from Recent Color list - check if it moves to it beginning.
+- Change the font color and font background color on selected text.
+- Change the font color and font background color across many paragraphs.
+- Check whether the colors are added to recent colors list.
+- Try to re-apply a color from recent colors list: the color should move to the beginning of the list.
