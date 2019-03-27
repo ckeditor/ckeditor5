@@ -154,6 +154,14 @@ describe( 'ColorTableView', () => {
 			expect( staticColorTable.items.length ).to.equal( 3 );
 		} );
 
+		it( 'binds #selectedColor to the table', () => {
+			colorTableView.selectedColor = 'foo';
+			expect( staticColorTable.selectedColor ).to.equal( 'foo' );
+
+			colorTableView.selectedColor = 'bar';
+			expect( staticColorTable.selectedColor ).to.equal( 'bar' );
+		} );
+
 		colorDefinitions.forEach( ( item, index ) => {
 			it( `dispatch event to parent element for color: ${ item.color }`, () => {
 				const spy = sinon.spy();

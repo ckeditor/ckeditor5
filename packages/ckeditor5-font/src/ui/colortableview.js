@@ -174,6 +174,7 @@ export default class ColorTableView extends View {
 		} );
 
 		colorGrid.delegate( 'execute' ).to( this );
+		colorGrid.bind( 'selectedColor' ).to( this );
 
 		return colorGrid;
 	}
