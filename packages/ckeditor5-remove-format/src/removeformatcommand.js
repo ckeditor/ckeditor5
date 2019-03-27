@@ -55,14 +55,11 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Yields elements from a selection range that contains styles to be removed by remove format feature.
-	 *
-	 * Finds any stylable items (including selection itself) in a given selection that contains any formatting that
-	 * could be removed by remove format feature.
+	 * Yields items from a selection (including selection itself) that contains styles to be removed by the remove format feature.
 	 *
 	 * @protected
 	 * @param {module:engine/model/documentselection~DocumentSelection} selection
-	 * @returns {Iterable.<module:engine/model/item~Item>|module:engine/model/documentselection~DocumentSelection}
+	 * @returns {Iterable.<module:engine/model/item~Item>|Iterable.<module:engine/model/documentselection~DocumentSelection>}
 	 */
 	* _getStylableElements( selection ) {
 		for ( const curRange of selection.getRanges() ) {

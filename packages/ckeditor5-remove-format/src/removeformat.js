@@ -15,7 +15,7 @@ import RemoveFormatCommand from './removeformatcommand';
 /**
  * The remove format plugin.
  *
- * For a detailed overview, check the {@glink features/removeformat Remove Format feature} documentation.
+ * For a detailed overview, check the {@glink features/remove-format Remove Format feature} documentation.
  *
  * This is a "glue" plugin which loads logic and UI of the remove format plugin.
  *
