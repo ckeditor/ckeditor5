@@ -89,13 +89,14 @@ export function normalizeOptions( colorRow ) {
 }
 
 /**
- * Helper which add {@link module:font/ui/colortableview~ColorTableView} to dropdown with proper initial values.
+ * Helper which add {@link module:font/ui/colortableview~ColorTableView} to a dropdown with proper initial values.
  *
  * @param {Object} config Configuration object
  * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
- * will be added {@link module:font/ui/colortableview~ColorTableView}.
- * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}  Array with definitions representing colors to be displayed
- * in the color table.
+ * a {@link module:font/ui/colortableview~ColorTableView} will be added.
+ * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions
+ * representing colors to be displayed in the color table.
+ * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
  * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */
 export function addColorTableToDropdown( { dropdownView, colors, columns, removeButtonLabel } ) {

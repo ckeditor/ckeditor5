@@ -17,7 +17,9 @@ import {
 
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
- * It is used to create the `'fontBackgroundColor'` and the `'fontColor'` dropdowns.
+ *
+ * It is used to create the `'fontBackgroundColor'` and the `'fontColor'` dropdowns, each hosting
+ * a {@link module:font/ui/colortableview~ColorTableView}.
  *
  * @extends module:core/plugin~Plugin
  */
