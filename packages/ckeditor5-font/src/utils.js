@@ -10,12 +10,22 @@
 import ColorTableView from './ui/colortableview';
 
 /**
- * Name of font color plugin.
+ * Name of the font size plugin.
+ */
+export const FONT_SIZE = 'fontSize';
+
+/**
+ * Name of the font family plugin.
+ */
+export const FONT_FAMILY = 'fontFamily';
+
+/**
+ * Name of the font color plugin.
  */
 export const FONT_COLOR = 'fontColor';
 
 /**
- * Name of font background color plugin.
+ * Name of font font background color plugin.
  */
 export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
