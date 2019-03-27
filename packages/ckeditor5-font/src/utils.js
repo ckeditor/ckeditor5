@@ -111,18 +111,17 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
 }
 
 /**
- * Returns configuration options as defined in the `editor.config[ featureName ]` but processed to account for
- * editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
+ * Returns color configuration options as defined in the `editor.config.(fontColor|fontBackgroundColor).colors`
+ * but processed to account for editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
  * or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig} in the correct language.
  *
  * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
  * when the user configuration is defined because the editor does not exist yet.
  *
  * @param {module:core/editor/editor~Editor} editor An editor instance.
- * @param {String} featureName Determines which config (`editor.config[ featureName ]`) colors to localize.
- * @returns {Array.<module:font/fontbackgroundcolor~FontBackgroundColorConfig>|Array.<module:font/fontcolor~FontColorConfig>}.
+ * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}.
  */
-export function getLocalizedColorOptions( editor, featureName ) {
+export function getLocalizedColorOptions( editor, options ) {
 	const t = editor.t;
 	const localizedColorNames = {
 		Black: t( 'Black' ),
@@ -142,7 +141,7 @@ export function getLocalizedColorOptions( editor, featureName ) {
 		Purple: t( 'Purple' )
 	};
 
-	return normalizeOptions( editor.config.get( featureName ).colors ).map( colorOption => {
+	return options.map( colorOption => {
 		const label = localizedColorNames[ colorOption.label ];
 
 		if ( label && label != colorOption.label ) {
