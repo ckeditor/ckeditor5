@@ -99,14 +99,6 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'allows to pass data to the constructor', () => {
-			return InlineEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
-			} );
-		} );
-
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
@@ -153,6 +145,49 @@ describe( 'InlineEditor', () => {
 
 		it( 'loads data from the editor element', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+		} );
+
+		it( 'should not require config object', () => {
+			// Just being safe with `builtinPlugins` static property.
+			class CustomInlineEditor extends InlineEditor {}
+			CustomInlineEditor.builtinPlugins = [ Paragraph, Bold ];
+
+			return CustomInlineEditor.create( editorElement )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return InlineEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'initializes with config.initialData', () => {
+			return InlineEditor.create( editorElement, {
+				initialData: '<p>Hello world!</p>',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
+			InlineEditor.create( '<p>Hello world!</p>', {
+				initialData: '<p>I am evil!</p>',
+				plugins: [ Paragraph ]
+			} ).catch( () => {
+				done();
+			} );
 		} );
 
 		// #25
