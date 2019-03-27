@@ -159,12 +159,11 @@ export default class InlineEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
-	 * If a DOM element is passed, its content will be automatically
-	 * {@link module:editor-inline/inlineeditor~InlineEditor#initData loaded} to the editor upon initialization.
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization.
 	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
-	 * It is available under {@link module:editor-classic/classiceditorui~InlineEditorUI#element `editor.ui.element`} property.
+	 * It is available under {@link module:editor-inline/inlineeditorui~InlineEditorUI#element `editor.ui.element`} property.
 	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
