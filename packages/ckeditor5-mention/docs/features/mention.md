@@ -261,6 +261,24 @@ Below is an example of a customized mention feature that:
 
 {@snippet features/mention-customization}
 
+### Colors and styles
+
+#### Using CSS variables
+
+The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [theme lark stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that mention styles can be easily customized:
+
+```css
+:root {
+	/* Make mention background blue. */
+	--ck-color-mention-background: hsla(220, 100%, 54%, 0.4);
+
+    /* Make mention text dark grey. */
+	--ck-color-mention-text: hsl(0, 0%, 15%);
+}
+```
+
+{@snippet features/custom-mention-colors-variables}
+
 ## Installation
 
 <info-box info>
