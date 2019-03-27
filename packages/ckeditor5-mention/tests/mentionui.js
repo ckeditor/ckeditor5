@@ -111,6 +111,8 @@ describe( 'MentionUI', () => {
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
+			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
@@ -120,8 +122,24 @@ describe( 'MentionUI', () => {
 					const pinArgument = pinSpy.firstCall.args[ 0 ];
 					const { target, positions } = pinArgument;
 
-					expect( target() ).to.deep.equal( caretRect );
 					expect( positions ).to.have.length( 4 );
+
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+					const mentionMarker = editor.model.markers.get( 'mention' );
+					const focus = doc.selection.focus;
+					const expectedRange = editor.model.createRange( focus.getShiftedBy( -1 ), focus );
+
+					// It should create a model marker for matcher marker character ('@').
+					expect( expectedRange.isEqual( mentionMarker.getRange() ) ).to.be.true;
+
+					const toViewRangeSpy = sinon.spy( editor.editing.mapper, 'toViewRange' );
+
+					expect( target() ).to.deep.equal( caretRect );
+
+					sinon.assert.calledOnce( toViewRangeSpy );
+					const range = toViewRangeSpy.firstCall.args[ 0 ];
+
+					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' );
 
 					const caretSouthEast = positions[ 0 ];
 					const caretNorthEast = positions[ 1 ];
@@ -195,6 +213,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} )
 				.then( waitForDebounce )
 				.then( () => {
@@ -205,6 +224,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					expect( listView.items ).to.have.length( 1 );
 
 					model.change( writer => {
@@ -214,6 +234,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					expect( listView.items ).to.have.length( 1 );
 				} );
 		} );
@@ -226,6 +247,8 @@ describe( 'MentionUI', () => {
 			it( 'should show panel for matched marker', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
+				expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
 				} );
@@ -233,6 +256,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 5 );
 					} );
 			} );
@@ -247,6 +271,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 5 );
 					} );
 			} );
@@ -261,6 +286,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
@@ -274,6 +300,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
@@ -287,6 +314,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
@@ -300,6 +328,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 						model.change( () => {
 							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
@@ -308,6 +337,7 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
@@ -325,6 +355,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 1 );
 					} );
 			} );
@@ -361,6 +392,7 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 						expect( listView.items ).to.have.length( 0 );
 					} );
 			} );
@@ -417,6 +449,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 4 );
 					} );
 			} );
@@ -435,6 +468,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 1 );
 					} );
 			} );
@@ -456,6 +490,7 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 						expect( listView.items ).to.have.length( 0 );
 					} );
 			} );
@@ -496,6 +531,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					fireKeyDownEvent( {
 						keyCode: keyCodes.esc,
@@ -504,6 +540,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
@@ -519,10 +556,12 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
@@ -538,6 +577,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					model.change( writer => {
 						// Place position at the begging of a paragraph.
@@ -545,6 +585,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
@@ -673,6 +714,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 						expect( listView.items ).to.have.length( 5 );
 					} );
 			} );
@@ -847,6 +889,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.esc,
@@ -855,6 +898,7 @@ describe( 'MentionUI', () => {
 						} );
 
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 
 						fireKeyDownEvent( {
 							keyCode,
@@ -865,6 +909,7 @@ describe( 'MentionUI', () => {
 						sinon.assert.notCalled( spy );
 
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 		}
@@ -912,6 +957,7 @@ describe( 'MentionUI', () => {
 					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 	} );

@@ -91,7 +91,7 @@ export default class MentionUI extends Plugin {
 				}
 
 				if ( data.keyCode == keyCodes.esc ) {
-					this._hidePanel();
+					this._hidePanelAndRemoveMarker();
 				}
 			}
 		}, { priority: 'highest' } ); // priority highest required for enter overriding.
@@ -101,7 +101,7 @@ export default class MentionUI extends Plugin {
 			emitter: this.panelView,
 			contextElements: [ this.panelView.element ],
 			activator: () => this.panelView.isVisible,
-			callback: () => this._hidePanel()
+			callback: () => this._hidePanelAndRemoveMarker()
 		} );
 
 		const feeds = this.editor.config.get( 'mention.feeds' );
@@ -211,7 +211,7 @@ export default class MentionUI extends Plugin {
 				range
 			} );
 
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 		} );
 
 		return mentionsView;
@@ -271,6 +271,26 @@ export default class MentionUI extends Plugin {
 
 			const { feedText, marker } = matched;
 
+			const matchedTextLength = marker.length + feedText.length;
+
+			// create marker range
+			const start = selection.focus.getShiftedBy( -matchedTextLength );
+			const end = selection.focus.getShiftedBy( -feedText.length );
+
+			const markerRange = editor.model.createRange( start, end );
+
+			let markerMarker;
+
+			if ( editor.model.markers.has( 'mention' ) ) {
+				markerMarker = editor.model.markers.get( 'mention' );
+			} else {
+				markerMarker = editor.model.change( writer => writer.addMarker( 'mention', {
+					range: markerRange,
+					usingOperation: false,
+					affectsData: false
+				} ) );
+			}
+
 			this._getFeed( marker, feedText )
 				.then( feed => {
 					this._items.clear();
@@ -282,15 +302,15 @@ export default class MentionUI extends Plugin {
 					}
 
 					if ( this._items.length ) {
-						this._showPanel();
+						this._showPanel( markerMarker );
 					} else {
-						this._hidePanel();
+						this._hidePanelAndRemoveMarker();
 					}
 				} );
 		} );
 
 		watcher.on( 'unmatched', () => {
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 		} );
 
 		return watcher;
@@ -314,18 +334,22 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @private
 	 */
-	_showPanel() {
-		this.panelView.pin( this._getBalloonPanelPositionData() );
+	_showPanel( markerMarker ) {
+		this.panelView.pin( this._getBalloonPanelPositionData( markerMarker ) );
 		this.panelView.show();
 		this._mentionsView.selectFirst();
 	}
 
 	/**
-	 * Hides the {@link #panelView}.
+	 * Hides the {@link #panelView} and remove 'mention' marker from markers collection.
 	 *
 	 * @private
 	 */
-	_hidePanel() {
+	_hidePanelAndRemoveMarker() {
+		if ( this.editor.model.markers.has( 'mention' ) ) {
+			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
+		}
+
 		this.panelView.unpin();
 		this.panelView.hide();
 	}
@@ -365,15 +389,16 @@ export default class MentionUI extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
-	_getBalloonPanelPositionData() {
-		const view = this.editor.editing.view;
-		const domConverter = view.domConverter;
-		const viewSelection = view.document.selection;
+	_getBalloonPanelPositionData( markerMarker ) {
+		const editing = this.editor.editing;
+		const domConverter = editing.view.domConverter;
+		const mapper = editing.mapper;
 
 		return {
 			target: () => {
-				const range = viewSelection.getLastRange();
-				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( range ) );
+				const viewRange = mapper.toViewRange( markerMarker.getRange() );
+
+				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
 				return rangeRects.pop();
 			},
