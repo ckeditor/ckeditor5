@@ -18,6 +18,9 @@ const removedAttributes = [
 	'code',
 	'subscript',
 	'superscript',
+	'fontSize',
+	'fontFamily',
+	'alignment',
 	'highlight'
 ];
 
