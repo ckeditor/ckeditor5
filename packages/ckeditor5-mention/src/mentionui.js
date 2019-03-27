@@ -21,7 +21,7 @@ import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
 
-const VERTICAL_SPACING = 5;
+const VERTICAL_SPACING = 3;
 
 /**
  * The mention UI feature.

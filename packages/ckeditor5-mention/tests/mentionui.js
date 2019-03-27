@@ -155,25 +155,25 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 123
+						top: 121
 					} );
 
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -55
+						top: -53
 					} );
 
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 123
+						top: 121
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -55
+						top: -53
 					} );
 				} );
 		} );
