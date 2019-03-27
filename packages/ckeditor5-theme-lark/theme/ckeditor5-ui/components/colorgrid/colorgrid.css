@@ -7,8 +7,6 @@
 
 :root {
 	--ck-color-grid-tile-size: 20px;
-	--ck-color-color-grid-tile-border: hsl(0, 0%, 90%);
-	--ck-color-color-grid-tile-border-active: hsl(184, 80%, 50%);
 }
 
 .ck.ck-color-grid {
@@ -31,11 +29,11 @@
 	}
 
 	&.ck-color-table__color-tile_bordered {
-		box-shadow: 0 0 0 1px var(--ck-color-color-grid-tile-border);
+		box-shadow: 0 0 0 1px var(--ck-color-base-border);
 	}
 
 	&:hover:not( .ck-disabled ) {
-		box-shadow: 0 0 0 2px var(--ck-color-color-grid-tile-border-active);
+		box-shadow: 0 0 0 2px var(--ck-color-focus-border);
 	}
 }
 
