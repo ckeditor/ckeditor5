@@ -98,14 +98,6 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
-		it( 'allows to pass data to the constructor', () => {
-			return ClassicEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
-			} );
-		} );
-
 		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
@@ -153,6 +145,49 @@ describe( 'ClassicEditor', () => {
 
 					return newEditor.destroy();
 				} );
+		} );
+
+		it( 'should not require config object', () => {
+			// Just being safe with `builtinPlugins` static property.
+			class CustomClassicEditor extends ClassicEditor {}
+			CustomClassicEditor.builtinPlugins = [ Paragraph, Bold ];
+
+			return CustomClassicEditor.create( editorElement )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return ClassicEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'initializes with config.initialData', () => {
+			return ClassicEditor.create( editorElement, {
+				initialData: '<p>Hello world!</p>',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
+			ClassicEditor.create( '<p>Hello world!</p>', {
+				initialData: '<p>I am evil!</p>',
+				plugins: [ Paragraph ]
+			} ).catch( () => {
+				done();
+			} );
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {

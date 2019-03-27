@@ -17,6 +17,7 @@ import ClassicEditorUIView from './classiceditoruiview';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
@@ -92,9 +93,11 @@ export default class ClassicEditor extends Editor {
 	}
 
 	/**
-	 * Creates a classic editor instance.
+	 * Creates a `ClassicEditor` instance.
 	 *
-	 * Creating an instance when using a {@glink builds/index CKEditor build}:
+	 * There are two general ways how the editor can be initialized.
+	 *
+	 * You can initialize the editor using an existing DOM element:
 	 *
 	 *		ClassicEditor
 	 *			.create( document.querySelector( '#editor' ) )
@@ -105,68 +108,65 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * The element's content will be used as the editor data and the element will be replaced by the editable element and the editor UI.
 	 *
-	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-	 *		import ...
-	 *
-	 *		ClassicEditor
-	 *			.create( document.querySelector( '#editor' ), {
-	 *				plugins: [ Essentials, Bold, Italic, ... ],
-	 *				toolbar: [ 'bold', 'italic', ... ]
-	 *			} )
-	 *			.then( editor => {
-	 *				console.log( 'Editor was initialized', editor );
-	 *			} )
-	 *			.catch( err => {
-	 *				console.error( err.stack );
-	 *			} );
-	 *
-	 * Creating an instance when using initial data instead of a DOM element:
-	 *
-	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-	 *		import ...
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
+	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
 	 *
 	 *		ClassicEditor
 	 *			.create( '<p>Hello world!</p>' )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
 	 *
-	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
-	 *				document.body.appendChild( editor.element );
+	 *				// Initial data was provided so the editor UI element needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.ui.element );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
+	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
+	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
+	 *
+	 *		ClassicEditor
+	 *			.create( document.querySelector( '#editor' ), {
+	 *				initialData: '<h2>Initial data</h2><p>Foo bar.</p>'
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * This method can be used to initialize the editor on an existing element with specified content in case if your integration
+	 * makes it difficult to set the content of the source element.
+	 *
+	 * Note that an error will be thrown if you pass initial data both as the first parameter and also in the config.
+	 *
+	 * See also the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * customizing plugins, toolbar and other.
+	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
 	 *
-	 * If a source element is passed, then its contents will be automatically
-	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
-	 * and the {@link module:core/editor/editorui~EditorUI#getEditableElement editor element} will replace the passed element in the DOM
-	 * (the original one will be hidden and the editor will be injected next to it).
+	 * If a DOM element is passed, its content will be automatically loaded to the editor upon initialization
+	 * and the {@link module:editor-classic/classiceditorui~ClassicEditorUI#element editor element} will replace the passed element
+	 * in the DOM (the original one will be hidden and the editor will be injected next to it).
 	 *
-	 * Moreover, the data will be set back to the source element once the editor is destroyed and
-	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
-	 * automatic integration with native web forms).
+	 * Moreover, the editor data will be set back to the original element once the editor is destroyed and when a form, in which
+	 * this element is contained, is submitted (if the original element is a `<textarea>`). This ensures seamless integration with native
+	 * web forms.
 	 *
-	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually (by accessing
-	 * it via the {@link module:editor-classic/classiceditorui~ClassicEditorUI#getEditableElement `editor.ui.getEditableElement()`} method).
+	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
+	 * It is available under {@link module:editor-classic/classiceditorui~ClassicEditorUI#element `editor.ui.element`} property.
 	 *
-	 * See the examples above to learn more.
-	 *
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
-	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
+	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
-	static create( sourceElementOrData, config ) {
+	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
 			const editor = new this( sourceElementOrData, config );
 
@@ -174,9 +174,14 @@ export default class ClassicEditor extends Editor {
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
-						const initialData = isElement( sourceElementOrData ) ?
-							getDataFromElement( sourceElementOrData ) :
-							sourceElementOrData;
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+							);
+						}
+
+						const initialData = config.initialData || getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )
@@ -189,3 +194,7 @@ export default class ClassicEditor extends Editor {
 
 mix( ClassicEditor, DataApiMixin );
 mix( ClassicEditor, ElementApiMixin );
+
+function getInitialData( sourceElementOrData ) {
+	return isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+}
