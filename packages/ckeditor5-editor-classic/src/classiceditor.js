@@ -108,7 +108,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * The element's content will be used as the editor data and it will be replaced by the editable element and the editor UI.
+	 * The element's content will be used as the editor data and the element will be replaced by the editable element and the editor UI.
 	 *
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
 	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
