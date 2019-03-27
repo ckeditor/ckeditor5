@@ -106,14 +106,6 @@ describe( 'BalloonEditor', () => {
 			} );
 		} );
 
-		it( 'allows to pass data to the constructor', () => {
-			return BalloonEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
-			} );
-		} );
-
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
 			return BalloonEditor
 				.create( '<p>Foo.</p>', {
@@ -163,6 +155,49 @@ describe( 'BalloonEditor', () => {
 
 		it( 'loads data from the editor element', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+		} );
+
+		it( 'should not require config object', () => {
+			// Just being safe with `builtinPlugins` static property.
+			class CustomBalloonEditor extends BalloonEditor {}
+			CustomBalloonEditor.builtinPlugins = [ Paragraph, Bold ];
+
+			return CustomBalloonEditor.create( editorElement )
+				.then( newEditor => {
+					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'initializes with config.initialData', () => {
+			return BalloonEditor.create( editorElement, {
+				initialData: '<p>Hello world!</p>',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+
+				editor.destroy();
+			} );
+		} );
+
+		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
+			BalloonEditor.create( '<p>Hello world!</p>', {
+				initialData: '<p>I am evil!</p>',
+				plugins: [ Paragraph ]
+			} ).catch( () => {
+				done();
+			} );
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
