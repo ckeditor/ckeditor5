@@ -134,7 +134,7 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * The element's content will be used as the editor data and it will become the editable element.
+	 * The element's content will be used as the editor data and the element will become the editable element.
 	 *
 	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
 	 * In this case, you will have to manually append to your web page both the toolbar element and the editable element.
