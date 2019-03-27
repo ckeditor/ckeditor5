@@ -14,6 +14,10 @@ const removedAttributes = [
 	'bold',
 	'italic',
 	'underline',
+	'strikethrough',
+	'code',
+	'subscript',
+	'superscript',
 	'highlight'
 ];
 
