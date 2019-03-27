@@ -108,6 +108,8 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should properly calculate position data', () => {
+			const editableElement = editingView.document.selection.editableElement;
+
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
@@ -120,9 +122,13 @@ describe( 'MentionUI', () => {
 			return waitForDebounce()
 				.then( () => {
 					const pinArgument = pinSpy.firstCall.args[ 0 ];
-					const { target, positions } = pinArgument;
+					const { target, positions, limiter, fitInViewport } = pinArgument;
 
+					expect( fitInViewport ).to.be.true;
 					expect( positions ).to.have.length( 4 );
+
+					// Mention UI should set limiter to the editable area.
+					expect( limiter() ).to.equal( editingView.domConverter.mapViewToDom( editableElement ) );
 
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					const mentionMarker = editor.model.markers.get( 'mention' );
