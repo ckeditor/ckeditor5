@@ -8,7 +8,7 @@
 	--ck-color-mention-text: hsl(341, 100%, 30%);
 }
 
-.mention {
+.ck-content .mention {
 	background: var(--ck-color-mention-background);
 	color: var(--ck-color-mention-text);
 }
