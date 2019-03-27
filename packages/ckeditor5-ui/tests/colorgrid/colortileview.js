@@ -5,6 +5,7 @@
 
 import ColorTileView from '../../src/colorgrid/colortileview';
 import ButtonView from '../../src/button/buttonview';
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 
 describe( 'ColorTileView', () => {
 	it( 'inherits from ButtonView', () => {
@@ -26,5 +27,12 @@ describe( 'ColorTileView', () => {
 
 		colorTile.set( 'hasBorder', true );
 		expect( colorTile.element.classList.contains( 'ck-color-table__color-tile_bordered' ) ).to.be.true;
+	} );
+
+	it( 'has a check icon', () => {
+		const colorTile = new ColorTileView();
+		colorTile.render();
+
+		expect( colorTile.icon ).to.equal( checkIcon );
 	} );
 } );

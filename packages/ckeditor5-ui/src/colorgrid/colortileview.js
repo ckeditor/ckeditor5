@@ -8,6 +8,7 @@
  */
 
 import ButtonView from '../button/buttonview';
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
@@ -22,6 +23,7 @@ export default class ColorTileView extends ButtonView {
 
 		/**
 		 * String representing a color shown as tile's background.
+		 *
 		 * @type {String}
 		 */
 		this.set( 'color' );
@@ -29,9 +31,12 @@ export default class ColorTileView extends ButtonView {
 		/**
 		 * A flag that toggles a special CSS class responsible for displaying
 		 * a border around the button.
+		 *
 		 * @type {Boolean}
 		 */
 		this.set( 'hasBorder' );
+
+		this.icon = checkIcon;
 
 		this.extendTemplate( {
 			attributes: {

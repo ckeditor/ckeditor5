@@ -92,6 +92,19 @@ describe( 'ColorGridView', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
 
+		it( 'reacts to changes in #selectedColor by setting the item#isOn', () => {
+			expect( view.items.map( item => item ).some( item => item.isOn ) ).to.be.false;
+
+			view.selectedColor = 'red';
+
+			expect( view.items.get( 2 ).isOn ).to.be.true;
+
+			view.selectedColor = 'rgb(255, 255, 255)';
+
+			expect( view.items.get( 1 ).isOn ).to.be.true;
+			expect( view.items.get( 2 ).isOn ).to.be.false;
+		} );
+
 		describe( 'add colors from definition as child items', () => {
 			it( 'has proper number of elements', () => {
 				expect( view.items.length ).to.equal( 3 );

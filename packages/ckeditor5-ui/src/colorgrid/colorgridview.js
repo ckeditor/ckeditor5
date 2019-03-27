@@ -40,6 +40,13 @@ export default class ColorGridView extends View {
 		}
 
 		/**
+		 * The color of the currently selected color tile in {@link #items}.
+		 *
+		 * @type {String}
+		 */
+		this.set( 'selectedColor' );
+
+		/**
 		 * Collection of the child tile views.
 		 *
 		 * @readonly
@@ -113,6 +120,12 @@ export default class ColorGridView extends View {
 					'ck-color-grid'
 				],
 				style: viewStyleAttribute
+			}
+		} );
+
+		this.on( 'change:selectedColor', ( evt, name, selectedColor ) => {
+			for ( const item of this.items ) {
+				item.isOn = item.color === selectedColor;
 			}
 		} );
 	}
