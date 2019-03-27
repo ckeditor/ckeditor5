@@ -147,76 +147,114 @@ ClassicEditor
 
 {@snippet features/custom-font-size-numeric-options}
 
-## Configuring font color and font background color
+## Configuring font color and font background color features
 
-Plugin enables `font color` and `font background color`. Which allows on using style `color` and `background-color` over text.
+Both font color and font background color features are configurable and share the same configuration format.
+
 <info-box info>
-	Please notice that you can turn on only one of those plugins. As well as configure them separately.
+	Please note that {@link module:font/fontcolor~FontColor font color} and {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} are separate plugins. They must be enabled and configured individually.
 </info-box>
 
-### Dropdown
-
-It is possible to configure which colors are available in dropdown in the editor. Use the `fontColor.colors` or `fontBackgroundColor.colors` configuration option to do so.
-
-It is possible to configure how many columns is shown in color dropdown. Use the `fontColor.columns` or `fontBackgroundColor.columns` configuration option to do so. This option also reflects to number of recently used colors section, which always have 1 row with amount of columns equal to `columns` configuration option.
-Default colors configuration is presented below:
-
-```js
-fontColor = {
-	colors: [
-		{
-			color: 'hsl(0, 0%, 0%)',
-			label: 'Black'
-		}, {
-			color: 'hsl(0, 0%, 30%)',
-			label: 'Dim grey'
-		}, {
-			color: 'hsl(0, 0%, 60%)',
-			label: 'Grey'
-		}, {
-			color: 'hsl(0, 0%, 90%)',
-			label: 'Light grey'
-		}, {
-			color: 'hsl(0, 0%, 100%)',
-			label: 'White',
-			hasBorder: true
-		}, {
-			color: 'hsl(0, 75%, 60%)',
-			label: 'Red'
-		}, {
-			color: 'hsl(30, 75%, 60%)',
-			label: 'Orange'
-		}, {
-			color: 'hsl(60, 75%, 60%)',
-			label: 'Yellow'
-		}, {
-			color: 'hsl(90, 75%, 60%)',
-			label: 'Light green'
-		}, {
-			color: 'hsl(120, 75%, 60%)',
-			label: 'Green'
-		}, {
-			color: 'hsl(150, 75%, 60%)',
-			label: 'Aquamarine'
-		}, {
-			color: 'hsl(180, 75%, 60%)',
-			label: 'Turquoise'
-		}, {
-			color: 'hsl(210, 75%, 60%)',
-			label: 'Light blue'
-		}, {
-			color: 'hsl(240, 75%, 60%)',
-			label: 'Blue'
-		}, {
-			color: 'hsl(270, 75%, 60%)',
-			label: 'Purple'
-		}
-	],
-	columns: 5
-}
-```
+Check out the editor below with both features customized using the editor configuration:
 
 {@snippet features/custom-font-color-and-background-color-options}
+
+### Specifying the available colors
+
+It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontColor~FontColor#colors `fontColor.colors`} and {@link module:font/fontBackgroundColor~FontBackgroundColor#colors `fontBackgroundColor.colors`} configuration options to do so.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			colors: [
+				{
+					color: 'hsl(0, 0%, 0%)',
+					label: 'Black'
+				},
+				{
+					color: 'hsl(0, 0%, 30%)',
+					label: 'Dim grey'
+				},
+				{
+					color: 'hsl(0, 0%, 60%)',
+					label: 'Grey'
+				},
+				{
+					color: 'hsl(0, 0%, 90%)',
+					label: 'Light grey'
+				},
+				{
+					color: 'hsl(0, 0%, 100%)',
+					label: 'White',
+					hasBorder: true
+				},
+
+				// ...
+			]
+		},
+		fontBackgroundColor: {
+			colors: [
+				{
+					color: 'hsl(0, 75%, 60%)',
+					label: 'Red'
+				},
+				{
+					color: 'hsl(30, 75%, 60%)',
+					label: 'Orange'
+				},
+				{
+					color: 'hsl(60, 75%, 60%)',
+					label: 'Yellow'
+				},
+				{
+					color: 'hsl(90, 75%, 60%)',
+					label: 'Light green'
+				},
+				{
+					color: 'hsl(120, 75%, 60%)',
+					label: 'Green'
+				},
+
+				// ...
+			]
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+### Changing the geometry of the color grid
+
+It is also possible to configure in how many columns the colors in the grid are displayed. Use {@link module:font/fontColor~FontColor#columns `fontColor.columns`} and {@link module:font/fontBackgroundColor~FontBackgroundColor#columns `fontBackgroundColor.columns`} to do so.
+
+<info-box>
+	The configuration of the columns also affects the number of recently used colors displayed under the color grid. The less columns, the fewer recently used colors will be displayed.
+</info-box>
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			columns: 3,
+
+			// ...
+		},
+		fontBackgroundColor: {
+			columns: 6,
+
+			// ...
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
 
 ## Installation
 
@@ -334,33 +372,38 @@ The {@link module:font/fontcolor~FontColor} plugin registers the following compo
 * The `'fontColor'` dropdown,
 * The {@link module:font/fontcolor/fontcolorcommand~FontColorCommand `'fontColor'`} command.
 
-	The number of options and their names correspond to the {@link module:font/fontcolor~FontColorConfig#colors `fontColor.colors`}
-	and {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} configuration options.
-
 	You can change the font color of the current selection by executing the command with a desired value:
 
 	```js
-	editor.execute( 'fontColor', { value: rgb(30, 188, 97) } );
+	editor.execute( 'fontColor', { value: 'rgb(30, 188, 97)' } );
 	```
 
-	The `'fontColor'` command will accept any strings as values.
+	Passing an empty value will remove the font color from the selection:
+
+	```js
+	editor.execute( 'fontColor' );
+	```
 
 The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers the following components:
 
-* The `'fontColor'` dropdown,
+* The `'fontBackgroundColor'` dropdown,
 * The {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand `'fontBackgroundColor'`} command.
-
-	The number of options and their names correspond to the {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors `fontBackgroundColor.colors`}
-	and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} configuration options.
 
 	You can change the font background color of the current selection by executing the command with a desired value:
 
 	```js
-	editor.execute( 'fontBackgroundColor', { value: rgb(30, 188, 97) } );
+	editor.execute( 'fontBackgroundColor', { value: 'rgb(30, 188, 97)' } );
 	```
 
-	The `'fontBackgroundColor'` command will accept any strings as values.
+	Passing an empty value will remove the font background color from the selection:
 
+	```js
+	editor.execute( 'fontBackgroundColor' );
+	```
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
