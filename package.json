@@ -52,6 +52,7 @@
     "@ckeditor/ckeditor5-list": "^12.0.0",
     "@ckeditor/ckeditor5-markdown-gfm": "^11.0.0",
     "@ckeditor/ckeditor5-media-embed": "^11.0.0",
+    "@ckeditor/ckeditor5-mention": "*",
     "@ckeditor/ckeditor5-paragraph": "^11.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^11.0.0",
     "@ckeditor/ckeditor5-table": "^12.0.0",
