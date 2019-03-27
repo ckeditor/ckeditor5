@@ -9,8 +9,8 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ColorTile from '@ckeditor/ckeditor5-ui/src/colorgrid/colortile';
-import ColorGrid from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgrid';
+import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
+import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
@@ -22,7 +22,7 @@ import '../../theme/fontcolor.css';
  * Class which represents a view with the following sub–components:
  *
  * * a remove color button,
- * * a {@link module:ui/colorgrid/colorgrid~ColorGrid},
+ * * a {@link module:ui/colorgrid/colorgrid~ColorGridView},
  * * a grid of recently used colors.
  *
  * @extends module:ui/view~View
@@ -168,7 +168,7 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	createStaticColorTable() {
-		const colorGrid = new ColorGrid( this.locale, {
+		const colorGrid = new ColorGridView( this.locale, {
 			colorDefinitions: this.colorDefinitions,
 			columns: this.columns
 		} );
@@ -184,11 +184,11 @@ export default class ColorTableView extends View {
 	 * @private
 	 */
 	recentlyUsed() {
-		const recentViews = new ColorGrid( this.locale, { columns: this.columns } );
+		const recentViews = new ColorGridView( this.locale, { columns: this.columns } );
 
 		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
-				const colorTile = new ColorTile();
+				const colorTile = new ColorTileView();
 
 				colorTile.set( {
 					color: colorObj.color,
