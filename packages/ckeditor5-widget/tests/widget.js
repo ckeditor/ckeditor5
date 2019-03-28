@@ -151,21 +151,6 @@ describe( 'Widget', () => {
 		sinon.assert.calledOnce( domEventDataMock.preventDefault );
 	} );
 
-	it( 'should do nothing if clicked inside nested editable', () => {
-		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
-		const viewDiv = viewDocument.getRoot().getChild( 0 );
-		const viewFigcaption = viewDiv.getChild( 0 );
-
-		const domEventDataMock = {
-			target: viewFigcaption,
-			preventDefault: sinon.spy()
-		};
-
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.notCalled( domEventDataMock.preventDefault );
-	} );
-
 	it( 'should do nothing if clicked in non-widget element', () => {
 		setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		const viewP = viewDocument.getRoot().getChild( 0 );

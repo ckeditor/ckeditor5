@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 import { getCode, keyCodes, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
 
@@ -114,8 +115,18 @@ export default class Widget extends Plugin {
 		const viewDocument = view.document;
 		let element = domEventData.target;
 
-		// Do nothing if inside nested editable.
+		// Do nothing for single or double click inside nested editable.
 		if ( isInsideNestedEditable( element ) ) {
+			// But at least triple click inside nested editable causes broken selection in Safari.
+			// For such event, we select the entire nested editable element.
+			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
+			if ( env.isSafari && domEventData.domEvent.detail >= 3 ) {
+				this.editor.editing.view.change( writer => {
+					domEventData.preventDefault();
+					writer.setSelection( element, 'in' );
+				} );
+			}
+
 			return;
 		}
 
