@@ -117,6 +117,10 @@ ClassicEditor
 	Do not forget to add all dependencies of your manual test as `devDependencies` (in `package.json`).
 </info-box>
 
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
+
 ## Test suite and CI
 
 To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of May 2018, this means over 8000 tests and the number is growing. Since every package is tested separately, we implement lower-level tests for libraries and higher-level tests for end-user features.

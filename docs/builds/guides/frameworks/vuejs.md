@@ -301,6 +301,8 @@ Now all you need to do is specify the list of rich text editor options (**includ
 </template>
 
 <script>
+	// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
+	// Since we're building CKEditor from source, we use the source version of ClassicEditor.
 	import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 	import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
