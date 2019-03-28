@@ -149,10 +149,10 @@ function removePartialMentionPostFixer( writer, doc ) {
 
 	for ( const change of changes ) {
 		// Check if user edited part of a mention.
-		if ( change.type == 'insert' || change.type == 'remove' ) {
+		if ( change.name == '$text' && ( change.type == 'insert' || change.type == 'remove' ) ) {
 			const textNode = change.position.textNode;
 
-			if ( change.name == '$text' && textNode && textNode.hasAttribute( 'mention' ) ) {
+			if ( !checkMentionAttributeOnNode( textNode ) ) {
 				writer.removeAttribute( 'mention', textNode );
 				wasChanged = true;
 			}
@@ -162,19 +162,25 @@ function removePartialMentionPostFixer( writer, doc ) {
 		if ( change.type == 'remove' ) {
 			const nodeBefore = change.position.nodeBefore;
 
-			if ( nodeBefore && nodeBefore.hasAttribute( 'mention' ) ) {
-				const text = nodeBefore.data;
-				const mention = nodeBefore.getAttribute( 'mention' );
-
-				const expectedText = mention._marker + mention.name;
-
-				if ( text != expectedText ) {
-					writer.removeAttribute( 'mention', nodeBefore );
-					wasChanged = true;
-				}
+			if ( !checkMentionAttributeOnNode( nodeBefore ) ) {
+				writer.removeAttribute( 'mention', nodeBefore );
+				wasChanged = true;
 			}
 		}
 	}
 
 	return wasChanged;
+}
+
+function checkMentionAttributeOnNode( node ) {
+	if ( !node || !node.is( 'text' ) || !node.hasAttribute( 'mention' ) ) {
+		return true;
+	}
+
+	const text = node.data;
+	const mention = node.getAttribute( 'mention' );
+
+	const expectedText = mention._marker + mention.name;
+
+	return text == expectedText;
 }

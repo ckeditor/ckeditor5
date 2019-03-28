@@ -57,7 +57,7 @@ describe( 'MentionEditing - integration', () => {
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view ) )
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 		} );
 
@@ -82,7 +82,7 @@ describe( 'MentionEditing - integration', () => {
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view ) )
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 		} );
 	} );
