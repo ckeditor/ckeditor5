@@ -39,7 +39,15 @@ const env = {
 	 * @static
 	 * @member {Boolean} module:utils/env~env#isEdge
 	 */
-	isGecko: isGecko( userAgent )
+	isGecko: isGecko( userAgent ),
+
+	/**
+	 * Indicates that the application is running in Safari.
+	 *
+	 * @static
+	 * @member {Boolean} module:utils/env~env#isSafari
+	 */
+	isSafari: isSafari( userAgent )
 };
 
 export default env;
@@ -72,4 +80,14 @@ export function isEdge( userAgent ) {
  */
 export function isGecko( userAgent ) {
 	return !!userAgent.match( /gecko\/\d+/ );
+}
+
+/**
+ * Checks if User Agent represented by the string is Safari.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Safari or not.
+ */
+export function isSafari( userAgent ) {
+	return userAgent.indexOf( ' applewebkit/' ) > -1 && userAgent.indexOf( 'chrome' ) === -1;
 }
