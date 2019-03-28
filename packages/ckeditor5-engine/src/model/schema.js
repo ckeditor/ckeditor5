@@ -149,70 +149,6 @@ export default class Schema {
 	}
 
 	/**
-	 * Registers custom properties to a given attribute.
-	 *
-	 * It can be used to mark the attributes relation and handle them in a common way.
-	 *
-	 *		// Mark blockQuote as a formatting attribute.
-	 *		schema.setAttributeProperties( 'blockQuote', {
-	 *			isFormatting: true
-	 *		} );
-	 *
-	 *		// Override code not to be considered a formatting markup.
-	 *		schema.setAttributeProperties( 'code', {
-	 *			isFormatting: false
-	 *		} );
-	 *
-	 * You can also use custom attributes:
-	 *
-	 *		schema.setAttributeProperties( 'blockQuote', {
-	 *			customAttribute: 'value'
-	 *		} );
-	 *
-	 * Subsequent calls to the same attributes will add up the value:
-	 *
-	 *		schema.setAttributeProperties( 'blockQuote', {
-	 *			one: 1
-	 *		} );
-	 *
-	 *		schema.setAttributeProperties( 'blockQuote', {
-	 *			two: 2
-	 *		} );
-	 *
-	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
-	 *		// Logs: {one: 1, two: 2}
-	 *
-	 * @param {String} attributeName Name of the attribute to receive properties.
-	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
-	 */
-	setAttributeProperties( attributeName, properties ) {
-		this._attributeProperties[ attributeName ] = Object.assign( this._attributeProperties[ attributeName ] || {}, properties );
-	}
-
-	/**
-	 * Returns properties assigned to a given attribute.
-	 *
-	 * @param {String} attributeName Name of the attribute.
-	 * @returns {module:engine/model/schema~AttributeProperties}
-	 */
-	getAttributeProperties( attributeName ) {
-		return this._attributeProperties[ attributeName ];
-	}
-
-	/**
-	 * Returns all registered items.
-	 *
-	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
-	 */
-	getDefinitions() {
-		if ( !this._compiledDefinitions ) {
-			this._compile();
-		}
-
-		return this._compiledDefinitions;
-	}
-
-	/**
 	 * Returns a definition of the given item or `undefined` if item is not registered.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -532,6 +468,70 @@ export default class Schema {
 				evt.return = retValue;
 			}
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Registers custom properties to a given attribute.
+	 *
+	 * It can be used to mark the attributes relation and handle them in a common way.
+	 *
+	 *		// Mark blockQuote as a formatting attribute.
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			isFormatting: true
+	 *		} );
+	 *
+	 *		// Override code not to be considered a formatting markup.
+	 *		schema.setAttributeProperties( 'code', {
+	 *			isFormatting: false
+	 *		} );
+	 *
+	 * You can also use custom attributes:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			customAttribute: 'value'
+	 *		} );
+	 *
+	 * Subsequent calls to the same attributes will add up the value:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			one: 1
+	 *		} );
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			two: 2
+	 *		} );
+	 *
+	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
+	 *		// Logs: {one: 1, two: 2}
+	 *
+	 * @param {String} attributeName Name of the attribute to receive properties.
+	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
+	 */
+	setAttributeProperties( attributeName, properties ) {
+		this._attributeProperties[ attributeName ] = Object.assign( this._attributeProperties[ attributeName ] || {}, properties );
+	}
+
+	/**
+	 * Returns properties assigned to a given attribute.
+	 *
+	 * @param {String} attributeName Name of the attribute.
+	 * @returns {module:engine/model/schema~AttributeProperties}
+	 */
+	getAttributeProperties( attributeName ) {
+		return this._attributeProperties[ attributeName ];
+	}
+
+	/**
+	 * Returns all registered items.
+	 *
+	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
+	 */
+	getDefinitions() {
+		if ( !this._compiledDefinitions ) {
+			this._compile();
+		}
+
+		return this._compiledDefinitions;
 	}
 
 	/**
