@@ -51,5 +51,11 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "depcheckIgnore": [
+    "collapse-whitespace",
+    "jsdom",
+    "void-elements",
+    "block-elements"
+  ]
 }
