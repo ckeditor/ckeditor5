@@ -178,7 +178,7 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
-		it( 'should re-calculate position on typing', () => {
+		it( 'should re-calculate position on typing and stay on selected position', () => {
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
@@ -186,9 +186,18 @@ describe( 'MentionUI', () => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 
+			let positionAfterFirstShow;
+
 			return waitForDebounce()
 				.then( () => {
 					sinon.assert.calledOnce( pinSpy );
+
+					const pinArgument = pinSpy.firstCall.args[ 0 ];
+					const { positions } = pinArgument;
+
+					expect( positions ).to.have.length( 4 );
+
+					positionAfterFirstShow = panelView.position;
 
 					model.change( writer => {
 						writer.insertText( 't', doc.selection.getFirstPosition() );
@@ -197,6 +206,34 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					sinon.assert.calledTwice( pinSpy );
+
+					const pinArgument = pinSpy.secondCall.args[ 0 ];
+					const { positions } = pinArgument;
+
+					expect( positions, 'should reuse first matched position' ).to.have.length( 1 );
+					expect( positions[ 0 ].name ).to.equal( positionAfterFirstShow );
+				} );
+		} );
+
+		it( 'does not fail if selection has no #editableElement', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+			stubSelectionRects( [ caretRect ] );
+
+			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					const pinArgument = pinSpy.firstCall.args[ 0 ];
+					const { limiter } = pinArgument;
+
+					sinon.stub( editingView.document.selection, 'editableElement' ).value( null );
+
+					// Should not break;
+					expect( limiter() ).to.be.null;
 				} );
 		} );
 	} );
@@ -571,7 +608,7 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
-		it( 'should hide the panel when click outside', () => {
+		it( 'should hide the panel on selection change', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
@@ -586,11 +623,43 @@ describe( 'MentionUI', () => {
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					model.change( writer => {
-						// Place position at the begging of a paragraph.
+						// Place position at the beginning of a paragraph.
 						writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.position ).to.be.undefined;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+				} );
+		} );
+
+		it( 'should hide the panel on selection change triggered by mouse click', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+					// This happens when user clicks outside the panel view and selection is changed.
+					// Two panel closing mechanisms are run:
+					// - clickOutsideHandler
+					// - unmatched text in text watcher
+					// which may fail when trying to remove mention marker twice.
+					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+					model.change( writer => {
+						// Place position at the beginning of a paragraph.
+						writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+					} );
+
+					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.position ).to.be.undefined;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
