@@ -172,6 +172,11 @@ function removePartialMentionPostFixer( writer, doc ) {
 	return wasChanged;
 }
 
+// Checks if node has correct mention attribute if present.
+// Returns false if node is text and has mention attribute and its text does not match expected mention text.
+//
+// @param {module:engine/model/node~Node} node a node to check
+// @returns {Boolean}
 function checkMentionAttributeOnNode( node ) {
 	if ( !node || !node.is( 'text' ) || !node.hasAttribute( 'mention' ) ) {
 		return true;
