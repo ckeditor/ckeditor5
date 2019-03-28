@@ -5,10 +5,10 @@ order: 10
 
 # Implementing an inline widget
 
-In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like a date or a surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown which will allow inserting new placeholders. We will also learn how to use the editor configuration to define allowed placeholder names.
+In this tutorial, you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert predefined placeholders, like a date or a surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown which will allow inserting new placeholders. We will also learn how to use the editor configuration to define allowed placeholder names.
 
 <info-box>
-	If you want to see the final product of this tutorial before you plunge in, check of the [demo](#demo).
+	If you want to see the final product of this tutorial before you plunge in, check out the [demo](#demo).
 </info-box>
 
 ## Before you start ⚠️
@@ -226,7 +226,7 @@ At this stage we can build the project and open it in the browser to verify if i
 
 ## The model and the view layers
 
-The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as  an inline} (text-like) element so it will be inserted in other editor blocks, like `<paragraph>`, that allow text. The placeholder will have `name` attribute. This means that the model containing some text and a placeholder will look like this:
+The placeholder feature will be {@link module:engine/model/schema~SchemaItemDefinition defined as  an inline} (text-like) element so it will be inserted in other editor blocks, like `<paragraph>`, that allow text. The placeholder will have a `name` attribute. This means that the model containing some text and a placeholder will look like this:
 
 ```html
 <paragraph>
@@ -285,7 +285,7 @@ The HTML structure (data output) of the converter will be a `<span>` with a `pla
 ```
 
 * **Upcast conversion**. This view-to-model converter will look for `<span>`s with class `placeholder`, read the `<span>`'s text and create a model `<placeholder>` elements with the `name` attribute set accordingly.
-* **Downcast conversion**. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget specific behavior in the editing view. In both pipelines the element will be rendered using the same structure.
+* **Downcast conversion**. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -469,7 +469,7 @@ This should result in:
 
 ### Fixing position mapping
 
-If you play now more with the widget (e.g. try to select it by dragging the mouse from its right to left edge) you will see the following error logged on the console:
+If you play now more with the widget (e.g. try to select it by dragging the mouse from its right to the left edge) you will see the following error logged on the console:
 
 ```
 Uncaught CKEditorError: model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.
@@ -541,11 +541,11 @@ After adding the custom mapping, the mapping will work perfectly. Every position
 
 ## Creating the UI
 
-The UI part will provide a dropdown button from which user can select a placeholder to insert into the editor.
+The UI part will provide a dropdown button from which the user can select a placeholder to insert into the editor.
 
 The CKEditor 5 framework features helpers to create different {@link framework/guides/architecture/ui-library#dropdowns dropdowns} like toolbar or list dropdowns.
 
-In this tutorial we will create a dropdown with list of available placeholders.
+In this tutorial, we will create a dropdown with a list of available placeholders.
 
 ```js
 // placeholder/placeholderui.js
@@ -645,7 +645,7 @@ ClassicEditor
 
 To make this plugin extensible, the types of placeholders will be read from editor configuration.
 
-The first step is to define placeholder configuration in the editing plugin:
+The first step is to define the placeholder configuration in the editing plugin:
 
 ```js
 // ... imports
@@ -701,7 +701,7 @@ export default class PlaceholderUI extends Plugin {
 }
 ```
 
-Now the plugins is ready to accept configuration. Let's check how this works by adding `placeholder` configuration in editor's create method:
+Now the plugins is ready to accept configuration. Let's check how this works by adding `placeholderConfig` configuration in editor's create method:
 
 ```js
 // ... imports
@@ -717,7 +717,7 @@ ClassicEditor
 	// ...
 ```
 
-Now if you open the dropdown in the toolbar you'll see new list of placeholders to insert.
+Now if you open the dropdown in the toolbar you'll see the new list of placeholders to insert.
 
 {@img assets/img/tutorial-implementing-an-inline-widget-2.png Screenshot of the placeholder widgets being inserted using the dropdown.}
 
