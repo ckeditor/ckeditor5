@@ -7,11 +7,6 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
-// The link plugin using highest priority in conversion pipeline.
-const HIGHER_THEN_HIGHEST = priorities.highest + 50;
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
 		cloudServices: CS_CONFIG,
@@ -70,7 +65,7 @@ function CustomMention( editor ) {
 				return mentionValue;
 			}
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 
 	function isFullMention( viewElement ) {
@@ -107,7 +102,7 @@ function CustomMention( editor ) {
 				'href': modelAttributeValue.link
 			} );
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 }
 
