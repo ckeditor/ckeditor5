@@ -5,7 +5,7 @@
 
 import ColorTileView from '../../src/colorgrid/colortileview';
 import ButtonView from '../../src/button/buttonview';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import checkIcon from '../../theme/icons/color-tile-check.svg';
 
 describe( 'ColorTileView', () => {
 	it( 'inherits from ButtonView', () => {

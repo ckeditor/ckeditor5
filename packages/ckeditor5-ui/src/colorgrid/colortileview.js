@@ -8,7 +8,7 @@
  */
 
 import ButtonView from '../button/buttonview';
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import checkIcon from '../../theme/icons/color-tile-check.svg';
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgrid~ColorGridView}.
