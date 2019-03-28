@@ -23,6 +23,7 @@
 	min-height: var(--ck-color-grid-tile-size);
 	padding: 0;
 	transition: 200ms ease box-shadow;
+	border: 0;
 
 	&.ck-disabled {
 		cursor: unset;
@@ -35,7 +36,6 @@
 
 	& .ck.ck-icon {
 		display: none;
-		filter: drop-shadow(0 0 1px var(--ck-color-base-background));
 	}
 
 	&.ck-on {
