@@ -12,7 +12,7 @@ import DataTransfer from '../src/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
-	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy;
+	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy, stopPropagationSpy;
 
 	beforeEach( () => {
 		view = new View();
@@ -34,6 +34,7 @@ describe( 'ClipboardObserver', () => {
 
 		eventSpy = sinon.spy();
 		preventDefaultSpy = sinon.spy();
+		stopPropagationSpy = sinon.spy();
 	} );
 
 	it( 'should define domEventType', () => {
@@ -223,6 +224,34 @@ describe( 'ClipboardObserver', () => {
 			expect( data.targetRanges[ 0 ].isEqual( range ) ).to.be.true;
 
 			expect( sinon.assert.callOrder( normalPrioritySpy, eventSpy ) );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-upload/issues/92
+		it( 'should stop propagation of the original event if handled by the editor', () => {
+			const dataTransfer = new DataTransfer( mockDomDataTransfer() );
+
+			doc.fire( 'drop', {
+				dataTransfer,
+				preventDefault: preventDefaultSpy,
+				stopPropagation: stopPropagationSpy,
+				dropRange: range
+			} );
+
+			sinon.assert.notCalled( stopPropagationSpy );
+
+			doc.on( 'clipboardInput', evt => {
+				// E.g. some feature handled the input.
+				evt.stop();
+			} );
+
+			doc.fire( 'drop', {
+				dataTransfer,
+				preventDefault: preventDefaultSpy,
+				stopPropagation: stopPropagationSpy,
+				dropRange: range
+			} );
+
+			sinon.assert.calledOnce( stopPropagationSpy );
 		} );
 	} );
 

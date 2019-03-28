@@ -191,6 +191,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 
@@ -286,6 +287,7 @@ describe( 'Clipboard feature', () => {
 
 			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
+				stopPropagation() {},
 				preventDefault() {}
 			} );
 

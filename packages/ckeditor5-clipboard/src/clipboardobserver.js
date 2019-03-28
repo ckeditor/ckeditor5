@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DataTransfer from './datatransfer';
 
 /**
@@ -45,10 +46,19 @@ export default class ClipboardObserver extends DomEventObserver {
 
 			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( viewDocument.selection.getRanges() );
 
-			viewDocument.fire( 'clipboardInput', {
+			const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
+
+			viewDocument.fire( eventInfo, {
 				dataTransfer: data.dataTransfer,
 				targetRanges
 			} );
+
+			// If CKEditor handled the input, do not bubble the original event any further.
+			// This helps external integrations recognize that fact and act accordingly.
+			// https://github.com/ckeditor/ckeditor5-upload/issues/92
+			if ( eventInfo.stop.called ) {
+				data.stopPropagation();
+			}
 		}
 	}
 
