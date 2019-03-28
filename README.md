@@ -541,6 +541,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-mention"><code>@ckeditor/ckeditor5-mention</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-mention"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-mention.svg" alt="@ckeditor/ckeditor5-mention npm package badge"></a>
+	</td>
+	<td>
+		The mention feature (autocomplete `@mentions`, `#tags`, etc.).
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-paragraph"><code>@ckeditor/ckeditor5-paragraph</code></a>
 	</td>
 	<td>
