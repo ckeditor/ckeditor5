@@ -821,6 +821,26 @@ export default class Differ {
 					}
 				}
 
+				if ( old.type == 'remove' ) {
+					// This is a case when attribute change "contains" remove change.
+					// The attribute change needs to be split into two because changes cannot intersect.
+					if ( inc.offset < old.offset && incEnd > old.offset ) {
+						const attributePart = {
+							type: 'attribute',
+							offset: old.offset,
+							howMany: incEnd - old.offset,
+							count: this._changeCount++
+						};
+
+						this._handleChange( attributePart, changes );
+
+						changes.push( attributePart );
+
+						inc.nodesToHandle = old.offset - inc.offset;
+						inc.howMany = inc.nodesToHandle;
+					}
+				}
+
 				if ( old.type == 'attribute' ) {
 					// There are only two conflicting scenarios possible here:
 					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
@@ -1087,7 +1107,7 @@ function _generateActionsFromChanges( oldChildrenLength, changes ) {
 		} else {
 			actions.push( ...'a'.repeat( change.howMany ).split( '' ) );
 
-			// The last handled offset isa at the position after the changed range.
+			// The last handled offset is at the position after the changed range.
 			offset = change.offset + change.howMany;
 			// We changed `howMany` old nodes, update `oldChildrenHandled`.
 			oldChildrenHandled += change.howMany;
