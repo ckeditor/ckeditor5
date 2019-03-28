@@ -7,8 +7,8 @@
 
 import FocusTracker from '../src/focustracker';
 import CKEditorError from '../src/ckeditorerror';
+import global from '../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'FocusTracker', () => {
 	let focusTracker, container, containerFirstInput, containerSecondInput;
