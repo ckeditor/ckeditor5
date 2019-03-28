@@ -1347,7 +1347,7 @@ export class SchemaContext {
 /**
  * A structure containing additional metadata describing the attribute.
  *
- * See {@link module:engine/schema~setAttributeProperties} for usage examples.
+ * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
  *
  * @typedef {Object} module:engine/model/schema~AttributeProperties
  * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting.
