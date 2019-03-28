@@ -14,11 +14,9 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^11.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^11.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^11.0.0",
     "@ckeditor/ckeditor5-core": "^12.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "^12.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^12.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^11.0.0",
     "@ckeditor/ckeditor5-font": "^11.0.0",
     "@ckeditor/ckeditor5-heading": "^11.0.0",
     "@ckeditor/ckeditor5-highlight": "^11.0.0",
