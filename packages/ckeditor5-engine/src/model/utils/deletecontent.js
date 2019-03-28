@@ -60,16 +60,16 @@ export default function deleteContent( model, selection, options = {} ) {
 		return;
 	}
 
+	const selRange = selection.getFirstRange();
+
+	// If the selection is already removed, don't do anything.
+	if ( selRange.root.rootName == '$graveyard' ) {
+		return;
+	}
+
 	const schema = model.schema;
 
 	model.change( writer => {
-		const selRange = selection.getFirstRange();
-
-		// If the selection is already removed, don't do anything.
-		if ( selRange.root.rootName == '$graveyard' ) {
-			return;
-		}
-
 		// 1. Replace the entire content with paragraph.
 		// See: https://github.com/ckeditor/ckeditor5-engine/issues/1012#issuecomment-315017594.
 		if ( !options.doNotResetEntireContent && shouldEntireContentBeReplacedWithParagraph( schema, selection ) ) {
