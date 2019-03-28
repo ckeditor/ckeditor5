@@ -67,8 +67,8 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-comments": "^2.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^11.0.1",
-    "@ckeditor/ckeditor5-dev-env": "^14.0.1",
-    "@ckeditor/ckeditor5-dev-tests": "^16.1.0",
+    "@ckeditor/ckeditor5-dev-env": "^14.1.0",
+    "@ckeditor/ckeditor5-dev-tests": "^16.2.0",
     "@ckeditor/ckeditor5-dev-utils": "^12.0.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^8.0.1",
     "@ckeditor/ckeditor5-inspector": "^1.2.0",
@@ -88,7 +88,7 @@
     "style-loader": "^0.23.0",
     "svgo": "^1.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "umberto": "^0.20.0",
+    "umberto": "^0.21.0",
     "webpack": "^4.15.0"
   },
   "engines": {
