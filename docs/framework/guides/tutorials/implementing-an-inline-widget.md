@@ -7,6 +7,10 @@ order: 10
 
 In this tutorial you will learn how to implement an inline widget. We will build a "Placeholder" feature which allow the user to insert a predefined placeholders, like a date or a surname, into the document. We will use widget utils and conversion in order to define the behavior of this feature. Later on, we will use dropdown utils to create a dropdown which will allow inserting new placeholders. We will also learn how to use the editor configuration to define allowed placeholder names.
 
+<info-box>
+	If you want to see the final product of this tutorial before you plunge in, check of the [demo](#demo).
+</info-box>
+
 ## Before you start ⚠️
 
 This guide assumes that you are familiar with widgets concept introduced in the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial. We will also reference various concepts from {@link framework/guides/architecture/intro CKEditor 5 architecture}.
@@ -719,11 +723,14 @@ Now if you open the dropdown in the toolbar you'll see new list of placeholders 
 
 ## Demo
 
+You can see the placeholder widget implementation in action in the editor below. You can also check out the full [source code](#full-source-code) of this tutorial if you want to develop your own inline widgets.
+
 {@snippet framework/tutorials/inline-widget}
 
 ## Full source code
 
-This source code present how to implement entire simple box plugin in one file.
+The following code contains a complete implementation of the `Placeholder` plugin and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
+
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -741,6 +748,12 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+
+class Placeholder extends Plugin {
+	static get requires() {
+		return [ PlaceholderEditing, PlaceholderUI ];
+	}
+}
 
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
@@ -765,12 +778,6 @@ class PlaceholderCommand extends Command {
 		const isAllowed = model.schema.checkChild( selection.focus.parent, 'placeholder' );
 
 		this.isEnabled = isAllowed;
-	}
-}
-
-class Placeholder extends Plugin {
-	static get requires() {
-		return [ PlaceholderEditing, PlaceholderUI ];
 	}
 }
 

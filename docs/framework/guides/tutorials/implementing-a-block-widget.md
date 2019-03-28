@@ -7,6 +7,10 @@ order: 10
 
 In this tutorial you will learn how to implement a more complex CKEditor 5 plugin. We will build a "Simple box" feature which will allow the user to insert a custom box with a title and body fields into the document. We will use the widget utils and work with the model-view conversion in order to properly setup the behavior of this feature. Later on, we will create a UI which will allow to insert new simple boxes into the document via the toolbar button.
 
+<info-box>
+	If you want to see the final product of this tutorial before you plunge in, check of the [demo](#demo).
+</info-box>
+
 <!-- TODO: and allow controlling simple box properties such as alignment and width. -->
 
 ## Before you start
@@ -966,11 +970,14 @@ Refresh the web page and try it yourself:
 
 ## Demo
 
+You can see the block widget implementation in action in the editor below. You can also check out the full [source code](#full-source-code) of this tutorial if you want to develop your own block widgets.
+
 {@snippet framework/tutorials/block-widget}
 
 ## Full source code
 
-This source code present how to implement entire simple box plugin in one file.
+The following code contains a complete implementation of the `SimpleBox` plugin and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
+
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
