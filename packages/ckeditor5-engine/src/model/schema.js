@@ -151,6 +151,8 @@ export default class Schema {
 	/**
 	 * Registers custom properties to a given attribute.
 	 *
+	 * It can be used to mark the attributes relation and handle them in a common way.
+	 *
 	 *		// Mark blockQuote as a formatting attribute.
 	 *		schema.setAttributeProperties( 'blockQuote', {
 	 *			isFormatting: true
@@ -161,8 +163,27 @@ export default class Schema {
 	 *			isFormatting: false
 	 *		} );
 	 *
+	 * You can also use custom attributes:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			customAttribute: 'value'
+	 *		} );
+	 *
+	 * Subsequent calls to the same attributes will add up the value:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			one: 1
+	 *		} );
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			two: 2
+	 *		} );
+	 *
+	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
+	 *		// Logs: {one: 1, two: 2}
+	 *
 	 * @param {String} attributeName Name of the attribute to receive properties.
-	 * @param {Map.<String,String>} properties Dictionary of properties.
+	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
 	 */
 	setAttributeProperties( attributeName, properties ) {
 		this._attributeProperties[ attributeName ] = Object.assign( this._attributeProperties[ attributeName ] || {}, properties );
@@ -172,7 +193,7 @@ export default class Schema {
 	 * Returns properties assigned to a given attribute.
 	 *
 	 * @param {String} attributeName Name of the attribute.
-	 * @returns {Map.<String,String>}
+	 * @returns {module:engine/model/schema~AttributeProperties}
 	 */
 	getAttributeProperties( attributeName ) {
 		return this._attributeProperties[ attributeName ];
@@ -1321,6 +1342,15 @@ export class SchemaContext {
  *		} );
  *
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
+ */
+
+/**
+ * A structure containing additional metadata describing the attribute.
+ *
+ * See {@link module:engine/schema~setAttributeProperties} for usage examples.
+ *
+ * @typedef {Object} module:engine/model/schema~AttributeProperties
+ * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting.
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
