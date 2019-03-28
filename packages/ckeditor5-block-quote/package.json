@@ -19,7 +19,6 @@
     "@ckeditor/ckeditor5-editor-classic": "^12.0.0",
     "@ckeditor/ckeditor5-engine": "^13.0.0",
     "@ckeditor/ckeditor5-enter": "^11.0.0",
-    "@ckeditor/ckeditor5-essentials": "^11.0.0",
     "@ckeditor/ckeditor5-heading": "^11.0.0",
     "@ckeditor/ckeditor5-image": "^13.0.0",
     "@ckeditor/ckeditor5-list": "^12.0.0",
