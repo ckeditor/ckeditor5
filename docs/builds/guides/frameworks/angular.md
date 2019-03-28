@@ -39,11 +39,10 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule( {
 	imports: [
-		...
 		CKEditorModule,
-		...
+		// ...
 	],
-	...
+	// ...
 } )
 ```
 
@@ -53,11 +52,11 @@ Import the editor build in your Angular component and assign it to a `public` pr
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
-	...
+	// ...
 }
 ```
 
@@ -77,8 +76,7 @@ If you want to use the {@link framework/guides/document-editor Document editor b
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 @Component( {
-	...
-} )
+	// ...
 export class MyComponent {
 	public Editor = DecoupledEditor;
 
@@ -105,13 +103,13 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 
 	```ts
 	@Component( {
-		...
+		// ...
 	} )
 	export class MyComponent {
 		public model = {
 			editorData: '<p>Hello, world!</p>'
 		};
-		...
+		// ...
 	}
 	```
 
@@ -153,11 +151,11 @@ or a shared parent component's property
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public editorData = '<p>Hello, world!</p>';
-	...
+	// ...
 }
 ```
 
@@ -181,11 +179,11 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public isDisabled = false;
-	...
+	// ...
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled
 	}
@@ -222,7 +220,7 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
@@ -299,9 +297,24 @@ Then, add it in the `angular.json` configuration file.
 }
 ```
 
+### Setting the placeholder
+
+To display {@link features/editor-placeholder the placeholder} in the main editable element simply set the `placeholder` field in the CKEditor 5 component configuration:
+
+```ts
+@Component( {
+	// ...
+} )
+export class MyComponent {
+	public config = {
+		placeholder: 'Type the content here!'
+	}
+}
+```
+
 ## Localization
 
-CKEditor 5 can be localized in two steps.
+The CKEditor 5 component can be localized in two steps.
 
 ### 1. Loading translation files
 
@@ -333,7 +346,7 @@ Then, you need to configure the editor to use the given language:
 
 ```ts
 @Component( {
-	...
+	// ...
 } )
 export class MyComponent {
 	public Editor = ClassicEditor;
