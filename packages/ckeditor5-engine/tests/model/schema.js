@@ -96,6 +96,49 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'setAttributeProperties()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'paragraph', {
+				allowIn: '$root'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+		} );
+
+		it( 'allows registering new properties', () => {
+			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
+
+			schema.setAttributeProperties( 'testAttribute', {
+				foo: 'bar',
+				baz: 'bom'
+			} );
+
+			expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+				foo: 'bar',
+				baz: 'bom'
+			} );
+		} );
+
+		it( 'support adding properties in subsequent calls', () => {
+			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
+
+			schema.setAttributeProperties( 'testAttribute', {
+				first: 'foo'
+			} );
+
+			schema.setAttributeProperties( 'testAttribute', {
+				second: 'bar'
+			} );
+
+			expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+				first: 'foo',
+				second: 'bar'
+			} );
+		} );
+	} );
+
 	describe( 'getDefinitions()', () => {
 		it( 'returns compiled definitions', () => {
 			schema.register( '$root' );

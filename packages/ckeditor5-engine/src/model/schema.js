@@ -39,6 +39,14 @@ export default class Schema {
 	constructor() {
 		this._sourceDefinitions = {};
 
+		/**
+		 * A map containing attribute's properties.
+		 *
+		 * @private
+		 * @member {Map.<String,String>}
+		 */
+		this._attributeProperties = {};
+
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
 
@@ -138,6 +146,36 @@ export default class Schema {
 		this._sourceDefinitions[ itemName ].push( Object.assign( {}, definition ) );
 
 		this._clearCache();
+	}
+
+	/**
+	 * Registers custom properties to a given attribute.
+	 *
+	 *		// Mark blockQuote as a formatting attribute.
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			isFormatting: true
+	 *		} );
+	 *
+	 *		// Override code not to be considered a formatting markup.
+	 *		schema.setAttributeProperties( 'code', {
+	 *			isFormatting: false
+	 *		} );
+	 *
+	 * @param {String} attributeName Name of the attribute to receive properties.
+	 * @param {Map.<String,String>} properties Dictionary of properties.
+	 */
+	setAttributeProperties( attributeName, properties ) {
+		this._attributeProperties[ attributeName ] = Object.assign( this._attributeProperties[ attributeName ] || {}, properties );
+	}
+
+	/**
+	 * Returns properties assigned to a given attribute.
+	 *
+	 * @param {String} attributeName Name of the attribute.
+	 * @returns {Map.<String,String>}
+	 */
+	getAttributeProperties( attributeName ) {
+		return this._attributeProperties[ attributeName ];
 	}
 
 	/**
