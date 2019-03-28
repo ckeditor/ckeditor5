@@ -342,13 +342,15 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		model.once( '_change', () => {
+		model.document.once( 'change', () => {
 			tryExpect( done, () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
-					`<img src="${ base64Sample }"></img>` +
-					'</figure>]' +
-					'<p>foo bar</p>' );
+						`<img src="${ base64Sample }"></img>` +
+						'</figure>]' +
+					'<p>foo bar</p>'
+				);
+
 				expect( loader.status ).to.equal( 'uploading' );
 			} );
 		} );
