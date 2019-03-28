@@ -1,8 +1,9 @@
 ---
-title: Theme customization
 category: examples-framework
 order: 10
 ---
+
+# Theme customization
 
 The [default theme](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark) of CKEditor 5 can be customized to match most visual integration requirements.
 
