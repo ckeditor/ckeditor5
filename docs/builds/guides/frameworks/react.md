@@ -521,7 +521,7 @@ npm install --save \
 	@ckeditor/ckeditor5-paragraph
 ```
 
-### Using CKEditor 5 source
+#### Using CKEditor 5 source
 
 Now you can use the `<CKEditor>` component together with {@link framework/guides/overview CKEditor 5 Framework}:
 
