@@ -9,8 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import eraseIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+import removeFormatIcon from '../theme/icons/remove-format.svg';
 
 const REMOVE_FORMAT = 'removeformat';
 
@@ -40,7 +39,7 @@ export default class RemoveFormatUI extends Plugin {
 
 			view.set( {
 				label: t( 'Remove format' ),
-				icon: eraseIcon,
+				icon: removeFormatIcon,
 				tooltip: true
 			} );
 
