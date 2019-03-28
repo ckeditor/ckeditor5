@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^11.0.0",
-    "@ckeditor/ckeditor5-essentials": "^11.0.0",
     "@ckeditor/ckeditor5-enter": "^11.0.0",
     "@ckeditor/ckeditor5-heading": "^11.0.0",
     "@ckeditor/ckeditor5-paragraph": "^11.0.0",
