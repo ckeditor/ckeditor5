@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Widget from '../src/widget';
@@ -14,8 +16,6 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
-/* global document */
 
 describe( 'Widget - integration', () => {
 	let editor, model, view, viewDocument, editorElement;
@@ -94,9 +94,11 @@ describe( 'Widget - integration', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
-	it( 'should do nothing if clicked inside nested editable', () => {
+	it( 'should do nothing if clicked inside a nested editable', () => {
 		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
@@ -120,10 +122,10 @@ describe( 'Widget - integration', () => {
 
 	it( 'should select the entire nested editable if triple clicked', () => {
 		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
+
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
 		const preventDefault = sinon.spy();
-
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -141,10 +143,10 @@ describe( 'Widget - integration', () => {
 
 	it( 'should select proper nested editable if triple clicked', () => {
 		setModelData( model, '[]<widget><nested>foo</nested><nested>bar</nested></widget>' );
+
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const secondViewFigcaption = viewDiv.getChild( 1 );
 		const preventDefault = sinon.spy();
-
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( secondViewFigcaption ),
 			preventDefault,
@@ -165,11 +167,10 @@ describe( 'Widget - integration', () => {
 
 	it( 'should select the entire nested editable if quadra clicked', () => {
 		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
+
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-
 		const preventDefault = sinon.spy();
-
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
@@ -187,10 +188,10 @@ describe( 'Widget - integration', () => {
 
 	it( 'should select the inline widget if triple clicked', () => {
 		setModelData( model, '<paragraph>Foo<inline-widget>foo bar</inline-widget>Bar</paragraph>' );
+
 		const viewParagraph = viewDocument.getRoot().getChild( 0 );
 		const viewInlineWidget = viewParagraph.getChild( 1 );
 		const preventDefault = sinon.spy();
-
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewInlineWidget ),
 			preventDefault,
@@ -210,11 +211,10 @@ describe( 'Widget - integration', () => {
 		testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
 
 		setModelData( model, '[]<widget><nested>foo bar</nested></widget>' );
+
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewFigcaption = viewDiv.getChild( 0 );
-
 		const preventDefault = sinon.spy();
-
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewFigcaption ),
 			preventDefault,
