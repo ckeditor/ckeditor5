@@ -47,7 +47,7 @@ const env = {
 	 * @static
 	 * @member {Boolean} module:utils/env~env#isSafari
 	 */
-	isSafari: isSafari( userAgent ),
+	isSafari: isSafari( userAgent )
 };
 
 export default env;
