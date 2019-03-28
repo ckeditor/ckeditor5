@@ -689,9 +689,9 @@
     semver "^5.4.1"
 
 "@ckeditor/ckeditor5-dev-tests@^16.2.0":
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.2.0.tgz#d5075e78125f6e08a113bdfef8c9daf312962795"
-  integrity sha512-Vog1aRpT+stH8ZyjbNWdgHWCQxL4puM4wf0o3EZuAeQymHKttv2VayK0oEK1AuDWM3sgIchb+QIBBLHK4ckitA==
+  version "16.2.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.2.1.tgz#7636a572b57b7cd91cfb11d78cdc1c7b9d24a0cb"
+  integrity sha512-fxJgJEu+3R/5m2VW1dEAdhINWNCBkmtCRFwObWxXbr16eD2fF+FE0Fabx6RDvfEy/r0TRnAzzbWHh7rY3h0yPQ==
   dependencies:
     "@babel/core" "^7.0.0"
     "@ckeditor/ckeditor5-dev-utils" "^12.0.1"
@@ -3797,9 +3797,9 @@ escodegen@^1.9.0:
     source-map "~0.6.1"
 
 eslint-config-ckeditor5@^1.0.11:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/eslint-config-ckeditor5/-/eslint-config-ckeditor5-1.0.12.tgz#111ef8efba2a368b037d56ff9d7d7fce6fd565f6"
-  integrity sha512-/HUJHkEKIVn4wll3hvkx+M+JPrNwqpJYee3e7ukJZxYWyKeOybNUCPqwjB913qMGUsdinwHoEoothIu01QTv8w==
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/eslint-config-ckeditor5/-/eslint-config-ckeditor5-1.0.13.tgz#0c8089fe0f560f7eab798bbcd93f1c8360cf0d50"
+  integrity sha512-MQKd3ari3P0pHRJU2Ov2Ws91kZcbUVRBdZk2TQIUB/Z+B0w+SBFONWGIa7YKbekfNtUCmv27cC1z4yugHodIsg==
   dependencies:
     eslint-plugin-ckeditor5-rules "^0.0.3"
 
@@ -4461,9 +4461,9 @@ gaze@^1.0.0:
     globule "^1.0.0"
 
 generic-pool@^3.4.2:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.6.1.tgz#a51a8439ee86f0bbcf100fc1db3f45c86289deb4"
-  integrity sha512-iMmD/pY4q0+V+f8o4twE9JPeqfNuX+gJAaIPB3B0W1lFkBOtTxBo6B0HxHPgGhzQA8jego7EWopcYq/UDJO2KA==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/generic-pool/-/generic-pool-3.7.1.tgz#36fe5bb83e7e0e032e5d32cd05dc00f5ff119aa8"
+  integrity sha512-ug6DAZoNgWm6q5KhPFA+hzXfBLFQu5sTXxPpv44DmE0A2g+CiHoq9LTVdkXpZMkYVMoGw83F6W+WT0h0MFMK/w==
 
 get-caller-file@^1.0.1:
   version "1.0.3"
