@@ -966,6 +966,23 @@ describe( 'MentionUI', () => {
 					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
+
+		it( 'should focus view after command execution', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			setData( model, '<paragraph>foo []</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+
+					sinon.assert.calledOnce( focusSpy );
+				} );
+		} );
 	} );
 
 	function createClassicTestEditor( mentionConfig ) {

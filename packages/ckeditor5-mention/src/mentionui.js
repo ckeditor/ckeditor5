@@ -205,13 +205,15 @@ export default class MentionUI extends Plugin {
 			const start = end.getShiftedBy( -matchedTextLength );
 			const range = model.createRange( start, end );
 
+			this._hidePanelAndRemoveMarker();
+
 			editor.execute( 'mention', {
 				mention: item,
 				marker,
 				range
 			} );
 
-			this._hidePanelAndRemoveMarker();
+			editor.editing.view.focus();
 		} );
 
 		return mentionsView;
