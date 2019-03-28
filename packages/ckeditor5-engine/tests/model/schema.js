@@ -105,11 +105,10 @@ describe( 'Schema', () => {
 			schema.register( '$text', {
 				allowIn: 'paragraph'
 			} );
+			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
 		} );
 
 		it( 'allows registering new properties', () => {
-			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
-
 			schema.setAttributeProperties( 'testAttribute', {
 				foo: 'bar',
 				baz: 'bom'
@@ -122,8 +121,6 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'support adding properties in subsequent calls', () => {
-			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
-
 			schema.setAttributeProperties( 'testAttribute', {
 				first: 'foo'
 			} );
