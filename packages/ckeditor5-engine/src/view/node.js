@@ -13,6 +13,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { clone } from 'lodash-es';
 
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Abstract tree view node class.
  *

@@ -13,6 +13,9 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Position in the view tree. Position is represented by its parent node and an offset in this parent.
  *
