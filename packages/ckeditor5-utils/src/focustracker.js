@@ -39,12 +39,17 @@ export default class FocusTracker {
 		this.set( 'isFocused', false );
 
 		/**
-		 * Currently focused element.
+		 * The currently focused element.
+		 *
+		 * While {@link #isFocused `isFocused`} remains `true`, the focus can
+		 * move between different UI elements. This property tracks those
+		 * elements and tells which one is currently focused.
 		 *
 		 * @readonly
-		 * @member {HTMLElement}
+		 * @observable
+		 * @member {HTMLElement|null}
 		 */
-		this.focusedElement = null;
+		this.set( 'focusedElement', null );
 
 		/**
 		 * List of registered elements.
