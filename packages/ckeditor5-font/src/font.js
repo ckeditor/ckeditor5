@@ -19,6 +19,8 @@ import FontBackgroundColor from './fontbackgroundcolor';
  *
  * * {@link module:font/fontsize~FontSize},
  * * {@link module:font/fontfamily~FontFamily}.
+ * * {@link module:font/fontcolor~FontColor},
+ * * {@link module:font/fontbackgroundcolor~FontBackgroundColor}.
  *
  * For a detailed overview, check the {@glink features/font Font feature} documentation
  * and the {@glink api/font package page}.
