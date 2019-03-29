@@ -21,11 +21,11 @@ describe( 'RemoveFormatUI', () => {
 
 	before( () => {
 		addTranslations( 'en', {
-			'Remove format': 'Remove format'
+			'Remove Format': 'Remove Format'
 		} );
 
 		addTranslations( 'pl', {
-			'Remove format': 'Usuń formatowanie'
+			'Remove Format': 'Usuń formatowanie'
 		} );
 	} );
 
