@@ -40,10 +40,10 @@ export default class Schema {
 		this._sourceDefinitions = {};
 
 		/**
-		 * A map containing attribute's properties.
+		 * A dictionary containing attribute properties.
 		 *
 		 * @private
-		 * @member {Map.<String,String>}
+		 * @member {Object.<String,String>}
 		 */
 		this._attributeProperties = {};
 
@@ -471,12 +471,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Registers custom properties to a given attribute.
+	 * This method allows assigning additional metadata to the model attributes. For example,
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties#isFormatting` property} is
+	 * used to mark formatting attributes (like `bold` or `italic`).
 	 *
-	 * It can be used to mark the attributes relation and handle them in a common way.
-	 *
-	 *		// Mark blockQuote as a formatting attribute.
-	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *		// Mark bold as a formatting attribute.
+	 *		schema.setAttributeProperties( 'bold', {
 	 *			isFormatting: true
 	 *		} );
 	 *
@@ -485,13 +485,13 @@ export default class Schema {
 	 *			isFormatting: false
 	 *		} );
 	 *
-	 * You can also use custom attributes:
+	 * You can also use custom properties:
 	 *
 	 *		schema.setAttributeProperties( 'blockQuote', {
-	 *			customAttribute: 'value'
+	 *			customProperty: 'value'
 	 *		} );
 	 *
-	 * Subsequent calls to the same attributes will add up the value:
+	 * Subsequent calls with the same attribute will extend its custom properties:
 	 *
 	 *		schema.setAttributeProperties( 'blockQuote', {
 	 *			one: 1
@@ -502,19 +502,19 @@ export default class Schema {
 	 *		} );
 	 *
 	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
-	 *		// Logs: {one: 1, two: 2}
+	 *		// Logs: { one: 1, two: 2 }
 	 *
-	 * @param {String} attributeName Name of the attribute to receive properties.
+	 * @param {String} attributeName A name of the attribute to receive the properties.
 	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
 	 */
 	setAttributeProperties( attributeName, properties ) {
-		this._attributeProperties[ attributeName ] = Object.assign( this._attributeProperties[ attributeName ] || {}, properties );
+		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ) || {}, properties );
 	}
 
 	/**
-	 * Returns properties assigned to a given attribute.
+	 * Returns properties associated with a given model attribute. See {@link #setAttributeProperties `setAttributeProperties()`}.
 	 *
-	 * @param {String} attributeName Name of the attribute.
+	 * @param {String} attributeName A name of the attribute.
 	 * @returns {module:engine/model/schema~AttributeProperties}
 	 */
 	getAttributeProperties( attributeName ) {
@@ -1350,7 +1350,8 @@ export class SchemaContext {
  * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
  *
  * @typedef {Object} module:engine/model/schema~AttributeProperties
- * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting.
+ * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
+ * `fontSize` rather than semantic attribute (such as `src`, `listType`, etc.). For example, it is used by the "Remove format" feature.
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {
