@@ -498,7 +498,8 @@ export default class Schema {
 	 *			isFormatting: false
 	 *		} );
 	 *
-	 * You can also use custom properties:
+	 * Properties are not limited to members defined in the
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties` type} and you can also use custom properties:
 	 *
 	 *		schema.setAttributeProperties( 'blockQuote', {
 	 *			customProperty: 'value'
