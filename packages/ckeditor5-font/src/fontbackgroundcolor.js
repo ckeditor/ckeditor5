@@ -139,5 +139,5 @@ export default class FontBackgroundColor extends Plugin {
  *			columns: 5
  *		}
  *
- * @member {Numebr} module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns
+ * @member {Number} module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns
  */
