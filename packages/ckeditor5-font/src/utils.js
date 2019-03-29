@@ -91,6 +91,7 @@ export function renderDowncastElement( styleAttr ) {
  * The object contains both the information necessary to render the UI and initialize a conversion.
  *
  * @param {module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors} options
+ * @returns {Array.<module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors>}
  */
 export function normalizeColorOptions( options ) {
 	return options
@@ -130,6 +131,7 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
  * when the user configuration is defined because the editor does not exist yet.
  *
  * @param {module:core/editor/editor~Editor} editor An editor instance.
+ * @param {module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}.
  */
 export function getLocalizedColorOptions( editor, options ) {
