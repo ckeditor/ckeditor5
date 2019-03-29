@@ -136,7 +136,7 @@ export default class DataController {
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
-			 *		data.get( 'root2' );
+			 *		data.get( { rootName: 'root2' } );
 			 *
 			 * will throw this error.
 			 *
