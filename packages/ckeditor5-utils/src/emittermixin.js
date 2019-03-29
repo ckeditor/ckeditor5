@@ -11,6 +11,9 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
 
+// To check if component is loaded more than once.
+import './version';
+
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 
