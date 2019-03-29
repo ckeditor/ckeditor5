@@ -13,6 +13,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
 import { last } from 'lodash-es';
 
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Represents a position in the model tree.
  *
