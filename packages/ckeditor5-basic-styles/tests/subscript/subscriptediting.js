@@ -39,6 +39,12 @@ describe( 'SubEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'subscript' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'subscript' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'command', () => {
 		it( 'should register subscript command', () => {
 			const command = editor.commands.get( 'subscript' );

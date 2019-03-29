@@ -39,6 +39,12 @@ describe( 'UnderlineEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'underline' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'command', () => {
 		it( 'should register underline command', () => {
 			const command = editor.commands.get( 'underline' );

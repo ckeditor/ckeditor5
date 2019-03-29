@@ -29,6 +29,7 @@ export default class ItalicEditing extends Plugin {
 
 		// Allow italic attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: ITALIC } );
+		editor.model.schema.setAttributeProperties( ITALIC, { isFormatting: true } );
 
 		editor.conversion.attributeToElement( {
 			model: ITALIC,
