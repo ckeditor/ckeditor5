@@ -157,14 +157,9 @@ To a link:
 <a class="mention" data-mention="Ted Mosby" data-user-id="5" href="https://www.imdb.com/title/tt0460649/characters/nm1102140">@Ted Mosby</a>
 ```
 
-The below converters must have priority higher then link attribute converter. The mention item in the model must be stored as a plain object with `name` attribute.
+The below converters must have priority 'high' priority as the link attribute converter has 'normal' priority. The mention item in the model must be stored as a plain object with `name` attribute.
 
 ```js
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
-// The link plugin using highest priority in conversion pipeline.
-const HIGHER_THEN_HIGHEST = priorities.highest + 50;
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Mention, CustomMention, ... ],    // Add custom mention plugin function.
@@ -207,7 +202,7 @@ function CustomMention( editor ) {
 				return mentionValue;
 			}
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 
 	function isFullMention( viewElement ) {
@@ -244,7 +239,7 @@ function CustomMention( editor ) {
 				'href': modelAttributeValue.link
 			} );
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 }
 ```
