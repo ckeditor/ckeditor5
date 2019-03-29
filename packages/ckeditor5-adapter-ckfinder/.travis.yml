@@ -24,7 +24,7 @@ before_install:
 - npm i -g yarn
 install:
 - cd /tmp && git clone https://github.com/ckeditor/ckeditor5-dev.git && cd ./ckeditor5-dev && git checkout t/ckeditor5/1655 && cd $CWD
-- yarn add /tmp/ckeditor5-dev/packages/ckeditor5-dev-tests
+- yarn add file:/tmp/ckeditor5-dev/packages/ckeditor5-dev-tests
 - ckeditor5-dev-tests-install-dependencies
 script:
 - ckeditor5-dev-tests-travis
