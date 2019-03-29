@@ -39,6 +39,12 @@ describe( 'AlignmentEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block' ], 'alignment' ) ).to.be.true;
 	} );
 
+	it( 'its attribute is marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'alignment' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'integration', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
