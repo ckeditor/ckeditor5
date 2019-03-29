@@ -39,7 +39,7 @@ export default class RemoveFormatUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Remove format' ),
+				label: t( 'Remove Format' ),
 				icon: removeFormatIcon,
 				tooltip: true
 			} );

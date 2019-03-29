@@ -28,7 +28,7 @@ const removableAttributes = [
  * The remove format command.
  *
  * It is used by the {@link module:remove-format/removeformat~RemoveFormat remove format feature}
- * to clear the formatting within the selection.
+ * to clear the formatting in the selection.
  *
  *		editor.execute( 'removeFormat' );
  *
