@@ -39,6 +39,12 @@ describe( 'StrikethroughEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'strikethrough' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'strikethrough' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'command', () => {
 		it( 'should register strikethrough command', () => {
 			const command = editor.commands.get( 'strikethrough' );

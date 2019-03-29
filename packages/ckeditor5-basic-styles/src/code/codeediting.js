@@ -29,6 +29,7 @@ export default class CodeEditing extends Plugin {
 
 		// Allow code attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
+		editor.model.schema.setAttributeProperties( CODE, { isFormatting: true } );
 
 		editor.conversion.attributeToElement( {
 			model: CODE,

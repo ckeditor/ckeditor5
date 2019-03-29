@@ -39,6 +39,12 @@ describe( 'CodeEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'code' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'code' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'command', () => {
 		it( 'should register code command', () => {
 			const command = editor.commands.get( 'code' );

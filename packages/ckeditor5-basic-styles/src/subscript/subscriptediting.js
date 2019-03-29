@@ -28,6 +28,7 @@ export default class SubscriptEditing extends Plugin {
 		const editor = this.editor;
 		// Allow sub attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUBSCRIPT } );
+		editor.model.schema.setAttributeProperties( SUBSCRIPT, { isFormatting: true } );
 
 		// Build converter from model to view for data and editing pipelines.
 

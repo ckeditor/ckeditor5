@@ -28,6 +28,7 @@ export default class SuperscriptEditing extends Plugin {
 		const editor = this.editor;
 		// Allow super attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUPERSCRIPT } );
+		editor.model.schema.setAttributeProperties( SUPERSCRIPT, { isFormatting: true } );
 
 		// Build converter from model to view for data and editing pipelines.
 

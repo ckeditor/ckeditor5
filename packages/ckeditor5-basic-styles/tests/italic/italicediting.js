@@ -39,6 +39,12 @@ describe( 'ItalicEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'italic' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'command', () => {
 		it( 'should register italic command', () => {
 			const command = editor.commands.get( 'italic' );

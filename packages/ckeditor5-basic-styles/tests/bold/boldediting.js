@@ -40,6 +40,12 @@ describe( 'BoldEditing', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'bold' ) ).to.be.true;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'bold' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	it( 'should set editor keystroke', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const keyEventData = {
