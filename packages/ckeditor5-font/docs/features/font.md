@@ -161,7 +161,7 @@ Check out the editor below with both features customized using the editor config
 
 ### Specifying the available colors
 
-It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontColor~FontColor#colors `fontColor.colors`} and {@link module:font/fontBackgroundColor~FontBackgroundColor#colors `fontBackgroundColor.colors`} configuration options to do so.
+It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontColor~FontColorConfig#colors `fontColor.colors`} and {@link module:font/fontBackgroundColor~FontBackgroundColorConfig#colors `fontBackgroundColor.colors`} configuration options to do so.
 
 ```js
 ClassicEditor
@@ -229,7 +229,7 @@ ClassicEditor
 
 ### Changing the geometry of the color grid
 
-It is also possible to configure in how many columns the colors in the grid are displayed. Use {@link module:font/fontColor~FontColor#columns `fontColor.columns`} and {@link module:font/fontBackgroundColor~FontBackgroundColor#columns `fontBackgroundColor.columns`} to do so.
+It is also possible to configure in how many columns the colors in the grid are displayed. Use {@link module:font/fontColor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontBackgroundColor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} to do so.
 
 <info-box>
 	The configuration of the columns also affects the number of recently used colors displayed under the color grid. The less columns, the fewer recently used colors will be displayed.
