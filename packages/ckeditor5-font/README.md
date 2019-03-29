@@ -10,7 +10,12 @@ CKEditor 5 font feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-font/status.svg)](https://david-dm.org/ckeditor/ckeditor5-font)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-font/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-font?type=dev)
 
-This package implements font size and font family support for CKEditor 5.
+This package implements support for the following CKEditor 5 features:
+
+* font size,
+* font family,
+* font color,
+* font background color.
 
 ## Demo
 

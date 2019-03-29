@@ -11,9 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
-import { buildDefinition } from '../utils';
-
-const FONT_SIZE = 'fontSize';
+import { buildDefinition, FONT_SIZE } from '../utils';
 
 /**
  * The font size editing feature.

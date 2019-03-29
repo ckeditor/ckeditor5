@@ -11,9 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
-import { buildDefinition } from '../utils';
-
-const FONT_FAMILY = 'fontFamily';
+import { buildDefinition, FONT_FAMILY } from '../utils';
 
 /**
  * The font family editing feature.
