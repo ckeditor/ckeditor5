@@ -13,6 +13,7 @@ node_js:
 cache:
   yarn: true
 before_install:
+- export START_TIME=$( date +%s )
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
@@ -23,10 +24,14 @@ script:
 - ckeditor5-dev-tests-travis
 after_success:
 - ckeditor5-dev-tests-save-revision
+branches:
+  except:
+  - stable
+after_script:
+- export END_TIME=$( date +%s )
+- ckeditor5-dev-tests-notify-travis-status
 env:
   global:
   - secure: cV2+JsJxfc3+J3I9ICdW+VH2lm3XYtcCxb43NcHXrYEYZ4oNGgemSEL+WOp25QKm52eLxmOULzKTNW5eJbNk0EGB8Im4hvRDvMEL8uzcKM+io33nOmUdEML7i1tihlr2C0aOGI+7DOGFIm3rWGItUXcCLWyb3E1zQiOsaDmhzwdDBqDQqug3i3US4l9d39IFO/rdfoZpWhUCKdEfV/gNp6lqPN/Y7P7VPu72k+hRm+fxaQcPNOB5xN+XLWy9vbegqw730EBVJ7e+dMGXAqdJHZxNHwF+aBwHaC5BhqeFfli0nTMH1P5g30t4VVxJfvMNBpj1vQ09UAGDkUWF5L/F8ey3pym+ntkyr+dDifLCbDbybbiwjEH0flX5FSTGBiLhw5loKeTlHoaM/vfKnJoB9rVQkmIw1NVgW/zb1KtFkg/zyJn4CQgg9hKQS07HWHOHO9oDOngB3qPEpBmFcVC4CQBpnycEv3mhghM5Z/cxgQ4cifnt5jybp/ksUyFBNIc61IbRFKBJnw+WXxKTauNRrMu9FiON8g+NW5hzhCaa2r7pmlJS7GU4JWa4mJc+5jAtoYVYCCFKFiP4JmEt/AVnO6ZiuETdl7tTsu9fXF6WFBDCAZDf76xIxv3glLtuG1AaetDPxTEx14/XNIDGiCIExMvfL1aZCUmL0Zg6n3KZOc8=
   - secure: PpyiVJhDey9v+VK8FFHZugfCiyr8JluPSCrrUP71DqGmaxJi4V2i3mRmowX2vznJtvnCjLAOfPCireD2CLqCQk1evohV/iOsIvdsvOqmn5wAF32SQbsYIj2FFQaK09uWW1Oxxu4VfbHjpsh4S7Gy+fEmed7nQyvBno3v5YH/Qm6vYa6BJLrSeiFyUGkuRjGeIt+cXrMFJJ3qqGh7tZFMkn0mW0KSkcdB7yauYWs2TfeJMkea6WVJ5XU0r9t5KPlSLgQuNixtaAvKN/oHMSCBAIM9okRoM1gOlErk7dgo21VZ4ThVhylil6ib3iGx84xCGYiR8MNBZ74yr7/xFbGQaaJID5ABZDYiT8VcGH1aZjWeN4yM/ZdEiXgkYaxSLNkqAbr0SSKbNyp/LrKvvcI9UKGTqbqEd86BU+K0VEfFcDj1O/0nHWFW6CkFBDAJ6JYlaV/GXoziWlmSBxfyME4rVA1FE3p04KH/T+kDwDaJ0gKctVRxQJdSYSpn89f51V+puvylZ02jq2LiJlKl8dygJRb6c/uFcQdRWCHbkUlCaTmFivCAh1x5njs5k+az6FDmmIs2ZxzbVObC+skvgtAJ4c5aTcOVJVXB4DLaMyDkXivn4E5zJj0C/LVPl/+rWWucyEiBJ0oTz1dsWCXdQiMj8TEjm6nuXkH7Hi+sfTH3EJI=
-branches:
-  except:
-  - stable
+  - secure: hluFgVh0VqpMzKUwmcbv1NUkdZh/5DgyMwJQSaf2K4rOeq1v92Y++3Wmgrfhmfv0e6lCmO46BvmewbTvmewyjcp7DJENHSP6S49JXwJLHXZ9OU0S3X7tMpao3TlVpYzohUxdEQjLvdLoWJOb+0J54Lru/Dh1pws4hpin2CSjm88w7iooZLVNDp1+/KZ8sE0dO4LPM6j551LXWtmSYtZsY/UPbTpUtA7beMngOUnnUmlPlS24LuVzCfc6NQ2p13sOC50mj/JO4NKkWa5K+Qwqt0hETsk2QZIEkLb85jvK0Z66LzqxAleiNdO20RfpZgfZXPWk7VUDTBAKay/uVTtmWKAP9Q8m/Zn1Z7sKLDCgk8ML5MFIQHmjJlAXk48pyTJUaaRvki0pqhyhIPDJBv5alkS4pMNeEDo0KgAP3V9yILyocvL2+7CYv47cBgbfIxKCAhT3NMmNbEGfboQmtTUPzfj9zFxq9zzrz6nlhBtEHUSxm0uP6leLhYBlfefrasGTRHlR6eweHIJPO3nEXoDdW9X/IhzLlWN0CDhAbgLto+tSDuIk+r5Lipkdde3YWGiU9A8oYStcoPCum5U5Peof62X7YkAo4P+CWbhMR/7KJiaqxJYU9Uf1vu3v5P4LVAeDpogiPCSoAnaqyEzu7R6YDp+eLvdwt7ydDj7Ea03eeKM=
