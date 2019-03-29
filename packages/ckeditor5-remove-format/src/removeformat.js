@@ -15,9 +15,10 @@ import RemoveFormatCommand from './removeformatcommand';
 /**
  * The remove format plugin.
  *
- * For a detailed overview, check the {@glink features/remove-format Remove Format feature} documentation.
+ * This is a "glue" plugin which loads the {@link module:remove-format/removeformatcommand~RemoveFormatCommand command}
+ * and the {@link module:remove-format/removeformatui~RemoveFormatUI UI}.
  *
- * This is a "glue" plugin which loads logic and UI of the remove format plugin.
+ * For a detailed overview, check out the {@glink features/remove-format Remove Format feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -32,7 +33,7 @@ export default class RemoveFormat extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.commands.add( 'removeformat', new RemoveFormatCommand( editor ) );
+		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
 	}
 
 	/**

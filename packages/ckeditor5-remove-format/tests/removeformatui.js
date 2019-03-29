@@ -6,8 +6,7 @@
 /* global document */
 
 import RemoveFormat from '../src/removeformat';
-import RemoveFormatUi from '../src/removeformatui';
-
+import RemoveFormatUI from '../src/removeformatui';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import {
@@ -40,12 +39,12 @@ describe( 'RemoveFormatUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ RemoveFormat, RemoveFormatUi ]
+				plugins: [ RemoveFormat, RemoveFormatUI ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				command = editor.commands.get( 'removeformat' );
-				button = editor.ui.componentFactory.create( 'removeformat' );
+				command = editor.commands.get( 'removeFormat' );
+				button = editor.ui.componentFactory.create( 'removeFormat' );
 			} );
 	} );
 
@@ -90,14 +89,14 @@ describe( 'RemoveFormatUI', () => {
 
 				return ClassicTestEditor
 					.create( editorElement, {
-						plugins: [ RemoveFormat, RemoveFormatUi ],
-						toolbar: [ 'removeformat' ],
+						plugins: [ RemoveFormat, RemoveFormatUI ],
+						toolbar: [ 'removeFormat' ],
 						language: 'pl'
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						button = editor.ui.componentFactory.create( 'removeformat' );
-						command = editor.commands.get( 'removeformat' );
+						button = editor.ui.componentFactory.create( 'removeFormat' );
+						command = editor.commands.get( 'removeFormat' );
 
 						editorElement.remove();
 

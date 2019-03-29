@@ -4,13 +4,13 @@
  */
 
 /**
- * @module remove-format/removeformat
+ * @module remove-format/removeformatcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 
-const removedAttributes = [
+const removableAttributes = [
 	'bold',
 	'italic',
 	'underline',
@@ -25,10 +25,12 @@ const removedAttributes = [
 ];
 
 /**
- * The removeformat command. It is used by the {@link module:remove-format/removeformat~RemoveFormat remove format feature}
- * to clear the formatting form current user selection.
+ * The remove format command.
  *
- *		editor.execute( 'removeformat' );
+ * It is used by the {@link module:remove-format/removeformat~RemoveFormat remove format feature}
+ * to clear the formatting within the selection.
+ *
+ *		editor.execute( 'removeFormat' );
  *
  * @extends module:core/command~Command
  */
@@ -50,7 +52,7 @@ export default class RemoveFormatCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of this._getStylableElements( model.document.selection ) ) {
-				for ( const attributeName of removedAttributes ) {
+				for ( const attributeName of removableAttributes ) {
 					if ( item instanceof DocumentSelection ) {
 						writer.removeSelectionAttribute( attributeName );
 					} else {
@@ -62,7 +64,8 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Yields items from a selection (including selection itself) that contains styles to be removed by the remove format feature.
+	 * Yields items from a selection (including selection itself) that contain styles to be removed
+	 * by the remove format feature.
 	 *
 	 * @protected
 	 * @param {module:engine/model/documentselection~DocumentSelection} selection
@@ -83,7 +86,7 @@ export default class RemoveFormatCommand extends Command {
 		}
 
 		function itemHasRemovableFormatting( item ) {
-			for ( const attributeName of removedAttributes ) {
+			for ( const attributeName of removableAttributes ) {
 				if ( item.hasAttribute( attributeName ) ) {
 					return true;
 				}

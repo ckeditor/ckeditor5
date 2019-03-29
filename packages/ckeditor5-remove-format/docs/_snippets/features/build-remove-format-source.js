@@ -18,6 +18,7 @@ import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
-ClassicEditor.builtinPlugins.push( RemoveFormat, Alignment, Font, Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code );
+ClassicEditor.builtinPlugins.push(
+	RemoveFormat, Alignment, Font, Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code );
 
 window.ClassicEditor = ClassicEditor;

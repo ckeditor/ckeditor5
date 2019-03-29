@@ -9,6 +9,8 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
+				'removeformat',
+				'|',
 				'bold',
 				'italic',
 				'underline',
@@ -20,8 +22,6 @@ ClassicEditor
 				'fontFamily',
 				'alignment',
 				'link',
-				'|',
-				'removeformat',
 				'|',
 				'undo',
 				'redo'

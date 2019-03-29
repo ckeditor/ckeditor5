@@ -4,7 +4,6 @@
  */
 
 import RemoveFormatCommand from '../src/removeformatcommand';
-
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import {
@@ -22,7 +21,7 @@ describe( 'RemoveFormatCommand', () => {
 				model = editor.model;
 
 				command = new RemoveFormatCommand( newEditor );
-				editor.commands.add( 'removeformat', command );
+				editor.commands.add( 'removeFormat', command );
 
 				model.schema.register( 'p', {
 					inheritAllFrom: '$block'

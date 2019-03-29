@@ -26,10 +26,11 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Bold, Clipboard, Enter, Highlight, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
+		plugins: [
+			Bold, Clipboard, Enter, Highlight, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
 			Underline, Undo, Image, Image, ImageCaption, ImageToolbar
 		],
-		toolbar: [ 'removeformat', 'italic', 'bold', 'link', 'underline', 'highlight', '|', 'undo', 'redo' ]
+		toolbar: [ 'removeFormat', '|', 'italic', 'bold', 'link', 'underline', 'highlight', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

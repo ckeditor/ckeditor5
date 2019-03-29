@@ -11,10 +11,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import removeFormatIcon from '../theme/icons/remove-format.svg';
 
-const REMOVE_FORMAT = 'removeformat';
+const REMOVE_FORMAT = 'removeFormat';
 
 /**
- * The default remove format UI plugin.
+ * The remove format UI plugin. It registers a `'removeFormat'` button which can be
+ * used in the toolbar.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -45,7 +46,7 @@ export default class RemoveFormatUI extends Plugin {
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
-			// Execute command.
+			// Execute the command.
 			this.listenTo( view, 'execute', () => editor.execute( REMOVE_FORMAT ) );
 
 			return view;

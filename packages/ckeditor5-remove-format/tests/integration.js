@@ -48,7 +48,7 @@ describe( 'RemoveFormat', () => {
 			setModelData( model, '<paragraph>foo[<$text bold="true">foo</$text></paragraph>' +
 				'<paragraph><$text bold="true">bar</$text>]bar</paragraph>' );
 
-			editor.execute( 'removeformat' );
+			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>foo[foo</paragraph><paragraph>bar]bar</paragraph>' );
@@ -58,7 +58,7 @@ describe( 'RemoveFormat', () => {
 			setModelData( model, '<paragraph>[<$text linkHref="url">foo</$text></paragraph><image src="assets/sample.png">' +
 				'<caption>caption</caption></image><paragraph>bar]</paragraph>' );
 
-			editor.execute( 'removeformat' );
+			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>[<$text linkHref="url">foo</$text></paragraph>' +
@@ -69,7 +69,7 @@ describe( 'RemoveFormat', () => {
 			setModelData( model, '<paragraph>[</paragraph>' +
 				'<image src="assets/sample.png"><caption><$text bold="true">foo</$text></caption></image><paragraph>bar]</paragraph>' );
 
-			editor.execute( 'removeformat' );
+			editor.execute( 'removeFormat' );
 
 			expect( getModelData( model ) )
 				.to.equal( '<paragraph>' +
