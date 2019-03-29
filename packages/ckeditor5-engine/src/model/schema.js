@@ -149,6 +149,19 @@ export default class Schema {
 	}
 
 	/**
+	 * Returns all registered items.
+	 *
+	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
+	 */
+	getDefinitions() {
+		if ( !this._compiledDefinitions ) {
+			this._compile();
+		}
+
+		return this._compiledDefinitions;
+	}
+
+	/**
 	 * Returns a definition of the given item or `undefined` if item is not registered.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
@@ -519,19 +532,6 @@ export default class Schema {
 	 */
 	getAttributeProperties( attributeName ) {
 		return this._attributeProperties[ attributeName ];
-	}
-
-	/**
-	 * Returns all registered items.
-	 *
-	 * @returns {Object.<String,module:engine/model/schema~SchemaCompiledItemDefinition>}
-	 */
-	getDefinitions() {
-		if ( !this._compiledDefinitions ) {
-			this._compile();
-		}
-
-		return this._compiledDefinitions;
 	}
 
 	/**
