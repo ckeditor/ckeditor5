@@ -36,6 +36,12 @@ describe( 'FontSizeEditing', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontSize' ) ).to.be.false;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( editor.model.schema.getAttributeProperties( 'fontSize' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
