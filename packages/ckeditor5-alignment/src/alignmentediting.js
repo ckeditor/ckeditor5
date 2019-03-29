@@ -41,6 +41,7 @@ export default class AlignmentEditing extends Plugin {
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
+		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
 
 		const definition = _buildDefinition( enabledOptions.filter( option => !isDefault( option ) ) );
 
