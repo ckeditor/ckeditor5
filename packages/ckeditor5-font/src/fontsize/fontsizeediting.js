@@ -63,5 +63,6 @@ export default class FontSizeEditing extends Plugin {
 
 		// Allow fontSize attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_SIZE } );
+		editor.model.schema.setAttributeProperties( FONT_SIZE, { isFormatting: true } );
 	}
 }

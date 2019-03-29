@@ -54,6 +54,7 @@ export default class FontFamilyEditing extends Plugin {
 
 		// Allow fontFamily attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_FAMILY } );
+		editor.model.schema.setAttributeProperties( FONT_FAMILY, { isFormatting: true } );
 
 		// Get configured font family options without "default" option.
 		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) ).filter( item => item.model );
