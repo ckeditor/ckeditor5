@@ -814,22 +814,12 @@ export default class Writer {
 			throw new CKEditorError( 'writer-wrap-element-attached: Element to wrap with is already attached to tree model.' );
 		}
 
-		const version = range.root.document ? range.root.document.version : null;
+		this.insert( element, range.start );
 
-		// Has to be `range.start` not `range.end` for better transformations.
-		const insert = new InsertOperation( range.start, element, version );
-		this.batch.addOperation( insert );
-		this.model.applyOperation( insert );
+		// Shift the range-to-wrap because we just inserted an element before that range.
+		const shiftedRange = new Range( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
 
-		const move = new MoveOperation(
-			range.start.getShiftedBy( 1 ),
-			range.end.offset - range.start.offset,
-			Position._createAt( element, 0 ),
-			version === null ? null : version + 1
-		);
-
-		this.batch.addOperation( move );
-		this.model.applyOperation( move );
+		this.move( shiftedRange, Position._createAt( element, 0 ) );
 	}
 
 	/**
