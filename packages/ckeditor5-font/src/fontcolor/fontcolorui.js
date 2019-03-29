@@ -17,6 +17,9 @@ import fontColorIcon from '../../theme/icons/font-color.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class FontColorUI extends ColorUI {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		const t = editor.locale.t;
 

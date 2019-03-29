@@ -17,6 +17,9 @@ import fontBackgroundColorIcon from '../../theme/icons/font-background.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class FontBackgroundColorUI extends ColorUI {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		const t = editor.locale.t;
 
