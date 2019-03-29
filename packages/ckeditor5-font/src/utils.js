@@ -91,8 +91,8 @@ export function renderDowncastElement( styleAttr ) {
  * Creates a unified color definition object from color configuration options.
  * The object contains both the information necessary to render the UI and initialize a conversion.
  *
- * @param {module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors} options
- * @returns {Array.<module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors>}
+ * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options
+ * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
  */
 export function normalizeColorOptions( options ) {
 	return options
@@ -132,7 +132,7 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
  * when the user configuration is defined because the editor does not exist yet.
  *
  * @param {module:core/editor/editor~Editor} editor An editor instance.
- * @param {module:font/fontcolor~FontColorConfig#colors|module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors} options
+ * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}.
  */
 export function getLocalizedColorOptions( editor, options ) {
@@ -176,7 +176,7 @@ function normalizeColorCode( value ) {
 
 // Creates normalized color definition from user defined configuration.
 //
-// @param {String|Object}
+// @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
 // @returns {module:ui/colorgrid/colorgrid~ColorDefinition}
 function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
