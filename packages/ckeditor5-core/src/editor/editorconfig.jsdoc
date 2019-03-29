@@ -41,7 +41,7 @@
  *			.catch( ... );
  *
  * By default, the editor is initialized with the content of the element on which the editor is initialized.
- * See {@link module:core/editor/editor~Editor#create Editor.create()}.
+ * See {@link module:core/editor/editor~Editor.create Editor.create()}.
  *
  * This configuration option lets you override initial data if an element is passed in `Editor.create()` call.
  * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
