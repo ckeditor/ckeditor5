@@ -110,7 +110,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * The element's content will be used as the editor data and the element will be replaced by the editable element and the editor UI.
+	 * The element's content will be used as the editor data and the element will be replaced by the editor UI.
 	 *
 	 * # Creating a detached editor
 	 *
@@ -132,7 +132,7 @@ export default class ClassicEditor extends Editor {
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
-	 * # Replacing a DOM element (and using data provided in `create()`)
+	 * # Replacing a DOM element (and data provided in `config.initialData`)
 	 *
 	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
 	 *
