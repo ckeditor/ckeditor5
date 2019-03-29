@@ -3,16 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import env, { isEdge, isMac, isGecko } from '../src/env';
+import env, { isEdge, isMac, isGecko, isSafari } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
 }
 
 describe( 'Env', () => {
-	beforeEach( () => {
-	} );
-
 	it( 'is an object', () => {
 		expect( env ).to.be.an( 'object' );
 	} );
@@ -32,6 +29,12 @@ describe( 'Env', () => {
 	describe( 'isGecko', () => {
 		it( 'is a boolean', () => {
 			expect( env.isGecko ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isSafari', () => {
+		it( 'is a boolean', () => {
+			expect( env.isSafari ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -102,5 +105,33 @@ describe( 'Env', () => {
 				'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36'
 			) ) ).to.be.false;
 		} );
+	} );
+
+	describe( 'isSafari()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Safari UA strings', () => {
+			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15'
+			) ) ).to.be.true;
+
+			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Safari UA strings', () => {
+			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+			) ) ).to.be.false;
+
+			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
 	} );
 } );
