@@ -36,6 +36,12 @@ describe( 'FontFamilyEditing', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontFamily' ) ).to.be.false;
 	} );
 
+	it( 'should be marked with a formatting property', () => {
+		expect( editor.model.schema.getAttributeProperties( 'fontFamily' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
