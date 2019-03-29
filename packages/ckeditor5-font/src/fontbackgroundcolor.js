@@ -14,6 +14,9 @@ import FontBackgroundColorUI from './fontbackgroundcolor/fontbackgroundcolorui';
 /**
  * The font background color plugin.
  *
+ * For a detailed overview, check the {@glink features/font font feature} documentation
+ * and the {@glink api/font package page}.
+ *
  * This is a "glue" plugin which loads
  * the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} and
  * {@link module:font/fontbackgroundcolor/fontbackgroundcolorui~FontBackgroundColorUI} features in the editor.
