@@ -16,11 +16,15 @@ branches:
   except:
   - stable
 before_install:
+- export DEBUG=true
+- export START_TIME=$( date +%s )
+- export CWD=$( pwd )
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
 install:
-- yarn add @ckeditor/ckeditor5-dev-tests
+- cd /tmp && git clone https://github.com/ckeditor/ckeditor5-dev.git && cd ./ckeditor5-dev && git checkout t/ckeditor5/1655 && cd $CWD
+- yarn add /tmp/ckeditor5-dev/packages/ckeditor5-dev-tests
 - ckeditor5-dev-tests-install-dependencies
 script:
 - ckeditor5-dev-tests-travis
@@ -30,3 +34,4 @@ env:
   global:
   - secure: GDDBIM9QXMqEkl7HgvsXagdijWH1ixykDhN4JZh0vvJ0lIVUWQ9TQ4YQD+MqtmNEGm0iFw0RCzFW8xz0sTwtG7S2OwtMrnmYPMfCrRJN1cYWmAVmuD3gGJ63KHBxdmOdvP38xOiS6Cbfka50eFcJWoumKqmdcQFtDQJFNi0Ky3jLRltaOu0A//gUQqlA7hIJ+BGpZRfIbPT1X82ylCgDWUI33e0dbbB1Z3E+lteOvTF137NqN6+0sVxrMLXLOx6e9qSi8d6E8yUNvA3ZjMSgx535Iv8XOC9jjwqnPaH+CCUuP1R84huuX9h8JCN02iyeA89YmoBDuvgJIzyClhCTugElHr+IVnG4ges7Ov7H1JXxu1ksoqWpUgffDYeKuBvdzNMnIJxRcsEgPd5br33HmNASYqgoheghWB5i+Gf9zi8h8qVh2k9MYF2dziBEHGQbPxr5M3Xm4K5xZhyF+OeZh6QJL48Jhd+Decy43XllpkaFdAc5d2iqcdK4NyCiMsl0jr7fOMiySO8+E/Hze+K6v6Ht5qqyC8GxxEvMirSsBWM/BsGRppxkm1jZt9S72ZxxVXJvYwn6pdcfmkrNIiVb8D0Afxmll4GJYHInkfR/jjc6uU5Ti0tPhDNCLjkLRVzSXrc3k5Cw7y0ObE7nzrBWVY9YAR+dPCuATbS0ZhGYe1U=
   - secure: Jl0HiiHK13TA6Rcn6SiS+NNsUBt1HerYv2szTQlpHW2C+KtItIyjYEijsaL4bjkZ+HJ2rx4xZFbRnwCybtbc28w/z2VXq2qL3EeXm8cgcdQlY0KglemwgbEV20o6QpO7+9/vQVWa/azcwQAUghlUxvwRxLkpPXmaPzK6yhkkaFbVQRwIFOKdm7o5Tjg2kZIXsrvS6fQi15hHtiUcC971g1iVpBrw5YwxehDqG+x3DfNDwJ3llEkw/PAOCsOpcpe6d1pE6dyzOMBDCWgHHLv34G0dS1Ee7ybw5T2bZoYrH6pdknwzv3vHKXmXAqiPVyQ9hNhL3R8SuruHRk1TqvyXojVPMKpq958wnVTHKfqS4I2kCyIFYENMvhJGOJpIGAoPxo20ZsoUxSkFLnsSy0Kp2QnV/nngxjuMEj9p6L3E1gjBhgYdiqjktZGF3ywK8XIFq+WW/fhRcwsaY/uINEQZ9dR0MQPNhZGlCga+ZSUNWFRJnOpwiYd6As3/3S2Db14oDfNGCXZN7oW+nwATUmenXcQFpLqAV3yeOmsduROyvUajjNnu7nZvAfsxFixVADD2B+tO1QV7jaUm+PyaXggwoHe4svMYN+iaR8I59T71pF0NdK8YyfY9OuSBtlCi6N3ktieJFZmgRhBt8afJFugumhvhk1vbJUsb9XFdnb3cGYo=
+  - secure: C0lJm86vEaynBVq4SfjiDMA5yLvua4T71jVoSVwQ1VsNE/zMkKesNMklnWpX1C0yBwdY0M9ecSIOUbYuWOr3Ge8owpqaKiJ1OC3OZCAhisQvPJRm+kiHqdi8cBpgjzg6Fw7tUAGO0a0Tc/3dlrGwdjSC3OMuPVOEtckpcGGOi19OcWZDE739NcmJyke50775QcUgw6tb5Cd/VI9OVgOSjdjNjId6W1/jZfV2GRw8qdf2c1E17moHmO9kbdgx0tUCoQdLr87ls8stv1TBGGQivGiReLIH2Q39OBc+Ac1zGMNPlaPzZrznVQP9dqp8ApAMxIfQASoujEp+MnGPNHAbJtzKnFxOVLr+tLSl8QaoSZtis3FsIxsIBTqKO/JMalLfh6QCjGhRKxHW+w/8CzP9uiNUvAARKMPOG4Q0PPCpTmOkoowYpdj4FtFaBdQHU5V9nCsjv58qhVPbDUOQ1/8O2YHX9IotS1LDUJntFNdly/uTcFaJFfvJMg7v9SO+3dxpB8pK2BXqvLqgfUbLFubfacsCrGakHgAySNf75ZiA+Od+c+w7ly4CMXcW95HtnZU5/Co6SaY4swF2K0Jhz41uxfdGJJyQi+hQJq3WopxIiO479C5VeRRU428jSPsa/H1S+XbmxxTPHNrX0Qwq5bURruGEg2YU9zElZBLL0Q2VcYk=
