@@ -57,7 +57,7 @@ export default class FontColor extends Plugin {
 /**
  * Available font colors defined as an array of strings or objects.
  *
- * The default value registers 15 colors:
+ * The default value registers the following colors:
  *
  *		const fontColorConfig = {
  *			colors: [
