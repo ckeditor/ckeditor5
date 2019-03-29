@@ -66,6 +66,7 @@ export function buildDefinition( modelAttributeKey, options ) {
  * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
  *
  * @param {String} styleAttr
+ * @return {String}
  */
 export function renderUpcastAttribute( styleAttr ) {
 	return viewElement => normalizeColorCode( viewElement.getStyle( styleAttr ) );
@@ -165,10 +166,18 @@ export function getLocalizedColorOptions( editor, options ) {
 	} );
 }
 
+// Fixes color value string
+//
+// @param {String} value
+// @returns {String}
 function normalizeColorCode( value ) {
 	return value.replace( /\s/g, '' );
 }
 
+// Creates normalized color definition from user defined configuration.
+//
+// @param {String|Object}
+// @returns {module:ui/colorgrid/colorgrid~ColorDefinition}
 function normalizeSingleColorDefinition( color ) {
 	if ( typeof color === 'string' ) {
 		return {
