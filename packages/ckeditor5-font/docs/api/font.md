@@ -14,8 +14,11 @@ Check out the {@link features/font#demo demo in the Font feature} guide.
 
 ## Documentation
 
-See the {@link features/font Font feature} guide
-and {@link module:font/fontfamily~FontFamily} and {@link module:font/fontsize~FontSize} plugins documentation.
+See the {@link features/font Font feature} guide and plugins documentation:
+- {@link module:font/fontfamily~FontFamily}.
+- {@link module:font/fontsize~FontSize}.
+- {@link module:font/fontcolor~FontColor}.
+- {@link module:font/fontbackgroundcolor~FontBackgroundColor}.
 
 ## Installation
 
