@@ -145,7 +145,7 @@ describe( 'MentionEditing', () => {
 		} );
 	} );
 
-	describe( 'selection post fixer', () => {
+	describe( 'selection post-fixer', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -182,7 +182,7 @@ describe( 'MentionEditing', () => {
 		} );
 	} );
 
-	describe( 'removing partial mention post fixer', () => {
+	describe( 'removing partial mention post-fixer', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -284,6 +284,17 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
+		} );
+	} );
+
+	describe( 'extend attribute on mention post-fixer', () => {
+		beforeEach( () => {
+			return createTestEditor()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+				} );
 		} );
 
 		it( 'should set attribute on whole mention when formatting part of a mention (beginning formatted)', () => {
