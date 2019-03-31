@@ -156,18 +156,15 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 
 		if ( change.name == '$text' ) {
 			// Check textNode where the change occurred.
-			if ( change.type == 'insert' || change.type == 'remove' ) {
-				checkAndFix( position.textNode );
+			checkAndFix( position.textNode );
 
-				// Occurs on pasting inside text node with mention;
-				const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
-				checkAndFix( nodeAfterInsertedTextNode );
-				checkAndFix( position.nodeBefore );
-			}
+			// Occurs on pasting inside text node with mention;
+			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
+			checkAndFix( nodeAfterInsertedTextNode );
+			checkAndFix( position.nodeBefore );
 
-			// Additional check: when removing text on mention boundaries.
+			// Additional check: when removing text at the beginning of a mention.
 			if ( change.type == 'remove' ) {
-				checkAndFix( position.nodeBefore );
 				checkAndFix( position.nodeAfter );
 			}
 		}
