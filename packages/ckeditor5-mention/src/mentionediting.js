@@ -57,7 +57,7 @@ export default class MentionEditing extends Plugin {
 			view: createViewMentionElement
 		} );
 
-		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc ) );
+		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc, model.schema ) );
 		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
 		doc.registerPostFixer( writer => selectionMentionAttributePostFixer( writer, doc ) );
 
@@ -141,40 +141,54 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
 // @returns {Boolean} Returns true if selection was fixed.
-function removePartialMentionPostFixer( writer, doc ) {
+function removePartialMentionPostFixer( writer, doc, schema ) {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
 
+	if ( !changes.length ) {
+		return;
+	}
+
 	for ( const change of changes ) {
 		// Check text node on current position;
+		const position = change.position;
+
 		if ( change.name == '$text' ) {
 			// Check textNode where the change occurred.
 			if ( change.type == 'insert' || change.type == 'remove' ) {
-				const textNode = change.position.textNode;
-
-				if ( !checkMentionAttributeOnNode( textNode ) ) {
-					writer.removeAttribute( 'mention', textNode );
-					wasChanged = true;
-				}
+				checkAndFix( position.textNode );
 			}
 
 			// Additional check: when removing text on mention boundaries.
 			if ( change.type == 'remove' ) {
-				const nodeBefore = change.position.nodeBefore;
-
-				if ( !checkMentionAttributeOnNode( nodeBefore ) ) {
-					writer.removeAttribute( 'mention', nodeBefore );
-					wasChanged = true;
-				}
-
-				const nodeAfter = change.position.nodeAfter;
-
-				if ( !checkMentionAttributeOnNode( nodeAfter ) ) {
-					writer.removeAttribute( 'mention', nodeAfter );
-					wasChanged = true;
-				}
+				checkAndFix( position.nodeBefore );
+				checkAndFix( position.nodeAfter );
 			}
+		}
+
+		// Check text nodes on inserted elements (might occur when splitting paragraph on enter key).
+		if ( change.name != '$text' && change.type == 'insert' && schema.checkChild( change.name, '$text' ) ) {
+			const insertedNode = position.nodeAfter;
+
+			for ( const child of insertedNode.getChildren() ) {
+				checkAndFix( child );
+			}
+		}
+
+		// Inserted inline elements might break mention.
+		if ( change.type == 'insert' && schema.isInline( change.name ) ) {
+			checkAndFix( position.nodeBefore );
+
+			const nodeAfterInserted = position.nodeAfter && position.nodeAfter.nextSibling;
+			checkAndFix( nodeAfterInserted );
+		}
+	}
+
+	function checkAndFix( textNode ) {
+		if ( !checkMentionAttributeOnNode( textNode ) ) {
+			writer.removeAttribute( 'mention', textNode );
+			wasChanged = true;
 		}
 	}
 

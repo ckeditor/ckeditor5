@@ -285,6 +285,36 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
 		} );
+
+		it( 'should remove mention on inserting inline element inside a mention', () => {
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				isInline: true
+			} );
+			editor.conversion.elementToElement( { model: 'inline', view: 'br' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.insertElement( 'inline', paragraph, 7 );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jo<br>hn bar</p>' );
+		} );
+
+		it( 'should remove mention when splitting paragraph with a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.split( writer.createPositionAt( paragraph, 7 ) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jo</p><p>hn bar</p>' );
+		} );
 	} );
 
 	describe( 'extend attribute on mention post-fixer', () => {
