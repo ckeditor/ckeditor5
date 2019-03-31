@@ -262,12 +262,7 @@ function getFullMentionNode( node ) {
 	const isPreviousPartial = !checkMentionAttributeOnNode( previousSibling );
 
 	if ( isPreviousPartial ) {
-		const previousSiblingMention = previousSibling.getAttribute( 'mention' );
-		const sameMention = previousSiblingMention._id == mention._id;
-
-		if ( sameMention ) {
-			nodes.push( previousSibling );
-		}
+		nodes.push( previousSibling );
 	}
 
 	nodes.push( textNode );

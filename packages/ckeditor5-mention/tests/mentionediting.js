@@ -401,6 +401,33 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() )
 				.to.equal( '<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>' );
 		} );
+
+		it( 'should set attribute on whole mention when formatting part of two mentions', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData(
+				'<p><span class="mention" data-mention="John">@John</span><span class="mention" data-mention="John">@John</span></p>'
+			);
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 4 );
+				const range = writer.createRange( start, start.getShiftedBy( 4 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span class="mention" data-mention="John"><strong>@John</strong></span>' +
+					'<span class="mention" data-mention="John"><strong>@John</strong></span>' +
+				'</p>'
+			);
+		} );
 	} );
 
 	function createTestEditor( mentionConfig ) {
