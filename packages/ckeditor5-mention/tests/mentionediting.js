@@ -192,7 +192,7 @@ describe( 'MentionEditing', () => {
 				} );
 		} );
 
-		it( 'should remove mention on adding a text inside mention', () => {
+		it( 'should remove mention on adding a text inside mention (in the middle)', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
@@ -217,7 +217,24 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
 		} );
 
-		it( 'should remove mention on removing a text inside mention', () => {
+		it( 'should remove mention on removing a text at the beginning of a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setSelection( paragraph, 4 );
+			} );
+
+			model.enqueueChange( () => {
+				model.modifySelection( doc.selection, { direction: 'forward', unit: 'codepoint' } );
+				model.deleteContent( doc.selection );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo John bar</p>' );
+		} );
+
+		it( 'should remove mention on removing a text in the middle a mention', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 
 			const paragraph = doc.getRoot().getChild( 0 );
@@ -239,7 +256,6 @@ describe( 'MentionEditing', () => {
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			// Set selection at the end of a John.
 			model.change( writer => {
 				writer.setSelection( paragraph, 9 );
 			} );
@@ -268,6 +284,69 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (beginning formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 0 );
+				const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p><strong>foo </strong><span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (end formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 6 );
+				const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span><strong> ba</strong>r</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (middle of mention formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 6 );
+				const range = writer.createRange( start, start.getShiftedBy( 1 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>' );
 		} );
 	} );
 

@@ -58,6 +58,7 @@ export default class MentionEditing extends Plugin {
 		} );
 
 		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc ) );
+		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
 		doc.registerPostFixer( writer => selectionMentionAttributePostFixer( writer, doc ) );
 
 		editor.commands.add( 'mention', new MentionCommand( editor ) );
@@ -146,23 +147,59 @@ function removePartialMentionPostFixer( writer, doc ) {
 	let wasChanged = false;
 
 	for ( const change of changes ) {
-		// Check if user edited part of a mention.
-		if ( change.name == '$text' && ( change.type == 'insert' || change.type == 'remove' ) ) {
-			const textNode = change.position.textNode;
+		// Check text node on current position;
+		if ( change.name == '$text' ) {
+			// Check textNode where the change occurred.
+			if ( change.type == 'insert' || change.type == 'remove' ) {
+				const textNode = change.position.textNode;
 
-			if ( !checkMentionAttributeOnNode( textNode ) ) {
-				writer.removeAttribute( 'mention', textNode );
-				wasChanged = true;
+				if ( !checkMentionAttributeOnNode( textNode ) ) {
+					writer.removeAttribute( 'mention', textNode );
+					wasChanged = true;
+				}
+			}
+
+			// Additional check: when removing text on mention boundaries.
+			if ( change.type == 'remove' ) {
+				const nodeBefore = change.position.nodeBefore;
+
+				if ( !checkMentionAttributeOnNode( nodeBefore ) ) {
+					writer.removeAttribute( 'mention', nodeBefore );
+					wasChanged = true;
+				}
+
+				const nodeAfter = change.position.nodeAfter;
+
+				if ( !checkMentionAttributeOnNode( nodeAfter ) ) {
+					writer.removeAttribute( 'mention', nodeAfter );
+					wasChanged = true;
+				}
 			}
 		}
+	}
 
-		// Additional check for deleting last character of a text node.
-		if ( change.type == 'remove' ) {
-			const nodeBefore = change.position.nodeBefore;
+	return wasChanged;
+}
 
-			if ( !checkMentionAttributeOnNode( nodeBefore ) ) {
-				writer.removeAttribute( 'mention', nodeBefore );
-				wasChanged = true;
+// This post-fixer will extend attribute applied on part of a mention so a whole text node of a mention will have added attribute.
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/document~Document} doc
+// @returns {Boolean} Returns true if selection was fixed.
+function extendAttributeOnMentionPostFixer( writer, doc ) {
+	const changes = doc.differ.getChanges();
+
+	let wasChanged = false;
+
+	for ( const change of changes ) {
+		if ( change.type === 'attribute' ) {
+			for ( const node of getBrokenMentionsFromRange( change.range ) ) {
+				for ( const partialMention of getFullMentionNode( node ) ) {
+					if ( partialMention.getAttribute( change.attributeKey ) !== change.attributeNewValue ) {
+						writer.setAttribute( change.attributeKey, change.attributeNewValue, partialMention );
+						wasChanged = true;
+					}
+				}
 			}
 		}
 	}
@@ -176,7 +213,7 @@ function removePartialMentionPostFixer( writer, doc ) {
 // @param {module:engine/model/node~Node} node a node to check
 // @returns {Boolean}
 function checkMentionAttributeOnNode( node ) {
-	if ( !node || !node.is( 'text' ) || !node.hasAttribute( 'mention' ) ) {
+	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return true;
 	}
 
@@ -186,4 +223,49 @@ function checkMentionAttributeOnNode( node ) {
 	const expectedText = mention._marker + mention.name;
 
 	return text == expectedText;
+}
+
+function* getBrokenMentionsFromRange( range ) {
+	for ( const item of range.getItems() ) {
+		if ( !checkMentionAttributeOnNode( item ) ) {
+			yield item;
+		}
+	}
+}
+
+function getFullMentionNode( node ) {
+	const textNode = node.textNode;
+
+	const previousSibling = textNode.previousSibling;
+	const nextSibling = textNode.nextSibling;
+
+	const mention = textNode.getAttribute( 'mention' );
+
+	const nodes = [];
+
+	const isPreviousPartial = !checkMentionAttributeOnNode( previousSibling );
+
+	if ( isPreviousPartial ) {
+		const previousSiblingMention = previousSibling.getAttribute( 'mention' );
+		const sameMention = previousSiblingMention._id == mention._id;
+
+		if ( sameMention ) {
+			nodes.push( previousSibling );
+		}
+	}
+
+	nodes.push( textNode );
+
+	const isNextPartial = !checkMentionAttributeOnNode( nextSibling );
+
+	if ( isNextPartial ) {
+		const nextSiblingMention = nextSibling.getAttribute( 'mention' );
+		const sameMention = nextSiblingMention._id == mention._id;
+
+		if ( sameMention ) {
+			nodes.push( nextSibling );
+		}
+	}
+
+	return nodes;
 }
