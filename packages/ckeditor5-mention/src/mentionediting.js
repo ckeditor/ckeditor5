@@ -208,13 +208,12 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 	let wasChanged = false;
 
 	for ( const change of changes ) {
-		if ( change.type === 'attribute' ) {
-			for ( const node of getBrokenMentionsFromRange( change.range ) ) {
-				for ( const partialMention of getFullMentionNode( node ) ) {
-					if ( partialMention.getAttribute( change.attributeKey ) !== change.attributeNewValue ) {
-						writer.setAttribute( change.attributeKey, change.attributeNewValue, partialMention );
-						wasChanged = true;
-					}
+		if ( change.type === 'attribute' && change.attributeKey != 'mention' ) {
+			// Check all mentions in changed range - attribute change may span over multiple text node.
+			for ( const textNode of getBrokenMentionsFromRange( change.range ) ) {
+				if ( textNode.getAttribute( change.attributeKey ) !== change.attributeNewValue ) {
+					writer.setAttribute( change.attributeKey, change.attributeNewValue, textNode );
+					wasChanged = true;
 				}
 			}
 		}
@@ -241,42 +240,24 @@ function checkMentionAttributeOnNode( node ) {
 	return text == expectedText;
 }
 
+// Yields all text nodes with broken mentions from a range - even if mention is outside range boundary.
+//
+// @param {module:engine/range~Range} range
 function* getBrokenMentionsFromRange( range ) {
-	for ( const item of range.getItems() ) {
-		if ( !checkMentionAttributeOnNode( item ) ) {
-			yield item;
-		}
-	}
-}
-
-function getFullMentionNode( node ) {
-	const textNode = node.textNode;
-
-	const previousSibling = textNode.previousSibling;
-	const nextSibling = textNode.nextSibling;
-
-	const mention = textNode.getAttribute( 'mention' );
-
-	const nodes = [];
-
-	const isPreviousPartial = !checkMentionAttributeOnNode( previousSibling );
-
-	if ( isPreviousPartial ) {
-		nodes.push( previousSibling );
+	// Check node at the left side of a range.
+	if ( !checkMentionAttributeOnNode( range.start.nodeBefore ) ) {
+		yield range.start.nodeBefore;
 	}
 
-	nodes.push( textNode );
-
-	const isNextPartial = !checkMentionAttributeOnNode( nextSibling );
-
-	if ( isNextPartial ) {
-		const nextSiblingMention = nextSibling.getAttribute( 'mention' );
-		const sameMention = nextSiblingMention._id == mention._id;
-
-		if ( sameMention ) {
-			nodes.push( nextSibling );
+	// Yield text nodes with broken mention from the range.
+	for ( const textProxy of range.getItems() ) {
+		if ( !checkMentionAttributeOnNode( textProxy ) ) {
+			yield textProxy.textNode;
 		}
 	}
 
-	return nodes;
+	// Check node at the right side of a range.
+	if ( !checkMentionAttributeOnNode( range.end.nodeAfter ) ) {
+		yield range.end.nodeAfter;
+	}
 }
