@@ -286,6 +286,18 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
 		} );
 
+		it( 'should remove mention on inserting text node inside a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.insertText( 'baz', paragraph, 7 );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jobazhn bar</p>' );
+		} );
+
 		it( 'should remove mention on inserting inline element inside a mention', () => {
 			model.schema.register( 'inline', {
 				allowWhere: '$text',
