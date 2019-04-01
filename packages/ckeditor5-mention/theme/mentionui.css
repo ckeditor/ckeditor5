@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck.ck-mention-view {
+	max-height: 300px;
+
+	overflow-y: auto;
+
+	overscroll-behavior: contain;
+}
