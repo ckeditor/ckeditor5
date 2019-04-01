@@ -162,11 +162,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
 			checkAndFix( nodeAfterInsertedTextNode );
 			checkAndFix( position.nodeBefore );
-
-			// Additional check: when removing text at the beginning of a mention.
-			if ( change.type == 'remove' ) {
-				checkAndFix( position.nodeAfter );
-			}
+			checkAndFix( position.nodeAfter );
 		}
 
 		// Check text nodes on inserted elements (might occur when splitting paragraph on enter key).

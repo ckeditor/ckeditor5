@@ -217,6 +217,27 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
 		} );
 
+		it( 'should remove mention on typing in mention node with selection attributes set', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( textNode ).to.not.be.null;
+			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				writer.setSelection( paragraph, 6 );
+				writer.setSelectionAttribute( 'bold', true );
+
+				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo @J<$text bold="true">a</$text>ohn bar</paragraph>' );
+		} );
+
 		it( 'should remove mention on removing a text at the beginning of a mention', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 
