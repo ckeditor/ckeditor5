@@ -96,7 +96,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'setAttributeProperties()', () => {
+	describe( 'attribute properties', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
 			schema.register( 'paragraph', {
@@ -105,33 +105,45 @@ describe( 'Schema', () => {
 			schema.register( '$text', {
 				allowIn: 'paragraph'
 			} );
-			schema.extend( '$text', { allowAttributes: 'testAttribute' } );
+			schema.extend( '$text', { allowAttributes: [ 'testAttribute', 'noPropertiesAttribute' ] } );
 		} );
 
-		it( 'allows registering new properties', () => {
-			schema.setAttributeProperties( 'testAttribute', {
-				foo: 'bar',
-				baz: 'bom'
+		describe( 'setAttributeProperties()', () => {
+			it( 'allows registering new properties', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					foo: 'bar',
+					baz: 'bom'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					foo: 'bar',
+					baz: 'bom'
+				} );
 			} );
 
-			expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
-				foo: 'bar',
-				baz: 'bom'
+			it( 'support adding properties in subsequent calls', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					first: 'foo'
+				} );
+
+				schema.setAttributeProperties( 'testAttribute', {
+					second: 'bar'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					first: 'foo',
+					second: 'bar'
+				} );
 			} );
 		} );
 
-		it( 'support adding properties in subsequent calls', () => {
-			schema.setAttributeProperties( 'testAttribute', {
-				first: 'foo'
+		describe( 'getAttributeProperties()', () => {
+			it( 'it returns a proper value if the attribute has no properties', () => {
+				expect( schema.getAttributeProperties( 'noPropertiesAttribute' ) ).to.deep.equal( {} );
 			} );
 
-			schema.setAttributeProperties( 'testAttribute', {
-				second: 'bar'
-			} );
-
-			expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
-				first: 'foo',
-				second: 'bar'
+			it( 'it returns a proper value for unknown attribute', () => {
+				expect( schema.getAttributeProperties( 'unregistered-attribute' ) ).to.deep.equal( {} );
 			} );
 		} );
 	} );
