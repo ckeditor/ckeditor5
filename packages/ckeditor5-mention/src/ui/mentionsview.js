@@ -65,7 +65,7 @@ export default class MentionsView extends View {
 	}
 
 	/**
-	 * Selects previous item to the currently selected.
+	 * Selects previous item to the currently {@link #select selected}.
 	 *
 	 * If first item is already selected it will select last item.
 	 */
