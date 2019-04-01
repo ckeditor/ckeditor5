@@ -226,10 +226,6 @@ command.on( 'change:value', ( evt, propertyName, newValue, oldValue ) => {
 command.value = true; // -> 'value has changed from undefined to true'
 ```
 
-<info-box>
-	Observable properties are marked in API documentation strings with the `@observable` keyword but we do not mark them in {@link api/index API documentation} ([yet](https://github.com/ckeditor/ckeditor5-dev/issues/285)).
-</info-box>
-
 Observables have one more feature which is widely used by the editor (especially in the UI library) &mdash; the ability to bind the value of one object's property to the value of some other property or properties (of one or more objects). This, of course, can also be processed by callbacks.
 
 Assuming that `target` and `source` are observables and that used properties are observable:
