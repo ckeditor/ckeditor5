@@ -82,7 +82,7 @@ export default class MentionsView extends View {
 	 *
 	 * Handles selection cycling when passed index is out of bounds:
 	 * - if the index is lower than 0, it will select the last item,
-	 * - if index is higher then last item index it will select the first item.
+	 * - if the index is higher than the last item index, it will select the first item.
 	 *
 	 * @param {Number} index Index of item to mark as selected.
 	 */
