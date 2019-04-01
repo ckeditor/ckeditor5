@@ -56,7 +56,7 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Yields items from a selection (including selection itself) that contain styles to be removed
+	 * Yields items from a selection (including selection itself) that contain format to be removed
 	 * by the remove format feature.
 	 *
 	 * @protected
@@ -77,7 +77,7 @@ export default class RemoveFormatCommand extends Command {
 			}
 		}
 
-		// Finally the selection might be styles as well, so make sure to check it.
+		// Finally the selection might be formatted as well, so make sure to check it.
 		if ( itemHasRemovableFormatting( selection ) ) {
 			yield selection;
 		}
