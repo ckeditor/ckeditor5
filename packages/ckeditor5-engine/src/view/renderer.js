@@ -706,7 +706,7 @@ export default class Renderer {
 			} );
 
 			// Fill it with a text node so we can update it later.
-			container.appendChild( domDocument.createTextNode( '\u00A0' ) );
+			container.textContent = '\u00A0';
 		}
 
 		if ( !container.parentElement || container.parentElement != domRoot ) {
@@ -714,7 +714,7 @@ export default class Renderer {
 		}
 
 		// Update contents.
-		container.firstChild.data = this.selection.fakeSelectionLabel || '\u00A0';
+		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
 		// Update selection.
 		const domSelection = domDocument.getSelection();
