@@ -3,8 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
+:root {
+	--ck-mention-list-max-height: 300px;
+}
+
 .ck.ck-mentions {
-	max-height: 300px;
+	max-height: var(--ck-mention-list-max-height);
 
 	overflow-y: auto;
 
