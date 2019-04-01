@@ -84,7 +84,7 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Returns a list formatting attributes in a given element.
+	 * Returns a list formatting attributes in a given `item`.
 	 *
 	 * @protected
 	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
