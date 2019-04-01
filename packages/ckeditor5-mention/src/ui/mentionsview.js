@@ -120,7 +120,7 @@ export default class MentionsView extends View {
 	// Checks if an item is visible in the scrollable area.
 	//
 	// The item is considered visible when:
-	// - its top line is inside scrolled rect
+	// - its top boundary is inside the scrollable rect
 	// - its bottom line is inside scrolled rect (whole item must be visible)
 	_isItemVisibleInScrolledArea( item ) {
 		const isBottomLineVisible = item.element.offsetTop + item.element.clientHeight <= this.element.clientHeight;
