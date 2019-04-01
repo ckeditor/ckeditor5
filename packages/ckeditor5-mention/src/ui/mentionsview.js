@@ -67,7 +67,7 @@ export default class MentionsView extends View {
 	/**
 	 * Selects previous item to the currently {@link #select selected}.
 	 *
-	 * If first item is already selected it will select last item.
+	 * If the first item is already selected, it will select the last item.
 	 */
 	selectPrevious() {
 		const item = this.selected;
