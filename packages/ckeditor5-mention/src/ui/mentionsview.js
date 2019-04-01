@@ -9,6 +9,7 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ListView from '@ckeditor/ckeditor5-ui/src/list/listview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import '../../theme/mentionui.css';
 
@@ -123,9 +124,6 @@ export default class MentionsView extends View {
 	// - its top boundary is inside the scrollable rect
 	// - its bottom boundary is inside the scrollable rect (the whole item must be visible)
 	_isItemVisibleInScrolledArea( item ) {
-		const isBottomLineVisible = item.element.offsetTop + item.element.clientHeight <= this.element.clientHeight;
-		const isTopLineVisible = item.element.offsetTop >= this.element.scrollTop;
-
-		return isBottomLineVisible && isTopLineVisible;
+		return new Rect( this.element ).contains( new Rect( item.element ) );
 	}
 }
