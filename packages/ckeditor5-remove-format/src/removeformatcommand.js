@@ -8,21 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-
-const removableAttributes = [
-	'bold',
-	'italic',
-	'underline',
-	'strikethrough',
-	'code',
-	'subscript',
-	'superscript',
-	'fontSize',
-	'fontFamily',
-	'alignment',
-	'highlight'
-];
 
 /**
  * The remove format command.
@@ -39,9 +24,9 @@ export default class RemoveFormatCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selection = this.editor.model.document.selection;
+		const model = this.editor.model;
 
-		this.isEnabled = !this._getStylableElements( selection ).next().done;
+		this.isEnabled = !this._getFormattedElements( model.document.selection, model.schema ).next().done;
 	}
 
 	/**
@@ -49,11 +34,12 @@ export default class RemoveFormatCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
+		const schema = model.schema;
 
 		model.change( writer => {
-			for ( const item of this._getStylableElements( model.document.selection ) ) {
+			for ( const item of this._getFormattedElements( model.document.selection, schema ) ) {
 				if ( item.is( 'selection' ) ) {
-					for ( const attributeName of removableAttributes ) {
+					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
 						writer.removeSelectionAttribute( attributeName );
 					}
 				} else {
@@ -61,7 +47,7 @@ export default class RemoveFormatCommand extends Command {
 					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 					const itemRange = writer.createRangeOn( item );
 
-					for ( const attributeName of removableAttributes ) {
+					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
 						writer.removeAttribute( attributeName, itemRange );
 					}
 				}
@@ -75,9 +61,14 @@ export default class RemoveFormatCommand extends Command {
 	 *
 	 * @protected
 	 * @param {module:engine/model/documentselection~DocumentSelection} selection
+	 * @param {module:engine/model/schema~Schema} schema Schema describing the item.
 	 * @returns {Iterable.<module:engine/model/item~Item>|Iterable.<module:engine/model/documentselection~DocumentSelection>}
 	 */
-	* _getStylableElements( selection ) {
+	* _getFormattedElements( selection, schema ) {
+		const itemHasRemovableFormatting = item => {
+			return !this._getFormattingAttributes( item, schema ).next().done;
+		}
+
 		for ( const curRange of selection.getRanges() ) {
 			for ( const item of curRange.getItems() ) {
 				if ( itemHasRemovableFormatting( item ) ) {
@@ -90,12 +81,20 @@ export default class RemoveFormatCommand extends Command {
 		if ( itemHasRemovableFormatting( selection ) ) {
 			yield selection;
 		}
+	}
 
-		function itemHasRemovableFormatting( item ) {
-			for ( const attributeName of removableAttributes ) {
-				if ( item.hasAttribute( attributeName ) ) {
-					return true;
-				}
+	/**
+	 * Returns a list formatting attributes in a given element.
+	 *
+	 * @protected
+	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
+	 * @param {module:engine/model/schema~Schema} schema Schema describing the item.
+	 * @returns {Iterable.<String>} Names of formatting attributes found in a given item.
+	 */
+	* _getFormattingAttributes( item, schema ) {
+		for ( const [ attributeName ] of item.getAttributes() ) {
+			if ( ( schema.getAttributeProperties( attributeName ) || {} ).isFormatting ) {
+				yield attributeName;
 			}
 		}
 	}

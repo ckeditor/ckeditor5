@@ -41,6 +41,10 @@ describe( 'RemoveFormatCommand', () => {
 						return true;
 					}
 				} );
+
+				model.schema.setAttributeProperties( 'bold', {
+					isFormatting: true
+				} );
 			} );
 	} );
 
