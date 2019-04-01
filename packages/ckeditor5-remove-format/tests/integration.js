@@ -76,4 +76,17 @@ describe( 'RemoveFormat', () => {
 					'[</paragraph><image src="assets/sample.png"><caption>foo</caption></image><paragraph>bar]</paragraph>' );
 		} );
 	} );
+
+	describe( 'Handles correctly known issues', () => {
+		it( 'doesn\'t break after removing subsequently applied style', () => {
+			// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
+			setModelData( model, '<paragraph>f[o<$text bold="true">ob</$text>a]r</paragraph>' );
+
+			editor.execute( 'underline' );
+
+			editor.execute( 'removeFormat' );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
+		} );
+	} );
 } );
