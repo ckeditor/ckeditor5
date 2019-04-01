@@ -45,7 +45,7 @@ export default class MentionsView extends View {
 	}
 
 	/**
-	 * Selects the first item.
+	 * {@link #select Selects} the first item.
 	 */
 	selectFirst() {
 		this.select( 0 );
