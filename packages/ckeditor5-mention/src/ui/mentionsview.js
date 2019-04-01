@@ -78,7 +78,7 @@ export default class MentionsView extends View {
 	}
 
 	/**
-	 * Marks item at given index as selected.
+	 * Marks item at a given index as selected.
 	 *
 	 * Handles selection cycling when passed index is out of bounds:
 	 * - if index is lover then 0 it will select last item
