@@ -84,7 +84,7 @@ export default class MentionsView extends View {
 	 * - if the index is lower than 0, it will select the last item,
 	 * - if the index is higher than the last item index, it will select the first item.
 	 *
-	 * @param {Number} index Index of item to mark as selected.
+	 * @param {Number} index Index of an item to be marked as selected.
 	 */
 	select( index ) {
 		let indexToGet = 0;
