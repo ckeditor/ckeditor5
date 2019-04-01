@@ -77,7 +77,7 @@ describe( 'RemoveFormat', () => {
 		} );
 	} );
 
-	describe.only( 'Handles correctly known issues', () => {
+	describe( 'Handles correctly known issues', () => {
 		it( 'doesn\'t break after removing format from attribute wrapped around another attribute', () => {
 			// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 			// setModelData( model, '<paragraph>f[o<$text bold="true">ob</$text>a]r</paragraph>' );
@@ -100,44 +100,20 @@ describe( 'RemoveFormat', () => {
 	describe.only( 'Test external bug', () => {
 		it( 'sel rem attr', () => {
 			setModelData( model, '<paragraph>' +
-					'f[<$text underline="true">o</$text>' +
-					'<$text underline="true" bold="true">ob</$text>' +
-					'<$text underline="true">a</$text>]r' +
+					'[<$text underline="true" bold="true">foo</$text>' +
+					'<$text underline="true">bar</$text>]' +
 				'</paragraph>' );
 
 			model.change( writer => {
 				const modelRoot = model.document.getRoot();
-				// const itemInQuestion = modelRoot.getChild( 0 ).getChild( 1 );
 
-				for ( const item of model.document.selection.getFirstRange() ) {
-					// console.log( item );
-					// console.log( 'has', item.item.hasAttribute( 'bold' ) );
-					writer.removeAttribute( 'bold', item.item );
-					writer.removeAttribute( 'underline', item.item );
-
+				for ( const node of model.document.selection.getFirstRange() ) {
+					writer.removeAttribute( 'bold', node.item );
+					writer.removeAttribute( 'underline', node.item );
 				}
-
-				// for ( const i of [ 1, 2, 3 ] ) {
-				// 	writer.removeAttribute( 'underline', modelRoot.getChild( 0 ).getChild( i ) );
-				// 	writer.removeAttribute( 'bold', modelRoot.getChild( 0 ).getChild( i ) );
-				// }
-
-				// for ( const item of modelRoot ) {
-				// 	console.log( item );
-				// }
-				// debugger;
-
-				// writer.removeAttribute( 'underline', itemInQuestion );
-				// writer.removeAttribute( 'bold', itemInQuestion );
 			} );
 
-			// model.createRange( 0 )
-
-			// editor.execute( 'underline' );
-
-			// editor.execute( 'removeFormat' );
-
-			expect( getModelData( model ) ).to.equal( '<paragraph>f[ooba]r</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[foobar]</paragraph>' );
 		} );
 	} );
 } );
