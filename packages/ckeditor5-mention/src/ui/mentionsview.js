@@ -111,7 +111,7 @@ export default class MentionsView extends View {
 	}
 
 	/**
-	 * Triggers "execute" event on selected item.
+	 * Triggers the `execute` event on the {@link #select selected} item.
 	 */
 	executeSelected() {
 		this.selected.fire( 'execute' );
