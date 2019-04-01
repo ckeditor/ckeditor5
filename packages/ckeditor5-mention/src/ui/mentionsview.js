@@ -32,7 +32,7 @@ export default class MentionsView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-mention-view'
+					'ck-mentions'
 				],
 
 				tabindex: '-1'
