@@ -79,41 +79,16 @@ describe( 'RemoveFormat', () => {
 
 	describe( 'Handles correctly known issues', () => {
 		it( 'doesn\'t break after removing format from attribute wrapped around another attribute', () => {
-			// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
-			// setModelData( model, '<paragraph>f[o<$text bold="true">ob</$text>a]r</paragraph>' );
-
-			// editor.execute( 'underline' );
-
+			// Edge case reported in https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 			setModelData( model, '<paragraph>' +
 					'f[<$text underline="true">o</$text>' +
 					'<$text underline="true" bold="true">ob</$text>' +
 					'<$text underline="true">a</$text>]r' +
 				'</paragraph>' );
-			// editor.execute( 'underline' );
 
 			editor.execute( 'removeFormat' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
-		} );
-	} );
-
-	describe.only( 'Test external bug', () => {
-		it( 'sel rem attr', () => {
-			setModelData( model, '<paragraph>' +
-					'[<$text underline="true" bold="true">foo</$text>' +
-					'<$text underline="true">bar</$text>]' +
-				'</paragraph>' );
-
-			model.change( writer => {
-				const modelRoot = model.document.getRoot();
-
-				for ( const node of model.document.selection.getFirstRange() ) {
-					writer.removeAttribute( 'bold', node.item );
-					writer.removeAttribute( 'underline', node.item );
-				}
-			} );
-
-			expect( getModelData( model ) ).to.equal( '<paragraph>[foobar]</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>f[ooba]r</paragraph>' );
 		} );
 	} );
 } );

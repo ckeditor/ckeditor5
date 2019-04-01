@@ -52,11 +52,17 @@ export default class RemoveFormatCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of this._getStylableElements( model.document.selection ) ) {
-				for ( const attributeName of removableAttributes ) {
-					if ( item instanceof DocumentSelection ) {
+				if ( item.is( 'selection' ) ) {
+					for ( const attributeName of removableAttributes ) {
 						writer.removeSelectionAttribute( attributeName );
-					} else {
-						writer.removeAttribute( attributeName, item );
+					}
+				} else {
+					// Workaround for items with multiple removable attributes. See
+					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
+					const itemRange = writer.createRangeOn( item );
+
+					for ( const attributeName of removableAttributes ) {
+						writer.removeAttribute( attributeName, itemRange );
 					}
 				}
 			}
