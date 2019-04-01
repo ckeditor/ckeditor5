@@ -265,7 +265,10 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
@@ -278,7 +281,10 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
@@ -303,6 +309,26 @@ describe( 'MentionUI', () => {
 
 						model.change( () => {
 							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is after existing mention', () => {
+				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 8 );
 						} );
 					} )
 					.then( waitForDebounce )
