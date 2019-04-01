@@ -469,9 +469,11 @@ function createTextMatcher( marker ) {
 // Default feed callback
 function createFeedCallback( feedItems ) {
 	return feedText => {
-		const filteredItems = feedItems.filter( item => {
-			return item.toLowerCase().includes( feedText.toLowerCase() );
-		} );
+		const filteredItems = feedItems
+		// Make default mention feed case-insensitive.
+			.filter( item => item.toLowerCase().includes( feedText.toLowerCase() ) )
+			// Do not return more then 10 items.
+			.slice( 0, 10 );
 
 		return Promise.resolve( filteredItems );
 	};
