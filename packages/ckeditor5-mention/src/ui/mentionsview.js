@@ -117,7 +117,7 @@ export default class MentionsView extends View {
 		this.selected.fire( 'execute' );
 	}
 
-	// Checks if item is visible in scrolled area.
+	// Checks if an item is visible in the scrollable area.
 	//
 	// The item is considered visible when:
 	// - its top line is inside scrolled rect
