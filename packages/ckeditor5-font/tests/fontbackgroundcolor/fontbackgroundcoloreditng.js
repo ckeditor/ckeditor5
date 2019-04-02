@@ -36,7 +36,7 @@ describe( 'FontBackgroundColorEditing', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontBackgroundColor' ) ).to.be.false;
 	} );
 
-	it( 'its attribute is marked with a formatting property', () => {
+	it( 'has the attribute marked with the isFormatting property', () => {
 		expect( editor.model.schema.getAttributeProperties( 'fontBackgroundColor' ) ).to.deep.equal( {
 			isFormatting: true
 		} );
