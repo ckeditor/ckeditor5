@@ -246,7 +246,7 @@ function CustomMention( editor ) {
 
 The full working demo with all customization possible is {@link features/mention#fully-customized-mention-feed  at the end of this section}.
 
-# Fully customized mention feed
+### Fully customized mention feed
 
 Below is an example of a customized mention feature that:
 
