@@ -1064,16 +1064,16 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Wraps children with provided `attribute`. Only children contained in `parent` element between
+	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} parent
 	 * @param {Number} startOffset
 	 * @param {Number} endOffset
-	 * @param {module:engine/view/element~Element} attribute
+	 * @param {module:engine/view/element~Element} wrapElement
 	 */
-	_wrapChildren( parent, startOffset, endOffset, attribute ) {
+	_wrapChildren( parent, startOffset, endOffset, wrapElement ) {
 		let i = startOffset;
 		const wrapPositions = [];
 
@@ -1084,10 +1084,27 @@ export default class DowncastWriter {
 			const isEmpty = child.is( 'emptyElement' );
 			const isUI = child.is( 'uiElement' );
 
-			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
-			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
+			//
+			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
+			//
+			// Check if `wrapElement` can be joined with the wrapped element. One of requirements is having same name.
+			// If possible, join elements.
+			//
+			// <p><span class="bar">abc</span></p>  -->  <p><span class="foo bar">abc</span></p>
+			//
+			if ( isAttribute && this._wrapAttributeElement( wrapElement, child ) ) {
+				wrapPositions.push(	new Position( parent, i ) );
+			}
+			//
+			// Wrap the child if it is not an attribute element or if it is an attribute element that should be inside
+			// `wrapElement` (due to priority).
+			//
+			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
+			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
+			//
+			else if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
 				// Clone attribute.
-				const newAttribute = attribute._clone();
+				const newAttribute = wrapElement._clone();
 
 				// Wrap current node with new attribute.
 				child._remove();
@@ -1098,9 +1115,13 @@ export default class DowncastWriter {
 
 				wrapPositions.push(	new Position( parent, i ) );
 			}
-			// If other nested attribute is found start wrapping there.
+			//
+			// If other nested attribute is found and it wasn't wrapped (see above), continue wrapping inside it.
+			//
+			// <p><a href="foo.html">abc</a></p>  -->  <p><a href="foo.html"><span class="foo">abc</span></a></p>
+			//
 			else if ( isAttribute ) {
-				this._wrapChildren( child, 0, child.childCount, attribute );
+				this._wrapChildren( child, 0, child.childCount, wrapElement );
 			}
 
 			i++;
@@ -1250,43 +1271,12 @@ export default class DowncastWriter {
 	 * @returns {module:engine/view/range~Range} New range after wrapping, spanning over wrapping attribute element.
 	 */
 	_wrapRange( range, attribute ) {
-		// Range is inside single attribute and spans on all children.
-		if ( rangeSpansOnAllChildren( range ) && this._wrapAttributeElement( attribute, range.start.parent ) ) {
-			const parent = range.start.parent;
-
-			const end = this.mergeAttributes( Position._createAfter( parent ) );
-			const start = this.mergeAttributes( Position._createBefore( parent ) );
-
-			return new Range( start, end );
-		}
-
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-
-		// Range around one element.
-		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
-			const node = breakStart.nodeAfter;
-
-			if ( node instanceof AttributeElement && this._wrapAttributeElement( attribute, node ) ) {
-				const start = this.mergeAttributes( breakStart );
-
-				if ( !start.isEqual( breakStart ) ) {
-					breakEnd.offset--;
-				}
-
-				const end = this.mergeAttributes( breakEnd );
-
-				return new Range( start, end );
-			}
-		}
-
 		const parentContainer = breakStart.parent;
 
-		// Unwrap children located between break points.
-		const unwrappedRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
-
 		// Wrap all children with attribute.
-		const newRange = this._wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
+		const newRange = this._wrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
 		// Merge attributes at the both ends and return a new range.
 		const start = this.mergeAttributes( newRange.start );
@@ -1818,17 +1808,6 @@ function mergeTextNodes( t1, t2 ) {
 	t2._remove();
 
 	return new Position( t1, nodeBeforeLength );
-}
-
-// Returns `true` if range is located in same {@link module:engine/view/attributeelement~AttributeElement AttributeElement}
-// (`start` and `end` positions are located inside same {@link module:engine/view/attributeelement~AttributeElement AttributeElement}),
-// starts on 0 offset and ends after last child node.
-//
-// @param {module:engine/view/range~Range} Range
-// @returns {Boolean}
-function rangeSpansOnAllChildren( range ) {
-	return range.start.parent == range.end.parent && range.start.parent.is( 'attributeElement' ) &&
-		range.start.offset === 0 && range.end.offset === range.start.parent.childCount;
 }
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of
