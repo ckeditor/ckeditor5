@@ -16,12 +16,14 @@ ClassicEditor
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
-		mention: [
-			{
-				marker: '@',
-				feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
-			}
-		]
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+				}
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

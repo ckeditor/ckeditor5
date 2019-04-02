@@ -17,14 +17,16 @@ ClassicEditor
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig(),
 		},
-		mention: [
-			{
-				marker: '@',
-				feed: getFeedItems,
-				itemRenderer: customItemRenderer,
-				minimumCharacters: 1
-			}
-		]
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeedItems,
+					itemRenderer: customItemRenderer,
+					minimumCharacters: 1
+				}
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
