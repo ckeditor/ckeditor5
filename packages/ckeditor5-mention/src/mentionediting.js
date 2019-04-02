@@ -165,7 +165,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 			checkAndFix( position.nodeAfter );
 		}
 
-		// Check text nodes on inserted elements (might occur when splitting paragraph on enter key).
+		// Check text nodes in inserted elements (might occur when splitting paragraph or pasting content).
 		if ( change.name != '$text' && change.type == 'insert' && schema.checkChild( change.name, '$text' ) ) {
 			const insertedNode = position.nodeAfter;
 
