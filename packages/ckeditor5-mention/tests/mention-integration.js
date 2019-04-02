@@ -5,15 +5,18 @@
 
 /* global document */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
 import MentionEditing from '../src/mentionediting';
 
-describe( 'MentionEditing - integration', () => {
+describe( 'Mention feature - integration', () => {
 	let div, editor, model, doc;
 
 	testUtils.createSinonSandbox();
@@ -21,13 +24,6 @@ describe( 'MentionEditing - integration', () => {
 	beforeEach( () => {
 		div = document.createElement( 'div' );
 		document.body.appendChild( div );
-
-		return ClassicTestEditor.create( div, { plugins: [ Paragraph, MentionEditing, UndoEditing ] } )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-			} );
 	} );
 
 	afterEach( () => {
@@ -36,10 +32,17 @@ describe( 'MentionEditing - integration', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'undo', () => {
+	describe( 'with undo', () => {
 		beforeEach( () => {
-			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
-			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+			return ClassicTestEditor.create( div, { plugins: [ Paragraph, MentionEditing, UndoEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+
+					model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+					editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+				} );
 		} );
 
 		// Failing test. See ckeditor/ckeditor5#1645.
@@ -167,5 +170,42 @@ describe( 'MentionEditing - integration', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 		}
+	} );
+
+	describe( 'with clipboard', () => {
+		let clipboard;
+
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( div, { plugins: [ Clipboard, Paragraph, BlockQuote, MentionEditing, UndoEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+
+					clipboard = editor.plugins.get( 'Clipboard' );
+				} );
+		} );
+
+		it( 'should fix broken mention inside pasted content', () => {
+			editor.setData( '<p>foobar</p>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 3 );
+			} );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<blockquote><p>xxx<span class="mention" data-mention="John">@Joh</span></p></blockquote>' )
+			} );
+
+			const expectedData = '<p>foo</p>' +
+				'<blockquote><p>xxx@Joh</p></blockquote>' +
+				'<p>bar</p>';
+
+			expect( editor.getData() )
+				.to.equal( expectedData );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( expectedData );
+		} );
 	} );
 } );
