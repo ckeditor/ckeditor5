@@ -158,7 +158,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 			// Check textNode where the change occurred.
 			checkAndFix( position.textNode );
 
-			// Occurs on pasting inside text node with mention;
+			// Occurs on pasting inside text node with mention.
 			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
 			checkAndFix( nodeAfterInsertedTextNode );
 			checkAndFix( position.nodeBefore );
