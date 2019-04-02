@@ -195,10 +195,15 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 
 	for ( const change of changes ) {
 		if ( change.type === 'attribute' && change.attributeKey != 'mention' ) {
-			// Check all mentions in changed range - attribute change may span over multiple text node.
-			for ( const textNode of getBrokenMentionsFromRange( change.range ) ) {
-				if ( textNode.getAttribute( change.attributeKey ) !== change.attributeNewValue ) {
-					writer.setAttribute( change.attributeKey, change.attributeNewValue, textNode );
+			// Check node at the left side of a range...
+			const nodeBefore = change.range.start.nodeBefore;
+			// ... and on right side of range.
+			const nodeAfter = change.range.end.nodeAfter;
+
+			for ( const node of [ nodeBefore, nodeAfter ] ) {
+				if ( isBrokenMentionNode( node ) && node.getAttribute( change.attributeKey ) != change.attributeNewValue ) {
+					writer.setAttribute( change.attributeKey, change.attributeNewValue, node );
+
 					wasChanged = true;
 				}
 			}
@@ -214,7 +219,7 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 // @param {module:engine/model/node~Node} node a node to check
 // @returns {Boolean}
 function isBrokenMentionNode( node ) {
-	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
+	if ( !node || !node.is( 'text' ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
 
@@ -224,28 +229,6 @@ function isBrokenMentionNode( node ) {
 	const expectedText = mention._marker + mention.name;
 
 	return text != expectedText;
-}
-
-// Yields all text nodes with broken mentions from a range - even if mention sticks out of the range boundary.
-//
-// @param {module:engine/range~Range} range
-function* getBrokenMentionsFromRange( range ) {
-	// Check node at the left side of a range.
-	if ( isBrokenMentionNode( range.start.nodeBefore ) ) {
-		yield range.start.nodeBefore;
-	}
-
-	// Yield text nodes with broken mention from the range.
-	for ( const textProxy of range.getItems() ) {
-		if ( isBrokenMentionNode( textProxy ) ) {
-			yield textProxy.textNode;
-		}
-	}
-
-	// Check node at the right side of a range.
-	if ( isBrokenMentionNode( range.end.nodeAfter ) ) {
-		yield range.end.nodeAfter;
-	}
 }
 
 // Fixes mention on text node it needs a fix.

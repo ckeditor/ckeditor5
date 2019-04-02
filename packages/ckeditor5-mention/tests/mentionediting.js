@@ -449,6 +449,52 @@ describe( 'MentionEditing', () => {
 				'</p>'
 			);
 		} );
+
+		it( 'should work with multiple ranges in change set', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'foo' ] } );
+			editor.conversion.attributeToElement( {
+				model: {
+					key: 'foo',
+					values: [ 'a', 'b' ]
+				},
+				view: {
+					a: {
+						name: 'span',
+						classes: 'mark-a'
+					},
+					b: {
+						name: 'span',
+						classes: 'mark-b'
+					}
+				},
+				converterPriority: 'high'
+			} );
+
+			editor.setData(
+				'<p>' +
+					'<span class="mark-a">foo <span class="mention" data-mention="John">@John</span></span>' +
+					'<span class="mention" data-mention="John">@John</span> bar' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 );
+				const start = writer.createPositionAt( paragraph, 7 );
+				const range = writer.createRange( start, start.getShiftedBy( 5 ) );
+
+				writer.setAttribute( 'foo', 'b', range );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span class="mark-a">foo </span>' +
+					'<span class="mark-b">' +
+						'<span class="mention" data-mention="John">@John</span>' +
+						'<span class="mention" data-mention="John">@John</span>' +
+					'</span> bar' +
+				'</p>'
+			);
+		} );
 	} );
 
 	function createTestEditor( mentionConfig ) {
