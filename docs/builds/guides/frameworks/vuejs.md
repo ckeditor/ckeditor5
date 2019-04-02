@@ -266,7 +266,7 @@ module.exports = {
 ```
 
 <info-box>
-By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create differnt webpack loader rules for your project SVG files and CKEditor's ones.
+By default, the Vue CLI uses [`file-loader`](https://webpack.js.org/loaders/file-loader/) for all SVG files. The `file-loader` copies the file to the output directory and resolves imports into URLs. The CKEditor's UI components use SVG {@link module:ui/icon/iconview~IconView#content source directly} so the theme icons must be loaded using [`raw-loader`](https://webpack.js.org/loaders/raw-loader). If your project uses different approach then CKEditor's UI library you must create differnt webpack loader rules for your project SVG files and CKEditor's ones.
 </info-box>
 
 ### Using the editor from source
