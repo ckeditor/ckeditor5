@@ -184,7 +184,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 	}
 
 	function checkAndFix( textNode ) {
-		if ( !checkMentionAttributeOnNode( textNode ) ) {
+		if ( isBrokenMentionNode( textNode ) ) {
 			writer.removeAttribute( 'mention', textNode );
 			wasChanged = true;
 		}
@@ -219,13 +219,13 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 }
 
 // Checks if node has correct mention attribute if present.
-// Returns false if node is text and has mention attribute and its text does not match expected mention text.
+// Returns true if node is text and has a mention attribute which text does not match expected mention text.
 //
 // @param {module:engine/model/node~Node} node a node to check
 // @returns {Boolean}
-function checkMentionAttributeOnNode( node ) {
+function isBrokenMentionNode( node ) {
 	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
-		return true;
+		return false;
 	}
 
 	const text = node.data;
@@ -233,7 +233,7 @@ function checkMentionAttributeOnNode( node ) {
 
 	const expectedText = mention._marker + mention.name;
 
-	return text == expectedText;
+	return text != expectedText;
 }
 
 // Yields all text nodes with broken mentions from a range - even if mention sticks out of the range boundary.
@@ -241,19 +241,19 @@ function checkMentionAttributeOnNode( node ) {
 // @param {module:engine/range~Range} range
 function* getBrokenMentionsFromRange( range ) {
 	// Check node at the left side of a range.
-	if ( !checkMentionAttributeOnNode( range.start.nodeBefore ) ) {
+	if ( isBrokenMentionNode( range.start.nodeBefore ) ) {
 		yield range.start.nodeBefore;
 	}
 
 	// Yield text nodes with broken mention from the range.
 	for ( const textProxy of range.getItems() ) {
-		if ( !checkMentionAttributeOnNode( textProxy ) ) {
+		if ( isBrokenMentionNode( textProxy ) ) {
 			yield textProxy.textNode;
 		}
 	}
 
 	// Check node at the right side of a range.
-	if ( !checkMentionAttributeOnNode( range.end.nodeAfter ) ) {
+	if ( isBrokenMentionNode( range.end.nodeAfter ) ) {
 		yield range.end.nodeAfter;
 	}
 }
