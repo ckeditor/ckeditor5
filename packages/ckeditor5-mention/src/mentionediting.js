@@ -236,7 +236,7 @@ function checkMentionAttributeOnNode( node ) {
 	return text == expectedText;
 }
 
-// Yields all text nodes with broken mentions from a range - even if mention is outside range boundary.
+// Yields all text nodes with broken mentions from a range - even if mention sticks out of the range boundary.
 //
 // @param {module:engine/range~Range} range
 function* getBrokenMentionsFromRange( range ) {
