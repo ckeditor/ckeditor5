@@ -35,6 +35,12 @@ describe( 'FontColorEditing', () => {
 		expect( editor.model.schema.checkAttribute( [ '$block' ], 'fontColor' ) ).to.be.false;
 	} );
 
+	it( 'its attribute is marked with a formatting property', () => {
+		expect( editor.model.schema.getAttributeProperties( 'fontColor' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
+	} );
+
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
