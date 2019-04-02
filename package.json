@@ -112,7 +112,7 @@
     "clean": "rm -rf node_modules && mgit exec 'rm -rf node_modules'",
     "reset": "rm -rf ./packages ./node_modules && yarn run bootstrap",
     "reinstall": "yarn run clean && yarn run bootstrap",
-    "docs": "node ./scripts/docs/build-docs.js",
+    "docs": "node --max-old-space-size=4096 ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
     "docs:build-and-publish": "node ./scripts/docs/build-and-publish.js",
     "docs:build-and-publish-nightly": "node ./scripts/docs/build-and-publish-nightly.js",
