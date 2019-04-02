@@ -166,7 +166,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 		if ( change.name != '$text' && change.type == 'insert' ) {
 			const insertedNode = position.nodeAfter;
 
-			for ( const { item } of writer.createRangeIn( insertedNode ).getWalker() ) {
+			for ( const item of writer.createRangeIn( insertedNode ).getItems() ) {
 				wasChanged = checkAndFix( item, writer ) || wasChanged;
 			}
 		}
