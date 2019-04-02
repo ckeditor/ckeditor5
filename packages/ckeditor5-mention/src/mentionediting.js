@@ -163,11 +163,11 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 		}
 
 		// Check text nodes in inserted elements (might occur when splitting paragraph or pasting content inside text with mention).
-		if ( change.name != '$text' && change.type == 'insert' && schema.checkChild( change.name, '$text' ) ) {
+		if ( change.name != '$text' && change.type == 'insert' ) {
 			const insertedNode = position.nodeAfter;
 
-			for ( const child of insertedNode.getChildren() ) {
-				wasChanged = checkAndFix( child, writer ) || wasChanged;
+			for ( const { item } of writer.createRangeIn( insertedNode ).getWalker() ) {
+				wasChanged = checkAndFix( item, writer ) || wasChanged;
 			}
 		}
 
@@ -219,7 +219,7 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 // @param {module:engine/model/node~Node} node a node to check
 // @returns {Boolean}
 function isBrokenMentionNode( node ) {
-	if ( !node || !node.is( 'text' ) || !node.hasAttribute( 'mention' ) ) {
+	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
 

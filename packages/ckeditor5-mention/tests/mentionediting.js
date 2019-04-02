@@ -348,6 +348,24 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jo</p><p>hn bar</p>' );
 		} );
+
+		it( 'should remove mention when deep splitting elements', () => {
+			model.schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
+			editor.setData( '<blockquote><p>foo <span class="mention" data-mention="John">@John</span> bar</p></blockquote>' );
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.split( writer.createPositionAt( paragraph, 7 ), doc.getRoot() );
+			} );
+
+			expect( editor.getData() ).to.equal( '<blockquote><p>foo @Jo</p></blockquote><blockquote><p>hn bar</p></blockquote>' );
+		} );
 	} );
 
 	describe( 'extend attribute on mention post-fixer', () => {
