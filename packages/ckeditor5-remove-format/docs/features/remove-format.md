@@ -1,12 +1,12 @@
 ---
 title: Removing Text Formatting
-menu-title: Remove Format
+menu-title: Remove formatting
 category: features
 ---
 
 {@snippet features/build-remove-format-source}
 
-The {@link module:remove-format/removeformat~RemoveFormat Remove Format} feature allows to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar. Note that block—level formatting ({@link features/headings headings}, {@link features/image images}) and semantic data ({@link features/link links}) will not be removed.
+The {@link module:remove-format/removeformat~RemoveFormat Remove format} feature allows to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar. Note that block-level formatting ({@link features/headings headings}, {@link features/image images}) and semantic data ({@link features/link links}) will not be removed.
 
 ## Demo
 
@@ -18,9 +18,46 @@ Select the content you want to clean up and press the "Remove Format" button in 
 
 The feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
 
+## A short note about content types in the editor
+
+The Remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Since each editor feature brings its own content types to the editor, if you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link builds/guides/integration/configuration#removing-features reducing the number of features} enabled in the editor.
+
+Doing that will spare the users the pain of manually removing formatting every time they paste content from other programs and make the editing experience smoother. The narrower set of editor features also gives you more control over the content saved to the database and prevents the accidental use of the types of content you would rather not store in your application.
+
 ## Integrating with editor features
 
-To make it possible for the remove formatting feature to work with your custom content, you must first mark it in the {@link framework/guides/architecture/editing-engine#schema schema}. All you need to do is set the `isFormatting` property on your custom {@link framework/guides/architecture/editing-engine#text-attributes text attribute}. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
+To make it possible for the remove formatting feature to work with your custom content, you must first mark it in the {@link framework/guides/architecture/editing-engine#schema schema}. All you need to do is set the `isFormatting` property on your custom {@link framework/guides/architecture/editing-engine#text-attributes text attribute}.
+
+For instance, if you want the feature to remove {@link features/link links} as well (not supported by default), you need to create a {@link builds/guides/integration/configuration#adding-simple-standalone-features simple plugin} that will extend the schema and tell the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
+
+```js
+// A simple plugin that extends the Remove format feature to consider links.
+function RemoveFormatLinks( editor ) {
+	// Extend the editor schema and mark the "linkHref" model attribute as formatting.
+	editor.model.schema.setAttributeProperties( 'linkHref', {
+		isFormatting: true
+	} );
+}
+```
+
+Enable the `RemoveFormatLinks` plugin in the {@link builds/guides/integration/configuration#adding-features configuration} and run the editor:
+
+```js
+ClassicEditor
+	.create( ..., {
+		plugins: [
+			RemoveFormat,
+			RemoveFormatLinks,
+			// ...
+		],
+		toolbar: [
+			'removeFormat',
+			// ...
+		]
+	} )
+```
+
+From now on, the "Remove Format" button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
 
 ## Installation
 
