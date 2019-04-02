@@ -158,12 +158,12 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
 
 			// Check textNode where the change occurred.
-			checkAndFix( position.textNode );
+			wasChanged = checkAndFix( position.textNode, writer ) || wasChanged;
 
 			// Occurs on paste occurs inside a text node with mention.
-			checkAndFix( nodeAfterInsertedTextNode );
-			checkAndFix( position.nodeBefore );
-			checkAndFix( position.nodeAfter );
+			wasChanged = checkAndFix( nodeAfterInsertedTextNode, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeAfter, writer ) || wasChanged;
 		}
 
 		// Check text nodes in inserted elements (might occur when splitting paragraph or pasting content).
@@ -171,7 +171,7 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 			const insertedNode = position.nodeAfter;
 
 			for ( const child of insertedNode.getChildren() ) {
-				checkAndFix( child );
+				wasChanged = checkAndFix( child, writer ) || wasChanged;
 			}
 		}
 
@@ -179,15 +179,8 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 		if ( change.type == 'insert' && schema.isInline( change.name ) ) {
 			const nodeAfterInserted = position.nodeAfter && position.nodeAfter.nextSibling;
 
-			checkAndFix( position.nodeBefore );
-			checkAndFix( nodeAfterInserted );
-		}
-	}
-
-	function checkAndFix( textNode ) {
-		if ( isBrokenMentionNode( textNode ) ) {
-			writer.removeAttribute( 'mention', textNode );
-			wasChanged = true;
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( nodeAfterInserted, writer ) || wasChanged;
 		}
 	}
 
@@ -257,4 +250,19 @@ function* getBrokenMentionsFromRange( range ) {
 	if ( isBrokenMentionNode( range.end.nodeAfter ) ) {
 		yield range.end.nodeAfter;
 	}
+}
+
+// Fixes mention on text node it needs a fix.
+//
+// @param {module:engine/model/text~Text} textNode
+// @param {module:engine/model/writer~Writer} writer
+// @returns {Boolean}
+function checkAndFix( textNode, writer ) {
+	if ( isBrokenMentionNode( textNode ) ) {
+		writer.removeAttribute( 'mention', textNode );
+
+		return true;
+	}
+
+	return false;
 }
