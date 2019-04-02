@@ -69,6 +69,12 @@ export default class ColorUI extends Plugin {
 		 * @type {Number}
 		 */
 		this.columns = editor.config.get( `${ this.componentName }.columns` );
+
+		/**
+		 * Keeps reference to {@link module:font/ui/colortableview~ColorTableView}.
+		 * @type {module:font/ui/colortableview~ColorTableView}
+		 */
+		this.colorTableView;
 	}
 
 	/**
@@ -84,7 +90,7 @@ export default class ColorUI extends Plugin {
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
-			const colorTableView = addColorTableToDropdown( {
+			this.colorTableView = addColorTableToDropdown( {
 				dropdownView,
 				colors: localizedColors.map( option => ( {
 					label: option.label,
@@ -97,7 +103,7 @@ export default class ColorUI extends Plugin {
 				removeButtonLabel: t( 'Remove color' )
 			} );
 
-			colorTableView.bind( 'selectedColor' ).to( command, 'value' );
+			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
 
 			dropdownView.buttonView.set( {
 				label: this.dropdownLabel,
@@ -114,19 +120,59 @@ export default class ColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			dropdownView.on( 'execute', ( evt, data ) => {
-				if ( data.value !== null ) {
-					colorTableView.recentlyUsedColors.add( {
-						color: data.value,
-						hasBorder: data.hasBorder,
-						label: data.label
-					}, 0 );
-				}
-
 				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
 			} );
 
 			return dropdownView;
 		} );
+
+		// Update recently used colors when user change data in editor.
+		editor.model.document.on( 'change:data', () => {
+			const model = editor.model;
+			const changes = model.document.differ.getChanges();
+			changes.forEach( change => {
+				if ( change.type === 'insert' ) {
+					const position = change.position;
+					const range = model.createRange( position, position.getShiftedBy( change.length ) );
+					const walker = range.getWalker( { ignoreElementEnd: true } );
+
+					let item = walker.next();
+
+					while ( !item.done ) {
+						if ( item.value.type === 'text' ) {
+							// Only text nodes can have color attributes.
+							const color = item.value.item.getAttribute( this.commandName );
+							if ( color ) {
+								this.addColorToRecentlyUsed( color );
+							}
+						}
+						item = walker.next();
+					}
+				} else if (
+					change.type === 'attribute' &&
+					change.attributeKey === this.commandName &&
+					change.attributeNewValue
+				) {
+					this.addColorToRecentlyUsed( change.attributeNewValue );
+				}
+			} );
+		} );
+	}
+
+	/**
+	 * Method tries to find color on predefined color list to use proper settings (e.g. label).
+	 * If color is not found then provides label with color's value.
+	 *
+	 * @param {String} color String which stores value of recently applied color
+	 */
+	addColorToRecentlyUsed( color ) {
+		const predefinedColor = this.colorTableView.colorDefinitions
+			.find( definition => definition.color === color );
+		this.colorTableView.recentlyUsedColors.add( {
+			color: predefinedColor ? predefinedColor.color : color,
+			label: predefinedColor ? predefinedColor.label : color,
+			hasBorder: predefinedColor && predefinedColor.options ? predefinedColor.options.hasBorder : false
+		}, 0 );
 	}
 }

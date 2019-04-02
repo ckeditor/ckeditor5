@@ -186,6 +186,8 @@ export default class ColorTableView extends View {
 	recentlyUsed() {
 		const recentViews = new ColorGridView( this.locale, { columns: this.columns } );
 
+		recentViews.bind( 'selectedColor' ).to( this );
+
 		recentViews.items.bindTo( this.recentlyUsedColors ).using(
 			colorObj => {
 				const colorTile = new ColorTileView();
