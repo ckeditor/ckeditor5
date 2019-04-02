@@ -155,11 +155,12 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 		const position = change.position;
 
 		if ( change.name == '$text' ) {
+			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
+
 			// Check textNode where the change occurred.
 			checkAndFix( position.textNode );
 
-			// Occurs on pasting inside text node with mention.
-			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
+			// Occurs on paste occurs inside a text node with mention.
 			checkAndFix( nodeAfterInsertedTextNode );
 			checkAndFix( position.nodeBefore );
 			checkAndFix( position.nodeAfter );
@@ -176,9 +177,9 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 
 		// Inserted inline elements might break mention.
 		if ( change.type == 'insert' && schema.isInline( change.name ) ) {
-			checkAndFix( position.nodeBefore );
-
 			const nodeAfterInserted = position.nodeAfter && position.nodeAfter.nextSibling;
+
+			checkAndFix( position.nodeBefore );
 			checkAndFix( nodeAfterInserted );
 		}
 	}
