@@ -117,5 +117,7 @@ export default class FontBackgroundColorEditing extends Plugin {
 
 		// Allow fontBackgroundColor attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_BACKGROUND_COLOR } );
+
+		editor.model.schema.setAttributeProperties( FONT_BACKGROUND_COLOR, { isFormatting: true } );
 	}
 }
