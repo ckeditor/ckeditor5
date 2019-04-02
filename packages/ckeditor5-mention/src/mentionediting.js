@@ -146,10 +146,6 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 
 	let wasChanged = false;
 
-	if ( !changes.length ) {
-		return;
-	}
-
 	for ( const change of changes ) {
 		// Check text node on current position;
 		const position = change.position;
