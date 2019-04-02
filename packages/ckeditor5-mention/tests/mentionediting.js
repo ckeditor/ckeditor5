@@ -396,7 +396,7 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() )
-				.to.equal( '<p><strong>foo </strong><span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>' );
+				.to.equal( '<p><strong>foo <span class="mention" data-mention="John">@John</span></strong> bar</p>' );
 		} );
 
 		it( 'should set attribute on whole mention when formatting part of a mention (end formatted)', () => {
@@ -417,7 +417,7 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() )
-				.to.equal( '<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span><strong> ba</strong>r</p>' );
+				.to.equal( '<p>foo <strong><span class="mention" data-mention="John">@John</span> ba</strong>r</p>' );
 		} );
 
 		it( 'should set attribute on whole mention when formatting part of a mention (middle of mention formatted)', () => {
@@ -438,7 +438,7 @@ describe( 'MentionEditing', () => {
 			} );
 
 			expect( editor.getData() )
-				.to.equal( '<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>' );
+				.to.equal( '<p>foo <strong><span class="mention" data-mention="John">@John</span></strong> bar</p>' );
 		} );
 
 		it( 'should set attribute on whole mention when formatting part of two mentions', () => {
@@ -462,8 +462,10 @@ describe( 'MentionEditing', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<p>' +
-					'<span class="mention" data-mention="John"><strong>@John</strong></span>' +
-					'<span class="mention" data-mention="John"><strong>@John</strong></span>' +
+					'<strong>' +
+						'<span class="mention" data-mention="John">@John</span>' +
+						'<span class="mention" data-mention="John">@John</span>' +
+					'</strong>' +
 				'</p>'
 			);
 		} );

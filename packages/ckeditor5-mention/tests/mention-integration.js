@@ -97,7 +97,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with attribute post-fixer (beginning formatted)', () => {
 			testAttributePostFixer(
 				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p><strong>foo </strong><span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>',
+				'<p><strong>foo <span class="mention" data-mention="John">@John</span></strong> bar</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
@@ -114,7 +114,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with attribute post-fixer (end formatted)', () => {
 			testAttributePostFixer(
 				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span><strong> ba</strong>r</p>',
+				'<p>foo <strong><span class="mention" data-mention="John">@John</span> ba</strong>r</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
@@ -131,7 +131,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with attribute post-fixer (middle formatted)', () => {
 			testAttributePostFixer(
 				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>',
+				'<p>foo <strong><span class="mention" data-mention="John">@John</span></strong> bar</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
