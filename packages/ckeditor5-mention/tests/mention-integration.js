@@ -37,6 +37,11 @@ describe( 'MentionEditing - integration', () => {
 	} );
 
 	describe( 'undo', () => {
+		beforeEach( () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+		} );
+
 		// Failing test. See ckeditor/ckeditor5#1645.
 		it( 'should restore removed mention on adding a text inside mention', () => {
 			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
@@ -85,5 +90,82 @@ describe( 'MentionEditing - integration', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
 		} );
+
+		it( 'should work with attribute post-fixer (beginning formatted)', () => {
+			testAttributePostFixer(
+				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
+				'<p><strong>foo </strong><span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>',
+				() => {
+					model.change( writer => {
+						const paragraph = doc.getRoot().getChild( 0 );
+						const start = writer.createPositionAt( paragraph, 0 );
+						const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+						writer.setSelection( range );
+
+						writer.setAttribute( 'bold', true, range );
+					} );
+				} );
+		} );
+
+		it( 'should work with attribute post-fixer (end formatted)', () => {
+			testAttributePostFixer(
+				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
+				'<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span><strong> ba</strong>r</p>',
+				() => {
+					model.change( writer => {
+						const paragraph = doc.getRoot().getChild( 0 );
+						const start = writer.createPositionAt( paragraph, 6 );
+						const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+						writer.setSelection( range );
+
+						writer.setAttribute( 'bold', true, range );
+					} );
+				} );
+		} );
+
+		it( 'should work with attribute post-fixer (middle formatted)', () => {
+			testAttributePostFixer(
+				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
+				'<p>foo <span class="mention" data-mention="John"><strong>@John</strong></span> bar</p>',
+				() => {
+					model.change( writer => {
+						const paragraph = doc.getRoot().getChild( 0 );
+						const start = writer.createPositionAt( paragraph, 6 );
+						const range = writer.createRange( start, start.getShiftedBy( 1 ) );
+
+						writer.setSelection( range );
+
+						writer.setAttribute( 'bold', true, range );
+					} );
+				} );
+		} );
+
+		function testAttributePostFixer( initialData, expectedData, testCallback ) {
+			editor.setData( initialData );
+
+			expect( editor.getData() ).to.equal( initialData );
+
+			testCallback();
+
+			expect( editor.getData() )
+				.to.equal( expectedData );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( expectedData );
+
+			editor.execute( 'undo' );
+
+			expect( editor.getData() ).to.equal( initialData );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( initialData );
+
+			editor.execute( 'redo' );
+
+			expect( editor.getData() )
+				.to.equal( expectedData );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( expectedData );
+		}
 	} );
 } );
