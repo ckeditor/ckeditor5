@@ -866,27 +866,6 @@ export default class DowncastWriter {
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-
-		// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
-		// For example:
-		// <b class="foo bar" title="baz"></b> unwrap with:	<b class="foo"></p> result: <b class"bar" title="baz"></b>
-		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
-			const node = breakStart.nodeAfter;
-
-			// Unwrap single attribute element.
-			if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && this._unwrapAttributeElement( attribute, node ) ) {
-				const start = this.mergeAttributes( breakStart );
-
-				if ( !start.isEqual( breakStart ) ) {
-					breakEnd.offset--;
-				}
-
-				const end = this.mergeAttributes( breakEnd );
-
-				return new Range( start, end );
-			}
-		}
-
 		const parentContainer = breakStart.parent;
 
 		// Unwrap children located between break points.
@@ -1151,25 +1130,40 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * Unwraps children from provided `attribute`. Only children contained in `parent` element between
+	 * Unwraps children from provided `unwrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be unwrapped.
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} parent
 	 * @param {Number} startOffset
 	 * @param {Number} endOffset
-	 * @param {module:engine/view/element~Element} attribute
+	 * @param {module:engine/view/element~Element} unwrapElement
 	 */
-	_unwrapChildren( parent, startOffset, endOffset, attribute ) {
+	_unwrapChildren( parent, startOffset, endOffset, unwrapElement ) {
 		let i = startOffset;
 		const unwrapPositions = [];
 
 		// Iterate over each element between provided offsets inside parent.
+		// We don't use tree walker or range iterator because we will be removing and merging potentially multiple nodes,
+		// so it could get messy. It is safer to it manually in this case.
 		while ( i < endOffset ) {
 			const child = parent.getChild( i );
 
-			// If attributes are the similar, then unwrap.
-			if ( child.isSimilar( attribute ) ) {
+			// Skip all text nodes. There should be no container element's here either.
+			if ( !child.is( 'attributeElement' ) ) {
+				i++;
+
+				continue;
+			}
+
+			//
+			// (In all examples, assume that `unwrapElement` is `<span class="foo">` element.)
+			//
+			// If the child is similar to the given attribute element, unwrap it - it will be completely removed.
+			//
+			// <p><span class="foo">abc</span>xyz</p>  -->  <p>abcxyz</p>
+			//
+			if ( child.isSimilar( unwrapElement ) ) {
 				const unwrapped = child.getChildren();
 				const count = child.childCount;
 
@@ -1185,18 +1179,39 @@ export default class DowncastWriter {
 					new Position( parent, i + count )
 				);
 
-				// Skip elements that were unwrapped. Assuming that there won't be another element to unwrap in child
-				// elements.
+				// Skip elements that were unwrapped. Assuming there won't be another element to unwrap in child elements.
 				i += count;
 				endOffset += count - 1;
-			} else {
-				// If other nested attribute is found start unwrapping there.
-				if ( child.is( 'attributeElement' ) ) {
-					this._unwrapChildren( child, 0, child.childCount, attribute );
-				}
+
+				continue;
+			}
+
+			//
+			// If the child is not similar but is an attribute element, try partial unwrapping - remove the same attributes/styles/classes.
+			// Partial unwrapping will happen only if the elements have the same name.
+			//
+			// <p><span class="foo bar">abc</span>xyz</p>  -->  <p><span class="bar">abc</span>xyz</p>
+			// <p><i class="foo">abc</i>xyz</p>            -->  <p><i class="foo">abc</i>xyz</p>
+			//
+			if ( this._unwrapAttributeElement( unwrapElement, child ) ) {
+				unwrapPositions.push(
+					new Position( parent, i ),
+					new Position( parent, i + 1 )
+				);
 
 				i++;
+
+				continue;
 			}
+
+			//
+			// If other nested attribute is found, look through it's children for elements to unwrap.
+			//
+			// <p><i><span class="foo">abc</span></i><p>  -->  <p><i>abc</i><p>
+			//
+			this._unwrapChildren( child, 0, child.childCount, unwrapElement );
+
+			i++;
 		}
 
 		// Merge at each unwrap.
