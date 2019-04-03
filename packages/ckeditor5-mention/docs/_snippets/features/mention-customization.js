@@ -89,11 +89,11 @@ function MentionCustomization( editor ) {
 }
 
 const items = [
-	{ userId: '1', name: 'Barney Stinson', id: 'swarley', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-	{ userId: '2', name: 'Lily Aldrin', id: 'lilypad', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ userId: '3', name: 'Marshall Eriksen', id: 'marshmallow', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ userId: '4', name: 'Robin Scherbatsky', id: 'rsparkles', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ userId: '5', name: 'Ted Mosby', id: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+	{ id: '@lilypad', userId: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+	{ id: '@marshmallow', userId: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ id: '@rsparkles', userId: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@tdog', userId: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
 function getFeedItems( queryText ) {
@@ -129,7 +129,7 @@ function customItemRenderer( item ) {
 	const usernameElement = document.createElement( 'span' );
 
 	usernameElement.classList.add( 'custom-item-username' );
-	usernameElement.textContent = `@${ item.id }`;
+	usernameElement.textContent = item.id;
 
 	itemElement.appendChild( usernameElement );
 
