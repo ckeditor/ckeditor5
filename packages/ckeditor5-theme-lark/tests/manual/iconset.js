@@ -59,6 +59,8 @@ import media from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
 
 import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
 
+import removeFormat from '@ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg';
+
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
 import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
@@ -99,6 +101,9 @@ const icons = {
 
 	// paragraph
 	paragraph,
+
+	// remove-format
+	removeFormat,
 
 	// table
 	table, tableRow, tableColumn, tableMergeCell,
