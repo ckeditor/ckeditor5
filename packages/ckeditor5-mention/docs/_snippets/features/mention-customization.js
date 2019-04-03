@@ -79,7 +79,7 @@ function MentionCustomization( editor ) {
 
 			return viewWriter.createAttributeElement( 'a', {
 				class: 'mention',
-				'data-mention': modelAttributeValue.name,
+				'data-mention': modelAttributeValue._marker + modelAttributeValue.name,
 				'data-user-id': modelAttributeValue.id,
 				'href': modelAttributeValue.link
 			} );

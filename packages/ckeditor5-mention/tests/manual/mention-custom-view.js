@@ -12,7 +12,6 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Font from '@ckeditor/ckeditor5-font/src/font';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import Mention from '../../src/mention';
 
@@ -31,16 +30,9 @@ class CustomMentionAttributeView extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: viewItem => {
-					const mentionValue = {
-						_id: uid(),
-						_marker: '@',
-						name: viewItem.getAttribute( 'data-mention' ),
-						link: viewItem.getAttribute( 'href' )
-					};
-
-					return mentionValue;
-				}
+				value: viewItem => editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
+					link: viewItem.getAttribute( 'href' )
+				} )
 			},
 			converterPriority: 'high'
 		} );

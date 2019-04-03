@@ -10,6 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import { _getText } from './textwatcher';
 
 /**
  * The mention command.
@@ -62,11 +63,12 @@ export default class MentionCommand extends Command {
 
 		const mention = typeof options.mention == 'string' ? { name: options.mention } : options.mention;
 
+		const range = options.range || selection.getFirstRange();
+
 		// Set internal attributes on mention object.
 		mention._id = uid();
 		mention._marker = marker;
-
-		const range = options.range || selection.getFirstRange();
+		mention._text = _getText( range );
 
 		model.change( writer => {
 			const currentAttributes = toMap( selection.getAttributes() );

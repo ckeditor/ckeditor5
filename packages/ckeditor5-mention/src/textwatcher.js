@@ -129,17 +129,19 @@ export default class TextWatcher {
 
 		const block = selection.focus.parent;
 
-		return getText( block ).slice( 0, selection.focus.offset );
+		return _getText( editor.model.createRangeIn( block ) ).slice( 0, selection.focus.offset );
 	}
 }
 
-// Returns whole text from parent element by adding all data from text nodes together.
-//
-// @private
-// @param {module:engine/model/element~Element} element
-// @returns {String}
-function getText( element ) {
-	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
+/**
+ * Returns whole text from given range by adding all data from text nodes together.
+ *
+ * @protected
+ * @param {module:engine/model/range~Range} range
+ * @returns {String}
+ */
+export function _getText( range ) {
+	return Array.from( range.getItems() ).reduce( ( a, b ) => a + b.data, '' );
 }
 
 mix( TextWatcher, EmitterMixin );

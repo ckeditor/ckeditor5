@@ -5,6 +5,8 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import Text from '@ckeditor/ckeditor5-engine/src/view/text';
 
 import Mention from '../src/mention';
 import MentionEditing from '../src/mentionediting';
@@ -46,5 +48,46 @@ describe( 'Mention', () => {
 
 	it( 'should load MentionUI plugin', () => {
 		expect( editor.plugins.get( MentionUI ) ).to.instanceOf( MentionUI );
+	} );
+
+	describe( 'toMentionAttribute()', () => {
+		it( 'should create mention attribute with default properties', () => {
+			const text = new Text( 'John Doe' );
+
+			const viewElement = new Element( 'span', {
+				'data-mention': '@John'
+			}, text );
+
+			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
+
+			expect( mentionAttribute ).to.have.property( '_id' );
+			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
+			expect( mentionAttribute ).to.have.property( 'name', '@John' );
+		} );
+
+		it( 'should create mention attribute with provided attributes', () => {
+			const text = new Text( 'John Doe' );
+
+			const viewElement = new Element( 'span', {
+				'data-mention': '@John'
+			}, text );
+
+			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { foo: 'bar' } );
+
+			expect( mentionAttribute ).to.have.property( '_id' );
+			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
+			expect( mentionAttribute ).to.have.property( 'name', '@John' );
+			expect( mentionAttribute ).to.have.property( 'foo', 'bar' );
+		} );
+
+		it( 'should return undefined if Element has no text node', () => {
+			const viewElement = new Element( 'span', {
+				'data-mention': '@John'
+			} );
+
+			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { foo: 'bar' } );
+
+			expect( mentionAttribute ).to.be.undefined;
+		} );
 	} );
 } );

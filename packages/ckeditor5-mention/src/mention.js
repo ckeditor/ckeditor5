@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import MentionEditing from './mentionediting';
+import MentionEditing, { _toMentionAttribute } from './mentionediting';
 import MentionUI from './mentionui';
 
 import '../theme/mention.css';
@@ -22,6 +22,22 @@ import '../theme/mention.css';
  * @extends module:core/plugin~Plugin
  */
 export default class Mention extends Plugin {
+	/**
+	 * Creates mention attribute value from provided view element and optional data.
+	 *
+	 *		editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
+	 *
+	 *		// for a viewElement: <span data-mention="@joe">@John Doe</span>
+	 *		// it will return:
+	 *		// { id: '@joe', userId: '1234', _uid: '7a7bc7...', _text: '@John Doe' }
+	 *
+	 * @param {module:engine/view/element~Element} viewElement
+	 * @param {String|Object} [data] Mention data to be extended.
+	 */
+	toMentionAttribute( viewElement, data ) {
+		return _toMentionAttribute( viewElement, data );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
