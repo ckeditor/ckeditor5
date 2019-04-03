@@ -8,19 +8,9 @@
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
@@ -75,9 +65,15 @@ class CustomMentionAttributeView extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
-			Mention, CustomMentionAttributeView ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
+		plugins: [ ArticlePluginSet, Underline, Font, Mention, CustomMentionAttributeView ],
+		toolbar: [
+			'heading',
+			'|', 'bulletedList', 'numberedList', 'blockQuote',
+			'|', 'bold', 'italic', 'underline', 'link',
+			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+			'|', 'insertTable',
+			'|', 'undo', 'redo'
+		],
 		mention: {
 			feeds: [
 				{ feed: getFeed }
