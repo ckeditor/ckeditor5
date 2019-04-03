@@ -194,9 +194,10 @@ export default class ClassicEditor extends Editor {
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							// Documented in core/editor/editorconfig.jdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
 							);
 						}
 
