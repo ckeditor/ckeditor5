@@ -56,7 +56,7 @@ class CustomMentionAttributeView extends Plugin {
 					class: 'mention',
 					'data-mention': modelAttributeValue.name,
 					'href': modelAttributeValue.link
-				} );
+				}, { id: modelAttributeValue._id } );
 			},
 			converterPriority: 'high'
 		} );
