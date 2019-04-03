@@ -537,7 +537,9 @@ function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
 		// Make default mention feed case-insensitive.
-			.filter( item => item.toLowerCase().includes( feedText.toLowerCase() ) )
+			.filter( item => {
+				return ( typeof item == 'string' ? item : String( item.id ) ).toLowerCase().includes( feedText.toLowerCase() );
+			} )
 			// Do not return more than 10 items.
 			.slice( 0, 10 );
 

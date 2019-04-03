@@ -27,8 +27,13 @@ ClassicEditor
 		mention: {
 			feeds: [
 				{
-					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ],
-					itemRenderer: item => item.text
+					feed: [
+						{ id: '@Barney', label: 'The Barney', text: 'Barney' },
+						{ id: '@Lily', label: 'The Lily', text: 'Lily' },
+						{ id: '@Marshall', label: 'The Marshall', text: 'Marshall' },
+						{ id: '@Robin', label: 'The Robin', text: 'Robin' },
+						{ id: '@Ted', label: 'The Ted', text: 'Ted' } ],
+					itemRenderer: item => item.label
 				},
 				{
 					marker: '#',
