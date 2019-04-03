@@ -23,8 +23,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import MentionUI from '../../src/mentionui';
-import MentionEditing from '../../src/mentionediting';
+import Mention from '../../src/mention';
 
 class CustomMentionAttributeView extends Plugin {
 	init() {
@@ -43,6 +42,7 @@ class CustomMentionAttributeView extends Plugin {
 				key: 'mention',
 				value: viewItem => {
 					const mentionValue = {
+						_marker: '@',
 						name: viewItem.getAttribute( 'data-mention' ),
 						link: viewItem.getAttribute( 'href' )
 					};
@@ -74,7 +74,7 @@ class CustomMentionAttributeView extends Plugin {
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Heading, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table,
-			MentionEditing, CustomMentionAttributeView, MentionUI ],
+			Mention, CustomMentionAttributeView ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
 		mention: {
 			feeds: [
