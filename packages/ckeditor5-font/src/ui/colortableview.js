@@ -20,7 +20,7 @@ import '../../theme/fontcolor.css';
  * Class which represents a view with the following sub–components:
  *
  * * a remove color button,
- * * a {@link module:ui/colorgrid/colorgrid~ColorGridView},
+ * * a {@link module:ui/colorgrid/colorgrid~ColorGridView}.
  *
  * @extends module:ui/view~View
  */
