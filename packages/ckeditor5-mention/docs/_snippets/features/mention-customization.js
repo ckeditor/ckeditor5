@@ -52,17 +52,15 @@ function MentionCustomization( editor ) {
 			key: 'mention',
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
-				// in the model is a plain object:
-				const mentionValue = {
-					// The name attribute is required.
-					name: viewItem.getAttribute( 'data-mention' ),
-
+				// in the model is a plain object with set of additional attributes.
+				// In order to create proper object use `toMentionAttribute` helper method:
+				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
-					id: viewItem.getAttribute( 'data-user-id' )
-				};
+					userId: viewItem.getAttribute( 'data-user-id' )
+				} );
 
-				return mentionValue;
+				return mentionAttribute;
 			}
 		},
 		converterPriority: 'high'

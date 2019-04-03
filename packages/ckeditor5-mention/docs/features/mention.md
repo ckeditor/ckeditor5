@@ -284,17 +284,15 @@ function MentionCustomization( editor ) {
 			key: 'mention',
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
-				// in the model is a plain object:
-				const mentionValue = {
-					// The name attribute is required.
-					name: viewItem.getAttribute( 'data-mention' ),
-
+				// in the model is a plain object with set of additional attributes.
+				// In order to create proper object use `toMentionAttribute` helper method:
+				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
-					id: viewItem.getAttribute( 'data-user-id' )
-				};
+					userId: viewItem.getAttribute( 'data-user-id' )
+				} );
 
-				return mentionValue;
+				return mentionAttribute;
 			}
 		},
 		converterPriority: 'high'
@@ -311,8 +309,8 @@ function MentionCustomization( editor ) {
 
 			return viewWriter.createAttributeElement( 'a', {
 				class: 'mention',
-				'data-mention': modelAttributeValue.name,
-				'data-user-id': modelAttributeValue.id,
+				'data-mention': modelAttributeValue.id,
+				'data-user-id': modelAttributeValue.userId,
 				'href': modelAttributeValue.link
 			} );
 		},
@@ -321,17 +319,17 @@ function MentionCustomization( editor ) {
 }
 
 const items = [
-	{ id: '1', name: 'Barney Stinson', username: 'swarley', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-	{ id: '2', name: 'Lily Aldrin', username: 'lilypad', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ id: '5', name: 'Ted Mosby', username: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+	{ id: '@lilypad', userId: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+	{ id: '@marshmallow', userId: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ id: '@rsparkles', userId: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@tdog', userId: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
 function getFeedItems( queryText ) {
 	// As an example of an asynchronous action, let's return a promise
 	// that resolves after a 100ms timeout.
-	// This can be a server request or any sort of delayed action.
+	// This can be a server request, or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
 			resolve( items.filter( isItemMatching ) );
@@ -346,7 +344,7 @@ function getFeedItems( queryText ) {
 		// Include an item in the search results if name or username includes the current user input.
 		return (
 			item.name.toLowerCase().includes( searchString ) ||
-			item.username.toLowerCase().includes( searchString )
+			item.id.toLowerCase().includes( searchString )
 		);
 	}
 }
@@ -355,13 +353,13 @@ function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
 
 	itemElement.classList.add( 'custom-item' );
-	itemElement.id = `mention-list-item-id-${ item.id }`;
+	itemElement.id = `mention-list-item-id-${ item.userid }`;
 	itemElement.textContent = `${ item.name } `;
 
 	const usernameElement = document.createElement( 'span' );
 
 	usernameElement.classList.add( 'custom-item-username' );
-	usernameElement.textContent = `@${ item.username }`;
+	usernameElement.textContent = item.id;
 
 	itemElement.appendChild( usernameElement );
 
