@@ -161,18 +161,19 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Method tries to find color on predefined color list to use proper settings (e.g. label).
-	 * If color is not found then provides label with color's value.
+	 * Method tries to find color on predefined color list to prevent of adding it to recent colors.
 	 *
 	 * @param {String} color String which stores value of recently applied color
 	 */
 	addColorToRecentlyUsed( color ) {
 		const predefinedColor = this.colorTableView.colorDefinitions
 			.find( definition => definition.color === color );
-		this.colorTableView.recentlyUsedColors.add( {
-			color: predefinedColor ? predefinedColor.color : color,
-			label: predefinedColor ? predefinedColor.label : color,
-			hasBorder: predefinedColor && predefinedColor.options ? predefinedColor.options.hasBorder : false
-		}, 0 );
+		if ( !predefinedColor ) {
+			this.colorTableView.recentlyUsedColors.add( {
+				color,
+				label: color,
+				hasBorder: false
+			}, 0 );
+		}
 	}
 }
