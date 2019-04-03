@@ -10,7 +10,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
 		cloudServices: CS_CONFIG,
-		extraPlugins: [ CustomMention ],
+		extraPlugins: [ MentionCustomization ],
 		toolbar: {
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
@@ -35,8 +35,9 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-function CustomMention( editor ) {
-	// The upcast converter will convert <a class="mention"> elements to the model 'mention' attribute.
+function MentionCustomization( editor ) {
+	// The upcast converter will convert <a class="mention" href="" data-user-id="">
+	// elements to the model 'mention' attribute.
 	editor.conversion.for( 'upcast' ).elementToAttribute( {
 		view: {
 			name: 'a',
@@ -50,16 +51,13 @@ function CustomMention( editor ) {
 		model: {
 			key: 'mention',
 			value: viewItem => {
-				// Optionally: do not convert partial mentions.
-				if ( !isFullMention( viewItem ) ) {
-					return;
-				}
-
-				// The mention feature expects that mention attribute value in the model is a plain object:
+				// The mention feature expects that the mention attribute value
+				// in the model is a plain object:
 				const mentionValue = {
-					// The name attribute is required by mention editing.
+					// The name attribute is required.
 					name: viewItem.getAttribute( 'data-mention' ),
-					// Add any other properties as required.
+
+					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
 					id: viewItem.getAttribute( 'data-user-id' )
 				};
@@ -70,30 +68,12 @@ function CustomMention( editor ) {
 		converterPriority: 'high'
 	} );
 
-	function isFullMention( viewElement ) {
-		const textNode = viewElement.getChild( 0 );
-		const dataMention = viewElement.getAttribute( 'data-mention' );
-
-		// Do not parse empty mentions.
-		if ( !textNode || !textNode.is( 'text' ) ) {
-			return false;
-		}
-
-		const mentionString = textNode.data;
-
-		// Assume that mention is set as marker + mention name.
-		const name = mentionString.slice( 1 );
-
-		// Do not upcast partial mentions - might come from copy-paste of partially selected mention.
-		return name == dataMention;
-	}
-
-	// Don't forget to define a downcast converter as well:
+	// Do not forget to define a downcast converter as well:
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
 		view: ( modelAttributeValue, viewWriter ) => {
+			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
-				// Do not convert empty attributes.
 				return;
 			}
 
@@ -116,8 +96,10 @@ const items = [
 	{ id: '5', name: 'Ted Mosby', username: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
-function getFeedItems( feedText ) {
-	// As an example of asynchronous action return a promise that resolves after a 100ms timeout.
+function getFeedItems( queryText ) {
+	// As an example of an asynchronous action, let's return a promise
+	// that resolves after a 100ms timeout.
+	// This can be a server request, or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
 			resolve( items.filter( isItemMatching ) );
@@ -127,24 +109,29 @@ function getFeedItems( feedText ) {
 	// Filtering function - it uses `name` and `username` properties of an item to find a match.
 	function isItemMatching( item ) {
 		// Make search case-insensitive.
-		const searchString = feedText.toLowerCase();
+		const searchString = queryText.toLowerCase();
 
 		// Include an item in the search results if name or username includes the current user input.
-		return textIncludesSearchSting( item.name, searchString ) || textIncludesSearchSting( item.username, searchString );
-	}
-
-	function textIncludesSearchSting( text, searchString ) {
-		return text.toLowerCase().includes( searchString );
+		return (
+			item.name.toLowerCase().includes( searchString ) ||
+			item.username.toLowerCase().includes( searchString )
+		);
 	}
 }
 
 function customItemRenderer( item ) {
-	const span = document.createElement( 'span' );
+	const itemElement = document.createElement( 'span' );
 
-	span.classList.add( 'custom-item' );
-	span.id = `mention-list-item-id-${ item.id }`;
+	itemElement.classList.add( 'custom-item' );
+	itemElement.id = `mention-list-item-id-${ item.id }`;
+	itemElement.textContent = `${ item.name } `;
 
-	span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
+	const usernameElement = document.createElement( 'span' );
 
-	return span;
+	usernameElement.classList.add( 'custom-item-username' );
+	usernameElement.textContent = `@${ item.username }`;
+
+	itemElement.appendChild( usernameElement );
+
+	return itemElement;
 }

@@ -21,7 +21,7 @@ import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
 
-const VERTICAL_SPACING = 5;
+const VERTICAL_SPACING = 3;
 
 /**
  * The mention UI feature.
@@ -91,17 +91,17 @@ export default class MentionUI extends Plugin {
 				}
 
 				if ( data.keyCode == keyCodes.esc ) {
-					this._hidePanel();
+					this._hidePanelAndRemoveMarker();
 				}
 			}
-		}, { priority: 'highest' } ); // priority highest required for enter overriding.
+		}, { priority: 'highest' } ); // Required to override enter.
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
 			contextElements: [ this.panelView.element ],
 			activator: () => this.panelView.isVisible,
-			callback: () => this._hidePanel()
+			callback: () => this._hidePanelAndRemoveMarker()
 		} );
 
 		const feeds = this.editor.config.get( 'mention.feeds' );
@@ -205,7 +205,7 @@ export default class MentionUI extends Plugin {
 			const start = end.getShiftedBy( -matchedTextLength );
 			const range = model.createRange( start, end );
 
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 
 			editor.execute( 'mention', {
 				mention: item,
@@ -273,6 +273,26 @@ export default class MentionUI extends Plugin {
 
 			const { feedText, marker } = matched;
 
+			const matchedTextLength = marker.length + feedText.length;
+
+			// create marker range
+			const start = selection.focus.getShiftedBy( -matchedTextLength );
+			const end = selection.focus.getShiftedBy( -feedText.length );
+
+			const markerRange = editor.model.createRange( start, end );
+
+			let mentionMarker;
+
+			if ( editor.model.markers.has( 'mention' ) ) {
+				mentionMarker = editor.model.markers.get( 'mention' );
+			} else {
+				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
+					range: markerRange,
+					usingOperation: false,
+					affectsData: false
+				} ) );
+			}
+
 			this._getFeed( marker, feedText )
 				.then( feed => {
 					this._items.clear();
@@ -284,15 +304,15 @@ export default class MentionUI extends Plugin {
 					}
 
 					if ( this._items.length ) {
-						this._showPanel();
+						this._showPanel( mentionMarker );
 					} else {
-						this._hidePanel();
+						this._hidePanelAndRemoveMarker();
 					}
 				} );
 		} );
 
 		watcher.on( 'unmatched', () => {
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 		} );
 
 		return watcher;
@@ -316,19 +336,25 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @private
 	 */
-	_showPanel() {
-		this.panelView.pin( this._getBalloonPanelPositionData() );
+	_showPanel( markerMarker ) {
+		this.panelView.pin( this._getBalloonPanelPositionData( markerMarker, this.panelView.position ) );
 		this.panelView.show();
 		this._mentionsView.selectFirst();
 	}
 
 	/**
-	 * Hides the {@link #panelView}.
+	 * Hides the {@link #panelView} and remove 'mention' marker from markers collection.
 	 *
 	 * @private
 	 */
-	_hidePanel() {
+	_hidePanelAndRemoveMarker() {
+		if ( this.editor.model.markers.has( 'mention' ) ) {
+			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
+		}
+
 		this.panelView.unpin();
+		// Make last matched position on panel view undefined so the #_getBalloonPanelPositionData() will return all positions on next call.
+		this.panelView.position = undefined;
 		this.panelView.hide();
 	}
 
@@ -364,22 +390,39 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
+	 * Creates position options object used to position the balloon panel.
+	 *
+	 * @param {module:engine/model/markercollection~Marker} mentionMarker
+	 * @param {String|undefined} positionName Name of last matched position name.
 	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
-	_getBalloonPanelPositionData() {
-		const view = this.editor.editing.view;
-		const domConverter = view.domConverter;
-		const viewSelection = view.document.selection;
+	_getBalloonPanelPositionData( mentionMarker, positionName ) {
+		const editing = this.editor.editing;
+		const domConverter = editing.view.domConverter;
+		const mapper = editing.mapper;
 
 		return {
 			target: () => {
-				const range = viewSelection.getLastRange();
-				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( range ) );
+				const viewRange = mapper.toViewRange( mentionMarker.getRange() );
+
+				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
 				return rangeRects.pop();
 			},
-			positions: getBalloonPanelPositions()
+			limiter: () => {
+				const view = this.editor.editing.view;
+				const viewDocument = view.document;
+				const editableElement = viewDocument.selection.editableElement;
+
+				if ( editableElement ) {
+					return view.domConverter.mapViewToDom( editableElement.root );
+				}
+
+				return null;
+			},
+			positions: getBalloonPanelPositions( positionName ),
+			fitInViewport: true
 		};
 	}
 }
@@ -387,10 +430,10 @@ export default class MentionUI extends Plugin {
 // Returns balloon positions data callbacks.
 //
 // @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPanelPositions() {
-	return [
+function getBalloonPanelPositions( positionName ) {
+	const positions = {
 		// Positions panel to the south of caret rect.
-		targetRect => {
+		'caret_se': targetRect => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
@@ -399,7 +442,7 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the north of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_ne': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
@@ -408,7 +451,7 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the south of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_sw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
@@ -417,13 +460,28 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the north of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_nw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
 				name: 'caret_nw'
 			};
 		}
+	};
+
+	// Return only last position if it was matched to prevent panel from jumping after first match.
+	if ( positions.hasOwnProperty( positionName ) ) {
+		return [
+			positions[ positionName ]
+		];
+	}
+
+	// As default return all positions callbacks.
+	return [
+		positions.caret_se,
+		positions.caret_ne,
+		positions.caret_sw,
+		positions.caret_nw
 	];
 }
 
