@@ -22,8 +22,7 @@ ClassicEditor
 				{
 					marker: '@',
 					feed: getFeedItems,
-					itemRenderer: customItemRenderer,
-					minimumCharacters: 1
+					itemRenderer: customItemRenderer
 				}
 			]
 		}

@@ -161,7 +161,7 @@ The example below defined a plugin which overrides the default output:
 To a link:
 
 ```html
-<a class="mention" data-mention="@Ted Mosby" data-user-id="5" href="https://www.imdb.com/title/tt0460649/characters/nm1102140">@Ted Mosby</a>
+<a class="mention" data-mention="@Ted" data-user-id="5" href="https://www.imdb.com/title/tt0460649/characters/nm1102140">@tdog</a>
 ```
 
 The converters must be defined with a `'high'` priority to be executed before the {@link features/link link} feature's converter and before the default converter of the mention feature. A mention is stored in the model as a {@link framework/guides/architecture/editing-engine#text-attributes text attribute} which stores an object (see {@link module:mention/mention~MentionFeedItem}).
@@ -254,8 +254,7 @@ ClassicEditor
 				{
 					marker: '@',
 					feed: getFeedItems,
-					itemRenderer: customItemRenderer,
-					minimumCharacters: 1
+					itemRenderer: customItemRenderer
 				}
 			]
 		}
