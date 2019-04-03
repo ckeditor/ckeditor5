@@ -209,6 +209,7 @@ export default class MentionUI extends Plugin {
 
 			editor.execute( 'mention', {
 				mention: item,
+				text: item.text,
 				marker,
 				range
 			} );
@@ -370,17 +371,24 @@ export default class MentionUI extends Plugin {
 		const editor = this.editor;
 
 		let view;
+		let label = item.id;
 
 		const renderer = this._getItemRenderer( marker );
 
 		if ( renderer ) {
-			const domNode = renderer( item );
+			const renderResult = renderer( item );
 
-			view = new DomWrapperView( editor.locale, domNode );
-		} else {
+			if ( typeof renderResult != 'string' ) {
+				view = new DomWrapperView( editor.locale, renderResult );
+			} else {
+				label = renderResult;
+			}
+		}
+
+		if ( !view ) {
 			const buttonView = new ButtonView( editor.locale );
 
-			buttonView.label = item.text || item.id;
+			buttonView.label = label;
 			buttonView.withText = true;
 
 			view = buttonView;

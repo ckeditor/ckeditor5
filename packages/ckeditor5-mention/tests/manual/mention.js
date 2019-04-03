@@ -26,7 +26,13 @@ ClassicEditor
 		],
 		mention: {
 			feeds: [
-				{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] },
+				{
+					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ],
+					itemRenderer: item => {
+						console.log( item );
+						return item.text;
+					}
+				},
 				{
 					marker: '#',
 					feed: [
