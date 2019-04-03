@@ -53,6 +53,13 @@
  */
 
 /**
+ * The `config.initialData` option cannot be used together with initial data passed as the first parameter of
+ * {@link module:core/editor/editor~Editor.create `Editor.create()`}.
+ *
+ * @error editor-create-initial-data
+ */
+
+/**
  * The list of plugins to load.
  *
  * If you use an {@glink builds/guides/overview editor build} you can define the list of plugins to load
