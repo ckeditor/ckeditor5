@@ -28,10 +28,7 @@ ClassicEditor
 			feeds: [
 				{
 					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ],
-					itemRenderer: item => {
-						console.log( item );
-						return item.text;
-					}
+					itemRenderer: item => item.text
 				},
 				{
 					marker: '#',
