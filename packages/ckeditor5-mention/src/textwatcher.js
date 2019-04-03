@@ -48,6 +48,15 @@ export default class TextWatcher {
 	_startListening() {
 		const editor = this.editor;
 
+		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
+			// The indirect changes (ie on typing) are handled in document's change event.
+			if ( !directChange ) {
+				return;
+			}
+
+			this._evaluateTextBeforeSelection();
+		} );
+
 		editor.model.document.on( 'change', ( evt, batch ) => {
 			if ( batch.type == 'transparent' ) {
 				return;
@@ -58,29 +67,49 @@ export default class TextWatcher {
 
 			// Typing is represented by only a single change.
 			const isTypingChange = changes.length == 1 && entry.name == '$text' && entry.length == 1;
-			// Selection is represented by empty changes.
-			const isSelectionChange = changes.length == 0;
 
-			if ( !isTypingChange && !isSelectionChange ) {
+			if ( !isTypingChange ) {
 				return;
 			}
 
-			const text = this._getText();
-
-			const textHasMatch = this.testCallback( text );
-
-			if ( !textHasMatch && this.hasMatch ) {
-				this.fire( 'unmatched' );
-			}
-
-			this.hasMatch = textHasMatch;
-
-			if ( textHasMatch ) {
-				const matched = this.textMatcher( text );
-
-				this.fire( 'matched', { text, matched } );
-			}
+			this._evaluateTextBeforeSelection();
 		} );
+	}
+
+	/**
+	 * Checks the editor content for matched text.
+	 *
+	 * @fires matched
+	 * @fires unmatched
+	 *
+	 * @private
+	 */
+	_evaluateTextBeforeSelection() {
+		const text = this._getText();
+
+		const textHasMatch = this.testCallback( text );
+
+		if ( !textHasMatch && this.hasMatch ) {
+			/**
+			 * Fired whenever text doesn't match anymore. Fired only when text matcher was matched.
+			 *
+			 * @event unmatched
+			 */
+			this.fire( 'unmatched' );
+		}
+
+		this.hasMatch = textHasMatch;
+
+		if ( textHasMatch ) {
+			const matched = this.textMatcher( text );
+
+			/**
+			 * Fired whenever text matcher was matched.
+			 *
+			 * @event matched
+			 */
+			this.fire( 'matched', { text, matched } );
+		}
 	}
 
 	/**
@@ -105,8 +134,7 @@ export default class TextWatcher {
 }
 
 // Returns whole text from parent element by adding all data from text nodes together.
-// @todo copied from autoformat...
-
+//
 // @private
 // @param {module:engine/model/element~Element} element
 // @returns {String}
