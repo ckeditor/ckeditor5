@@ -22,6 +22,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import Mention from '../../src/mention';
 
@@ -42,6 +43,7 @@ class CustomMentionAttributeView extends Plugin {
 				key: 'mention',
 				value: viewItem => {
 					const mentionValue = {
+						_id: uid(),
 						_marker: '@',
 						name: viewItem.getAttribute( 'data-mention' ),
 						link: viewItem.getAttribute( 'href' )
