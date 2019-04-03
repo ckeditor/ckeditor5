@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, Event */
+/* global document */
 
 import ColorUI from './../../src/ui/colorui';
 import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
@@ -149,28 +149,6 @@ describe( 'ColorUI', () => {
 			dropdown.fire( 'execute', { value: null } );
 
 			sinon.assert.calledOnce( focusSpy );
-		} );
-
-		it( 'static color grid should impact on recent colors', () => {
-			const firstStaticTile = dropdown.colorTableView.items.get( 1 ).items.first;
-			const recentColorsModel = dropdown.colorTableView.recentlyUsedColors;
-			const spy = sinon.spy();
-
-			dropdown.on( 'execute', spy );
-
-			firstStaticTile.element.dispatchEvent( new Event( 'click' ) );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWith( spy, sinon.match.any, {
-				value: 'yellow',
-				label: 'yellow',
-				hasBorder: false
-			} );
-			expect( recentColorsModel.get( 0 ) ).to.include( {
-				color: 'yellow',
-				label: 'yellow',
-				hasBorder: false
-			} );
 		} );
 
 		describe( 'model to command binding', () => {

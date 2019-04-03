@@ -231,10 +231,6 @@ ClassicEditor
 
 It is also possible to configure in how many columns the colors in the grid are displayed. Use {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} to do so.
 
-<info-box>
-	The configuration of the columns also affects the number of recently used colors displayed under the color grid. The less columns, the fewer recently used colors will be displayed.
-</info-box>
-
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

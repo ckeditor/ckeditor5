@@ -132,8 +132,7 @@ export default class FontBackgroundColor extends Plugin {
  */
 
 /**
- * Represents the amount of columns in the dropdown. It also represents the number of background colors
- * recently used by the user displayed in the dropdown. The default value is:
+ * Represents the amount of columns in the dropdown. The default value is:
  *
  *		const fontBackgroundColorConfig = {
  *			columns: 5

@@ -9,9 +9,7 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -22,8 +20,7 @@ import '../../theme/fontcolor.css';
  * Class which represents a view with the following sub–components:
  *
  * * a remove color button,
- * * a {@link module:ui/colorgrid/colorgrid~ColorGridView},
- * * a grid of recently used colors.
+ * * a {@link module:ui/colorgrid/colorgrid~ColorGridView}.
  *
  * @extends module:ui/view~View
  */
@@ -36,7 +33,6 @@ export default class ColorTableView extends View {
 	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors Array with definitions of colors to
 	 * be displayed in the table.
 	 * @param {Number} config.columns Number of columns in the color grid.
-	 * Also determines how many recent color will be displayed.
 	 * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
 	 */
 	constructor( locale, { colors, columns, removeButtonLabel } ) {
@@ -88,19 +84,11 @@ export default class ColorTableView extends View {
 		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * The number of columns in color grid. Also determines the number of recent color to be displayed.
+		 * The number of columns in color grid.
 		 *
 		 * @type {Number}
 		 */
 		this.columns = columns;
-
-		/**
-		 * A collection storing definitions of recently used colors.
-		 *
-		 * @readonly
-		 * @member {module:utils/collection~Collection}
-		 */
-		this.recentlyUsedColors = new Collection();
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
@@ -122,7 +110,6 @@ export default class ColorTableView extends View {
 			}
 		} );
 
-		this.initRecentCollection();
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -136,7 +123,6 @@ export default class ColorTableView extends View {
 
 		this.items.add( this.removeColorButton() );
 		this.items.add( this.createStaticColorTable() );
-		this.items.add( this.recentlyUsed() );
 	}
 
 	/**
@@ -177,79 +163,6 @@ export default class ColorTableView extends View {
 		colorGrid.bind( 'selectedColor' ).to( this );
 
 		return colorGrid;
-	}
-
-	/**
-	 * Adds recently used colors section view and binds it to {@link #recentlyUsedColors}.
-	 *
-	 * @private
-	 */
-	recentlyUsed() {
-		const recentViews = new ColorGridView( this.locale, { columns: this.columns } );
-
-		recentViews.items.bindTo( this.recentlyUsedColors ).using(
-			colorObj => {
-				const colorTile = new ColorTileView();
-
-				colorTile.set( {
-					color: colorObj.color,
-					hasBorder: colorObj.hasBorder
-				} );
-
-				if ( colorObj.label ) {
-					colorTile.set( {
-						label: colorObj.label,
-						tooltip: true
-					} );
-				}
-
-				if ( colorObj.isEnabled === false ) {
-					colorTile.set( 'isEnabled', false );
-				}
-
-				colorTile.on( 'execute', () => {
-					this.fire( 'execute', {
-						value: colorObj.color,
-						hasBorder: colorObj.hasBorder,
-						label: colorObj.label
-					} );
-				} );
-
-				return colorTile;
-			}
-		);
-
-		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
-			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
-
-			if ( duplicates.length === 2 ) {
-				this.recentlyUsedColors.remove( duplicates[ 1 ] );
-			}
-
-			if ( this.recentlyUsedColors.length > this.columns ) {
-				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
-			}
-		} );
-
-		recentViews.delegate( 'execute' ).to( this );
-
-		return recentViews;
-	}
-
-	/**
-	 * Populates {@link #recentlyUsedColors} with empty non-clickable buttons, which represent placeholders
-	 * for colors.
-	 *
-	 * @private
-	 */
-	initRecentCollection() {
-		for ( let i = 0; i < this.columns; i++ ) {
-			this.recentlyUsedColors.add( {
-				color: 'hsla(0, 0%, 0%, 0)',
-				isEnabled: false,
-				hasBorder: true
-			} );
-		}
 	}
 
 	/**
