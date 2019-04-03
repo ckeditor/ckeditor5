@@ -132,29 +132,29 @@ export default class ColorUI extends Plugin {
 			const model = editor.model;
 			const changes = model.document.differ.getChanges();
 			changes.forEach( change => {
-				if ( change.type === 'insert' ) {
-					const position = change.position;
-					const range = model.createRange( position, position.getShiftedBy( change.length ) );
-					const walker = range.getWalker( { ignoreElementEnd: true } );
-
-					let item = walker.next();
-
-					while ( !item.done ) {
-						if ( item.value.type === 'text' ) {
-							// Only text nodes can have color attributes.
-							const color = item.value.item.getAttribute( this.componentName );
-							if ( color ) {
-								this.addColorToRecentlyUsed( color );
+				switch ( change.type ) {
+					case 'insert': {
+						const position = change.position;
+						const range = model.createRange( position, position.getShiftedBy( change.length ) );
+						const walker = range.getWalker( { ignoreElementEnd: true } );
+						let item = walker.next();
+						while ( !item.done ) {
+							if ( item.value.type === 'text' ) {
+								// Only text nodes can have color attributes.
+								const color = item.value.item.getAttribute( this.componentName );
+								if ( color ) {
+									this.addColorToRecentlyUsed( color );
+								}
 							}
+							item = walker.next();
 						}
-						item = walker.next();
+						break;
 					}
-				} else if (
-					change.type === 'attribute' &&
-					change.attributeKey === this.componentName &&
-					change.attributeNewValue
-				) {
-					this.addColorToRecentlyUsed( change.attributeNewValue );
+					case 'attribute':
+						if ( change.attributeKey === this.componentName && change.attributeNewValue ) {
+							this.addColorToRecentlyUsed( change.attributeNewValue );
+						}
+						break;
 				}
 			} );
 		} );
