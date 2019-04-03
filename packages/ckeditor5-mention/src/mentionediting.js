@@ -110,7 +110,8 @@ function createViewMentionElement( mention, viewWriter ) {
 	};
 
 	const options = {
-		id: mention._id
+		id: mention._id,
+		priority: 20
 	};
 
 	return viewWriter.createAttributeElement( 'span', attributes, options );
