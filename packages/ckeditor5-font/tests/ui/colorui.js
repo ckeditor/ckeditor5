@@ -216,21 +216,21 @@ describe( 'ColorUI', () => {
 				} );
 			} );
 
-			it( 'predefined color is recognized and used in recent colors', () => {
+			it( 'predefined color is recognized and is not used in recent colors', () => {
 				setModelData( model, '<paragraph><$text testColor="rgb(255,255,255)">Foo</$text></paragraph>' );
 				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'rgb(255,255,255)',
-					label: 'White',
+					color: 'hsla(0, 0%, 0%, 0)',
+					isEnabled: false,
 					hasBorder: true
 				} );
 			} );
 
 			it( 'removing color from model doesn\'t change recent colors', () => {
-				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text></paragraph>' );
+				setModelData( model, '<paragraph><$text testColor="lightgreen">Foo</$text></paragraph>' );
 
 				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'yellow',
-					label: 'yellow',
+					color: 'lightgreen',
+					label: 'lightgreen',
 					hasBorder: false
 				} );
 
@@ -241,15 +241,15 @@ describe( 'ColorUI', () => {
 				} );
 
 				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'yellow',
-					label: 'yellow',
+					color: 'lightgreen',
+					label: 'lightgreen',
 					hasBorder: false
 				} );
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
 			} );
 
 			it( 'inserting text without color doesn\'t break anything in colors', () => {
-				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text>[]</paragraph>' );
+				setModelData( model, '<paragraph><$text testColor="lightblue">Foo</$text>[]</paragraph>' );
 
 				const paragraph = model.document.getRoot().getChild( 0 );
 
@@ -257,36 +257,36 @@ describe( 'ColorUI', () => {
 					writer.insertText( 'bar', paragraph, 'end' );
 				} );
 				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'yellow',
-					label: 'yellow',
+					color: 'lightblue',
+					label: 'lightblue',
 					hasBorder: false
 				} );
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><$text testColor="yellow">Foo</$text>bar</paragraph>' );
+					.to.equal( '<paragraph><$text testColor="lightblue">Foo</$text>bar</paragraph>' );
 			} );
 
 			it( 'changing color value will added as recently used color', () => {
-				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text>[]</paragraph>' );
+				setModelData( model, '<paragraph><$text testColor="lightblue">Foo</$text>[]</paragraph>' );
 
 				const textNode = model.document.getRoot().getChild( 0 ).getChild( 0 );
 
 				model.change( writer => {
-					writer.setAttribute( 'testColor', '#00FF00', textNode );
+					writer.setAttribute( 'testColor', 'lightgreen', textNode );
 				} );
 
 				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: '#00FF00',
-					label: 'Green',
+					color: 'lightgreen',
+					label: 'lightgreen',
 					hasBorder: false
 				} );
 				expect( recentColorsModel.get( 1 ) ).to.include( {
-					color: 'yellow',
-					label: 'yellow',
+					color: 'lightblue',
+					label: 'lightblue',
 					hasBorder: false
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><$text testColor="#00FF00">Foo</$text></paragraph>' );
+					.to.equal( '<paragraph><$text testColor="lightgreen">Foo</$text></paragraph>' );
 			} );
 		} );
 
