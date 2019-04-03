@@ -522,7 +522,7 @@ export default class Schema {
 	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
 	 */
 	setAttributeProperties( attributeName, properties ) {
-		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ) || {}, properties );
+		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ), properties );
 	}
 
 	/**
@@ -532,7 +532,7 @@ export default class Schema {
 	 * @returns {module:engine/model/schema~AttributeProperties}
 	 */
 	getAttributeProperties( attributeName ) {
-		return this._attributeProperties[ attributeName ];
+		return this._attributeProperties[ attributeName ] || {};
 	}
 
 	/**
