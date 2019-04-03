@@ -94,7 +94,7 @@ export default class MentionUI extends Plugin {
 					this._hidePanel();
 				}
 			}
-		}, { priority: 'highest' } ); // priority highest required for enter overriding.
+		}, { priority: 'highest' } ); // Required to override enter.
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
