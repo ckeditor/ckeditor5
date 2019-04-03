@@ -282,6 +282,75 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
+		describe( 'static list with large set of results', () => {
+			const bigList = {
+				marker: '@',
+				feed: [
+					'a01', 'a02', 'a03', 'a04', 'a05', 'a06', 'a07', 'a08', 'a09', 'a10', 'a11', 'a12'
+				]
+			};
+
+			beforeEach( () => {
+				return createClassicTestEditor( { feeds: [ bigList ] } );
+			} );
+
+			it( 'should show panel with no more then 10 items for default static feed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( listView.items ).to.have.length( 10 );
+					} );
+			} );
+
+			it( 'should scroll mention panel to the selected item', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+
+						const arrowDownEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						const arrowUpEvtData = {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						fireKeyDownEvent( arrowDownEvtData );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
+
+						fireKeyDownEvent( arrowUpEvtData );
+						fireKeyDownEvent( arrowUpEvtData );
+
+						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
+						expect( mentionsView.element.scrollTop ).to.be.not.equal( 0 );
+
+						fireKeyDownEvent( arrowDownEvtData );
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+					} );
+			} );
+		} );
+
 		describe( 'static list with default trigger', () => {
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -334,7 +403,10 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
@@ -348,7 +420,10 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
@@ -381,6 +456,26 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is after existing mention', () => {
+				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 8 );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
 					} );
 			} );
 

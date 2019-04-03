@@ -22,12 +22,9 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import MentionUI from '../../src/mentionui';
 import MentionEditing from '../../src/mentionediting';
-
-const HIGHER_THEN_HIGHEST = priorities.highest + 50;
 
 class CustomMentionAttributeView extends Plugin {
 	init() {
@@ -53,7 +50,7 @@ class CustomMentionAttributeView extends Plugin {
 					return mentionValue;
 				}
 			},
-			converterPriority: HIGHER_THEN_HIGHEST
+			converterPriority: 'high'
 		} );
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
@@ -69,7 +66,7 @@ class CustomMentionAttributeView extends Plugin {
 					'href': modelAttributeValue.link
 				} );
 			},
-			converterPriority: HIGHER_THEN_HIGHEST
+			converterPriority: 'high'
 		} );
 	}
 }
