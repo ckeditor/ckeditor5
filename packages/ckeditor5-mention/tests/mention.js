@@ -60,9 +60,9 @@ describe( 'Mention', () => {
 
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
 
-			expect( mentionAttribute ).to.have.property( '_id' );
+			expect( mentionAttribute ).to.have.property( 'id', '@John' );
+			expect( mentionAttribute ).to.have.property( '_uid' );
 			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
-			expect( mentionAttribute ).to.have.property( 'name', '@John' );
 		} );
 
 		it( 'should create mention attribute with provided attributes', () => {
@@ -74,10 +74,10 @@ describe( 'Mention', () => {
 
 			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { foo: 'bar' } );
 
-			expect( mentionAttribute ).to.have.property( '_id' );
-			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
-			expect( mentionAttribute ).to.have.property( 'name', '@John' );
+			expect( mentionAttribute ).to.have.property( 'id', '@John' );
 			expect( mentionAttribute ).to.have.property( 'foo', 'bar' );
+			expect( mentionAttribute ).to.have.property( '_uid' );
+			expect( mentionAttribute ).to.have.property( '_text', 'John Doe' );
 		} );
 
 		it( 'should return undefined if Element has no text node', () => {
@@ -85,7 +85,7 @@ describe( 'Mention', () => {
 				'data-mention': '@John'
 			} );
 
-			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { foo: 'bar' } );
+			const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement );
 
 			expect( mentionAttribute ).to.be.undefined;
 		} );

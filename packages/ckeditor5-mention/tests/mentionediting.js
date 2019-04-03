@@ -74,9 +74,9 @@ describe( 'MentionEditing', () => {
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
 			const expectedView = '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>';
 
@@ -102,8 +102,8 @@ describe( 'MentionEditing', () => {
 			assertTextNode( paragraph.getChild( 0 ) );
 			assertTextNode( paragraph.getChild( 1 ) );
 
-			const firstMentionId = paragraph.getChild( 0 ).getAttribute( 'mention' )._id;
-			const secondMentionId = paragraph.getChild( 1 ).getAttribute( 'mention' )._id;
+			const firstMentionId = paragraph.getChild( 0 ).getAttribute( 'mention' )._uid;
+			const secondMentionId = paragraph.getChild( 1 ).getAttribute( 'mention' )._uid;
 
 			expect( firstMentionId ).to.not.equal( secondMentionId );
 
@@ -116,10 +116,9 @@ describe( 'MentionEditing', () => {
 			function assertTextNode( textNode ) {
 				expect( textNode ).to.not.be.null;
 				expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', '@John' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
 				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 			}
 		} );
 
@@ -130,10 +129,9 @@ describe( 'MentionEditing', () => {
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@Jo' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
 			const expectedView = '<p><span class="mention" data-mention="@John">@Jo</span></p>';
 
@@ -207,10 +205,9 @@ describe( 'MentionEditing', () => {
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );

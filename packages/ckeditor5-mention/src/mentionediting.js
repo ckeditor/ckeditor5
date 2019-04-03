@@ -65,6 +65,10 @@ export default class MentionEditing extends Plugin {
 	}
 }
 
+export function _addMentionAttributes( baseMentionData, data ) {
+	return Object.assign( { _uid: uid() }, baseMentionData, data || {} );
+}
+
 /**
  * Creates mention attribute value from provided view element and optional data.
  *
@@ -72,27 +76,26 @@ export default class MentionEditing extends Plugin {
  * {@link module:mention/mention~Mention#toWidgetAttribute `editor.plugins.get( 'Mention' ).toWidgetAttribute()`}.
  *
  * @protected
- * @param {module:engine/view/element~Element} viewElement
+ * @param {module:engine/view/element~Element} viewElementOrMention
  * @param {String|Object} [data] Mention data to be extended.
+ * @return {module:mention/mention~MentionAttribute}
  */
-export function _toMentionAttribute( viewElement, data ) {
-	const dataMention = viewElement.getAttribute( 'data-mention' );
+export function _toMentionAttribute( viewElementOrMention, data ) {
+	const dataMention = viewElementOrMention.getAttribute( 'data-mention' );
 
-	const { marker, id } = extractMarkerAndId( dataMention );
-
-	const textNode = viewElement.getChild( 0 );
+	const textNode = viewElementOrMention.getChild( 0 );
 
 	// Do not convert empty mentions.
 	if ( !textNode ) {
 		return;
 	}
 
-	return Object.assign( {
-		name: marker + id,
-		_text: textNode.data,
-		_marker: marker,
-		_id: uid()
-	}, data || {} );
+	const baseMentionData = {
+		id: dataMention,
+		_text: textNode.data
+	};
+
+	return _addMentionAttributes( baseMentionData, data );
 }
 
 // Creates mention element from mention data.
@@ -107,11 +110,11 @@ function createViewMentionElement( mention, viewWriter ) {
 
 	const attributes = {
 		class: 'mention',
-		'data-mention': mention.name
+		'data-mention': mention.id
 	};
 
 	const options = {
-		id: mention._id,
+		id: mention._uid,
 		priority: 20
 	};
 
@@ -246,12 +249,4 @@ function checkAndFix( textNode, writer ) {
 	}
 
 	return false;
-}
-
-function extractMarkerAndId( data ) {
-	const string = String( data );
-	const marker = string[ 0 ];
-	const id = string.slice( 1 );
-
-	return { id, marker };
 }

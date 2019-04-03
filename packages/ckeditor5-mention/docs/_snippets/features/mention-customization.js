@@ -79,8 +79,8 @@ function MentionCustomization( editor ) {
 
 			return viewWriter.createAttributeElement( 'a', {
 				class: 'mention',
-				'data-mention': modelAttributeValue._marker + modelAttributeValue.name,
-				'data-user-id': modelAttributeValue.id,
+				'data-mention': modelAttributeValue.id,
+				'data-user-id': modelAttributeValue.userId,
 				'href': modelAttributeValue.link
 			} );
 		},
@@ -89,11 +89,11 @@ function MentionCustomization( editor ) {
 }
 
 const items = [
-	{ id: '1', name: 'Barney Stinson', username: 'swarley', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-	{ id: '2', name: 'Lily Aldrin', username: 'lilypad', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ id: '5', name: 'Ted Mosby', username: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ userId: '1', name: 'Barney Stinson', id: 'swarley', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+	{ userId: '2', name: 'Lily Aldrin', id: 'lilypad', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+	{ userId: '3', name: 'Marshall Eriksen', id: 'marshmallow', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ userId: '4', name: 'Robin Scherbatsky', id: 'rsparkles', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ userId: '5', name: 'Ted Mosby', id: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
 function getFeedItems( queryText ) {
@@ -114,7 +114,7 @@ function getFeedItems( queryText ) {
 		// Include an item in the search results if name or username includes the current user input.
 		return (
 			item.name.toLowerCase().includes( searchString ) ||
-			item.username.toLowerCase().includes( searchString )
+			item.id.toLowerCase().includes( searchString )
 		);
 	}
 }
@@ -123,13 +123,13 @@ function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
 
 	itemElement.classList.add( 'custom-item' );
-	itemElement.id = `mention-list-item-id-${ item.id }`;
+	itemElement.id = `mention-list-item-id-${ item.userid }`;
 	itemElement.textContent = `${ item.name } `;
 
 	const usernameElement = document.createElement( 'span' );
 
 	usernameElement.classList.add( 'custom-item-username' );
-	usernameElement.textContent = `@${ item.username }`;
+	usernameElement.textContent = `@${ item.id }`;
 
 	itemElement.appendChild( usernameElement );
 

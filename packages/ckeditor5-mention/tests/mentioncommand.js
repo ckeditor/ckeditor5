@@ -54,26 +54,40 @@ describe( 'MentionCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'inserts mention attribute for given range', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
-
-			command.execute( {
-				mention: { name: 'John' },
-				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
-			} );
-
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
-		} );
-
 		it( 'inserts mention object if mention was passed as string', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
-				mention: 'John',
+				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
+		} );
+
+		it( 'inserts mention object with data if mention was passed as object', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			command.execute( {
+				mention: { id: '@John', userId: '123456' },
+				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			} );
+
+			const mentionNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+			assertMention( mentionNode, '@John' );
+			expect( mentionNode.getAttribute( 'mention' ) ).to.have.property( 'userId', '123456' );
+		} );
+
+		it( 'inserts options.text as mention text', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			command.execute( {
+				mention: '@John',
+				text: '@John Doe',
+				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			} );
+
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 		} );
 
 		it( 'inserts mention attribute with passed marker for given range', () => {
@@ -83,22 +97,21 @@ describe( 'MentionCommand', () => {
 			const start = end.getShiftedBy( -3 );
 
 			command.execute( {
-				mention: { name: 'John' },
+				mention: '#John',
 				range: model.createRange( start, end ),
-				marker: '#'
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#John' );
 		} );
 
 		it( 'inserts mention attribute at current selection if no range was passed', () => {
 			setData( model, '<paragraph>foo []bar</paragraph>' );
 
 			command.execute( {
-				mention: { name: 'John' }
+				mention: '@John'
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 		} );
 
 		it( 'should set also other styles in inserted text', () => {
@@ -107,20 +120,20 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
 
 			command.execute( {
-				mention: { name: 'John' },
+				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -5 ), selection.focus )
 			} );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
-			assertMention( textNode, '@', 'John' );
+			assertMention( textNode, '@John' );
 			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
 		} );
 	} );
 
-	function assertMention( textNode, marker, name ) {
+	function assertMention( textNode, id ) {
 		expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', marker );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', name );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', textNode.data );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', id );
 	}
 } );

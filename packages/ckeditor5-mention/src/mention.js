@@ -33,6 +33,7 @@ export default class Mention extends Plugin {
 	 *
 	 * @param {module:engine/view/element~Element} viewElement
 	 * @param {String|Object} [data] Mention data to be extended.
+	 * @returns {module:mention/mention~MentionAttribute}
 	 */
 	toMentionAttribute( viewElement, data ) {
 		return _toMentionAttribute( viewElement, data );
@@ -215,4 +216,14 @@ export default class Mention extends Plugin {
  *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
  * @property {String} name Name of the mention.
+ */
+
+/**
+ * Represents mention in the model.
+ *
+ * @interface module:mention/mention~MentionAttribute
+ * @property {String} id Id of a mention - identifies the mention item in mention feed.
+ * @property {String} _uid Internal mention view item id. Should be passed as an `option.id` when using
+ * {@link module:engine/model/writer~Writer#createAttributeElement writer.createAttributeElement()}.
+ * @property {String} _text Helper property that holds text of inserted mention. Used for detecting broken mention in the editing area.
  */

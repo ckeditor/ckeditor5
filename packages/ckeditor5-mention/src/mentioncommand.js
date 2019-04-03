@@ -9,8 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
-import { _getText } from './textwatcher';
+import { _addMentionAttributes } from './mentionediting';
 
 /**
  * The mention command.
@@ -50,7 +49,7 @@ export default class MentionCommand extends Command {
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {Object|String} options.mention Mention object to insert. If passed a string it will be used to create a plain object with
 	 * name attribute equal to passed string.
-	 * @param {String} [options.marker='@'] The mention marker to insert.
+	 * @param {String} [options.text'] The text of inserted mention. Defaults to `mention` string or `mention.id` if object is passed.
 	 * @param {String} [options.range] Range to replace. Note that replace range might be shorter then inserted text with mention attribute.
 	 * @fires execute
 	 */
@@ -59,23 +58,20 @@ export default class MentionCommand extends Command {
 		const document = model.document;
 		const selection = document.selection;
 
-		const marker = options.marker || '@';
-
-		const mention = typeof options.mention == 'string' ? { name: options.mention } : options.mention;
+		const mentionData = typeof options.mention == 'string' ? { id: options.mention } : options.mention;
+		const mentionID = mentionData.id;
 
 		const range = options.range || selection.getFirstRange();
 
-		// Set internal attributes on mention object.
-		mention._id = uid();
-		mention._marker = marker;
-		mention._text = _getText( range );
+		const mentionText = options.text || mentionID;
+
+		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID }, mentionData );
 
 		model.change( writer => {
 			const currentAttributes = toMap( selection.getAttributes() );
 			const attributesWithMention = new Map( currentAttributes.entries() );
-			attributesWithMention.set( 'mention', mention );
 
-			const mentionText = `${ marker }${ mention.name }`;
+			attributesWithMention.set( 'mention', mention );
 
 			// Replace range with a text with mention.
 			writer.remove( range );

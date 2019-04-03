@@ -46,9 +46,9 @@ class CustomMentionAttributeView extends Plugin {
 
 				return viewWriter.createAttributeElement( 'a', {
 					class: 'mention',
-					'data-mention': modelAttributeValue.name,
+					'data-mention': modelAttributeValue.id,
 					'href': modelAttributeValue.link
-				}, { id: modelAttributeValue._id } );
+				}, { id: modelAttributeValue._uid } );
 			},
 			converterPriority: 'high'
 		} );
@@ -81,14 +81,24 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return [
-		{ id: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-		{ id: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-		{ id: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-		{ id: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-		{ id: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+		{ itemId: '1', id: '@Barney Stinson', text: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+		{ itemId: '2', id: '@Lily Aldrin', text: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+		{
+			itemId: '3',
+			id: '@Marshall Eriksen',
+			text: 'Marshall Eriksen',
+			link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981'
+		},
+		{
+			itemId: '4',
+			id: '@Robin Scherbatsky',
+			text: 'Robin Scherbatsky',
+			link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627'
+		},
+		{ itemId: '5', id: '@Ted Mosby', text: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.name.toLowerCase().includes( searchString );
+		return item.id.toLowerCase().includes( searchString );
 	} );
 }

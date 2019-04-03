@@ -297,8 +297,8 @@ export default class MentionUI extends Plugin {
 				.then( feed => {
 					this._items.clear();
 
-					for ( const name of feed ) {
-						const item = typeof name != 'object' ? { name } : name;
+					for ( const feedItem of feed ) {
+						const item = typeof feedItem != 'object' ? { id: marker + feedItem, text: feedItem } : feedItem;
 
 						this._items.add( { item, marker } );
 					}
@@ -380,7 +380,7 @@ export default class MentionUI extends Plugin {
 		} else {
 			const buttonView = new ButtonView( editor.locale );
 
-			buttonView.label = item.name;
+			buttonView.label = item.text || item.id;
 			buttonView.withText = true;
 
 			view = buttonView;

@@ -405,7 +405,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is inside a mention', () => {
 				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -422,7 +422,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is at the end of a mention', () => {
 				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -462,7 +462,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is after existing mention', () => {
 				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				return waitForDebounce()
@@ -760,7 +760,7 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'default list item', () => {
-			const feedItems = staticConfig.feeds[ 0 ].feed.map( name => ( { name } ) );
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text, id: `@${ text }` } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -842,6 +842,42 @@ describe( 'MentionUI', () => {
 				testExecuteKey( 'tab', keyCodes.tab, feedItems );
 
 				testExecuteKey( 'space', keyCodes.space, feedItems );
+			} );
+		} );
+
+		describe( 'default list item with custom feed', () => {
+			const issues = [
+				{ id: '@Ted' },
+				{ id: '@Barney' },
+				{ id: '@Robin' },
+				{ id: '@Lily' },
+				{ id: '@Marhsal' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: feedText => issues.filter( issue => issue.id.includes( feedText ) )
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
 			} );
 		} );
 
@@ -1106,7 +1142,7 @@ describe( 'MentionUI', () => {
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					assertCommandOptions( commandOptions, '@', { name: 'Barney' } );
+					assertCommandOptions( commandOptions, '@', { id: '@Barney', text: 'Barney' } );
 
 					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );

@@ -32,9 +32,9 @@ ClassicEditor
 						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
 						span.classList.add( 'custom-item' );
-						span.id = `mention-list-item-id-${ item.id }`;
+						span.id = `mention-list-item-id-${ item.itemId }`;
 
-						span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
+						span.innerHTML = `${ item.name } <span class="custom-item-username">${ item.id }</span>`;
 
 						return span;
 					}
@@ -51,14 +51,14 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return Promise.resolve( [
-		{ id: '1', name: 'Barney Stinson', username: 'swarley' },
-		{ id: '2', name: 'Lily Aldrin', username: 'lilypad' },
-		{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow' },
-		{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles' },
-		{ id: '5', name: 'Ted Mosby', username: 'tdog' }
+		{ itemId: '1', name: 'Barney Stinson', id: '@swarley' },
+		{ itemId: '2', name: 'Lily Aldrin', id: '@lilypad' },
+		{ itemId: '3', name: 'Marshall Eriksen', id: '@marshmallow' },
+		{ itemId: '4', name: 'Robin Scherbatsky', id: '@rsparkles' },
+		{ itemId: '5', name: 'Ted Mosby', id: '@tdog' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.name.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
+		return item.name.toLowerCase().includes( searchString ) || item.id.toLowerCase().includes( searchString );
 	} ) );
 }
