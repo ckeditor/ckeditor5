@@ -12,5 +12,3 @@ The format in the editor content is: `N. [font color]; [background color]`.
 
 - Change the font color and font background color on selected text.
 - Change the font color and font background color across many paragraphs.
-- Check whether the colors are added to recent colors list.
-- Try to re-apply a color from recent colors list: the color should move to the beginning of the list.

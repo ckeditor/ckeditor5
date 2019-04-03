@@ -64,7 +64,7 @@ export default class ColorUI extends Plugin {
 		this.dropdownLabel = dropdownLabel;
 
 		/**
-		 * Number of columns in color grid. Determines the number of recent colors to be displayed.
+		 * Number of columns in color grid.
 		 * @type {Number}
 		 */
 		this.columns = editor.config.get( `${ this.componentName }.columns` );
@@ -113,14 +113,6 @@ export default class ColorUI extends Plugin {
 			dropdownView.bind( 'isEnabled' ).to( command );
 
 			dropdownView.on( 'execute', ( evt, data ) => {
-				if ( data.value !== null ) {
-					colorTableView.recentlyUsedColors.add( {
-						color: data.value,
-						hasBorder: data.hasBorder,
-						label: data.label
-					}, 0 );
-				}
-
 				editor.execute( this.commandName, data );
 				editor.editing.view.focus();
 			} );
