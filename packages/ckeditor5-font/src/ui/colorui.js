@@ -142,7 +142,7 @@ export default class ColorUI extends Plugin {
 					while ( !item.done ) {
 						if ( item.value.type === 'text' ) {
 							// Only text nodes can have color attributes.
-							const color = item.value.item.getAttribute( this.commandName );
+							const color = item.value.item.getAttribute( this.componentName );
 							if ( color ) {
 								this.addColorToRecentlyUsed( color );
 							}
@@ -151,7 +151,7 @@ export default class ColorUI extends Plugin {
 					}
 				} else if (
 					change.type === 'attribute' &&
-					change.attributeKey === this.commandName &&
+					change.attributeKey === this.componentName &&
 					change.attributeNewValue
 				) {
 					this.addColorToRecentlyUsed( change.attributeNewValue );
