@@ -10,13 +10,13 @@ The {@link module:mention/mention~Mention} feature brings support for smart auto
 
 ## Demo
 
-You can type `'@'` character to invoke mention autocomplete UI. The below demo is configured as a static list of names.
+You can type the `'@'` character to invoke mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
 
 {@snippet features/mention}
 
 ## Configuration
 
-The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will be shown.
+The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will show up.
 
 The code snippet below was used to configure the demo above. It defines the list of names that will be autocompleted after the user types the `'@'` character.
 
@@ -44,7 +44,7 @@ ClassicEditor
 Additionally, you can configure:
 
 * How the item is rendered in the autocomplete panel (via setting {@link module:mention/mention~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
-* How the item is converted during the conversion. See ["Customizing the output"](#customizing-the-output).
+* How the item is converted during the {@link framework/guides/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
 * Multiple feeds &mdash; in the demo above we used only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `#` for tags.
 
 ### Providing the feed
@@ -109,7 +109,7 @@ A full, working demo with all possible customizations and its source code is ava
 
 The items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionFeed `itemRenderer`} callback.
 
-This callback takes a feed item (it contains at least the `name` property). The item renderer function must return a new DOM element.
+This callback takes a feed item (it contains at least the `name` property) and must return a new DOM element.
 
 ```js
 ClassicEditor
@@ -164,7 +164,7 @@ To a link:
 <a class="mention" data-mention="Ted Mosby" data-user-id="5" href="https://www.imdb.com/title/tt0460649/characters/nm1102140">@Ted Mosby</a>
 ```
 
-The converters must be defined with a `'high'` priority to be executed before the link feature's converter and before the default converter of the mention feature. A mention is stored in the model as a text attribute which stores an object (see {@link module:mention/mention~MentionFeedItem}).
+The converters must be defined with a `'high'` priority to be executed before the {@link features/link link} feature's converter and before the default converter of the mention feature. A mention is stored in the model as a {@link framework/guides/architecture/editing-engine#text-attributes text attribute} which stores an object (see {@link module:mention/mention~MentionFeedItem}).
 
 ```js
 ClassicEditor
@@ -239,7 +239,7 @@ Below is an example of a customized mention feature that:
 
 * Uses a feed of items with additional properties (`id`, `username`, `link`).
 * Renders custom item views in the autocomplete panel.
-* Converts mention to an `<a>` element instead of `<span>`.
+* Converts mention to an `<a>` element instead of a `<span>`.
 
 {@snippet features/mention-customization}
 
@@ -373,14 +373,14 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [theme lark stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that mention styles can be easily customized:
+The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [theme lark stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that mention styles can be {@link framework/guides/theme-customization easily customized}:
 
 ```css
 :root {
 	/* Make mention background blue. */
 	--ck-color-mention-background: hsla(220, 100%, 54%, 0.4);
 
-    /* Make mention text dark grey. */
+	/* Make mention text dark grey. */
 	--ck-color-mention-text: hsl(0, 0%, 15%);
 }
 ```
@@ -425,6 +425,10 @@ The {@link module:mention/mention~Mention} plugin registers:
 	```js
 	editor.execute( 'mention', { marker: '@', mention: 'John' } );
 	```
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 
