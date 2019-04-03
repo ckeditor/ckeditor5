@@ -286,7 +286,7 @@ function MentionCustomization( editor ) {
 				// The mention feature expects that the mention attribute value
 				// in the model is a plain object with set of additional attributes.
 				// In order to create proper object use `toMentionAttribute` helper method:
-				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( {
+				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
 					userId: viewItem.getAttribute( 'data-user-id' )
