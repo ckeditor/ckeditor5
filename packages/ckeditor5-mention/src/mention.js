@@ -180,23 +180,23 @@ export default class Mention extends Plugin {
  *							marker: '@',
  *							feed: [
  *								{
- *									name: 'Barney',
+ *									id: 'Barney',
  *									fullName: 'Barney Bloom'
  *								},
  *								{
- *									name: 'Lily',
+ *									id: 'Lily',
  *									fullName: 'Lily Smith'
  *								},
  *								{
- *									name: 'Marshall',
+ *									id: 'Marshall',
  *									fullName: 'Marshall McDonald'
  *								},
  *								{
- *									name: 'Robin',
+ *									id: 'Robin',
  *									fullName: 'Robin Hood'
  *								},
  *								{
- *									name: 'Ted',
+ *									id: 'Ted',
  *									fullName: 'Ted Cruze'
  *								},
  *								// ...
@@ -215,7 +215,8 @@ export default class Mention extends Plugin {
  *			.catch( ... );
  *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
- * @property {String} name Name of the mention.
+ * @property {String} id Unique id of the mention.
+ * @property {String} [text] Text used for display in mention auto-complete suggestions list.
  */
 
 /**

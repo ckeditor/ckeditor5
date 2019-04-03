@@ -20,13 +20,26 @@ import { _addMentionAttributes } from './mentionediting';
  *
  *		const focus = editor.model.document.selection.focus;
  *
+ *		// It will replace one character before selection focus with '#1234' text
+ *		// with mention attribute filled with passed attributes.
  *		editor.execute( 'mention', {
  *			mention: {
+ *				id: '#1234',
  *				name: 'Foo',
- *				id: '1234',
  *				title: 'Big Foo'
  *			},
- *			marker: '#',
+ *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *		} );
+ *
+ *		// It will replace one character before selection focus with 'Teh "Big Foo"' text
+ *		// with attribute filled with passed attributes.
+ *		editor.execute( 'mention', {
+ *			mention: {
+ *				id: '#1234',
+ *				name: 'Foo',
+ *				title: 'Big Foo'
+ *			},
+ *			text: 'The "Big Foo"'
  *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
  *		} );
  *
@@ -49,7 +62,8 @@ export default class MentionCommand extends Command {
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {Object|String} options.mention Mention object to insert. If passed a string it will be used to create a plain object with
 	 * name attribute equal to passed string.
-	 * @param {String} [options.text'] The text of inserted mention. Defaults to `mention` string or `mention.id` if object is passed.
+	 * @param {String} [options.text] The text of inserted mention. Defaults to full mention string composed from `marker` and
+	 * `mention` string or `mention.id` if object is passed.
 	 * @param {String} [options.range] Range to replace. Note that replace range might be shorter then inserted text with mention attribute.
 	 * @fires execute
 	 */
