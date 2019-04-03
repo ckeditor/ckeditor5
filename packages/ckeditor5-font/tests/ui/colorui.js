@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, Event */
+/* global document */
 
 import ColorUI from './../../src/ui/colorui';
 import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ColorUI', () => {
 	class TestColorPlugin extends ColorUI {
@@ -23,6 +25,7 @@ describe( 'ColorUI', () => {
 			} );
 
 			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
+			editor.model.schema.extend( '$text', { allowAttributes: 'testColor' } );
 		}
 
 		static get pluginName() {
@@ -65,13 +68,21 @@ describe( 'ColorUI', () => {
 			'Red': 'Czerwony',
 			'Green': 'Zielony'
 		} );
+		addTranslations( 'en', {
+			'Test Color': 'Test Color',
+			'Remove color': 'Remove color',
+			'Yellow': 'Yellow',
+			'White': 'White',
+			'Red': 'Red',
+			'Green': 'Green'
+		} );
 	} );
 
 	after( () => {
 		clearTranslations();
 	} );
 
-	let editor, element, testColorPlugin, command;
+	let editor, element, model, testColorPlugin, command;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -79,11 +90,12 @@ describe( 'ColorUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TestColorPlugin ],
+				plugins: [ Paragraph, TestColorPlugin ],
 				testColor: testColorConfig
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				model = editor.model;
 				testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
 			} );
 	} );
@@ -108,7 +120,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'has assigned proper dropdownLabel', () => {
-			expect( testColorPlugin.dropdownLabel ).to.equal( 'Testowy plugin' );
+			expect( testColorPlugin.dropdownLabel ).to.equal( 'Test Color' );
 		} );
 
 		it( 'has assigned proper amount of columns', () => {
@@ -128,7 +140,7 @@ describe( 'ColorUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Testowy plugin' );
+			expect( button ).to.have.property( 'label', 'Test Color' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>' );
 		} );
@@ -151,28 +163,6 @@ describe( 'ColorUI', () => {
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
-		it( 'static color grid should impact on recent colors', () => {
-			const firstStaticTile = dropdown.colorTableView.items.get( 1 ).items.first;
-			const recentColorsModel = dropdown.colorTableView.recentlyUsedColors;
-			const spy = sinon.spy();
-
-			dropdown.on( 'execute', spy );
-
-			firstStaticTile.element.dispatchEvent( new Event( 'click' ) );
-
-			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWith( spy, sinon.match.any, {
-				value: 'yellow',
-				label: 'yellow',
-				hasBorder: false
-			} );
-			expect( recentColorsModel.get( 0 ) ).to.include( {
-				color: 'yellow',
-				label: 'yellow',
-				hasBorder: false
-			} );
-		} );
-
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
@@ -181,6 +171,122 @@ describe( 'ColorUI', () => {
 
 				command.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( 'reacts on change:data event', () => {
+			let recentColorsModel;
+			beforeEach( () => {
+				recentColorsModel = testColorPlugin.colorTableView.recentlyUsedColors;
+			} );
+
+			it( 'editor starts with empty colors', () => {
+				recentColorsModel.map( ( item, index ) => {
+					expect( item ).to.include( {
+						color: 'hsla(0, 0%, 0%, 0)',
+						isEnabled: false,
+						hasBorder: true
+					}, `Default item with index: ${ index }, should be empty color.` );
+				} );
+			} );
+
+			it( 'recent colors are read after initialization', () => {
+				setModelData( model, '<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>' +
+					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' );
+
+				// First color should be reset to gold, because it's appear again in last paragraph
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: 'gold',
+					label: 'gold',
+					hasBorder: false
+				} );
+
+				expect( recentColorsModel.get( 1 ) ).to.include( {
+					color: '#FFAACC',
+					label: '#FFAACC',
+					hasBorder: false
+				} );
+
+				expect( recentColorsModel.get( 2 ) ).to.include( {
+					color: 'rgb(10,20,30)',
+					label: 'rgb(10,20,30)',
+					hasBorder: false
+				} );
+			} );
+
+			it( 'predefined color is recognized and used in recent colors', () => {
+				setModelData( model, '<paragraph><$text testColor="rgb(255,255,255)">Foo</$text></paragraph>' );
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: 'rgb(255,255,255)',
+					label: 'White',
+					hasBorder: true
+				} );
+			} );
+
+			it( 'removing color from model doesn\'t change recent colors', () => {
+				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text></paragraph>' );
+
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: 'yellow',
+					label: 'yellow',
+					hasBorder: false
+				} );
+
+				const textNode = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				model.change( writer => {
+					writer.removeAttribute( 'testColor', textNode );
+				} );
+
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: 'yellow',
+					label: 'yellow',
+					hasBorder: false
+				} );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
+			} );
+
+			it( 'inserting text without color doesn\'t break anything in colors', () => {
+				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text>[]</paragraph>' );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.insertText( 'bar', paragraph, 'end' );
+				} );
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: 'yellow',
+					label: 'yellow',
+					hasBorder: false
+				} );
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><$text testColor="yellow">Foo</$text>bar</paragraph>' );
+			} );
+
+			it( 'changing color value will added as recently used color', () => {
+				setModelData( model, '<paragraph><$text testColor="yellow">Foo</$text>[]</paragraph>' );
+
+				const textNode = model.document.getRoot().getChild( 0 ).getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'testColor', '#00FF00', textNode );
+				} );
+
+				expect( recentColorsModel.get( 0 ) ).to.include( {
+					color: '#00FF00',
+					label: 'Green',
+					hasBorder: false
+				} );
+				expect( recentColorsModel.get( 1 ) ).to.include( {
+					color: 'yellow',
+					label: 'yellow',
+					hasBorder: false
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><$text testColor="#00FF00">Foo</$text></paragraph>' );
 			} );
 		} );
 
