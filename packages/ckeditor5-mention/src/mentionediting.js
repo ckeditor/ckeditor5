@@ -73,7 +73,7 @@ export function _addMentionAttributes( baseMentionData, data ) {
  * Creates mention attribute value from provided view element and optional data.
  *
  * This function is exposed as
- * {@link module:mention/mention~Mention#toWidgetAttribute `editor.plugins.get( 'Mention' ).toWidgetAttribute()`}.
+ * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
  *
  * @protected
  * @param {module:engine/view/element~Element} viewElementOrMention
