@@ -124,7 +124,7 @@ export default class Mention extends Plugin {
  *				return tags
  *					// Filter the tags list.
  *					.filter( tag => {
- *						return tag.toLowerCase() == queryText.toLowerCase();
+ *						return tag.toLowerCase().includes( queryText.toLowerCase() );
  *					} )
  *					// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
  *					.slice( 0, 10 );
@@ -165,8 +165,8 @@ export default class Mention extends Plugin {
 /**
  * The mention feed item. It may be defined as a string or a plain object.
  *
- * When defining feed item as a plain object, the `name` property is obligatory. The additional properties
- * can be used when customizing the mention feature bahaviour
+ * When defining a feed item as a plain object, the `id` property is obligatory. The additional properties
+ * can be used when customizing the mention feature bahavior
  * (see {@glink features/mention#customizing-the-autocomplete-list "Customizing the autocomplete list"}
  * and {@glink features/mention#customizing-the-output "Customizing the output"} sections).
  *
@@ -216,7 +216,7 @@ export default class Mention extends Plugin {
  *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
  * @property {String} id Unique id of the mention. It must start with the marker character.
- * @property {String} [text] Text used for display in mention auto-complete suggestions list.
+ * @property {String} [text] Text inserted into the editor when creating a mention.
  */
 
 /**
