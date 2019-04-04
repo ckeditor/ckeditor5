@@ -81,21 +81,11 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return [
-		{ itemId: '1', id: '@Barney Stinson', text: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-		{ itemId: '2', id: '@Lily Aldrin', text: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-		{
-			itemId: '3',
-			id: '@Marshall Eriksen',
-			text: 'Marshall Eriksen',
-			link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981'
-		},
-		{
-			itemId: '4',
-			id: '@Robin Scherbatsky',
-			text: 'Robin Scherbatsky',
-			link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627'
-		},
-		{ itemId: '5', id: '@Ted Mosby', text: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+		{ id: '@Barney Stinson', text: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+		{ id: '@Lily Aldrin', text: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+		{ id: '@Marshall Eriksen', text: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+		{ id: '@Robin Scherbatsky', text: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+		{ id: '@Ted Mosby', text: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 

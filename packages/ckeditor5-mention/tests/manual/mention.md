@@ -7,15 +7,18 @@ The minimal mention configuration with a static list of autocomplete feed:
 The feeds:
 
 1. Static list with `@` marker:
+
     - Barney
     - Lily
     - Marshall
     - Robin
     - Ted
+
 2. Static list of 20 items (`#` marker)
+
     - a01
     - a02
-    - ... 
+    - ...
     - a20
 
 ### Interaction

@@ -299,7 +299,9 @@ export default class MentionUI extends Plugin {
 					this._items.clear();
 
 					for ( const feedItem of feed ) {
-						const item = typeof feedItem != 'object' ? { id: marker + feedItem, text: feedItem } : feedItem;
+						const fullId = marker + feedItem;
+
+						const item = typeof feedItem != 'object' ? { id: fullId, text: fullId } : feedItem;
 
 						this._items.add( { item, marker } );
 					}
@@ -538,7 +540,11 @@ function createFeedCallback( feedItems ) {
 		const filteredItems = feedItems
 		// Make default mention feed case-insensitive.
 			.filter( item => {
-				return ( typeof item == 'string' ? item : String( item.id ) ).toLowerCase().includes( feedText.toLowerCase() );
+				// Item might be defined as object.
+				const itemId = typeof item == 'string' ? item : String( item.id );
+
+				// The default feed is case insensitive.
+				return itemId.toLowerCase().includes( feedText.toLowerCase() );
 			} )
 			// Do not return more than 10 items.
 			.slice( 0, 10 );

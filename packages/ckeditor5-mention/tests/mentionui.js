@@ -760,7 +760,8 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'default list item', () => {
-			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text, id: `@${ text }` } ) );
+			// Create map of expected feed items as objects as they will be stored internally.
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text: `@${ text }`, id: `@${ text }` } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -851,7 +852,7 @@ describe( 'MentionUI', () => {
 				{ id: '@Barney' },
 				{ id: '@Robin' },
 				{ id: '@Lily' },
-				{ id: '@Marhsal' }
+				{ id: '@Marshal' }
 			];
 
 			beforeEach( () => {
@@ -881,7 +882,124 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'custom list item', () => {
+		describe( 'custom list item (string)', () => {
+			const issues = [
+				{ id: '1002', title: 'Some bug in editor.' },
+				{ id: '1003', title: 'Introduce this feature.' },
+				{ id: '1004', title: 'Missing docs.' },
+				{ id: '1005', title: 'Another bug.' },
+				{ id: '1006', title: 'More bugs' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: issues,
+							itemRenderer: item => item.title
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			describe( 'keys', () => {
+				describe( 'on arrows', () => {
+					it( 'should cycle down on arrow down', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowdown,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+
+					it( 'should cycle up on arrow up', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowup,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+				} );
+
+				describe( 'on "execute" keys', () => {
+					testExecuteKey( 'enter', keyCodes.enter, issues );
+
+					testExecuteKey( 'tab', keyCodes.tab, issues );
+
+					testExecuteKey( 'space', keyCodes.space, issues );
+				} );
+			} );
+		} );
+
+		describe( 'custom list item (DOM Element)', () => {
 			const issues = [
 				{ id: '1002', title: 'Some bug in editor.' },
 				{ id: '1003', title: 'Introduce this feature.' },
@@ -1142,7 +1260,7 @@ describe( 'MentionUI', () => {
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					assertCommandOptions( commandOptions, '@', { id: '@Barney', text: 'Barney' } );
+					assertCommandOptions( commandOptions, '@', { id: '@Barney', text: '@Barney' } );
 
 					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );

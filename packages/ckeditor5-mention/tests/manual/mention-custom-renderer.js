@@ -38,6 +38,17 @@ ClassicEditor
 
 						return span;
 					}
+				},
+				{
+					marker: '#',
+					feed: [
+						{ id: '1002', text: 'Some bug in editor' },
+						{ id: '1003', text: 'Introduce this feature' },
+						{ id: '1004', text: 'Missing docs' },
+						{ id: '1005', text: 'Another bug' },
+						{ id: '1006', text: 'More bugs' }
+					],
+					itemRenderer: item => `Issue ${ item.id }: ${ item.text }`
 				}
 			]
 		}

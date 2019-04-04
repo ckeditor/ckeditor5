@@ -5,11 +5,11 @@ This sample overrides default mention conversion to `<span>`. The mention is con
 ### Configuration
 
 The feed:
-- `{ name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
-- `{ name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989?ref_=tt_cl_t5' }`
-- `{ name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' }`
-- `{ name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
-- `{ name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
+- `{ id: '@Barney Stinson', text: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' }`
+- `{ id: '@Lily Aldrin', text: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989?ref_=tt_cl_t5' }`
+- `{ id: '@Marshall Eriksen', text: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' }`
+- `{ id: '@Robin Scherbatsky', text: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' }`
+- `{ id: '@Ted Mosby', text: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }`
 
 ### Interaction
 
