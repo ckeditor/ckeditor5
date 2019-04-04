@@ -87,7 +87,7 @@ export default class MentionCommand extends Command {
 
 		if ( options.marker.length != 1 ) {
 			/**
-			 * The marker must be one character.
+			 * The marker must be a single character.
 			 *
 			 * Correct markers: `'@'`, `'#'`.
 			 *
@@ -97,7 +97,7 @@ export default class MentionCommand extends Command {
 			 *
 			 * @error markercommand-incorrect-marker
 			 */
-			throw new CKEditorError( 'markercommand-incorrect-marker: The marker must be one character.' );
+			throw new CKEditorError( 'markercommand-incorrect-marker: The marker must be a single character.' );
 		}
 
 		if ( mentionID.charAt( 0 ) != options.marker ) {

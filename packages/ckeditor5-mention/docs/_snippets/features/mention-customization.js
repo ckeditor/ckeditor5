@@ -35,8 +35,8 @@ ClassicEditor
 	} );
 
 function MentionCustomization( editor ) {
-	// The upcast converter will convert <a class="mention" href="" data-user-id="">
-	// elements to the model 'mention' attribute.
+	// The upcast converter will convert view <a class="mention" href="" data-user-id="">
+	// elements to the model 'mention' text attribute.
 	editor.conversion.for( 'upcast' ).elementToAttribute( {
 		view: {
 			name: 'a',
@@ -65,7 +65,7 @@ function MentionCustomization( editor ) {
 		converterPriority: 'high'
 	} );
 
-	// Do not forget to define a downcast converter as well:
+	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
 		view: ( modelAttributeValue, viewWriter ) => {

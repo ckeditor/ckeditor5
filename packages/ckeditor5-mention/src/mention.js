@@ -153,7 +153,7 @@ export default class Mention extends Plugin {
  *		}
  *
  * @typedef {Object} module:mention/mention~MentionFeed
- * @property {String} [marker='@'] The character which triggers autocompletion for mention.
+ * @property {String} [marker] The character which triggers autocompletion for mention. It must be a single character.
  * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed The autocomplete items. Provide an array for
  * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
  * matching items (directly, or via a promise).

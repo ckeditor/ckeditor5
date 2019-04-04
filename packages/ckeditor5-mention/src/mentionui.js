@@ -109,7 +109,7 @@ export default class MentionUI extends Plugin {
 		for ( const mentionDescription of feeds ) {
 			const feed = mentionDescription.feed;
 
-			const marker = mentionDescription.marker || '@';
+			const marker = mentionDescription.marker;
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );

@@ -212,17 +212,15 @@ function MentionCustomization( editor ) {
 			key: 'mention',
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
-				// in the model is a plain object:
-				const mentionValue = {
-					// The name attribute is required.
-					name: viewItem.getAttribute( 'data-mention' ),
-
+				// in the model is a plain object with a set of additional attributes.
+				// In order to create a proper object use the toMentionAttribute() helper method:
+				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
-					id: viewItem.getAttribute( 'data-user-id' )
-				};
+					userId: viewItem.getAttribute( 'data-user-id' )
+				} );
 
-				return mentionValue;
+				return mentionAttribute;
 			}
 		},
 		converterPriority: 'high'
@@ -239,8 +237,8 @@ function MentionCustomization( editor ) {
 
 			return viewWriter.createAttributeElement( 'a', {
 				class: 'mention',
-				'data-mention': modelAttributeValue.name,
-				'data-user-id': modelAttributeValue.id,
+				'data-mention': modelAttributeValue.id,
+				'data-user-id': modelAttributeValue.userId,
 				'href': modelAttributeValue.link
 			} );
 		},
@@ -346,10 +344,16 @@ const items = [
 function getFeedItems( queryText ) {
 	// As an example of an asynchronous action, let's return a promise
 	// that resolves after a 100ms timeout.
-	// This can be a server request, or any sort of delayed action.
+	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
-			resolve( items.filter( isItemMatching ) );
+			const itemsToDisplay = items
+				// Filter out the full list of all items to only those matching queryText.
+				.filter( isItemMatching )
+				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+				.slice( 0, 10 );
+
+			resolve( itemsToDisplay );
 		}, 100 );
 	} );
 
@@ -370,7 +374,7 @@ function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
 
 	itemElement.classList.add( 'custom-item' );
-	itemElement.id = `mention-list-item-id-${ item.userid }`;
+	itemElement.id = `mention-list-item-id-${ item.userId }`;
 	itemElement.textContent = `${ item.name } `;
 
 	const usernameElement = document.createElement( 'span' );
