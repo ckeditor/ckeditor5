@@ -80,22 +80,47 @@ describe( 'EditableUIView', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/1530.
+			// https://github.com/ckeditor/ckeditor5/issues/1676.
 			it( 'should work when update is handled during the rendering phase', () => {
+				const secondEditingViewRoot = new ViewRootEditableElement( 'div' );
+				const secondView = new EditableUIView( locale, editingView );
+				const secondEditableElement = document.createElement( 'div' );
+
+				document.body.appendChild( secondEditableElement );
+
+				secondEditingViewRoot.rootName = 'second';
+				secondEditingViewRoot._document = editingView.document;
+				editingView.document.roots.add( secondEditingViewRoot );
+
+				secondView.name = 'second';
+				secondView.render();
+
+				editingView.attachDomRoot( editableElement, 'main' );
+				editingView.attachDomRoot( secondEditableElement, 'second' );
+
 				view.isFocused = true;
+				secondView.isFocused = false;
+
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 1 ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 2 ).to.be.false;
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 3 ).to.be.false;
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 4 ).to.be.true;
+
 				editingView.isRenderingInProgress = true;
-
-				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
-
 				view.isFocused = false;
+				secondView.isFocused = true;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.true;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 5 ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 6 ).to.be.false;
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 7 ).to.be.false;
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 8 ).to.be.true;
 
 				editingView.isRenderingInProgress = false;
 
-				expect( editingViewRoot.hasClass( 'ck-focused' ) ).to.be.false;
-				expect( editingViewRoot.hasClass( 'ck-blurred' ) ).to.be.true;
+				expect( editingViewRoot.hasClass( 'ck-focused' ), 9 ).to.be.false;
+				expect( editingViewRoot.hasClass( 'ck-blurred' ), 10 ).to.be.true;
+				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 11 ).to.be.true;
+				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 12 ).to.be.false;
 			} );
 		} );
 	} );
