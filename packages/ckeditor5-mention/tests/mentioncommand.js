@@ -54,7 +54,7 @@ describe( 'MentionCommand', () => {
 		} );
 	} );
 
-	describe.only( 'execute()', () => {
+	describe( 'execute()', () => {
 		it( 'inserts mention object if mention was passed as string', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
