@@ -121,6 +121,8 @@ describe( 'EditableUIView', () => {
 				expect( editingViewRoot.hasClass( 'ck-blurred' ), 10 ).to.be.true;
 				expect( secondEditingViewRoot.hasClass( 'ck-focused' ), 11 ).to.be.true;
 				expect( secondEditingViewRoot.hasClass( 'ck-blurred' ), 12 ).to.be.false;
+
+				secondEditableElement.remove();
 			} );
 		} );
 	} );
