@@ -30,9 +30,11 @@ class CustomMentionAttributeView extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: viewItem => editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
-					link: viewItem.getAttribute( 'href' )
-				} )
+				value: viewItem => {
+					return editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
+						link: viewItem.getAttribute( 'href' )
+					} );
+				}
 			},
 			converterPriority: 'high'
 		} );

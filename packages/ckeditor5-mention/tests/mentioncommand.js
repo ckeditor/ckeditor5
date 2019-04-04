@@ -58,6 +58,7 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
+				marker: '@',
 				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
@@ -69,6 +70,7 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
+				marker: '@',
 				mention: { id: '@John', userId: '123456' },
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
@@ -82,6 +84,7 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
+				marker: '@',
 				mention: '@John',
 				text: '@John Doe',
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
@@ -97,6 +100,7 @@ describe( 'MentionCommand', () => {
 			const start = end.getShiftedBy( -3 );
 
 			command.execute( {
+				marker: '#',
 				mention: '#John',
 				range: model.createRange( start, end ),
 			} );
@@ -108,6 +112,7 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph>foo []bar</paragraph>' );
 
 			command.execute( {
+				marker: '@',
 				mention: '@John'
 			} );
 
@@ -120,6 +125,7 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
 
 			command.execute( {
+				marker: '@',
 				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -5 ), selection.focus )
 			} );

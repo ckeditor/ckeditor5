@@ -299,9 +299,7 @@ export default class MentionUI extends Plugin {
 					this._items.clear();
 
 					for ( const feedItem of feed ) {
-						const fullId = marker + feedItem;
-
-						const item = typeof feedItem != 'object' ? { id: fullId, text: fullId } : feedItem;
+						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
 
 						this._items.add( { item, marker } );
 					}

@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console, window */
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+/* global console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Mention from '../../src/mention';
@@ -14,7 +12,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
 		toolbar: [
 			'heading',
@@ -29,7 +27,7 @@ ClassicEditor
 				{
 					feed: getFeed,
 					itemRenderer: item => {
-						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+						const span = document.createElement( 'span' );
 
 						span.classList.add( 'custom-item' );
 						span.id = `mention-list-item-id-${ item.itemId }`;
@@ -42,11 +40,11 @@ ClassicEditor
 				{
 					marker: '#',
 					feed: [
-						{ id: '1002', text: 'Some bug in editor' },
-						{ id: '1003', text: 'Introduce this feature' },
-						{ id: '1004', text: 'Missing docs' },
-						{ id: '1005', text: 'Another bug' },
-						{ id: '1006', text: 'More bugs' }
+						{ id: '#1002', text: 'Some bug in editor' },
+						{ id: '#1003', text: 'Introduce this feature' },
+						{ id: '#1004', text: 'Missing docs' },
+						{ id: '#1005', text: 'Another bug' },
+						{ id: '#1006', text: 'More bugs' }
 					],
 					itemRenderer: item => `Issue ${ item.id }: ${ item.text }`
 				}

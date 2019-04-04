@@ -25,7 +25,10 @@ describe( 'MentionUI', () => {
 
 	const staticConfig = {
 		feeds: [
-			{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
+			{
+				feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
+				marker: '@'
+			}
 		]
 	};
 
@@ -286,7 +289,7 @@ describe( 'MentionUI', () => {
 			const bigList = {
 				marker: '@',
 				feed: [
-					'a01', 'a02', 'a03', 'a04', 'a05', 'a06', 'a07', 'a08', 'a09', 'a10', 'a11', 'a12'
+					'@a01', '@a02', '@a03', '@a04', '@a05', '@a06', '@a07', '@a08', '@a09', '@a10', '@a11', '@a12'
 				]
 			};
 
@@ -559,7 +562,7 @@ describe( 'MentionUI', () => {
 
 		describe( 'asynchronous list with custom trigger', () => {
 			beforeEach( () => {
-				const issuesNumbers = [ '100', '101', '102', '103' ];
+				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
 
 				return createClassicTestEditor( {
 					feeds: [
@@ -761,7 +764,7 @@ describe( 'MentionUI', () => {
 
 		describe( 'default list item', () => {
 			// Create map of expected feed items as objects as they will be stored internally.
-			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text: `@${ text }`, id: `@${ text }` } ) );
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text: `${ text }`, id: `${ text }` } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -884,11 +887,11 @@ describe( 'MentionUI', () => {
 
 		describe( 'custom list item (string)', () => {
 			const issues = [
-				{ id: '1002', title: 'Some bug in editor.' },
-				{ id: '1003', title: 'Introduce this feature.' },
-				{ id: '1004', title: 'Missing docs.' },
-				{ id: '1005', title: 'Another bug.' },
-				{ id: '1006', title: 'More bugs' }
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
 			];
 
 			beforeEach( () => {
@@ -1001,11 +1004,11 @@ describe( 'MentionUI', () => {
 
 		describe( 'custom list item (DOM Element)', () => {
 			const issues = [
-				{ id: '1002', title: 'Some bug in editor.' },
-				{ id: '1003', title: 'Introduce this feature.' },
-				{ id: '1004', title: 'Missing docs.' },
-				{ id: '1005', title: 'Another bug.' },
-				{ id: '1006', title: 'More bugs' }
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
 			];
 
 			beforeEach( () => {
@@ -1019,7 +1022,7 @@ describe( 'MentionUI', () => {
 							itemRenderer: item => {
 								const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-								span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
+								span.innerHTML = `<span id="issue-${ item.id.slice( 1 ) }">@${ item.title }</span>`;
 
 								return span;
 							}
