@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MentionCommand from '../src/mentioncommand';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MentionCommand', () => {
 	let editor, command, model, doc, selection;
@@ -53,7 +54,7 @@ describe( 'MentionCommand', () => {
 		} );
 	} );
 
-	describe( 'execute()', () => {
+	describe.only( 'execute()', () => {
 		it( 'inserts mention object if mention was passed as string', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
@@ -133,6 +134,33 @@ describe( 'MentionCommand', () => {
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 			assertMention( textNode, '@John' );
 			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
+		} );
+
+		it( 'should throw if marker is not one character', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			const testCases = [
+				{ marker: '##', mention: '##foo' },
+				{ marker: '', mention: '@foo' },
+			];
+
+			for ( const options of testCases ) {
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-marker/ );
+			}
+		} );
+
+		it( 'should throw if marker does not match mention id', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			const testCases = [
+				{ marker: '@', mention: 'foo' },
+				{ marker: '@', mention: { id: 'foo' } },
+				{ marker: '@', mention: { id: '#foo' } }
+			];
+
+			for ( const options of testCases ) {
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-id/ );
+			}
 		} );
 	} );
 
