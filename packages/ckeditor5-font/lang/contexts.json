@@ -6,7 +6,7 @@
 	"Huge": "Dropdown option label for the 'huge' font size preset.",
 	"Font Family": "Tooltip for the font family dropdown.",
 	"Default": "Dropdown option label for the default font family.",
-	"Font color": "Label of a button that allows selecting a font color.",
+	"Font Color": "Label of a button that allows selecting a font color.",
 	"Font Background Color": "Label of a button that allows selecting a font background color.",
 	"Remove color": "Label or a button that removes the color from the text (font color and background).",
 	"Black": "Label of a button that applies a black text color (font color and background)",
