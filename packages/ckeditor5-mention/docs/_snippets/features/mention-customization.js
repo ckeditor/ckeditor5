@@ -96,10 +96,16 @@ const items = [
 function getFeedItems( queryText ) {
 	// As an example of an asynchronous action, let's return a promise
 	// that resolves after a 100ms timeout.
-	// This can be a server request, or any sort of delayed action.
+	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
-			resolve( items.filter( isItemMatching ) );
+			const itemsToDisplay = items
+				// Filter out the full list of all items to only those matching queryText.
+				.filter( isItemMatching )
+				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+				.slice( 0, 10 );
+
+			resolve( itemsToDisplay );
 		}, 100 );
 	} );
 
@@ -120,7 +126,7 @@ function customItemRenderer( item ) {
 	const itemElement = document.createElement( 'span' );
 
 	itemElement.classList.add( 'custom-item' );
-	itemElement.id = `mention-list-item-id-${ item.userid }`;
+	itemElement.id = `mention-list-item-id-${ item.userId }`;
 	itemElement.textContent = `${ item.name } `;
 
 	const usernameElement = document.createElement( 'span' );

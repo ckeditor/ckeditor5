@@ -85,12 +85,48 @@ export default class MentionCommand extends Command {
 
 		const mention = _addMentionAttributes( { _text: mentionText, id: mentionID }, mentionData );
 
-		if ( mentionID.charAt( 0 ) != options.marker ) {
-			throw new CKEditorError( 'foo' );
+		if ( options.marker.length != 1 ) {
+			/**
+			 * The marker must be one character.
+			 *
+			 * Correct markers: `'@'`, `'#'`.
+			 *
+			 * Incorrect markers: `'$$'`, `'[@'`.
+			 *
+			 * See {@link module:mention/mention~MentionConfig}.
+			 *
+			 * @error markercommand-incorrect-marker
+			 */
+			throw new CKEditorError( 'markercommand-incorrect-marker: The marker must be one character.' );
 		}
 
-		if ( options.marker.length != 1 ) {
-			throw new CKEditorError( 'foo2' );
+		if ( mentionID.charAt( 0 ) != options.marker ) {
+			/**
+			 * The feed item id must start with the marker character.
+			 *
+			 * Correct mention feed setting:
+			 *
+			 *		mentions: [
+			 *			{
+			 *				marker: '@',
+			 *				feed: [ '@Ann', '@Barney', ... ]
+			 *			}
+			 *		]
+			 *
+			 * Incorrect mention feed setting:
+			 *
+			 *		mentions: [
+			 *			{
+			 *				marker: '@',
+			 *				feed: [ 'Ann', 'Barney', ... ]
+			 *			}
+			 *		]
+			 *
+			 * See {@link module:mention/mention~MentionConfig}.
+			 *
+			 * @error markercommand-incorrect-id
+			 */
+			throw new CKEditorError( 'markercommand-incorrect-id: The item id must start with the marker character.' );
 		}
 
 		model.change( writer => {

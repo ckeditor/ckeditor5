@@ -23,7 +23,7 @@ import '../theme/mention.css';
  */
 export default class Mention extends Plugin {
 	/**
-	 * Creates mention attribute value from provided view element and optional data.
+	 * Creates a mention attribute value from the provided view element and optional data.
 	 *
 	 *		editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
 	 *
@@ -32,7 +32,7 @@ export default class Mention extends Plugin {
 	 *		// { id: '@joe', userId: '1234', _uid: '7a7bc7...', _text: '@John Doe' }
 	 *
 	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {String|Object} [data] Mention data to be extended.
+	 * @param {String|Object} [data] Additional data to be stored in the mention attribute.
 	 * @returns {module:mention/mention~MentionAttribute}
 	 */
 	toMentionAttribute( viewElement, data ) {
@@ -90,7 +90,7 @@ export default class Mention extends Plugin {
  *					feeds: [
  *						{
  *							marker: '@',
- *							feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+ *							feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
  *						},
  *						...
  * 					]
@@ -113,7 +113,7 @@ export default class Mention extends Plugin {
  *		// Static configuration.
  *		const mentionFeedPeople = {
  *			marker: '@',
- *			feed: [ 'Alice', 'Bob', ... ],
+ *			feed: [ '@Alice', '@Bob', ... ],
  *			minimumCharacters: 2
  *		};
  *
@@ -180,23 +180,23 @@ export default class Mention extends Plugin {
  *							marker: '@',
  *							feed: [
  *								{
- *									id: 'Barney',
+ *									id: '@Barney',
  *									fullName: 'Barney Bloom'
  *								},
  *								{
- *									id: 'Lily',
+ *									id: '@Lily',
  *									fullName: 'Lily Smith'
  *								},
  *								{
- *									id: 'Marshall',
+ *									id: '@Marshall',
  *									fullName: 'Marshall McDonald'
  *								},
  *								{
- *									id: 'Robin',
+ *									id: '@Robin',
  *									fullName: 'Robin Hood'
  *								},
  *								{
- *									id: 'Ted',
+ *									id: '@Ted',
  *									fullName: 'Ted Cruze'
  *								},
  *								// ...
@@ -215,15 +215,17 @@ export default class Mention extends Plugin {
  *			.catch( ... );
  *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
- * @property {String} id Unique id of the mention.
+ * @property {String} id Unique id of the mention. It must start with the marker character.
  * @property {String} [text] Text used for display in mention auto-complete suggestions list.
  */
 
 /**
  * Represents mention in the model.
  *
+ * See {@link module:mention/mention~Mention#toMentionAttribute `Mention#toMentionAttribute()`}.
+ *
  * @interface module:mention/mention~MentionAttribute
- * @property {String} id Id of a mention - identifies the mention item in mention feed.
+ * @property {String} id Id of a mention – identifies the mention item in mention feed.
  * @property {String} _uid Internal mention view item id. Should be passed as an `option.id` when using
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
  * @property {String} _text Helper property that holds text of inserted mention. Used for detecting broken mention in the editing area.
