@@ -13,7 +13,8 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { toWidget } from '../src/utils';
 import {
 	setData as setModelData,
-	getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+	getData as getModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
