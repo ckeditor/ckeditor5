@@ -22,23 +22,23 @@ msgstr "Величина фонта"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr ""
+msgstr "Ситно"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr ""
+msgstr "Мало"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr ""
+msgstr "Велико"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr ""
+msgstr "Огромно"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr ""
+msgstr "Фонт"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"

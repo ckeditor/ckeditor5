@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr%40latin/)\n"
+"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
 "Language: sr@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -22,23 +22,23 @@ msgstr "Veličina fonta"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr ""
+msgstr "Sitno"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr ""
+msgstr "Malo"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr ""
+msgstr "Veliko"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr ""
+msgstr "Ogromno"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr ""
+msgstr "Font"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
