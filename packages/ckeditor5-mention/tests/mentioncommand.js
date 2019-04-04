@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import MentionCommand from '../src/mentioncommand';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MentionCommand', () => {
 	let editor, command, model, doc, selection;
@@ -54,26 +55,43 @@ describe( 'MentionCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'inserts mention attribute for given range', () => {
-			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
-
-			command.execute( {
-				mention: { name: 'John' },
-				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
-			} );
-
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
-		} );
-
 		it( 'inserts mention object if mention was passed as string', () => {
 			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
 
 			command.execute( {
-				mention: 'John',
+				marker: '@',
+				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
+		} );
+
+		it( 'inserts mention object with data if mention was passed as object', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			command.execute( {
+				marker: '@',
+				mention: { id: '@John', userId: '123456' },
+				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			} );
+
+			const mentionNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+			assertMention( mentionNode, '@John' );
+			expect( mentionNode.getAttribute( 'mention' ) ).to.have.property( 'userId', '123456' );
+		} );
+
+		it( 'inserts options.text as mention text', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			command.execute( {
+				marker: '@',
+				mention: '@John',
+				text: '@John Doe',
+				range: model.createRange( selection.focus.getShiftedBy( -3 ), selection.focus )
+			} );
+
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 		} );
 
 		it( 'inserts mention attribute with passed marker for given range', () => {
@@ -83,22 +101,23 @@ describe( 'MentionCommand', () => {
 			const start = end.getShiftedBy( -3 );
 
 			command.execute( {
-				mention: { name: 'John' },
+				marker: '#',
+				mention: '#John',
 				range: model.createRange( start, end ),
-				marker: '#'
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '#John' );
 		} );
 
 		it( 'inserts mention attribute at current selection if no range was passed', () => {
 			setData( model, '<paragraph>foo []bar</paragraph>' );
 
 			command.execute( {
-				mention: { name: 'John' }
+				marker: '@',
+				mention: '@John'
 			} );
 
-			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@', 'John' );
+			assertMention( doc.getRoot().getChild( 0 ).getChild( 1 ), '@John' );
 		} );
 
 		it( 'should set also other styles in inserted text', () => {
@@ -107,20 +126,48 @@ describe( 'MentionCommand', () => {
 			setData( model, '<paragraph><$text bold="true">foo@John[]bar</$text></paragraph>' );
 
 			command.execute( {
-				mention: { name: 'John' },
+				marker: '@',
+				mention: '@John',
 				range: model.createRange( selection.focus.getShiftedBy( -5 ), selection.focus )
 			} );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
-			assertMention( textNode, '@', 'John' );
+			assertMention( textNode, '@John' );
 			expect( textNode.hasAttribute( 'bold' ) ).to.be.true;
+		} );
+
+		it( 'should throw if marker is not one character', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			const testCases = [
+				{ marker: '##', mention: '##foo' },
+				{ marker: '', mention: '@foo' },
+			];
+
+			for ( const options of testCases ) {
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-marker/ );
+			}
+		} );
+
+		it( 'should throw if marker does not match mention id', () => {
+			setData( model, '<paragraph>foo @Jo[]bar</paragraph>' );
+
+			const testCases = [
+				{ marker: '@', mention: 'foo' },
+				{ marker: '@', mention: { id: 'foo' } },
+				{ marker: '@', mention: { id: '#foo' } }
+			];
+
+			for ( const options of testCases ) {
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-id/ );
+			}
 		} );
 	} );
 
-	function assertMention( textNode, marker, name ) {
+	function assertMention( textNode, id ) {
 		expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', marker );
-		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', name );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', textNode.data );
+		expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', id );
 	}
 } );

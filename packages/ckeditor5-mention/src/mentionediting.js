@@ -17,7 +17,7 @@ import MentionCommand from './mentioncommand';
  *
  * It introduces the {@link module:mention/mentioncommand~MentionCommand command} and the `mention`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
- * as a `<span class="mention" data-mention="name">`.
+ * as a `<span class="mention" data-mention="@mention">`.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -48,7 +48,7 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: parseMentionViewItemAttributes
+				value: _toMentionAttribute
 			}
 		} );
 
@@ -65,33 +65,37 @@ export default class MentionEditing extends Plugin {
 	}
 }
 
-// Parses matched view element to mention attribute value.
-//
-// @param {module:engine/view/element} viewElement
-// @returns {Object} Mention attribute value
-function parseMentionViewItemAttributes( viewElement ) {
-	const dataMention = viewElement.getAttribute( 'data-mention' );
+export function _addMentionAttributes( baseMentionData, data ) {
+	return Object.assign( { _uid: uid() }, baseMentionData, data || {} );
+}
 
-	const textNode = viewElement.getChild( 0 );
+/**
+ * Creates mention attribute value from provided view element and optional data.
+ *
+ * This function is exposed as
+ * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
+ *
+ * @protected
+ * @param {module:engine/view/element~Element} viewElementOrMention
+ * @param {String|Object} [data] Mention data to be extended.
+ * @return {module:mention/mention~MentionAttribute}
+ */
+export function _toMentionAttribute( viewElementOrMention, data ) {
+	const dataMention = viewElementOrMention.getAttribute( 'data-mention' );
 
-	// Do not parse empty mentions.
-	if ( !textNode || !textNode.is( 'text' ) ) {
+	const textNode = viewElementOrMention.getChild( 0 );
+
+	// Do not convert empty mentions.
+	if ( !textNode ) {
 		return;
 	}
 
-	const mentionString = textNode.data;
+	const baseMentionData = {
+		id: dataMention,
+		_text: textNode.data
+	};
 
-	// Assume that mention is set as marker + mention name.
-	const marker = mentionString.slice( 0, 1 );
-	const name = mentionString.slice( 1 );
-
-	// Do not upcast partial mentions - might come from copy-paste of partially selected mention.
-	if ( name != dataMention ) {
-		return;
-	}
-
-	// Set UID for mention to not merge mentions in the same block that are next to each other.
-	return { name: dataMention, _marker: marker, _id: uid() };
+	return _addMentionAttributes( baseMentionData, data );
 }
 
 // Creates mention element from mention data.
@@ -106,11 +110,11 @@ function createViewMentionElement( mention, viewWriter ) {
 
 	const attributes = {
 		class: 'mention',
-		'data-mention': mention.name
+		'data-mention': mention.id
 	};
 
 	const options = {
-		id: mention._id,
+		id: mention._uid,
 		priority: 20
 	};
 
@@ -227,7 +231,7 @@ function isBrokenMentionNode( node ) {
 	const text = node.data;
 	const mention = node.getAttribute( 'mention' );
 
-	const expectedText = mention._marker + mention.name;
+	const expectedText = mention._text;
 
 	return text != expectedText;
 }

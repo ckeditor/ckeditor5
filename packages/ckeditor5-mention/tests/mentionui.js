@@ -25,7 +25,10 @@ describe( 'MentionUI', () => {
 
 	const staticConfig = {
 		feeds: [
-			{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
+			{
+				feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
+				marker: '@'
+			}
 		]
 	};
 
@@ -286,7 +289,7 @@ describe( 'MentionUI', () => {
 			const bigList = {
 				marker: '@',
 				feed: [
-					'a01', 'a02', 'a03', 'a04', 'a05', 'a06', 'a07', 'a08', 'a09', 'a10', 'a11', 'a12'
+					'@a01', '@a02', '@a03', '@a04', '@a05', '@a06', '@a07', '@a08', '@a09', '@a10', '@a11', '@a12'
 				]
 			};
 
@@ -405,7 +408,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is inside a mention', () => {
 				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -422,7 +425,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is at the end of a mention', () => {
 				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -462,7 +465,7 @@ describe( 'MentionUI', () => {
 			it( 'should not show panel when selection is after existing mention', () => {
 				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { name: 'John', _marker: '@', _id: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				return waitForDebounce()
@@ -559,7 +562,7 @@ describe( 'MentionUI', () => {
 
 		describe( 'asynchronous list with custom trigger', () => {
 			beforeEach( () => {
-				const issuesNumbers = [ '100', '101', '102', '103' ];
+				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
 
 				return createClassicTestEditor( {
 					feeds: [
@@ -760,7 +763,8 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'default list item', () => {
-			const feedItems = staticConfig.feeds[ 0 ].feed.map( name => ( { name } ) );
+			// Create map of expected feed items as objects as they will be stored internally.
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text: `${ text }`, id: `${ text }` } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -845,13 +849,166 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'custom list item', () => {
+		describe( 'default list item with custom feed', () => {
 			const issues = [
-				{ id: '1002', title: 'Some bug in editor.' },
-				{ id: '1003', title: 'Introduce this feature.' },
-				{ id: '1004', title: 'Missing docs.' },
-				{ id: '1005', title: 'Another bug.' },
-				{ id: '1006', title: 'More bugs' }
+				{ id: '@Ted' },
+				{ id: '@Barney' },
+				{ id: '@Robin' },
+				{ id: '@Lily' },
+				{ id: '@Marshal' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: feedText => issues.filter( issue => issue.id.includes( feedText ) )
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
+			} );
+		} );
+
+		describe( 'custom list item (string)', () => {
+			const issues = [
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: issues,
+							itemRenderer: item => item.title
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			describe( 'keys', () => {
+				describe( 'on arrows', () => {
+					it( 'should cycle down on arrow down', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowdown,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+
+					it( 'should cycle up on arrow up', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowup,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+				} );
+
+				describe( 'on "execute" keys', () => {
+					testExecuteKey( 'enter', keyCodes.enter, issues );
+
+					testExecuteKey( 'tab', keyCodes.tab, issues );
+
+					testExecuteKey( 'space', keyCodes.space, issues );
+				} );
+			} );
+		} );
+
+		describe( 'custom list item (DOM Element)', () => {
+			const issues = [
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
 			];
 
 			beforeEach( () => {
@@ -865,7 +1022,7 @@ describe( 'MentionUI', () => {
 							itemRenderer: item => {
 								const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-								span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
+								span.innerHTML = `<span id="issue-${ item.id.slice( 1 ) }">@${ item.title }</span>`;
 
 								return span;
 							}
@@ -1106,7 +1263,7 @@ describe( 'MentionUI', () => {
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					assertCommandOptions( commandOptions, '@', { name: 'Barney' } );
+					assertCommandOptions( commandOptions, '@', { id: '@Barney', text: '@Barney' } );
 
 					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );

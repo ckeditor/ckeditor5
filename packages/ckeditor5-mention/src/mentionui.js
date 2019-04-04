@@ -109,7 +109,7 @@ export default class MentionUI extends Plugin {
 		for ( const mentionDescription of feeds ) {
 			const feed = mentionDescription.feed;
 
-			const marker = mentionDescription.marker || '@';
+			const marker = mentionDescription.marker;
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
@@ -209,6 +209,7 @@ export default class MentionUI extends Plugin {
 
 			editor.execute( 'mention', {
 				mention: item,
+				text: item.text,
 				marker,
 				range
 			} );
@@ -297,8 +298,8 @@ export default class MentionUI extends Plugin {
 				.then( feed => {
 					this._items.clear();
 
-					for ( const name of feed ) {
-						const item = typeof name != 'object' ? { name } : name;
+					for ( const feedItem of feed ) {
+						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
 
 						this._items.add( { item, marker } );
 					}
@@ -370,17 +371,24 @@ export default class MentionUI extends Plugin {
 		const editor = this.editor;
 
 		let view;
+		let label = item.id;
 
 		const renderer = this._getItemRenderer( marker );
 
 		if ( renderer ) {
-			const domNode = renderer( item );
+			const renderResult = renderer( item );
 
-			view = new DomWrapperView( editor.locale, domNode );
-		} else {
+			if ( typeof renderResult != 'string' ) {
+				view = new DomWrapperView( editor.locale, renderResult );
+			} else {
+				label = renderResult;
+			}
+		}
+
+		if ( !view ) {
 			const buttonView = new ButtonView( editor.locale );
 
-			buttonView.label = item.name;
+			buttonView.label = label;
 			buttonView.withText = true;
 
 			view = buttonView;
@@ -529,7 +537,13 @@ function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
 		// Make default mention feed case-insensitive.
-			.filter( item => item.toLowerCase().includes( feedText.toLowerCase() ) )
+			.filter( item => {
+				// Item might be defined as object.
+				const itemId = typeof item == 'string' ? item : String( item.id );
+
+				// The default feed is case insensitive.
+				return itemId.toLowerCase().includes( feedText.toLowerCase() );
+			} )
 			// Do not return more than 10 items.
 			.slice( 0, 10 );
 

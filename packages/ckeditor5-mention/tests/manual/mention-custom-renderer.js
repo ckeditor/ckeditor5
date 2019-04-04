@@ -3,44 +3,50 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console, window */
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+/* global console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import Table from '@ckeditor/ckeditor5-table/src/table';
 import Mention from '../../src/mention';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Link, Bold, Italic, Underline, Undo, Clipboard, Widget, ShiftEnter, Table, Mention ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', 'link', '|', 'insertTable', '|', 'undo', 'redo' ],
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ ArticlePluginSet, Underline, Font, Mention ],
+		toolbar: [
+			'heading',
+			'|', 'bulletedList', 'numberedList', 'blockQuote',
+			'|', 'bold', 'italic', 'underline', 'link',
+			'|', 'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor',
+			'|', 'insertTable',
+			'|', 'undo', 'redo'
+		],
 		mention: {
 			feeds: [
 				{
 					feed: getFeed,
 					itemRenderer: item => {
-						const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
+						const span = document.createElement( 'span' );
 
 						span.classList.add( 'custom-item' );
-						span.id = `mention-list-item-id-${ item.id }`;
+						span.id = `mention-list-item-id-${ item.itemId }`;
 
-						span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
+						span.innerHTML = `${ item.name } <span class="custom-item-username">${ item.id }</span>`;
 
 						return span;
 					}
+				},
+				{
+					marker: '#',
+					feed: [
+						{ id: '#1002', text: 'Some bug in editor' },
+						{ id: '#1003', text: 'Introduce this feature' },
+						{ id: '#1004', text: 'Missing docs' },
+						{ id: '#1005', text: 'Another bug' },
+						{ id: '#1006', text: 'More bugs' }
+					],
+					itemRenderer: item => `Issue ${ item.id }: ${ item.text }`
 				}
 			]
 		}
@@ -54,14 +60,14 @@ ClassicEditor
 
 function getFeed( feedText ) {
 	return Promise.resolve( [
-		{ id: '1', name: 'Barney Stinson', username: 'swarley' },
-		{ id: '2', name: 'Lily Aldrin', username: 'lilypad' },
-		{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow' },
-		{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles' },
-		{ id: '5', name: 'Ted Mosby', username: 'tdog' }
+		{ itemId: '1', name: 'Barney Stinson', id: '@swarley' },
+		{ itemId: '2', name: 'Lily Aldrin', id: '@lilypad' },
+		{ itemId: '3', name: 'Marshall Eriksen', id: '@marshmallow' },
+		{ itemId: '4', name: 'Robin Scherbatsky', id: '@rsparkles' },
+		{ itemId: '5', name: 'Ted Mosby', id: '@tdog' }
 	].filter( item => {
 		const searchString = feedText.toLowerCase();
 
-		return item.name.toLowerCase().includes( searchString ) || item.username.toLowerCase().includes( searchString );
+		return item.name.toLowerCase().includes( searchString ) || item.id.toLowerCase().includes( searchString );
 	} ) );
 }

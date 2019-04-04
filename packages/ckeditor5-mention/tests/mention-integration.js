@@ -47,9 +47,9 @@ describe( 'Mention feature - integration', () => {
 
 		// Failing test. See ckeditor/ckeditor5#1645.
 		it( 'should restore removed mention on adding a text inside mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -64,16 +64,16 @@ describe( 'Mention feature - integration', () => {
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
 		// Failing test. See ckeditor/ckeditor5#1645.
 		it( 'should restore removed mention on removing a text inside mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -89,15 +89,15 @@ describe( 'Mention feature - integration', () => {
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
 		it( 'should work with attribute post-fixer (beginning formatted)', () => {
 			testAttributePostFixer(
-				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p><strong>foo <span class="mention" data-mention="John">@John</span></strong> bar</p>',
+				'<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>',
+				'<p><strong>foo <span class="mention" data-mention="@John">@John</span></strong> bar</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
@@ -113,8 +113,8 @@ describe( 'Mention feature - integration', () => {
 
 		it( 'should work with attribute post-fixer (end formatted)', () => {
 			testAttributePostFixer(
-				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p>foo <strong><span class="mention" data-mention="John">@John</span> ba</strong>r</p>',
+				'<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>',
+				'<p>foo <strong><span class="mention" data-mention="@John">@John</span> ba</strong>r</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
@@ -130,8 +130,8 @@ describe( 'Mention feature - integration', () => {
 
 		it( 'should work with attribute post-fixer (middle formatted)', () => {
 			testAttributePostFixer(
-				'<p>foo <span class="mention" data-mention="John">@John</span> bar</p>',
-				'<p>foo <strong><span class="mention" data-mention="John">@John</span></strong> bar</p>',
+				'<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>',
+				'<p>foo <strong><span class="mention" data-mention="@John">@John</span></strong> bar</p>',
 				() => {
 					model.change( writer => {
 						const paragraph = doc.getRoot().getChild( 0 );
@@ -187,7 +187,7 @@ describe( 'Mention feature - integration', () => {
 				} );
 		} );
 
-		it( 'should fix broken mention inside pasted content', () => {
+		it( 'should not fix broken mention inside pasted content', () => {
 			editor.setData( '<p>foobar</p>' );
 
 			model.change( writer => {
@@ -195,11 +195,11 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<blockquote><p>xxx<span class="mention" data-mention="John">@Joh</span></p></blockquote>' )
+				content: parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' )
 			} );
 
 			const expectedData = '<p>foo</p>' +
-				'<blockquote><p>xxx@Joh</p></blockquote>' +
+				'<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' +
 				'<p>bar</p>';
 
 			expect( editor.getData() )

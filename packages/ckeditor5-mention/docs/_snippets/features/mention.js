@@ -20,7 +20,7 @@ ClassicEditor
 			feeds: [
 				{
 					marker: '@',
-					feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ]
+					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
 				}
 			]
 		}
