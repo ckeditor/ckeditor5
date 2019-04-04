@@ -6,6 +6,7 @@
 /* globals Event */
 
 import ColorTableView from './../../src/ui/colortableview';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -79,6 +80,10 @@ describe( 'ColorTableView', () => {
 
 		it( 'sets number of drawed columns', () => {
 			expect( colorTableView.columns ).to.equal( 5 );
+		} );
+
+		it( 'creaets collection of recently used colors', () => {
+			expect( colorTableView.recentlyUsedColors ).to.be.instanceOf( Collection );
 		} );
 
 		it( 'creates focus cycler', () => {
@@ -169,6 +174,117 @@ describe( 'ColorTableView', () => {
 					value: item.color,
 					label: item.label,
 					hasBorder: item.options.hasBorder
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'recent colors grid', () => {
+		const colorBlack = {
+			color: '#000000',
+			label: 'Black',
+			hasBorder: false
+		};
+		const colorWhite = {
+			color: '#FFFFFF',
+			label: 'Black',
+			hasBorder: true
+		};
+		const colorRed = {
+			color: 'rgb(255,0,0)',
+			hasBorder: false
+		};
+		const emptyColor = {
+			color: 'hsla(0, 0%, 0%, 0)',
+			isEnabled: false,
+			hasBorder: true
+		};
+
+		let recentColorsGridView, recentColorModel;
+
+		beforeEach( () => {
+			recentColorModel = colorTableView.recentlyUsedColors;
+			recentColorsGridView = colorTableView.items.last;
+		} );
+
+		describe( 'initialization', () => {
+			it( 'has proper length of populated items', () => {
+				expect( recentColorModel.length ).to.equal( 5 );
+			} );
+
+			for ( let i = 0; i < 5; i++ ) {
+				it( `initialized item with index: "${ i }" has proper attributes`, () => {
+					const modelItem = recentColorModel.get( i );
+					const viewItem = recentColorsGridView.items.get( i );
+
+					expect( modelItem.color ).to.equal( 'hsla(0, 0%, 0%, 0)' );
+					expect( modelItem.isEnabled ).to.be.false;
+					expect( modelItem.hasBorder ).to.be.true;
+					expect( viewItem.isEnabled ).to.be.false;
+					expect( viewItem.color ).to.equal( 'hsla(0, 0%, 0%, 0)' );
+					expect( viewItem.hasBorder ).to.be.true;
+					expect( viewItem.label ).to.be.undefined;
+				} );
+			}
+		} );
+
+		describe( 'model manipulation', () => {
+			it( 'adding item will preserve length of collection', () => {
+				expect( recentColorModel.length ).to.equal( 5 );
+
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+
+				expect( recentColorModel.length ).to.equal( 5 );
+				expect( recentColorModel.first.color ).to.equal( '#000000' );
+				expect( recentColorModel.first.label ).to.equal( 'Black' );
+				expect( recentColorModel.first.hasBorder ).to.be.false;
+			} );
+
+			it( 'adding multiple times same color should not work', () => {
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+
+				expect( recentColorModel.first ).to.own.include( colorBlack );
+				expect( recentColorModel.get( 1 ) ).to.own.include( emptyColor );
+
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+
+				expect( recentColorModel.first ).to.own.include( colorBlack );
+				expect( recentColorModel.get( 1 ) ).to.own.include( emptyColor );
+			} );
+
+			it( 'adding duplicates move color to the front', () => {
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+				recentColorModel.add( Object.assign( {}, colorWhite ), 0 );
+				recentColorModel.add( Object.assign( {}, colorRed ), 0 );
+
+				expect( recentColorModel.get( 0 ) ).to.own.include( colorRed );
+				expect( recentColorModel.get( 1 ) ).to.own.include( colorWhite );
+				expect( recentColorModel.get( 2 ) ).to.own.include( colorBlack );
+				expect( recentColorModel.get( 3 ) ).to.own.include( emptyColor );
+
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+
+				expect( recentColorModel.get( 0 ) ).to.own.include( colorBlack );
+				expect( recentColorModel.get( 1 ) ).to.own.include( colorRed );
+				expect( recentColorModel.get( 2 ) ).to.own.include( colorWhite );
+				expect( recentColorModel.get( 3 ) ).to.own.include( emptyColor );
+			} );
+		} );
+
+		describe( 'events', () => {
+			it( 'added colors delegates execute to parent', () => {
+				const spy = sinon.spy();
+				colorTableView.on( 'execute', spy );
+
+				recentColorModel.add( Object.assign( {}, colorBlack ), 0 );
+
+				recentColorsGridView.items.first.element.dispatchEvent( new Event( 'click' ) );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWith( spy, sinon.match.any, {
+					value: '#000000',
+					label: 'Black',
+					hasBorder: false
 				} );
 			} );
 		} );
