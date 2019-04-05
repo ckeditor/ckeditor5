@@ -9,19 +9,12 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
-// Fire all "unmatched" events before any "matched" events.
-const UNMATCH_EVENT_PRIORITY = priorities.normal + 10;
-const MATCH_EVENT_PRIORITY = priorities.normal;
 
 /**
  * Text watcher feature.
  *
  * Fires {@link module:mention/textwatcher~TextWatcher#event:matched matched} and
  * {@link module:mention/textwatcher~TextWatcher#event:unmatched unmatched} events on typing or selection changes.
- *
- * **Note**: The "unmatched" events for any created text watchers are fired before any "matched" events of another text watchers.
  *
  * @private
  */
@@ -59,54 +52,35 @@ export default class TextWatcher {
 	_startListening() {
 		const editor = this.editor;
 
-		// Register "unmatch" evaluator for selection changes.
 		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
 			// The indirect changes (ie on typing) are handled in document's change event.
 			if ( !directChange ) {
 				return;
 			}
 
-			this._evaluateTextBeforeSelectionForUnmatch();
-		}, { priority: UNMATCH_EVENT_PRIORITY } );
+			this._evaluateTextBeforeSelection();
+		} );
 
-		// Register "match" evaluator for selection changes.
-		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
-			// The indirect changes (ie on typing) are handled in document's change event.
-			if ( !directChange ) {
-				return;
-			}
-
-			this._evaluateTextBeforeSelectionForMatch();
-		}, { priority: MATCH_EVENT_PRIORITY } );
-
-		// Register "unmatch" evaluator for typing changes.
 		editor.model.document.on( 'change:data', ( evt, batch ) => {
-			if ( !this._isTypingChange( batch ) ) {
-				return;
+			if ( batch.type == 'transparent' ) {
+				return false;
 			}
 
-			this._evaluateTextBeforeSelectionForUnmatch();
-		}, { priority: UNMATCH_EVENT_PRIORITY } );
-
-		// Register "match" evaluator for typing changes.
-		editor.model.document.on( 'change:data', ( evt, batch ) => {
-			if ( !this._isTypingChange( batch ) ) {
-				return;
-			}
-
-			this._evaluateTextBeforeSelectionForMatch();
-		}, { priority: MATCH_EVENT_PRIORITY } );
+			this._evaluateTextBeforeSelection();
+		} );
 	}
 
 	/**
 	 * Checks the editor content for matched text.
 	 *
-	 * @fires module:mention/textwatcher~TextWatcher#unmatched
+	 * @fires matched
+	 * @fires unmatched
 	 *
 	 * @private
 	 */
-	_evaluateTextBeforeSelectionForUnmatch() {
+	_evaluateTextBeforeSelection() {
 		const text = this._getText();
+
 		const textHasMatch = this.testCallback( text );
 
 		if ( !textHasMatch && this.hasMatch ) {
@@ -117,18 +91,6 @@ export default class TextWatcher {
 			 */
 			this.fire( 'unmatched' );
 		}
-	}
-
-	/**
-	 * Checks the editor content for unmatched text.
-	 *
-	 * @fires module:mention/textwatcher~TextWatcher#matched
-	 *
-	 * @private
-	 */
-	_evaluateTextBeforeSelectionForMatch() {
-		const text = this._getText();
-		const textHasMatch = this.testCallback( text );
 
 		this.hasMatch = textHasMatch;
 
@@ -142,27 +104,6 @@ export default class TextWatcher {
 			 */
 			this.fire( 'matched', { text, matched } );
 		}
-	}
-
-	/**
-	 * Returns true if batch contains typing change. Typing change is detected as single character insertion.
-	 *
-	 * @param {module:engine/model/batch~Batch} batch
-	 * @returns {Boolean}
-	 * @private
-	 */
-	_isTypingChange( batch ) {
-		const editor = this.editor;
-
-		if ( batch.type == 'transparent' ) {
-			return false;
-		}
-
-		const changes = Array.from( editor.model.document.differ.getChanges() );
-		const entry = changes[ 0 ];
-
-		// Typing is represented by only a single change.
-		return changes.length == 1 && entry.name == '$text' && entry.length == 1;
 	}
 
 	/**
