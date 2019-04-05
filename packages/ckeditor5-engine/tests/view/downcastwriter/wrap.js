@@ -119,6 +119,44 @@ describe( 'DowncastWriter', () => {
 				);
 			} );
 
+			it( 'should join wrapping element with a nested attribute element', () => {
+				test(
+					'<container:p>' +
+						'<attribute:u view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">{foo}</attribute:b>' +
+						'</attribute:u>' +
+					'</container:p>',
+
+					'<attribute:b class="foo" view-priority="2"></attribute:b>',
+
+					'<container:p>' +
+						'[<attribute:u view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar foo">foo</attribute:b>' +
+						'</attribute:u>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should join wrapping element with a part of a nested attribute element', () => {
+				test(
+					'<container:p>' +
+						'<attribute:i view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">fo{ob}ar</attribute:b>' +
+						'</attribute:i>' +
+					'</container:p>',
+
+					'<attribute:b class="foo" view-priority="2"></attribute:b>',
+
+					'<container:p>' +
+						'<attribute:i view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">fo</attribute:b>' +
+							'[<attribute:b view-priority="2" class="bar foo">ob</attribute:b>]' +
+							'<attribute:b view-priority="2" class="bar">ar</attribute:b>' +
+						'</attribute:i>' +
+					'</container:p>'
+				);
+			} );
+
 			it( 'wraps part of a single text node #3', () => {
 				test(
 					'<container:p>foo{bar}</container:p>',

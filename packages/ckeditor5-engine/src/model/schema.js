@@ -39,6 +39,14 @@ export default class Schema {
 	constructor() {
 		this._sourceDefinitions = {};
 
+		/**
+		 * A dictionary containing attribute properties.
+		 *
+		 * @private
+		 * @member {Object.<String,String>}
+		 */
+		this._attributeProperties = {};
+
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
 
@@ -230,7 +238,7 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
+	 * an object element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isObject` property.
 	 *
 	 *		schema.isObject( 'paragraph' ); // -> false
 	 *		schema.isObject( 'image' ); // -> true
@@ -244,6 +252,24 @@ export default class Schema {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isObject );
+	}
+
+	/**
+	 * Returns `true` if the given item is defined to be
+	 * an inline element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 *
+	 *		schema.isInline( 'paragraph' ); // -> false
+	 *		schema.isInline( 'softBreak' ); // -> true
+	 *
+	 *		const text = writer.createText('foo' );
+	 *		schema.isInline( text ); // -> true
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
+	 */
+	isInline( item ) {
+		const def = this.getDefinition( item );
+
+		return !!( def && def.isInline );
 	}
 
 	/**
@@ -455,6 +481,58 @@ export default class Schema {
 				evt.return = retValue;
 			}
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * This method allows assigning additional metadata to the model attributes. For example,
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties#isFormatting` property} is
+	 * used to mark formatting attributes (like `bold` or `italic`).
+	 *
+	 *		// Mark bold as a formatting attribute.
+	 *		schema.setAttributeProperties( 'bold', {
+	 *			isFormatting: true
+	 *		} );
+	 *
+	 *		// Override code not to be considered a formatting markup.
+	 *		schema.setAttributeProperties( 'code', {
+	 *			isFormatting: false
+	 *		} );
+	 *
+	 * Properties are not limited to members defined in the
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties` type} and you can also use custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			customProperty: 'value'
+	 *		} );
+	 *
+	 * Subsequent calls with the same attribute will extend its custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			one: 1
+	 *		} );
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			two: 2
+	 *		} );
+	 *
+	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
+	 *		// Logs: { one: 1, two: 2 }
+	 *
+	 * @param {String} attributeName A name of the attribute to receive the properties.
+	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
+	 */
+	setAttributeProperties( attributeName, properties ) {
+		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ), properties );
+	}
+
+	/**
+	 * Returns properties associated with a given model attribute. See {@link #setAttributeProperties `setAttributeProperties()`}.
+	 *
+	 * @param {String} attributeName A name of the attribute.
+	 * @returns {module:engine/model/schema~AttributeProperties}
+	 */
+	getAttributeProperties( attributeName ) {
+		return this._attributeProperties[ attributeName ] || {};
 	}
 
 	/**
@@ -899,7 +977,7 @@ mix( Schema, ObservableMixin );
  * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
  * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
  * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`, `isInline`. Read about them below.
  *
  * # The is* properties
  *
@@ -915,8 +993,9 @@ mix( Schema, ObservableMixin );
  * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
  * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
  * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
- * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
- * returns `true` for object elements automatically.
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ * * `isInline` &ndash; Whether an item is "text-like" and should be treated as an inline node. Examples of inline elements:
+ * `$text`, `softBreak` (`<br>`), etc.
  *
  * # Generic items
  *
@@ -931,7 +1010,8 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *		this.schema.register( '$text', {
- *			allowIn: '$block'
+ *			allowIn: '$block',
+ *			isInline: true
  *		} );
  *
  * They reflect typical editor content that is contained within one root, consists of several blocks
@@ -1263,6 +1343,16 @@ export class SchemaContext {
  *		} );
  *
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
+ */
+
+/**
+ * A structure containing additional metadata describing the attribute.
+ *
+ * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
+ *
+ * @typedef {Object} module:engine/model/schema~AttributeProperties
+ * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
+ * `fontSize` rather than semantic attribute (such as `src`, `listType`, etc.). For example, it is used by the "Remove format" feature.
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {

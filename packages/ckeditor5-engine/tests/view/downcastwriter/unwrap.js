@@ -144,6 +144,22 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
+		it( 'should unwrap a part of a nested attribute', () => {
+			test(
+				'<container:p>' +
+					'<attribute:u view-priority="1"><attribute:b view-priority="1">fo{ob}ar</attribute:b></attribute:u>' +
+				'</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>' +
+					'<attribute:u view-priority="1">' +
+						'<attribute:b view-priority="1">fo</attribute:b>' +
+						'[ob]' +
+						'<attribute:b view-priority="1">ar</attribute:b>' +
+					'</attribute:u>' +
+				'</container:p>'
+			);
+		} );
+
 		it( 'should merge unwrapped nodes #1', () => {
 			test(
 				'<container:p>foo[<attribute:b view-priority="1">bar</attribute:b>]baz</container:p>',
@@ -309,6 +325,40 @@ describe( 'DowncastWriter', () => {
 				'<container:p>' +
 					'[<attribute:b view-priority="1" baz="qux">foo</attribute:b>]' +
 					'<attribute:b view-priority="1" baz="qux" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should partially unwrap a nested attribute', () => {
+			test(
+				'<container:p>' +
+					'[<attribute:i view-priority="1">' +
+						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>' +
+					'</attribute:i>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" style="position: absolute;"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:i view-priority="1">' +
+						'<attribute:b view-priority="1" style="color:red;top:10px">test</attribute:b>' +
+					'</attribute:i>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should partially unwrap a part of a nested attribute', () => {
+			test(
+				'<container:p>' +
+					'<attribute:i view-priority="1">' +
+						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">t{es}t</attribute:b>' +
+					'</attribute:i>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" style="position: absolute;"></attribute:b>',
+				'<container:p>' +
+					'<attribute:i view-priority="1">' +
+						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">t</attribute:b>' +
+						'[<attribute:b view-priority="1" style="color:red;top:10px">es</attribute:b>]' +
+						'<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">t</attribute:b>' +
+					'</attribute:i>' +
 				'</container:p>'
 			);
 		} );

@@ -306,7 +306,7 @@ export function transformSets( operationsA, operationsB, options ) {
 		originalOperationsBCount: operationsB.length
 	};
 
-	const contextFactory = new ContextFactory( options.document, options.useRelations );
+	const contextFactory = new ContextFactory( options.document, options.useRelations, options.forceWeakRemove );
 	contextFactory.setOriginalOperations( operationsA );
 	contextFactory.setOriginalOperations( operationsB );
 
@@ -386,12 +386,16 @@ class ContextFactory {
 	// @param {module:engine/model/document~Document} document Document which the operations change.
 	// @param {Boolean} useRelations Whether during transformation relations should be used (used during undo for
 	// better conflict resolution).
-	constructor( document, useRelations ) {
+	// @param {Boolean} [forceWeakRemove=false] If set to `false`, remove operation will be always stronger than move operation,
+	// so the removed nodes won't end up back in the document root. When set to `true`, context data will be used.
+	constructor( document, useRelations, forceWeakRemove = false ) {
 		// `model.History` instance which information about undone operations will be taken from.
 		this._history = document.history;
 
 		// Whether additional context should be used.
 		this._useRelations = useRelations;
+
+		this._forceWeakRemove = !!forceWeakRemove;
 
 		// For each operation that is created during transformation process, we keep a reference to the original operation
 		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
@@ -504,6 +508,10 @@ class ContextFactory {
 							this._setRelation( opA, opB, 'mergeTargetNotMoved' );
 						}
 
+						if ( opA.sourcePosition.isEqual( opB.targetPosition ) ) {
+							this._setRelation( opA, opB, 'mergeSourceNotMoved' );
+						}
+
 						if ( opA.sourcePosition.isEqual( opB.sourcePosition ) ) {
 							this._setRelation( opA, opB, 'mergeSameElement' );
 						}
@@ -583,7 +591,8 @@ class ContextFactory {
 			aWasUndone: this._wasUndone( opA ),
 			bWasUndone: this._wasUndone( opB ),
 			abRelation: this._useRelations ? this._getRelation( opA, opB ) : null,
-			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null
+			baRelation: this._useRelations ? this._getRelation( opB, opA ) : null,
+			forceWeakRemove: this._forceWeakRemove
 		};
 	}
 
@@ -1313,7 +1322,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
-	if ( b.type == 'remove' && !context.bWasUndone ) {
+	if ( b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
 			return [ new NoOperation( 0 ) ];
 		}
@@ -1429,19 +1438,34 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 
 	// Case 2:
 	//
-	// Merge source is at the same position as split position. This sometimes happen during undo. This merge operation
-	// might have been earlier transformed by a merge operation which both merged the same element. See case in
-	// `MergeOperation` x `MergeOperation` transformation. In that case, if the merge operation has been undone, the special
-	// case is not applied.
+	// Merge source is at the same position as split position. This sometimes happen, mostly during undo.
+	// The decision here is mostly to choose whether merge source position should stay where it is (so it will be at the end of the
+	// split element) or should be move to the beginning of the new element.
 	//
-	// In this scenario the merge operation is now transformed by the split which has undone the previous merge operation.
-	// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
-	//
-	if ( a.sourcePosition.isEqual( b.splitPosition ) && ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) ) {
-		a.sourcePosition = b.moveTargetPosition.clone();
-		a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+	if ( a.sourcePosition.isEqual( b.splitPosition ) ) {
+		// Use context to check if `SplitOperation` is not undoing a merge operation, that didn't change the `a` operation.
+		// This scenario happens the undone merge operation moved nodes at the source position of `a` operation.
+		// In that case `a` operation source position should stay where it is.
+		if ( context.abRelation == 'mergeSourceNotMoved' ) {
+			a.howMany = 0;
+			a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
 
-		return [ a ];
+			return [ a ];
+		}
+
+		// This merge operation might have been earlier transformed by a merge operation which both merged the same element.
+		// See that case in `MergeOperation` x `MergeOperation` transformation. In that scenario, if the merge operation has been undone,
+		// the special case is not applied.
+		//
+		// Now, the merge operation is transformed by the split which has undone that previous merge operation.
+		// So now we are fixing situation which was skipped in `MergeOperation` x `MergeOperation` case.
+		//
+		if ( context.abRelation == 'mergeSameElement' || a.sourcePosition.offset > 0 ) {
+			a.sourcePosition = b.moveTargetPosition.clone();
+			a.targetPosition = a.targetPosition._getTransformedBySplitOperation( b );
+
+			return [ a ];
+		}
 	}
 
 	// The default case.
@@ -1596,9 +1620,9 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// If only one of operations is a remove operation, we force remove operation to be the "stronger" one
 	// to provide more expected results.
-	if ( a.type == 'remove' && b.type != 'remove' && !context.aWasUndone ) {
+	if ( a.type == 'remove' && b.type != 'remove' && !context.aWasUndone && !context.forceWeakRemove ) {
 		aIsStrong = true;
-	} else if ( a.type != 'remove' && b.type == 'remove' && !context.bWasUndone ) {
+	} else if ( a.type != 'remove' && b.type == 'remove' && !context.bWasUndone && !context.forceWeakRemove ) {
 		aIsStrong = false;
 	}
 
@@ -1768,7 +1792,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	if ( b.graveyardPosition ) {
 		const movesGraveyardElement = moveRange.start.isEqual( b.graveyardPosition ) || moveRange.containsPosition( b.graveyardPosition );
 
-		if ( a.howMany > 1 && movesGraveyardElement ) {
+		if ( a.howMany > 1 && movesGraveyardElement && !context.aWasUndone ) {
 			ranges.push( Range._createFromPositionAndShift( b.insertionPosition, 1 ) );
 		}
 	}
@@ -1780,7 +1804,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 	const movedRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( b.deletionPosition.hasSameParentAs( a.sourcePosition ) && movedRange.containsPosition( b.sourcePosition ) ) {
-		if ( a.type == 'remove' ) {
+		if ( a.type == 'remove' && !context.forceWeakRemove ) {
 			// Case 1:
 			//
 			// The element to remove got merged.
@@ -1794,21 +1818,22 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				const results = [];
 
 				let gyMoveSource = b.graveyardPosition.clone();
-				let splitNodesMoveSource = b.targetPosition.clone();
+				let splitNodesMoveSource = b.targetPosition._getTransformedByMergeOperation( b );
 
 				if ( a.howMany > 1 ) {
 					results.push( new MoveOperation( a.sourcePosition, a.howMany - 1, a.targetPosition, 0 ) );
-					gyMoveSource = gyMoveSource._getTransformedByInsertion( a.targetPosition, a.howMany - 1 );
+
+					gyMoveSource = gyMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
 					splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( a.sourcePosition, a.targetPosition, a.howMany - 1 );
 				}
 
 				const gyMoveTarget = b.deletionPosition._getCombined( a.sourcePosition, a.targetPosition );
 				const gyMove = new MoveOperation( gyMoveSource, 1, gyMoveTarget, 0 );
 
-				const targetPositionPath = gyMove.getMovedRangeStart().path.slice();
-				targetPositionPath.push( 0 );
+				const splitNodesMoveTargetPath = gyMove.getMovedRangeStart().path.slice();
+				splitNodesMoveTargetPath.push( 0 );
 
-				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, targetPositionPath );
+				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, splitNodesMoveTargetPath );
 				splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( gyMoveSource, gyMoveTarget, 1 );
 				const splitNodesMove = new MoveOperation( splitNodesMoveSource, b.howMany, splitNodesMoveTarget, 0 );
 
@@ -2052,7 +2077,9 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 		// is already moved to the correct position, we need to only move the nodes after the split position.
 		// This will be done by `MoveOperation` instead of `SplitOperation`.
 		//
-		if ( rangeToMove.start.isEqual( a.graveyardPosition ) || rangeToMove.containsPosition( a.graveyardPosition ) ) {
+		const gyElementMoved = rangeToMove.start.isEqual( a.graveyardPosition ) || rangeToMove.containsPosition( a.graveyardPosition );
+
+		if ( !context.bWasUndone && gyElementMoved ) {
 			const sourcePosition = a.splitPosition._getTransformedByMoveOperation( b );
 
 			const newParentPosition = a.graveyardPosition._getTransformedByMoveOperation( b );
@@ -2157,6 +2184,9 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 	//
 	// So we cancel split operation only if it was really identical.
 	//
+	// Also, there is additional case, where split operations aren't identical and should not be cancelled, however the
+	// default transformation is incorrect too.
+	//
 	if ( a.splitPosition.isEqual( b.splitPosition ) ) {
 		if ( !a.graveyardPosition && !b.graveyardPosition ) {
 			return [ new NoOperation( 0 ) ];
@@ -2164,6 +2194,20 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 
 		if ( a.graveyardPosition && b.graveyardPosition && a.graveyardPosition.isEqual( b.graveyardPosition ) ) {
 			return [ new NoOperation( 0 ) ];
+		}
+
+		// Use context to know that the `a.splitPosition` should stay where it is.
+		// This happens during undo when first a merge operation moved nodes to `a.splitPosition` and now `b` operation undoes that merge.
+		if ( context.abRelation == 'splitBefore' ) {
+			// Since split is at the same position, there are no nodes left to split.
+			a.howMany = 0;
+
+			// Note: there was `if ( a.graveyardPosition )` here but it was uncovered in tests and I couldn't find any scenarios for now.
+			// That would have to be a `SplitOperation` that didn't come from undo but is transformed by operations that were undone.
+			// It could happen if `context` is enabled in collaboration.
+			a.graveyardPosition = a.graveyardPosition._getTransformedBySplitOperation( b );
+
+			return [ a ];
 		}
 	}
 
@@ -2296,9 +2340,7 @@ function _makeMoveOperationsFromRanges( ranges, targetPosition ) {
 		const op = new MoveOperation(
 			range.start,
 			range.end.offset - range.start.offset,
-			// If the target is the end of the move range this operation doesn't really move anything.
-			// In this case, it is better for OT to use range start instead of range end.
-			targetPosition.isEqual( range.end ) ? range.start : targetPosition,
+			targetPosition,
 			0
 		);
 

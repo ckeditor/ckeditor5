@@ -540,6 +540,24 @@ describe( 'transform', () => {
 					'<paragraph>r</paragraph>'
 				);
 			} );
+
+			it( 'move operation does not really move anything', () => {
+				john.setData( '<paragraph>[F]oobar</paragraph>' );
+				kate.setData( '<paragraph>F[oo]bar</paragraph>' );
+
+				john.remove();
+				john.setSelection( [ 0, 4 ] );
+				john.split();
+
+				kate.move( [ 0, 0 ] );
+
+				syncClients();
+
+				expectClients(
+					'<paragraph>ooba</paragraph>' +
+					'<paragraph>r</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );

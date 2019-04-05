@@ -182,6 +182,10 @@ describe( 'Position', () => {
 				expect( Position._createAt( ul, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 			} );
 
+			it( 'should set stickiness (if not cloning other position)', () => {
+				expect( Position._createAt( root, 'end', 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
+			} );
+
 			it( 'throws when parent is not an element', () => {
 				expect( () => {
 					Position._createAt( b, 0 );
@@ -214,6 +218,10 @@ describe( 'Position', () => {
 				expect( Position._createBefore( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 			} );
 
+			it( 'should set stickiness', () => {
+				expect( Position._createBefore( p, 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
+			} );
+
 			it( 'should throw error if one try to create positions before root', () => {
 				expect( () => {
 					Position._createBefore( root );
@@ -238,6 +246,10 @@ describe( 'Position', () => {
 				expect( Position._createAfter( b ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
 				expect( Position._createAfter( a ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 				expect( Position._createAfter( r ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 3 ] );
+			} );
+
+			it( 'should set stickiness', () => {
+				expect( Position._createAfter( p, 'toPrevious' ) ).to.have.property( 'stickiness' ).that.equals( 'toPrevious' );
 			} );
 
 			it( 'should throw error if one try to make positions after root', () => {

@@ -998,7 +998,7 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'remove and add attribute on text', () => {
+		it( 'remove attribute and add attribute on text', () => {
 			const p = root.getChild( 1 );
 
 			p.getChild( 0 )._setAttribute( 'bold', true );
@@ -1277,6 +1277,46 @@ describe( 'Differ', () => {
 						type,
 						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 3 ) ),
 						attributeKey: 'b',
+						attributeOldValue,
+						attributeNewValue
+					}
+				] );
+			} );
+		} );
+
+		it( 'add attribute after some text was removed', () => {
+			const p = root.getChild( 0 );
+
+			const range = new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) );
+			const position = Position._createAt( p, 1 );
+
+			model.change( () => {
+				remove( position, 1 );
+				attribute( range, 'a', null, true );
+
+				const type = 'attribute';
+				const attributeOldValue = null;
+				const attributeNewValue = true;
+
+				// Attribute change glueing does not work 100% correct.
+				expectChanges( [
+					{
+						type,
+						range: new Range( Position._createAt( p, 0 ), Position._createAt( p, 1 ) ),
+						attributeKey: 'a',
+						attributeOldValue,
+						attributeNewValue
+					},
+					{
+						type: 'remove',
+						position,
+						length: 1,
+						name: '$text'
+					},
+					{
+						type,
+						range: new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) ),
+						attributeKey: 'a',
 						attributeOldValue,
 						attributeNewValue
 					}

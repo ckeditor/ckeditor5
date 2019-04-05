@@ -108,15 +108,14 @@ export default class UpcastDispatcher {
 	 */
 	constructor( conversionApi = {} ) {
 		/**
-		 * List of elements that will be checked after conversion process and if element in the list will be empty it
-		 * will be removed from conversion result.
+		 * List of the elements that were created during splitting.
 		 *
-		 * After conversion process list is cleared.
+		 * After conversion process the list is cleared.
 		 *
-		 * @protected
-		 * @type {Set<module:engine/model/element~Element>}
+		 * @private
+		 * @type {Map.<module:engine/model/element~Element,Array.<module:engine/model/element~Element>>}
 		 */
-		this._removeIfEmpty = new Set();
+		this._splitParts = new Map();
 
 		/**
 		 * Position in the temporary structure where the converted content is inserted. The structure reflect the context of
@@ -140,6 +139,7 @@ export default class UpcastDispatcher {
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
+		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
 	}
 
 	/**
@@ -176,15 +176,15 @@ export default class UpcastDispatcher {
 		// Do the conversion.
 		const { modelRange } = this._convertItem( viewItem, this._modelCursor );
 
-		// Conversion result is always a document fragment so let's create this fragment.
+		// Conversion result is always a document fragment so let's create it.
 		const documentFragment = writer.createDocumentFragment();
 
 		// When there is a conversion result.
 		if ( modelRange ) {
-			// Remove all empty elements that was added to #_removeIfEmpty list.
+			// Remove all empty elements that were create while splitting.
 			this._removeEmptyElements();
 
-			// Move all items that was converted to context tree to document fragment.
+			// Move all items that were converted in context tree to the document fragment.
 			for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
 				writer.append( item, documentFragment );
 			}
@@ -196,8 +196,8 @@ export default class UpcastDispatcher {
 		// Clear context position.
 		this._modelCursor = null;
 
-		// Clear split elements.
-		this._removeIfEmpty.clear();
+		// Clear split elements lists.
+		this._splitParts.clear();
 
 		// Clear conversion API.
 		this.conversionApi.writer = null;
@@ -283,14 +283,31 @@ export default class UpcastDispatcher {
 		// Split element to allowed parent.
 		const splitResult = this.conversionApi.writer.split( modelCursor, allowedParent );
 
-		// Remember all elements that are created as a result of split.
-		// This is important because at the end of conversion we want to remove all empty split elements.
+		// Using the range returned by `model.Writer#split`, we will pair original elements with their split parts.
 		//
-		// Loop through positions between elements in range (except split result position) and collect parents.
-		// <notSplit><split1><split2>[pos]</split2>[pos]</split1>[omit]<split1>[pos]<split2>[pos]</split2></split1></notSplit>
-		for ( const position of splitResult.range.getPositions() ) {
-			if ( !position.isEqual( splitResult.position ) ) {
-				this._removeIfEmpty.add( position.parent );
+		// The range returned from the writer spans "over the split" or, precisely saying, from the end of the original element (the one
+		// that got split) to the beginning of the other part of that element:
+		//
+		// <limit><a><b><c>X[]Y</c></b><a></limit> ->
+		// <limit><a><b><c>X[</c></b></a><a><b><c>]Y</c></b></a>
+		//
+		// After the split there cannot be any full node between the positions in `splitRange`. The positions are touching.
+		// Also, because of how splitting works, it is easy to notice, that "closing tags" are in the reverse order than "opening tags".
+		// Also, since we split all those elements, each of them has to have the other part.
+		//
+		// With those observations in mind, we will pair the original elements with their split parts by saving "closing tags" and matching
+		// them with "opening tags" in the reverse order. For that we can use a stack.
+		const stack = [];
+
+		for ( const treeWalkerValue of splitResult.range.getWalker() ) {
+			if ( treeWalkerValue.type == 'elementEnd' ) {
+				stack.push( treeWalkerValue.item );
+			} else {
+				// There should not be any text nodes after the element is split, so the only other value is `elementStart`.
+				const originalPart = stack.pop();
+				const splitPart = treeWalkerValue.item;
+
+				this._registerSplitPair( originalPart, splitPart );
 			}
 		}
 
@@ -301,25 +318,62 @@ export default class UpcastDispatcher {
 	}
 
 	/**
-	 * Checks if {@link #_removeIfEmpty} contains empty elements and remove them.
-	 * We need to do it smart because there could be elements that are not empty because contains
-	 * other empty elements and after removing its children they become available to remove.
-	 * We need to continue iterating over split elements as long as any element will be removed.
+	 * Registers that `splitPart` element is a split part of the `originalPart` element.
+	 *
+	 * Data set by this method is used by {@link #_getSplitParts} and {@link #_removeEmptyElements}.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} originalPart
+	 * @param {module:engine/model/element~Element} splitPart
+	 */
+	_registerSplitPair( originalPart, splitPart ) {
+		if ( !this._splitParts.has( originalPart ) ) {
+			this._splitParts.set( originalPart, [ originalPart ] );
+		}
+
+		const list = this._splitParts.get( originalPart );
+
+		this._splitParts.set( splitPart, list );
+		list.push( splitPart );
+	}
+
+	/**
+	 * @private
+	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#getSplitParts
+	 */
+	_getSplitParts( element ) {
+		let parts;
+
+		if ( !this._splitParts.has( element ) ) {
+			parts = [ element ];
+		} else {
+			parts = this._splitParts.get( element );
+		}
+
+		return parts;
+	}
+
+	/**
+	 * Checks if there are any empty elements created while splitting and removes them.
+	 *
+	 * This method works recursively to re-check empty elements again after at least one element was removed in the initial call,
+	 * as some elements might have become empty after other empty elements were removed from them.
 	 *
 	 * @private
 	 */
 	_removeEmptyElements() {
-		let removed = false;
+		let anyRemoved = false;
 
-		for ( const element of this._removeIfEmpty ) {
+		for ( const element of this._splitParts.keys() ) {
 			if ( element.isEmpty ) {
 				this.conversionApi.writer.remove( element );
-				this._removeIfEmpty.delete( element );
-				removed = true;
+				this._splitParts.delete( element );
+
+				anyRemoved = true;
 			}
 		}
 
-		if ( removed ) {
+		if ( anyRemoved ) {
 			this._removeEmptyElements();
 		}
 	}
@@ -408,7 +462,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	return markers;
 }
 
-// Creates model fragment according to given context and returns position in top element.
+// Creates model fragment according to given context and returns position in the bottom (the deepest) element.
 function createContextTree( contextDefinition, writer ) {
 	let position;
 
@@ -465,7 +519,7 @@ function createContextTree( contextDefinition, writer ) {
  * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:text
  * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:documentFragment
- * @param {module:engine/view/item~Item} viewItem Item to convert.
+ * @param {module:engine/view/item~Item} viewItem Element which children should be converted.
  * @param {module:engine/model/position~Position} modelCursor Position of conversion.
  * @returns {Object} result Conversion result.
  * @returns {module:engine/model/range~Range} result.modelRange Model range containing results of conversion of all children of given item.
@@ -502,6 +556,46 @@ function createContextTree( contextDefinition, writer ) {
  * @returns {module:engine/model/position~Position} position between split elements.
  * @returns {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
  * continue conversion. When element is not defined it means that there was no split.
+ */
+
+/**
+ * Returns all the split parts of given `element` that were created during upcasting through using {@link #splitToAllowedParent}.
+ * It enables you to easily track those elements and continue processing them after they are split during their children conversion.
+ *
+ *		<paragraph>Foo<image />bar<image />baz</paragraph> ->
+ *		<paragraph>Foo</paragraph><image /><paragraph>bar</paragraph><image /><paragraph>baz</paragraph>
+ *
+ * For a reference to any of above paragraphs, the function will return all three paragraphs (the original element included),
+ * sorted in the order of their creation (the original element is the first one).
+ *
+ * If given `element` was not split, an array with single element is returned.
+ *
+ * Example of a usage in a converter code:
+ *
+ *		const myElement = conversionApi.writer.createElement( 'myElement' );
+ *
+ *		// Children conversion may split `myElement`.
+ *		conversionApi.convertChildren( myElement, modelCursor );
+ *
+ *		const splitParts = conversionApi.getSplitParts( myElement );
+ *		const lastSplitPart = splitParts[ splitParts.length - 1 ];
+ *
+ *		// Setting `data.modelRange` basing on split parts:
+ *		data.modelRange = conversionApi.writer.createRange(
+ *			conversionApi.writer.createPositionBefore( myElement ),
+ *			conversionApi.writer.createPositionAfter( lastSplitPart )
+ *		);
+ *
+ *		// Setting `data.modelCursor` to continue after the last split element:
+ *		data.modelCursor = conversionApi.writer.createPositionAfter( lastSplitPart );
+ *
+ * **Tip:** if you are unable to get a reference to the original element (for example because the code is split into multiple converters
+ * or even classes) but it was already converted, you might want to check first element in `data.modelRange`. This is a common situation
+ * if an attribute converter is separated from an element converter.
+ *
+ * @method #getSplitParts
+ * @param {module:engine/model/element~Element} element
+ * @returns {Array.<module:engine/model/element~Element>}
  */
 
 /**

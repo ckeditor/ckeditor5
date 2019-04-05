@@ -29,7 +29,7 @@ describe( 'Conversion', () => {
 
 		upcastDispaA = Symbol( 'upA' );
 
-		conversion = new Conversion( [ downcastDispA, downcastDispB ], upcastDispaA );
+		conversion = new Conversion( [ downcastDispA, downcastDispB ], [ upcastDispaA ] );
 	} );
 
 	describe( 'addAlias()', () => {
@@ -99,6 +99,21 @@ describe( 'Conversion', () => {
 			expect( helperB.calledWithExactly( downcastDispB ) ).to.be.false;
 			expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
 		} );
+	} );
+
+	it( 'constructor() should be able to take singular objects instead of arrays', () => {
+		const helperA = sinon.stub();
+		const helperB = sinon.stub();
+
+		conversion = new Conversion( downcastDispA, upcastDispaA );
+
+		conversion.for( 'downcast' ).add( helperA );
+
+		expect( helperA.calledWithExactly( downcastDispA ) ).to.be.true;
+
+		conversion.for( 'upcast' ).add( helperB );
+
+		expect( helperB.calledWithExactly( upcastDispaA ) ).to.be.true;
 	} );
 
 	describe( 'converters', () => {

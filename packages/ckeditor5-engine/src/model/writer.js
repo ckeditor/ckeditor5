@@ -717,8 +717,8 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 * @param {module:engine/model/node~Node} [limitElement] Stop splitting when this element will be reached.
 	 * @returns {Object} result Split result.
-	 * @returns {module:engine/model/position~Position} result.position between split elements.
-	 * @returns {module:engine/model/range~Range} result.range Range that stars from the end of the first split element and ands
+	 * @returns {module:engine/model/position~Position} result.position Position between split elements.
+	 * @returns {module:engine/model/range~Range} result.range Range that stars from the end of the first split element and ends
 	 * at the beginning of the first copy element.
 	 */
 	split( position, limitElement ) {
@@ -814,22 +814,12 @@ export default class Writer {
 			throw new CKEditorError( 'writer-wrap-element-attached: Element to wrap with is already attached to tree model.' );
 		}
 
-		const version = range.root.document ? range.root.document.version : null;
+		this.insert( element, range.start );
 
-		// Has to be `range.start` not `range.end` for better transformations.
-		const insert = new InsertOperation( range.start, element, version );
-		this.batch.addOperation( insert );
-		this.model.applyOperation( insert );
+		// Shift the range-to-wrap because we just inserted an element before that range.
+		const shiftedRange = new Range( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
 
-		const move = new MoveOperation(
-			range.start.getShiftedBy( 1 ),
-			range.end.offset - range.start.offset,
-			Position._createAt( element, 0 ),
-			version === null ? null : version + 1
-		);
-
-		this.batch.addOperation( move );
-		this.model.applyOperation( move );
+		this.move( shiftedRange, Position._createAt( element, 0 ) );
 	}
 
 	/**
@@ -939,12 +929,37 @@ export default class Writer {
 	}
 
 	/**
-	 * Adds or updates a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
+	 * Adds, updates or refreshes a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
 	 * changes in the document and updates its range automatically, when model tree changes. Still, it is possible to change the
 	 * marker's range directly using this method.
 	 *
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
+	 *
+	 * As the second parameter you can set the new marker data or leave this parameter as empty which will just refresh
+	 * the marker by triggering downcast conversion for it. Refreshing the marker is useful when you want to change
+	 * the marker {@link module:engine/view/element~Element view element} without changing any marker data.
+	 *
+	 * 		let isCommentActive = false;
+	 *
+	 * 		model.conversion.markerToHighlight( {
+	 * 			model: 'comment',
+	 *			view: data => {
+	 *				const classes = [ 'comment-marker' ];
+	 *
+	 *				if ( isCommentActive ) {
+	 *					classes.push( 'comment-marker--active' );
+	 *				}
+	 *
+	 *				return { classes };
+	 *			}
+	 * 		} );
+	 *
+	 * 		// Change the property that indicates if marker is displayed as active or not.
+	 * 		isCommentActive = true;
+	 *
+	 * 		// And refresh the marker to convert it with additional class.
+	 * 		model.change( writer => writer.updateMarker( 'comment' ) );
 	 *
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
@@ -975,13 +990,14 @@ export default class Writer {
 	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
-	 * @param {Object} options
+	 * @param {Object} [options] If options object is not defined then marker will be refreshed by triggering
+	 * downcast conversion for this marker with the same data.
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
 	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the editor data.
 	 */
-	updateMarker( markerOrName, options = {} ) {
+	updateMarker( markerOrName, options ) {
 		this._assertWriterUsedCorrectly();
 
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -994,6 +1010,12 @@ export default class Writer {
 			 * @error writer-updateMarker-marker-not-exists
 			 */
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
+		}
+
+		if ( !options ) {
+			this.model.markers._refresh( currentMarker );
+
+			return;
 		}
 
 		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';

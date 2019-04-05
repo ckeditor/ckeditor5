@@ -404,11 +404,18 @@ export default class Selection {
 			this._setRanges( selectable, placeOrOffset && !!placeOrOffset.backward );
 		} else {
 			/**
-			 * Cannot set selection to given place.
+			 * Cannot set the selection to the given place.
+			 *
+			 * Invalid parameters were specified when setting the selection. Common issues:
+			 *
+			 * * A {@link module:engine/model/textproxy~TextProxy} instance was passed instead of
+			 * a real {@link module:engine/model/text~Text}.
+			 * * View nodes were passed instead of model nodes.
+			 * * `null`/`undefined` was passed.
 			 *
 			 * @error model-selection-setTo-not-selectable
 			 */
-			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set selection to given place.' );
+			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set the selection to the given place.' );
 		}
 	}
 

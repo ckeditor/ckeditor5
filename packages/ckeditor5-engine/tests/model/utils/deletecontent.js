@@ -29,6 +29,29 @@ describe( 'DataController utils', () => {
 			} );
 		} );
 
+		it( 'should not do anything if the selection is already in graveyard', () => {
+			model = new Model();
+			doc = model.document;
+
+			const gy = model.document.graveyard;
+
+			gy._appendChild( new Element( 'paragraph' ) );
+
+			const baseVersion = model.document.baseVersion;
+
+			model.change( writer => {
+				sinon.spy( writer, 'remove' );
+
+				const selection = writer.createSelection( writer.createRangeIn( gy ) );
+
+				deleteContent( model, selection );
+
+				expect( writer.remove.called ).to.be.false;
+			} );
+
+			expect( model.document.baseVersion ).to.equal( baseVersion );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				model = new Model();
@@ -592,19 +615,6 @@ describe( 'DataController utils', () => {
 					.to.equal( 'x[]z' );
 			} );
 
-			it( 'creates a paragraph when text is not allowed (paragraph selected)', () => {
-				setData(
-					model,
-					'<paragraph>x</paragraph>[<paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
-					{ rootName: 'bodyRoot' }
-				);
-
-				deleteContent( model, doc.selection );
-
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
-			} );
-
 			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
 				setData(
 					model,
@@ -614,6 +624,7 @@ describe( 'DataController utils', () => {
 
 				const root = doc.getRoot( 'bodyRoot' );
 
+				// [<paragraph>yyy</paragraph>]
 				const selection = new Selection( [
 					new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) )
 				] );
@@ -699,6 +710,32 @@ describe( 'DataController utils', () => {
 
 				expect( getData( model, { rootName: 'restrictedRoot' } ) )
 					.to.equal( '<blockWidget></blockWidget>[]<blockWidget></blockWidget>' );
+			} );
+
+			it( 'does not create a paragraph when doNotAutoparagraph option is set to true', () => {
+				setData(
+					model,
+					'<paragraph>x</paragraph>[<blockWidget></blockWidget>]<paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection, { doNotAutoparagraph: true } );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>x[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates paragraph when after deletion there is no valid selection range', () => {
+				setData(
+					model,
+					'[<blockWidget></blockWidget>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContent( model, doc.selection, { doNotAutoparagraph: true } );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
 			} );
 		} );
 

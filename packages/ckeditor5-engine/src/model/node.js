@@ -11,6 +11,9 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Model node. Most basic structure of model tree.
  *

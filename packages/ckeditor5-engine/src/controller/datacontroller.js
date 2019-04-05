@@ -35,6 +35,11 @@ import ModelRange from '../model/range';
  * * downcast converters,
  * * upcast converters.
  *
+ * An instance of the data controller is always available in the {@link module:core/editor/editor~Editor#data `editor.data`}
+ * property:
+ *
+ *		editor.data.get( { rootName: 'customRoot' } ); // -> '<p>Hello!</p>'
+ *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class DataController {
@@ -115,17 +120,23 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
-	 * @param {String} [rootName='main'] Root name.
+	 * @param {Object} [options]
+	 * @param {String} [options.rootName='main'] Root name.
+	 * @param {String} [options.trim='empty'] Whether returned data should be trimmed. This option is set to `empty` by default,
+	 * which means whenever editor content is considered empty, an empty string will be returned. To turn off trimming completely
+	 * use `'none'`. In such cases exact content will be returned (for example `<p>&nbsp;</p>` for an empty editor).
 	 * @returns {String} Output data.
 	 */
-	get( rootName = 'main' ) {
+	get( options ) {
+		const { rootName = 'main', trim = 'empty' } = options || {};
+
 		if ( !this._checkIfRootsExists( [ rootName ] ) ) {
 			/**
 			 * Cannot get data from a non-existing root. This error is thrown when {@link #get DataController#get() method}
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
-			 * 		data.get( 'root2' );
+			 *		data.get( { rootName: 'root2' } );
 			 *
 			 * will throw this error.
 			 *
@@ -134,8 +145,13 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-get-non-existent-root: Attempting to get data from a non-existing root.' );
 		}
 
-		// Get model range.
-		return this.stringify( this.model.document.getRoot( rootName ) );
+		const root = this.model.document.getRoot( rootName );
+
+		if ( trim === 'empty' && !this.model.hasContent( root, { ignoreWhitespaces: true } ) ) {
+			return '';
+		}
+
+		return this.stringify( root );
 	}
 
 	/**
@@ -390,7 +406,7 @@ export default class DataController {
 	 * should be fired manually.
 	 *
 	 * The `init` event is fired by decorated {@link #init} method.
-	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event init
 	 */

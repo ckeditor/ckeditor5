@@ -945,6 +945,47 @@ describe( 'Selection post-fixer', () => {
 			} );
 		} );
 
+		describe( 'non-collapsed selection - inline widget scenarios', () => {
+			beforeEach( () => {
+				model.schema.register( 'placeholder', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+			} );
+
+			it( 'should fix selection that ends in inline element', () => {
+				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[]<placeholder></placeholder>bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that starts in inline element', () => {
+				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa<placeholder></placeholder>[]bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that ends in inline element that is also an object', () => {
+				model.schema.extend( 'placeholder', {
+					isObject: true
+				} );
+
+				setModelData( model, '<paragraph>aaa[<placeholder>]</placeholder>bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+			} );
+
+			it( 'should fix selection that starts in inline element that is also an object', () => {
+				model.schema.extend( 'placeholder', {
+					isObject: true
+				} );
+
+				setModelData( model, '<paragraph>aaa<placeholder>[</placeholder>]bbb</paragraph>' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>aaa[<placeholder></placeholder>]bbb</paragraph>' );
+			} );
+		} );
+
 		describe( 'collapsed selection', () => {
 			beforeEach( () => {
 				setModelData( model,

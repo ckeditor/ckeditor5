@@ -581,6 +581,8 @@ export default class Renderer {
 	 * @returns {Array.<String>} The list of actions based on the {@link module:utils/diff~diff} function.
 	 */
 	_diffNodeLists( actualDomChildren, expectedDomChildren ) {
+		actualDomChildren = filterOutFakeSelectionContainer( actualDomChildren, this._fakeSelectionContainer );
+
 		return diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFiller ) );
 	}
 
@@ -704,16 +706,15 @@ export default class Renderer {
 			} );
 
 			// Fill it with a text node so we can update it later.
-			container.appendChild( domDocument.createTextNode( '\u00A0' ) );
+			container.textContent = '\u00A0';
 		}
 
-		// Add fake container if not already added.
-		if ( !container.parentElement ) {
+		if ( !container.parentElement || container.parentElement != domRoot ) {
 			domRoot.appendChild( container );
 		}
 
 		// Update contents.
-		container.firstChild.data = this.selection.fakeSelectionLabel || '\u00A0';
+		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
 		// Update selection.
 		const domSelection = domDocument.getSelection();
@@ -955,4 +956,20 @@ function fixGeckoSelectionAfterBr( focus, domSelection ) {
 	if ( childAtOffset && childAtOffset.tagName == 'BR' ) {
 		domSelection.addRange( domSelection.getRangeAt( 0 ) );
 	}
+}
+
+function filterOutFakeSelectionContainer( domChildList, fakeSelectionContainer ) {
+	const childList = Array.from( domChildList );
+
+	if ( childList.length == 0 || !fakeSelectionContainer ) {
+		return childList;
+	}
+
+	const last = childList[ childList.length - 1 ];
+
+	if ( last == fakeSelectionContainer ) {
+		childList.pop();
+	}
+
+	return childList;
 }

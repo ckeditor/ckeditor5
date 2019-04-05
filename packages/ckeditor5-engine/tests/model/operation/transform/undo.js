@@ -5,6 +5,10 @@
 
 import { Client, expectClients, clearBuffer } from './utils.js';
 
+import DocumentFragment from '../../../../src/model/documentfragment';
+import Element from '../../../../src/model/element';
+import Text from '../../../../src/model/text';
+
 describe( 'transform', () => {
 	let john;
 
@@ -573,5 +577,113 @@ describe( 'transform', () => {
 		john.undo();
 
 		expectClients( '<paragraph>XY</paragraph>' );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1385
+	it( 'paste inside paste + undo, undo + redo, redo', () => {
+		const model = john.editor.model;
+
+		john.setData( '<paragraph>[]</paragraph>' );
+
+		model.insertContent( getPastedContent() );
+
+		john.setSelection( [ 0, 3 ] );
+
+		model.insertContent( getPastedContent() );
+
+		expectClients( '<heading1>FooFoobarbar</heading1>' );
+
+		john.undo();
+
+		expectClients( '<heading1>Foobar</heading1>' );
+
+		john.undo();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foobar</heading1>' );
+
+		john.redo();
+
+		expectClients( '<heading1>FooFoobarbar</heading1>' );
+
+		function getPastedContent() {
+			return new Element( 'heading1', null, new Text( 'Foobar' ) );
+		}
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/1540
+	it( 'paste, select all, paste, undo, undo, redo, redo, redo', () => {
+		john.setData( '<paragraph>[]</paragraph>' );
+
+		pasteContent();
+
+		john.setSelection( [ 0, 0 ], [ 1, 3 ] );
+
+		pasteContent();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph></paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<heading1>Foo</heading1><paragraph>Bar</paragraph>' );
+
+		function pasteContent() {
+			john.editor.model.insertContent(
+				new DocumentFragment( [
+					new Element( 'heading1', null, new Text( 'Foo' ) ),
+					new Element( 'paragraph', null, new Text( 'Bar' ) )
+				] )
+			);
+		}
+	} );
+
+	// Happens in track changes. Emulated here.
+	// https://github.com/ckeditor/ckeditor5-engine/issues/1701
+	it( 'paste, remove, undo, undo, redo, redo', () => {
+		john.setData( '<paragraph>Ab[]cd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.editor.model.insertContent(
+			new DocumentFragment( [
+				new Element( 'paragraph', null, new Text( 'Foo' ) ),
+				new Element( 'paragraph', null, new Text( 'Bar' ) )
+			] )
+		);
+
+		john.setSelection( [ 1, 3 ], [ 2, 2 ] );
+
+		john._processExecute( 'delete' );
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Barcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.undo();
+
+		expectClients( '<paragraph>Abcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Barcd</paragraph><paragraph>Wxyz</paragraph>' );
+
+		john.redo();
+
+		expectClients( '<paragraph>AbFoo</paragraph><paragraph>Baryz</paragraph>' );
 	} );
 } );
