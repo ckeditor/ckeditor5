@@ -34,5 +34,6 @@ describe( 'ColorTileView', () => {
 		colorTile.render();
 
 		expect( colorTile.icon ).to.equal( checkIcon );
+		expect( colorTile.iconView.fillColor ).to.equal( 'hsl(0, 0%, 100%)' );
 	} );
 } );
