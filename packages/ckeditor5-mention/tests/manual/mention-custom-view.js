@@ -70,7 +70,10 @@ ClassicEditor
 		],
 		mention: {
 			feeds: [
-				{ feed: getFeed }
+				{
+					marker: '@',
+					feed: getFeed
+				}
 			]
 		}
 	} )

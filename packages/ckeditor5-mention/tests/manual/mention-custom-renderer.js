@@ -25,6 +25,7 @@ ClassicEditor
 		mention: {
 			feeds: [
 				{
+					marker: '@',
 					feed: getFeed,
 					itemRenderer: item => {
 						const span = document.createElement( 'span' );

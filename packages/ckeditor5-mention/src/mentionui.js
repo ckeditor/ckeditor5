@@ -14,6 +14,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import TextWatcher from './textwatcher';
 
@@ -110,6 +111,22 @@ export default class MentionUI extends Plugin {
 			const feed = mentionDescription.feed;
 
 			const marker = mentionDescription.marker;
+
+			if ( !marker || marker.length != 1 ) {
+				/**
+				 * The marker must be a single character.
+				 *
+				 * Correct markers: `'@'`, `'#'`.
+				 *
+				 * Incorrect markers: `'$$'`, `'[@'`.
+				 *
+				 * See {@link module:mention/mention~MentionConfig}.
+				 *
+				 * @error mentionconfig-incorrect-marker
+				 */
+				throw new CKEditorError( 'mentionconfig-incorrect-marker: The marker must be provided and be a single character.' );
+			}
+
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
