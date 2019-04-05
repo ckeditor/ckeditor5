@@ -19,6 +19,7 @@ import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
@@ -43,13 +44,38 @@ describe( 'MentionUI', () => {
 		sinon.restore();
 		editorElement.remove();
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	it( 'should create a plugin instance', () => {
 		return createClassicTestEditor().then( () => {
 			expect( mentionUI ).to.instanceOf( Plugin );
 			expect( mentionUI ).to.instanceOf( MentionUI );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should throw if marker was not provided for feed', () => {
+			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
+		} );
+
+		it( 'should throw if marker is empty string', () => {
+			return createClassicTestEditor( { feeds: [ { marker: '', feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
+		} );
+
+		it( 'should throw if marker is longer then 1 character', () => {
+			return createClassicTestEditor( { feeds: [ { marker: '$$', feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
 		} );
 	} );
 
@@ -451,6 +477,39 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
+						model.change( () => {
+							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is changing (non-collapsed)', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+						model.change( () => {
+							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} )
+					.then( () => {
 						model.change( () => {
 							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
 						} );
