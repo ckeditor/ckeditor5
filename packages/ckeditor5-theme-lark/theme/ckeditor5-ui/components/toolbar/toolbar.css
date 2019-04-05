@@ -25,7 +25,7 @@
 		/* Items in a vertical toolbar span the entire width. */
 		padding: 0;
 
-		& > * {
+		& > .ck {
 			/* Items in a vertical toolbar should span the horizontal space. */
 			width: 100%;
 
