@@ -7,6 +7,7 @@
 
 const path = require( 'path' );
 const fs = require( 'fs' );
+const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
@@ -19,6 +20,8 @@ const DEFAULT_LANGUAGE = 'en';
 /**
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} options
+ * @param {Boolean} options.production Whether to build snippets in production mode.
+ * @param {Array.<String>>} options.whitelistedSnippets An array that contains glob patterns
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
@@ -42,7 +45,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					continue;
 				}
 
-				// Find a root path where to look for the snippet's sources. We just want to pass them through Webpack.
+				// Find a root path where to look for the snippet's sources. We just want to pass it through Webpack.
 				const snippetBasePathRegExp = new RegExp( snippetData.snippetName.replace( /\//g, '\\/' ) + '.*$' );
 				const snippetBasePath = snippetData.snippetSources.js.replace( snippetBasePathRegExp, '' );
 
@@ -51,7 +54,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					snippetName: dependencyName,
 					outputPath: snippetData.outputPath,
 					destinationPath: snippetData.destinationPath,
-					parent: snippetData
+					requiredFor: snippetData
 				};
 
 				if ( !dependencySnippet.snippetSources.js ) {
@@ -66,9 +69,15 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		}
 	}
 
+	// Add all dependencies to the snippet collection.
 	for ( const snippetData of snippetsDependencies.values() ) {
 		snippets.add( snippetData );
 	}
+
+	// Remove snippets that do not match to patterns specified in `options.whitelistedSnippets`.
+	filterWhitelistedSnippets( snippets, options.whitelistedSnippets );
+
+	console.log( 'Number of snippets that will be built:', snippets.size );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -94,6 +103,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 	let promise = Promise.resolve();
 
+	// Nothing to build.
 	if ( !webpackConfigs.length ) {
 		return promise;
 	}
@@ -115,9 +125,11 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 				groupedSnippetsByDestinationPath[ snippetData.destinationPath ].add( snippetData );
 			}
 
+			// For every page that contains at least one snippet, we need to replace Umberto comments with HTML code.
 			for ( const destinationPath of Object.keys( groupedSnippetsByDestinationPath ) ) {
 				const snippetsOnPage = groupedSnippetsByDestinationPath[ destinationPath ];
 
+				// Assets required for the all snippets.
 				const cssFiles = [];
 				const jsFiles = [];
 
@@ -128,7 +140,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					const wasCSSGenerated = fs.existsSync( path.join( snippetData.outputPath, snippetData.snippetName, 'snippet.css' ) );
 
 					// If the snippet is a dependency, append JS and CSS to HTML save to disk and continue.
-					if ( snippetData.parent ) {
+					if ( snippetData.requiredFor ) {
 						let htmlFile = fs.readFileSync( snippetData.snippetSources.html ).toString();
 
 						if ( wasCSSGenerated ) {
@@ -142,17 +154,10 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 						continue;
 					}
 
-					let snippetHTML;
+					let snippetHTML = fs.readFileSync( snippetData.snippetSources.html ).toString();
 
-					if ( fs.existsSync( snippetData.snippetSources.html ) ) {
-						snippetHTML = fs.readFileSync( snippetData.snippetSources.html ).toString();
-						snippetHTML = snippetHTML.replace( /%BASE_PATH%/g, snippetData.basePath );
-						snippetHTML = `<div class="live-snippet">${ snippetHTML }</div>`;
-					} else {
-						// TODO: Check.
-						console.log( 'Czy taka sytuacja istnieje?', snippetData );
-						snippetHTML = '';
-					}
+					snippetHTML = snippetHTML.replace( /%BASE_PATH%/g, snippetData.basePath );
+					snippetHTML = `<div class="live-snippet">${ snippetHTML }</div>`;
 
 					content = content.replace( getSnippetPlaceholder( snippetData.snippetName ), snippetHTML );
 
@@ -179,9 +184,64 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 				fs.writeFileSync( destinationPath, content );
 			}
+		} )
+		.then( () => {
+			console.log( 'Snippets has been built.' );
 		} );
 };
 
+/**
+ * Removes snippets that names do not match to patterns specified in `whitelistedSnippets` array.
+ *
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
+ * @param {Array.<String>} whitelistedSnippets Snippet patterns that should be built.
+ */
+function filterWhitelistedSnippets( snippets, whitelistedSnippets ) {
+	if ( !whitelistedSnippets.length ) {
+		return;
+	}
+
+	const snippetsToBuild = new Set();
+
+	// Find all snippets that matched to specified criteria.
+	for ( const snippetData of snippets ) {
+		const matchToPatterns = whitelistedSnippets.some( pattern => minimatch( snippetData.snippetName, pattern ) );
+
+		// Snippet should be built.
+		if ( matchToPatterns ) {
+			snippetsToBuild.add( snippetData );
+		}
+	}
+
+	// Find all dependencies that are required for whitelisted snippets.
+	for ( const snippetData of snippets ) {
+		if ( snippetsToBuild.has( snippetData ) ) {
+			continue;
+		}
+
+		if ( snippetData.requiredFor && snippetsToBuild.has( snippetData.requiredFor ) ) {
+			snippetsToBuild.add( snippetData );
+		}
+	}
+
+	// Remove snippets that won't be built and aren't dependencies of other snippets.
+	for ( const snippetData of snippets ) {
+		if ( !snippetsToBuild.has( snippetData ) ) {
+			snippets.delete( snippetData );
+		}
+	}
+}
+
+/**
+ * Prepares configuration for Webpack.
+ *
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
+ * @param {Object} config
+ * @param {String} config.language Language for the build.
+ * @param {Boolean} config.production Whether to build for production.
+ * @param {Object} config.definitions
+ * @returns {Object}
+ */
 function getWebpackConfig( snippets, config ) {
 	// Stringify all definitions values. The `DefinePlugin` injects definition values as they are so we need to stringify them,
 	// so they will become real strings in the generated code. See https://webpack.js.org/plugins/define-plugin/ for more information.
@@ -282,6 +342,12 @@ function getWebpackConfig( snippets, config ) {
 	return webpackConfig;
 }
 
+/**
+ * Builds snippets.
+ *
+ * @param {Object} webpackConfig
+ * @returns {Promise}
+ */
 function runWebpack( webpackConfig ) {
 	return new Promise( ( resolve, reject ) => {
 		webpack( webpackConfig, ( err, stats ) => {
@@ -296,6 +362,9 @@ function runWebpack( webpackConfig ) {
 	} );
 }
 
+/**
+ * @returns {Array.<String>}
+ */
 function getModuleResolvePaths() {
 	return [
 		path.resolve( __dirname, '..', '..', 'node_modules' ),
@@ -303,6 +372,12 @@ function getModuleResolvePaths() {
 	];
 }
 
+/**
+ * Reads the snippet's configuration.
+ *
+ * @param {String} snippetSourcePath An absolute path to the file.
+ * @returns {Object}
+ */
 function readSnippetConfig( snippetSourcePath ) {
 	const snippetSource = fs.readFileSync( snippetSourcePath ).toString();
 
@@ -315,6 +390,13 @@ function readSnippetConfig( snippetSourcePath ) {
 	return JSON.parse( configSourceMatch[ 1 ] );
 }
 
+/**
+ * Removes duplicated entries specified in `files` array and map those entires using `mapFunction`.
+ *
+ * @param {Array.<String>} files Paths collection.
+ * @param {Function} mapFunction Function that should return a string.
+ * @returns {String}
+ */
 function getHTMLImports( files, mapFunction ) {
 	return [ ...new Set( files ) ]
 		.map( mapFunction )
@@ -339,7 +421,8 @@ function getHTMLImports( files, mapFunction ) {
  *
  * @property {String} [relativeOutputPath] The same like `basePath` but for the output path (where processed file will be saved).
  *
- * @property {Snippet|undefined} [parent] If the value is instance of `Snippet`, current snippet requires `parent` to work.
+ * @property {Snippet|undefined} [requiredFor] If the value is instance of `Snippet`, current snippet requires
+ * the snippet defined as `requiredFor` to work.
  */
 
 /**
