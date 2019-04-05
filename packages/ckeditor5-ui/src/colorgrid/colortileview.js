@@ -51,4 +51,13 @@ export default class ColorTileView extends ButtonView {
 			}
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		this.iconView.fillColor = 'hsl(0, 0%, 100%)';
+	}
 }
