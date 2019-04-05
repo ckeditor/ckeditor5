@@ -1222,6 +1222,73 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'multiple feeds configuration', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: [ '@a1', '@a2', '@a3' ]
+						},
+						{
+							marker: '$',
+							feed: [ '$a1', '$a2', '$a3', '$a4', '$a5' ]
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 3 );
+
+						listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						model.change( writer => {
+							writer.insertText( '$', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( listView.items ).to.have.length( 5 );
+
+						listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+						expect( listView.items ).to.have.length( 3 );
+					} );
+			} );
+		} );
+
 		function testExecuteKey( name, keyCode, feedItems ) {
 			it( 'should execute selected button on ' + name, () => {
 				setData( model, '<paragraph>foo []</paragraph>' );

@@ -518,7 +518,7 @@ function getBalloonPanelPositions( positionName ) {
 function createPattern( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	return `(^| )(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	return `(^| )(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for marker to be used in text watcher instance.
