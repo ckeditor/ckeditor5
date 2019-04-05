@@ -50,7 +50,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
-		const insertionPosition = selection.anchor.clone();
+		const insertionPosition = selection.getFirstPosition();
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
