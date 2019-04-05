@@ -17,14 +17,13 @@ const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
 const DEFAULT_LANGUAGE = 'en';
 
 /**
- * @param {Set.<Snippet>} snippets
+ * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} options
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
 module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 	const { getSnippetPlaceholder, getSnippetSourcePaths } = umbertoHelpers;
-
 	const snippetsDependencies = new Map();
 
 	// For each snippet, load its config. If the snippet has defined dependencies, load those as well.
@@ -52,7 +51,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					snippetName: dependencyName,
 					outputPath: snippetData.outputPath,
 					destinationPath: snippetData.destinationPath,
-					isDependency: true
+					parent: snippetData
 				};
 
 				if ( !dependencySnippet.snippetSources.js ) {
@@ -129,7 +128,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					const wasCSSGenerated = fs.existsSync( path.join( snippetData.outputPath, snippetData.snippetName, 'snippet.css' ) );
 
 					// If the snippet is a dependency, append JS and CSS to HTML save to disk and continue.
-					if ( snippetData.isDependency ) {
+					if ( snippetData.parent ) {
 						let htmlFile = fs.readFileSync( snippetData.snippetSources.html ).toString();
 
 						if ( wasCSSGenerated ) {
@@ -150,6 +149,8 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 						snippetHTML = snippetHTML.replace( /%BASE_PATH%/g, snippetData.basePath );
 						snippetHTML = `<div class="live-snippet">${ snippetHTML }</div>`;
 					} else {
+						// TODO: Check.
+						console.log( 'Czy taka sytuacja istnieje?', snippetData );
 						snippetHTML = '';
 					}
 
@@ -165,15 +166,13 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 					}
 				}
 
-				const cssImportsHTML = [ ...new Set( cssFiles ) ]
-					.map( importPath => `    <link rel="stylesheet" href="${ importPath }" type="text/css">` )
-					.join( '\n' )
-					.replace( /^\s+/, '' );
+				const cssImportsHTML = getHTMLImports( cssFiles, importPath => {
+					return `    <link rel="stylesheet" href="${ importPath }" type="text/css">`;
+				} );
 
-				const jsImportsHTML = [ ...new Set( jsFiles ) ]
-					.map( importPath => `    <script src="${ importPath }"></script>` )
-					.join( '\n' )
-					.replace( /^\s+/, '' );
+				const jsImportsHTML = getHTMLImports( jsFiles, importPath => {
+					return `    <script src="${ importPath }"></script>`;
+				} );
 
 				content = content.replace( '<!--UMBERTO: SNIPPET: CSS-->', cssImportsHTML );
 				content = content.replace( '<!--UMBERTO: SNIPPET: JS-->', jsImportsHTML );
@@ -316,6 +315,13 @@ function readSnippetConfig( snippetSourcePath ) {
 	return JSON.parse( configSourceMatch[ 1 ] );
 }
 
+function getHTMLImports( files, mapFunction ) {
+	return [ ...new Set( files ) ]
+		.map( mapFunction )
+		.join( '\n' )
+		.replace( /^\s+/, '' );
+}
+
 /**
  * @typedef {Object} Snippet
  *
@@ -333,7 +339,7 @@ function readSnippetConfig( snippetSourcePath ) {
  *
  * @property {String} [relativeOutputPath] The same like `basePath` but for the output path (where processed file will be saved).
  *
- * @property {Boolean} [isDependency] Whether parsed snippet is a dependency of other snippet.
+ * @property {Snippet|undefined} [parent] If the value is instance of `Snippet`, current snippet requires `parent` to work.
  */
 
 /**
