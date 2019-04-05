@@ -180,7 +180,7 @@ export default class MentionUI extends Plugin {
 
 		this.panelView.content.add( mentionsView );
 
-		mentionsView.listView.items.bindTo( this._items ).using( data => {
+		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
 			const listItemView = new MentionListItemView( locale );

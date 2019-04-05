@@ -7,7 +7,6 @@
  * @module mention/ui/mentionsview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import ListView from '@ckeditor/ckeditor5-ui/src/list/listview';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
@@ -16,32 +15,23 @@ import '../../theme/mentionui.css';
 /**
  * The mention ui view.
  *
- * @extends module:ui/view~View
+ * @extends module:ui/list/listview~ListView
  */
-export default class MentionsView extends View {
+export default class MentionsView extends ListView {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( locale ) {
 		super( locale );
 
-		this.listView = new ListView( locale );
-
-		this.setTemplate( {
-			tag: 'div',
-
+		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck',
 					'ck-mentions'
 				],
 
 				tabindex: '-1'
-			},
-
-			children: [
-				this.listView
-			]
+			}
 		} );
 	}
 
@@ -59,8 +49,7 @@ export default class MentionsView extends View {
 	 */
 	selectNext() {
 		const item = this.selected;
-
-		const index = this.listView.items.getIndex( item );
+		const index = this.items.getIndex( item );
 
 		this.select( index + 1 );
 	}
@@ -72,8 +61,7 @@ export default class MentionsView extends View {
 	 */
 	selectPrevious() {
 		const item = this.selected;
-
-		const index = this.listView.items.getIndex( item );
+		const index = this.items.getIndex( item );
 
 		this.select( index - 1 );
 	}
@@ -90,13 +78,13 @@ export default class MentionsView extends View {
 	select( index ) {
 		let indexToGet = 0;
 
-		if ( index > 0 && index < this.listView.items.length ) {
+		if ( index > 0 && index < this.items.length ) {
 			indexToGet = index;
 		} else if ( index < 0 ) {
-			indexToGet = this.listView.items.length - 1;
+			indexToGet = this.items.length - 1;
 		}
 
-		const item = this.listView.items.get( indexToGet );
+		const item = this.items.get( indexToGet );
 		item.highlight();
 
 		// Scroll the mentions view to the selected element.
