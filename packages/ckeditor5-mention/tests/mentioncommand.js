@@ -145,7 +145,7 @@ describe( 'MentionCommand', () => {
 			];
 
 			for ( const options of testCases ) {
-				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-marker/ );
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /mentioncommand-incorrect-marker/ );
 			}
 		} );
 
@@ -159,7 +159,7 @@ describe( 'MentionCommand', () => {
 			];
 
 			for ( const options of testCases ) {
-				expect( () => command.execute( options ) ).to.throw( CKEditorError, /markercommand-incorrect-id/ );
+				expect( () => command.execute( options ) ).to.throw( CKEditorError, /mentioncommand-incorrect-id/ );
 			}
 		} );
 	} );
