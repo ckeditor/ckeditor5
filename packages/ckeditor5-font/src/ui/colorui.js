@@ -100,7 +100,8 @@ export default class ColorUI extends Plugin {
 					}
 				} ) ),
 				columns: this.columns,
-				removeButtonLabel: t( 'Remove color' )
+				removeButtonLabel: t( 'Remove color' ),
+				recentlyUsedLabel: t( 'Recently used:' )
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
