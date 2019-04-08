@@ -22,7 +22,7 @@ import MentionsView from '../src/ui/mentionsview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
 
 	const staticConfig = {
 		feeds: [
@@ -297,7 +297,7 @@ describe( 'MentionUI', () => {
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-					expect( listView.items ).to.have.length( 1 );
+					expect( mentionsView.items ).to.have.length( 1 );
 
 					model.change( writer => {
 						writer.insertText( 'r', doc.selection.getFirstPosition() );
@@ -307,7 +307,7 @@ describe( 'MentionUI', () => {
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-					expect( listView.items ).to.have.length( 1 );
+					expect( mentionsView.items ).to.have.length( 1 );
 				} );
 		} );
 
@@ -333,7 +333,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 10 );
+						expect( mentionsView.items ).to.have.length( 10 );
 					} );
 			} );
 
@@ -398,7 +398,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -413,7 +413,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -556,7 +556,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 1 );
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 
@@ -569,7 +569,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const button = listView.items.get( 0 ).children.get( 0 );
+						const button = mentionsView.items.get( 0 ).children.get( 0 );
 
 						expect( button.isOn ).to.be.true;
 					} );
@@ -593,7 +593,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-						expect( listView.items ).to.have.length( 0 );
+						expect( mentionsView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -650,7 +650,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 4 );
+						expect( mentionsView.items ).to.have.length( 4 );
 					} );
 			} );
 
@@ -669,7 +669,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 1 );
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 
@@ -691,7 +691,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-						expect( listView.items ).to.have.length( 0 );
+						expect( mentionsView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -939,7 +939,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 		} );
@@ -976,7 +976,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -1101,7 +1101,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -1383,7 +1383,7 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					sinon.assert.calledOnce( spy );
 
@@ -1407,7 +1407,7 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					expect( panelView.isVisible ).to.be.false;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
@@ -1425,7 +1425,7 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					sinon.assert.calledOnce( focusSpy );
 				} );
@@ -1446,7 +1446,6 @@ describe( 'MentionUI', () => {
 				mentionUI = editor.plugins.get( MentionUI );
 				panelView = mentionUI.panelView;
 				mentionsView = mentionUI._mentionsView;
-				listView = mentionsView.listView;
 
 				editingView.attachDomRoot( editorElement );
 
@@ -1491,7 +1490,7 @@ describe( 'MentionUI', () => {
 	}
 
 	function expectChildViewsIsOnState( expectedState ) {
-		const childViews = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+		const childViews = [ ...mentionsView.items ].map( item => item.children.get( 0 ) );
 
 		expect( childViews.map( child => child.isOn ) ).to.deep.equal( expectedState );
 	}
