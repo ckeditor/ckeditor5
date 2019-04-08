@@ -17,7 +17,7 @@ import '../theme/mention.css';
 /**
  * The mention plugin.
  *
- * For a detailed overview, check the {@glink features/mention Mention feature documentation}.
+ * For a detailed overview, check the {@glink features/mentions Mention feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -66,7 +66,7 @@ export default class Mention extends Plugin {
 /**
  * The configuration of the mention feature.
  *
- * Read more about {@glink features/mention#configuration configuring the mention feature}.
+ * Read more about {@glink features/mentions#configuration configuring the mention feature}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -167,8 +167,8 @@ export default class Mention extends Plugin {
  *
  * When defining a feed item as a plain object, the `id` property is obligatory. The additional properties
  * can be used when customizing the mention feature bahavior
- * (see {@glink features/mention#customizing-the-autocomplete-list "Customizing the autocomplete list"}
- * and {@glink features/mention#customizing-the-output "Customizing the output"} sections).
+ * (see {@glink features/mentions#customizing-the-autocomplete-list "Customizing the autocomplete list"}
+ * and {@glink features/mentions#customizing-the-output "Customizing the output"} sections).
  *
  *		ClassicEditor
  *			.create( editorElement, {

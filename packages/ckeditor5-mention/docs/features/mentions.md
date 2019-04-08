@@ -1,16 +1,17 @@
 ---
 category: features
+menu-title: Mentions
 ---
 
 {@snippet features/build-mention-source}
 
-# Mention
+# Mentions (autocompletion)
 
 The {@link module:mention/mention~Mention} feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
 
 ## Demo
 
-You can type the `'@'` character to invoke mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
+You can type the "@" character to invoke mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
 
 {@snippet features/mention}
 
@@ -18,7 +19,7 @@ You can type the `'@'` character to invoke mention autocomplete UI. The demo bel
 
 The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will show up.
 
-The code snippet below was used to configure the demo above. It defines the list of names that will be autocompleted after the user types the `'@'` character.
+The code snippet below was used to configure the demo above. It defines the list of names that will be autocompleted after the user types the "@" character.
 
 ```js
 ClassicEditor
@@ -45,7 +46,7 @@ Additionally, you can configure:
 
 * How the item is rendered in the autocomplete panel (via setting {@link module:mention/mention~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
 * How the item is converted during the {@link framework/guides/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
-* Multiple feeds &mdash; in the demo above we used only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `#` for tags.
+* Multiple feeds &mdash; in the demo above we used only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
 
 ### Providing the feed
 
@@ -121,7 +122,7 @@ function getFeedItems( queryText ) {
 }
 ```
 
-A full, working demo with all possible customizations and its source code is available {@link features/mention#fully-customized-mention-feed at the end of this section}.
+A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
 
 ### Customizing the autocomplete list
 
@@ -164,7 +165,7 @@ function customItemRenderer( item ) {
 }
 ```
 
-A full, working demo with all possible customizations and its source code is available {@link features/mention#fully-customized-mention-feed at the end of this section}.
+A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
 
 ### Customizing the output
 
@@ -247,7 +248,7 @@ function MentionCustomization( editor ) {
 }
 ```
 
-The full working demo with all customization possible is {@link features/mention#fully-customized-mention-feed  at the end of this section}.
+The full working demo with all customization possible is {@link features/mentions#fully-customized-mention-feed  at the end of this section}.
 
 ### Fully customized mention feed
 
