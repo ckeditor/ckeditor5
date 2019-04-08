@@ -24,6 +24,9 @@ ClassicEditor
 			'|', 'insertTable',
 			'|', 'undo', 'redo'
 		],
+		image: {
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
 		mention: {
 			feeds: [
 				{

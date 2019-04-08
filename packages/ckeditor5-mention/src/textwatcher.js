@@ -12,6 +12,10 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * Text watcher feature.
+ *
+ * Fires {@link module:mention/textwatcher~TextWatcher#event:matched matched} and
+ * {@link module:mention/textwatcher~TextWatcher#event:unmatched unmatched} events on typing or selection changes.
+ *
  * @private
  */
 export default class TextWatcher {
@@ -57,19 +61,9 @@ export default class TextWatcher {
 			this._evaluateTextBeforeSelection();
 		} );
 
-		editor.model.document.on( 'change', ( evt, batch ) => {
+		editor.model.document.on( 'change:data', ( evt, batch ) => {
 			if ( batch.type == 'transparent' ) {
-				return;
-			}
-
-			const changes = Array.from( editor.model.document.differ.getChanges() );
-			const entry = changes[ 0 ];
-
-			// Typing is represented by only a single change.
-			const isTypingChange = changes.length == 1 && entry.name == '$text' && entry.length == 1;
-
-			if ( !isTypingChange ) {
-				return;
+				return false;
 			}
 
 			this._evaluateTextBeforeSelection();
