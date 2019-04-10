@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [13.0.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.0...v13.0.1) (2019-04-10)
+
+### Other changes
+
+* Updated translations. ([e674e9c](https://github.com/ckeditor/ckeditor5-image/commit/e674e9c)) 
+
+
 ## [13.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v12.0.0...v13.0.0) (2019-02-28)
 
 ### Features
