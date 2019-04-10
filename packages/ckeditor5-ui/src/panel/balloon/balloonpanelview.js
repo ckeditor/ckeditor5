@@ -212,6 +212,8 @@ export default class BalloonPanelView extends View {
 	 * **Note**: An attached panel will not follow its target when the window is scrolled or resized.
 	 * See the {@link #pin} method for more permanent positioning strategy.
 	 *
+	 * **Note**: If a limiter is not provided in the options the panel will use `document.body` as a default limiter.
+	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
