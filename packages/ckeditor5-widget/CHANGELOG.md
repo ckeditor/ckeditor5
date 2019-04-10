@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-widget/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Bug fixes
+
+* Triple clicking inside a nested editable should not select the entire widget in Safari. Closes [ckeditor/ckeditor5#1463](https://github.com/ckeditor/ckeditor5/issues/1463). ([b7c4765](https://github.com/ckeditor/ckeditor5-widget/commit/b7c4765))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.3.1...v11.0.0) (2019-02-28)
 
 ### Bug fixes
