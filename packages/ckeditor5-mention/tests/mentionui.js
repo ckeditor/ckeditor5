@@ -137,8 +137,6 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should properly calculate position data', () => {
-			const editableElement = editingView.document.selection.editableElement;
-
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
@@ -151,13 +149,13 @@ describe( 'MentionUI', () => {
 			return waitForDebounce()
 				.then( () => {
 					const pinArgument = pinSpy.firstCall.args[ 0 ];
-					const { target, positions, limiter, fitInViewport } = pinArgument;
+					const { target, positions } = pinArgument;
 
-					expect( fitInViewport ).to.be.true;
 					expect( positions ).to.have.length( 4 );
 
-					// Mention UI should set limiter to the editable area.
-					expect( limiter() ).to.equal( editingView.domConverter.mapViewToDom( editableElement ) );
+					// Mention UI should not set limiter or default values.
+					expect( pinArgument.limiter ).to.be.undefined;
+					expect( pinArgument.fitInViewport ).to.be.undefined;
 
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 					const mentionMarker = editor.model.markers.get( 'mention' );
@@ -177,8 +175,8 @@ describe( 'MentionUI', () => {
 					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' );
 
 					const caretSouthEast = positions[ 0 ];
-					const caretNorthEast = positions[ 1 ];
-					const caretSouthWest = positions[ 2 ];
+					const caretSouthWest = positions[ 1 ];
+					const caretNorthEast = positions[ 2 ];
 					const caretNorthWest = positions[ 3 ];
 
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
@@ -241,28 +239,6 @@ describe( 'MentionUI', () => {
 
 					expect( positions, 'should reuse first matched position' ).to.have.length( 1 );
 					expect( positions[ 0 ].name ).to.equal( positionAfterFirstShow );
-				} );
-		} );
-
-		it( 'does not fail if selection has no #editableElement', () => {
-			setData( model, '<paragraph>foo []</paragraph>' );
-			stubSelectionRects( [ caretRect ] );
-
-			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-
-			model.change( writer => {
-				writer.insertText( '@', doc.selection.getFirstPosition() );
-			} );
-
-			return waitForDebounce()
-				.then( () => {
-					const pinArgument = pinSpy.firstCall.args[ 0 ];
-					const { limiter } = pinArgument;
-
-					sinon.stub( editingView.document.selection, 'editableElement' ).value( null );
-
-					// Should not break;
-					expect( limiter() ).to.be.null;
 				} );
 		} );
 	} );
