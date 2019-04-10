@@ -3,6 +3,10 @@ Changelog
 
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.0.0...v12.1.0) (2019-04-10)
 
+We are happy to report the release of CKEditor 5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
+
+Check out the linked guides for information how to install and configure those features in your editor.
+
 ### Dependencies
 
 Minor releases:
