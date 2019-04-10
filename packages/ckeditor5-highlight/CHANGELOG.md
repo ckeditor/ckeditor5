@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-highlight/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Other changes
+
+* Optimized icons. ([63c9d45](https://github.com/ckeditor/ckeditor5-highlight/commit/63c9d45))
+* Updated translations. ([6695a99](https://github.com/ckeditor/ckeditor5-highlight/commit/6695a99)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-highlight/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Other changes
