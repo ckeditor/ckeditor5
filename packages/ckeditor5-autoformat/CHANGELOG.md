@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Other changes
+
+* Any digit followed by a dot won't trigger the numbered list. Now, only `1` is supported by the `Autoformat` plugin. Closes [#60](https://github.com/ckeditor/ckeditor5-autoformat/issues/60). ([c7c4662](https://github.com/ckeditor/ckeditor5-autoformat/commit/c7c4662))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Features
