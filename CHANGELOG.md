@@ -3,6 +3,10 @@ Changelog
 
 ## [12.1.0](https://github.com/ckeditor/ckeditor5/compare/v12.0.0...v12.1.0) (2019-04-10)
 
+We are happy to report the release of CKEditor 5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
+
+Blog post comming soon...
+
 ### Dependencies
 
 New packages:
@@ -57,13 +61,6 @@ Patch releases (bug fixes, internal changes):
 * [@ckeditor/ckeditor5-upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload): v11.0.0 => [v11.0.1](https://github.com/ckeditor/ckeditor5-upload/releases/tag/v11.0.1)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v11.0.0 => [v11.0.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v11.0.1)
 
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Introduced the mention feature. ([fe9c9f7](https://github.com/ckeditor/ckeditor5/commit/fe9c9f7))
-* Introduced the remove format feature. ([f62033f](https://github.com/ckeditor/ckeditor5/commit/f62033f))
-
 
 ## [12.0.0](https://github.com/ckeditor/ckeditor5/compare/v11.2.0...v12.0.0) (2019-02-28)
 
@@ -71,7 +68,7 @@ We are happy to report the release of CKEditor 5 v12.0.0. This release introduce
 
 Besides new features, this release contains many improvements to stability, [performance](https://github.com/ckeditor/ckeditor5-utils/issues/269) and API. The last group of changes contain many breaking ones. Make sure to read the notes below.
 
-Blog post coming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v12.0.0-with-inline-widgets-and-distraction-free-editor-released/
 
 **Important information for integration developers:** The `editor.getData()` method will return an empty string if the editor is empty (instead of returning `<p>&nbsp;</p>`). Also, if you relied on `editor.ui.view.editable`, you will now need to use `editor.ui.getEditableElement()` instead. You may also want to read the below sections and the [Migration guide](https://github.com/ckeditor/ckeditor5/issues/1582) to learn more.
 
