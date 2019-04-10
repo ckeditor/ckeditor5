@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [12.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.0...v12.0.1) (2019-04-10)
+
+### Bug fixes
+
+* Single paragraphs with attributes inside tableCell will be properly converted in data pipeline.. Closes [ckeditor/ckeditor5#1620](https://github.com/ckeditor/ckeditor5/issues/1620). ([67ec89f](https://github.com/ckeditor/ckeditor5-table/commit/67ec89f))
+
+### Other changes
+
+* Optimized icons. ([c042369](https://github.com/ckeditor/ckeditor5-table/commit/c042369))
+* Updated translations. ([cd204c3](https://github.com/ckeditor/ckeditor5-table/commit/cd204c3)) 
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.1...v12.0.0) (2019-02-28)
 
 ### Features
