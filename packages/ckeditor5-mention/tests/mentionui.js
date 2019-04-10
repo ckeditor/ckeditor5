@@ -1249,9 +1249,9 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 3 );
+						expect( mentionsView.items ).to.have.length( 3 );
 
-						listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 					} )
 					.then( waitForDebounce )
 					.then( () => {
@@ -1266,9 +1266,9 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( mentionsView.items ).to.have.length( 5 );
 
-						listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 					} )
 					.then( waitForDebounce )
 					.then( () => {
@@ -1284,7 +1284,7 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
-						expect( listView.items ).to.have.length( 3 );
+						expect( mentionsView.items ).to.have.length( 3 );
 					} );
 			} );
 		} );
