@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v11.0.0...v11.1.0) (2019-04-10)
+
+### Features
+
+* Added support for mobile YouTube URLs in the default providers configuration. Closes [#82](https://github.com/ckeditor/ckeditor5-media-embed/issues/82). ([9e5cf21](https://github.com/ckeditor/ckeditor5-media-embed/commit/9e5cf21))
+
+### Other changes
+
+* Optimized icons. ([05c3ba0](https://github.com/ckeditor/ckeditor5-media-embed/commit/05c3ba0))
+* Updated translations. ([53e6137](https://github.com/ckeditor/ckeditor5-media-embed/commit/53e6137)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-media-embed/compare/v10.1.0...v11.0.0) (2019-02-28)
 
 ### Bug fixes
