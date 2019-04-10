@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Bug fixes
+
+* The DOM `drop` event will not bubble up if the `clipboardInput` event was handled. Closes [ckeditor/ckeditor5-upload#92](https://github.com/ckeditor/ckeditor5-upload/issues/92). ([5d14697](https://github.com/ckeditor/ckeditor5-clipboard/commit/5d14697))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### BREAKING CHANGES
