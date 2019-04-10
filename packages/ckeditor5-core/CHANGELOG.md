@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-core/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Introduced `Command#disable()` and `Command#enable()`. Closes [#165](https://github.com/ckeditor/ckeditor5-core/issues/165). ([030ca2b](https://github.com/ckeditor/ckeditor5-core/commit/030ca2b))
+
+### Other changes
+
+* Optimized icons. ([a5f8d34](https://github.com/ckeditor/ckeditor5-core/commit/a5f8d34))
+* Updated translations. ([2dedc43](https://github.com/ckeditor/ckeditor5-core/commit/2dedc43)) 
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v11.1.0...v12.0.0) (2019-02-28)
 
 ### Bug fixes
