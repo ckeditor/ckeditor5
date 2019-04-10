@@ -9,9 +9,9 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^12.0.0",
-    "@ckeditor/ckeditor5-ui": "^12.0.0",
-    "@ckeditor/ckeditor5-utils": "^12.0.0"
+    "@ckeditor/ckeditor5-core": "^12.1.0",
+    "@ckeditor/ckeditor5-ui": "^12.1.0",
+    "@ckeditor/ckeditor5-utils": "^12.1.0"
   },
   "devDependencies": {
     "eslint": "^5.5.0",
