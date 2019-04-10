@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Other changes
+
+* Updated translations. ([3a0fe51](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/commit/3a0fe51)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-adapter-ckfinder/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Other changes
