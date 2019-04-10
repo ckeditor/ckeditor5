@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v11.0.0...v11.1.0) (2019-04-10)
+
+### Features
+
+* Marked alignment as a formatting attribute using the `AttributeProperties#isFormatting` property. Closes [ckeditor/ckeditor5#1664](https://github.com/ckeditor/ckeditor5/issues/1664). ([6358e08](https://github.com/ckeditor/ckeditor5-alignment/commit/6358e08))
+
+### Other changes
+
+* Updated translations. ([78bfc40](https://github.com/ckeditor/ckeditor5-alignment/commit/78bfc40)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Other changes
