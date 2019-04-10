@@ -897,6 +897,49 @@ describe( 'MentionUI', () => {
 							expectChildViewsIsOnState( [ true, false, false, false, false ] );
 						} );
 				} );
+
+				it( 'should not cycle when only one item in the list', () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+					const keyDownEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					const keyUpEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+
+					return waitForDebounce()
+						.then( () => {
+							expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+							fireKeyDownEvent( keyDownEvtData );
+							expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+							model.change( writer => {
+								writer.insertText( 'T', doc.selection.getFirstPosition() );
+							} );
+						} )
+						.then( waitForDebounce )
+						.then( () => {
+							expectChildViewsIsOnState( [ true ] );
+
+							fireKeyDownEvent( keyDownEvtData );
+
+							expectChildViewsIsOnState( [ true ] );
+
+							fireKeyDownEvent( keyUpEvtData );
+
+							expectChildViewsIsOnState( [ true ] );
+						} );
+				} );
 			} );
 
 			describe( 'on "execute" keys', () => {
