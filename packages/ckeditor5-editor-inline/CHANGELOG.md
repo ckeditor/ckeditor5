@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Introduced `EditorConfig#initialData`. ([59e97b5](https://github.com/ckeditor/ckeditor5-editor-inline/commit/59e97b5))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v11.0.2...v12.0.0) (2019-02-28)
 
 ### Features
