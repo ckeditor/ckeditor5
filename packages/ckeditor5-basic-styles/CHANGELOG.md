@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v11.0.0...v11.1.0) (2019-04-10)
+
+### Features
+
+* Marked basic style attributes as a formatting using the `AttributeProperties#isFormatting` property. Closes [ckeditor/ckeditor5#1664](https://github.com/ckeditor/ckeditor5/issues/1664). ([fcfba54](https://github.com/ckeditor/ckeditor5-basic-styles/commit/fcfba54))
+
+### Other changes
+
+* Optimized icons. ([018dda9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/018dda9))
+* Updated translations. ([4365251](https://github.com/ckeditor/ckeditor5-basic-styles/commit/4365251)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v10.1.0...v11.0.0) (2019-02-28)
 
 ### Other changes
