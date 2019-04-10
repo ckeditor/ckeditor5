@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [12.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v12.0.0...v12.0.1) (2019-04-10)
+
+### Bug fixes
+
+* The `delete` event will now stop the `keydown` event if it was set with the highest priority. Closes [#186](https://github.com/ckeditor/ckeditor5-typing/issues/186). ([07cca83](https://github.com/ckeditor/ckeditor5-typing/commit/07cca83))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v11.0.2...v12.0.0) (2019-02-28)
 
 ### Bug fixes
