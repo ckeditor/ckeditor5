@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+* Introduced font color and font background color features. Closes [ckeditor/ckeditor5#1457](https://github.com/ckeditor/ckeditor5/issues/1457). ([c456b2a](https://github.com/ckeditor/ckeditor5-font/commit/c456b2a))
 * Marked font size and font family as a formatting attribute using the `AttributeProperties#isFormatting` property. Closes [ckeditor/ckeditor5#1664](https://github.com/ckeditor/ckeditor5/issues/1664). ([d9f0a51](https://github.com/ckeditor/ckeditor5-font/commit/d9f0a51))
 
 ### Other changes
