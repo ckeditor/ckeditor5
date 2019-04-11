@@ -29,6 +29,17 @@ export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'link', {
+			targetDecorator: true
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
@@ -56,6 +67,40 @@ export default class LinkEditing extends Plugin {
 					value: viewElement => viewElement.getAttribute( 'href' )
 				}
 			} );
+
+		if ( editor.config.get( 'link.targetDecorator' ) ) {
+			const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
+
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				// Links are represented in the model as a "linkHref" attribute.
+				// Use the "low" listener priority to apply the changes after the Link feature.
+				dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+					if ( conversionApi.consumable.consume( data.item, 'attribute:linkHref' ) ) {
+						return;
+					}
+					const viewWriter = conversionApi.writer;
+					const viewSelection = viewWriter.document.selection;
+
+					const viewElement = viewWriter.createAttributeElement( 'a', {
+						target: '_blank'
+					}, {
+						priority: 5
+					} );
+
+					if ( !( EXTERNAL_LINKS_REGEXP.test( data.attributeNewValue ) ) ) {
+						viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+					} else {
+						if ( data.item.is( 'selection' ) ) {
+							viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
+						} else {
+							viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
+						}
+					}
+
+					evt.stop();
+				} );
+			}, { priority: 'low' } );
+		}
 
 		// Create linking commands.
 		editor.commands.add( 'link', new LinkCommand( editor ) );
