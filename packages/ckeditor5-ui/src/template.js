@@ -158,22 +158,18 @@ export default class Template {
 	 * {@link module:ui/template~Template#revert} method.
 	 *
 	 *		const element = document.createElement( 'div' );
+	 *		const observable = new Model( { divClass: 'my-div' } );
+	 *		const emitter = Object.create( EmitterMixin );
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				id: 'first-div',
 	 *				class: bind.to( 'divClass' )
-	 *			},
-	 *			on: {
-	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
 	 *			}
-	 *			children: [
-	 *				'Div text.'
-	 *			]
 	 *		} ).apply( element );
 	 *
-	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
+	 *		console.log( element.outerHTML ); // Logs: '<div id="first-div" class="my-div"></div>'
 	 *
 	 * @see module:ui/template~Template#render
 	 * @see module:ui/template~Template#revert
