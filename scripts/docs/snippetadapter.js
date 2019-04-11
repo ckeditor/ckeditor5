@@ -430,17 +430,17 @@ function getHTMLImports( files, mapFunction ) {
 /**
  * @typedef {Object} SnippetSource
  *
- * @property {<String>} html An absolute path to the HTML sample.
+ * @property {String} html An absolute path to the HTML sample.
  *
- * @property {<String>} css An absolute path to the CSS sample.
+ * @property {String} css An absolute path to the CSS sample.
  *
- * @property {<String>} js An absolute path to the JS sample.
+ * @property {String} js An absolute path to the JS sample.
  */
 
 /**
  * @typedef {Object} SnippetConfiguration
  *
- * @property {<String>} [language] A language that will be used for building the editor.
+ * @property {String} [language] A language that will be used for building the editor.
  *
  * @property {Array.<String>} [dependencies] Names of samples that are required to working.
  */
