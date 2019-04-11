@@ -262,7 +262,7 @@ export default class Template {
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				// Binds the element "class" attribute to observable#classAttribute.
 	 *				class: bind.to( 'classAttribute' )
 	 *			}
