@@ -11,11 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import { createLinkElement, ensureSafeUrl } from './utils';
+import AutomaticDispatchers from './utils/automaticdispatcher';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
+const AUTO = 'automatic';
 
 /**
  * The link engine feature.
@@ -68,39 +70,26 @@ export default class LinkEditing extends Plugin {
 				}
 			} );
 
+		const automaticDispatcher = new AutomaticDispatchers();
+
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
-			const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
-
-			editor.conversion.for( 'downcast' ).add( dispatcher => {
-				// Links are represented in the model as a "linkHref" attribute.
-				// Use the "low" listener priority to apply the changes after the Link feature.
-				dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
-					if ( conversionApi.consumable.consume( data.item, 'attribute:linkHref' ) ) {
-						return;
-					}
-					const viewWriter = conversionApi.writer;
-					const viewSelection = viewWriter.document.selection;
-
-					const viewElement = viewWriter.createAttributeElement( 'a', {
-						target: '_blank'
-					}, {
-						priority: 5
-					} );
-
-					if ( !( EXTERNAL_LINKS_REGEXP.test( data.attributeNewValue ) ) ) {
-						viewWriter.unwrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
-					} else {
-						if ( data.item.is( 'selection' ) ) {
-							viewWriter.wrap( viewSelection.getFirstRange(), viewElement );
-						} else {
-							viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), viewElement );
-						}
-					}
-
-					evt.stop();
-				} );
-			}, { priority: 'low' } );
+			automaticDispatcher.add( {
+				mode: AUTO,
+				callback: url => {
+					const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
+					return EXTERNAL_LINKS_REGEXP.test( url );
+				},
+				attributes: {
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			} );
 		}
+
+		const linkDecorators = editor.config.get( 'link.decorator' ) || [];
+		automaticDispatcher.add( linkDecorators.filter( item => item.mode === AUTO ) );
+
+		editor.conversion.for( 'downcast' ).add( automaticDispatcher.getCallback() );
 
 		// Create linking commands.
 		editor.commands.add( 'link', new LinkCommand( editor ) );
