@@ -431,7 +431,7 @@ import ProductPreview from './productpreview';
 export default class ProductList extends React.Component {
 	render() {
 		return <div className="app__product-list">
-			<h2>Products</h2>
+			<h3>Products</h3>
 			<ul>
 				{this.props.products.map( product => {
 					return <li key={product.id}>
@@ -535,42 +535,7 @@ class App extends React.Component {
 		this.state = {
 			// The initial editor data. It is bound to the editor instance and will change as
 			// the user types and modifies the content of the editor.
-			editorData: `
-				<h2>Check our last minute deals!</h2>
-
-				<p>Aenean erat conubia pretium libero habitant turpis vivamus dignissim molestie, phasellus libero! Curae; consequat cubilia mattis. Litora non iaculis tincidunt.</p>
-				<section class="product" data-id="2">&nbsp;</section>
-				<p>Mollis gravida parturient ad maecenas euismod consectetur lacus rutrum urna eget ligula. Nisi imperdiet scelerisque natoque scelerisque cubilia nulla gravida. Eleifend malesuada pharetra est commodo venenatis aenean habitasse curae; fusce elit.</p>
-				<section class="product" data-id="1">&nbsp;</section>
-
-				<h3>Other deals</h3>
-				<p>Ultricies dapibus placerat orci natoque fames commodo facilisi sollicitudin. Sed hendrerit mi dis non lacinia ipsum. Luctus fames scelerisque auctor pellentesque mi nunc mattis, amet sapien.</p>
-
-				<figure class="table">
-					<table>
-						<thead>
-							<tr>
-								<th>Our deal</th>
-								<th>Why this one?</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<section class="product" data-id="3">&nbsp;</section>
-								</td>
-								<td>Nascetur, nullam hac nibh curabitur elementum. Est ridiculus turpis adipiscing erat maecenas habitant montes. Curabitur mauris ut luctus semper. Neque orci auctor luctus accumsan quam cursus purus condimentum dis?</td>
-							</tr>
-							<tr>
-								<td>
-									<section class="product" data-id="4">&nbsp;</section>
-								</td>
-								<td>Elementum condimentum convallis porttitor cubilia consectetur cum. In pretium neque accumsan pharetra. Magna in quisque dignissim praesent facilisi diam. Ad habitant ultricies at faucibus. Ultricies auctor sodales massa nisi eget sem porta?</td>
-							</tr>
-						</tbody>
-					</table>
-				</figure>
-			`,
+			editorData: '<h2>Check our last minute deals!</h2><p>The capital city of <a href="https://en.wikipedia.org/wiki/Malta">Malta</a> is the top destination this summer. It’s home to a cutting-edge contemporary architecture, baroque masterpieces, delicious local cuisine and at least 8 months of sun.</p><section class="product" data-id="2"></section><p>You’ll definitely love exploring <a href="https://en.wikipedia.org/wiki/Warsaw">Warsaw</a>! Best time to visit the city is July and August, when it’s cool enough to not break a sweat and hot enough to enjoy summer. The city which has quite a combination of both old and modern textures is located by the river of Vistula.</p><section class="product" data-id="1"></section><h3>Other destinations</h3><figure class="table"><table><thead><tr><th>Destination</th><th>Trip details</th></tr></thead><tbody><tr><td><section class="product" data-id="3"></section><p>&nbsp;</p></td><td>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid. <a href="http://ckeditor.com">Find out more...</a></td></tr><tr><td><section class="product" data-id="4"></section><p>&nbsp;</p></td><td>Tourists frequently admit that Taj Mahal "simply cannot be described with words". And that’s probably true. The more you try the more speechless you become. Words give only a semblance of truth. <a href="http://ckeditor.com">Find out more...</a></td></tr></tbody></table></figure>'
 		};
 
 		// The configuration of the <CKEditor> instance.
@@ -647,7 +612,7 @@ class App extends React.Component {
 			// * in the right column, a <ProductList> is rendered with available <ProductPreviews>
 			//   to choose from.
 			<div className="app__offer-editor" key="offer-editor">
-				<h2>Product offer editor</h2>
+				<h3>Product offer editor</h3>
 				<CKEditor
 					editor={ClassicEditor}
 					data={this.state.editorData}
@@ -893,6 +858,8 @@ The product preview (`.product-preview` class) uses `background-image: var(--pro
 ## Demo
 
 You can see the entire application working below. Click the products in the sidebar to add them to the editor. You can also check out the [full source code](#full-source-code) of this tutorial if you want to extend it further or use it as base for your application.
+
+{@snippet framework/tutorials/using-react-in-widget}
 
 ## Full source code
 
