@@ -7,11 +7,27 @@
  * @module link/utils/automaticdecorators
  */
 
+/**
+ * Helper class which stores information about automatic decorators for link plugin
+ * and provides dispatcher which applies all of them to the view.
+ */
 export default class AutomaticDecorators {
 	constructor() {
+		/**
+		 * Stores definition of automatic decorators. Based on those values proper conversion has happens.
+		 *
+		 * @private
+		 * @type {Set}
+		 */
 		this._definitions = new Set();
 	}
 
+	/**
+	 * Add item or array of items with autoamtic rules for applying decorators to link plugin.
+	 *
+	 * @param {Object|Array.<Object>} item configuration object of automatic rules for decorating links.
+	 * It might be also array of such objects.
+	 */
 	add( item ) {
 		if ( Array.isArray( item ) ) {
 			item.forEach( item => this._definitions.add( item ) );
@@ -20,6 +36,12 @@ export default class AutomaticDecorators {
 		}
 	}
 
+	/**
+	 * Gets the conversion helper used in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add} method.
+	 *
+	 * @returns {Function} dispatcher function used as conversion helper
+	 * in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#add}
+	 */
 	getDispatcher() {
 		return dispatcher => {
 			dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {

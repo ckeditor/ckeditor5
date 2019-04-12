@@ -34,3 +34,11 @@ export default class Link extends Plugin {
 		return 'Link';
 	}
 }
+
+/**
+ * The configuration of the {@link module:link/link~Link} feature.
+ *
+ * Read more in {@link module:link/linkt~LinkConfig}.
+ *
+ * @member {module:link/link~LinkConfig} module:core/editor/editorconfig~EditorConfig#link
+ */
