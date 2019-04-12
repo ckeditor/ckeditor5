@@ -57,12 +57,12 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * Returns an iterable of items in a selection (including selection itself) that have formatting model
+	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
 	 *
 	 * @protected
 	 * @param {module:engine/model/documentselection~DocumentSelection} selection
-	 * @param {module:engine/model/schema~Schema} schema Schema describing the item.
+	 * @param {module:engine/model/schema~Schema} schema The schema describing the item.
 	 * @returns {Iterable.<module:engine/model/item~Item>|Iterable.<module:engine/model/documentselection~DocumentSelection>}
 	 */
 	* _getFormattingItems( selection, schema ) {
@@ -87,12 +87,12 @@ export default class RemoveFormatCommand extends Command {
 	/**
 	 * Returns an iterable of formatting attributes of a given model item.
 	 *
-	 * **Note:** Formatting items have the `isFormatting` property set `true`.
+	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
 	 * @protected
 	 * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} item
-	 * @param {module:engine/model/schema~Schema} schema Schema describing the item.
-	 * @returns {Iterable.<String>} Names of formatting attributes found in a given item.
+	 * @param {module:engine/model/schema~Schema} schema The schema describing the item.
+	 * @returns {Iterable.<String>} The names of formatting attributes found in a given item.
 	 */
 	* _getFormattingAttributes( item, schema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {

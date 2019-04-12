@@ -1,12 +1,14 @@
 ---
-title: Removing Text Formatting
+title: Removing text formatting
 menu-title: Remove formatting
 category: features
 ---
 
 {@snippet features/build-remove-format-source}
 
-The {@link module:remove-format/removeformat~RemoveFormat Remove format} feature allows to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar. Note that block-level formatting ({@link features/headings headings}, {@link features/image images}) and semantic data ({@link features/link links}) will not be removed.
+The {@link module:remove-format/removeformat~RemoveFormat `Remove format`} feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
+
+Note that block-level formatting ({@link features/headings headings}, {@link features/image images}) and semantic data ({@link features/link links}) will not be removed by this feature.
 
 ## Demo
 
@@ -16,11 +18,11 @@ Select the content you want to clean up and press the "Remove Format" button in 
 
 ## Configuring the remove format feature
 
-The feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
+This feature has no integration–level configuration. Once enabled, it works out–of–the–box with all {@link features/index core editor features}.
 
 ## A short note about content types in the editor
 
-The Remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Since each editor feature brings its own content types to the editor, if you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link builds/guides/integration/configuration#removing-features reducing the number of features} enabled in the editor.
+The remove format feature is intended to help users tidy up chunks of content from unnecessary formatting. Each editor feature brings its own content types to the WYSIWYG editor. If you do not want the unnecessary formatting to be enabled in the first place, you may want to consider {@link builds/guides/integration/configuration#removing-features reducing the number of features} enabled in the editor.
 
 Doing that will spare the users the pain of manually removing formatting every time they paste content from other programs and make the editing experience smoother. The narrower set of editor features also gives you more control over the content saved to the database and prevents the accidental use of the types of content you would rather not store in your application.
 
@@ -31,7 +33,7 @@ To make it possible for the remove formatting feature to work with your custom c
 For instance, if you want the feature to remove {@link features/link links} as well (not supported by default), you need to create a {@link builds/guides/integration/configuration#adding-simple-standalone-features simple plugin} that will extend the schema and tell the editor that the `linkHref` text attribute produced by the link feature is a formatting attribute:
 
 ```js
-// A simple plugin that extends the Remove format feature to consider links.
+// A simple plugin that extends the remove format feature to consider links.
 function RemoveFormatLinks( editor ) {
 	// Extend the editor schema and mark the "linkHref" model attribute as formatting.
 	editor.model.schema.setAttributeProperties( 'linkHref', {
@@ -57,11 +59,11 @@ ClassicEditor
 	} )
 ```
 
-From now on, the "Remove Format" button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
+From now on, the the "Remove Format" button should also remove links in the content. {@link module:engine/model/schema~Schema#setAttributeProperties Learn more about attribute properties.}
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-remove-format`](https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format) package:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-remove-format
@@ -87,7 +89,7 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:remove-format/removeformat~RemoveFormat} plugin registers the `'removeFormat'` UI button component the command of the same name implemented by {@link module:remove-format/removeformatcommand~RemoveFormatCommand}.
+The {@link module:remove-format/removeformat~RemoveFormat} plugin registers the `'removeFormat'` UI button component and a command of the same name implemented by {@link module:remove-format/removeformatcommand~RemoveFormatCommand}.
 
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 

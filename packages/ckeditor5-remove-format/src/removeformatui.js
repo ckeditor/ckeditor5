@@ -14,7 +14,7 @@ import removeFormatIcon from '../theme/icons/remove-format.svg';
 const REMOVE_FORMAT = 'removeFormat';
 
 /**
- * The remove format UI plugin. It registers a `'removeFormat'` button which can be
+ * The remove format UI plugin. It registers the `'removeFormat'` button which can be
  * used in the toolbar.
  *
  * @extends module:core/plugin~Plugin
