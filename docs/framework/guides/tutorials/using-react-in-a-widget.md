@@ -18,8 +18,10 @@ Later on, we will use the "Product preview" feature to build a simple React appl
 
 ## Before you start
 
-* Since you are here, we assume you probably have at least some basic understanding of what React is and how it works. But before we start, you should also know that CKEditor 5 has an official {@link builds/guides/frameworks/react Rich text editor component for React} and it will be core feature used in this tutorial. Learning how to {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
-* In this tutorial, we are going to implement a block editor widget and that itself is not an easy topic. We recommend you at least skim through the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API and possible use–cases.
+There is a couple of thing you should know before we start:
+
+* Since you are here, we assume you probably have at least some basic understanding of what React is and how it works. But what you might not know is that CKEditor 5 has an official {@link builds/guides/frameworks/react **Rich text editor component for React**} and it will be one of the key features used in this tutorial. Learning how to {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source use it in your project} is a good place to start.
+* In this tutorial, we are going to implement a block editor widget and that itself could give you an headache. We recommend you at least skim through the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial to get a grip on editor widgets, their API and possible use–cases.
 * Also, while it is not strictly necessary to read the {@link framework/guides/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor 5 framework before you will dive into this tutorial.
 * We will also reference various parts of the {@link framework/guides/architecture/intro CKEditor 5 architecture} section as we go. While reading them is not necessary to finish this tutorial, we recommend reading those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
@@ -29,7 +31,7 @@ This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and yo
 
 First, install packages needed to build and set up a basic React application with a CKEditor 5 instance.
 
-```bash
+```
 yarn add --dev \
 	@babel/cli \
 	@babel/core \
@@ -184,7 +186,7 @@ You should see a "Hello world" application in your web browser, which might not 
 
 ## Application structure
 
-So far, the application is not very useful and it is a good time to change that. We will create a couple of React components and CKEditor 5 classes to bring some logic to the application.
+Nothing warms the heart of a developer like a good "Hello world!". But you probably agree that what we created is not the most useful application and it is time to change that. In the next chapters, we will create a couple of React components and CKEditor 5 classes to bring some real logic to the application.
 
 To keep some order in the project, we will put [CKEditor classes](#ckeditor-classes) in the `/ckeditor` directory and [React components](#react-components) in the `/react` directory. [Images and CSS styles](#styles-and-assets) will land in the `/assets` directory. By the time you are finished with this tutorial, the structure of the project should look as follows:
 
