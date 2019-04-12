@@ -10,6 +10,7 @@ import UnlinkCommand from '../src/unlinkcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
@@ -387,8 +388,8 @@ describe( 'LinkEditing', () => {
 					url: 'tel:123456789'
 				}
 			];
-			it( 'link.targetDecorator is predefined as true value', () => {
-				expect( editor.config.get( 'link.targetDecorator' ) ).to.be.true;
+			it( 'link.targetDecorator is predefined as false value', () => {
+				expect( editor.config.get( 'link.targetDecorator' ) ).to.be.false;
 			} );
 
 			describe( 'for link.targetDecorator = false', () => {
@@ -398,7 +399,7 @@ describe( 'LinkEditing', () => {
 						.create( {
 							plugins: [ Paragraph, LinkEditing, Enter ],
 							link: {
-								targetDecorator: false
+								targetDecorator: true
 							}
 						} )
 						.then( newEditor => {
@@ -407,36 +408,34 @@ describe( 'LinkEditing', () => {
 							view = editor.editing.view;
 						} );
 				} );
-
-				it( 'link.targetDecorator is predefined as false value', () => {
-					expect( editor.config.get( 'link.targetDecorator' ) ).to.be.false;
+				it( 'link.targetDecorator is set as true value', () => {
+					expect( editor.config.get( 'link.targetDecorator' ) ).to.be.true;
 				} );
 
 				testLinks.forEach( link => {
-					it( `link: ${ link.url } should not get 'target' and 'rel' attributes`, () => {
+					it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
 						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
-						expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+						if ( link.external ) {
+							expect( editor.getData() )
+								.to.equal( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
+						} else {
+							expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+						}
 					} );
 				} );
 			} );
-
 			testLinks.forEach( link => {
-				it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
+				it( `link: ${ link.url } should not get 'target' and 'rel' attributes`, () => {
 					editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
 						.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
 
-					if ( link.external ) {
-						expect( editor.getData() )
-							.to.equal( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
-					} else {
-						expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
-					}
+					expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
 				} );
 			} );
 		} );
@@ -473,7 +472,7 @@ describe( 'LinkEditing', () => {
 							plugins: [ Paragraph, LinkEditing, Enter ],
 							link: {
 								targetDecorator: false,
-								decorator: [
+								decorators: [
 									{
 										mode: 'automatic',
 										callback: url => url.startsWith( 'http' ),
@@ -524,6 +523,57 @@ describe( 'LinkEditing', () => {
 						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
 					} );
 				} );
+			} );
+		} );
+
+		describe( 'custom linkHref converter', () => {
+			beforeEach( () => {
+				class CustomLinks extends Plugin {
+					init() {
+						const editor = this.editor;
+
+						editor.conversion.for( 'downcast' ).add( dispatcher => {
+							dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.item, 'attribute:linkHref' );
+
+								// Very simplified downcast just for test assertion.
+								const viewWriter = conversionApi.writer;
+								const linkElement = viewWriter.createAttributeElement(
+									'a',
+									{
+										href: data.attributeNewValue
+									}, {
+										priority: 5
+									}
+								);
+								viewWriter.setCustomProperty( 'link', true, linkElement );
+								viewWriter.wrap( conversionApi.mapper.toViewRange( data.range ), linkElement );
+							}, { priority: 'highest' } );
+						} );
+					}
+				}
+				editor.destroy();
+				return VirtualTestEditor
+					.create( {
+						plugins: [ Paragraph, LinkEditing, Enter, CustomLinks ],
+						link: {
+							targetDecorator: true,
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						view = editor.editing.view;
+					} );
+			} );
+
+			it( 'has possibility to override default one', () => {
+				editor.setData( '<p><a href="http://example.com">foo</a>bar</p>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<paragraph><$text linkHref="http://example.com">foo</$text>bar</paragraph>' );
+
+				expect( editor.getData() ).to.equal( '<p><a href="http://example.com">foo</a>bar</p>' );
 			} );
 		} );
 	} );
