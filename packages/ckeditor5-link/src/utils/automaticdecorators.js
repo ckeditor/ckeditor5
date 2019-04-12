@@ -4,10 +4,10 @@
  */
 
 /**
- * @module link/utils/automaticdispatcher
+ * @module link/utils/automaticdecorators
  */
 
-export default class AutomaticDispatchers {
+export default class AutomaticDecorators {
 	constructor() {
 		this._definitions = new Set();
 	}
@@ -20,7 +20,7 @@ export default class AutomaticDispatchers {
 		}
 	}
 
-	getCallback() {
+	getDispatcher() {
 		return dispatcher => {
 			dispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
 				// There is only test as this behavior decorates links and

@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import { createLinkElement, ensureSafeUrl } from './utils';
-import AutomaticDispatchers from './utils/automaticdispatcher';
+import AutomaticDecorators from './utils/automaticdecorators';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
@@ -70,10 +70,10 @@ export default class LinkEditing extends Plugin {
 				}
 			} );
 
-		const automaticDispatcher = new AutomaticDispatchers();
+		const automaticDecorators = new AutomaticDecorators();
 
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
-			automaticDispatcher.add( {
+			automaticDecorators.add( {
 				mode: AUTO,
 				callback: url => {
 					const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
@@ -87,9 +87,9 @@ export default class LinkEditing extends Plugin {
 		}
 
 		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
-		automaticDispatcher.add( linkDecorators.filter( item => item.mode === AUTO ) );
+		automaticDecorators.add( linkDecorators.filter( item => item.mode === AUTO ) );
 
-		editor.conversion.for( 'downcast' ).add( automaticDispatcher.getCallback() );
+		editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
 
 		// Create linking commands.
 		editor.commands.add( 'link', new LinkCommand( editor ) );
