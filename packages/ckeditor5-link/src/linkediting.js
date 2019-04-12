@@ -35,7 +35,7 @@ export default class LinkEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'link', {
-			targetDecorator: true
+			targetDecorator: false
 		} );
 	}
 
@@ -86,7 +86,7 @@ export default class LinkEditing extends Plugin {
 			} );
 		}
 
-		const linkDecorators = editor.config.get( 'link.decorator' ) || [];
+		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
 		automaticDispatcher.add( linkDecorators.filter( item => item.mode === AUTO ) );
 
 		editor.conversion.for( 'downcast' ).add( automaticDispatcher.getCallback() );
