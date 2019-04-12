@@ -351,4 +351,180 @@ describe( 'LinkEditing', () => {
 			} );
 		} );
 	} );
+
+	describe( 'link attributes decorator', () => {
+		describe( 'default behavior', () => {
+			const testLinks = [
+				{
+					external: true,
+					url: 'http://example.com'
+				}, {
+					external: true,
+					url: 'https://cksource.com'
+				}, {
+					external: false,
+					url: 'ftp://server.io'
+				}, {
+					external: true,
+					url: '//schemaless.org'
+				}, {
+					external: false,
+					url: 'www.ckeditor.com'
+				}, {
+					external: false,
+					url: '/relative/url.html'
+				}, {
+					external: false,
+					url: 'another/relative/url.html'
+				}, {
+					external: false,
+					url: '#anchor'
+				}, {
+					external: false,
+					url: 'mailto:some@user.org'
+				}, {
+					external: false,
+					url: 'tel:123456789'
+				}
+			];
+			it( 'link.targetDecorator is predefined as true value', () => {
+				expect( editor.config.get( 'link.targetDecorator' ) ).to.be.true;
+			} );
+
+			describe( 'for link.targetDecorator = false', () => {
+				beforeEach( () => {
+					editor.destroy();
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, LinkEditing, Enter ],
+							link: {
+								targetDecorator: false
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							view = editor.editing.view;
+						} );
+				} );
+
+				it( 'link.targetDecorator is predefined as false value', () => {
+					expect( editor.config.get( 'link.targetDecorator' ) ).to.be.false;
+				} );
+
+				testLinks.forEach( link => {
+					it( `link: ${ link.url } should not get 'target' and 'rel' attributes`, () => {
+						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+						expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+					} );
+				} );
+			} );
+
+			testLinks.forEach( link => {
+				it( `link: ${ link.url } should be treat as ${ link.external ? 'external' : 'non-external' } link`, () => {
+					editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+					expect( getModelData( model, { withoutSelection: true } ) )
+						.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+					if ( link.external ) {
+						expect( editor.getData() )
+							.to.equal( `<p><a target="_blank" rel="noopener noreferrer" href="${ link.url }">foo</a>bar</p>` );
+					} else {
+						expect( editor.getData() ).to.equal( `<p><a href="${ link.url }">foo</a>bar</p>` );
+					}
+				} );
+			} );
+		} );
+
+		describe( 'custom config', () => {
+			describe( 'mode: automatic', () => {
+				const testLinks = [
+					{
+						url: 'relative/url.html',
+						attributes: {}
+					}, {
+						url: 'http://exmaple.com',
+						attributes: {
+							target: '_blank'
+						}
+					}, {
+						url: 'https://example.com/download/link.pdf',
+						attributes: {
+							target: '_blank',
+							download: 'download'
+						}
+					}, {
+						url: 'mailto:some@person.io',
+						attributes: {
+							class: 'mail-url'
+						}
+					}
+				];
+
+				beforeEach( () => {
+					editor.destroy();
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, LinkEditing, Enter ],
+							link: {
+								targetDecorator: false,
+								decorator: [
+									{
+										mode: 'automatic',
+										callback: url => url.startsWith( 'http' ),
+										attributes: {
+											target: '_blank'
+										}
+									}, {
+										mode: 'automatic',
+										callback: url => url.includes( 'download' ),
+										attributes: {
+											download: 'download'
+										}
+									}, {
+										mode: 'automatic',
+										callback: url => url.startsWith( 'mailto:' ),
+										attributes: {
+											class: 'mail-url'
+										}
+									}
+								]
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							view = editor.editing.view;
+						} );
+				} );
+
+				testLinks.forEach( link => {
+					it( `Link: ${ link.url } should get attributes: ${ JSON.stringify( link.attributes ) }`, () => {
+						const ORDER = [ 'target', 'download', 'class' ];
+						const attr = Object.entries( link.attributes ).sort( ( a, b ) => {
+							const aIndex = ORDER.indexOf( a[ 0 ] );
+							const bIndex = ORDER.indexOf( b[ 0 ] );
+							return aIndex - bIndex;
+						} );
+						const reducedAttr = attr.reduce( ( acc, cur ) => {
+							return acc + `${ cur[ 0 ] }="${ cur[ 1 ] }" `;
+						}, '' );
+
+						editor.setData( `<p><a href="${ link.url }">foo</a>bar</p>` );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( `<paragraph><$text linkHref="${ link.url }">foo</$text>bar</paragraph>` );
+
+						// Order of attributes is important, that's why this is assert is construct in such way.
+						expect( editor.getData() ).to.equal( `<p><a ${ reducedAttr }href="${ link.url }">foo</a>bar</p>` );
+					} );
+				} );
+			} );
+		} );
+	} );
 } );
