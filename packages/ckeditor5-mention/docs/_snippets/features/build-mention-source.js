@@ -6,8 +6,10 @@
 /* globals window */
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 
-ClassicEditor.builtinPlugins.push( Mention );
+ClassicEditor.builtinPlugins.push( Underline, Strikethrough, Mention );
 
 window.ClassicEditor = ClassicEditor;

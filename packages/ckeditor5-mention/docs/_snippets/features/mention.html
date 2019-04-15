@@ -1,3 +1,142 @@
-<div id="snippet-mention">
-	<p>Hello <span class="mention" data-mention="@Ted">@Ted</span>.</p>
+<div class="snippet-mention">
+	<ul class="snippet-mention__posts">
+		<li>
+			<img src="../assets/img/m_1.jpg" alt="avatar" class="photo">
+			<div class="message">
+				<strong>Charles Flores</strong>
+				<span class="bullet">•</span>
+				<a class="mailto-user" href="mailto:cflores@example.com">@cflores</a>
+				<span class="bullet">•</span>
+				<span class="time">2 hours ago</span>
+				<p class="post-content">
+					Thanks for another <a class="mention" data-mention="#yummy" href="https://example.com/social/yummy">#yummy</a> recipe,
+					<a class="mention" data-mention="@dwilliams" href="mailto:dwilliams@example.com">@dwilliams</a>!
+					Makes me <a class="mention" data-mention="#hungry" href="https://example.com/social/hungry">#hungry</a>
+					just looking at the photos 😋. Definitely adding it to my TODO list for our next
+					<a class="mention" data-mention="#mediterranean" href="https://example.com/social/mediterranean">#mediterranean</a> potluck.
+				</p>
+			</div>
+		</li>
+		<li>
+			<img src="../assets/img/w_1.jpg" alt="avatar" class="photo">
+			<div class="message">
+				<strong>Mildred Wilson</strong>
+				<span class="bullet">•</span>
+				<a class="mailto-user" href="mailto:mwilson@example.com">@mwilson</a>
+				<span class="bullet">•</span>
+				<span class="time">4 hours ago</span>
+				<p class="post-content">
+					Really appreciate the <a class="mention" data-mention="#vegetarian" href="https://example.com/social/vegetarian">#vegetarian</a>
+					and <a class="mention" data-mention="#vegan" href="https://example.com/social/vegan">#vegan</a> variations of your recipes.
+					So thoughtful of you! 🌱
+				</p>
+			</div>
+		</li>
+	</ul>
+	<div class="snippet-mention__editor">
+		<p>
+			I agree with <a href="mwilson@example.com" class="mention" data-mention="@mwilson">@mwilson</a> 👍.
+			It’s so nice of you to always be providing a few options to try! I love
+			<a href="https://example.com/social/greek" class="mention" data-mention="#greek">#greek</a> cuisine with a modern twist,
+			this one will be perfect to try.
+		</p>
+	</div>
+
+	<button class="snippet-mention-send" type="button">Send</button>
+
+	<style>
+		/* ---- Chat styles ---------------------------------------------------------------------- */
+
+		ul.snippet-mention__posts {
+			border: 1px solid var(--ck-color-base-border);
+			border-top-left-radius: var(--ck-border-radius);
+			border-top-right-radius: var(--ck-border-radius);
+			border-bottom: none;
+			margin: 1em 0 0;
+			padding: 1em;
+			list-style-position: inside;
+		}
+
+		ul.snippet-mention__posts li {
+			display: flex;
+		}
+
+		ul.snippet-mention__posts li.new-post {
+			animation: highlight 600ms ease-out;
+		}
+
+		ul.snippet-mention__posts li + li {
+			margin-top: 1em;
+		}
+
+		.snippet-mention__posts li .photo {
+			border-radius: 100%;
+			height: 40px;
+			margin-right: 1.5em;
+		}
+
+		.snippet-mention__posts li .time {
+			color: #b7b7b7;
+			font-size: .9em;
+		}
+
+		.snippet-mention__posts li .bullet {
+			padding-left: 5px;
+			padding-right: 5px;
+			color: #b7b7b7;
+		}
+
+		@keyframes highlight {
+			0% {
+				background-color: yellow;
+			}
+
+			100% {
+				background-color: white;
+			}
+		}
+
+		/* ---- Editor styles ---------------------------------------------------------------------- */
+
+		.snippet-mention__editor + .ck.ck-editor {
+			margin-top: 0;
+		}
+
+		.snippet-mention__editor + .ck.ck-editor .ck.ck-toolbar {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
+
+		/* ---- Mention styles ---------------------------------------------------------------------- */
+
+		.ck-mentions .snippet-mention__item {
+			display: block;
+		}
+
+		.ck-mentions .snippet-mention__item img {
+			border-radius: 100%;
+			height: 30px;
+		}
+
+		.ck-mentions .snippet-mention__item span {
+			margin-left: .5em;
+		}
+
+		.ck-mentions .snippet-mention__item.ck-on .snippet-mention__item__user-name {
+			color: var(--ck-color-base-background);
+		}
+
+		.ck-mentions .snippet-mention__item .snippet-mention__item__full-name {
+			color: #aaa;
+		}
+
+		.ck-content .mention {
+			background: unset;
+		}
+
+		.snippet-mention .ck.ck-content a,
+		.snippet-mention .snippet-mention__posts a {
+			color: #1b3af2;
+		}
+	</style>
 </div>
