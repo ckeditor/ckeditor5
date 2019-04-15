@@ -80,7 +80,7 @@
 
 .app .app__product-list ul {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 	grid-gap: 10px;
 	list-style-type: none;
 	margin: 1.5em 0;
@@ -235,15 +235,18 @@ class App extends React.Component {
 				// Our custom plugin implementing the widget is loaded here.
 				ProductPreviewEditing
 			],
-			toolbar: [
-				'heading',
-				'|',
-				'bold', 'italic', 'underline',
-				'|',
-				'link', 'insertTable',
-				'|',
-				'undo', 'redo'
-			],
+			toolbar: {
+				viewportTopOffset: window.getViewportTopOffsetConfig(),
+				items: [
+					'heading',
+					'|',
+					'bold', 'italic', 'underline',
+					'|',
+					'link', 'insertTable',
+					'|',
+					'undo', 'redo'
+				]
+			},
 			table: {
 				contentToolbar: [
 					'tableColumn',
