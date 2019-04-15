@@ -15,14 +15,14 @@ import { _addMentionAttributes } from './mentionediting';
 /**
  * The mention command.
  *
- * The command is registered by the {@link module:mention/mentionediting~MentionEditing} as `'mention'`.
+ * The command is registered by {@link module:mention/mentionediting~MentionEditing} as `'mention'`.
  *
- * To insert a mention on a range, execute the command and specify a mention object and a range to replace:
+ * To insert a mention onto a range, execute the command and specify a mention object with a range to replace:
  *
  *		const focus = editor.model.document.selection.focus;
  *
- *		// It will replace one character before selection focus with '#1234' text
- *		// with mention attribute filled with passed attributes.
+ *		// It will replace one character before the selection focus with the '#1234' text
+ *		// with the mention attribute filled with passed attributes.
  *		editor.execute( 'mention', {
  *			marker: '#',
  *			mention: {
@@ -33,8 +33,8 @@ import { _addMentionAttributes } from './mentionediting';
  *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
  *		} );
  *
- *		// It will replace one character before selection focus with 'Teh "Big Foo"' text
- *		// with attribute filled with passed attributes.
+ *		// It will replace one character before the selection focus with the 'The "Big Foo"' text
+ *		// with the mention attribute filled with passed attributes.
  *		editor.execute( 'mention', {
  *			marker: '#',
  *			mention: {
@@ -63,12 +63,13 @@ export default class MentionCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {Object|String} options.mention Mention object to insert. If passed a string it will be used to create a plain object with
-	 * name attribute equal to passed string.
+	 * @param {Object|String} options.mention The mention object to insert. When a string is passed, it will be used to create a plain
+	 * object with the name attribute that equals the passed string.
 	 * @param {String} options.marker The marker character (e.g. `'@'`).
-	 * @param {String} [options.text] The text of inserted mention. Defaults to full mention string composed from `marker` and
-	 * `mention` string or `mention.id` if object is passed.
-	 * @param {String} [options.range] Range to replace. Note that replace range might be shorter then inserted text with mention attribute.
+	 * @param {String} [options.text] The text of the inserted mention. Defaults to the full mention string composed from `marker` and
+	 * `mention` string or `mention.id` if an object is passed.
+	 * @param {String} [options.range] The range to replace. Note that the replaced range might be shorter than the inserted text with the
+	 * mention attribute.
 	 * @fires execute
 	 */
 	execute( options ) {
@@ -102,7 +103,7 @@ export default class MentionCommand extends Command {
 
 		if ( mentionID.charAt( 0 ) != options.marker ) {
 			/**
-			 * The feed item id must start with the marker character.
+			 * The feed item ID must start with the marker character.
 			 *
 			 * Correct mention feed setting:
 			 *
@@ -135,11 +136,11 @@ export default class MentionCommand extends Command {
 
 			attributesWithMention.set( 'mention', mention );
 
-			// Replace range with a text with mention.
+			// Replace a range with the text with a mention.
 			writer.remove( range );
 			writer.insertText( mentionText, attributesWithMention, range.start );
 
-			// Insert space after a mention.
+			// Insert a space after the mention.
 			writer.insertText( ' ', currentAttributes, model.document.selection.focus );
 		} );
 	}

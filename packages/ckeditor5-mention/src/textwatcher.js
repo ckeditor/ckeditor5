@@ -11,10 +11,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
- * Text watcher feature.
+ * The text watcher feature.
  *
- * Fires {@link module:mention/textwatcher~TextWatcher#event:matched matched} and
- * {@link module:mention/textwatcher~TextWatcher#event:unmatched unmatched} events on typing or selection changes.
+ * Fires {@link module:mention/textwatcher~TextWatcher#event:matched `matched`} and
+ * {@link module:mention/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  *
  * @private
  */
@@ -22,8 +22,8 @@ export default class TextWatcher {
 	/**
 	 * Creates a text watcher instance.
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Function} testCallback Function used to match the text.
-	 * @param {Function} textMatcherCallback Function used to process matched text.
+	 * @param {Function} testCallback The function used to match the text.
+	 * @param {Function} textMatcherCallback The function used to process matched text.
 	 */
 	constructor( editor, testCallback, textMatcherCallback ) {
 		this.editor = editor;
@@ -36,7 +36,7 @@ export default class TextWatcher {
 	}
 
 	/**
-	 * Last matched text.
+	 * The last matched text.
 	 *
 	 * @property {String}
 	 */
@@ -45,7 +45,7 @@ export default class TextWatcher {
 	}
 
 	/**
-	 * Starts listening the editor for typing & selection events.
+	 * Starts listening to the editor for typing and selection events.
 	 *
 	 * @private
 	 */
@@ -53,7 +53,7 @@ export default class TextWatcher {
 		const editor = this.editor;
 
 		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
-			// The indirect changes (ie on typing) are handled in document's change event.
+			// Indirect changes (i.e. on typing) are handled in the document's change event.
 			if ( !directChange ) {
 				return;
 			}
@@ -85,7 +85,7 @@ export default class TextWatcher {
 
 		if ( !textHasMatch && this.hasMatch ) {
 			/**
-			 * Fired whenever text doesn't match anymore. Fired only when text matcher was matched.
+			 * Fired whenever the text does not match anymore. Fired only when the text watcher found a match.
 			 *
 			 * @event unmatched
 			 */
@@ -98,7 +98,7 @@ export default class TextWatcher {
 			const matched = this.textMatcher( text );
 
 			/**
-			 * Fired whenever text matcher was matched.
+			 * Fired whenever the text watcher found a match.
 			 *
 			 * @event matched
 			 */
@@ -109,14 +109,14 @@ export default class TextWatcher {
 	/**
 	 * Returns the text before the caret from the current selection block.
 	 *
-	 * @returns {String|undefined} Text from block or undefined if selection is not collapsed.
+	 * @returns {String|undefined} The text from the block or undefined if the selection is not collapsed.
 	 * @private
 	 */
 	_getText() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		// Do nothing if selection is not collapsed.
+		// Do nothing if the selection is not collapsed.
 		if ( !selection.isCollapsed ) {
 			return;
 		}
@@ -128,7 +128,7 @@ export default class TextWatcher {
 }
 
 /**
- * Returns whole text from given range by adding all data from text nodes together.
+ * Returns the whole text from a given range by adding all data from the text nodes together.
  *
  * @protected
  * @param {module:engine/model/range~Range} range
