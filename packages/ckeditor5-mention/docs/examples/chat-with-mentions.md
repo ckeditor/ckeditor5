@@ -156,12 +156,16 @@ The HTML code of the application is listed below:
 		margin-left: .5em;
 	}
 
-	.ck-mentions .mention__item.ck-on .mention__item__user-name {
+	.ck-mentions .mention__item.ck-on span {
 		color: var(--ck-color-base-background);
 	}
 
 	.ck-mentions .mention__item .mention__item__full-name {
-		color: hsl(0, 0%, 67%);
+		color: hsl(0, 0%, 45%);
+	}
+
+	.ck-mentions .mention__item:hover .mention__item__full-name {
+		color: hsl(0, 0%, 40%);
 	}
 
 	/* ---- Chat editor content styles ----------------------------------------------------------- */
