@@ -358,33 +358,43 @@ describe( 'MentionUI', () => {
 							stopPropagation: sinon.spy()
 						};
 
-						const isItemVisibleInScrolledAreaStub = testUtils.sinon.stub( mentionsView, '_isItemVisibleInScrolledArea' );
-						const firstItemOffset = mentionsView.items.get( 0 ).children.get( 0 ).element.offsetTop;
+						// The scroll test highly depends on browser styles.
+						// Some CI test environments might not load theme which will result that tests will not render on CI as locally.
+						// To make this test repeatable across different environments it enforces mentions view size to 100px...
+						mentionsView.element.style = 'height:100px;padding:0px;margin:0px';
 
+						// ...and each list view item size to 25px...
+						Array.from( mentionsView.items ).forEach( item => {
+							item.children.get( 0 ).element.style = 'height:25px;padding:0px;margin:0px;';
+						} );
+
+						// ...so after those changes it is safe to assume that:
+						// - base offset is 0
+						// - only 4 items are visible at once
+						// - if scrolled to the last element scrollTop will be set to 150px. The 150px is the offset of the 7th item in the
+						//   list as last four (7, 8, 9 & 10) will be visible.
 						expect( panelView.isVisible ).to.be.true;
-						isItemVisibleInScrolledAreaStub.returns( true );
 
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( firstItemOffset );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
 						fireKeyDownEvent( arrowDownEvtData );
 
 						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( firstItemOffset );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
 						fireKeyDownEvent( arrowUpEvtData );
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( firstItemOffset );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
-						isItemVisibleInScrolledAreaStub.returns( false );
 						fireKeyDownEvent( arrowUpEvtData );
 						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
-						expect( mentionsView.element.scrollTop ).to.not.equal( firstItemOffset );
+						expect( mentionsView.element.scrollTop ).to.equal( 150 );
 
 						fireKeyDownEvent( arrowDownEvtData );
 
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( firstItemOffset );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 					} );
 			} );
 		} );
