@@ -147,7 +147,7 @@ ClassicEditor
 
 {@snippet features/custom-font-size-numeric-options}
 
-## Configuring font color and font background color features
+## Configuring the font color and font background color features
 
 Both font color and font background color features are configurable and share the same configuration format.
 
@@ -159,7 +159,7 @@ Check out the editor below with both features customized using the editor config
 
 {@snippet features/custom-font-color-and-background-color-options}
 
-### Specifying the available colors
+### Specifying available colors
 
 It is possible to configure which colors are available in the color dropdown. Use the {@link module:font/fontcolor~FontColorConfig#colors `fontColor.colors`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#colors `fontBackgroundColor.colors`} configuration options to do so.
 
@@ -229,7 +229,7 @@ ClassicEditor
 
 ### Changing the geometry of the color grid
 
-It is also possible to configure in how many columns the colors in the grid are displayed. Use {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} to do so.
+It is also possible to configure in how many columns the colors in the grid are displayed. Use the {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} and {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`} options to do so.
 
 ```js
 ClassicEditor
@@ -274,7 +274,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-You can also add one of the font features to your plugin list and the toolbar configuration:
+You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
 
 ```js
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
@@ -294,9 +294,9 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:font/fontfamily~FontFamily} plugin registers:
+The {@link module:font/fontfamily~FontFamily} plugin registers the following components:
 
-* The `'fontFamily'` dropdown,
+* The `'fontFamily'` dropdown.
 * The {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand `'fontFamily'`} command.
 
 	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option.
@@ -342,7 +342,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 
 The {@link module:font/fontsize~FontSize} plugin registers the following components:
 
-* The `'fontSize'` dropdown,
+* The `'fontSize'` dropdown.
 * The {@link module:font/fontsize/fontsizecommand~FontSizeCommand `'fontSize'`} command.
 
 	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option.
@@ -365,7 +365,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 
 The {@link module:font/fontcolor~FontColor} plugin registers the following components:
 
-* The `'fontColor'` dropdown,
+* The `'fontColor'` dropdown.
 * The {@link module:font/fontcolor/fontcolorcommand~FontColorCommand `'fontColor'`} command.
 
 	You can change the font color of the current selection by executing the command with a desired value:
@@ -382,7 +382,7 @@ The {@link module:font/fontcolor~FontColor} plugin registers the following compo
 
 The {@link module:font/fontbackgroundcolor~FontBackgroundColor} plugin registers the following components:
 
-* The `'fontBackgroundColor'` dropdown,
+* The `'fontBackgroundColor'` dropdown.
 * The {@link module:font/fontbackgroundcolor/fontbackgroundcolorcommand~FontBackgroundColorCommand `'fontBackgroundColor'`} command.
 
 	You can change the font background color of the current selection by executing the command with a desired value:

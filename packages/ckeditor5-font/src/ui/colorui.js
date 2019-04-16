@@ -18,19 +18,19 @@ import {
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
  *
- * It is used to create the `'fontBackgroundColor'` and the `'fontColor'` dropdowns, each hosting
+ * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
  * a {@link module:font/ui/colortableview~ColorTableView}.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class ColorUI extends Plugin {
 	/**
-	 * Creates a plugin which brings dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}
+	 * Creates a plugin which introduces a dropdown with a pre–configured {@link module:font/ui/colortableview~ColorTableView}.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Object} config Configuration object
-	 * @param {String} config.commandName Name of command which will be executed when a color tile is clicked.
-	 * @param {String} config.componentName Name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
+	 * @param {Object} config The configuration object.
+	 * @param {String} config.commandName The name of the command which will be executed when a color tile is clicked.
+	 * @param {String} config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}
 	 * and the configuration scope name in `editor.config`.
 	 * @param {String} config.icon SVG icon used by the dropdown.
 	 * @param {String} config.dropdownLabel Label used by the dropdown.
@@ -39,13 +39,13 @@ export default class ColorUI extends Plugin {
 		super( editor );
 
 		/**
-		 * Name of the command which will be executed when a color tile is clicked.
+		 * The name of the command which will be executed when a color tile is clicked.
 		 * @type {String}
 		 */
 		this.commandName = commandName;
 
 		/**
-		 * Name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
+		 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
 		 * Also the configuration scope name in `editor.config`.
 		 * @type {String}
 		 */
@@ -64,7 +64,7 @@ export default class ColorUI extends Plugin {
 		this.dropdownLabel = dropdownLabel;
 
 		/**
-		 * Number of columns in color grid.
+		 * The number of columns in the color grid.
 		 * @type {Number}
 		 */
 		this.columns = editor.config.get( `${ this.componentName }.columns` );
@@ -80,7 +80,7 @@ export default class ColorUI extends Plugin {
 		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
 		const localizedColors = getLocalizedColorOptions( editor, colorsConfig );
 
-		// Register UI component.
+		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
 			const dropdownView = createDropdown( locale );
 			const colorTableView = addColorTableToDropdown( {

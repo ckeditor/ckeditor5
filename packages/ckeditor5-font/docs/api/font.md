@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-font.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)
 
-This package implements the font family and font size features for CKEditor 5.
+This package implements the font family, font size as well as font and background color features for CKEditor 5.
 
 ## Demo
 

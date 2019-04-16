@@ -11,7 +11,7 @@ import FontCommand from '../fontcommand';
 import { FONT_COLOR } from '../utils';
 
 /**
- * The font color command. It's used by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing}
+ * The font color command. It is used by {@link module:font/fontcolor/fontcolorediting~FontColorEditing}
  * to apply the font color.
  *
  *		editor.execute( 'fontColor', { value: 'rgb(250, 20, 20)' } );

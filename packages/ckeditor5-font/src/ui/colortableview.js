@@ -17,23 +17,23 @@ import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import '../../theme/fontcolor.css';
 
 /**
- * Class which represents a view with the following sub–components:
+ * A class which represents a view with the following sub–components:
  *
- * * a remove color button,
- * * a {@link module:ui/colorgrid/colorgrid~ColorGridView}.
+ * * A remove color button,
+ * * A {@link module:ui/colorgrid/colorgrid~ColorGridView}.
  *
  * @extends module:ui/view~View
  */
 export default class ColorTableView extends View {
 	/**
-	 * Creates a view to be inserted as child of {@link module:ui/dropdown/dropdownview~DropdownView}.
+	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {Object} config Configuration object
-	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors Array with definitions of colors to
+	 * @param {Object} config The configuration object.
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions of colors to
 	 * be displayed in the table.
-	 * @param {Number} config.columns Number of columns in the color grid.
-	 * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
+	 * @param {Number} config.columns The number of columns in the color grid.
+	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
 	 */
 	constructor( locale, { colors, columns, removeButtonLabel } ) {
 		super( locale );
@@ -62,7 +62,7 @@ export default class ColorTableView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
@@ -70,21 +70,21 @@ export default class ColorTableView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Keeps value of the command associated with the table for current selection.
+		 * Keeps value of the command associated with the table for the current selection.
 		 *
 		 * @type {String}
 		 */
 		this.set( 'selectedColor' );
 
 		/**
-		 * A label of the button responsible for removing color attributes.
+		 * The label of the button responsible for removing color attributes.
 		 *
 		 * @type {String}
 		 */
 		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * The number of columns in color grid.
+		 * The number of columns in the color grid.
 		 *
 		 * @type {Number}
 		 */
@@ -102,10 +102,10 @@ export default class ColorTableView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate list items backwards using the arrowup key.
+				// Navigate list items backwards using the Arrow Up key.
 				focusPrevious: 'arrowup',
 
-				// Navigate list items forwards using the arrowdown key.
+				// Navigate list items forwards using the Arrow Down key.
 				focusNext: 'arrowdown',
 			}
 		} );
@@ -126,7 +126,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Adds the remove color button as child for current view.
+	 * Adds the remove color button as a child of the current view.
 	 *
 	 * @private
 	 */
@@ -149,7 +149,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Creates a static color table grid based on editor config.
+	 * Creates a static color table grid based on the editor configuration.
 	 *
 	 * @private
 	 */
@@ -181,14 +181,14 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Focuses the first focusable in {@link #items}.
+	 * Focuses the first focusable element in {@link #items}.
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
 	}
 
 	/**
-	 * Focuses the last focusable in {@link #items}.
+	 * Focuses the last focusable element in {@link #items}.
 	 */
 	focusLast() {
 		this._focusCycler.focusLast();

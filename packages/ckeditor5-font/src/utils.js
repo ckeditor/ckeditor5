@@ -10,22 +10,22 @@
 import ColorTableView from './ui/colortableview';
 
 /**
- * Name of the font size plugin.
+ * The name of the font size plugin.
  */
 export const FONT_SIZE = 'fontSize';
 
 /**
- * Name of the font family plugin.
+ * The name of the font family plugin.
  */
 export const FONT_FAMILY = 'fontFamily';
 
 /**
- * Name of the font color plugin.
+ * The name of the font color plugin.
  */
 export const FONT_COLOR = 'fontColor';
 
 /**
- * Name of font font background color plugin.
+ * The name of the font font background color plugin.
  */
 export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
@@ -61,7 +61,7 @@ export function buildDefinition( modelAttributeKey, options ) {
 /**
  * A {@link module:font/fontcolor~FontColor font color} and
  * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
- * responsible for upcasting data to model.
+ * responsible for upcasting data to the model.
  *
  * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
  *
@@ -75,7 +75,7 @@ export function renderUpcastAttribute( styleAttr ) {
 /**
  * A {@link module:font/fontcolor~FontColor font color} and
  * {@link module:font/fontbackgroundcolor~FontBackgroundColor font background color} helper
- * responsible for downcasting a color attribute to a span element.
+ * responsible for downcasting a color attribute to a `<span>` element.
  *
  * **Note**: `styleAttr` should be either `'color'` or `'background-color'`.
  *
@@ -89,7 +89,7 @@ export function renderDowncastElement( styleAttr ) {
 
 /**
  * Creates a unified color definition object from color configuration options.
- * The object contains both the information necessary to render the UI and initialize a conversion.
+ * The object contains the information necessary to both render the UI and initialize the conversion.
  *
  * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options
  * @returns {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
@@ -101,14 +101,14 @@ export function normalizeColorOptions( options ) {
 }
 
 /**
- * Helper which add {@link module:font/ui/colortableview~ColorTableView} to a dropdown with proper initial values.
+ * Helper that adds {@link module:font/ui/colortableview~ColorTableView} to a dropdown with proper initial values.
  *
- * @param {Object} config Configuration object
- * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView Dropdown view to which
+ * @param {Object} config The configuration object.
+ * @param {module:ui/dropdown/dropdownview~DropdownView} config.dropdownView The dropdown view to which
  * a {@link module:font/ui/colortableview~ColorTableView} will be added.
  * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions
  * representing colors to be displayed in the color table.
- * @param {String} config.removeButtonLabel A label of a button responsible for removing the color.
+ * @param {String} config.removeButtonLabel The label for the button responsible for removing the color.
  * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */
 export function addColorTableToDropdown( { dropdownView, colors, columns, removeButtonLabel } ) {
@@ -124,7 +124,7 @@ export function addColorTableToDropdown( { dropdownView, colors, columns, remove
 }
 
 /**
- * Returns color configuration options as defined in the `editor.config.(fontColor|fontBackgroundColor).colors`
+ * Returns color configuration options as defined in `editor.config.(fontColor|fontBackgroundColor).colors`
  * but processed to account for editor localization, i.e. to display {@link module:font/fontcolor~FontColorConfig}
  * or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig} in the correct language.
  *
@@ -166,7 +166,7 @@ export function getLocalizedColorOptions( editor, options ) {
 	} );
 }
 
-// Fixes color value string
+// Fixes the color value string.
 //
 // @param {String} value
 // @returns {String}
@@ -174,7 +174,7 @@ function normalizeColorCode( value ) {
 	return value.replace( /\s/g, '' );
 }
 
-// Creates normalized color definition from user defined configuration.
+// Creates a normalized color definition from the user-defined configuration.
 //
 // @param {String|module:ui/colorgrid/colorgrid~ColorDefinition}
 // @returns {module:ui/colorgrid/colorgrid~ColorDefinition}

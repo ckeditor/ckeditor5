@@ -131,7 +131,7 @@ export default class FontColor extends Plugin {
  */
 
 /**
- * Represents the amount of columns in the dropdown. The default value is:
+ * Represents the number of columns in the dropdown. The default value is:
  *
  *		const fontColorConfig = {
  *			columns: 5

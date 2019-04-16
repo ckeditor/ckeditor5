@@ -11,7 +11,7 @@ import FontCommand from '../fontcommand';
 import { FONT_BACKGROUND_COLOR } from '../utils';
 
 /**
- * The font background color command. It's used by the
+ * The font background color command. It is used by
  * {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing}
  * to apply the font background color.
  *
