@@ -5,17 +5,17 @@ order: 10
 
 # Chat with mentions
 
-The {@link features/mentions Mentions} feature allows developing rich–text applications (e.g. chats) with autocomplete suggestions displayed in the dedicated panel as the user types a pre–configured marker. For instance, in the editor below, type **"@"** to mention users and **"#"** to select from the list of available tags.
+The {@link features/mentions mention} feature allows developing rich–text applications (e.g. chats) with autocomplete suggestions displayed in a dedicated panel as the user types a pre–configured marker. For instance, in the editor below, type **"@"** to mention users and **"#"** to select from the list of available tags.
 
 {@snippet examples/chat-with-mentions}
 
-Learn how to {@link features/mentions#configuration configure} mention feeds in the dedicated guide and check out the [full source code](#source–code) of this example if you want to implement your own chat.
+Learn how to {@link features/mentions#configuration configure mention feeds} in the dedicated guide and check out the [full source code](#source-code) of this example if you want to implement your own chat using CKEditor 5 WYSIWYG editor.
 
 ## Source code
 
 The following code will let you run the editor inside a chat application like in the example above. See the {@link builds/guides/integration/installing-plugins installing plugins} guide to learn more.
 
-**Note**: You may need to change the path to the `assets/img` both in the HTML and JavaScript to load user avatars properly.
+**Note**: You may need to change the path to the `assets/img` both in the HTML and JavaScript code to load user avatars properly.
 
 The HTML code of the application is listed below:
 
@@ -87,7 +87,7 @@ The HTML code of the application is listed below:
 	}
 
 	.chat ul.chat__posts li.new-post {
-		/* Highlight a new post in the chat */
+		/* Highlight a new post in the chat. */
 		animation: highlight 600ms ease-out;
 	}
 
@@ -177,7 +177,7 @@ The HTML code of the application is listed below:
 </style>
 ```
 
-JavaScript required to run the editor:
+JavaScript code required to run the editor:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
@@ -267,8 +267,8 @@ ClassicEditor
 	} );
 
 /*
- * This plugin customizes the way mentions are handled in editor model and data.
- * Instead of classic <span class="mention"></span>,
+ * This plugin customizes the way mentions are handled in the editor model and data.
+ * Instead of a classic <span class="mention"></span>,
  */
 function MentionLinks( editor ) {
 	// The upcast converter will convert a view
@@ -325,7 +325,7 @@ function MentionLinks( editor ) {
 }
 
 /*
- * Customizes the way list of user suggestions is displayed.
+ * Customizes the way the list of user suggestions is displayed.
  * Each user has an @id, a name and an avatar.
  */
 function customItemRenderer( item ) {

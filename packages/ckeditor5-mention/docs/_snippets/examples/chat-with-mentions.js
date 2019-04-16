@@ -95,8 +95,8 @@ ClassicEditor
 	} );
 
 /*
- * This plugin customizes the way mentions are handled in editor model and data.
- * Instead of classic <span class="mention"></span>,
+ * This plugin customizes the way mentions are handled in the editor model and data.
+ * Instead of a classic <span class="mention"></span>,
  */
 function MentionLinks( editor ) {
 	// The upcast converter will convert a view
@@ -153,7 +153,7 @@ function MentionLinks( editor ) {
 }
 
 /*
- * Customizes the way list of user suggestions is displayed.
+ * Customizes the way the list of user suggestions is displayed.
  * Each user has an @id, a name and an avatar.
  */
 function customItemRenderer( item ) {
