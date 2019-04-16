@@ -143,24 +143,24 @@ The HTML code of the application is listed below:
 
 	/* ---- In–editor mention list --------------------------------------------------------------- */
 
-	.ck-mentions .chat__item {
+	.ck-mentions .mention__item {
 		display: block;
 	}
 
-	.ck-mentions .chat__item img {
+	.ck-mentions .mention__item img {
 		border-radius: 100%;
 		height: 30px;
 	}
 
-	.ck-mentions .chat__item span {
+	.ck-mentions .mention__item span {
 		margin-left: .5em;
 	}
 
-	.ck-mentions .chat__item.ck-on .chat__item__user-name {
+	.ck-mentions .mention__item.ck-on .mention__item__user-name {
 		color: var(--ck-color-base-background);
 	}
 
-	.ck-mentions .chat__item .chat__item__full-name {
+	.ck-mentions .mention__item .mention__item__full-name {
 		color: hsl(0, 0%, 67%);
 	}
 
@@ -334,14 +334,14 @@ function customItemRenderer( item ) {
 	const userNameElement = document.createElement( 'span' );
 	const fullNameElement = document.createElement( 'span' );
 
-	itemElement.classList.add( 'snippet-mention__item' );
+	itemElement.classList.add( 'mention__item' );
 
-	avatar.src = `../assets/img/${ item.avatar }.jpg`;
+	avatar.src = `../../assets/img/${ item.avatar }.jpg`;
 
-	userNameElement.classList.add( 'snippet-mention__item__user-name' );
+	userNameElement.classList.add( 'mention__item__user-name' );
 	userNameElement.textContent = item.id;
 
-	fullNameElement.classList.add( 'snippet-mention__item__full-name' );
+	fullNameElement.classList.add( 'mention__item__full-name' );
 	fullNameElement.textContent = item.name;
 
 	itemElement.appendChild( avatar );

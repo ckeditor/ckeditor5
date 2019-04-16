@@ -162,14 +162,14 @@ function customItemRenderer( item ) {
 	const userNameElement = document.createElement( 'span' );
 	const fullNameElement = document.createElement( 'span' );
 
-	itemElement.classList.add( 'snippet-mention__item' );
+	itemElement.classList.add( 'mention__item' );
 
-	avatar.src = `../assets/img/${ item.avatar }.jpg`;
+	avatar.src = `../../assets/img/${ item.avatar }.jpg`;
 
-	userNameElement.classList.add( 'snippet-mention__item__user-name' );
+	userNameElement.classList.add( 'mention__item__user-name' );
 	userNameElement.textContent = item.id;
 
-	fullNameElement.classList.add( 'snippet-mention__item__full-name' );
+	fullNameElement.classList.add( 'mention__item__full-name' );
 	fullNameElement.textContent = item.name;
 
 	itemElement.appendChild( avatar );
