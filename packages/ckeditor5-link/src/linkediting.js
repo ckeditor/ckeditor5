@@ -18,6 +18,7 @@ import '../theme/link.css';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
 const AUTO = 'automatic';
+const MANUAL = 'manual';
 
 /**
  * The link engine feature.
@@ -70,8 +71,26 @@ export default class LinkEditing extends Plugin {
 				}
 			} );
 
+		// Create linking commands.
+		editor.commands.add( 'link', new LinkCommand( editor ) );
+		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
+
+		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
+		this.enableAutomaticDecorators( linkDecorators.filter( item => item.mode === AUTO ) );
+		this.enableManualDecorators( linkDecorators.filter( item => item.mode === MANUAL ) );
+
+		// Enable two-step caret movement for `linkHref` attribute.
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
+
+		// Setup highlight over selected link.
+		this._setupLinkHighlight();
+	}
+
+	enableAutomaticDecorators( automaticDecoratorDefinitions ) {
+		const editor = this.editor;
 		const automaticDecorators = new AutomaticDecorators();
 
+		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
 			automaticDecorators.add( {
 				mode: AUTO,
@@ -86,20 +105,40 @@ export default class LinkEditing extends Plugin {
 			} );
 		}
 
-		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
-		automaticDecorators.add( linkDecorators.filter( item => item.mode === AUTO ) );
-
+		automaticDecorators.add( automaticDecoratorDefinitions );
 		editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
+	}
 
-		// Create linking commands.
-		editor.commands.add( 'link', new LinkCommand( editor ) );
-		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
+	enableManualDecorators( manualDecoratorDefinitions ) {
+		const editor = this.editor;
+		if ( !manualDecoratorDefinitions.length ) {
+			return;
+		}
 
-		// Enable two-step caret movement for `linkHref` attribute.
-		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
+		const command = editor.commands.get( 'link' );
+		const attrMap = command.customAttributes;
 
-		// Setup highlight over selected link.
-		this._setupLinkHighlight();
+		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
+			const decoratorName = `linkManualDecorator${ index }`;
+			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
+
+			attrMap.set( decoratorName, Object.assign( { value: undefined }, decorator ) );
+			editor.conversion.for( 'downcast' ).attributeToElement( {
+				model: decoratorName,
+				view: ( manualDecoratorName, writer ) => {
+					if ( manualDecoratorName ) {
+						const element = writer.createAttributeElement(
+							'a',
+							attrMap.get( decoratorName ).attributes,
+							{
+								priority: 5
+							}
+						);
+						writer.setCustomProperty( 'link', true, element );
+						return element;
+					}
+				} } );
+		} );
 	}
 
 	/**

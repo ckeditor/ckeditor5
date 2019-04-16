@@ -25,6 +25,12 @@ export default class LinkCommand extends Command {
 	 * @member {Object|undefined} #value
 	 */
 
+	constructor( editor ) {
+		super( editor );
+
+		this.customAttributes = new Map();
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -52,9 +58,20 @@ export default class LinkCommand extends Command {
 	 * @fires execute
 	 * @param {String} href Link destination.
 	 */
-	execute( href ) {
+	execute( href, customAttrs = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+
+		// Stores information about custom attributes to turn on/off.
+		const truthyCustomAttributes = [];
+		const falsyCustomAttributes = [];
+		Object.entries( customAttrs ).forEach( entriesPair => {
+			if ( entriesPair[ 1 ] ) {
+				truthyCustomAttributes.push( entriesPair[ 0 ] );
+			} else {
+				falsyCustomAttributes.push( entriesPair[ 0 ] );
+			}
+		} );
 
 		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
@@ -64,9 +81,15 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
-					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ), model );
+					const linkRange = findLinkRange( position, selection.getAttribute( 'linkHref' ), model );
 
 					writer.setAttribute( 'linkHref', href, linkRange );
+					truthyCustomAttributes.forEach( item => {
+						writer.setAttribute( item, true, linkRange );
+					} );
+					falsyCustomAttributes.forEach( item => {
+						writer.removeAttribute( item, linkRange );
+					} );
 
 					// Create new range wrapping changed link.
 					writer.setSelection( linkRange );
@@ -78,6 +101,10 @@ export default class LinkCommand extends Command {
 					const attributes = toMap( selection.getAttributes() );
 
 					attributes.set( 'linkHref', href );
+
+					truthyCustomAttributes.forEach( item => {
+						attributes.set( item, true );
+					} );
 
 					const node = writer.createText( href, attributes );
 
@@ -93,6 +120,12 @@ export default class LinkCommand extends Command {
 
 				for ( const range of ranges ) {
 					writer.setAttribute( 'linkHref', href, range );
+					truthyCustomAttributes.forEach( item => {
+						writer.setAttribute( item, true, range );
+					} );
+					falsyCustomAttributes.forEach( item => {
+						writer.removeAttribute( item, range );
+					} );
 				}
 			}
 		} );
