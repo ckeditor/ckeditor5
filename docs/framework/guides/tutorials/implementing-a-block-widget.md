@@ -571,7 +571,7 @@ Let's see what else we can improve.
 ### Making simple box a widget
 
 <info-box>
-	If you are familiar with the {@link @ckeditor4 guide/dev_widgets Widget System of CKEditor 4} you will notice significant differences in how widgets are implemented in CKEditor 5.
+	If you are familiar with the {@link @ckeditor4 guide/dev/deep_dive/widgets/README Widget System of CKEditor 4} you will notice significant differences in how widgets are implemented in CKEditor 5.
 
 	CKEditor 4's implementation exposes a declarative API which controls the entire behavior of a widget (from its schema and internal model to the styles, clicking behavior, context menu and the dialog).
 
@@ -976,7 +976,7 @@ You can see the block widget implementation in action in the editor below. You c
 
 ## Full source code
 
-The following code contains a complete implementation of the `SimpleBox` plugin and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
+The following code contains a complete implementation of the `SimpleBox` plugin (and all its dependencies) and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

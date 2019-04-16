@@ -577,6 +577,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-remove-format"><code>@ckeditor/ckeditor5-remove-format</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-remove-format"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-remove-format.svg" alt="@ckeditor/ckeditor5-remove-format npm package badge"></a>
+	</td>
+	<td>
+		The remove format feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-table"><code>@ckeditor/ckeditor5-table</code></a>
 	</td>
 	<td>
