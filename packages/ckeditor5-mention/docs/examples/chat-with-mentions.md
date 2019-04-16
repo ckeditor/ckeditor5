@@ -164,7 +164,7 @@ The HTML code of the application is listed below:
 		color: hsl(0, 0%, 45%);
 	}
 
-	.ck-mentions .mention__item:hover .mention__item__full-name {
+	.ck-mentions .mention__item:hover:not(.ck-on) .mention__item__full-name {
 		color: hsl(0, 0%, 40%);
 	}
 
