@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event */
+/* global document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -1457,15 +1457,6 @@ describe( 'MentionUI', () => {
 				mentionUI = editor.plugins.get( MentionUI );
 				panelView = mentionUI.panelView;
 				mentionsView = mentionUI._mentionsView;
-
-				editingView.attachDomRoot( editorElement );
-
-				// Focus the engine.
-				editingView.document.isFocused = true;
-				editingView.getDomRoot().focus();
-
-				// Remove all selection ranges from DOM before testing.
-				window.getSelection().removeAllRanges();
 			} );
 	}
 
