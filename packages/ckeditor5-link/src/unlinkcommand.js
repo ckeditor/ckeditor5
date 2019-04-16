@@ -32,8 +32,10 @@ export default class UnlinkCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
+		const editor = this.editor;
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const linkCommand = editor.commands.get( 'link' );
 
 		model.change( writer => {
 			// Get ranges to unlink.
@@ -43,6 +45,12 @@ export default class UnlinkCommand extends Command {
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {
 				writer.removeAttribute( 'linkHref', range );
+				// If there are registered custom attributes, then remove them during unlink.
+				if ( linkCommand ) {
+					linkCommand.customAttributes.forEach( ( val, key ) => {
+						writer.removeAttribute( key, range );
+					} );
+				}
 			}
 		} );
 	}
