@@ -21,7 +21,7 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-so
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds build of your choice}.
+Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
