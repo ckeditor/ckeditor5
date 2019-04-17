@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-font/compare/v11.0.0...v11.1.0) (2019-04-10)
+
+### Features
+
+* Introduced font color and font background color features. Closes [ckeditor/ckeditor5#1457](https://github.com/ckeditor/ckeditor5/issues/1457). ([c456b2a](https://github.com/ckeditor/ckeditor5-font/commit/c456b2a))
+* Marked font size and font family as a formatting attribute using the `AttributeProperties#isFormatting` property. Closes [ckeditor/ckeditor5#1664](https://github.com/ckeditor/ckeditor5/issues/1664). ([d9f0a51](https://github.com/ckeditor/ckeditor5-font/commit/d9f0a51))
+
+### Other changes
+
+* Optimized icons. ([47ca23f](https://github.com/ckeditor/ckeditor5-font/commit/47ca23f))
+* Updated translations. ([6f3332f](https://github.com/ckeditor/ckeditor5-font/commit/6f3332f)) ([f756b70](https://github.com/ckeditor/ckeditor5-font/commit/f756b70))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Other changes

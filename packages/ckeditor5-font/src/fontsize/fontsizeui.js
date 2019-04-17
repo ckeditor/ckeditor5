@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -12,7 +12,8 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import { normalizeOptions } from '../fontsize/utils';
+import { normalizeOptions } from './utils';
+import { FONT_SIZE } from '../utils';
 
 import fontSizeIcon from '../../theme/icons/font-size.svg';
 import '../../theme/fontsize.css';
@@ -32,10 +33,10 @@ export default class FontSizeUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( 'fontSize' );
+		const command = editor.commands.get( FONT_SIZE );
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'fontSize', locale => {
+		editor.ui.componentFactory.add( FONT_SIZE, locale => {
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
@@ -89,7 +90,7 @@ export default class FontSizeUI extends Plugin {
 			Huge: t( 'Huge' )
 		};
 
-		const options = normalizeOptions( editor.config.get( 'fontSize.options' ) );
+		const options = normalizeOptions( editor.config.get( FONT_SIZE ).options );
 
 		return options.map( option => {
 			const title = localizedTitles[ option.title ];
@@ -115,7 +116,7 @@ function _prepareListOptions( options, command ) {
 		const def = {
 			type: 'button',
 			model: new Model( {
-				commandName: 'fontSize',
+				commandName: FONT_SIZE,
 				commandParam: option.model,
 				label: option.title,
 				class: 'ck-fontsize-option',

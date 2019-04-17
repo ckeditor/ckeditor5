@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -13,6 +13,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import { normalizeOptions } from './utils';
+import { FONT_FAMILY } from '../utils';
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 /**
@@ -30,10 +31,10 @@ export default class FontFamilyUI extends Plugin {
 
 		const options = this._getLocalizedOptions();
 
-		const command = editor.commands.get( 'fontFamily' );
+		const command = editor.commands.get( FONT_FAMILY );
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'fontFamily', locale => {
+		editor.ui.componentFactory.add( FONT_FAMILY, locale => {
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
@@ -76,7 +77,7 @@ export default class FontFamilyUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) );
+		const options = normalizeOptions( editor.config.get( FONT_FAMILY ).options );
 
 		return options.map( option => {
 			// The only title to localize is "Default" others are font names.
@@ -101,7 +102,7 @@ function _prepareListOptions( options, command ) {
 		const def = {
 			type: 'button',
 			model: new Model( {
-				commandName: 'fontFamily',
+				commandName: FONT_FAMILY,
 				commandParam: option.model,
 				label: option.title,
 				withText: true

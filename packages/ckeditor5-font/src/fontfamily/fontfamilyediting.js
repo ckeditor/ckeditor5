@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -11,9 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
-import { buildDefinition } from '../utils';
-
-const FONT_FAMILY = 'fontFamily';
+import { buildDefinition, FONT_FAMILY } from '../utils';
 
 /**
  * The font family editing feature.
@@ -56,6 +54,7 @@ export default class FontFamilyEditing extends Plugin {
 
 		// Allow fontFamily attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_FAMILY } );
+		editor.model.schema.setAttributeProperties( FONT_FAMILY, { isFormatting: true } );
 
 		// Get configured font family options without "default" option.
 		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) ).filter( item => item.model );

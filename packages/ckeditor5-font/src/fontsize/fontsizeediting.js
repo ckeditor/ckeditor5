@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -11,9 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
-import { buildDefinition } from '../utils';
-
-const FONT_SIZE = 'fontSize';
+import { buildDefinition, FONT_SIZE } from '../utils';
 
 /**
  * The font size editing feature.
@@ -65,5 +63,6 @@ export default class FontSizeEditing extends Plugin {
 
 		// Allow fontSize attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: FONT_SIZE } );
+		editor.model.schema.setAttributeProperties( FONT_SIZE, { isFormatting: true } );
 	}
 }

@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr%40latin/)\n"
+"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
 "Language: sr@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -22,24 +22,96 @@ msgstr "Veličina fonta"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr ""
+msgstr "Sitno"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr ""
+msgstr "Malo"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr ""
+msgstr "Veliko"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr ""
+msgstr "Ogromno"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr ""
+msgstr "Font"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
 msgstr "Оsnovni"
+
+msgctxt "Label of a button that allows selecting a font color."
+msgid "Font Color"
+msgstr ""
+
+msgctxt "Label of a button that allows selecting a font background color."
+msgid "Font Background Color"
+msgstr ""
+
+msgctxt "Label or a button that removes the color from the text (font color and background)."
+msgid "Remove color"
+msgstr ""
+
+msgctxt "Label of a button that applies a black text color (font color and background)"
+msgid "Black"
+msgstr ""
+
+msgctxt "Label of a button that applies a dim grey text color (font color and background)"
+msgid "Dim grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a grey text color (font color and background)"
+msgid "Grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a light grey text color (font color and background)"
+msgid "Light grey"
+msgstr ""
+
+msgctxt "Label of a button that applies a white text color (font color and background)"
+msgid "White"
+msgstr ""
+
+msgctxt "Label of a button that applies a red text color (font color and background)"
+msgid "Red"
+msgstr ""
+
+msgctxt "Label of a button that applies a orange text color (font color and background)"
+msgid "Orange"
+msgstr ""
+
+msgctxt "Label of a button that applies a yellow text color (font color and background)"
+msgid "Yellow"
+msgstr ""
+
+msgctxt "Label of a button that applies a light green text color (font color and background)"
+msgid "Light green"
+msgstr ""
+
+msgctxt "Label of a button that applies a green text color (font color and background)"
+msgid "Green"
+msgstr ""
+
+msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
+msgid "Aquamarine"
+msgstr ""
+
+msgctxt "Label of a button that applies a turquoise text color (font color and background)"
+msgid "Turquoise"
+msgstr ""
+
+msgctxt "Label of a button that applies a light blue text color (font color and background)"
+msgid "Light blue"
+msgstr ""
+
+msgctxt "Label of a button that applies a blue text color (font color and background)"
+msgid "Blue"
+msgstr ""
+
+msgctxt "Label of a button that applies a purple text color (font color and background)"
+msgid "Purple"
+msgstr ""

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -8,6 +8,7 @@
  */
 
 import FontCommand from '../fontcommand';
+import { FONT_SIZE } from '../utils';
 
 /**
  * The font size command. It is used by {@link module:font/fontsize/fontsizeediting~FontSizeEditing}
@@ -24,6 +25,6 @@ export default class FontSizeCommand extends FontCommand {
 	 * @inheritDoc
 	 */
 	constructor( editor ) {
-		super( editor, 'fontSize' );
+		super( editor, FONT_SIZE );
 	}
 }
