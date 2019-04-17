@@ -312,17 +312,17 @@ export class MyComponent {
 }
 ```
 
-## Accessing the CKEditor 5 Editor API from the Angular Component
+## Accessing the CKEditor 5 Editor
 
-The `<ckeditor>` component will provide all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to access with an additional step.
+The `<ckeditor>` component will provide all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to access the editor with an additional step.
 
-To do this create a template reference variable pointing the `<ckeditor>` component:
+To do this create a template reference variable `#editor` pointing the `<ckeditor>` component:
 
 ```html
 <ckeditor #editor [editor]="Editor" ...></ckeditor>
 ```
 
-Then get the `<ckeditor>` component with the usage of decorated `@ViewChild` variable and access the editor instance when needed:
+Then get the `<ckeditor>` component using a property decorated by `@ViewChild( 'editor' )` and access the editor instance when needed:
 
 ```ts
 @Component()
