@@ -350,17 +350,92 @@ will be preferable in the case where there is more than one `<ckeditor>` element
 the page.  Also, if the `<ckeditor>` element is inside an `*ngIf` structure the `@ViewChild`
 declared variable may be inadvertently undefined.
 
-## Implementing an Upload Adapter in an Angular Application
+## Implementing an Upload Adapter in the Angular Application
 
-An Upload Adapter can be used with CKEditor so that when a user adds an image
-to a document it is encoded as a link to the image.  The image itself is stored
-separately from the document.   When images are large or numerous this results
-in noticable improvement in performance over the default behavior.  Read about custom
-UploadAdapters {@link framework/guides/deep-dive/upload-adapter here}.
+An Upload Adapter can be used with CKEditor 5 so that when a user adds an image
+to a document it is encoded as a link to the image. The image itself is stored
+separately from the document. When images are large or numerous this results
+in noticeable improvement in performance over the default behavior. Read about custom
+UploadAdapters {@link TODO framework/guides/deep-dive/upload-adapter here}.
 
-The first step is to create an Upload Adapter.  This can be done in the same file where the
-component that will use it.  Alternatively this can have its own file and be
-imported.
+If you're familiar with Angular you have probably already used the [`HTTPClient`](https://angular.io/guide/http)
+service which wraps the JavaScript XMLHttpRequest and provides a more concise API around it.
+
+```ts
+import { Subscription, Observable } from 'rxjs';
+import { HttpClient, HttpEventType, HttpRequest, HttpEvent } from '@angular/common/http';
+// ...
+
+class UploadAdapterPlugin {
+	constructor( editor ) {
+		const httpClient = editor.config.get( 'httpClient' );
+
+		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+			return new UploadAdapter( loader, httpClient, '/image' );  // Modify for your server.
+		};
+	}
+}
+
+class UploadAdapter {
+	private sub: Subscription;
+
+	constructor(
+		private loader: any,
+		private httpClient: HttpClient,
+		private url: string
+	) { }
+
+	public upload() {
+		return new Promise( ( resolve, reject ) => {
+			const formData = new FormData();
+			formData.append( 'file', this.loader.file );
+
+			this.sub = this.httpPostMediaReq( formData ).subscribe( event => {
+				if ( event.type === HttpEventType.Response ) {
+					const response = event.body;
+
+					if ( !response.list || response.list.length < 1 || response.list[ 0 ].id < 1 ) {
+						return reject( response.error );
+					}
+
+					const imageURL = this.getImageUrl( response.list[ 0 ].id );
+					resolve( { default: imageURL } );
+				} else if ( event.type === HttpEventType.UploadProgress ) {
+					this.loader.uploaded = event.loaded;
+					this.loader.uploadTotal = event.total;
+				}
+			}, err => {
+				reject( err.body.message );
+			} );
+		} );
+	}
+
+	public abort() {
+		if ( this.sub ) {
+			this.sub.unsubscribe();
+		}
+	}
+
+	private getImageUrl( id ) {
+		// Return the URL where the successfully upload image
+		// can be retrieved with an HTTP GET request.
+	}
+
+	private httpPostMediaReq( formData: FormData ): Observable<HttpEvent<any>> {
+		const request = new HttpRequest(
+			'POST',
+			this.url,
+			formData,
+			{
+				withCredentials: true,
+				reportProgress: true
+			}
+		);
+
+		return this.httpClient.request( request );
+	}
+}
+```
 
 This class will be instantiated each time that CKEditor needs it.  Note that
 the functions in this class will run outside an `NgZone` which means that
@@ -370,82 +445,6 @@ in the Angular framework won't detect those changes.
 The instance property `loader` is the primary interface between the UploadAdapter
 and the CKEditor instance.
 
-```ts
-class UploadAdapter {
-  private loader;
-  private url;
-
-  private sub: Subscription;
-
-  constructor(loader, url) {
-    this.loader = loader;
-    this.url = url;
-  }
-
-  upload() {
-    return new Promise((resolve, reject) => {
-      const fd = new FormData();
-      fd.append('file', this.loader.file);
-
-      this.sub = this.httpPostMediaReq(fd).subscribe(
-        (event) => {
-          if (event.type === HttpEventType.Response) {
-            const resp = event.body;
-            if (!resp.list || resp.list.length < 1 || resp.list[0].id < 1) reject(resp.error);
-            else {
-              const imageURL = this.imageURL(resp.list[0].id);
-              resolve({ default: imageURL });
-            }
-          }
-          else if (event.type === HttpEventType.UploadProgress) {
-            this.loader.uploaded = event.loaded;
-            this.loader.uploadTotal = event.total;
-          }
-        },
-        (err) => {
-            reject(err.body.message);
-        });
-    });
-  }
-
-  imageURL(id) {
-     // RETURN THE URL WHERE THE SUCCESSFULY UPLOADED IMAGE
-     // CAN BE RETRIEVED WITH AN HTTP GET REQUEST
-  }
-
-  httpPostMediaReq(formReq: FormData): Observable<any> {
-      const options: {
-        observe: 'events';
-        reportProgress: boolean;
-        withCredentials: boolean;
-      } = {
-        withCredentials: true,
-        reportProgress: true,
-        observe: 'events'
-      };
-      const request = new HttpRequest(
-        'POST', this.url, formReq, options);
-      return this.http.request(request);
-    }
-
-  abort() {
-    console.log('UploadAdapter abort');
-    if (this.sub) this.sub.unsubscribe();
-  }
-
-```
-
-Next, in your component, create a function that can be plugged into CKEditor that
-will generate an UploadAdapter as needed:
-
-```ts
-  MyUploadAdapterPlugin(editor) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-      return new UploadAdapter(loader, '/image');  // MODIFY FOR YOUR SERVER
-    };
-  }
-```
-
 The second parameter is the URL where the image will be sent.  This will need
 to have everything the `imageURL` function in the UploadAdpater needs to
 generate a complete URL.
@@ -454,27 +453,6 @@ Next, we need to tell CKEditor where the Plugin can be found.  This is done
 using the `extraPlugins` element in the configuration object, which can
 be used without rebuilding the standard build you are using.  The following
 instance variable can be defined:
-
-```ts
-  ckconfig = {
-    extraPlugins: [ (ei) => this.MyUploadAdapterPlugin(ei) ]
-  };
-```
-
-Any other desired configuration settings can be added (such as `toolbar`).
-Then it can be used in the `<ckeditor>` component as follows:
-
-```html
-        <ckeditor [editor]="Editor" [config]="ckconfig"
-                  [(ngModel)]="text" name="editcontent"></ckeditor>
-```
-
-Note the use of a closure in the `extraPlugins` array in the configuration.
-This is done so that the `MyUploadAdapterPlugin` function will have access
-to the properties of the component instance that spawned it.
-
-At this point your UploadAdapter should be invoked any time the user pastes
-or drag-and-drops an image into the `<ckeditor>` window.
 
 ## Localization
 
