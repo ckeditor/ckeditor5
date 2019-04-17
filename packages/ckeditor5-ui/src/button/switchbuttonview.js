@@ -26,7 +26,7 @@ import '../../theme/components/button/switchbutton.css';
  *
  *		document.body.append( view.element );
  *
- * @extends module:ui/buttonview~ButtonView
+ * @extends module:ui/button/buttonview~ButtonView
  */
 export default class SwitchButtonView extends ButtonView {
 	/**
