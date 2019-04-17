@@ -15,8 +15,11 @@ before_install:
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - npm i -g yarn
+- export CWD=$(pwd)
 install:
-- yarn add @ckeditor/ckeditor5-dev-tests
+- cd /tmp && git clone https://github.com/ckeditor/ckeditor5-dev.git && cd ckeditor5-dev && git checkout t/ckeditor5/1662 && cd packages/ckeditor5-dev-tests && yarn install && yarn link && cd $CWD
+#- yarn add @ckeditor/ckeditor5-dev-tests
+- yarn add file:/tmp/ckeditor5-dev/packages/ckeditor5-dev-tests
 - ckeditor5-dev-tests-install-dependencies
 script:
 - ckeditor5-dev-tests-travis

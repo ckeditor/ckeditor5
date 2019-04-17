@@ -57,6 +57,9 @@
     "src/lib/**",
     "packages/**"
   ],
+  "depcheckIgnore": [
+    "eslint-plugin-ckeditor5-rules"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
