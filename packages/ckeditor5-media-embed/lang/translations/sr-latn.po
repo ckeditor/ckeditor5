@@ -12,7 +12,7 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr%40latin/)\n"
+"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
 "Language: sr@latin\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -26,7 +26,7 @@ msgstr "Media URL"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr ""
+msgstr " Nalepi medijski URL u polje za unos."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
