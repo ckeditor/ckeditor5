@@ -35,6 +35,7 @@
     "@ckeditor/ckeditor5-link": "^11.0.1",
     "@ckeditor/ckeditor5-list": "^12.0.1",
     "@ckeditor/ckeditor5-paragraph": "^11.0.1",
+    "@ckeditor/ckeditor5-theme-lark": "^13.0.1",
     "@ckeditor/ckeditor5-typing": "^12.0.1",
     "@ckeditor/ckeditor5-undo": "^11.0.1",
     "@ckeditor/ckeditor5-widget": "^11.0.1",
