@@ -137,11 +137,11 @@ export default class InlineEditor extends Editor {
 	 *			} );
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
-	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
+	 * web page content is generated on the client side and the DOM structure is not ready at the moment when you initialize the editor.
 	 *
 	 * # Using an existing DOM element (and data provided in `config.initialData`)
 	 *
-	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
+	 * You can also mix these two ways by providing a DOM element to be used and passing the initial data through the configuration:
 	 *
 	 *		InlineEditor
 	 *			.create( document.querySelector( '#editor' ), {
@@ -154,15 +154,15 @@ export default class InlineEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * This method can be used to initialize the editor on an existing element with specified content in case if your integration
+	 * This method can be used to initialize the editor on an existing element with the specified content in case if your integration
 	 * makes it difficult to set the content of the source element.
 	 *
-	 * Note that an error will be thrown if you pass initial data both as the first parameter and also in the config.
+	 * Note that an error will be thrown if you pass the initial data both as the first parameter and also in the configuration.
 	 *
 	 * # Configuring the editor
 	 *
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
-	 * customizing plugins, toolbar and other.
+	 * customizing plugins, toolbar and more.
 	 *
 	 * # Using the editor from source
 	 *
@@ -170,7 +170,7 @@ export default class InlineEditor extends Editor {
 	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-inline`).
 	 *
 	 * If you want to use the inline editor from source (`@ckeditor/ckeditor5-editor-inline/src/inlineeditor`),
-	 * then you need to define the list of
+	 * you need to define the list of
 	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
 	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
 	 * source in the {@glink builds/guides/integration/advanced-setup "Advanced setup" guide}.
@@ -182,7 +182,7 @@ export default class InlineEditor extends Editor {
 	 * Moreover, the editor data will be set back to the original element once the editor is destroyed.
 	 *
 	 * If the initial data is passed, a detached editor will be created. In this case you need to insert it into the DOM manually.
-	 * It is available under {@link module:editor-inline/inlineeditorui~InlineEditorUI#element `editor.ui.element`} property.
+	 * It is available under the {@link module:editor-inline/inlineeditorui~InlineEditorUI#element `editor.ui.element`} property.
 	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
