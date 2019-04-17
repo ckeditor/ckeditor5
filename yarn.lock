@@ -710,7 +710,7 @@
     request "^2.83.0"
     semver "^5.4.1"
 
-"@ckeditor/ckeditor5-dev-tests@^16.2.3":
+"@ckeditor/ckeditor5-dev-tests@^16.3.0":
   version "16.3.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-dev-tests/-/ckeditor5-dev-tests-16.3.0.tgz#adf46dff3ba6447db599625ca5a6d57a2b72edab"
   integrity sha512-6CVkPsAOFyGoE9ZQE//yswNUgezN7PGCeufBfKgGy1AIR2aqGeRYSe9qx90Kjrseoirr5+r5GHwa2Gvyd0eQ/Q==
