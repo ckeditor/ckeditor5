@@ -142,8 +142,9 @@ export default class LinkUI extends Plugin {
 	 */
 	_createFormView() {
 		const editor = this.editor;
-		const formView = new LinkFormView( editor.locale );
 		const linkCommand = editor.commands.get( 'link' );
+
+		const formView = new LinkFormView( editor.locale, linkCommand.customAttributes );
 
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
@@ -153,7 +154,13 @@ export default class LinkUI extends Plugin {
 
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.inputView.element.value );
+			const customAttributes = {};
+
+			for ( const switchButton of formView.customAttributesView ) {
+				customAttributes[ switchButton.value ] = switchButton.isOn;
+			}
+
+			editor.execute( 'link', formView.urlInputView.inputView.element.value, customAttributes );
 			this._closeFormView();
 		} );
 

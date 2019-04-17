@@ -8,7 +8,8 @@
 .ck.ck-link-form {
 	display: flex;
 	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
+	max-width: 500px;
 
 	& .ck-label {
 		display: none;

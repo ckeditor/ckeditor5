@@ -11,6 +11,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
@@ -34,7 +35,7 @@ export default class LinkFormView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale ) {
+	constructor( locale, customAttributes ) {
 		super( locale );
 
 		const t = locale.t;
@@ -76,6 +77,10 @@ export default class LinkFormView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
+
+		this.customAttributes = customAttributes;
+
+		this.customAttributesView = this._createCustomAttributesView();
 
 		/**
 		 * A collection of views which can be focused in the form.
@@ -122,7 +127,8 @@ export default class LinkFormView extends View {
 			children: [
 				this.urlInputView,
 				this.saveButtonView,
-				this.cancelButtonView
+				this.cancelButtonView,
+				...this.customAttributesView,
 			]
 		} );
 	}
@@ -137,10 +143,12 @@ export default class LinkFormView extends View {
 			view: this
 		} );
 
+		// Focus order should be different than position in DOM. Save/Cancel buttons should be focused at the end.
 		const childViews = [
 			this.urlInputView,
+			...this.customAttributesView,
 			this.saveButtonView,
-			this.cancelButtonView
+			this.cancelButtonView,
 		];
 
 		childViews.forEach( v => {
@@ -174,7 +182,6 @@ export default class LinkFormView extends View {
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
 
 		labeledInput.label = t( 'Link URL' );
-		labeledInput.inputView.placeholder = 'https://example.com';
 
 		return labeledInput;
 	}
@@ -209,6 +216,28 @@ export default class LinkFormView extends View {
 		}
 
 		return button;
+	}
+
+	_createCustomAttributesView() {
+		const checkboxes = this.createCollection();
+
+		checkboxes.bindTo( this.customAttributes ).using( item => {
+			const checkbox = new SwitchButtonView( this.locale );
+			checkbox.set( {
+				value: item.id,
+				label: item.label,
+				withText: true
+			} );
+
+			checkbox.bind( 'isOn' ).to( item, 'value' );
+
+			checkbox.on( 'execute', () => {
+				this.customAttributes.get( item.id ).set( 'value', !checkbox.isOn );
+			} );
+
+			return checkbox;
+		} );
+		return checkboxes;
 	}
 }
 

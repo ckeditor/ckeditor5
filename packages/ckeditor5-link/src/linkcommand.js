@@ -10,6 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -28,7 +29,7 @@ export default class LinkCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		this.customAttributes = new Map();
+		this.customAttributes = new Collection();
 	}
 
 	/**
@@ -39,6 +40,11 @@ export default class LinkCommand extends Command {
 		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
+
+		for ( const customAttr of this.customAttributes ) {
+			customAttr.value = doc.selection.getAttribute( customAttr.id ) || false;
+		}
+
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 

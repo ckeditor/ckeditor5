@@ -15,6 +15,8 @@ import AutomaticDecorators from './utils/automaticdecorators';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 const HIGHLIGHT_CLASS = 'ck-link_selected';
 const AUTO = 'automatic';
@@ -116,20 +118,20 @@ export default class LinkEditing extends Plugin {
 		}
 
 		const command = editor.commands.get( 'link' );
-		const attrMap = command.customAttributes;
+		const attrCollection = command.customAttributes;
 
 		manualDecoratorDefinitions.forEach( ( decorator, index ) => {
 			const decoratorName = `linkManualDecorator${ index }`;
 			editor.model.schema.extend( '$text', { allowAttributes: decoratorName } );
 
-			attrMap.set( decoratorName, Object.assign( { value: undefined }, decorator ) );
+			attrCollection.add( new ManualDecorator( Object.assign( { id: decoratorName, value: undefined }, decorator ) ) );
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decoratorName,
 				view: ( manualDecoratorName, writer ) => {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement(
 							'a',
-							attrMap.get( decoratorName ).attributes,
+							attrCollection.get( decoratorName ).attributes,
 							{
 								priority: 5
 							}
@@ -198,3 +200,17 @@ export default class LinkEditing extends Plugin {
 		} );
 	}
 }
+
+class ManualDecorator {
+	constructor( { id, value, label, attributes } = {} ) {
+		this.id = id;
+
+		this.set( 'value', value );
+
+		this.label = label;
+
+		this.attributes = attributes;
+	}
+}
+
+mix( ManualDecorator, ObservableMixin );
