@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -13,7 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import eraserIcon from './../theme/icons/eraser.svg';
+import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
