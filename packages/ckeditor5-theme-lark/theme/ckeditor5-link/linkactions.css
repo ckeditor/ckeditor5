@@ -7,7 +7,7 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
-@import "../mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link-actions {
 	padding: var(--ck-spacing-standard);
