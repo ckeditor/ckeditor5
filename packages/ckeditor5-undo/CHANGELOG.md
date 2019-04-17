@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [11.0.1](https://github.com/ckeditor/ckeditor5-undo/compare/v11.0.0...v11.0.1) (2019-04-10)
+
+### Other changes
+
+* Updated translations. ([69faf7c](https://github.com/ckeditor/ckeditor5-undo/commit/69faf7c)) 
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-undo/compare/v10.0.4...v11.0.0) (2019-02-28)
 
 ### Other changes
