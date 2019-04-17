@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
@@ -11,7 +11,10 @@ import Widget from '../src/widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 import { toWidget } from '../src/utils';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	setData as setModelData,
+	getData as getModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -118,6 +121,8 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
 		);
+
+		expect( getModelData( model ) ).to.equal( '[]<widget><nested>foo bar</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if triple clicked', () => {
@@ -137,8 +142,9 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption></div>'
+			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">{foo bar}</figcaption></div>'
 		);
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select proper nested editable if triple clicked', () => {
@@ -160,9 +166,11 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo</figcaption>' +
-				'<figcaption contenteditable="true">[bar]</figcaption>' +
+				'<figcaption contenteditable="true">{bar}</figcaption>' +
 			'</div>'
 		);
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>foo</nested><nested>[bar]</nested></widget>' );
 	} );
 
 	it( 'should select the entire nested editable if quadra clicked', () => {
@@ -182,8 +190,10 @@ describe( 'Widget - integration', () => {
 		sinon.assert.called( preventDefault );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">[foo bar]</figcaption></div>'
+			'<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">{foo bar}</figcaption></div>'
 		);
+
+		expect( getModelData( model ) ).to.equal( '<widget><nested>[foo bar]</nested></widget>' );
 	} );
 
 	it( 'should select the inline widget if triple clicked', () => {
@@ -205,6 +215,8 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'
 		);
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );
 	} );
 
 	it( 'should does nothing for non-Safari browser', () => {
@@ -228,5 +240,7 @@ describe( 'Widget - integration', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[]<div class="ck-widget" contenteditable="false"><figcaption contenteditable="true">foo bar</figcaption></div>'
 		);
+
+		expect( getModelData( model ) ).to.equal( '[]<widget><nested>foo bar</nested></widget>' );
 	} );
 } );

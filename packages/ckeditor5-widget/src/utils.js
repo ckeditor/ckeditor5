@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -355,11 +355,11 @@ function getFillerOffset() {
 	return null;
 }
 
-// Adds a drag handler to the editable element.
+// Adds a drag handler to the widget.
 //
-// @param {module:engine/view/editableelement~EditableElement}
+// @param {module:engine/view/containerelement~ContainerElement}
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-function addSelectionHandler( editable, writer ) {
+function addSelectionHandler( widgetElement, writer ) {
 	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 
@@ -376,6 +376,6 @@ function addSelectionHandler( editable, writer ) {
 	} );
 
 	// Append the selection handler into the widget wrapper.
-	writer.insert( writer.createPositionAt( editable, 0 ), selectionHandler );
-	writer.addClass( [ 'ck-widget_with-selection-handler' ], editable );
+	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandler );
+	writer.addClass( [ 'ck-widget_with-selection-handler' ], widgetElement );
 }

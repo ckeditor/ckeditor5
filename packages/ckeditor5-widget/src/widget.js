@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -121,9 +121,12 @@ export default class Widget extends Plugin {
 			// For such event, we select the entire nested editable element.
 			// See: https://github.com/ckeditor/ckeditor5/issues/1463.
 			if ( env.isSafari && domEventData.domEvent.detail >= 3 ) {
-				this.editor.editing.view.change( writer => {
+				const mapper = editor.editing.mapper;
+				const modelElement = mapper.toModelElement( element );
+
+				this.editor.model.change( writer => {
 					domEventData.preventDefault();
-					writer.setSelection( element, 'in' );
+					writer.setSelection( modelElement, 'in' );
 				} );
 			}
 
