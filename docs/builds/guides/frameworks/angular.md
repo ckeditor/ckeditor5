@@ -312,54 +312,38 @@ export class MyComponent {
 }
 ```
 
-## Accessing the CKEditor API from an Angular Component
+## Accessing the CKEditor 5 Editor API from the Angular Component
 
-The `<ckeditor>` component will provide all the functionality needed for most use cases.  In
-cases where access to the Javascript-level {@link api CKEditor API} is needed
-it is easy to access with an additional step.
+The `<ckeditor>` component will provide all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to access with an additional step.
 
-To do this, assign the Angular `<ckeditor>` component to a locally scoped variable as
-follows:
+To do this create a template reference variable pointing the `<ckeditor>` component:
 
 ```html
-	<ckeditor #editor1 [editor]="Editor" [config]="ckconfig"
-			  [(ngModel)]="text" name="editcontent"></ckeditor>
+<ckeditor #editor [editor]="Editor" ...></ckeditor>
 ```
 
-You can then refer to that variable as needed in any method call within the component
-such as:
-
-```html
-	<button type="button" (click)="doPasteSomething(editor1)">Do Someting</button>
-```
-
-In the component the target function will look like this:
+Then get the `<ckeditor>` component with the usage of decorated `@ViewChild` variable and access the editor instance when needed:
 
 ```ts
-  doPasteSomething(editorComponent: CKEditorComponent) {
-    const editor = editorComponent.editorInstance;
-    editor.model.insertContent(' >> This just got pasted! << ');
-  }
+@Component()
+export class MyComponent {
+	@ViewChild( 'editor' ) editorComponent: CKEditorComponent;
+
+	public getEditor() {
+		// Warning: this may return undefined if the editor is hidden behind the `*ngIf` directive or
+		// if the editor is not fully initialised yet.
+		return this.editorComponent.editorInstance;
+	}
+}
 ```
 
-The operations performed may be anything that is defined and allowable by the API.
+If you want to make changes on just created editor then the better option would be getting instance of CKEditor 5 editor on the [`ready`](#ready) event.
 
-Note that the Angular `editor1` template variable may also be accessed with an
-`@ViewChild`-decorated variable declaration.  The method in the example, however,
-will be preferable in the case where there is more than one `<ckeditor>` element on
-the page.  Also, if the `<ckeditor>` element is inside an `*ngIf` structure the `@ViewChild`
-declared variable may be inadvertently undefined.
+## Implementing an Upload Adapter based on Angular HttpClient
 
-## Implementing an Upload Adapter in the Angular Application
+An Upload Adapter can be used with CKEditor 5 so that when a user adds an image to a document it is encoded as a link to the image. The image itself is stored separately from the document. Read more in the {@link framework/guides/deep-dive/upload-adapter Upload Adapter guide}.
 
-An Upload Adapter can be used with CKEditor 5 so that when a user adds an image
-to a document it is encoded as a link to the image. The image itself is stored
-separately from the document. When images are large or numerous this results
-in noticeable improvement in performance over the default behavior. Read about custom
-UploadAdapters {@link TODO framework/guides/deep-dive/upload-adapter here}.
-
-If you're familiar with Angular you have probably already used the [`HTTPClient`](https://angular.io/guide/http)
-service which wraps the JavaScript XMLHttpRequest and provides a more concise API around it.
+If you are familiar with Angular you have probably already used the [`HTTPClient`](https://angular.io/guide/http) service which wraps the JavaScript XMLHttpRequest and provides a more concise API around it. Let's make a use of it to give Angular the control over the image upload process:
 
 ```ts
 import { Subscription, Observable } from 'rxjs';
@@ -368,14 +352,16 @@ import { HttpClient, HttpEventType, HttpRequest, HttpEvent } from '@angular/comm
 
 @Component()
 export class MyComponent {
+	constructor( private httpClient: HttpClient ){}
+
   	public editorConfig = {
 		extraPlugins: [ UploadAdapterPlugin ],
-		httpClient: this.http
+		httpClient: this.httpClient
 	};
 }
 
 class UploadAdapterPlugin {
-	constructor( editor ) {
+	constructor( editor: any ) {
 		const httpClient = editor.config.get( 'httpClient' );
 
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
@@ -399,7 +385,7 @@ class UploadAdapter {
 			const formData = new FormData();
 			formData.append( 'file', this.loader.file );
 
-			this.sub = this.httpPostMediaReq( formData ).subscribe( event => {
+			this.sub = this.uploadImage( formData ).subscribe( event => {
 				if ( event.type === HttpEventType.Response ) {
 					// Modify for your endpoint, in this scenario the endpoint should return:
 					// { error: string } in case of an error.
@@ -411,7 +397,12 @@ class UploadAdapter {
 						return reject( response.error );
 					}
 
-					const imageUrl = this.getImageUrl( response.list[ 0 ] );
+					const imageId = response.list[ 0 ];
+
+					// Return the URL where the successfully upload image
+					// can be retrieved with an HTTP GET request.
+					const imageUrl = `/images/${ imageId }`;
+
 					resolve( { default: imageUrl } );
 				} else if ( event.type === HttpEventType.UploadProgress ) {
 					this.loader.uploaded = event.loaded;
@@ -429,13 +420,7 @@ class UploadAdapter {
 		}
 	}
 
-	private getImageUrl( id: number ) {
-		// Return the URL where the successfully upload image
-		// can be retrieved with an HTTP GET request.
-		return `/images/${ id }`;
-	}
-
-	private httpPostMediaReq( formData: FormData ): Observable<HttpEvent<ImageEndpointResponse>> {
+	private uploadImage( formData: FormData ): Observable<HttpEvent<ImageEndpointResponse>> {
 		const request = new HttpRequest(
 			'POST',
 			this.url,
@@ -460,25 +445,9 @@ interface UploadLoader {
 	uploadTotal: number;
 	readonly file: string;
 }
-
 ```
 
-This class will be instantiated each time that CKEditor needs it.  Note that
-the functions in this class will run outside an `NgZone` which means that
-if it makes changes to variables bound to HTML elements, the shadow-DOM logic
-in the Angular framework won't detect those changes.
-
-The instance property `loader` is the primary interface between the UploadAdapter
-and the CKEditor instance.
-
-The second parameter is the URL where the image will be sent.  This will need
-to have everything the `imageURL` function in the UploadAdpater needs to
-generate a complete URL.
-
-Next, we need to tell CKEditor where the Plugin can be found.  This is done
-using the `extraPlugins` element in the configuration object, which can
-be used without rebuilding the standard build you are using.  The following
-instance variable can be defined:
+The `UploadAdapter` class will be instantiated each time when CKEditor 5 needs it. Note that the functions in this class will run outside the `NgZone`, which means that if it makes changes to variables bound to HTML elements, the shadow-DOM logic of Angular won't detect those changes.
 
 ## Localization
 
