@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -12,14 +12,12 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import MentionCommand from './mentioncommand';
 
-import '../theme/mentionediting.css';
-
 /**
  * The mention editing feature.
  *
  * It introduces the {@link module:mention/mentioncommand~MentionCommand command} and the `mention`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
- * as a `<span class="mention" data-mention="name">`.
+ * as a `<span class="mention" data-mention="@mention">`.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -50,7 +48,7 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: parseMentionViewItemAttributes
+				value: _toMentionAttribute
 			}
 		} );
 
@@ -59,40 +57,45 @@ export default class MentionEditing extends Plugin {
 			view: createViewMentionElement
 		} );
 
-		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc ) );
+		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc, model.schema ) );
+		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
 		doc.registerPostFixer( writer => selectionMentionAttributePostFixer( writer, doc ) );
 
 		editor.commands.add( 'mention', new MentionCommand( editor ) );
 	}
 }
 
-// Parses matched view element to mention attribute value.
-//
-// @param {module:engine/view/element} viewElement
-// @returns {Object} Mention attribute value
-function parseMentionViewItemAttributes( viewElement ) {
-	const dataMention = viewElement.getAttribute( 'data-mention' );
+export function _addMentionAttributes( baseMentionData, data ) {
+	return Object.assign( { _uid: uid() }, baseMentionData, data || {} );
+}
 
-	const textNode = viewElement.getChild( 0 );
+/**
+ * Creates mention attribute value from provided view element and optional data.
+ *
+ * This function is exposed as
+ * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
+ *
+ * @protected
+ * @param {module:engine/view/element~Element} viewElementOrMention
+ * @param {String|Object} [data] Mention data to be extended.
+ * @return {module:mention/mention~MentionAttribute}
+ */
+export function _toMentionAttribute( viewElementOrMention, data ) {
+	const dataMention = viewElementOrMention.getAttribute( 'data-mention' );
 
-	// Do not parse empty mentions.
-	if ( !textNode || !textNode.is( 'text' ) ) {
+	const textNode = viewElementOrMention.getChild( 0 );
+
+	// Do not convert empty mentions.
+	if ( !textNode ) {
 		return;
 	}
 
-	const mentionString = textNode.data;
+	const baseMentionData = {
+		id: dataMention,
+		_text: textNode.data
+	};
 
-	// Assume that mention is set as marker + mention name.
-	const marker = mentionString.slice( 0, 1 );
-	const name = mentionString.slice( 1 );
-
-	// Do not upcast partial mentions - might come from copy-paste of partially selected mention.
-	if ( name != dataMention ) {
-		return;
-	}
-
-	// Set UID for mention to not merge mentions in the same block that are next to each other.
-	return { name: dataMention, _marker: marker, _id: uid() };
+	return _addMentionAttributes( baseMentionData, data );
 }
 
 // Creates mention element from mention data.
@@ -107,11 +110,12 @@ function createViewMentionElement( mention, viewWriter ) {
 
 	const attributes = {
 		class: 'mention',
-		'data-mention': mention.name
+		'data-mention': mention.id
 	};
 
 	const options = {
-		id: mention._id
+		id: mention._uid,
+		priority: 20
 	};
 
 	return viewWriter.createAttributeElement( 'span', attributes, options );
@@ -142,34 +146,69 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
 // @returns {Boolean} Returns true if selection was fixed.
-function removePartialMentionPostFixer( writer, doc ) {
+function removePartialMentionPostFixer( writer, doc, schema ) {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
 
 	for ( const change of changes ) {
-		// Check if user edited part of a mention.
-		if ( change.type == 'insert' || change.type == 'remove' ) {
-			const textNode = change.position.textNode;
+		// Check text node on current position;
+		const position = change.position;
 
-			if ( change.name == '$text' && textNode && textNode.hasAttribute( 'mention' ) ) {
-				writer.removeAttribute( 'mention', textNode );
-				wasChanged = true;
+		if ( change.name == '$text' ) {
+			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
+
+			// Check textNode where the change occurred.
+			wasChanged = checkAndFix( position.textNode, writer ) || wasChanged;
+
+			// Occurs on paste occurs inside a text node with mention.
+			wasChanged = checkAndFix( nodeAfterInsertedTextNode, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( position.nodeAfter, writer ) || wasChanged;
+		}
+
+		// Check text nodes in inserted elements (might occur when splitting paragraph or pasting content inside text with mention).
+		if ( change.name != '$text' && change.type == 'insert' ) {
+			const insertedNode = position.nodeAfter;
+
+			for ( const item of writer.createRangeIn( insertedNode ).getItems() ) {
+				wasChanged = checkAndFix( item, writer ) || wasChanged;
 			}
 		}
 
-		// Additional check for deleting last character of a text node.
-		if ( change.type == 'remove' ) {
-			const nodeBefore = change.position.nodeBefore;
+		// Inserted inline elements might break mention.
+		if ( change.type == 'insert' && schema.isInline( change.name ) ) {
+			const nodeAfterInserted = position.nodeAfter && position.nodeAfter.nextSibling;
 
-			if ( nodeBefore && nodeBefore.hasAttribute( 'mention' ) ) {
-				const text = nodeBefore.data;
-				const mention = nodeBefore.getAttribute( 'mention' );
+			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
+			wasChanged = checkAndFix( nodeAfterInserted, writer ) || wasChanged;
+		}
+	}
 
-				const expectedText = mention._marker + mention.name;
+	return wasChanged;
+}
 
-				if ( text != expectedText ) {
-					writer.removeAttribute( 'mention', nodeBefore );
+// This post-fixer will extend attribute applied on part of a mention so a whole text node of a mention will have added attribute.
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/document~Document} doc
+// @returns {Boolean} Returns true if selection was fixed.
+function extendAttributeOnMentionPostFixer( writer, doc ) {
+	const changes = doc.differ.getChanges();
+
+	let wasChanged = false;
+
+	for ( const change of changes ) {
+		if ( change.type === 'attribute' && change.attributeKey != 'mention' ) {
+			// Check node at the left side of a range...
+			const nodeBefore = change.range.start.nodeBefore;
+			// ... and on right side of range.
+			const nodeAfter = change.range.end.nodeAfter;
+
+			for ( const node of [ nodeBefore, nodeAfter ] ) {
+				if ( isBrokenMentionNode( node ) && node.getAttribute( change.attributeKey ) != change.attributeNewValue ) {
+					writer.setAttribute( change.attributeKey, change.attributeNewValue, node );
+
 					wasChanged = true;
 				}
 			}
@@ -177,4 +216,37 @@ function removePartialMentionPostFixer( writer, doc ) {
 	}
 
 	return wasChanged;
+}
+
+// Checks if node has correct mention attribute if present.
+// Returns true if node is text and has a mention attribute which text does not match expected mention text.
+//
+// @param {module:engine/model/node~Node} node a node to check
+// @returns {Boolean}
+function isBrokenMentionNode( node ) {
+	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
+		return false;
+	}
+
+	const text = node.data;
+	const mention = node.getAttribute( 'mention' );
+
+	const expectedText = mention._text;
+
+	return text != expectedText;
+}
+
+// Fixes mention on text node it needs a fix.
+//
+// @param {module:engine/model/text~Text} textNode
+// @param {module:engine/model/writer~Writer} writer
+// @returns {Boolean}
+function checkAndFix( textNode, writer ) {
+	if ( isBrokenMentionNode( textNode ) ) {
+		writer.removeAttribute( 'mention', textNode );
+
+		return true;
+	}
+
+	return false;
 }

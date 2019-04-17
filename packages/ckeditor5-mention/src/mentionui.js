@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -14,6 +14,7 @@ import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpa
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import TextWatcher from './textwatcher';
 
@@ -21,7 +22,7 @@ import MentionsView from './ui/mentionsview';
 import DomWrapperView from './ui/domwrapperview';
 import MentionListItemView from './ui/mentionlistitemview';
 
-const VERTICAL_SPACING = 5;
+const VERTICAL_SPACING = 3;
 
 /**
  * The mention UI feature.
@@ -91,17 +92,17 @@ export default class MentionUI extends Plugin {
 				}
 
 				if ( data.keyCode == keyCodes.esc ) {
-					this._hidePanel();
+					this._hidePanelAndRemoveMarker();
 				}
 			}
-		}, { priority: 'highest' } ); // priority highest required for enter overriding.
+		}, { priority: 'highest' } ); // Required to override enter.
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
 			contextElements: [ this.panelView.element ],
 			activator: () => this.panelView.isVisible,
-			callback: () => this._hidePanel()
+			callback: () => this._hidePanelAndRemoveMarker()
 		} );
 
 		const feeds = this.editor.config.get( 'mention.feeds' );
@@ -109,7 +110,23 @@ export default class MentionUI extends Plugin {
 		for ( const mentionDescription of feeds ) {
 			const feed = mentionDescription.feed;
 
-			const marker = mentionDescription.marker || '@';
+			const marker = mentionDescription.marker;
+
+			if ( !marker || marker.length != 1 ) {
+				/**
+				 * The marker must be a single character.
+				 *
+				 * Correct markers: `'@'`, `'#'`.
+				 *
+				 * Incorrect markers: `'$$'`, `'[@'`.
+				 *
+				 * See {@link module:mention/mention~MentionConfig}.
+				 *
+				 * @error mentionconfig-incorrect-marker
+				 */
+				throw new CKEditorError( 'mentionconfig-incorrect-marker: The marker must be provided and be a single character.' );
+			}
+
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
 			const feedCallback = typeof feed == 'function' ? feed : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
@@ -163,7 +180,7 @@ export default class MentionUI extends Plugin {
 
 		this.panelView.content.add( mentionsView );
 
-		mentionsView.listView.items.bindTo( this._items ).using( data => {
+		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
 			const listItemView = new MentionListItemView( locale );
@@ -205,10 +222,11 @@ export default class MentionUI extends Plugin {
 			const start = end.getShiftedBy( -matchedTextLength );
 			const range = model.createRange( start, end );
 
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 
 			editor.execute( 'mention', {
 				mention: item,
+				text: item.text,
 				marker,
 				range
 			} );
@@ -273,26 +291,46 @@ export default class MentionUI extends Plugin {
 
 			const { feedText, marker } = matched;
 
+			const matchedTextLength = marker.length + feedText.length;
+
+			// create marker range
+			const start = selection.focus.getShiftedBy( -matchedTextLength );
+			const end = selection.focus.getShiftedBy( -feedText.length );
+
+			const markerRange = editor.model.createRange( start, end );
+
+			let mentionMarker;
+
+			if ( editor.model.markers.has( 'mention' ) ) {
+				mentionMarker = editor.model.markers.get( 'mention' );
+			} else {
+				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
+					range: markerRange,
+					usingOperation: false,
+					affectsData: false
+				} ) );
+			}
+
 			this._getFeed( marker, feedText )
 				.then( feed => {
 					this._items.clear();
 
-					for ( const name of feed ) {
-						const item = typeof name != 'object' ? { name } : name;
+					for ( const feedItem of feed ) {
+						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
 
 						this._items.add( { item, marker } );
 					}
 
 					if ( this._items.length ) {
-						this._showPanel();
+						this._showPanel( mentionMarker );
 					} else {
-						this._hidePanel();
+						this._hidePanelAndRemoveMarker();
 					}
 				} );
 		} );
 
 		watcher.on( 'unmatched', () => {
-			this._hidePanel();
+			this._hidePanelAndRemoveMarker();
 		} );
 
 		return watcher;
@@ -316,19 +354,25 @@ export default class MentionUI extends Plugin {
 	 *
 	 * @private
 	 */
-	_showPanel() {
-		this.panelView.pin( this._getBalloonPanelPositionData() );
+	_showPanel( markerMarker ) {
+		this.panelView.pin( this._getBalloonPanelPositionData( markerMarker, this.panelView.position ) );
 		this.panelView.show();
 		this._mentionsView.selectFirst();
 	}
 
 	/**
-	 * Hides the {@link #panelView}.
+	 * Hides the {@link #panelView} and remove 'mention' marker from markers collection.
 	 *
 	 * @private
 	 */
-	_hidePanel() {
+	_hidePanelAndRemoveMarker() {
+		if ( this.editor.model.markers.has( 'mention' ) ) {
+			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
+		}
+
 		this.panelView.unpin();
+		// Make last matched position on panel view undefined so the #_getBalloonPanelPositionData() will return all positions on next call.
+		this.panelView.position = undefined;
 		this.panelView.hide();
 	}
 
@@ -344,17 +388,24 @@ export default class MentionUI extends Plugin {
 		const editor = this.editor;
 
 		let view;
+		let label = item.id;
 
 		const renderer = this._getItemRenderer( marker );
 
 		if ( renderer ) {
-			const domNode = renderer( item );
+			const renderResult = renderer( item );
 
-			view = new DomWrapperView( editor.locale, domNode );
-		} else {
+			if ( typeof renderResult != 'string' ) {
+				view = new DomWrapperView( editor.locale, renderResult );
+			} else {
+				label = renderResult;
+			}
+		}
+
+		if ( !view ) {
 			const buttonView = new ButtonView( editor.locale );
 
-			buttonView.label = item.name;
+			buttonView.label = label;
 			buttonView.withText = true;
 
 			view = buttonView;
@@ -364,22 +415,39 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
+	 * Creates position options object used to position the balloon panel.
+	 *
+	 * @param {module:engine/model/markercollection~Marker} mentionMarker
+	 * @param {String|undefined} positionName Name of last matched position name.
 	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
-	_getBalloonPanelPositionData() {
-		const view = this.editor.editing.view;
-		const domConverter = view.domConverter;
-		const viewSelection = view.document.selection;
+	_getBalloonPanelPositionData( mentionMarker, positionName ) {
+		const editing = this.editor.editing;
+		const domConverter = editing.view.domConverter;
+		const mapper = editing.mapper;
 
 		return {
 			target: () => {
-				const range = viewSelection.getLastRange();
-				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( range ) );
+				const viewRange = mapper.toViewRange( mentionMarker.getRange() );
+
+				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
 				return rangeRects.pop();
 			},
-			positions: getBalloonPanelPositions()
+			limiter: () => {
+				const view = this.editor.editing.view;
+				const viewDocument = view.document;
+				const editableElement = viewDocument.selection.editableElement;
+
+				if ( editableElement ) {
+					return view.domConverter.mapViewToDom( editableElement.root );
+				}
+
+				return null;
+			},
+			positions: getBalloonPanelPositions( positionName ),
+			fitInViewport: true
 		};
 	}
 }
@@ -387,10 +455,10 @@ export default class MentionUI extends Plugin {
 // Returns balloon positions data callbacks.
 //
 // @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPanelPositions() {
-	return [
+function getBalloonPanelPositions( positionName ) {
+	const positions = {
 		// Positions panel to the south of caret rect.
-		targetRect => {
+		'caret_se': targetRect => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
@@ -399,7 +467,7 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the north of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_ne': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
@@ -408,7 +476,7 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the south of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_sw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
@@ -417,13 +485,28 @@ function getBalloonPanelPositions() {
 		},
 
 		// Positions panel to the north of caret rect.
-		( targetRect, balloonRect ) => {
+		'caret_nw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
 				name: 'caret_nw'
 			};
 		}
+	};
+
+	// Return only last position if it was matched to prevent panel from jumping after first match.
+	if ( positions.hasOwnProperty( positionName ) ) {
+		return [
+			positions[ positionName ]
+		];
+	}
+
+	// As default return all positions callbacks.
+	return [
+		positions.caret_se,
+		positions.caret_ne,
+		positions.caret_sw,
+		positions.caret_nw
 	];
 }
 
@@ -435,7 +518,7 @@ function getBalloonPanelPositions() {
 function createPattern( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	return `(^| )(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	return `(^| )(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for marker to be used in text watcher instance.
@@ -469,9 +552,17 @@ function createTextMatcher( marker ) {
 // Default feed callback
 function createFeedCallback( feedItems ) {
 	return feedText => {
-		const filteredItems = feedItems.filter( item => {
-			return item.toLowerCase().includes( feedText.toLowerCase() );
-		} );
+		const filteredItems = feedItems
+		// Make default mention feed case-insensitive.
+			.filter( item => {
+				// Item might be defined as object.
+				const itemId = typeof item == 'string' ? item : String( item.id );
+
+				// The default feed is case insensitive.
+				return itemId.toLowerCase().includes( feedText.toLowerCase() );
+			} )
+			// Do not return more than 10 items.
+			.slice( 0, 10 );
 
 		return Promise.resolve( filteredItems );
 	};

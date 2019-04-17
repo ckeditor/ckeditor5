@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -12,6 +12,10 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * Text watcher feature.
+ *
+ * Fires {@link module:mention/textwatcher~TextWatcher#event:matched matched} and
+ * {@link module:mention/textwatcher~TextWatcher#event:unmatched unmatched} events on typing or selection changes.
+ *
  * @private
  */
 export default class TextWatcher {
@@ -48,39 +52,58 @@ export default class TextWatcher {
 	_startListening() {
 		const editor = this.editor;
 
-		editor.model.document.on( 'change', ( evt, batch ) => {
-			if ( batch.type == 'transparent' ) {
+		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
+			// The indirect changes (ie on typing) are handled in document's change event.
+			if ( !directChange ) {
 				return;
 			}
 
-			const changes = Array.from( editor.model.document.differ.getChanges() );
-			const entry = changes[ 0 ];
-
-			// Typing is represented by only a single change.
-			const isTypingChange = changes.length == 1 && entry.name == '$text' && entry.length == 1;
-			// Selection is represented by empty changes.
-			const isSelectionChange = changes.length == 0;
-
-			if ( !isTypingChange && !isSelectionChange ) {
-				return;
-			}
-
-			const text = this._getText();
-
-			const textHasMatch = this.testCallback( text );
-
-			if ( !textHasMatch && this.hasMatch ) {
-				this.fire( 'unmatched' );
-			}
-
-			this.hasMatch = textHasMatch;
-
-			if ( textHasMatch ) {
-				const matched = this.textMatcher( text );
-
-				this.fire( 'matched', { text, matched } );
-			}
+			this._evaluateTextBeforeSelection();
 		} );
+
+		editor.model.document.on( 'change:data', ( evt, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return false;
+			}
+
+			this._evaluateTextBeforeSelection();
+		} );
+	}
+
+	/**
+	 * Checks the editor content for matched text.
+	 *
+	 * @fires matched
+	 * @fires unmatched
+	 *
+	 * @private
+	 */
+	_evaluateTextBeforeSelection() {
+		const text = this._getText();
+
+		const textHasMatch = this.testCallback( text );
+
+		if ( !textHasMatch && this.hasMatch ) {
+			/**
+			 * Fired whenever text doesn't match anymore. Fired only when text matcher was matched.
+			 *
+			 * @event unmatched
+			 */
+			this.fire( 'unmatched' );
+		}
+
+		this.hasMatch = textHasMatch;
+
+		if ( textHasMatch ) {
+			const matched = this.textMatcher( text );
+
+			/**
+			 * Fired whenever text matcher was matched.
+			 *
+			 * @event matched
+			 */
+			this.fire( 'matched', { text, matched } );
+		}
 	}
 
 	/**
@@ -100,18 +123,19 @@ export default class TextWatcher {
 
 		const block = selection.focus.parent;
 
-		return getText( block ).slice( 0, selection.focus.offset );
+		return _getText( editor.model.createRangeIn( block ) ).slice( 0, selection.focus.offset );
 	}
 }
 
-// Returns whole text from parent element by adding all data from text nodes together.
-// @todo copied from autoformat...
-
-// @private
-// @param {module:engine/model/element~Element} element
-// @returns {String}
-function getText( element ) {
-	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
+/**
+ * Returns whole text from given range by adding all data from text nodes together.
+ *
+ * @protected
+ * @param {module:engine/model/range~Range} range
+ * @returns {String}
+ */
+export function _getText( range ) {
+	return Array.from( range.getItems() ).reduce( ( a, b ) => a + b.data, '' );
 }
 
 mix( TextWatcher, EmitterMixin );

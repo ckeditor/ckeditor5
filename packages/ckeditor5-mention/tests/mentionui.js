@@ -1,9 +1,9 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event */
+/* global document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,17 +15,21 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, listView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
 
 	const staticConfig = {
 		feeds: [
-			{ feed: [ 'Barney', 'Lily', 'Marshall', 'Robin', 'Ted' ] }
+			{
+				feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
+				marker: '@'
+			}
 		]
 	};
 
@@ -40,13 +44,38 @@ describe( 'MentionUI', () => {
 		sinon.restore();
 		editorElement.remove();
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	it( 'should create a plugin instance', () => {
 		return createClassicTestEditor().then( () => {
 			expect( mentionUI ).to.instanceOf( Plugin );
 			expect( mentionUI ).to.instanceOf( MentionUI );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should throw if marker was not provided for feed', () => {
+			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
+		} );
+
+		it( 'should throw if marker is empty string', () => {
+			return createClassicTestEditor( { feeds: [ { marker: '', feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
+		} );
+
+		it( 'should throw if marker is longer then 1 character', () => {
+			return createClassicTestEditor( { feeds: [ { marker: '$$', feed: [ 'a' ] } ] } ).catch( error => {
+				expect( error ).to.be.instanceOf( CKEditorError );
+				expect( error.message ).to.match( /mentionconfig-incorrect-marker/ );
+			} );
 		} );
 	} );
 
@@ -108,8 +137,12 @@ describe( 'MentionUI', () => {
 		} );
 
 		it( 'should properly calculate position data', () => {
+			const editableElement = editingView.document.selection.editableElement;
+
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
+
+			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 
 			model.change( writer => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
@@ -118,10 +151,30 @@ describe( 'MentionUI', () => {
 			return waitForDebounce()
 				.then( () => {
 					const pinArgument = pinSpy.firstCall.args[ 0 ];
-					const { target, positions } = pinArgument;
+					const { target, positions, limiter, fitInViewport } = pinArgument;
+
+					expect( fitInViewport ).to.be.true;
+					expect( positions ).to.have.length( 4 );
+
+					// Mention UI should set limiter to the editable area.
+					expect( limiter() ).to.equal( editingView.domConverter.mapViewToDom( editableElement ) );
+
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+					const mentionMarker = editor.model.markers.get( 'mention' );
+					const focus = doc.selection.focus;
+					const expectedRange = editor.model.createRange( focus.getShiftedBy( -1 ), focus );
+
+					// It should create a model marker for matcher marker character ('@').
+					expect( expectedRange.isEqual( mentionMarker.getRange() ) ).to.be.true;
+
+					const toViewRangeSpy = sinon.spy( editor.editing.mapper, 'toViewRange' );
 
 					expect( target() ).to.deep.equal( caretRect );
-					expect( positions ).to.have.length( 4 );
+
+					sinon.assert.calledOnce( toViewRangeSpy );
+					const range = toViewRangeSpy.firstCall.args[ 0 ];
+
+					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' );
 
 					const caretSouthEast = positions[ 0 ];
 					const caretNorthEast = positions[ 1 ];
@@ -131,30 +184,30 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 123
+						top: 121
 					} );
 
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -55
+						top: -53
 					} );
 
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 123
+						top: 121
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -55
+						top: -53
 					} );
 				} );
 		} );
 
-		it( 'should re-calculate position on typing', () => {
+		it( 'should re-calculate position on typing and stay on selected position', () => {
 			setData( model, '<paragraph>foo []</paragraph>' );
 			stubSelectionRects( [ caretRect ] );
 
@@ -162,9 +215,18 @@ describe( 'MentionUI', () => {
 				writer.insertText( '@', doc.selection.getFirstPosition() );
 			} );
 
+			let positionAfterFirstShow;
+
 			return waitForDebounce()
 				.then( () => {
 					sinon.assert.calledOnce( pinSpy );
+
+					const pinArgument = pinSpy.firstCall.args[ 0 ];
+					const { positions } = pinArgument;
+
+					expect( positions ).to.have.length( 4 );
+
+					positionAfterFirstShow = panelView.position;
 
 					model.change( writer => {
 						writer.insertText( 't', doc.selection.getFirstPosition() );
@@ -173,6 +235,34 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					sinon.assert.calledTwice( pinSpy );
+
+					const pinArgument = pinSpy.secondCall.args[ 0 ];
+					const { positions } = pinArgument;
+
+					expect( positions, 'should reuse first matched position' ).to.have.length( 1 );
+					expect( positions[ 0 ].name ).to.equal( positionAfterFirstShow );
+				} );
+		} );
+
+		it( 'does not fail if selection has no #editableElement', () => {
+			setData( model, '<paragraph>foo []</paragraph>' );
+			stubSelectionRects( [ caretRect ] );
+
+			expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+			model.change( writer => {
+				writer.insertText( '@', doc.selection.getFirstPosition() );
+			} );
+
+			return waitForDebounce()
+				.then( () => {
+					const pinArgument = pinSpy.firstCall.args[ 0 ];
+					const { limiter } = pinArgument;
+
+					testUtils.sinon.stub( editingView.document.selection, 'editableElement' ).value( null );
+
+					// Should not break;
+					expect( limiter() ).to.be.null;
 				} );
 		} );
 	} );
@@ -195,6 +285,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} )
 				.then( waitForDebounce )
 				.then( () => {
@@ -205,7 +296,8 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
-					expect( listView.items ).to.have.length( 1 );
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+					expect( mentionsView.items ).to.have.length( 1 );
 
 					model.change( writer => {
 						writer.insertText( 'r', doc.selection.getFirstPosition() );
@@ -214,8 +306,97 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
-					expect( listView.items ).to.have.length( 1 );
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+					expect( mentionsView.items ).to.have.length( 1 );
 				} );
+		} );
+
+		describe( 'static list with large set of results', () => {
+			const bigList = {
+				marker: '@',
+				feed: [
+					'@a01', '@a02', '@a03', '@a04', '@a05', '@a06', '@a07', '@a08', '@a09', '@a10', '@a11', '@a12'
+				]
+			};
+
+			beforeEach( () => {
+				return createClassicTestEditor( { feeds: [ bigList ] } );
+			} );
+
+			it( 'should show panel with no more then 10 items for default static feed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 10 );
+					} );
+			} );
+
+			it( 'should scroll mention panel to the selected item', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const arrowDownEvtData = {
+							keyCode: keyCodes.arrowdown,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						const arrowUpEvtData = {
+							keyCode: keyCodes.arrowup,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						};
+
+						// The scroll test highly depends on browser styles.
+						// Some CI test environments might not load theme which will result that tests will not render on CI as locally.
+						// To make this test repeatable across different environments it enforces mentions view size to 100px...
+						mentionsView.element.style = 'height:100px;padding:0px;margin:0px';
+
+						// ...and each list view item size to 25px...
+						Array.from( mentionsView.items ).forEach( item => {
+							item.children.get( 0 ).element.style = 'height:25px;padding:0px;margin:0px;';
+						} );
+
+						// ...so after those changes it is safe to assume that:
+						// - base offset is 0
+						// - only 4 items are visible at once
+						// - if scrolled to the last element scrollTop will be set to 150px. The 150px is the offset of the 7th item in the
+						//   list as last four (7, 8, 9 & 10) will be visible.
+						expect( panelView.isVisible ).to.be.true;
+
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						fireKeyDownEvent( arrowDownEvtData );
+
+						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						fireKeyDownEvent( arrowUpEvtData );
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						fireKeyDownEvent( arrowUpEvtData );
+						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 150 );
+
+						fireKeyDownEvent( arrowDownEvtData );
+
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+					} );
+			} );
 		} );
 
 		describe( 'static list with default trigger', () => {
@@ -226,6 +407,8 @@ describe( 'MentionUI', () => {
 			it( 'should show panel for matched marker', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
 
+				expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
 				model.change( writer => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
 				} );
@@ -233,7 +416,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -247,7 +431,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -261,11 +446,15 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 7 );
@@ -274,11 +463,15 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo <$text mention="{\'name\':\'John\'}">@John</$text> bar</paragraph>' );
+				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
 
 				model.change( writer => {
 					writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
@@ -287,6 +480,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 
@@ -300,9 +494,64 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 						model.change( () => {
 							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is changing (non-collapsed)', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+						model.change( () => {
+							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} )
+					.then( () => {
+						model.change( () => {
+							model.modifySelection( doc.selection, { direction: 'backward', unit: 'character' } );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection is after existing mention', () => {
+				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 8 );
 						} );
 					} )
 					.then( waitForDebounce )
@@ -325,7 +574,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 1 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 
@@ -338,7 +588,7 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						const button = listView.items.get( 0 ).children.get( 0 );
+						const button = mentionsView.items.get( 0 ).children.get( 0 );
 
 						expect( button.isOn ).to.be.true;
 					} );
@@ -361,7 +611,8 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
-						expect( listView.items ).to.have.length( 0 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+						expect( mentionsView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -389,7 +640,7 @@ describe( 'MentionUI', () => {
 
 		describe( 'asynchronous list with custom trigger', () => {
 			beforeEach( () => {
-				const issuesNumbers = [ '100', '101', '102', '103' ];
+				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
 
 				return createClassicTestEditor( {
 					feeds: [
@@ -417,7 +668,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 4 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 4 );
 					} );
 			} );
 
@@ -435,7 +687,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 1 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 
@@ -456,7 +709,8 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
-						expect( listView.items ).to.have.length( 0 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+						expect( mentionsView.items ).to.have.length( 0 );
 					} );
 			} );
 
@@ -496,6 +750,7 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					fireKeyDownEvent( {
 						keyCode: keyCodes.esc,
@@ -504,6 +759,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
@@ -519,14 +775,16 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
-		it( 'should hide the panel when click outside', () => {
+		it( 'should hide the panel on selection change', () => {
 			return createClassicTestEditor( staticConfig )
 				.then( () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
@@ -538,18 +796,53 @@ describe( 'MentionUI', () => {
 				.then( waitForDebounce )
 				.then( () => {
 					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 					model.change( writer => {
-						// Place position at the begging of a paragraph.
+						// Place position at the beginning of a paragraph.
 						writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.position ).to.be.undefined;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+				} );
+		} );
+
+		it( 'should hide the panel on selection change triggered by mouse click', () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+					// This happens when user clicks outside the panel view and selection is changed.
+					// Two panel closing mechanisms are run:
+					// - clickOutsideHandler
+					// - unmatched text in text watcher
+					// which may fail when trying to remove mention marker twice.
+					document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+					model.change( writer => {
+						// Place position at the beginning of a paragraph.
+						writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
+					} );
+
+					expect( panelView.isVisible ).to.be.false;
+					expect( panelView.position ).to.be.undefined;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
 		describe( 'default list item', () => {
-			const feedItems = staticConfig.feeds[ 0 ].feed.map( name => ( { name } ) );
+			// Create map of expected feed items as objects as they will be stored internally.
+			const feedItems = staticConfig.feeds[ 0 ].feed.map( text => ( { text: `${ text }`, id: `${ text }` } ) );
 
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -634,13 +927,166 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'custom list item', () => {
+		describe( 'default list item with custom feed', () => {
 			const issues = [
-				{ id: '1002', title: 'Some bug in editor.' },
-				{ id: '1003', title: 'Introduce this feature.' },
-				{ id: '1004', title: 'Missing docs.' },
-				{ id: '1005', title: 'Another bug.' },
-				{ id: '1006', title: 'More bugs' }
+				{ id: '@Ted' },
+				{ id: '@Barney' },
+				{ id: '@Robin' },
+				{ id: '@Lily' },
+				{ id: '@Marshal' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: feedText => issues.filter( issue => issue.id.includes( feedText ) )
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+					} );
+			} );
+		} );
+
+		describe( 'custom list item (string)', () => {
+			const issues = [
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: issues,
+							itemRenderer: item => item.title
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			describe( 'keys', () => {
+				describe( 'on arrows', () => {
+					it( 'should cycle down on arrow down', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowdown,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+
+					it( 'should cycle up on arrow up', () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+
+						return waitForDebounce()
+							.then( () => {
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+
+								const keyEvtData = {
+									keyCode: keyCodes.arrowup,
+									preventDefault: sinon.spy(),
+									stopPropagation: sinon.spy()
+								};
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, false, true ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, false, true, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, false, true, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ false, true, false, false, false ] );
+
+								fireKeyDownEvent( keyEvtData );
+								expectChildViewsIsOnState( [ true, false, false, false, false ] );
+							} );
+					} );
+				} );
+
+				describe( 'on "execute" keys', () => {
+					testExecuteKey( 'enter', keyCodes.enter, issues );
+
+					testExecuteKey( 'tab', keyCodes.tab, issues );
+
+					testExecuteKey( 'space', keyCodes.space, issues );
+				} );
+			} );
+		} );
+
+		describe( 'custom list item (DOM Element)', () => {
+			const issues = [
+				{ id: '@1002', title: 'Some bug in editor.' },
+				{ id: '@1003', title: 'Introduce this feature.' },
+				{ id: '@1004', title: 'Missing docs.' },
+				{ id: '@1005', title: 'Another bug.' },
+				{ id: '@1006', title: 'More bugs' }
 			];
 
 			beforeEach( () => {
@@ -654,7 +1100,7 @@ describe( 'MentionUI', () => {
 							itemRenderer: item => {
 								const span = global.document.createElementNS( 'http://www.w3.org/1999/xhtml', 'span' );
 
-								span.innerHTML = `<span id="issue-${ item.id }">@${ item.title }</span>`;
+								span.innerHTML = `<span id="issue-${ item.id.slice( 1 ) }">@${ item.title }</span>`;
 
 								return span;
 							}
@@ -673,7 +1119,8 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
-						expect( listView.items ).to.have.length( 5 );
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
 
@@ -794,6 +1241,73 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'multiple feeds configuration', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: [ '@a1', '@a2', '@a3' ]
+						},
+						{
+							marker: '$',
+							feed: [ '$a1', '$a2', '$a3', '$a4', '$a5' ]
+						}
+					]
+				} );
+			} );
+
+			it( 'should show panel for matched marker', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 3 );
+
+						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						model.change( writer => {
+							writer.insertText( '$', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+
+						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+
+						expect( mentionsView.items ).to.have.length( 3 );
+					} );
+			} );
+		} );
+
 		function testExecuteKey( name, keyCode, feedItems ) {
 			it( 'should execute selected button on ' + name, () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
@@ -847,6 +1361,7 @@ describe( 'MentionUI', () => {
 				return waitForDebounce()
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
 						fireKeyDownEvent( {
 							keyCode: keyCodes.esc,
@@ -855,6 +1370,7 @@ describe( 'MentionUI', () => {
 						} );
 
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 
 						fireKeyDownEvent( {
 							keyCode,
@@ -865,6 +1381,7 @@ describe( 'MentionUI', () => {
 						sinon.assert.notCalled( spy );
 
 						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 		}
@@ -885,13 +1402,13 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					sinon.assert.calledOnce( spy );
 
 					const commandOptions = spy.getCall( 0 ).args[ 0 ];
 
-					assertCommandOptions( commandOptions, '@', { name: 'Barney' } );
+					assertCommandOptions( commandOptions, '@', { id: '@Barney', text: '@Barney' } );
 
 					const start = model.createPositionAt( doc.getRoot().getChild( 0 ), 4 );
 					const expectedRange = model.createRange( start, start.getShiftedBy( 1 ) );
@@ -909,9 +1426,10 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					expect( panelView.isVisible ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
 
@@ -926,7 +1444,7 @@ describe( 'MentionUI', () => {
 
 			return waitForDebounce()
 				.then( () => {
-					listView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
+					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 
 					sinon.assert.calledOnce( focusSpy );
 				} );
@@ -947,16 +1465,6 @@ describe( 'MentionUI', () => {
 				mentionUI = editor.plugins.get( MentionUI );
 				panelView = mentionUI.panelView;
 				mentionsView = mentionUI._mentionsView;
-				listView = mentionsView.listView;
-
-				editingView.attachDomRoot( editorElement );
-
-				// Focus the engine.
-				editingView.document.isFocused = true;
-				editingView.getDomRoot().focus();
-
-				// Remove all selection ranges from DOM before testing.
-				window.getSelection().removeAllRanges();
 			} );
 	}
 
@@ -992,7 +1500,7 @@ describe( 'MentionUI', () => {
 	}
 
 	function expectChildViewsIsOnState( expectedState ) {
-		const childViews = [ ...listView.items ].map( listView => listView.children.get( 0 ) );
+		const childViews = [ ...mentionsView.items ].map( item => item.children.get( 0 ) );
 
 		expect( childViews.map( child => child.isOn ) ).to.deep.equal( expectedState );
 	}

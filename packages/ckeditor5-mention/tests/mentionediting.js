@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -67,18 +67,18 @@ describe( 'MentionEditing', () => {
 				} );
 		} );
 
-		it( 'should convert <span class="mention" data-mention="John"> to mention attribute', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+		it( 'should convert <span class="mention" data-mention="@John"> to mention attribute', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
-			const expectedView = '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>';
+			const expectedView = '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
@@ -87,8 +87,8 @@ describe( 'MentionEditing', () => {
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
 			editor.setData(
 				'<p>' +
-					'<span class="mention" data-mention="John">@John</span>' +
-					'<span class="mention" data-mention="John">@John</span>' +
+					'<span class="mention" data-mention="@John">@John</span>' +
+					'<span class="mention" data-mention="@John">@John</span>' +
 				'</p>'
 			);
 
@@ -102,13 +102,13 @@ describe( 'MentionEditing', () => {
 			assertTextNode( paragraph.getChild( 0 ) );
 			assertTextNode( paragraph.getChild( 1 ) );
 
-			const firstMentionId = paragraph.getChild( 0 ).getAttribute( 'mention' )._id;
-			const secondMentionId = paragraph.getChild( 1 ).getAttribute( 'mention' )._id;
+			const firstMentionId = paragraph.getChild( 0 ).getAttribute( 'mention' )._uid;
+			const secondMentionId = paragraph.getChild( 1 ).getAttribute( 'mention' )._uid;
 
 			expect( firstMentionId ).to.not.equal( secondMentionId );
 
-			const expectedView = '<p><span class="mention" data-mention="John">@John</span>' +
-				'<span class="mention" data-mention="John">@John</span></p>';
+			const expectedView = '<p><span class="mention" data-mention="@John">@John</span>' +
+				'<span class="mention" data-mention="@John">@John</span></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
@@ -116,25 +116,31 @@ describe( 'MentionEditing', () => {
 			function assertTextNode( textNode ) {
 				expect( textNode ).to.not.be.null;
 				expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+				expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 			}
 		} );
 
 		it( 'should not convert partial mentions', () => {
-			editor.setData( '<p><span class="mention" data-mention="John">@Jo</span></p>' );
+			editor.setData( '<p><span class="mention" data-mention="@John">@Jo</span></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>@Jo</paragraph>' );
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 0 );
 
-			const expectedView = '<p>@Jo</p>';
+			expect( textNode ).to.not.be.null;
+			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@Jo' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+
+			const expectedView = '<p><span class="mention" data-mention="@John">@Jo</span></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should not convert empty mentions', () => {
-			editor.setData( '<p>foo<span class="mention" data-mention="John"></span></p>' );
+			editor.setData( '<p>foo<span class="mention" data-mention="@John"></span></p>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 
@@ -145,7 +151,7 @@ describe( 'MentionEditing', () => {
 		} );
 	} );
 
-	describe( 'selection post fixer', () => {
+	describe( 'selection post-fixer', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -156,7 +162,7 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should remove mention attribute from a selection if selection is on right side of a mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span>bar</p>' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -168,7 +174,7 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should allow to type after a mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span>bar</p>' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -178,11 +184,11 @@ describe( 'MentionEditing', () => {
 				writer.insertText( ' ', paragraph, 9 );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 	} );
 
-	describe( 'removing partial mention post fixer', () => {
+	describe( 'removing partial mention post-fixer', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -192,16 +198,16 @@ describe( 'MentionEditing', () => {
 				} );
 		} );
 
-		it( 'should remove mention on adding a text inside mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+		it( 'should remove mention on adding a text inside mention (in the middle)', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_id' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_marker', '@' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'name', 'John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', '@John' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
 			model.change( writer => {
 				const paragraph = doc.getRoot().getChild( 0 );
@@ -217,8 +223,46 @@ describe( 'MentionEditing', () => {
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
 		} );
 
-		it( 'should remove mention on removing a text inside mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+		it( 'should remove mention on typing in mention node with selection attributes set', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( textNode ).to.not.be.null;
+			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 );
+
+				writer.setSelection( paragraph, 6 );
+				writer.setSelectionAttribute( 'bold', true );
+
+				writer.insertText( 'a', doc.selection.getAttributes(), writer.createPositionAt( paragraph, 6 ) );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo @J<$text bold="true">a</$text>ohn bar</paragraph>' );
+		} );
+
+		it( 'should remove mention on removing a text at the beginning of a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setSelection( paragraph, 4 );
+			} );
+
+			model.enqueueChange( () => {
+				model.modifySelection( doc.selection, { direction: 'forward', unit: 'codepoint' } );
+				model.deleteContent( doc.selection );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo John bar</p>' );
+		} );
+
+		it( 'should remove mention on removing a text in the middle a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
@@ -235,11 +279,10 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should remove mention on removing a text at the and of a mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
-			// Set selection at the end of a John.
 			model.change( writer => {
 				writer.setSelection( paragraph, 9 );
 			} );
@@ -253,7 +296,7 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should not remove mention on removing a text just after a mention', () => {
-			editor.setData( '<p>foo <span class="mention" data-mention="John">@John</span> bar</p>' );
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const paragraph = doc.getRoot().getChild( 0 );
 
@@ -267,7 +310,216 @@ describe( 'MentionEditing', () => {
 				model.deleteContent( doc.selection );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="John">@John</span>bar</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span>bar</p>' );
+		} );
+
+		it( 'should remove mention on inserting text node inside a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.insertText( 'baz', paragraph, 7 );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jobazhn bar</p>' );
+		} );
+
+		it( 'should remove mention on inserting inline element inside a mention', () => {
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				isInline: true
+			} );
+			editor.conversion.elementToElement( { model: 'inline', view: 'br' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.insertElement( 'inline', paragraph, 7 );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jo<br>hn bar</p>' );
+		} );
+
+		it( 'should remove mention when splitting paragraph with a mention', () => {
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.split( writer.createPositionAt( paragraph, 7 ) );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>foo @Jo</p><p>hn bar</p>' );
+		} );
+
+		it( 'should remove mention when deep splitting elements', () => {
+			model.schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
+			editor.setData( '<blockquote><p>foo <span class="mention" data-mention="@John">@John</span> bar</p></blockquote>' );
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 ).getChild( 0 );
+
+				writer.split( writer.createPositionAt( paragraph, 7 ), doc.getRoot() );
+			} );
+
+			expect( editor.getData() ).to.equal( '<blockquote><p>foo @Jo</p></blockquote><blockquote><p>hn bar</p></blockquote>' );
+		} );
+	} );
+
+	describe( 'extend attribute on mention post-fixer', () => {
+		beforeEach( () => {
+			return createTestEditor()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+				} );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (beginning formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 0 );
+				const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p><strong>foo <span class="mention" data-mention="@John">@John</span></strong> bar</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (end formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 6 );
+				const range = writer.createRange( start, start.getShiftedBy( 6 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p>foo <strong><span class="mention" data-mention="@John">@John</span> ba</strong>r</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of a mention (middle of mention formatted)', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 6 );
+				const range = writer.createRange( start, start.getShiftedBy( 1 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() )
+				.to.equal( '<p>foo <strong><span class="mention" data-mention="@John">@John</span></strong> bar</p>' );
+		} );
+
+		it( 'should set attribute on whole mention when formatting part of two mentions', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold' ] } );
+			editor.conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			editor.setData(
+				'<p><span class="mention" data-mention="@John">@John</span><span class="mention" data-mention="@John">@John</span></p>'
+			);
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( paragraph, 4 );
+				const range = writer.createRange( start, start.getShiftedBy( 4 ) );
+
+				writer.setSelection( range );
+
+				writer.setAttribute( 'bold', true, range );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<strong>' +
+						'<span class="mention" data-mention="@John">@John</span>' +
+						'<span class="mention" data-mention="@John">@John</span>' +
+					'</strong>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should work with multiple ranges in change set', () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'foo' ] } );
+			editor.conversion.attributeToElement( {
+				model: {
+					key: 'foo',
+					values: [ 'a', 'b' ]
+				},
+				view: {
+					a: {
+						name: 'span',
+						classes: 'mark-a'
+					},
+					b: {
+						name: 'span',
+						classes: 'mark-b'
+					}
+				},
+				converterPriority: 'high'
+			} );
+
+			editor.setData(
+				'<p>' +
+					'<span class="mark-a">foo <span class="mention" data-mention="@John">@John</span></span>' +
+					'<span class="mention" data-mention="@John">@John</span> bar' +
+				'</p>'
+			);
+
+			model.change( writer => {
+				const paragraph = doc.getRoot().getChild( 0 );
+				const start = writer.createPositionAt( paragraph, 7 );
+				const range = writer.createRange( start, start.getShiftedBy( 5 ) );
+
+				writer.setAttribute( 'foo', 'b', range );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<span class="mark-a">foo </span>' +
+					'<span class="mark-b">' +
+						'<span class="mention" data-mention="@John">@John</span>' +
+						'<span class="mention" data-mention="@John">@John</span>' +
+					'</span> bar' +
+				'</p>'
+			);
 		} );
 	} );
 

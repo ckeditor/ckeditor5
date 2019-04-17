@@ -1,35 +1,31 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals ClassicEditor, console, window, document, setTimeout */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
-// The link plugin using highest priority in conversion pipeline.
-const HIGHER_THEN_HIGHEST = priorities.highest + 50;
-
 ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
 		cloudServices: CS_CONFIG,
-		extraPlugins: [ CustomMention ],
+		extraPlugins: [ MentionCustomization ],
 		toolbar: {
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig(),
 		},
-		mention: [
-			{
-				marker: '@',
-				feed: getFeedItems,
-				itemRenderer: customItemRenderer,
-				minimumCharacters: 1
-			}
-		]
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: getFeedItems,
+					itemRenderer: customItemRenderer
+				}
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -38,8 +34,9 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-function CustomMention( editor ) {
-	// The upcast converter will convert <a class="mention"> elements to the model 'mention' attribute.
+function MentionCustomization( editor ) {
+	// The upcast converter will convert view <a class="mention" href="" data-user-id="">
+	// elements to the model 'mention' text attribute.
 	editor.conversion.for( 'upcast' ).elementToAttribute( {
 		view: {
 			name: 'a',
@@ -53,101 +50,91 @@ function CustomMention( editor ) {
 		model: {
 			key: 'mention',
 			value: viewItem => {
-				// Optionally: do not convert partial mentions.
-				if ( !isFullMention( viewItem ) ) {
-					return;
-				}
-
-				// The mention feature expects that mention attribute value in the model is a plain object:
-				const mentionValue = {
-					// The name attribute is required by mention editing.
-					name: viewItem.getAttribute( 'data-mention' ),
-					// Add any other properties as required.
+				// The mention feature expects that the mention attribute value
+				// in the model is a plain object with a set of additional attributes.
+				// In order to create a proper object use the toMentionAttribute() helper method:
+				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
+					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
-					id: viewItem.getAttribute( 'data-user-id' )
-				};
+					userId: viewItem.getAttribute( 'data-user-id' )
+				} );
 
-				return mentionValue;
+				return mentionAttribute;
 			}
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 
-	function isFullMention( viewElement ) {
-		const textNode = viewElement.getChild( 0 );
-		const dataMention = viewElement.getAttribute( 'data-mention' );
-
-		// Do not parse empty mentions.
-		if ( !textNode || !textNode.is( 'text' ) ) {
-			return false;
-		}
-
-		const mentionString = textNode.data;
-
-		// Assume that mention is set as marker + mention name.
-		const name = mentionString.slice( 1 );
-
-		// Do not upcast partial mentions - might come from copy-paste of partially selected mention.
-		return name == dataMention;
-	}
-
-	// Don't forget to define a downcast converter as well:
+	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
 		view: ( modelAttributeValue, viewWriter ) => {
+			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
-				// Do not convert empty attributes.
 				return;
 			}
 
 			return viewWriter.createAttributeElement( 'a', {
 				class: 'mention',
-				'data-mention': modelAttributeValue.name,
-				'data-user-id': modelAttributeValue.id,
+				'data-mention': modelAttributeValue.id,
+				'data-user-id': modelAttributeValue.userId,
 				'href': modelAttributeValue.link
 			} );
 		},
-		converterPriority: HIGHER_THEN_HIGHEST
+		converterPriority: 'high'
 	} );
 }
 
 const items = [
-	{ id: '1', name: 'Barney Stinson', username: 'swarley', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
-	{ id: '2', name: 'Lily Aldrin', username: 'lilypad', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
-	{ id: '3', name: 'Marshall Eriksen', username: 'marshmallow', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
-	{ id: '4', name: 'Robin Scherbatsky', username: 'rsparkles', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
-	{ id: '5', name: 'Ted Mosby', username: 'tdog', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
+	{ id: '@swarley', userId: '1', name: 'Barney Stinson', link: 'https://www.imdb.com/title/tt0460649/characters/nm0000439' },
+	{ id: '@lilypad', userId: '2', name: 'Lily Aldrin', link: 'https://www.imdb.com/title/tt0460649/characters/nm0004989' },
+	{ id: '@marshmallow', userId: '3', name: 'Marshall Eriksen', link: 'https://www.imdb.com/title/tt0460649/characters/nm0781981' },
+	{ id: '@rsparkles', userId: '4', name: 'Robin Scherbatsky', link: 'https://www.imdb.com/title/tt0460649/characters/nm1130627' },
+	{ id: '@tdog', userId: '5', name: 'Ted Mosby', link: 'https://www.imdb.com/title/tt0460649/characters/nm1102140' }
 ];
 
-function getFeedItems( feedText ) {
-	// As an example of asynchronous action return a promise that resolves after a 100ms timeout.
+function getFeedItems( queryText ) {
+	// As an example of an asynchronous action, let's return a promise
+	// that resolves after a 100ms timeout.
+	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
-			resolve( items.filter( isItemMatching ) );
+			const itemsToDisplay = items
+				// Filter out the full list of all items to only those matching queryText.
+				.filter( isItemMatching )
+				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
+				.slice( 0, 10 );
+
+			resolve( itemsToDisplay );
 		}, 100 );
 	} );
 
 	// Filtering function - it uses `name` and `username` properties of an item to find a match.
 	function isItemMatching( item ) {
 		// Make search case-insensitive.
-		const searchString = feedText.toLowerCase();
+		const searchString = queryText.toLowerCase();
 
 		// Include an item in the search results if name or username includes the current user input.
-		return textIncludesSearchSting( item.name, searchString ) || textIncludesSearchSting( item.username, searchString );
-	}
-
-	function textIncludesSearchSting( text, searchString ) {
-		return text.toLowerCase().includes( searchString );
+		return (
+			item.name.toLowerCase().includes( searchString ) ||
+			item.id.toLowerCase().includes( searchString )
+		);
 	}
 }
 
 function customItemRenderer( item ) {
-	const span = document.createElement( 'span' );
+	const itemElement = document.createElement( 'span' );
 
-	span.classList.add( 'custom-item' );
-	span.id = `mention-list-item-id-${ item.id }`;
+	itemElement.classList.add( 'custom-item' );
+	itemElement.id = `mention-list-item-id-${ item.userId }`;
+	itemElement.textContent = `${ item.name } `;
 
-	span.innerHTML = `${ item.name } <span class="custom-item-username">@${ item.username }</span>`;
+	const usernameElement = document.createElement( 'span' );
 
-	return span;
+	usernameElement.classList.add( 'custom-item-username' );
+	usernameElement.textContent = item.id;
+
+	itemElement.appendChild( usernameElement );
+
+	return itemElement;
 }

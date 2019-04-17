@@ -10,11 +10,11 @@ This package implements the mention feature for CKEditor 5. This features provid
 
 ## Demo
 
-Check out the {@link features/mention#demo demo in the Mention feature} guide.
+Check out the {@link features/mentions#demo demo in the Mention feature} guide.
 
 ## Documentation
 
-See the {@link features/mention Mention feature} guide and the {@link module:mention/mention~Mention} plugin documentation.
+See the {@link features/mentions Mention feature} guide and the {@link module:mention/mention~Mention} plugin documentation.
 
 ## Installation
 
