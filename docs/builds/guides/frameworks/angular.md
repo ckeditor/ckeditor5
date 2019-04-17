@@ -116,7 +116,7 @@ The component implements the [`ControlValueAccessor`](https://angular.io/api/for
 2. Use the model in the template to enable a two–way data binding:
 
 	```html
-	<ckeditor [(ngModel)]="model.editorData" [editor]="Editor" name="editor1"></ckeditor>
+	<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
 	```
 
 ## Supported `@Input` properties
