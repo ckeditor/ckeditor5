@@ -187,7 +187,7 @@ export default class BalloonPanelView extends View {
 
 	/**
 	 * Attaches the panel to a specified {@link module:utils/dom/position~Options#target} with a
-	 * smart positioning heuristics that choses from available positions to make sure the panel
+	 * smart positioning heuristics that chooses from available positions to make sure the panel
 	 * is visible to the user i.e. within the limits of the viewport.
 	 *
 	 * This method accepts configuration {@link module:utils/dom/position~Options options}
@@ -211,6 +211,8 @@ export default class BalloonPanelView extends View {
 	 *
 	 * **Note**: An attached panel will not follow its target when the window is scrolled or resized.
 	 * See the {@link #pin} method for more permanent positioning strategy.
+	 *
+	 * **Note**: If a limiter is not provided in the options the panel will use `document.body` as a default limiter.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
