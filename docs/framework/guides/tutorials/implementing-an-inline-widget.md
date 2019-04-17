@@ -729,7 +729,7 @@ You can see the placeholder widget implementation in action in the editor below.
 
 ## Full source code
 
-The following code contains a complete implementation of the `Placeholder` plugin and the code to run the editor. You can paste it into the [`app.js`](#plugin-structure) file and it will run out–of–the–box:
+The following code snippet contains a complete implementation of the `Placeholder` plugin (and all its dependencies) and the code to run the editor. You can paste it into the `app.js` file and it will run out–of–the–box:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
