@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import ItalicEditing from '../../src/italic/italicediting';
@@ -37,6 +37,12 @@ describe( 'ItalicEditing', () => {
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'italic' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).to.be.true;
+	} );
+
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'italic' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
 	} );
 
 	describe( 'command', () => {

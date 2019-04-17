@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import SuperEditing from '../../src/superscript/superscriptediting';
@@ -37,6 +37,12 @@ describe( 'SuperEditing', () => {
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'superscript' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'superscript' ) ).to.be.true;
+	} );
+
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'superscript' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
 	} );
 
 	describe( 'command', () => {

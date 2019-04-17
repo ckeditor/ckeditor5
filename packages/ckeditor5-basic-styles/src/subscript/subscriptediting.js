@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -28,6 +28,7 @@ export default class SubscriptEditing extends Plugin {
 		const editor = this.editor;
 		// Allow sub attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: SUBSCRIPT } );
+		editor.model.schema.setAttributeProperties( SUBSCRIPT, { isFormatting: true } );
 
 		// Build converter from model to view for data and editing pipelines.
 

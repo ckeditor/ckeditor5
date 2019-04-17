@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import SubEditing from '../../src/subscript/subscriptediting';
@@ -37,6 +37,12 @@ describe( 'SubEditing', () => {
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'subscript' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'subscript' ) ).to.be.true;
+	} );
+
+	it( 'should be marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'subscript' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
 	} );
 
 	describe( 'command', () => {

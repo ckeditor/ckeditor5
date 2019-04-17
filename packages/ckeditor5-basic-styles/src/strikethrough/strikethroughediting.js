@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -30,6 +30,7 @@ export default class StrikethroughEditing extends Plugin {
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: STRIKETHROUGH } );
+		editor.model.schema.setAttributeProperties( STRIKETHROUGH, { isFormatting: true } );
 
 		editor.conversion.attributeToElement( {
 			model: STRIKETHROUGH,

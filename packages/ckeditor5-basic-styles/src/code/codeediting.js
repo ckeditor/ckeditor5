@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -29,6 +29,7 @@ export default class CodeEditing extends Plugin {
 
 		// Allow code attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
+		editor.model.schema.setAttributeProperties( CODE, { isFormatting: true } );
 
 		editor.conversion.attributeToElement( {
 			model: CODE,
