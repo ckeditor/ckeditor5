@@ -13,6 +13,7 @@
     "lodash-es": "^4.17.10"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^12.1.0",
     "@ckeditor/ckeditor5-core": "^12.1.0",
     "@ckeditor/ckeditor5-engine": "^13.1.0",
     "eslint": "^5.5.0",
