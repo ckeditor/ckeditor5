@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import AlignmentEditing from '../src/alignmentediting';
@@ -37,6 +37,12 @@ describe( 'AlignmentEditing', () => {
 
 	it( 'allows for alignment in $blocks', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block' ], 'alignment' ) ).to.be.true;
+	} );
+
+	it( 'its attribute is marked with a formatting property', () => {
+		expect( model.schema.getAttributeProperties( 'alignment' ) ).to.deep.equal( {
+			isFormatting: true
+		} );
 	} );
 
 	describe( 'integration', () => {

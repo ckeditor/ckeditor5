@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -41,6 +41,7 @@ export default class AlignmentEditing extends Plugin {
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
+		editor.model.schema.setAttributeProperties( 'alignment', { isFormatting: true } );
 
 		const definition = _buildDefinition( enabledOptions.filter( option => !isDefault( option ) ) );
 
