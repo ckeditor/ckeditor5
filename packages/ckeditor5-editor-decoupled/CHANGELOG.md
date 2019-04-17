@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Introduced `EditorConfig#initialData`. ([7e01ca7](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/7e01ca7))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v11.0.2...v12.0.0) (2019-02-28)
 
 ### Features

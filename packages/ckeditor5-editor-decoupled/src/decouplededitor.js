@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -113,12 +113,14 @@ export default class DecoupledEditor extends Editor {
 	}
 
 	/**
-	 * Creates a `DecoupledEditor` instance.
+	 * Creates a new decoupled editor instance.
 	 *
-	 * Remember that `DecoupledEditor` do not append the toolbar element to your web page so you have to do it manually after the editor
+	 * Remember that `DecoupledEditor` does not append the toolbar element to your web page so you have to do it manually after the editor
 	 * has been initialized.
 	 *
-	 * There are two general ways how the editor can be initialized.
+	 * There are two ways how the editor can be initialized.
+	 *
+	 * # Using an existing DOM element (and loading data from it)
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
@@ -136,7 +138,9 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * The element's content will be used as the editor data and the element will become the editable element.
 	 *
-	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
 	 * In this case, you will have to manually append to your web page both the toolbar element and the editable element.
 	 *
 	 *		DecoupledEditor
@@ -156,6 +160,8 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Using an existing DOM element (and data provided in `config.initialData`)
 	 *
 	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
 	 *
@@ -178,8 +184,21 @@ export default class DecoupledEditor extends Editor {
 	 *
 	 * Note that an error will be thrown if you pass initial data both as the first parameter and also in the config.
 	 *
-	 * See also the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and other.
+	 *
+	 * # Using the editor from source
+	 *
+	 * The code samples listed in the previous sections of this documentation assume that you are using an
+	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-decoupled`).
+	 *
+	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
+	 * then you need to define the list of
+	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
+	 * source in the {@glink builds/guides/integration/advanced-setup "Advanced setup" guide}.
 	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
@@ -204,9 +223,10 @@ export default class DecoupledEditor extends Editor {
 					} )
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							// Documented in core/editor/editorconfig.jdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
 							);
 						}
 
