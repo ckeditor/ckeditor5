@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## [13.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v13.0.0...v13.1.0) (2019-04-10)
+
+### Features
+
+* `Model#insertContent()` will return a range affected by the insertion. ([f4e4644](https://github.com/ckeditor/ckeditor5-engine/commit/f4e4644))
+
+  In `Model#deleteContent()`, added `doNotAutoparagraph` flag to `options`.
+  `Position` and `LivePosition` static creators should handle `stickiness` param.
+* Added possibility to refresh the marker with no changes through `Writer#updateMarker()` method. Closes [#1649](https://github.com/ckeditor/ckeditor5-engine/issues/1649). ([cf56d90](https://github.com/ckeditor/ckeditor5-engine/commit/cf56d90))
+* Introduced `Schema#setAttributeProperties()` and `Schema#getAttributeProperties()` methods. Closes [ckeditor/ckeditor5#1659](https://github.com/ckeditor/ckeditor5/issues/1659). ([1c6f83a](https://github.com/ckeditor/ckeditor5-engine/commit/1c6f83a))
+* Introduced `UpcastConversionApi#getSplitParts()`. Also, provided a way to set upcast conversion helper fired for every view element. Closes https://github.com/ckeditor/ckeditor5/issues/1580. Closes https://github.com/ckeditor/ckeditor5/issues/1581. ([d0ee3f4](https://github.com/ckeditor/ckeditor5-engine/commit/d0ee3f4))
+
+### Bug fixes
+
+* `view.DowncastWriter` will now correctly wrap and unwrap nested attribute elements. Closes [#1716](https://github.com/ckeditor/ckeditor5-engine/issues/1716). Closes [ckeditor/ckeditor5-font#30](https://github.com/ckeditor/ckeditor5-font/issues/30). ([4126359](https://github.com/ckeditor/ckeditor5-engine/commit/4126359))
+* Attribute and remove change on intersecting ranges done in the same change block will be correctly saved in `Differ` and downcasted. Closes [ckeditor/ckeditor5#1645](https://github.com/ckeditor/ckeditor5/issues/1645). ([b2a9d86](https://github.com/ckeditor/ckeditor5-engine/commit/b2a9d86))
+* Editor will no longer crash during undo in some pasting+remove scenarios. Closes [#1701](https://github.com/ckeditor/ckeditor5-engine/issues/1701). ([ca619e7](https://github.com/ckeditor/ckeditor5-engine/commit/ca619e7))
+* Made sure that `Schema#getAttributeProperties()` always returns an object. Closes [#1717](https://github.com/ckeditor/ckeditor5-engine/issues/1717). ([b3f5da3](https://github.com/ckeditor/ckeditor5-engine/commit/b3f5da3))
+* Markers should be now correctly upcasted inside any element. Closes [#1697](https://github.com/ckeditor/ckeditor5-engine/issues/1697). ([3706324](https://github.com/ckeditor/ckeditor5-engine/commit/3706324))
+* `Model#deleteContent()` will not throw anymore if the passed selection is in the graveyard root. Closes [#1706](https://github.com/ckeditor/ckeditor5-engine/issues/1706). ([bd875c7](https://github.com/ckeditor/ckeditor5-engine/commit/bd875c7))
+* The editor will not throw an error when updating an empty fake selection container. Closes [#1714](https://github.com/ckeditor/ckeditor5-engine/issues/1714). ([c48f5a4](https://github.com/ckeditor/ckeditor5-engine/commit/c48f5a4))
+
+
 ## [13.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v12.0.0...v13.0.0) (2019-02-28)
 
 ### Features

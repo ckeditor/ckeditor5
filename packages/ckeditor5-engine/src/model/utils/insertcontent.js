@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -50,7 +50,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			selection = writer.createSelection( selectable, placeOrOffset );
 		}
 
-		const insertionPosition = selection.anchor.clone();
+		const insertionPosition = selection.getFirstPosition();
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );

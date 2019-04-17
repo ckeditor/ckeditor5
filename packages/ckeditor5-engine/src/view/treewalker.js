@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -240,7 +240,7 @@ export default class TreeWalker {
 				let charactersCount = node.data.length;
 				let item;
 
-				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
+				// If text stick out of walker range, we need to cut it and wrap in TextProxy.
 				if ( node == this._boundaryEndParent ) {
 					charactersCount = this.boundaries.end.offset;
 					item = new TextProxy( node, 0, charactersCount );
@@ -352,7 +352,7 @@ export default class TreeWalker {
 				let charactersCount = node.data.length;
 				let item;
 
-				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
+				// If text stick out of walker range, we need to cut it and wrap in TextProxy.
 				if ( node == this._boundaryStartParent ) {
 					const offset = this.boundaries.start.offset;
 

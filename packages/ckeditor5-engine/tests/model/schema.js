@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Schema, { SchemaContext } from '../../src/model/schema';
@@ -93,6 +93,58 @@ describe( 'Schema', () => {
 			expect( () => {
 				schema.extend( 'foo' );
 			} ).to.throw( CKEditorError, /^schema-cannot-extend-missing-item:/ );
+		} );
+	} );
+
+	describe( 'attribute properties', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'paragraph', {
+				allowIn: '$root'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+			schema.extend( '$text', { allowAttributes: [ 'testAttribute', 'noPropertiesAttribute' ] } );
+		} );
+
+		describe( 'setAttributeProperties()', () => {
+			it( 'allows registering new properties', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					foo: 'bar',
+					baz: 'bom'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					foo: 'bar',
+					baz: 'bom'
+				} );
+			} );
+
+			it( 'support adding properties in subsequent calls', () => {
+				schema.setAttributeProperties( 'testAttribute', {
+					first: 'foo'
+				} );
+
+				schema.setAttributeProperties( 'testAttribute', {
+					second: 'bar'
+				} );
+
+				expect( schema.getAttributeProperties( 'testAttribute' ) ).to.deep.equal( {
+					first: 'foo',
+					second: 'bar'
+				} );
+			} );
+		} );
+
+		describe( 'getAttributeProperties()', () => {
+			it( 'it returns a proper value if the attribute has no properties', () => {
+				expect( schema.getAttributeProperties( 'noPropertiesAttribute' ) ).to.deep.equal( {} );
+			} );
+
+			it( 'it returns a proper value for unknown attribute', () => {
+				expect( schema.getAttributeProperties( 'unregistered-attribute' ) ).to.deep.equal( {} );
+			} );
 		} );
 	} );
 

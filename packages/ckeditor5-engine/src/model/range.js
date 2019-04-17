@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -335,6 +335,16 @@ export default class Range {
 
 	/**
 	 * Creates a {@link module:engine/model/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
+	 *
+	 * For example, to iterate over all items in the entire document root:
+	 *
+	 *		// Create a range spanning over the entire root content:
+	 *		const range = editor.model.createRangeIn( editor.model.document.getRoot() );
+	 *
+	 *		// Iterate over all items in this range:
+	 *		for ( const value of range.getWalker() ) {
+	 *			console.log( value.item );
+	 *		}
 	 *
 	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 * @param {module:engine/model/position~Position} [options.startPosition]

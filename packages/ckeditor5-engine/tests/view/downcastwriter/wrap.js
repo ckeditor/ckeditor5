@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import DowncastWriter from '../../../src/view/downcastwriter';
@@ -116,6 +116,44 @@ describe( 'DowncastWriter', () => {
 					'<container:p>நி{லை}க்கு</container:p>',
 					'<attribute:b view-priority="1"></attribute:b>',
 					'<container:p>நி[<attribute:b view-priority="1">லை</attribute:b>]க்கு</container:p>'
+				);
+			} );
+
+			it( 'should join wrapping element with a nested attribute element', () => {
+				test(
+					'<container:p>' +
+						'<attribute:u view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">{foo}</attribute:b>' +
+						'</attribute:u>' +
+					'</container:p>',
+
+					'<attribute:b class="foo" view-priority="2"></attribute:b>',
+
+					'<container:p>' +
+						'[<attribute:u view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar foo">foo</attribute:b>' +
+						'</attribute:u>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should join wrapping element with a part of a nested attribute element', () => {
+				test(
+					'<container:p>' +
+						'<attribute:i view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">fo{ob}ar</attribute:b>' +
+						'</attribute:i>' +
+					'</container:p>',
+
+					'<attribute:b class="foo" view-priority="2"></attribute:b>',
+
+					'<container:p>' +
+						'<attribute:i view-priority="1">' +
+							'<attribute:b view-priority="2" class="bar">fo</attribute:b>' +
+							'[<attribute:b view-priority="2" class="bar foo">ob</attribute:b>]' +
+							'<attribute:b view-priority="2" class="bar">ar</attribute:b>' +
+						'</attribute:i>' +
+					'</container:p>'
 				);
 			} );
 

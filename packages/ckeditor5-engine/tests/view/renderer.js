@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, window, NodeFilter, MutationObserver */
@@ -1956,6 +1956,31 @@ describe( 'Renderer', () => {
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
 				expect( bindSelection ).to.not.be.undefined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-engine/issues/1714.
+			it( 'should handle situation when label got removed from the fake selection container', () => {
+				const label = 'fake selection label';
+				selection._setTo( selection.getRanges(), { fake: true, label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+
+				const container = domRoot.childNodes[ 1 ];
+				expect( domConverter.mapDomToView( container ) ).to.be.undefined;
+				expect( container.childNodes.length ).to.equal( 1 );
+
+				const textNode = container.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
+
+				// Remove a text node (label) from the fake selection container.
+				// It can be done by pressing backspace while the delete command is disabled and selection is on the widget.
+				textNode.remove();
+
+				renderer.render();
+
+				const domSelection = domRoot.ownerDocument.getSelection();
+				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
 			// Use a forgiving way of checking what the selection contains

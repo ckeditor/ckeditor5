@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -136,7 +136,7 @@ export default class DataController {
 			 * is called with non-existent root name. For example, if there is an editor instance with only `main` root,
 			 * calling {@link #get} like:
 			 *
-			 *		data.get( 'root2' );
+			 *		data.get( { rootName: 'root2' } );
 			 *
 			 * will throw this error.
 			 *

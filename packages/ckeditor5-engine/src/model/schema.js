@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -38,6 +38,14 @@ export default class Schema {
 	 */
 	constructor() {
 		this._sourceDefinitions = {};
+
+		/**
+		 * A dictionary containing attribute properties.
+		 *
+		 * @private
+		 * @member {Object.<String,String>}
+		 */
+		this._attributeProperties = {};
 
 		this.decorate( 'checkChild' );
 		this.decorate( 'checkAttribute' );
@@ -473,6 +481,58 @@ export default class Schema {
 				evt.return = retValue;
 			}
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * This method allows assigning additional metadata to the model attributes. For example,
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties#isFormatting` property} is
+	 * used to mark formatting attributes (like `bold` or `italic`).
+	 *
+	 *		// Mark bold as a formatting attribute.
+	 *		schema.setAttributeProperties( 'bold', {
+	 *			isFormatting: true
+	 *		} );
+	 *
+	 *		// Override code not to be considered a formatting markup.
+	 *		schema.setAttributeProperties( 'code', {
+	 *			isFormatting: false
+	 *		} );
+	 *
+	 * Properties are not limited to members defined in the
+	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties` type} and you can also use custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			customProperty: 'value'
+	 *		} );
+	 *
+	 * Subsequent calls with the same attribute will extend its custom properties:
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			one: 1
+	 *		} );
+	 *
+	 *		schema.setAttributeProperties( 'blockQuote', {
+	 *			two: 2
+	 *		} );
+	 *
+	 *		console.log( schema.getAttributeProperties( 'blockQuote' ) );
+	 *		// Logs: { one: 1, two: 2 }
+	 *
+	 * @param {String} attributeName A name of the attribute to receive the properties.
+	 * @param {module:engine/model/schema~AttributeProperties} properties A dictionary of properties.
+	 */
+	setAttributeProperties( attributeName, properties ) {
+		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ), properties );
+	}
+
+	/**
+	 * Returns properties associated with a given model attribute. See {@link #setAttributeProperties `setAttributeProperties()`}.
+	 *
+	 * @param {String} attributeName A name of the attribute.
+	 * @returns {module:engine/model/schema~AttributeProperties}
+	 */
+	getAttributeProperties( attributeName ) {
+		return this._attributeProperties[ attributeName ] || {};
 	}
 
 	/**
@@ -1283,6 +1343,16 @@ export class SchemaContext {
  *		} );
  *
  * @typedef {Object} module:engine/model/schema~SchemaContextItem
+ */
+
+/**
+ * A structure containing additional metadata describing the attribute.
+ *
+ * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
+ *
+ * @typedef {Object} module:engine/model/schema~AttributeProperties
+ * @property {Boolean} [isFormatting] Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
+ * `fontSize` rather than semantic attribute (such as `src`, `listType`, etc.). For example, it is used by the "Remove format" feature.
  */
 
 function compileBaseItemRule( sourceItemRules, itemName ) {

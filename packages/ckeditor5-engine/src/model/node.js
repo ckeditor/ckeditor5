@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -10,6 +10,9 @@
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
  * Model node. Most basic structure of model tree.

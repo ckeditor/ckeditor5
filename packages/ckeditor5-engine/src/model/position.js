@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -12,6 +12,9 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
 import { last } from 'lodash-es';
+
+// To check if component is loaded more than once.
+import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
  * Represents a position in the model tree.
