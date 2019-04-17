@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-utils/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Added `isSafari` property and `isSafari()` helper to the `env` module. See: [ckeditor/ckeditor5#1463](https://github.com/ckeditor/ckeditor5/issues/1463). ([f1ba6ae](https://github.com/ckeditor/ckeditor5-utils/commit/f1ba6ae))
+* Made `FocusTracker#focusedElement` observable to bring support for multi-root editors (see [ckeditor/ckeditor5#1599](https://github.com/ckeditor/ckeditor5/issues/1599)). ([952d440](https://github.com/ckeditor/ckeditor5-utils/commit/952d440))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v11.1.0...v12.0.0) (2019-02-28)
 
 ### Features

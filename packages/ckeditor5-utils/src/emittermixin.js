@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -10,6 +10,9 @@
 import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
+
+// To check if component is loaded more than once.
+import './version';
 
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
