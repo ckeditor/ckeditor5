@@ -559,6 +559,37 @@ class App extends Component {
 export default App;
 ```
 
+## Localization
+
+The CKEditor 5 component can be localized in two steps.
+
+### 1. Loading translation files
+
+First, you need to add translation files to the bundle. 
+
+```js
+import '@ckeditor/ckeditor5-build-classic/build/translations/de';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// ...
+```
+
+### 2. Configuring the language
+
+Then, you need to configure the editor to use the given language:
+
+```jsx
+<CKEditor
+    config={ {
+        language: 'de',
+        // ...
+    } }
+	editor={ ClassicEditor }
+	data="<p>Hello from CKEditor 5!</p>"
+/>
+```
+
+For advanced usage see the {@link features/ui-language Setting UI language} guide.
+
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in https://github.com/ckeditor/ckeditor5-react.
