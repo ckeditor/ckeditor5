@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -384,20 +384,19 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 	const tableCell = tableWalkerValue.cell;
 
-	const isSingleParagraph = tableCell.childCount === 1 && tableCell.getChild( 0 ).name === 'paragraph';
+	const firstChild = tableCell.getChild( 0 );
+	const isSingleParagraph = tableCell.childCount === 1 && firstChild.name === 'paragraph';
 
 	conversionApi.writer.insert( insertPosition, cellElement );
 
-	if ( isSingleParagraph ) {
+	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
 		const innerParagraph = tableCell.getChild( 0 );
 		const paragraphInsertPosition = conversionApi.writer.createPositionAt( cellElement, 'end' );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
 		if ( options.asWidget ) {
-			const containerName = [ ...innerParagraph.getAttributeKeys() ].length ? 'p' : 'span';
-
-			const fakeParagraph = conversionApi.writer.createContainerElement( containerName );
+			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
 
 			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
 			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
@@ -553,4 +552,12 @@ function getViewTable( viewFigure ) {
 			return child;
 		}
 	}
+}
+
+// Checks if element has any attribute set.
+//
+// @param {module:engine/model/element~Element element
+// @returns {Boolean}
+function hasAnyAttribute( element ) {
+	return !![ ...element.getAttributeKeys() ].length;
 }

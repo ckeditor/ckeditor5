@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -140,6 +140,35 @@ describe( 'downcast converters', () => {
 							'<tr>' +
 								'<td><p>00</p><p>foo</p></td>' +
 								'<td>01</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
+		} );
+
+		it( 'should create table with block content (attribute on paragraph)', () => {
+			editor.conversion.attributeToAttribute(
+				{
+					model: { key: 'alignment', values: [ 'right', 'center', 'justify' ] },
+					view: {
+						right: { key: 'style', value: { 'text-align': 'right' } },
+						center: { key: 'style', value: { 'text-align': 'center' } },
+						justify: { key: 'style', value: { 'text-align': 'justify' } }
+					}
+				}
+			);
+
+			setModelData( model, modelTable( [
+				[ '<paragraph alignment="right">00</paragraph>' ]
+			] ) );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td><p style="text-align:right">00</p></td>' +
 							'</tr>' +
 						'</tbody>' +
 					'</table>' +
