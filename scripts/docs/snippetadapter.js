@@ -21,7 +21,7 @@ const DEFAULT_LANGUAGE = 'en';
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} options
  * @param {Boolean} options.production Whether to build snippets in production mode.
- * @param {Array.<String>>|undefined} options.whitelistedSnippets An array that contains glob patterns.
+ * @param {Array.<String>|undefined} options.whitelistedSnippets An array that contains glob patterns.
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
@@ -38,6 +38,11 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		snippetData.snippetConfig = readSnippetConfig( snippetData.snippetSources.js );
 		snippetData.snippetConfig.language = snippetData.snippetConfig.language || DEFAULT_LANGUAGE;
 
+		// If, in order to work, a snippet requires another snippet to be built, and the other snippet
+		// isn't included in any guide via `{@snippet ...}`, then that other snippet need to be marked
+		// as a dependency of the first one. Example – bootstrap UI uses an iframe, and inside that iframe we
+		// need a JS file. That JS file needs to be built, even though it's not a real snippet (and it's not used
+		// via {@snippet}).
 		if ( snippetData.snippetConfig.dependencies ) {
 			for ( const dependencyName of snippetData.snippetConfig.dependencies ) {
 				// Do not load the same dependency more than once.
@@ -79,7 +84,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 		filterWhitelistedSnippets( snippets, options.whitelistedSnippets );
 	}
 
-	console.log( 'Number of snippets that will be built:', snippets.size );
+	console.log( `Building ${ snippets.size } snippets...` );
 
 	const groupedSnippetsByLanguage = {};
 
@@ -188,7 +193,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			}
 		} )
 		.then( () => {
-			console.log( 'Snippets has been built.' );
+			console.log( `Finished building ${ snippets.size } snippets.` );
 		} );
 };
 
