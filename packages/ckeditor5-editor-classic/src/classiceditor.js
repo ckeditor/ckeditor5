@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -93,9 +93,11 @@ export default class ClassicEditor extends Editor {
 	}
 
 	/**
-	 * Creates a `ClassicEditor` instance.
+	 * Creates a new classic editor instance.
 	 *
-	 * There are two general ways how the editor can be initialized.
+	 * There are three ways how the editor can be initialized.
+	 *
+	 * # Replacing a DOM element (and loading data from it)
 	 *
 	 * You can initialize the editor using an existing DOM element:
 	 *
@@ -108,10 +110,12 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * The element's content will be used as the editor data and the element will be replaced by the editable element and the editor UI.
+	 * The element's content will be used as the editor data and the element will be replaced by the editor UI.
 	 *
-	 * Alternatively, you can initialize the editor by passing the initial data directly as a `String`.
-	 * In this case, the editor will render an element that must be inserted into the DOM for the editor to work properly:
+	 * # Creating a detached editor
+	 *
+	 * Alternatively, you can initialize the editor by passing the initial data directly as a string.
+	 * In this case, the editor will render an element that must be inserted into the DOM:
 	 *
 	 *		ClassicEditor
 	 *			.create( '<p>Hello world!</p>' )
@@ -127,6 +131,8 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * This lets you dynamically append the editor to your web page whenever it is convenient for you. You may use this method if your
 	 * web page content is generated on the client-side and the DOM structure is not ready at the moment when you initialize the editor.
+	 *
+	 * # Replacing a DOM element (and data provided in `config.initialData`)
 	 *
 	 * You can also mix those two ways by providing a DOM element to be used and passing the initial data through the config:
 	 *
@@ -146,8 +152,21 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * Note that an error will be thrown if you pass initial data both as the first parameter and also in the config.
 	 *
-	 * See also the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
+	 * # Configuring the editor
+	 *
+	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and other.
+	 *
+	 * # Using the editor from source
+	 *
+	 * The code samples listed in the previous sections of this documentation assume that you are using an
+	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-classic`).
+	 *
+	 * If you want to use the classic editor from source (`@ckeditor/ckeditor5-editor-classic/src/classiceditor`),
+	 * then you need to define the list of
+	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
+	 * source in the {@glink builds/guides/integration/advanced-setup "Advanced setup" guide}.
 	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data.
@@ -175,9 +194,10 @@ export default class ClassicEditor extends Editor {
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							// Documented in core/editor/editorconfig.jdoc.
 							throw new CKEditorError(
 								'editor-create-initial-data: ' +
-								'EditorConfig#initialData cannot be used together with initial data passed in Editor#create()'
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
 							);
 						}
 
