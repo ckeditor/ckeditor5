@@ -366,12 +366,21 @@ import { Subscription, Observable } from 'rxjs';
 import { HttpClient, HttpEventType, HttpRequest, HttpEvent } from '@angular/common/http';
 // ...
 
+@Component()
+export class MyComponent {
+  	public editorConfig = {
+		extraPlugins: [ UploadAdapterPlugin ],
+		httpClient: this.http
+	};
+}
+
 class UploadAdapterPlugin {
 	constructor( editor ) {
 		const httpClient = editor.config.get( 'httpClient' );
 
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
-			return new UploadAdapter( loader, httpClient, '/image' );  // Modify for your server.
+			// Modify your endpoint URL.
+			return new UploadAdapter( loader, httpClient, '/image' );
 		};
 	}
 }
@@ -380,26 +389,30 @@ class UploadAdapter {
 	private sub: Subscription;
 
 	constructor(
-		private loader: any,
+		private loader: UploadLoader,
 		private httpClient: HttpClient,
 		private url: string
 	) { }
 
-	public upload() {
+	public upload(): Promise<{ default: string }> {
 		return new Promise( ( resolve, reject ) => {
 			const formData = new FormData();
 			formData.append( 'file', this.loader.file );
 
 			this.sub = this.httpPostMediaReq( formData ).subscribe( event => {
 				if ( event.type === HttpEventType.Response ) {
+					// Modify for your endpoint, in this scenario the endpoint should return:
+					// { error: string } in case of an error.
+					// { list: number[] } (an array of image ids) in case of success.
+
 					const response = event.body;
 
-					if ( !response.list || response.list.length < 1 || response.list[ 0 ].id < 1 ) {
+					if ( response.error ) {
 						return reject( response.error );
 					}
 
-					const imageURL = this.getImageUrl( response.list[ 0 ].id );
-					resolve( { default: imageURL } );
+					const imageUrl = this.getImageUrl( response.list[ 0 ] );
+					resolve( { default: imageUrl } );
 				} else if ( event.type === HttpEventType.UploadProgress ) {
 					this.loader.uploaded = event.loaded;
 					this.loader.uploadTotal = event.total;
@@ -416,12 +429,13 @@ class UploadAdapter {
 		}
 	}
 
-	private getImageUrl( id ) {
+	private getImageUrl( id: number ) {
 		// Return the URL where the successfully upload image
 		// can be retrieved with an HTTP GET request.
+		return `/images/${ id }`;
 	}
 
-	private httpPostMediaReq( formData: FormData ): Observable<HttpEvent<any>> {
+	private httpPostMediaReq( formData: FormData ): Observable<HttpEvent<ImageEndpointResponse>> {
 		const request = new HttpRequest(
 			'POST',
 			this.url,
@@ -435,6 +449,18 @@ class UploadAdapter {
 		return this.httpClient.request( request );
 	}
 }
+
+interface ImageEndpointResponse {
+	list: number[];
+	error?: string;
+}
+
+interface UploadLoader {
+	uploaded: number;
+	uploadTotal: number;
+	readonly file: string;
+}
+
 ```
 
 This class will be instantiated each time that CKEditor needs it.  Note that
