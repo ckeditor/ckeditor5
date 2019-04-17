@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-@import "../mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
 .ck.ck-link-form {
 	padding: var(--ck-spacing-standard);
