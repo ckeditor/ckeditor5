@@ -1207,14 +1207,14 @@ function normalize( def ) {
 //			}
 //		}
 //
-// @param {Object} attrs
-function normalizeAttributes( attrs ) {
-	for ( const a in attrs ) {
-		if ( attrs[ a ].value ) {
-			attrs[ a ].value = [].concat( attrs[ a ].value );
+// @param {Object} attributes
+function normalizeAttributes( attributes ) {
+	for ( const a in attributes ) {
+		if ( attributes[ a ].value ) {
+			attributes[ a ].value = [].concat( attributes[ a ].value );
 		}
 
-		arrayify( attrs, a );
+		arrayify( attributes, a );
 	}
 }
 
