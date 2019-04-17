@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [12.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.0.0...v12.1.0) (2019-04-10)
+
+### Features
+
+* Implemented `ColorGridView` and `ColorTileView` components. See [ckeditor/ckeditor5#1457](https://github.com/ckeditor/ckeditor5/issues/1457). ([6be52b4](https://github.com/ckeditor/ckeditor5-ui/commit/6be52b4))
+
+### Bug fixes
+
+* Fixed `View#render` collision when moving focus from a one editable to the other in multi-root editor. Closes https://github.com/ckeditor/ckeditor5/issues/1676. ([17e86f9](https://github.com/ckeditor/ckeditor5-ui/commit/17e86f9))
+
+### Other changes
+
+* Optimized icons. ([5325ea8](https://github.com/ckeditor/ckeditor5-ui/commit/5325ea8))
+* Updated translations. ([dcdca2e](https://github.com/ckeditor/ckeditor5-ui/commit/dcdca2e))
+
+
 ## [12.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v11.2.0...v12.0.0) (2019-02-28)
 
 ### Bug fixes

@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -122,7 +122,7 @@ export default class EditableUIView extends View {
 		const editingView = this._editingView;
 
 		if ( editingView.isRenderingInProgress ) {
-			editingView.once( 'change:isRenderingInProgress', () => update( this ) );
+			updateAfterRender( this );
 		} else {
 			update( this );
 		}
@@ -133,6 +133,21 @@ export default class EditableUIView extends View {
 
 				writer.addClass( view.isFocused ? 'ck-focused' : 'ck-blurred', viewRoot );
 				writer.removeClass( view.isFocused ? 'ck-blurred' : 'ck-focused', viewRoot );
+			} );
+		}
+
+		// In a case of a multi-root editor, a callback will be attached more than once (one callback for each root).
+		// While executing one callback the `isRenderingInProgress` observable is changing what causes executing another
+		// callback and render is called inside the already pending render.
+		// We need to be sure that callback is executed only when the value has changed from `true` to `false`.
+		// See https://github.com/ckeditor/ckeditor5/issues/1676.
+		function updateAfterRender( view ) {
+			editingView.once( 'change:isRenderingInProgress', ( evt, name, value ) => {
+				if ( !value ) {
+					update( view );
+				} else {
+					updateAfterRender( view );
+				}
 			} );
 		}
 	}
