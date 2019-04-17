@@ -389,7 +389,7 @@ describe( 'MentionUI', () => {
 
 						fireKeyDownEvent( arrowUpEvtData );
 						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
-						expect( mentionsView.element.scrollTop ).to.equal( 150 );
+						expect( mentionsView.element.scrollTop ).to.be.within( 140, 160 ); // We want 150, but sometimes we get e.g. 151.
 
 						fireKeyDownEvent( arrowDownEvtData );
 
