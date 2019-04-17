@@ -166,10 +166,13 @@ export default class Template {
 	 *			attributes: {
 	 *				id: 'first-div',
 	 *				class: bind.to( 'divClass' )
+	 *			},
+	 *			on: {
+	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
 	 *			}
 	 *		} ).apply( element );
 	 *
-	 *		console.log( element.outerHTML ); // Logs: '<div id="first-div" class="my-div"></div>'
+	 *		console.log( element.outerHTML ); // -> '<div id="first-div" class="my-div"></div>'
 	 *
 	 * @see module:ui/template~Template#render
 	 * @see module:ui/template~Template#revert
