@@ -299,6 +299,47 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.class ).to.equal( 'bar' );
 		} );
+
+		it( 'should hide arrow if `withArrow` option is set to false', () => {
+			balloon.remove( viewA );
+			balloon.view.pin.resetHistory();
+
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'foo'
+				},
+				withArrow: false
+			} );
+
+			expect( balloon.view.withArrow ).to.be.false;
+		} );
+
+		it( 'should show arrow if `withArrow` option was not set and previously shown view had hidden arrow', () => {
+			balloon.remove( viewA );
+			balloon.view.pin.resetHistory();
+
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'foo'
+				},
+				withArrow: false
+			} );
+
+			expect( balloon.view.withArrow ).to.be.false;
+
+			balloon.remove( viewB );
+
+			balloon.add( {
+				view: viewB,
+				position: {
+					target: 'foo'
+				}
+			} );
+
+			expect( balloon.view.withArrow ).to.be.true;
+		} );
 	} );
 
 	describe( 'visibleView', () => {
