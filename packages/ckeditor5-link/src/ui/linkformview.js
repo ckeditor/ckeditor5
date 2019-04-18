@@ -82,6 +82,8 @@ export default class LinkFormView extends View {
 
 		this.customAttributesView = this._createCustomAttributesView();
 
+		this.children = this._createFormChildren();
+
 		/**
 		 * A collection of views which can be focused in the form.
 		 *
@@ -124,12 +126,7 @@ export default class LinkFormView extends View {
 				tabindex: '-1'
 			},
 
-			children: [
-				this.urlInputView,
-				this.saveButtonView,
-				this.cancelButtonView,
-				...this.customAttributesView,
-			]
+			children: this.children
 		} );
 	}
 
@@ -238,6 +235,38 @@ export default class LinkFormView extends View {
 			return checkbox;
 		} );
 		return checkboxes;
+	}
+
+	_createFormChildren() {
+		const children = this.createCollection();
+
+		const requiredButtonView = new View();
+		requiredButtonView.setTemplate( {
+			tag: 'div',
+			children: [
+				this.urlInputView,
+				this.saveButtonView,
+				this.cancelButtonView
+			],
+			attributes: {
+				class: 'ck-link-form_required-buttons'
+			}
+		} );
+		children.add( requiredButtonView );
+
+		if ( this.customAttributes.length ) {
+			const additionalButtonsView = new View();
+			additionalButtonsView.setTemplate( {
+				tag: 'div',
+				children: [ ...this.customAttributesView ],
+				attributes: {
+					class: 'ck-link-form_additional-buttons'
+				}
+			} );
+			children.add( additionalButtonsView );
+		}
+
+		return children;
 	}
 }
 
