@@ -85,18 +85,24 @@ export default class MentionsView extends ListView {
 		}
 
 		const item = this.items.get( indexToGet );
+
+		// Return early if item is already selected.
+		if ( this.selected === item ) {
+			return;
+		}
+
+		// Remove highlight of previously selected item.
+		if ( this.selected ) {
+			this.selected.removeHighlight();
+		}
+
 		item.highlight();
+		this.selected = item;
 
 		// Scroll the mentions view to the selected element.
 		if ( !this._isItemVisibleInScrolledArea( item ) ) {
 			this.element.scrollTop = item.element.offsetTop;
 		}
-
-		if ( this.selected ) {
-			this.selected.removeHighlight();
-		}
-
-		this.selected = item;
 	}
 
 	/**
