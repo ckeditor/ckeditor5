@@ -147,9 +147,11 @@ export default class Template {
 	/**
 	 * Applies the template to an existing DOM Node, either HTML element or text.
 	 *
-	 * **Note:** No new DOM nodes will be created. Applying extends
-	 * {@link module:ui/template~TemplateDefinition attributes} and
-	 * {@link module:ui/template~TemplateDefinition event listeners} only.
+	 * **Note:** No new DOM nodes will be created. Applying extends:
+	 *
+	 * {@link module:ui/template~TemplateDefinition attributes},
+	 * {@link module:ui/template~TemplateDefinition event listeners}, and
+	 * `textContent` of {@link module:ui/template~TemplateDefinition children} only.
 	 *
 	 * **Note:** Existing `class` and `style` attributes are extended when a template
 	 * is applied to an HTML element, while other attributes and `textContent` are overridden.
@@ -169,7 +171,10 @@ export default class Template {
 	 *			},
 	 *			on: {
 	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
-	 *			}
+	 *			},
+	 *			children: [
+	 *				'Div text.'
+	 *			]
 	 *		} ).apply( element );
 	 *
 	 *		console.log( element.outerHTML ); // -> '<div id="first-div" class="my-div"></div>'
