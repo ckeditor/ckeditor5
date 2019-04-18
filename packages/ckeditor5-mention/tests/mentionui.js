@@ -8,7 +8,6 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -16,6 +15,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
@@ -56,6 +56,12 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
+	it( 'should load ContextualBalloon plugin', () => {
+		return createClassicTestEditor().then( () => {
+			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
+		} );
+	} );
+
 	describe( 'init()', () => {
 		it( 'should throw if marker was not provided for feed', () => {
 			return createClassicTestEditor( { feeds: [ { feed: [ 'a' ] } ] } ).catch( error => {
@@ -87,25 +93,26 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
-	describe( 'child views', () => {
-		beforeEach( () => createClassicTestEditor() );
+	describe( 'contextual balloon', () => {
+		beforeEach( () => {
+			return createClassicTestEditor( staticConfig )
+				.then( () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
 
-		describe( 'panelView', () => {
-			it( 'should create a view instance', () => {
-				expect( panelView ).to.instanceof( BalloonPanelView );
-			} );
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+				} )
+				.then( waitForDebounce );
+		} );
 
-			it( 'should be added to the ui.view.body collection', () => {
-				expect( Array.from( editor.ui.view.body ) ).to.include( panelView );
-			} );
+		it( 'should disable arrow', () => {
+			expect( panelView.isVisible ).to.be.true;
+			expect( panelView.withArrow ).to.be.false;
+		} );
 
-			it( 'should have disabled arrow', () => {
-				expect( panelView.withArrow ).to.be.false;
-			} );
-
-			it( 'should have added MentionView as a child', () => {
-				expect( panelView.content.get( 0 ) ).to.be.instanceof( MentionsView );
-			} );
+		it( 'should add MentionView to a panel', () => {
+			expect( editor.plugins.get( ContextualBalloon ).visibleView ).to.be.instanceof( MentionsView );
 		} );
 	} );
 
@@ -153,8 +160,6 @@ describe( 'MentionUI', () => {
 
 					expect( positions ).to.have.length( 4 );
 
-					// Mention UI should not set limiter or default values.
-					expect( pinArgument.limiter ).to.be.undefined;
 					expect( pinArgument.fitInViewport ).to.be.undefined;
 
 					expect( editor.model.markers.has( 'mention' ) ).to.be.true;
@@ -224,7 +229,7 @@ describe( 'MentionUI', () => {
 
 					expect( positions ).to.have.length( 4 );
 
-					positionAfterFirstShow = panelView.position;
+					positionAfterFirstShow = mentionsView.position;
 
 					model.change( writer => {
 						writer.insertText( 't', doc.selection.getFirstPosition() );
@@ -780,7 +785,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
-					expect( panelView.position ).to.be.undefined;
+					expect( mentionsView.position ).to.be.undefined;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
@@ -811,7 +816,7 @@ describe( 'MentionUI', () => {
 					} );
 
 					expect( panelView.isVisible ).to.be.false;
-					expect( panelView.position ).to.be.undefined;
+					expect( mentionsView.position ).to.be.undefined;
 					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 				} );
 		} );
@@ -1439,7 +1444,7 @@ describe( 'MentionUI', () => {
 				doc = model.document;
 				editingView = editor.editing.view;
 				mentionUI = editor.plugins.get( MentionUI );
-				panelView = mentionUI.panelView;
+				panelView = editor.plugins.get( ContextualBalloon ).view;
 				mentionsView = mentionUI._mentionsView;
 			} );
 	}
