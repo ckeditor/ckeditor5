@@ -429,7 +429,7 @@ class UploadAdapter {
 
 // Modify to align your endpoint response.
 interface ImageEndpointResponse {
-	url: number[];
+	url: string;
 	error?: { message: string };
 }
 
