@@ -343,7 +343,7 @@ If you want to make changes on just created editor then the better option would 
 
 An Upload Adapter can be used with CKEditor 5 so that when a user adds an image to a document it is encoded as a link to the image. The image itself is stored separately from the document. Read more in the {@link framework/guides/deep-dive/upload-adapter Upload Adapter guide}.
 
-If you are familiar with Angular you have probably already used the [`HTTPClient`](https://angular.io/guide/http) service which wraps the JavaScript XMLHttpRequest and provides a more concise API around it. Let's make a use of it to give Angular the control over the image upload process:
+If you are familiar with Angular you have probably already used the [`HTTPClient`](https://angular.io/guide/http) service which wraps the JavaScript XMLHttpRequest and provides a more concise API around it. Let's make a use of it to give Angular the control over the image upload process (e.g. for easier mocking and testing later):
 
 ```ts
 import { Subscription, Observable } from 'rxjs';
