@@ -147,9 +147,11 @@ export default class Template {
 	/**
 	 * Applies the template to an existing DOM Node, either HTML element or text.
 	 *
-	 * **Note:** No new DOM nodes will be created. Applying extends
-	 * {@link module:ui/template~TemplateDefinition attributes} and
-	 * {@link module:ui/template~TemplateDefinition event listeners} only.
+	 * **Note:** No new DOM nodes will be created. Applying extends:
+	 *
+	 * {@link module:ui/template~TemplateDefinition attributes},
+	 * {@link module:ui/template~TemplateDefinition event listeners}, and
+	 * `textContent` of {@link module:ui/template~TemplateDefinition children} only.
 	 *
 	 * **Note:** Existing `class` and `style` attributes are extended when a template
 	 * is applied to an HTML element, while other attributes and `textContent` are overridden.
@@ -158,22 +160,24 @@ export default class Template {
 	 * {@link module:ui/template~Template#revert} method.
 	 *
 	 *		const element = document.createElement( 'div' );
+	 *		const observable = new Model( { divClass: 'my-div' } );
+	 *		const emitter = Object.create( EmitterMixin );
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				id: 'first-div',
 	 *				class: bind.to( 'divClass' )
 	 *			},
 	 *			on: {
 	 *				click: bind( 'elementClicked' ) // Will be fired by the observable.
-	 *			}
+	 *			},
 	 *			children: [
 	 *				'Div text.'
 	 *			]
 	 *		} ).apply( element );
 	 *
-	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
+	 *		console.log( element.outerHTML ); // -> '<div id="first-div" class="my-div"></div>'
 	 *
 	 * @see module:ui/template~Template#render
 	 * @see module:ui/template~Template#revert
@@ -266,7 +270,7 @@ export default class Template {
 	 *		const bind = Template.bind( observable, emitter );
 	 *
 	 *		new Template( {
-	 *			attrs: {
+	 *			attributes: {
 	 *				// Binds the element "class" attribute to observable#classAttribute.
 	 *				class: bind.to( 'classAttribute' )
 	 *			}
@@ -1211,14 +1215,14 @@ function normalize( def ) {
 //			}
 //		}
 //
-// @param {Object} attrs
-function normalizeAttributes( attrs ) {
-	for ( const a in attrs ) {
-		if ( attrs[ a ].value ) {
-			attrs[ a ].value = [].concat( attrs[ a ].value );
+// @param {Object} attributes
+function normalizeAttributes( attributes ) {
+	for ( const a in attributes ) {
+		if ( attributes[ a ].value ) {
+			attributes[ a ].value = [].concat( attributes[ a ].value );
 		}
 
-		arrayify( attrs, a );
+		arrayify( attributes, a );
 	}
 }
 
