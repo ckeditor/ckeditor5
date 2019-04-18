@@ -354,7 +354,7 @@ import { HttpClient, HttpEventType, HttpRequest, HttpEvent } from '@angular/comm
 export class MyComponent {
 	constructor( private httpClient: HttpClient ){}
 
-  	public editorConfig = {
+  	public config = {
 		extraPlugins: [ UploadAdapterPlugin ],
 		httpClient: this.httpClient
 	};
