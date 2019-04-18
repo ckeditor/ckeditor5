@@ -366,7 +366,7 @@ class UploadAdapterPlugin {
 
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
 			// Modify your endpoint URL.
-			return new UploadAdapter( loader, httpClient, '/image' );
+			return new UploadAdapter( loader, httpClient, 'http://example.com/image/upload/path' );
 		};
 	}
 }
@@ -380,30 +380,22 @@ class UploadAdapter {
 		private url: string
 	) { }
 
-	public upload(): Promise<{ default: string }> {
+	public async upload(): Promise<{ default: string }> {
+		const file = await this.loader.file;
+
 		return new Promise( ( resolve, reject ) => {
 			const formData = new FormData();
-			formData.append( 'file', this.loader.file );
+			formData.append( 'file', file );
 
 			this.sub = this.uploadImage( formData ).subscribe( event => {
 				if ( event.type === HttpEventType.Response ) {
-					// Modify for your endpoint, in this scenario the endpoint should return:
-					// { error: string } in case of an error.
-					// { list: number[] } (an array of image ids) in case of success.
-
 					const response = event.body;
 
 					if ( response.error ) {
-						return reject( response.error );
+						return reject( response.error.message );
 					}
 
-					const imageId = response.list[ 0 ];
-
-					// Return the URL where the successfully upload image
-					// can be retrieved with an HTTP GET request.
-					const imageUrl = `/images/${ imageId }`;
-
-					resolve( { default: imageUrl } );
+					resolve( { default: response.url } );
 				} else if ( event.type === HttpEventType.UploadProgress ) {
 					this.loader.uploaded = event.loaded;
 					this.loader.uploadTotal = event.total;
@@ -435,9 +427,10 @@ class UploadAdapter {
 	}
 }
 
+// Modify to align your endpoint response.
 interface ImageEndpointResponse {
-	list: number[];
-	error?: string;
+	url: number[];
+	error?: { message: string };
 }
 
 interface UploadLoader {
