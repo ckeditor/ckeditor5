@@ -919,6 +919,7 @@ describe( 'MentionUI', () => {
 
 				it( 'should not cycle with only one item in the list', () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
+
 					const keyDownEvtData = {
 						keyCode: keyCodes.arrowdown,
 						preventDefault: sinon.spy(),
