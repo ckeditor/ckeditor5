@@ -932,21 +932,10 @@ describe( 'MentionUI', () => {
 					};
 
 					model.change( writer => {
-						writer.insertText( '@', doc.selection.getFirstPosition() );
+						writer.insertText( '@T', doc.selection.getFirstPosition() );
 					} );
 
 					return waitForDebounce()
-						.then( () => {
-							expectChildViewsIsOnState( [ true, false, false, false, false ] );
-
-							fireKeyDownEvent( keyDownEvtData );
-							expectChildViewsIsOnState( [ false, true, false, false, false ] );
-
-							model.change( writer => {
-								writer.insertText( 'T', doc.selection.getFirstPosition() );
-							} );
-						} )
-						.then( waitForDebounce )
 						.then( () => {
 							expectChildViewsIsOnState( [ true ] );
 
