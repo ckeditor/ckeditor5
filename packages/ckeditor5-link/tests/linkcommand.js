@@ -5,6 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import LinkCommand from '../src/linkcommand';
+import { ManualDecorator } from '../src/linkediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'LinkCommand', () => {
@@ -257,6 +258,81 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
 			} );
+		} );
+	} );
+
+	describe( 'manual decorators', () => {
+		beforeEach( () => {
+			editor.destroy();
+			return ModelTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					command = new LinkCommand( editor );
+
+					command.customAttributes.add( new ManualDecorator( {
+						id: 'linkManualDecorator0',
+						value: undefined,
+						label: 'Foo',
+						attributes: {
+							class: 'Foo'
+						}
+					} ) );
+					command.customAttributes.add( new ManualDecorator( {
+						id: 'linkManualDecorator1',
+						value: undefined,
+						label: 'Bar',
+						attributes: {
+							target: '_blank'
+						}
+					} ) );
+
+					model.schema.extend( '$text', {
+						allowIn: '$root',
+						allowAttributes: 'linkHref'
+					} );
+
+					model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should insert additional attributes to link when is created', () => {
+			setData( model, 'foo[]bar' );
+
+			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+
+			expect( getData( model ) ).to
+				.equal( 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">url</$text>]bar' );
+		} );
+
+		it( 'should remove additional attributes to link if those are falsy', () => {
+			setData( model, 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >url</$text>]bar' );
+
+			command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
+
+			expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+		} );
+
+		it( 'should add additional attributes to link when link is modified', () => {
+			setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
+
+			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+
+			expect( getData( model ) ).to
+				.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+		} );
+
+		it( 'should insert additional attributes for range selection', () => {
+			setData( model, 'f[ooba]r' );
+
+			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+
+			expect( getData( model ) ).to
+				.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
 		} );
 	} );
 } );

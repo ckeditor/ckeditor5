@@ -201,7 +201,7 @@ export default class LinkEditing extends Plugin {
 	}
 }
 
-class ManualDecorator {
+export class ManualDecorator {
 	constructor( { id, value, label, attributes } = {} ) {
 		this.id = id;
 
