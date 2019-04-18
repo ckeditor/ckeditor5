@@ -20,7 +20,7 @@ describe( 'LinkFormView', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: val => val } );
+		view = new LinkFormView( { t: val => val }, [] );
 		view.render();
 	} );
 

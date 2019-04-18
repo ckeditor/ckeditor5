@@ -885,7 +885,7 @@ describe( 'LinkUI', () => {
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.be.true;
-				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.be.true;
+				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com', {} ) ).to.be.true;
 			} );
 
 			it( 'should hide and reveal the #actionsView on formView#submit event', () => {
