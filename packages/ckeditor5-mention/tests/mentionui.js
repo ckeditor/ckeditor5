@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window, document, setTimeout, Event */
+/* global document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,11 +15,11 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MentionUI', () => {
 	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
@@ -322,10 +322,6 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( panelView.isVisible ).to.be.true;
-
-						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-
 						const arrowDownEvtData = {
 							keyCode: keyCodes.arrowdown,
 							preventDefault: sinon.spy(),
@@ -338,18 +334,41 @@ describe( 'MentionUI', () => {
 							stopPropagation: sinon.spy()
 						};
 
-						fireKeyDownEvent( arrowDownEvtData );
+						// The scroll test highly depends on browser styles.
+						// Some CI test environments might not load theme which will result that tests will not render on CI as locally.
+						// To make this test repeatable across different environments it enforces mentions view size to 100px...
+						mentionsView.element.style = 'height:100px;padding:0px;margin:0px';
+
+						// ...and each list view item size to 25px...
+						Array.from( mentionsView.items ).forEach( item => {
+							item.children.get( 0 ).element.style = 'height:25px;padding:0px;margin:0px;';
+						} );
+
+						// ...so after those changes it is safe to assume that:
+						// - base offset is 0
+						// - only 4 items are visible at once
+						// - if scrolled to the last element scrollTop will be set to 150px. The 150px is the offset of the 7th item in the
+						//   list as last four (7, 8, 9 & 10) will be visible.
+						expect( panelView.isVisible ).to.be.true;
+
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
 						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
+						fireKeyDownEvent( arrowDownEvtData );
+
 						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
 						fireKeyDownEvent( arrowUpEvtData );
-						fireKeyDownEvent( arrowUpEvtData );
+						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
+						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
+						fireKeyDownEvent( arrowUpEvtData );
 						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
-						expect( mentionsView.element.scrollTop ).to.be.not.equal( 0 );
+						expect( mentionsView.element.scrollTop ).to.be.within( 140, 160 ); // We want 150, but sometimes we get e.g. 151.
 
 						fireKeyDownEvent( arrowDownEvtData );
+
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
 						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 					} );
@@ -1422,15 +1441,6 @@ describe( 'MentionUI', () => {
 				mentionUI = editor.plugins.get( MentionUI );
 				panelView = mentionUI.panelView;
 				mentionsView = mentionUI._mentionsView;
-
-				editingView.attachDomRoot( editorElement );
-
-				// Focus the engine.
-				editingView.document.isFocused = true;
-				editingView.getDomRoot().focus();
-
-				// Remove all selection ranges from DOM before testing.
-				window.getSelection().removeAllRanges();
 			} );
 	}
 
