@@ -240,19 +240,9 @@ export default class LinkFormView extends View {
 	_createFormChildren() {
 		const children = this.createCollection();
 
-		const requiredButtonView = new View();
-		requiredButtonView.setTemplate( {
-			tag: 'div',
-			children: [
-				this.urlInputView,
-				this.saveButtonView,
-				this.cancelButtonView
-			],
-			attributes: {
-				class: 'ck-link-form_required-buttons'
-			}
-		} );
-		children.add( requiredButtonView );
+		children.add( this.urlInputView );
+		children.add( this.saveButtonView );
+		children.add( this.cancelButtonView );
 
 		if ( this.customAttributes.length ) {
 			const additionalButtonsView = new View();
