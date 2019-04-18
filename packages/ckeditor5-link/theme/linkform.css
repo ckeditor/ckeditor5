@@ -5,14 +5,31 @@
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
 
+:root {
+	--ck-link-form-max-width: 330px;
+}
+
 .ck.ck-link-form {
 	display: flex;
-	flex-direction: row;
 	flex-wrap: wrap;
-	max-width: 500px;
+	max-width: var(--ck-link-form-max-width);
 
 	& .ck-label {
 		display: none;
+	}
+
+	/* Buttons like `open in new window` with switch toggler.
+	Added div is a temporary solution to make stronger specificity than `.ck.ck-link-form > :not(:first-child)` in theme-lark. */
+	& div.ck-link-form_additional-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		margin-left: 0;
+	}
+
+	& .ck-link-form_additional-buttons .ck-button {
+		width: 100%;
+		margin-left: 0;
+		margin-top: var(--ck-spacing-standard);
 	}
 
 	@mixin ck-media-phone {
