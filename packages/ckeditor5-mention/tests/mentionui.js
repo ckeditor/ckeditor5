@@ -898,7 +898,7 @@ describe( 'MentionUI', () => {
 						} );
 				} );
 
-				it( 'should not cycle when only one item in the list', () => {
+				it( 'should not cycle with only one item in the list', () => {
 					setData( model, '<paragraph>foo []</paragraph>' );
 					const keyDownEvtData = {
 						keyCode: keyCodes.arrowdown,
