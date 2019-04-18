@@ -39,9 +39,9 @@ describe( 'LinkFormView', () => {
 			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
 			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 
-			expect( view._unboundChildren.get( 0 ) ).to.equal( view.urlInputView );
-			expect( view._unboundChildren.get( 1 ) ).to.equal( view.saveButtonView );
-			expect( view._unboundChildren.get( 2 ) ).to.equal( view.cancelButtonView );
+			expect( view.children.get( 0 ) ).to.equal( view.urlInputView );
+			expect( view.children.get( 1 ) ).to.equal( view.saveButtonView );
+			expect( view.children.get( 2 ) ).to.equal( view.cancelButtonView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -78,12 +78,12 @@ describe( 'LinkFormView', () => {
 
 		describe( 'template', () => {
 			it( 'has url input view', () => {
-				expect( view.template.children[ 0 ] ).to.equal( view.urlInputView );
+				expect( view.template.children[ 0 ].get( 0 ) ).to.equal( view.urlInputView );
 			} );
 
 			it( 'has button views', () => {
-				expect( view.template.children[ 1 ] ).to.equal( view.saveButtonView );
-				expect( view.template.children[ 2 ] ).to.equal( view.cancelButtonView );
+				expect( view.template.children[ 0 ].get( 1 ) ).to.equal( view.saveButtonView );
+				expect( view.template.children[ 0 ].get( 2 ) ).to.equal( view.cancelButtonView );
 			} );
 		} );
 	} );
@@ -100,7 +100,7 @@ describe( 'LinkFormView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			view = new LinkFormView( { t: () => {} } );
+			view = new LinkFormView( { t: () => {} }, [] );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
@@ -109,7 +109,7 @@ describe( 'LinkFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new LinkFormView( { t: () => {} } );
+			view = new LinkFormView( { t: () => {} }, [] );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
