@@ -12,7 +12,6 @@ import Link from '../../src/link';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -30,14 +29,14 @@ ClassicEditor
 				},
 				{
 					mode: 'manual',
-					label: 'downloadable',
+					label: 'Downloadable',
 					attributes: {
 						download: 'download'
 					}
 				},
 				{
 					mode: 'manual',
-					label: 'gallery',
+					label: 'Gallery link',
 					attributes: {
 						class: 'gallery'
 					}
@@ -46,9 +45,45 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.getModelData = getModelData;
+		if ( !window.editors ) {
+			window.editors = {};
+		}
 		window.editor = editor;
-		window.model = editor.model;
+		window.editors.manualDecorators = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor2' ), {
+		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
+		toolbar: [ 'link', 'undo', 'redo' ],
+		link: {
+			decorators: [
+				{
+					mode: 'automatic',
+					callback: url => url.startsWith( 'tel:' ),
+					attributes: {
+						class: 'phone'
+					}
+				},
+				{
+					mode: 'automatic',
+					callback: url => url.startsWith( '#' ),
+					attributes: {
+						class: 'internal'
+					}
+				}
+			],
+			targetDecorator: true
+		}
+	} )
+	.then( editor => {
+		if ( !window.editors ) {
+			window.editors = {};
+		}
+		window.editors.autoamticDecorators = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
