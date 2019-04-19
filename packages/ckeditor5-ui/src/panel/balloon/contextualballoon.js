@@ -115,6 +115,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional css class for {@link #view} added when given view is visible.
+	 * @param {Boolean} [data.withArrow=true] Whether the balloon should be rendered with an arrow.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -203,9 +204,11 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Object} data Configuration.
 	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
 	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
+	 * @param {Boolean} [data.withArrow=true] Whether the {@link #_balloon} view should be rendered with an arrow.
 	 */
-	_show( { view, balloonClassName = '' } ) {
+	_show( { view, balloonClassName = '', withArrow = true } ) {
 		this.view.class = balloonClassName;
+		this.view.withArrow = withArrow;
 
 		this.view.content.add( view );
 		this.view.pin( this._getBalloonPosition() );
