@@ -204,7 +204,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Object} data Configuration.
 	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
 	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
-	 * @param {Boolean} [data.withArrow=true] Whether the {#_balloon} view should be rendered with arrow.
+	 * @param {Boolean} [data.withArrow=true] Whether the {@link #_balloon} view should be rendered with an arrow.
 	 */
 	_show( { view, balloonClassName = '', withArrow = true } ) {
 		this.view.class = balloonClassName;
