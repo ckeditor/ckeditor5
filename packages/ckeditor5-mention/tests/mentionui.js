@@ -569,16 +569,6 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-
-						model.change( writer => {
-							writer.setSelection( doc.getRoot().getChild( 0 ), 10 );
-						} );
-					} )
-					.then( waitForDebounce )
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-
 						model.change( writer => {
 							writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
 						} );
