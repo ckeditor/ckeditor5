@@ -62,7 +62,8 @@ describe( 'ColorGridView', () => {
 			const view = new ColorGridView( locale, { columns: 3 } );
 			view.render();
 
-			expect( view.element.style.gridTemplateColumns ).to.equal( '1fr 1fr 1fr' );
+			// Note: Different browsers use different value optimization.
+			expect( view.element.style.gridTemplateColumns ).to.be.oneOf( [ '1fr 1fr 1fr', 'repeat(3, 1fr)' ] );
 
 			view.destroy();
 		} );
