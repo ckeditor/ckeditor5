@@ -451,9 +451,9 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -468,9 +468,9 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -541,12 +541,39 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is after existing mention', () => {
-				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar[]</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 8 );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection moves inside existing mention', () => {
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
+						} );
+					} )
+					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 
