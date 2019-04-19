@@ -53,7 +53,7 @@ describe( 'LabeledInputView', () => {
 		} );
 
 		it( 'should pair #inputView and #statusView by unique id', () => {
-			expect( view.inputView.ariaDesribedById ).to.equal( view.statusView.element.id );
+			expect( view.inputView.ariaDescribedById ).to.equal( view.statusView.element.id );
 		} );
 	} );
 

@@ -68,9 +68,9 @@ export default class InputTextView extends View {
 		 * some error, it helps screen readers read the error text.
 		 *
 		 * @observable
-		 * @member {Boolean} #ariaDesribedById
+		 * @member {Boolean} #ariaDescribedById
 		 */
-		this.set( 'ariaDesribedById' );
+		this.set( 'ariaDescribedById' );
 
 		const bind = this.bindTemplate;
 
@@ -88,7 +88,7 @@ export default class InputTextView extends View {
 				placeholder: bind.to( 'placeholder' ),
 				readonly: bind.to( 'isReadOnly' ),
 				'aria-invalid': bind.if( 'hasError', true ),
-				'aria-describedby': bind.to( 'ariaDesribedById' )
+				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
 				input: bind.to( 'input' )

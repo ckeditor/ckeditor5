@@ -175,7 +175,7 @@ export default class LabeledInputView extends View {
 		const inputView = new InputView( this.locale, statusUid );
 
 		inputView.id = inputUid;
-		inputView.ariaDesribedById = statusUid;
+		inputView.ariaDescribedById = statusUid;
 		inputView.bind( 'value' ).to( this );
 		inputView.bind( 'isReadOnly' ).to( this );
 		inputView.bind( 'hasError' ).to( this, 'errorText', value => !!value );
