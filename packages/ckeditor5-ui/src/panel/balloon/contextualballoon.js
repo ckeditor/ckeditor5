@@ -49,7 +49,7 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * The {@link module:utils/dom/position~Options#limiter position limiter}
-		 * for the {@link #view}, used when no `limiter` has been passed into {@link #add}
+		 * for the {@link #view balloon}, used when no `limiter` has been passed into {@link #add}
 		 * or {@link #updatePosition}.
 		 *
 		 * By default, a function, which obtains the farthest DOM
@@ -114,8 +114,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Object} data Configuration of the view.
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
-	 * @param {String} [data.balloonClassName] Additional css class for {@link #view} added when given view is visible.
-	 * @param {Boolean} [data.withArrow=true] Whether the balloon should be rendered with an arrow.
+	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
+	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -203,8 +203,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @param {Object} data Configuration.
 	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
-	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
-	 * @param {Boolean} [data.withArrow=true] Whether the {@link #_balloon} view should be rendered with an arrow.
+	 * @param {String} [data.balloonClassName=''] Additional class name which will be added to the {@link #view balloon}.
+	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
 	_show( { view, balloonClassName = '', withArrow = true } ) {
 		this.view.class = balloonClassName;
