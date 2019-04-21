@@ -1143,7 +1143,7 @@ describe( 'DocumentSelection', () => {
 
 	// https://github.com/ckeditor/ckeditor5-engine/issues/1673
 	describe( 'refreshing selection data', () => {
-		it( 'should be up to date when post fixers are called', done => {
+		it( 'should be up to date before post fixers', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			const p = doc.getRoot().getChild( 0 );
@@ -1151,7 +1151,6 @@ describe( 'DocumentSelection', () => {
 			doc.registerPostFixer( () => {
 				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker' ] );
-				done();
 			} );
 
 			model.change( writer => {
@@ -1169,7 +1168,44 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		it( 'should be up to date when post fixers have changed the data', () => {
+		it( 'should be up to date between post fixers', () => {
+			model.schema.extend( '$text', { allowAttributes: 'foo' } );
+
+			const p = doc.getRoot().getChild( 0 );
+
+			doc.registerPostFixer( writer => {
+				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
+				writer.removeMarker( 'marker-1' );
+				writer.addMarker( 'marker-2', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+			} );
+
+			doc.registerPostFixer( () => {
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'abcdef', { foo: 'bar' }, p );
+
+				writer.addMarker( 'marker-1', {
+					range: writer.createRange(
+						writer.createPositionFromPath( p, [ 1 ] ),
+						writer.createPositionFromPath( p, [ 5 ] )
+					),
+					usingOperation: false
+				} );
+
+				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
+			} );
+		} );
+
+		it( 'should be up to date after post fixers', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			const p = doc.getRoot().getChild( 0 );

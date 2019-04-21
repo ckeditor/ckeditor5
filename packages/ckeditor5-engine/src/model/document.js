@@ -313,6 +313,9 @@ export default class Document {
 				this.fire( 'change', writer.batch );
 			}
 
+			// Refresh selection attributes according to the final position in the model after the change.
+			this.selection.refreshAttributes();
+
 			this.differ.reset();
 		}
 
@@ -391,6 +394,10 @@ export default class Document {
 
 		do {
 			for ( const callback of this._postFixers ) {
+				// Ensure selection attributes are up to date before each post-fixer.
+				// https://github.com/ckeditor/ckeditor5-engine/issues/1673.
+				this.selection.refreshAttributes();
+
 				wasFixed = callback( writer );
 
 				if ( wasFixed ) {
