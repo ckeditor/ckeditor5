@@ -6261,11 +6261,6 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lightgallery.js@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/lightgallery.js/-/lightgallery.js-1.1.3.tgz#05d47fa2e09546208a430b97fdf5d32f156515c5"
-  integrity sha512-eo96ApfhSyb+Gv421ntAKxkw3CvJ9UBF9/XjiUfwz0rNWYszSsauG3se+FL606+wrMpsp/wFweqSMPTzoiLbnQ==
-
 linkify-it@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-2.1.0.tgz#c4caf38a6cd7ac2212ef3c7d2bde30a91561f9db"
@@ -6803,6 +6798,11 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
+
+medium-zoom@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/medium-zoom/-/medium-zoom-1.0.4.tgz#b1063093f81151a19989489589edf28e6090630c"
+  integrity sha512-BjE+00gQku3XQfgHDcqyYwQaBtFddzh6Lnj1RZOliqJ9HS0mh/P2IaqVJ25/j9EbnjAUf27mLeLZBRxnd00bfA==
 
 mem@^4.0.0:
   version "4.3.0"
@@ -10341,10 +10341,10 @@ ultron@~1.1.0:
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.1.1.tgz#9fe1536a10a664a65266a1e3ccf85fd36302bc9c"
   integrity sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
 
-umberto@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/umberto/-/umberto-0.22.0.tgz#f673cb9c67b4f25ca3125d9ccb2b8fe19f836021"
-  integrity sha512-Xi3Ml2xmhwR77z3rbK4z0e241mgBZOpvfuEMrYah+RML9XB5+D5LSNy6zKmmSr0HoR/7qb1IhBC8vBUJVI7hTQ==
+umberto@^0.23.1:
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/umberto/-/umberto-0.23.1.tgz#b61efe561e8645e3ab4774219da188e51ed3bb73"
+  integrity sha512-SbYOfTYkgk90R6UTNoDtqxUuKOgBcaOf9byBv9GDjfvyU7k1jR+Nn9fyNXUEAi7oO7wKEGvPHFCGPJceY4t6Rg==
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/polyfill" "^7.0.0"
@@ -10367,10 +10367,10 @@ umberto@^0.22.0:
     javascript-stringify "^1.6.0"
     jquery "^3.1.1"
     js-beautify "^1.8.6"
-    lightgallery.js "^1.1.3"
     lodash "^4.17.11"
     markdown-it-expand-tabs "^1.0.12"
     markdown-it-toc-and-anchor "^4.1.2"
+    medium-zoom "^1.0.4"
     mkdirp "^0.5.1"
     node-sass "^4.9.3"
     pug "^2.0.0-beta11"

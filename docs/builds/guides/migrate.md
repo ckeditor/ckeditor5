@@ -90,7 +90,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-autoGrow_onStartup">autoGrow_onStartup</a></td>
 			<td>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with <code>.ck-content { min-height:200px; max-height:400px; }</code>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with <code>.ck-editor__editable_inline { min-height:200px; max-height:400px; }</code>.</p>
 				<p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -336,7 +336,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-height">height</a></td>
 			<td>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the height setting can be achieved with <code>.ck-content { height:400px; }</code>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the height setting can be achieved with <code>.ck-editor__editable_inline { height:400px; }</code>.</p>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -578,7 +578,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-width">width</a></td>
 			<td>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the width setting can be achieved with <code>.ck-content { width:400px; }</code>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For instance, to set the width of the Classic editor, use <code>.ck-editor { width:400px; }</code>. Setting the width of other editors which do not enclose the toolbar and the editable in a box (Inline editor, Balloon editor, etc.) can be achieved using <code>.ck-editor__editable_inline { width:400px; }</code>.</p>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>

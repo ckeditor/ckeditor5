@@ -255,7 +255,7 @@ First, create a (S)CSS file in the parent component's directory and style the gi
 ```css
 /* src/app/app.component.css */
 
-:host ::ng-deep .ck-editor__editable {
+:host ::ng-deep .ck-editor__editable_inline {
 	min-height: 500px;
 }
 ```
@@ -278,7 +278,7 @@ To style the component using a global stylesheet, first, create it:
 ```css
 /* src/styles.css */
 
-.ck-editor__editable {
+.ck-editor__editable_inline {
 	min-height: 500px;
 }
 ```

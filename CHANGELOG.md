@@ -5,7 +5,7 @@ Changelog
 
 We are happy to report the release of CKEditor 5 v12.1.0. This release introduces 3 new features ([mentions](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html), [font color and background color](https://ckeditor.com/docs/ckeditor5/latest/features/font.html) and [remove format](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html)).
 
-Blog post comming soon...
+Read more in the blog post: https://ckeditor.com/blog/CKEditor-5-v12.1.0-with-mentions-font-color-and-remove-formatting-released/
 
 ### Dependencies
 

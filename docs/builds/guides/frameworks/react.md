@@ -14,7 +14,7 @@ The easiest way to use CKEditor 5 in your React application is by choosing one o
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the editor build of your choice.
+Install the [CKEditor 5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link builds/guides/overview#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -95,7 +95,7 @@ There are two main ways to do that.
 
 ### Note: Building for production
 
-If you still work with `create-react-app@1` or use a custom configuration for you application which still uses `webpack@3`, you will need to adjust the `UglifyJsPlugin` option to make CKEditor 5 compatible with this setup. CKEditor 5 builds use ES6 so the default JavaScript minifier of `webpack@3` and `create-react-app@1` is not able to digest them.
+If you still work with `create-react-app@1` or use a custom configuration for you application that still uses `webpack@3`, you will need to adjust the `UglifyJsPlugin` option to make CKEditor 5 compatible with this setup. CKEditor 5 builds use ES6 so the default JavaScript minifier of `webpack@3` and `create-react-app@1` is not able to digest them.
 
 To do that, you need to first [eject the configuration](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject) from the setup created via `create-react-app` (assuming that you use it):
 
@@ -147,31 +147,31 @@ This guide assumes that you are using [Create React App CLI](https://github.com/
 
 ### Using `create-react-app@2`
 
-The configuration needs to be ejected so you are able to customize the webpack configuration. In order to be able to build CKEditor 5 from source you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude CKEditor 5's source from existing loaders.
+The configuration needs to be ejected to make it possible to customize the webpack configuration. In order to be able to build CKEditor 5 from source, you need to tell webpack how to handle CKEditor 5's SVG and CSS files (by adding loaders configuration). Additionally, you need to exclude the CKEditor 5 source from existing loaders.
 
 <info-box>
   You can see all the changes described below in this example project: https://github.com/ckeditor/ckeditor5-react-example/commits/master.
 </info-box>
 
-Let's create a sample application using `create-react-app@2` first:
+Create a sample application using `create-react-app@2` first:
 
 ```bash
 npx create-react-app ckeditor5-react-example && cd ckeditor5-react-example
 ```
 
-Now, you can eject the configuration (you can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject)):
+Now you can eject the configuration (you can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject)):
 
 ```bash
 yarn eject
 
-# For some strange reasons this is needed too
-# (https://github.com/facebook/create-react-app/issues/6099)
+# For some strange reasons this is needed, too
+# (https://github.com/facebook/create-react-app/issues/6099).
 yarn add @babel/plugin-transform-react-jsx @babel/plugin-transform-react-jsx-self
 ```
 
 #### Installing missing dependencies
 
-Before we will start modifying the webpack configuration, let's first install a couple of CKEditor 5 dependencies that you will need:
+Before you start modifying the webpack configuration, first install some CKEditor 5 dependencies that you will need:
 
 ```bash
 yarn add \
@@ -187,7 +187,7 @@ yarn add \
 
 #### Modifying webpack configuration
 
-Once you ejected the configuration and installed dependencies, you can now edit the webpack config (`config/webpack.config.js`).
+Once you ejected the configuration and installed dependencies, you can now edit the webpack configuration (`config/webpack.config.js`).
 
 First, import an object that creates the configuration for PostCSS:
 
@@ -195,7 +195,7 @@ First, import an object that creates the configuration for PostCSS:
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 ```
 
-Then, add two new elements to the exported object under the `module.rules` array (as new items of the `oneOf` array). These are SVG and CSS loaders required to handle CKEditor 5 source:
+Then, add two new elements to the exported object under the `module.rules` array (as new items of the `oneOf` array). These are SVG and CSS loaders required to handle the CKEditor 5 source:
 
 ```js
 {
@@ -224,7 +224,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 },
 ```
 
-Now, you need to exclude CSS files used by CKEditor 5 from project's CSS loader.
+Now you need to exclude CSS files used by CKEditor 5 from the project's CSS loader.
 
 First, find a loader that starts its definition with the following code: `test: cssRegex` and modify it:
 
@@ -239,7 +239,7 @@ First, find a loader that starts its definition with the following code: `test: 
 }
 ```
 
-Below it, you will find another loader that handles CSS files. We need to disable it for CKEditor 5 CSS as well. Its definition starts with `test: cssModuleRegex`:
+Below it, you will find another loader that handles CSS files. You need to disable it for CKEditor 5 CSS as well. Its definition starts with `test: cssModuleRegex`:
 
 ```js
 {
@@ -251,15 +251,15 @@ Below it, you will find another loader that handles CSS files. We need to disabl
 }
 ```
 
-Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last item in the `module.rules` array which should be the `file-loader` configuration and modify it so it looks like this:
+Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last item in the `module.rules` array which should be the `file-loader` configuration, and modify it so it looks like this:
 
 ```js
 {
   loader: require.resolve('file-loader'),
-  // Exclude `js` files to keep "css" loader working as it injects
-  // its runtime that would otherwise be processed through "file" loader.
+  // Exclude `js` files to keep the "css" loader working as it injects
+  // its runtime that would otherwise be processed through the "file" loader.
   // Also exclude `html` and `json` extensions so they get processed
-  // by webpacks internal loaders.
+  // by webpack's internal loaders.
   exclude: [
     /\.(js|mjs|jsx|ts|tsx)$/,
     /\.html$/,
@@ -275,14 +275,14 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader` . Find the last
 
 #### Using CKEditor 5 source
 
-Once your configuration is updated, you can now use CKEditor 5 directly from source. Let's test it by editing `src/App.js`:
+Once your configuration is updated, you can now use CKEditor 5 directly from source. Test it by editing `src/App.js`:
 
 ```jsx
 import React, { Component } from 'react';
 
 import CKEditor from '@ckeditor/ckeditor5-react';
 
-// NOTE: We use editor from source (not a build)!
+// NOTE: Use the editor from source (not a build)!
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -355,7 +355,7 @@ Now you can eject the configuration:
 npm run eject
 ```
 
-The configuration needs to be ejected in order for you to be able to customize webpack configuration. To be able to build CKEditor 5 from source you must load inline SVG images and handle CKEditor 5's CSS as well as correctly minify the ES6 source.
+The configuration needs to be ejected to make it possible to customize the webpack configuration. To be able to build CKEditor 5 from source you must load inline SVG images and handle CKEditor 5's CSS as well as correctly minify the ES6 source.
 
 <info-box>
 	You can find more information about ejecting [here](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject).
