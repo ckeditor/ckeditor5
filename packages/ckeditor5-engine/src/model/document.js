@@ -396,6 +396,10 @@ export default class Document {
 			for ( const callback of this._postFixers ) {
 				// Ensure selection attributes are up to date before each post-fixer.
 				// https://github.com/ckeditor/ckeditor5-engine/issues/1673.
+				//
+				// It might be good to refresh the selection after each operation but at the moment it leads
+				// to losing attributes for composition or and spell checking
+				// https://github.com/ckeditor/ckeditor5-typing/issues/188
 				this.selection.refresh();
 
 				wasFixed = callback( writer );
