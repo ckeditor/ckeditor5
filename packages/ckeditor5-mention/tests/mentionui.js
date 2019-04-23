@@ -152,9 +152,8 @@ describe( 'MentionUI', () => {
 			return waitForDebounce()
 				.then( () => {
 					const pinArgument = pinSpy.firstCall.args[ 0 ];
-					const { target, positions, limiter, fitInViewport } = pinArgument;
+					const { target, positions, limiter } = pinArgument;
 
-					expect( fitInViewport ).to.be.true;
 					expect( positions ).to.have.length( 4 );
 
 					// Mention UI should set limiter to the editable area.
