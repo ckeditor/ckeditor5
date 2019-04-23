@@ -11,14 +11,15 @@ const hostname = '127.0.0.1';
 const port = 3000;
 
 const server = http.createServer( function( req, res ) {
-	readEntries( getTimeout() ).then( entries => {
-		res.statusCode = 200;
-		res.setHeader( 'Content-Type', 'application/json' );
-		res.end( JSON.stringify( entries ) );
-	} );
+	res.statusCode = 200;
+	res.setHeader( 'Content-Type', 'application/json' );
 
-	setTimeout( () => {
-	}, 600 );
+	readEntries( getTimeout() ).then( entries => {
+		res.setHeader( 'Access-Control-Allow-Origin', '*' );
+		res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );
+
+		res.end( JSON.stringify( entries ) + '\n' );
+	} );
 } );
 
 server.listen( port, hostname, () => {
@@ -29,7 +30,7 @@ function readEntries( timeOut ) {
 	return new Promise( resolve => {
 		setTimeout( () => {
 			resolve( [
-				{ id: 123, username: 'jodator', name: 'Maciej Gołaszewski' }
+				{ id: '@jodator', name: 'Maciej Gołaszewski', userId: 123 }
 			] );
 		}, timeOut );
 	} );
