@@ -85,11 +85,12 @@
     "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
     "postcss-loader": "^3.0.0",
+    "progress-bar-webpack-plugin": "^1.12.1",
     "raw-loader": "^1.0.0",
     "style-loader": "^0.23.0",
     "svgo": "^1.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "umberto": "^0.23.1",
+    "umberto": "^1.0.0",
     "webpack": "^4.15.0"
   },
   "engines": {
