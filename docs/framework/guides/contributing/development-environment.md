@@ -211,7 +211,7 @@ This task accepts the following arguments:
 
 * `--skip-api` &mdash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &mdash; Skips building live snippets.
-* `--whitelisted-snippet=snippet-name` &mdash; Builds a single snippet (`snippet-name.js`) only.
+* `--snippets=snippet-name` &mdash; Whitelist snippets to build (accepts glob patterns).
 * `--skip-validation` &mdash; Skips the final link validation.
 * `--watch` &mdash; Runs the documentation generator in a watch mode. It covers guides (it does not cover API docs).
 * `--production` &mdash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
