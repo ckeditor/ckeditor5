@@ -441,7 +441,19 @@ export default class MentionUI extends Plugin {
 
 				return rangeRects.pop();
 			},
-			positions: getBalloonPanelPositions( positionName )
+			limiter: () => {
+				const view = this.editor.editing.view;
+				const viewDocument = view.document;
+				const editableElement = viewDocument.selection.editableElement;
+
+				if ( editableElement ) {
+					return view.domConverter.mapViewToDom( editableElement.root );
+				}
+
+				return null;
+			},
+			positions: getBalloonPanelPositions( positionName ),
+			fitInViewport: true
 		};
 	}
 }
@@ -498,8 +510,8 @@ function getBalloonPanelPositions( positionName ) {
 	// As default return all positions callbacks.
 	return [
 		positions.caret_se,
-		positions.caret_sw,
 		positions.caret_ne,
+		positions.caret_sw,
 		positions.caret_nw
 	];
 }
