@@ -17,7 +17,7 @@ const skipValidation = process.argv.includes( '--skip-validation' );
 const production = process.argv.includes( '--production' );
 const watch = process.argv.includes( '--watch' );
 const verbose = process.argv.includes( '--verbose' );
-const whitelistedSnippets = process.argv.find( item => item.startsWith( '--whitelisted-snippet=' ) );
+const whitelistedSnippets = process.argv.find( item => item.startsWith( '--snippets=' ) );
 
 buildDocs();
 
@@ -53,11 +53,11 @@ function runUmberto( options ) {
 		skipLiveSnippets: options.skipLiveSnippets,
 		skipValidation: options.skipValidation,
 		snippetOptions: {
-			production: options.production
+			production: options.production,
+			whitelistedSnippets: whitelistedSnippets ? whitelistedSnippets.replace( '--snippets=', '' ).split( ',' ) : []
 		},
 		skipApi: options.skipApi,
 		verbose: options.verbose,
-		watch: options.watch,
-		whitelistedSnippets: whitelistedSnippets ? whitelistedSnippets.replace( '--whitelisted-snippet=', '' ) : undefined
+		watch: options.watch
 	} );
 }

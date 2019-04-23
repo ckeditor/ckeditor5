@@ -69,7 +69,7 @@
     "@ckeditor/ckeditor5-comments": "^3.0.0",
     "@ckeditor/ckeditor5-dev-docs": "^11.0.1",
     "@ckeditor/ckeditor5-dev-env": "^14.1.1",
-    "@ckeditor/ckeditor5-dev-tests": "^16.2.3",
+    "@ckeditor/ckeditor5-dev-tests": "^16.3.0",
     "@ckeditor/ckeditor5-dev-utils": "^12.0.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^8.0.1",
     "@ckeditor/ckeditor5-inspector": "^1.2.0",
@@ -85,11 +85,12 @@
     "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
     "postcss-loader": "^3.0.0",
+    "progress-bar-webpack-plugin": "^1.12.1",
     "raw-loader": "^1.0.0",
     "style-loader": "^0.23.0",
     "svgo": "^1.1.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "umberto": "^0.22.0",
+    "umberto": "^1.0.0",
     "webpack": "^4.15.0"
   },
   "engines": {
