@@ -338,8 +338,6 @@ describe( 'MentionUI', () => {
 					stopPropagation: sinon.spy()
 				};
 
-				const mentionElementSpy = testUtils.sinon.spy( mentionsView.element, 'scrollTop', [ 'set' ] );
-
 				return waitForDebounce()
 					.then( () => {
 						// The scroll test highly depends on browser styles.
@@ -347,6 +345,7 @@ describe( 'MentionUI', () => {
 						// To make this test repeatable across different environments it enforces mentions view size to 100px...
 						const reset = 'padding:0px;margin:0px;border:0 none;line-height: 1em;';
 
+						const mentionElementSpy = testUtils.sinon.spy( mentionsView.element, 'scrollTop', [ 'set' ] );
 						mentionsView.element.style = `min-height:100px;height:100px;max-height:100px;${ reset };`;
 
 						// ...and each list view item size to 25px...
