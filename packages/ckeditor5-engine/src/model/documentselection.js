@@ -362,7 +362,7 @@ export default class DocumentSelection {
 	/**
 	 * Refreshes selection attributes and markers according to the current position in the model.
 	 */
-	refreshAttributes() {
+	refresh() {
 		this._selection._updateMarkers();
 		this._selection._updateAttributes( false );
 	}

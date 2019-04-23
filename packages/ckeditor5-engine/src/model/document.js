@@ -308,7 +308,7 @@ export default class Document {
 			this._callPostFixers( writer );
 
 			// Refresh selection attributes according to the final position in the model after the change.
-			this.selection.refreshAttributes();
+			this.selection.refresh();
 
 			if ( this.differ.hasDataChanges() ) {
 				this.fire( 'change:data', writer.batch );
@@ -396,7 +396,7 @@ export default class Document {
 			for ( const callback of this._postFixers ) {
 				// Ensure selection attributes are up to date before each post-fixer.
 				// https://github.com/ckeditor/ckeditor5-engine/issues/1673.
-				this.selection.refreshAttributes();
+				this.selection.refresh();
 
 				wasFixed = callback( writer );
 
