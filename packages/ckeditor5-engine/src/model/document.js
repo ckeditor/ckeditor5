@@ -307,14 +307,14 @@ export default class Document {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 
+			// Refresh selection attributes according to the final position in the model after the change.
+			this.selection.refreshAttributes();
+
 			if ( this.differ.hasDataChanges() ) {
 				this.fire( 'change:data', writer.batch );
 			} else {
 				this.fire( 'change', writer.batch );
 			}
-
-			// Refresh selection attributes according to the final position in the model after the change.
-			this.selection.refreshAttributes();
 
 			this.differ.reset();
 		}

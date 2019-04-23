@@ -1205,10 +1205,16 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		it( 'should be up to date after post fixers', () => {
+		it( 'should be up to date after post fixers (on `change` event)', done => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
 			const p = doc.getRoot().getChild( 0 );
+
+			doc.on( 'change', () => {
+				expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
+				expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
+				done();
+			} );
 
 			doc.registerPostFixer( writer => {
 				writer.setAttribute( 'foo', 'biz', p.getChild( 0 ) );
@@ -1235,9 +1241,6 @@ describe( 'DocumentSelection', () => {
 
 				writer.setSelection( writer.createPositionFromPath( p, [ 3 ] ) );
 			} );
-
-			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'biz' );
-			expect( Array.from( model.document.selection.markers, m => m.name ) ).to.deep.equal( [ 'marker-2' ] );
 		} );
 	} );
 
