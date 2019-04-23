@@ -41,7 +41,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Examples of providing callbacks for `UpcastDispatcher`:
  *
  *		// Converter for links (<a>).
- *		upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+ *		editor.data.upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
  *			if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
  *				// This is why we need to convert only children.
@@ -56,7 +56,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		} );
  *
  *		// Convert all elements which have no custom converter into paragraph (autoparagraphing).
- *  	data.viewToModel.on( 'element', ( evt, data, conversionApi ) => {
+ *  	editor.data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
  *  	 	// When element is already consumed by higher priority converters then do nothing.
  *  	 	if ( conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
  *  	 			const paragraph = conversionApi.writer.createElement( 'paragraph' );

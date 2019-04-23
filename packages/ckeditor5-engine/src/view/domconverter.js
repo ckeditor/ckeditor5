@@ -29,6 +29,8 @@ import { isElement } from 'lodash-es';
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
  * {@link module:engine/view/domconverter~DomConverter#bindElements binding} these nodes.
  *
+ * The instance of DOMConverter is available in {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
+ *
  * DomConverter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep a
  * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link module:engine/view/document~Document}).
  *

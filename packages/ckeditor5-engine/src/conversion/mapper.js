@@ -21,7 +21,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Maps elements, positions and markers between {@link module:engine/view/document~Document the view} and
  * {@link module:engine/model/model the model}.
  *
- * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
+ * The instance of the Mapper used for the editing pipeline is available in
+ * {@link module:engine/controller/editingcontroller~EditingController#mapper `editor.editing.mapper`}.
+ *
+ * Mapper uses bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link module:engine/conversion/mapper~Mapper#bindElements bound}.
  *
  * To map complex model to/from view relations, you may provide custom callbacks for
