@@ -212,10 +212,11 @@ function filterWhitelistedSnippets( snippets, whitelistedSnippets ) {
 
 	// Find all snippets that matched to specified criteria.
 	for ( const snippetData of snippets ) {
-		const matchToPatterns = whitelistedSnippets.some( pattern => minimatch( snippetData.snippetName, pattern ) );
+		const shouldBeBuilt = whitelistedSnippets.some( pattern => {
+			return minimatch( snippetData.snippetName, pattern ) || snippetData.snippetName.includes( pattern );
+		} );
 
-		// Snippet should be built.
-		if ( matchToPatterns ) {
+		if ( shouldBeBuilt ) {
 			snippetsToBuild.add( snippetData );
 		}
 	}
