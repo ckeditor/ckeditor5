@@ -16,6 +16,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import MentionUI from '../src/mentionui';
 import MentionEditing from '../src/mentionediting';
@@ -320,28 +321,34 @@ describe( 'MentionUI', () => {
 					writer.insertText( '@', doc.selection.getFirstPosition() );
 				} );
 
+				const arrowDownEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const arrowUpEvtData = {
+					keyCode: keyCodes.arrowup,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const mentionElementSpy = testUtils.sinon.spy( mentionsView.element, 'scrollTop', [ 'set' ] );
+
 				return waitForDebounce()
 					.then( () => {
-						const arrowDownEvtData = {
-							keyCode: keyCodes.arrowdown,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
-
-						const arrowUpEvtData = {
-							keyCode: keyCodes.arrowup,
-							preventDefault: sinon.spy(),
-							stopPropagation: sinon.spy()
-						};
-
 						// The scroll test highly depends on browser styles.
 						// Some CI test environments might not load theme which will result that tests will not render on CI as locally.
 						// To make this test repeatable across different environments it enforces mentions view size to 100px...
-						mentionsView.element.style = 'height:100px;padding:0px;margin:0px';
+						const reset = 'padding:0px;margin:0px;border:0 none;line-height: 1em;';
+
+						mentionsView.element.style = `min-height:100px;height:100px;max-height:100px;${ reset };`;
 
 						// ...and each list view item size to 25px...
 						Array.from( mentionsView.items ).forEach( item => {
-							item.children.get( 0 ).element.style = 'height:25px;padding:0px;margin:0px;';
+							const listItemElement = item.children.get( 0 ).element;
+
+							listItemElement.style = `min-height:unset;height:25px;max-height:25px;${ reset };min-width:12em;`;
 						} );
 
 						// ...so after those changes it is safe to assume that:
@@ -350,27 +357,55 @@ describe( 'MentionUI', () => {
 						// - if scrolled to the last element scrollTop will be set to 150px. The 150px is the offset of the 7th item in the
 						//   list as last four (7, 8, 9 & 10) will be visible.
 						expect( panelView.isVisible ).to.be.true;
-
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
+						if ( !env.isEdge ) {
+							sinon.assert.callCount( mentionElementSpy.set, 0 );
+						}
 
 						fireKeyDownEvent( arrowDownEvtData );
 
 						expectChildViewsIsOnState( [ false, true, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
+						if ( !env.isEdge ) {
+							expect( mentionsView.element.scrollTop ).to.equal( 0 );
+							sinon.assert.callCount( mentionElementSpy.set, 0 );
+						}
 
 						fireKeyDownEvent( arrowUpEvtData );
+
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
 						expect( mentionsView.element.scrollTop ).to.equal( 0 );
 
+						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
+						if ( !env.isEdge ) {
+							sinon.assert.callCount( mentionElementSpy.set, 0 );
+						}
+
 						fireKeyDownEvent( arrowUpEvtData );
+
 						expectChildViewsIsOnState( [ false, false, false, false, false, false, false, false, false, true ] );
-						expect( mentionsView.element.scrollTop ).to.be.within( 140, 160 ); // We want 150, but sometimes we get e.g. 151.
+
+						// We want 150, but sometimes we get e.g. 151.
+						expect( mentionsView.element.scrollTop ).to.be.within( 140, 160, 'last item highlighted' );
+
+						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
+						if ( !env.isEdge ) {
+							sinon.assert.callCount( mentionElementSpy.set, 1 );
+						}
 
 						fireKeyDownEvent( arrowDownEvtData );
 
 						expectChildViewsIsOnState( [ true, false, false, false, false, false, false, false, false, false ] );
-						expect( mentionsView.element.scrollTop ).to.equal( 0 );
+
+						// We want 0, but sometimes we get e.g. 1. (Firefox)
+						expect( mentionsView.element.scrollTop ).to.be.within( 0, 10 );
+
+						// Edge browser always tries to scroll in tests environment: See ckeditor5-utils#282.
+						if ( !env.isEdge ) {
+							sinon.assert.callCount( mentionElementSpy.set, 2 );
+						}
 					} );
 			} );
 		} );
@@ -427,9 +462,9 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is inside a mention', () => {
-				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -444,9 +479,9 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is at the end of a mention', () => {
-				setData( model, '<paragraph>foo [@John] bar</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				model.change( writer => {
@@ -517,12 +552,39 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should not show panel when selection is after existing mention', () => {
-				setData( model, '<paragraph>foo [@John] bar[]</paragraph>' );
+				setData( model, '<paragraph>foo [@Lily] bar[]</paragraph>' );
 				model.change( writer => {
-					writer.setAttribute( 'mention', { id: '@John', _uid: 1234 }, doc.selection.getFirstRange() );
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
 				} );
 
 				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 8 );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+					} );
+			} );
+
+			it( 'should not show panel when selection moves inside existing mention', () => {
+				setData( model, '<paragraph>foo [@Lily] bar</paragraph>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '@Lily', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 9 );
+						} );
+					} )
+					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 

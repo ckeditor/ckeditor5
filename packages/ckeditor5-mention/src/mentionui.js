@@ -282,8 +282,14 @@ export default class MentionUI extends Plugin {
 
 			const selection = editor.model.document.selection;
 
-			const hasMention = selection.hasAttribute( 'mention' );
-			const nodeBefore = selection.focus.nodeBefore;
+			const focus = selection.focus;
+
+			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
+			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
+			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
+			const hasMention = focus.textNode && focus.textNode.hasAttribute( 'mention' );
+
+			const nodeBefore = focus.nodeBefore;
 
 			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
 				return;
@@ -294,8 +300,8 @@ export default class MentionUI extends Plugin {
 			const matchedTextLength = marker.length + feedText.length;
 
 			// create marker range
-			const start = selection.focus.getShiftedBy( -matchedTextLength );
-			const end = selection.focus.getShiftedBy( -feedText.length );
+			const start = focus.getShiftedBy( -matchedTextLength );
+			const end = focus.getShiftedBy( -feedText.length );
 
 			const markerRange = editor.model.createRange( start, end );
 

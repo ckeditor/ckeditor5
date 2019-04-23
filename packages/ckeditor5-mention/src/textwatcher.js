@@ -52,8 +52,8 @@ export default class TextWatcher {
 	_startListening() {
 		const editor = this.editor;
 
-		editor.model.document.selection.on( 'change', ( evt, { directChange } ) => {
-			// The indirect changes (ie on typing) are handled in document's change event.
+		editor.model.document.selection.on( 'change:range', ( evt, { directChange } ) => {
+			// The indirect changes (ie when user types or external changes are applied) are handled in document's change event.
 			if ( !directChange ) {
 				return;
 			}
