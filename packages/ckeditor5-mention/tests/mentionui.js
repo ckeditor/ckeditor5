@@ -177,8 +177,8 @@ describe( 'MentionUI', () => {
 					expect( mentionMarker.getRange().isEqual( range ), 'Should position to mention marker.' );
 
 					const caretSouthEast = positions[ 0 ];
-					const caretNorthEast = positions[ 1 ];
-					const caretSouthWest = positions[ 2 ];
+					const caretSouthWest = positions[ 1 ];
+					const caretNorthEast = positions[ 2 ];
 					const caretNorthWest = positions[ 3 ];
 
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
@@ -187,16 +187,16 @@ describe( 'MentionUI', () => {
 						top: 121
 					} );
 
-					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
-						left: 501,
-						name: 'caret_ne',
-						top: -53
-					} );
-
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
 						top: 121
+					} );
+
+					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
+						left: 501,
+						name: 'caret_ne',
+						top: -53
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {

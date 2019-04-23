@@ -509,8 +509,8 @@ function getBalloonPanelPositions( positionName ) {
 	// As default return all positions callbacks.
 	return [
 		positions.caret_se,
-		positions.caret_ne,
 		positions.caret_sw,
+		positions.caret_ne,
 		positions.caret_nw
 	];
 }
