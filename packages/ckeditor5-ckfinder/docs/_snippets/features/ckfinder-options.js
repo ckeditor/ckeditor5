@@ -15,7 +15,7 @@ ClassicEditor
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json',
 			options: {
 				height: 600,
 				width: 800,

@@ -15,7 +15,7 @@ ClassicEditor
 		},
 		ckfinder: {
 			// eslint-disable-next-line max-len
-			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.4.5/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		}
 	} )
 	.then( editor => {
