@@ -360,6 +360,14 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Refreshes selection attributes and markers according to the current position in the model.
+	 */
+	refresh() {
+		this._selection._updateMarkers();
+		this._selection._updateAttributes( false );
+	}
+
+	/**
 	 * Checks whether object is of given type following the convention set by
 	 * {@link module:engine/model/node~Node#is `Node#is()`}.
 	 *
@@ -598,32 +606,7 @@ class LiveSelection extends Selection {
 		// @type {Set}
 		this._overriddenGravityRegister = new Set();
 
-		// Ensure selection is correct and up to date after each range change.
-		this.on( 'change:range', () => {
-			for ( const range of this.getRanges() ) {
-				if ( !this._document._validateSelectionRange( range ) ) {
-					/**
-					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
-					 * starts or ends at incorrect position.
-					 *
-					 * @error document-selection-wrong-position
-					 * @param {module:engine/model/range~Range} range
-					 */
-					throw new CKEditorError(
-						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
-						{ range }
-					);
-				}
-			}
-
-			this._updateMarkers();
-			this._updateAttributes( false );
-		} );
-
-		// Update markers data stored by the selection after each marker change.
-		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
-
-		// Ensure selection is correct and up to date after each operation.
+		// Ensure selection is correct after each operation.
 		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 
@@ -641,12 +624,31 @@ class LiveSelection extends Selection {
 				this._hasChangedRange = false;
 				this.fire( 'change:range', { directChange: false } );
 			}
-
-			this._updateMarkers();
-			this._updateAttributes( false );
 		}, { priority: 'lowest' } );
 
-		// Clear selection attributes from element if no longer empty.
+		// Ensure selection is correct and up to date after each range change.
+		this.on( 'change:range', () => {
+			for ( const range of this.getRanges() ) {
+				if ( !this._document._validateSelectionRange( range ) ) {
+					/**
+					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+					 * starts or ends at incorrect position.
+					 *
+					 * @error document-selection-wrong-position
+					 * @param {module:engine/model/range~Range} range
+					 */
+					throw new CKEditorError(
+						'document-selection-wrong-position: Range from document selection starts or ends at incorrect position.',
+						{ range }
+					);
+				}
+			}
+		} );
+
+		// Update markers data stored by the selection after each marker change.
+		this.listenTo( this._model.markers, 'update', () => this._updateMarkers() );
+
+		// Ensure selection is up to date after each change block.
 		this.listenTo( this._document, 'change', ( evt, batch ) => {
 			clearAttributesStoredInElement( this._model, batch );
 		} );
@@ -715,12 +717,12 @@ class LiveSelection extends Selection {
 
 	setTo( selectable, optionsOrPlaceOrOffset, options ) {
 		super.setTo( selectable, optionsOrPlaceOrOffset, options );
-		this._refreshAttributes();
+		this._updateAttributes( true );
 	}
 
 	setFocus( itemOrPosition, offset ) {
 		super.setFocus( itemOrPosition, offset );
-		this._refreshAttributes();
+		this._updateAttributes( true );
 	}
 
 	setAttribute( key, value ) {
@@ -747,7 +749,7 @@ class LiveSelection extends Selection {
 		this._overriddenGravityRegister.add( overrideUid );
 
 		if ( this._overriddenGravityRegister.size === 1 ) {
-			this._refreshAttributes();
+			this._updateAttributes( true );
 		}
 
 		return overrideUid;
@@ -773,13 +775,8 @@ class LiveSelection extends Selection {
 
 		// Restore gravity only when all overriding have been restored.
 		if ( !this.isGravityOverridden ) {
-			this._refreshAttributes();
+			this._updateAttributes( true );
 		}
-	}
-
-	// Removes all attributes from the selection and sets attributes according to the surrounding nodes.
-	_refreshAttributes() {
-		this._updateAttributes( true );
 	}
 
 	_popRange() {
