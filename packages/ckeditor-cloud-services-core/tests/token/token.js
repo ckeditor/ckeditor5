@@ -160,7 +160,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Cannot download new token!/ );
-			} )
+			} );
 		} );
 
 		it( 'should throw an error when the response is aborted', () => {
@@ -173,7 +173,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Abort/ );
-			} )
+			} );
 		} );
 
 		it( 'should throw an error when network error occurs', () => {
@@ -186,7 +186,7 @@ describe( 'Token', () => {
 				throw new Error( 'Promise should be rejected' );
 			}, error => {
 				expect( error ).to.match( /Network Error/ );
-			} )
+			} );
 		} );
 
 		it( 'should throw an error when the callback throws error', () => {
