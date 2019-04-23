@@ -516,7 +516,7 @@ Specifies the {@link module:core/editor/editorconfig~EditorConfig configuration}
 			return {
 				editor: ClassicEditor,
 				editorConfig: {
-					toolbar: [ 'bold', 'italic', '|' 'link' ]
+					toolbar: [ 'bold', 'italic', '|', 'link' ]
 				}
 			};
 		}
