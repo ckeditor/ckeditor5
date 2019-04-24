@@ -33,13 +33,19 @@ ClassicEditor
 					marker: '@',
 					feed: getFeed,
 					itemRenderer: ( { fullName, id, thumbnail } ) => {
-						const span = document.createElement( 'span' );
+						const div = document.createElement( 'div' );
 
-						span.classList.add( 'custom-item' );
+						div.classList.add( 'custom' );
+						div.classList.add( 'mention__item' );
 
-						span.innerHTML = `<img src="${ thumbnail }"> ${ fullName } <span class="custom-item-username">${ id }</span>`;
+						div.innerHTML =
+							`<img class="mention__item__thumbnail" src="${ thumbnail }">` +
+							'<div class="mention__item__body">' +
+								`<span class="mention__item__full-name">${ fullName }</span>` +
+								`<span class="mention__item__username">${ id }</span>` +
+							'</div>';
 
-						return span;
+						return div;
 					}
 				}
 			]
@@ -52,12 +58,25 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
+// Simplest cache:
+const cache = new Map();
+
 function getFeed( text ) {
+	if ( cache.has( text ) ) {
+		return cache.get( text );
+	}
+
 	const fetchOptions = {
 		method: 'get',
 		mode: 'cors'
 	};
 
 	return fetch( `http://localhost:3000?search=${ text }`, fetchOptions )
-		.then( response => response.json() );
+		.then( response => {
+			const feedItems = response.json();
+
+			cache.set( text, feedItems );
+
+			return feedItems;
+		} );
 }

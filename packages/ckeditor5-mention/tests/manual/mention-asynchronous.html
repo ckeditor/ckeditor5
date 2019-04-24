@@ -13,20 +13,37 @@
 </div>
 
 <style>
-	.custom-item {
-		display: block;
-		padding: 1em;
+	.ck-mentions .custom.mention__item {
+		display: flex;
+		flex-direction: row;
+		width: 220px;
 	}
 
-	.custom-item.ck-on {
-		color: white;
+	.mention__item .mention__item__thumbnail {
+		/* Prevent images re-draw */
+		width: 48px;
+		height: 48px;
+		border-radius: 100%;
+		border: 2px solid #fff;
 	}
 
-	.custom-item .custom-item-username {
+	.mention__item .mention__item__body {
+		flex: 1;
+		margin-left: 1em;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.mention__item .mention__item__username {
+		float: left;
 		color: #666;
 	}
 
-	.custom-item.ck-on .custom-item-username{
+	.mention__item.ck-on .mention__item__username {
 		color: #ddd;
+	}
+
+	.mention__item.ck-on .mention__item__full-name {
+		float: left;
 	}
 </style>
