@@ -448,6 +448,17 @@ export default class MentionUI extends Plugin {
 
 				return rangeRects.pop();
 			},
+			limiter: () => {
+				const view = this.editor.editing.view;
+				const viewDocument = view.document;
+				const editableElement = viewDocument.selection.editableElement;
+
+				if ( editableElement ) {
+					return view.domConverter.mapViewToDom( editableElement.root );
+				}
+
+				return null;
+			},
 			positions: getBalloonPanelPositions( preferredPosition )
 		};
 	}
