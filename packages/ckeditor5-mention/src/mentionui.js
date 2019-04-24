@@ -452,8 +452,7 @@ export default class MentionUI extends Plugin {
 
 				return null;
 			},
-			positions: getBalloonPanelPositions( positionName ),
-			fitInViewport: true
+			positions: getBalloonPanelPositions( positionName )
 		};
 	}
 }
@@ -510,8 +509,8 @@ function getBalloonPanelPositions( positionName ) {
 	// As default return all positions callbacks.
 	return [
 		positions.caret_se,
-		positions.caret_ne,
 		positions.caret_sw,
+		positions.caret_ne,
 		positions.caret_nw
 	];
 }
