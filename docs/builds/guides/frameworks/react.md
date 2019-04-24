@@ -561,9 +561,11 @@ export default App;
 
 ## Localization
 
+### Using ready-to-use builds
+
 The CKEditor 5 component can be localized in two steps.
 
-### 1. Loading translation files
+#### 1. Loading translation files
 
 First, you need to add translation files to the bundle. 
 
@@ -573,7 +575,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 // ...
 ```
 
-### 2. Configuring the language
+#### 2. Configuring the language
 
 Then, you need to configure the editor to use the given language:
 
@@ -583,10 +585,56 @@ Then, you need to configure the editor to use the given language:
         language: 'de',
         // ...
     } }
-	editor={ ClassicEditor }
-	data="<p>Hello from CKEditor 5!</p>"
+    editor={ ClassicEditor }
+    data="<p>Hello from CKEditor 5!</p>"
 />
 ```
+
+For advanced usage see the {@link features/ui-language Setting UI language} guide.
+
+### Using CKEditor 5 Framework
+
+Using the framework requires to modify the webpack configuration once again. Firstly, you need to install our webpack plugin that
+allows localizing the editor build. 
+
+```bash
+npm install @ckeditor/ckeditor5-dev-webpack-plugin --save-dev
+```
+
+Then, add the plugin to the webpack configuration:
+
+```js
+// webpack.config.js
+'use strict';
+
+// ...
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+
+module.exports = {
+  // ...
+
+  optimization: { /* ... */ },
+
+  plugins: [
+    // ....
+
+    new CKEditorWebpackPlugin( {
+      // UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+      language: 'de'
+    } ),
+
+    // ....
+  ],
+
+  module: { /* ... */ },
+
+  // ...
+};
+```
+
+After building the application, CKEditor 5 will be translated to the specified language.
+
+This guide assumed that you're using `create-react-app@2`. For lower versions, you need to remember to modify two webpack configurations.
 
 For advanced usage see the {@link features/ui-language Setting UI language} guide.
 
