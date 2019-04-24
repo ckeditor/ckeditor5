@@ -6,6 +6,9 @@
 /* eslint-env node */
 
 const http = require( 'http' );
+const fs = require( 'fs' );
+const querystring = require( 'querystring' );
+const url = require( 'url' );
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -14,12 +17,24 @@ const server = http.createServer( function( req, res ) {
 	res.statusCode = 200;
 	res.setHeader( 'Content-Type', 'application/json' );
 
-	readEntries( getTimeout() ).then( entries => {
-		res.setHeader( 'Access-Control-Allow-Origin', '*' );
-		res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );
+	const { search } = querystring.parse( url.parse( req.url ).query );
 
-		res.end( JSON.stringify( entries ) + '\n' );
-	} );
+	readEntries( getTimeout() )
+		.then( entries => entries
+			.map( ( { picture, name, login } ) => ( {
+				id: `@${ login.username }`,
+				username: login.username,
+				fullName: `${ name.first } ${ name.last }`,
+				thumbnail: picture.thumbnail
+			} ) )
+			.sort( ( a, b ) => a.username.localeCompare( b.username ) )
+			.filter( entry => entry.fullName.includes( search ) || entry.username.includes( search ) ) )
+		.then( entries => {
+			res.setHeader( 'Access-Control-Allow-Origin', '*' );
+			res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );
+
+			res.end( JSON.stringify( entries ) + '\n' );
+		} );
 } );
 
 server.listen( port, hostname, () => {
@@ -27,12 +42,18 @@ server.listen( port, hostname, () => {
 } );
 
 function readEntries( timeOut ) {
-	return new Promise( resolve => {
-		setTimeout( () => {
-			resolve( [
-				{ id: '@jodator', name: 'Maciej Gołaszewski', userId: 123 }
-			] );
-		}, timeOut );
+	return new Promise( ( resolve, reject ) => {
+		fs.readFile( './data/db.json', ( err, data ) => {
+			if ( err ) {
+				reject( err );
+			}
+
+			const entries = JSON.parse( data );
+
+			setTimeout( () => {
+				resolve( entries );
+			}, timeOut );
+		} );
 	} );
 }
 

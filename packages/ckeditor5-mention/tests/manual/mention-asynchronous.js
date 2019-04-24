@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console, window, fetch */
+/* global console, window, fetch, document */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -31,7 +31,16 @@ ClassicEditor
 			feeds: [
 				{
 					marker: '@',
-					feed: getFeed
+					feed: getFeed,
+					itemRenderer: ( { fullName, id, thumbnail } ) => {
+						const span = document.createElement( 'span' );
+
+						span.classList.add( 'custom-item' );
+
+						span.innerHTML = `<img src="${ thumbnail }"> ${ fullName } <span class="custom-item-username">${ id }</span>`;
+
+						return span;
+					}
 				}
 			]
 		}
@@ -43,12 +52,12 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-function getFeed() {
+function getFeed( text ) {
 	const fetchOptions = {
 		method: 'get',
 		mode: 'cors'
 	};
 
-	return fetch( 'http://localhost:3000', fetchOptions )
+	return fetch( `http://localhost:3000?search=${ text }`, fetchOptions )
 		.then( response => response.json() );
 }
