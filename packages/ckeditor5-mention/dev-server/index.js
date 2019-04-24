@@ -9,6 +9,7 @@ const http = require( 'http' );
 const fs = require( 'fs' );
 const querystring = require( 'querystring' );
 const url = require( 'url' );
+const { upperFirst } = require( 'lodash' );
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -17,18 +18,20 @@ const server = http.createServer( function( req, res ) {
 	res.statusCode = 200;
 	res.setHeader( 'Content-Type', 'application/json' );
 
-	const { search } = querystring.parse( url.parse( req.url ).query );
+	const { search } = querystring.parse( url.parse( req.url ).query.toLowerCase() );
 
 	readEntries( getTimeout() )
 		.then( entries => entries
 			.map( ( { picture, name, login } ) => ( {
 				id: `@${ login.username }`,
 				username: login.username,
-				fullName: `${ name.first } ${ name.last }`,
+				fullName: `${ upperFirst( name.first ) } ${ upperFirst( name.last ) }`,
 				thumbnail: picture.thumbnail
 			} ) )
 			.sort( ( a, b ) => a.username.localeCompare( b.username ) )
-			.filter( entry => entry.fullName.includes( search ) || entry.username.includes( search ) ) )
+			.filter( entry => entry.fullName.toLowerCase().includes( search ) || entry.username.toLowerCase().includes( search ) )
+			.slice( 0, 10 )
+		)
 		.then( entries => {
 			res.setHeader( 'Access-Control-Allow-Origin', '*' );
 			res.setHeader( 'Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept' );

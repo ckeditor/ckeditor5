@@ -261,7 +261,25 @@ export default class MentionUI extends Plugin {
 	_getFeed( marker, feedText ) {
 		const { feedCallback } = this._mentionsConfigurations.get( marker );
 
-		return Promise.resolve().then( () => feedCallback( feedText ) );
+		this._lastRequested = feedText;
+
+		return new Promise( ( resolve, reject ) => {
+			const response = feedCallback( feedText );
+
+			const isAsynchronous = response instanceof Promise;
+
+			if ( !isAsynchronous ) {
+				resolve( response );
+			}
+
+			return response.then( response => {
+				if ( this._lastRequested == feedText ) {
+					resolve( response );
+				} else {
+					reject( `Feed discarded: ${ feedText }` );
+				}
+			} );
+		} );
 	}
 
 	/**
@@ -318,7 +336,19 @@ export default class MentionUI extends Plugin {
 			}
 
 			this._getFeed( marker, feedText )
+				.catch( () => {
+					// Discard error.
+				} )
 				.then( feed => {
+					if ( !feed ) {
+						return;
+					}
+
+					if ( !this.editor.model.markers.has( 'mention' ) ) {
+						// already hidden
+						return;
+					}
+
 					this._items.clear();
 
 					for ( const feedItem of feed ) {
@@ -326,7 +356,6 @@ export default class MentionUI extends Plugin {
 
 						this._items.add( { item, marker } );
 					}
-
 					if ( this._items.length ) {
 						this._showPanel( mentionMarker );
 					} else {
@@ -555,7 +584,7 @@ function createTextMatcher( marker ) {
 	};
 }
 
-// Default feed callback
+// Default feed callback.
 function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
@@ -570,7 +599,7 @@ function createFeedCallback( feedItems ) {
 			// Do not return more than 10 items.
 			.slice( 0, 10 );
 
-		return Promise.resolve( filteredItems );
+		return filteredItems;
 	};
 }
 
