@@ -229,7 +229,7 @@ describe( 'UnlinkCommand', () => {
 		} );
 	} );
 
-	describe.skip( 'manual decorators', () => {
+	describe( 'manual decorators', () => {
 		beforeEach( () => {
 			editor.destroy();
 			return ModelTestEditor.create( {
