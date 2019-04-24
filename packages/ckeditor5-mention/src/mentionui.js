@@ -10,11 +10,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import TextWatcher from './textwatcher';
 
@@ -44,13 +44,6 @@ export default class MentionUI extends Plugin {
 		super( editor );
 
 		/**
-		 * The balloon panel view, containing the mention view.
-		 *
-		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
-		 */
-		this.panelView = this._creatPanelView();
-
-		/**
 		 * The mentions view.
 		 *
 		 * @type {module:mention/ui/mentionsview~MentionsView}
@@ -73,9 +66,19 @@ export default class MentionUI extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
+		/**
+		 * The contextual balloon plugin instance.
+		 *
+		 * @private
+		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
+		 */
+		this._balloon = editor.plugins.get( ContextualBalloon );
+
 		// Key listener that handles navigation in mention view.
-		this.editor.editing.view.document.on( 'keydown', ( evt, data ) => {
-			if ( isHandledKey( data.keyCode ) && this.panelView.isVisible ) {
+		editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+			if ( isHandledKey( data.keyCode ) && this._isUIVisible ) {
 				data.preventDefault();
 				evt.stop(); // Required for enter overriding.
 
@@ -92,20 +95,20 @@ export default class MentionUI extends Plugin {
 				}
 
 				if ( data.keyCode == keyCodes.esc ) {
-					this._hidePanelAndRemoveMarker();
+					this._hideUIAndRemoveMarker();
 				}
 			}
 		}, { priority: 'highest' } ); // Required to override enter.
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
-			emitter: this.panelView,
-			contextElements: [ this.panelView.element ],
-			activator: () => this.panelView.isVisible,
-			callback: () => this._hidePanelAndRemoveMarker()
+			emitter: this._mentionsView,
+			activator: () => this._isUIVisible,
+			contextElements: [ this._balloon.view.element ],
+			callback: () => this._hideUIAndRemoveMarker()
 		} );
 
-		const feeds = this.editor.config.get( 'mention.feeds' );
+		const feeds = editor.config.get( 'mention.feeds' );
 
 		for ( const mentionDescription of feeds ) {
 			const feed = mentionDescription.feed;
@@ -145,24 +148,18 @@ export default class MentionUI extends Plugin {
 		super.destroy();
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
-		this.panelView.destroy();
+		this._mentionsView.destroy();
 	}
 
 	/**
-	 * Creates the {@link #panelView}.
-	 *
-	 * @private
-	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+	 * @inheritDoc
 	 */
-	_creatPanelView() {
-		const panelView = new BalloonPanelView( this.editor.locale );
+	static get requires() {
+		return [ ContextualBalloon ];
+	}
 
-		panelView.withArrow = false;
-		panelView.render();
-
-		this.editor.ui.view.body.add( panelView );
-
-		return panelView;
+	get _isUIVisible() {
+		return this._balloon.visibleView === this._mentionsView;
 	}
 
 	/**
@@ -177,8 +174,6 @@ export default class MentionUI extends Plugin {
 		const mentionsView = new MentionsView( locale );
 
 		this._items = new Collection();
-
-		this.panelView.content.add( mentionsView );
 
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
@@ -222,7 +217,7 @@ export default class MentionUI extends Plugin {
 			const start = end.getShiftedBy( -matchedTextLength );
 			const range = model.createRange( start, end );
 
-			this._hidePanelAndRemoveMarker();
+			this._hideUIAndRemoveMarker();
 
 			editor.execute( 'mention', {
 				mention: item,
@@ -357,15 +352,15 @@ export default class MentionUI extends Plugin {
 						this._items.add( { item, marker } );
 					}
 					if ( this._items.length ) {
-						this._showPanel( mentionMarker );
+						this._showUI( mentionMarker );
 					} else {
-						this._hidePanelAndRemoveMarker();
+						this._hideUIAndRemoveMarker();
 					}
 				} );
 		} );
 
 		watcher.on( 'unmatched', () => {
-			this._hidePanelAndRemoveMarker();
+			this._hideUIAndRemoveMarker();
 		} );
 
 		return watcher;
@@ -385,30 +380,42 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Shows the {@link #panelView}. If panel is already visible it will reposition it.
+	 * Shows the mentions balloon.
 	 *
 	 * @private
 	 */
-	_showPanel( markerMarker ) {
-		this.panelView.pin( this._getBalloonPanelPositionData( markerMarker, this.panelView.position ) );
-		this.panelView.show();
+	_showUI( markerMarker ) {
+		if ( this._isUIVisible ) {
+			// Update balloon position as the mention list view may change its size.
+			this._balloon.updatePosition( this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ) );
+		} else {
+			this._balloon.add( {
+				view: this._mentionsView,
+				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
+				withArrow: false
+			} );
+		}
+
+		this._mentionsView.position = this._balloon.view.position;
+
 		this._mentionsView.selectFirst();
 	}
 
 	/**
-	 * Hides the {@link #panelView} and remove 'mention' marker from markers collection.
+	 * Hides the mentions balloon and remove 'mention' marker from markers collection.
 	 *
 	 * @private
 	 */
-	_hidePanelAndRemoveMarker() {
+	_hideUIAndRemoveMarker() {
 		if ( this.editor.model.markers.has( 'mention' ) ) {
 			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
-		this.panelView.unpin();
-		// Make last matched position on panel view undefined so the #_getBalloonPanelPositionData() will return all positions on next call.
-		this.panelView.position = undefined;
-		this.panelView.hide();
+		if ( this._isUIVisible ) {
+			this._balloon.remove( this._mentionsView );
+		}
+
+		this._mentionsView.position = undefined;
 	}
 
 	/**
@@ -453,11 +460,11 @@ export default class MentionUI extends Plugin {
 	 * Creates position options object used to position the balloon panel.
 	 *
 	 * @param {module:engine/model/markercollection~Marker} mentionMarker
-	 * @param {String|undefined} positionName Name of last matched position name.
+	 * @param {String|undefined} preferredPosition Name of last matched position name.
 	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
-	_getBalloonPanelPositionData( mentionMarker, positionName ) {
+	_getBalloonPanelPositionData( mentionMarker, preferredPosition ) {
 		const editing = this.editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
@@ -481,15 +488,16 @@ export default class MentionUI extends Plugin {
 
 				return null;
 			},
-			positions: getBalloonPanelPositions( positionName )
+			positions: getBalloonPanelPositions( preferredPosition )
 		};
 	}
 }
 
 // Returns balloon positions data callbacks.
 //
+// @param {String} preferredPosition
 // @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPanelPositions( positionName ) {
+function getBalloonPanelPositions( preferredPosition ) {
 	const positions = {
 		// Positions panel to the south of caret rect.
 		'caret_se': targetRect => {
@@ -529,9 +537,9 @@ function getBalloonPanelPositions( positionName ) {
 	};
 
 	// Return only last position if it was matched to prevent panel from jumping after first match.
-	if ( positions.hasOwnProperty( positionName ) ) {
+	if ( positions.hasOwnProperty( preferredPosition ) ) {
 		return [
-			positions[ positionName ]
+			positions[ preferredPosition ]
 		];
 	}
 
