@@ -3,34 +3,23 @@
 
 ### Configuration
 
-The feeds:
+The feed is asynchronous list that is loaded from server (`@` marker) after random delay:
 
-1. Static list with `@` marker:
+- 80% of requests completes in 100-300ms.
+- 20% of requests completes in 600-1000ms.
 
-    - Barney
-    - Lily
-    - Marshall
-    - Robin
-    - Ted
+In order to run the server go to the `ckeditor5-mention/dev-server/` and run:
 
-2. Static list of 20 items (`#` marker)
-
-    - a01
-    - a02
-    - ...
-    - a20
+```sh
+node index.js
+```  
 
 ### Interaction
 
-You can interact with mention panel with keyboard:
+Controlling the cache:
 
-- Move arrows up/down to select an item.
-- Use <kbd>enter</kbd> or <kbd>tab</kbd> to insert a mention into the documentation. 
-- The <kbd>esc</kbd> should close the panel.
-
-Mention panel should be closed on:
-- Click outside the panel view.
-- Changing selection - like placing it in other part of text.
+- You can enable caching mechanism in `getFeed()` method - if checked it will save results and load them from cache for the same query.s
+- If cache is disable no loading nor saving will be performed. 
 
 ### Disclaimer
 

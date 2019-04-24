@@ -62,7 +62,11 @@ ClassicEditor
 const cache = new Map();
 
 function getFeed( text ) {
-	if ( cache.has( text ) ) {
+	const useCache = document.querySelector( '#cache-control' ).checked;
+
+	if ( useCache && cache.has( text ) ) {
+		console.log( `Loading from cache for: "${ text }".` );
+
 		return cache.get( text );
 	}
 
@@ -75,7 +79,9 @@ function getFeed( text ) {
 		.then( response => {
 			const feedItems = response.json();
 
-			cache.set( text, feedItems );
+			if ( useCache ) {
+				cache.set( text, feedItems );
+			}
 
 			return feedItems;
 		} );
