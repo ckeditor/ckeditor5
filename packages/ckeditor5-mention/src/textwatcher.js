@@ -114,16 +114,17 @@ export default class TextWatcher {
 	 */
 	_getText() {
 		const editor = this.editor;
-		const selection = editor.model.document.selection;
+		const model = editor.model;
+		const selection = model.document.selection;
 
 		// Do nothing if selection is not collapsed.
 		if ( !selection.isCollapsed ) {
 			return;
 		}
 
-		const block = selection.focus.parent;
+		const rangeBeforeSelection = model.createRange( model.createPositionAt( selection.focus.parent, 0 ), selection.focus );
 
-		return _getText( editor.model.createRangeIn( block ) ).slice( 0, selection.focus.offset );
+		return _getText( rangeBeforeSelection );
 	}
 }
 
@@ -135,7 +136,16 @@ export default class TextWatcher {
  * @returns {String}
  */
 export function _getText( range ) {
-	return Array.from( range.getItems() ).reduce( ( a, b ) => a + b.data, '' );
+	const rangeText = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+		if ( node.is( 'softBreak' ) ) {
+			// Trim text to softBreak
+			return '';
+		}
+
+		return rangeText + node.data;
+	}, '' );
+
+	return rangeText;
 }
 
 mix( TextWatcher, EmitterMixin );
