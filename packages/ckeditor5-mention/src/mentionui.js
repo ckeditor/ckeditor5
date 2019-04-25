@@ -24,6 +24,8 @@ import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
 
+const IGNORED_CHARACTERS = ' ([{\'"';
+
 /**
  * The mention UI feature.
  *
@@ -523,7 +525,7 @@ function getBalloonPanelPositions( positionName ) {
 function createPattern( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	return `(^| )(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	return `(^| |${ IGNORED_CHARACTERS.split( '' ).join( '|\\' ) })(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for marker to be used in text watcher instance.

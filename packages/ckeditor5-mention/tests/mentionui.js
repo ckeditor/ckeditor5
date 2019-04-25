@@ -502,6 +502,27 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
+			for ( const character of [ '(', '\'', '"', '[' ] ) {
+				it( `should show panel for matched marker after a "${ character }" character`, () => {
+					setData( model, '<paragraph>[] foo</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( character, doc.selection.getFirstPosition() );
+					} );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+
+					return waitForDebounce()
+						.then( () => {
+							expect( panelView.isVisible ).to.be.true;
+							expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+							expect( mentionsView.items ).to.have.length( 5 );
+						} );
+				} );
+			}
+
 			it( 'should not show panel for marker in the middle of other word', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
 
