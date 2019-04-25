@@ -236,9 +236,7 @@ export default class ColorTableView extends View {
 					this.fire( 'execute', {
 						value: colorObj.color,
 						label: colorObj.label,
-						options: {
-							hasBorder: colorObj.hasBorder,
-						}
+						options: Object.assign( {}, colorObj.options )
 					} );
 				} );
 
