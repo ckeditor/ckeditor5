@@ -13,6 +13,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
@@ -51,6 +52,10 @@ describe( 'ColorTableView', () => {
 			documentColorsCount: 4
 		} );
 		colorTableView.render();
+	} );
+
+	afterEach( () => {
+		colorTableView.destroy();
 	} );
 
 	testUtils.createSinonSandbox();
@@ -200,7 +205,7 @@ describe( 'ColorTableView', () => {
 		} );
 	} );
 
-	describe( 'document colors grid', () => {
+	describe( 'document colors', () => {
 		const colorBlack = {
 			color: '#000000',
 			label: 'Black',
@@ -221,77 +226,148 @@ describe( 'ColorTableView', () => {
 				hasBorder: false
 			}
 		};
+		const colorEmpty = {
+			color: 'hsla(0,0%,0%,0)',
+			options: {
+				isEnabled: false,
+				hasBorder: true
+			}
+		};
+		describe( 'default checks', () => {
+			let documentColorsGridView, documentColors;
 
-		let documentColorsGridView, documentColors;
-
-		beforeEach( () => {
-			documentColors = colorTableView.documentColors;
-			documentColorsGridView = colorTableView.items.last;
-		} );
-
-		describe( 'model manipulation', () => {
-			it( 'adding items works properly', () => {
-				expect( documentColors.length ).to.equal( 0 );
-
-				documentColors.add( Object.assign( {}, colorBlack ), 0 );
-
-				expect( documentColors.length ).to.equal( 1 );
-				expect( documentColors.first.color ).to.equal( '#000000' );
-				expect( documentColors.first.label ).to.equal( 'Black' );
-				expect( documentColors.first.options.hasBorder ).to.be.false;
+			beforeEach( () => {
+				documentColors = colorTableView.documentColors;
+				documentColorsGridView = colorTableView.items.last;
 			} );
 
-			it( 'adding multiple times same color should not populate items collection', () => {
-				expect( documentColors.length ).to.equal( 0 );
+			describe( 'model manipulation', () => {
+				it( 'adding items works properly', () => {
+					expect( documentColors.length ).to.equal( 0 );
 
-				documentColors.add( Object.assign( {}, colorBlack ) );
+					documentColors.add( Object.assign( {}, colorBlack ) );
 
-				expect( documentColors.first ).to.own.include( colorBlack );
-				expect( documentColors.length ).to.equal( 1 );
-
-				documentColors.add( Object.assign( {}, colorBlack ) );
-
-				expect( documentColors.first ).to.own.include( colorBlack );
-				expect( documentColors.length ).to.equal( 1 );
-			} );
-
-			it( 'adding duplicated colors don\'t add it to model', () => {
-				expect( documentColors.length ).to.equal( 0 );
-
-				documentColors.add( Object.assign( {}, colorBlack ) );
-				documentColors.add( Object.assign( {}, colorWhite ) );
-				documentColors.add( Object.assign( {}, colorRed ) );
-
-				expect( documentColors.length ).to.equal( 3 );
-				expect( documentColors.get( 0 ) ).to.own.include( colorBlack );
-				expect( documentColors.get( 1 ) ).to.own.include( colorWhite );
-				expect( documentColors.get( 2 ) ).to.own.include( colorRed );
-
-				documentColors.add( Object.assign( {}, colorBlack ) );
-
-				expect( documentColors.length ).to.equal( 3 );
-				expect( documentColors.get( 0 ) ).to.own.include( colorBlack );
-				expect( documentColors.get( 1 ) ).to.own.include( colorWhite );
-				expect( documentColors.get( 2 ) ).to.own.include( colorRed );
-			} );
-		} );
-
-		describe( 'events', () => {
-			it( 'added colors delegates execute to parent', () => {
-				const spy = sinon.spy();
-				colorTableView.on( 'execute', spy );
-
-				documentColors.add( Object.assign( {}, colorBlack ) );
-				documentColorsGridView.items.first.element.dispatchEvent( new Event( 'click' ) );
-
-				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWith( spy, sinon.match.any, {
-					value: '#000000',
-					label: 'Black',
-					options: {
-						hasBorder: false
-					}
+					expect( documentColors.length ).to.equal( 1 );
+					expect( documentColors.first.color ).to.equal( '#000000' );
+					expect( documentColors.first.label ).to.equal( 'Black' );
+					expect( documentColors.first.options.hasBorder ).to.be.false;
 				} );
+
+				it( 'adding multiple times same color should not populate items collection', () => {
+					expect( documentColors.length ).to.equal( 0 );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+
+					expect( documentColors.first ).to.own.include( colorBlack );
+					expect( documentColors.length ).to.equal( 1 );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+
+					expect( documentColors.first ).to.own.include( colorBlack );
+					expect( documentColors.length ).to.equal( 1 );
+				} );
+
+				it( 'adding duplicated colors don\'t add it to model', () => {
+					expect( documentColors.length ).to.equal( 0 );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+					documentColors.add( Object.assign( {}, colorWhite ) );
+					documentColors.add( Object.assign( {}, colorRed ) );
+
+					expect( documentColors.length ).to.equal( 3 );
+					expect( documentColors.get( 0 ) ).to.own.include( colorBlack );
+					expect( documentColors.get( 1 ) ).to.own.include( colorWhite );
+					expect( documentColors.get( 2 ) ).to.own.include( colorRed );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+
+					expect( documentColors.length ).to.equal( 3 );
+					expect( documentColors.get( 0 ) ).to.own.include( colorBlack );
+					expect( documentColors.get( 1 ) ).to.own.include( colorWhite );
+					expect( documentColors.get( 2 ) ).to.own.include( colorRed );
+				} );
+
+				it( 'should correctly add disabled colors', () => {
+					expect( documentColors.length ).to.equal( 0 );
+
+					documentColors.add( Object.assign( {}, colorEmpty ) );
+
+					expect( documentColors.length ).to.equal( 1 );
+					expect( documentColors.first.color ).to.equal( 'hsla(0,0%,0%,0)' );
+					expect( documentColors.first.options.hasBorder ).to.be.true;
+					expect( documentColors.first.options.isEnabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'events', () => {
+				it( 'added colors delegates execute to parent', () => {
+					const spy = sinon.spy();
+					colorTableView.on( 'execute', spy );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+					documentColorsGridView.items.first.element.dispatchEvent( new Event( 'click' ) );
+
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWith( spy, sinon.match.any, {
+						value: '#000000',
+						label: 'Black',
+						options: {
+							hasBorder: false
+						}
+					} );
+				} );
+			} );
+
+			describe( 'binding', () => {
+				it( 'add tile item when document colors model is updated', () => {
+					let itm;
+					expect( documentColors.length ).to.equal( 0 );
+					expect( documentColorsGridView.items.length ).to.equal( 0 );
+
+					documentColors.add( Object.assign( {}, colorBlack ) );
+
+					expect( documentColors.length ).to.equal( 1 );
+
+					expect( documentColorsGridView.items.length ).to.equal( 1 );
+
+					itm = documentColorsGridView.items.first;
+					expect( itm ).to.be.instanceOf( ColorTileView );
+					expect( itm.label ).to.equal( 'Black' );
+					expect( itm.color ).to.equal( '#000000' );
+					expect( itm.hasBorder ).to.be.false;
+					expect( itm.isEnabled ).to.be.true;
+
+					documentColors.add( Object.assign( {}, colorEmpty ) );
+					itm = documentColorsGridView.items.get( 1 );
+					expect( itm ).to.be.instanceOf( ColorTileView );
+					expect( itm.color ).to.equal( 'hsla(0,0%,0%,0)' );
+					expect( itm.hasBorder ).to.be.true;
+					expect( itm.isEnabled ).to.be.false;
+				} );
+			} );
+		} );
+
+		describe( 'empty', () => {
+			let colorTableView;
+			beforeEach( () => {
+				locale = { t() {} };
+				colorTableView = new ColorTableView( locale, {
+					colors: colorDefinitions,
+					columns: 5,
+					removeButtonLabel: 'Remove color',
+					documentColorsCount: 0
+				} );
+				colorTableView.render();
+			} );
+
+			afterEach( () => {
+				colorTableView.destroy();
+			} );
+
+			it( 'should not add document colors grid to the view', () => {
+				expect( colorTableView.items.length ).to.equal( 2 );
+				expect( colorTableView.documentColors.length ).to.equal( 0 );
+				expect( colorTableView.documentColorsCount ).to.equal( 0 );
 			} );
 		} );
 	} );
