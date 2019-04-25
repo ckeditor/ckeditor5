@@ -30,7 +30,10 @@ ClassicEditor
 			'blockQuote',
 			'undo',
 			'redo'
-		]
+		],
+		fontColor: {
+			documentColors: 7
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

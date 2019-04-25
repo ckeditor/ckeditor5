@@ -37,9 +37,10 @@ export default class ColorTableView extends View {
 	 * be displayed in the table.
 	 * @param {Number} config.columns The number of columns in the color grid.
 	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
-	 * @param {String} config.recentlyUsedLabel The label for the section with the recently used color inside the dropdown.
+	 * @param {String} config.documentColorsLabel The label for the section with the document colors.
+	 * @param {String} config.documentColorsCount The number of colors in document colors section inside dropdown.
 	 */
-	constructor( locale, { colors, columns, removeButtonLabel, recentlyUsedLabel } ) {
+	constructor( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
 		super( locale );
 
 		/**
@@ -88,11 +89,11 @@ export default class ColorTableView extends View {
 		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * The label for the section with the recently used color inside the dropdown.
+		 * The label for the section with document colors.
 		 *
 		 * @type {String}
 		 */
-		this.recentlyUsedLabel = recentlyUsedLabel;
+		this.documentColorsLabel = documentColorsLabel;
 
 		/**
 		 * The number of columns in the color grid.
@@ -107,7 +108,15 @@ export default class ColorTableView extends View {
 		 * @readonly
 		 * @member {module:utils/collection~Collection}
 		 */
-		this.recentlyUsedColors = new Collection();
+		this.documentColors = new Collection();
+
+		/**
+		 * Maximum number of colors in document colors section.
+		 *
+		 * @readonly
+		 * @type {Number}
+		 */
+		this.documentColorsCount = documentColorsCount;
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
@@ -129,7 +138,6 @@ export default class ColorTableView extends View {
 			}
 		} );
 
-		this.initRecentCollection();
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
@@ -142,8 +150,11 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this.removeColorButton() );
-		this.items.add( this.createStaticColorTable() );
-		this.items.add( this.recentlyUsed() );
+		this.items.add( this.createStaticColorGrid() );
+
+		if ( documentColorsCount ) {
+			this.items.add( this.createDocumentColors() );
+		}
 	}
 
 	/**
@@ -174,7 +185,7 @@ export default class ColorTableView extends View {
 	 *
 	 * @private
 	 */
-	createStaticColorTable() {
+	createStaticColorGrid() {
 		const colorGrid = new ColorGridView( this.locale, {
 			colorDefinitions: this.colorDefinitions,
 			columns: this.columns
@@ -187,22 +198,27 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Adds recently used colors section view and binds it to {@link #recentlyUsedColors}.
+	 * Adds document colors section view and binds it to {@link #documentColors}.
+	 * It also initialize empty color placeholders with {@link #initEmptyDocumentColorsCollection}.
 	 *
 	 * @private
 	 */
-	recentlyUsed() {
-		const recentViews = new ColorGridView( this.locale, { columns: this.columns, gridLabel: this.recentlyUsedLabel } );
+	createDocumentColors() {
+		const documentColors = new ColorGridView( this.locale, {
+			columns: this.columns,
+			gridLabel: this.documentColorsLabel
+		} );
 
-		recentViews.bind( 'selectedColor' ).to( this );
+		documentColors.delegate( 'execute' ).to( this );
+		documentColors.bind( 'selectedColor' ).to( this );
 
-		recentViews.items.bindTo( this.recentlyUsedColors ).using(
+		documentColors.items.bindTo( this.documentColors ).using(
 			colorObj => {
 				const colorTile = new ColorTileView();
 
 				colorTile.set( {
 					color: colorObj.color,
-					hasBorder: colorObj.hasBorder
+					hasBorder: colorObj.options || colorObj.options.hasBorder
 				} );
 
 				if ( colorObj.label ) {
@@ -212,15 +228,17 @@ export default class ColorTableView extends View {
 					} );
 				}
 
-				if ( colorObj.isEnabled === false ) {
+				if ( colorObj.options && colorObj.options.isEnabled === false ) {
 					colorTile.set( 'isEnabled', false );
 				}
 
 				colorTile.on( 'execute', () => {
 					this.fire( 'execute', {
 						value: colorObj.color,
-						hasBorder: colorObj.hasBorder,
-						label: colorObj.label
+						label: colorObj.label,
+						options: {
+							hasBorder: colorObj.hasBorder,
+						}
 					} );
 				} );
 
@@ -228,37 +246,15 @@ export default class ColorTableView extends View {
 			}
 		);
 
-		this.recentlyUsedColors.on( 'add', ( evt, item ) => {
-			const duplicates = this.recentlyUsedColors.filter( element => element.color === item.color, this );
+		this.documentColors.on( 'add', ( evt, item ) => {
+			const duplicates = this.documentColors.filter( element => element.color === item.color, this );
 
 			if ( duplicates.length === 2 ) {
-				this.recentlyUsedColors.remove( duplicates[ 1 ] );
-			}
-
-			if ( this.recentlyUsedColors.length > this.columns ) {
-				this.recentlyUsedColors.remove( this.recentlyUsedColors.length - 1 );
+				this.documentColors.remove( duplicates[ 1 ] );
 			}
 		} );
 
-		recentViews.delegate( 'execute' ).to( this );
-
-		return recentViews;
-	}
-
-	/**
-	 * Populates {@link #recentlyUsedColors} with empty non-clickable buttons, which represent placeholders
-	 * for colors.
-	 *
-	 * @private
-	 */
-	initRecentCollection() {
-		for ( let i = 0; i < this.columns; i++ ) {
-			this.recentlyUsedColors.add( {
-				color: 'hsla(0, 0%, 0%, 0)',
-				isEnabled: false,
-				hasBorder: true
-			} );
-		}
+		return documentColors;
 	}
 
 	/**

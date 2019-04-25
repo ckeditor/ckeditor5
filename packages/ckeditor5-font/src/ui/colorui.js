@@ -86,6 +86,7 @@ export default class ColorUI extends Plugin {
 		const command = editor.commands.get( this.commandName );
 		const colorsConfig = normalizeColorOptions( editor.config.get( this.componentName ).colors );
 		const localizedColors = getLocalizedColorOptions( editor, colorsConfig );
+		const documentColorsCount = editor.config.get( `${ this.componentName }.documentColors` );
 
 		// Register the UI component.
 		editor.ui.componentFactory.add( this.componentName, locale => {
@@ -101,7 +102,8 @@ export default class ColorUI extends Plugin {
 				} ) ),
 				columns: this.columns,
 				removeButtonLabel: t( 'Remove color' ),
-				recentlyUsedLabel: t( 'Recently used:' )
+				documentColorsLabel: documentColorsCount !== 0 ? t( 'Document colors' ) : undefined,
+				documentColorsCount: documentColorsCount === undefined ? this.columns : documentColorsCount
 			} );
 
 			this.colorTableView.bind( 'selectedColor' ).to( command, 'value' );
@@ -125,39 +127,36 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			return dropdownView;
-		} );
+			if ( documentColorsCount !== 0 ) {
+				dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
+					if ( val ) {
+						const model = editor.model;
+						const document = model.document;
+						const rootNames = document.getRootNames();
+						const maxCount = this.colorTableView.documentColorsCount;
+						const documentColors = this.colorTableView.documentColors;
+						documentColors.clear();
 
-		// Update recently used colors when user change data in editor.
-		editor.model.document.on( 'change:data', () => {
-			const model = editor.model;
-			const changes = model.document.differ.getChanges();
-			changes.forEach( change => {
-				switch ( change.type ) {
-					case 'insert': {
-						const position = change.position;
-						const range = model.createRange( position, position.getShiftedBy( change.length ) );
-						const walker = range.getWalker( { ignoreElementEnd: true } );
-						let item = walker.next();
-						while ( !item.done ) {
-							if ( item.value.type === 'text' ) {
-								// Only text nodes can have color attributes.
-								const color = item.value.item.getAttribute( this.componentName );
-								if ( color ) {
-									this.addColorToRecentlyUsed( color );
+						for ( const rootName of rootNames ) {
+							if ( documentColors.length >= maxCount ) {
+								break;
+							}
+							const root = document.getRoot( rootName );
+							const range = model.createRangeIn( root );
+							for ( const node of range.getItems() ) {
+								if ( node.is( 'textProxy' ) && node.hasAttribute( this.componentName ) ) {
+									this.addColorToDocumentColors( node.getAttribute( this.componentName ) );
+									if ( documentColors.length >= maxCount ) {
+										break;
+									}
 								}
 							}
-							item = walker.next();
 						}
-						break;
 					}
-					case 'attribute':
-						if ( change.attributeKey === this.componentName && change.attributeNewValue ) {
-							this.addColorToRecentlyUsed( change.attributeNewValue );
-						}
-						break;
-				}
-			} );
+				} );
+			}
+
+			return dropdownView;
 		} );
 	}
 
@@ -166,15 +165,19 @@ export default class ColorUI extends Plugin {
 	 *
 	 * @param {String} color String which stores value of recently applied color
 	 */
-	addColorToRecentlyUsed( color ) {
+	addColorToDocumentColors( color ) {
 		const predefinedColor = this.colorTableView.colorDefinitions
 			.find( definition => definition.color === color );
 		if ( !predefinedColor ) {
-			this.colorTableView.recentlyUsedColors.add( {
+			this.colorTableView.documentColors.add( {
 				color,
 				label: color,
-				hasBorder: false
-			}, 0 );
+				options: {
+					hasBorder: false
+				}
+			} );
+		} else {
+			this.colorTableView.documentColors.add( Object.assign( {}, predefinedColor ) );
 		}
 	}
 }
