@@ -22,8 +22,8 @@ import '../../theme/fontcolor.css';
  * A class which represents a view with the following sub–components:
  *
  * * A remove color button,
- * * A {@link module:ui/colorgrid/colorgrid~ColorGridView},
- * * A grid of recently used colors.
+ * * A static {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors defined in the configuration,
+ * * A dynamic {@link module:ui/colorgrid/colorgrid~ColorGridView} of colors used in the document.
  *
  * @extends module:ui/view~View
  */
@@ -103,7 +103,7 @@ export default class ColorTableView extends View {
 		this.columns = columns;
 
 		/**
-		 * A collection storing definitions of recently used colors.
+		 * A collection of definitions stores document colors.
 		 *
 		 * @readonly
 		 * @member {module:utils/collection~Collection}
@@ -112,6 +112,7 @@ export default class ColorTableView extends View {
 
 		/**
 		 * Maximum number of colors in document colors section.
+		 * If equals 0, then document colors section is not added.
 		 *
 		 * @readonly
 		 * @type {Number}
@@ -199,7 +200,6 @@ export default class ColorTableView extends View {
 
 	/**
 	 * Adds document colors section view and binds it to {@link #documentColors}.
-	 * It also initialize empty color placeholders with {@link #initEmptyDocumentColorsCollection}.
 	 *
 	 * @private
 	 */

@@ -148,3 +148,11 @@ export default class FontColor extends Plugin {
  *
  * @member {Number} module:font/fontcolor~FontColorConfig#columns
  */
+
+/**
+ * Determines maximum number of available document colors. If not defined,
+ * then it equals to {@link module:font/fontcolor~FontColorConfig#columns} value.
+ * If set to `0`, then document colors feature will be disabled.
+ *
+ * @member {Number} module:font/fontcolor~FontColorConfig#documentColors
+ */

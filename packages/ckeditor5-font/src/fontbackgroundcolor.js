@@ -149,3 +149,11 @@ export default class FontBackgroundColor extends Plugin {
  *
  * @member {Number} module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns
  */
+
+/**
+ * Determines maximum number of available document colors. If not defined,
+ * then it equals to {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns} value.
+ * If set to `0`, then document colors feature will be disabled.
+ *
+ * @member {Number} module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors
+ */
