@@ -109,14 +109,47 @@ export default class Document {
 	 * not be fixed in the new document tree state.
 	 *
 	 * View post-fixers are useful when you wants to update view structure whenever it changes, for instance add some classes
-	 * to elements based on the view structure or selection. However, is you need DOM elements to be already updated, use
+	 * to elements based on the view structure or selection. However, if you need DOM elements to be already updated, use
 	 * {@link module:engine/view/view~View#event:render render event}.
 	 *
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}
 	 * instance connected with the executed changes block.
 	 *
-	 * Note that registering a post-fixer won't re-render the editor's view. If the view should change after registering the post-fixer then
-	 * it should be done manually calling `view.forceRender();`.
+	 * Here is an example which wraps all spaces into spans to add a gray background to all of them:
+	 *
+	 *
+	 *		editor.editing.view.document.registerPostFixer( writer => {
+	 *			let changed = false;
+	 *
+	 *			let range = editor.editing.view.createRangeIn( editor.editing.view.document.getRoot() );
+	 *			const items = range.getWalker( { singleCharacters: true, direction: 'backward' } );
+	 *
+	 *			for( let item of items ) {
+	 *				if( item.type == 'text' && item.item.data == ' ' ) {
+	 *					if ( !isWrapped( item.nextPosition ) ) {
+	 *						const rangeToWrap = writer.createRange( item.nextPosition, item.previousPosition );
+	 *						const span = writer.createAttributeElement( 'span', { 'style': 'background-color: gray;' } );
+	 *
+	 *						writer.wrap( rangeToWrap, span );
+	 *						writer.setSelection( item.nextPosition );
+	 *
+	 *						changed = true;
+	 *					}
+	 *				}
+	 *			}
+	 *
+	 *			return changed;
+	 *
+	 *			function isWrapped( position ) {
+	 *				return position.getAncestors()
+	 *					.find( element => element.getStyle && element.getStyle( 'background-color' ) === 'gray' );
+	 *			}
+	 *		} );
+	 *
+	 * Note that nothing happens when you execute this code in the console. It is because adding post-fixer will not execute it.
+	 * It will be executed as soon as any change in the document causes rendering. If you want to re-render the editor's
+	 * view after registering the post-fixer then you should do it manually calling
+	 * {@link module:engine/view/view~View#forceRender `view.forceRender();`}.
 	 *
 	 * @param {Function} postFixer
 	 */
