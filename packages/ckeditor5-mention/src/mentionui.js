@@ -24,8 +24,6 @@ import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
 
-const IGNORED_CHARACTERS = ' ([{\'"';
-
 /**
  * The mention UI feature.
  *
@@ -517,15 +515,31 @@ function getBalloonPanelPositions( positionName ) {
 	];
 }
 
-// Creates a regex pattern for marker.
+// Creates a regex for marker.
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
 // @returns {String}
-function createPattern( marker, minimumCharacters ) {
+function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	return `(^| |${ IGNORED_CHARACTERS.split( '' ).join( '|\\' ) })(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	try {
+		// Uses the ES2018 syntax. See ckeditor5-mention#44.
+		return new RegExp( buildPattern( '\\p{Ps}"\';', marker, numberOfCharacters ), 'u' );
+	} catch ( error ) {
+		// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
+		return new RegExp( buildPattern( '([{"\'', marker, numberOfCharacters ), 'u' );
+	}
+}
+
+// Creates a regex pattern for marker.
+//
+// @param {String} whitelistedCharacters
+// @param {String} marker
+// @param {Number} minimumCharacters
+// @returns {String}
+function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
+	return `(^|[ ${ whitelistedCharacters }])(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for marker to be used in text watcher instance.
@@ -534,7 +548,7 @@ function createPattern( marker, minimumCharacters ) {
 // @param {Number} minimumCharacters
 // @returns {Function}
 function createTestCallback( marker, minimumCharacters ) {
-	const regExp = new RegExp( createPattern( marker, minimumCharacters ) );
+	const regExp = createRegExp( marker, minimumCharacters );
 
 	return text => regExp.test( text );
 }
@@ -544,7 +558,7 @@ function createTestCallback( marker, minimumCharacters ) {
 // @param {String} marker
 // @returns {Function}
 function createTextMatcher( marker ) {
-	const regExp = new RegExp( createPattern( marker, 0 ) );
+	const regExp = createRegExp( marker, 0 );
 
 	return text => {
 		const match = text.match( regExp );
