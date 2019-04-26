@@ -44,6 +44,7 @@ export default class ColorUI extends Plugin {
 
 		/**
 		 * The name of the command which will be executed when a color tile is clicked.
+		 *
 		 * @type {String}
 		 */
 		this.commandName = commandName;
@@ -51,6 +52,7 @@ export default class ColorUI extends Plugin {
 		/**
 		 * The name of this component in the {@link module:ui/componentfactory~ComponentFactory}.
 		 * Also the configuration scope name in `editor.config`.
+		 *
 		 * @type {String}
 		 */
 		this.componentName = componentName;
@@ -63,6 +65,7 @@ export default class ColorUI extends Plugin {
 
 		/**
 		 * Label used by the dropdown.
+		 *
 		 * @type {String}
 		 */
 		this.dropdownLabel = dropdownLabel;
@@ -76,6 +79,7 @@ export default class ColorUI extends Plugin {
 
 		/**
 		 * Keeps reference to {@link module:font/ui/colortableview~ColorTableView}.
+		 *
 		 * @type {module:font/ui/colortableview~ColorTableView}
 		 */
 		this.colorTableView;
