@@ -540,7 +540,7 @@ function createRegExp( marker, minimumCharacters ) {
 // @param {Number} minimumCharacters
 // @returns {String}
 function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
-	return `(^|[ ${ whitelistedCharacters }])(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	return `(^|[ ${ whitelistedCharacters }])([${ marker }])([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for the marker to be used in the text watcher instance.
