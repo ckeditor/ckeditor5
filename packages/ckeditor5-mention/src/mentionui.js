@@ -44,14 +44,14 @@ export default class MentionUI extends Plugin {
 		super( editor );
 
 		/**
-		 * The balloon panel view, containing the mention view.
+		 * The balloon panel view containing the mention view.
 		 *
 		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 		 */
 		this.panelView = this._creatPanelView();
 
 		/**
-		 * The mentions view.
+		 * The mention view.
 		 *
 		 * @type {module:mention/ui/mentionsview~MentionsView}
 		 * @private
@@ -59,7 +59,7 @@ export default class MentionUI extends Plugin {
 		this._mentionsView = this._createMentionView();
 
 		/**
-		 * Stores mentions feeds configurations.
+		 * Stores mention feeds configurations.
 		 *
 		 * @type {Map<String, Object>}
 		 * @private
@@ -77,7 +77,7 @@ export default class MentionUI extends Plugin {
 		this.editor.editing.view.document.on( 'keydown', ( evt, data ) => {
 			if ( isHandledKey( data.keyCode ) && this.panelView.isVisible ) {
 				data.preventDefault();
-				evt.stop(); // Required for enter overriding.
+				evt.stop(); // Required for Enter key overriding.
 
 				if ( data.keyCode == keyCodes.arrowdown ) {
 					this._mentionsView.selectNext();
@@ -95,7 +95,7 @@ export default class MentionUI extends Plugin {
 					this._hidePanelAndRemoveMarker();
 				}
 			}
-		}, { priority: 'highest' } ); // Required to override enter.
+		}, { priority: 'highest' } ); // Required to override the Enter key.
 
 		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
@@ -124,7 +124,7 @@ export default class MentionUI extends Plugin {
 				 *
 				 * @error mentionconfig-incorrect-marker
 				 */
-				throw new CKEditorError( 'mentionconfig-incorrect-marker: The marker must be provided and be a single character.' );
+				throw new CKEditorError( 'mentionconfig-incorrect-marker: The marker must be provided and it must be a single character.' );
 			}
 
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
@@ -238,7 +238,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns item renderer for marker.
+	 * Returns item renderer for the marker.
 	 *
 	 * @private
 	 * @param {String} marker
@@ -251,7 +251,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns a promise that resolves with autocomplete items for given text.
+	 * Returns a promise that resolves with autocomplete items for a given text.
 	 *
 	 * @param {String} marker
 	 * @param {String} feedText
@@ -265,7 +265,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Registers a text watcher for marker.
+	 * Registers a text watcher for the marker.
 	 *
 	 * @private
 	 * @param {String} marker
@@ -299,7 +299,7 @@ export default class MentionUI extends Plugin {
 
 			const matchedTextLength = marker.length + feedText.length;
 
-			// create marker range
+			// Create a marker range.
 			const start = focus.getShiftedBy( -matchedTextLength );
 			const end = focus.getShiftedBy( -feedText.length );
 
@@ -343,7 +343,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns registered text watcher for marker.
+	 * Returns the registered text watcher for the marker.
 	 *
 	 * @private
 	 * @param {String} marker
@@ -356,7 +356,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Shows the {@link #panelView}. If panel is already visible it will reposition it.
+	 * Shows the {@link #panelView}. If the panel is already visible, it will reposition it.
 	 *
 	 * @private
 	 */
@@ -367,7 +367,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Hides the {@link #panelView} and remove 'mention' marker from markers collection.
+	 * Hides the {@link #panelView} and removes the 'mention' marker from the markers collection.
 	 *
 	 * @private
 	 */
@@ -377,7 +377,8 @@ export default class MentionUI extends Plugin {
 		}
 
 		this.panelView.unpin();
-		// Make last matched position on panel view undefined so the #_getBalloonPanelPositionData() will return all positions on next call.
+		// Make the last matched position on panel view undefined so the #_getBalloonPanelPositionData() method will return all positions
+		// on the next call.
 		this.panelView.position = undefined;
 		this.panelView.hide();
 	}
@@ -421,10 +422,10 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Creates position options object used to position the balloon panel.
+	 * Creates a position options object used to position the balloon panel.
 	 *
 	 * @param {module:engine/model/markercollection~Marker} mentionMarker
-	 * @param {String|undefined} positionName Name of last matched position name.
+	 * @param {String|undefined} positionName The name of the last matched position name.
 	 * @returns {module:utils/dom/position~Options}
 	 * @private
 	 */
@@ -457,12 +458,12 @@ export default class MentionUI extends Plugin {
 	}
 }
 
-// Returns balloon positions data callbacks.
+// Returns the balloon positions data callbacks.
 //
 // @returns {Array.<module:utils/dom/position~Position>}
 function getBalloonPanelPositions( positionName ) {
 	const positions = {
-		// Positions panel to the south of caret rect.
+		// Positions the panel to the southeast of the caret rectangle.
 		'caret_se': targetRect => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
@@ -471,7 +472,7 @@ function getBalloonPanelPositions( positionName ) {
 			};
 		},
 
-		// Positions panel to the north of caret rect.
+		// Positions the panel to the northeast of the caret rectangle.
 		'caret_ne': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
@@ -480,7 +481,7 @@ function getBalloonPanelPositions( positionName ) {
 			};
 		},
 
-		// Positions panel to the south of caret rect.
+		// Positions the panel to the southwest of the caret rectangle.
 		'caret_sw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
@@ -489,7 +490,7 @@ function getBalloonPanelPositions( positionName ) {
 			};
 		},
 
-		// Positions panel to the north of caret rect.
+		// Positions the panel to the northwest of the caret rect.
 		'caret_nw': ( targetRect, balloonRect ) => {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
@@ -499,14 +500,14 @@ function getBalloonPanelPositions( positionName ) {
 		}
 	};
 
-	// Return only last position if it was matched to prevent panel from jumping after first match.
+	// Returns only the last position if it was matched to prevent the panel from jumping after the first match.
 	if ( positions.hasOwnProperty( positionName ) ) {
 		return [
 			positions[ positionName ]
 		];
 	}
 
-	// As default return all positions callbacks.
+	// By default return all position callbacks.
 	return [
 		positions.caret_se,
 		positions.caret_sw,
@@ -532,7 +533,7 @@ function createRegExp( marker, minimumCharacters ) {
 	}
 }
 
-// Creates a regex pattern for marker.
+// Creates a regex pattern for the marker.
 //
 // @param {String} whitelistedCharacters
 // @param {String} marker
@@ -542,7 +543,7 @@ function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
 	return `(^|[ ${ whitelistedCharacters }])(${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
-// Creates a test callback for marker to be used in text watcher instance.
+// Creates a test callback for the marker to be used in the text watcher instance.
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
@@ -553,7 +554,7 @@ function createTestCallback( marker, minimumCharacters ) {
 	return text => regExp.test( text );
 }
 
-// Creates a text watcher matcher for marker.
+// Creates a text matcher from the marker.
 //
 // @param {String} marker
 // @returns {Function}
@@ -570,11 +571,11 @@ function createTextMatcher( marker ) {
 	};
 }
 
-// Default feed callback
+// The default feed callback.
 function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
-		// Make default mention feed case-insensitive.
+		// Make the default mention feed case-insensitive.
 			.filter( item => {
 				// Item might be defined as object.
 				const itemId = typeof item == 'string' ? item : String( item.id );
@@ -589,7 +590,7 @@ function createFeedCallback( feedItems ) {
 	};
 }
 
-// Checks if given key code is handled by the mention ui.
+// Checks if a given key code is handled by the mention UI.
 //
 // @param {Number}
 // @returns {Boolean}

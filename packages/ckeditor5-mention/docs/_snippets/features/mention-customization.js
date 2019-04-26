@@ -52,7 +52,7 @@ function MentionCustomization( editor ) {
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
 				// in the model is a plain object with a set of additional attributes.
-				// In order to create a proper object use the toMentionAttribute() helper method:
+				// In order to create a proper object, use the toMentionAttribute() helper method:
 				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
@@ -94,13 +94,13 @@ const items = [
 ];
 
 function getFeedItems( queryText ) {
-	// As an example of an asynchronous action, let's return a promise
+	// As an example of an asynchronous action, return a promise
 	// that resolves after a 100ms timeout.
 	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
 			const itemsToDisplay = items
-				// Filter out the full list of all items to only those matching queryText.
+				// Filter out the full list of all items to only those matching the query text.
 				.filter( isItemMatching )
 				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
 				.slice( 0, 10 );
@@ -109,12 +109,12 @@ function getFeedItems( queryText ) {
 		}, 100 );
 	} );
 
-	// Filtering function - it uses `name` and `username` properties of an item to find a match.
+	// Filtering function - it uses the `name` and `username` properties of an item to find a match.
 	function isItemMatching( item ) {
-		// Make search case-insensitive.
+		// Make the search case-insensitive.
 		const searchString = queryText.toLowerCase();
 
-		// Include an item in the search results if name or username includes the current user input.
+		// Include an item in the search results if the name or username includes the current user input.
 		return (
 			item.name.toLowerCase().includes( searchString ) ||
 			item.id.toLowerCase().includes( searchString )
