@@ -8,11 +8,11 @@
 import ColorUI from './../../src/ui/colorui';
 import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ColorUI', () => {
 	class TestColorPlugin extends ColorUI {
@@ -135,6 +135,12 @@ describe( 'ColorUI', () => {
 		beforeEach( () => {
 			command = editor.commands.get( 'testColorCommand' );
 			dropdown = editor.ui.componentFactory.create( 'testColor' );
+
+			dropdown.render();
+		} );
+
+		afterEach( () => {
+			dropdown.destroy();
 		} );
 
 		it( 'button has the base properties', () => {
@@ -146,10 +152,6 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-			dropdown.render();
-
 			expect( dropdown.element.classList.contains( 'ck-color-ui-dropdown' ) ).to.be.true;
 		} );
 
@@ -163,6 +165,13 @@ describe( 'ColorUI', () => {
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
+		it( 'colorTableView has set proper default attributes', () => {
+			const colorTableView = dropdown.colorTableView;
+
+			expect( colorTableView.documentColorsLabel ).to.equal( 'Document colors' );
+			expect( colorTableView.documentColorsCount ).to.equal( 3 );
+		} );
+
 		describe( 'model to command binding', () => {
 			it( 'isEnabled', () => {
 				command.isEnabled = false;
@@ -174,119 +183,95 @@ describe( 'ColorUI', () => {
 			} );
 		} );
 
-		describe( 'reacts on change:data event', () => {
-			let recentColorsModel;
+		describe( 'properly detects document colors on dropdown open', () => {
+			let documentColorsModel, dropdown;
 			beforeEach( () => {
-				recentColorsModel = testColorPlugin.colorTableView.recentlyUsedColors;
+				dropdown = editor.ui.componentFactory.create( 'testColor' );
+				dropdown.render();
+				documentColorsModel = dropdown.colorTableView.documentColors;
+				global.document.body.appendChild( dropdown.element );
+			} );
+			afterEach( () => {
+				dropdown.destroy();
 			} );
 
-			it( 'editor starts with empty colors', () => {
-				recentColorsModel.map( ( item, index ) => {
-					expect( item ).to.include( {
-						color: 'hsla(0, 0%, 0%, 0)',
-						isEnabled: false,
-						hasBorder: true
-					}, `Default item with index: ${ index }, should be empty color.` );
-				} );
-			} );
-
-			it( 'recent colors are read after initialization', () => {
-				setModelData( model, '<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+			it( 'adds to model colors from editor and not duplicates it', () => {
+				setModelData( model,
 					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
-					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>' +
-					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' );
+					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+					'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+				);
 
-				// First color should be reset to gold, because it's appear again in last paragraph
-				expect( recentColorsModel.get( 0 ) ).to.include( {
+				dropdown.isOpen = true;
+
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
 					color: 'gold',
 					label: 'gold',
-					hasBorder: false
+					options: {
+						hasBorder: false
+					}
 				} );
 
-				expect( recentColorsModel.get( 1 ) ).to.include( {
-					color: '#FFAACC',
-					label: '#FFAACC',
-					hasBorder: false
-				} );
-
-				expect( recentColorsModel.get( 2 ) ).to.include( {
+				expect( documentColorsModel.get( 1 ) ).to.deep.include( {
 					color: 'rgb(10,20,30)',
 					label: 'rgb(10,20,30)',
-					hasBorder: false
+					options: {
+						hasBorder: false
+					}
+				} );
+
+				expect( documentColorsModel.get( 2 ) ).to.deep.include( {
+					color: '#FFAACC',
+					label: '#FFAACC',
+					options: {
+						hasBorder: false
+					}
 				} );
 			} );
 
-			it( 'predefined color is recognized and is not used in recent colors', () => {
-				setModelData( model, '<paragraph><$text testColor="rgb(255,255,255)">Foo</$text></paragraph>' );
-				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'hsla(0, 0%, 0%, 0)',
-					isEnabled: false,
-					hasBorder: true
-				} );
-			} );
+			it( 'reacts on document model changes', () => {
+				setModelData( model,
+					'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>'
+				);
 
-			it( 'removing color from model doesn\'t change recent colors', () => {
-				setModelData( model, '<paragraph><$text testColor="lightgreen">Foo</$text></paragraph>' );
+				dropdown.isOpen = true;
 
-				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'lightgreen',
-					label: 'lightgreen',
-					hasBorder: false
+				expect( documentColorsModel.length ).to.equal( 1 );
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
+					color: 'rgb(10,20,30)',
+					label: 'rgb(10,20,30)',
+					options: {
+						hasBorder: false
+					}
 				} );
 
-				const textNode = model.document.getRoot().getChild( 0 ).getChild( 0 );
+				dropdown.isOpen = false;
 
-				model.change( writer => {
-					writer.removeAttribute( 'testColor', textNode );
+				setModelData( model,
+					'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+					'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+				);
+
+				dropdown.isOpen = true;
+
+				expect( documentColorsModel.length ).to.equal( 2 );
+
+				expect( documentColorsModel.get( 0 ) ).to.deep.include( {
+					color: 'gold',
+					label: 'gold',
+					options: {
+						hasBorder: false
+					}
 				} );
 
-				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'lightgreen',
-					label: 'lightgreen',
-					hasBorder: false
+				expect( documentColorsModel.get( 1 ) ).to.deep.include( {
+					color: '#FFAACC',
+					label: '#FFAACC',
+					options: {
+						hasBorder: false
+					}
 				} );
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
-			} );
-
-			it( 'inserting text without color doesn\'t break anything in colors', () => {
-				setModelData( model, '<paragraph><$text testColor="lightblue">Foo</$text>[]</paragraph>' );
-
-				const paragraph = model.document.getRoot().getChild( 0 );
-
-				model.change( writer => {
-					writer.insertText( 'bar', paragraph, 'end' );
-				} );
-				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'lightblue',
-					label: 'lightblue',
-					hasBorder: false
-				} );
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><$text testColor="lightblue">Foo</$text>bar</paragraph>' );
-			} );
-
-			it( 'changing color value will added as recently used color', () => {
-				setModelData( model, '<paragraph><$text testColor="lightblue">Foo</$text>[]</paragraph>' );
-
-				const textNode = model.document.getRoot().getChild( 0 ).getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'testColor', 'lightgreen', textNode );
-				} );
-
-				expect( recentColorsModel.get( 0 ) ).to.include( {
-					color: 'lightgreen',
-					label: 'lightgreen',
-					hasBorder: false
-				} );
-				expect( recentColorsModel.get( 1 ) ).to.include( {
-					color: 'lightblue',
-					label: 'lightblue',
-					hasBorder: false
-				} );
-
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph><$text testColor="lightgreen">Foo</$text></paragraph>' );
 			} );
 		} );
 
@@ -366,6 +351,80 @@ describe( 'ColorUI', () => {
 						return editor;
 					} );
 			}
+		} );
+	} );
+
+	describe( 'addColorToDocumentColors', () => {
+		let dropdown;
+
+		beforeEach( () => {
+			dropdown = editor.ui.componentFactory.create( 'testColor' );
+			dropdown.render();
+		} );
+
+		afterEach( () => {
+			dropdown.destroy();
+		} );
+
+		it( 'add custom color from not defined colors', () => {
+			testColorPlugin.addColorToDocumentColors( '#123456' );
+			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+				color: '#123456',
+				label: '#123456',
+				options: {
+					hasBorder: false
+				}
+			} );
+		} );
+
+		it( 'add already define color absed on color value', () => {
+			testColorPlugin.addColorToDocumentColors( 'rgb(255,255,255)' );
+			// Color values are kept without spaces.
+			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+				color: 'rgb(255,255,255)',
+				label: 'White',
+				options: {
+					hasBorder: true
+				}
+			} );
+		} );
+	} );
+
+	describe( 'empty document colors', () => {
+		let editor, element;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: Object.assign( {
+						documentColors: 0
+					}, testColorConfig )
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'document colors are not created', () => {
+			const dropdown = editor.ui.componentFactory.create( 'testColor' );
+			dropdown.render();
+
+			const colorTableView = dropdown.colorTableView;
+
+			expect( colorTableView.documentColorsCount ).to.equal( 0 );
+			expect( colorTableView.documentColorsLabel ).to.be.undefined;
 		} );
 	} );
 } );

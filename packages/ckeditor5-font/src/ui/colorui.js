@@ -138,9 +138,6 @@ export default class ColorUI extends Plugin {
 						documentColors.clear();
 
 						for ( const rootName of rootNames ) {
-							if ( documentColors.length >= maxCount ) {
-								break;
-							}
 							const root = document.getRoot( rootName );
 							const range = model.createRangeIn( root );
 							for ( const node of range.getItems() ) {
@@ -150,6 +147,9 @@ export default class ColorUI extends Plugin {
 										break;
 									}
 								}
+							}
+							if ( documentColors.length >= maxCount ) {
+								break;
 							}
 						}
 					}
