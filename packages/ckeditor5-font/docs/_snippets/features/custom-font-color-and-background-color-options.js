@@ -174,7 +174,8 @@ ClassicEditor
 					hasBorder: true
 				},
 			],
-			columns: 9
+			columns: 9,
+			documentColors: 18
 		},
 		fontColor: {
 			colors: [
@@ -198,7 +199,8 @@ ClassicEditor
 				'teal',
 				'aqua'
 			],
-			columns: 4
+			columns: 4,
+			documentColors: 12
 		}
 	} )
 	.then( editor => {

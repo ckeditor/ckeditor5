@@ -256,6 +256,35 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Documents colors
+
+Plugin contains special section with document colors. In this additional grid are presented colors found in currently edited document. Colors are read from the beginning of document to its end. Duplicated colors are not inserted multiple times. Only limited number of colors is displayed in this grid. You can mange how many document colors is displayed by changing {@link module:font/fontcolor~FontColorConfig#documentColors `fontColor.documentColors`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors `fontBackgroundColor.documentColors`} value. By default its value equals to {@link module:font/fontcolor~FontColorConfig#columns `fontColor.columns`} or {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns `fontBackgroundColor.columns`}. This results with one row of document colors available in dropdown.
+
+Setting `documentColors` value to `0` will disable this feature.
+
+If edited document doesn't contain any font color or background colors, then document colors section will be hidden until text with proper color value appear.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontColor: {
+			documentColors: 10,
+
+			// ...
+		},
+		fontBackgroundColor: {
+			documentColors: 0, // disables feature
+
+			// ...
+		},
+		toolbar: [
+			'heading', 'bulletedList', 'numberedList', 'fontColor', 'fontBackgroundColor', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 ## Installation
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
