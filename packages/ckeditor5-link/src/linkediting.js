@@ -78,6 +78,7 @@ export default class LinkEditing extends Plugin {
 		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
 
 		const linkDecorators = editor.config.get( 'link.decorators' ) || [];
+
 		this.enableAutomaticDecorators( linkDecorators.filter( item => item.mode === AUTO ) );
 		this.enableManualDecorators( linkDecorators.filter( item => item.mode === MANUAL ) );
 
@@ -108,15 +109,17 @@ export default class LinkEditing extends Plugin {
 		}
 
 		automaticDecorators.add( automaticDecoratorDefinitions );
-		editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
+		if ( automaticDecorators.length ) {
+			editor.conversion.for( 'downcast' ).add( automaticDecorators.getDispatcher() );
+		}
 	}
 
 	enableManualDecorators( manualDecoratorDefinitions ) {
-		const editor = this.editor;
 		if ( !manualDecoratorDefinitions.length ) {
 			return;
 		}
 
+		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
 		const attrCollection = command.customAttributes;
 

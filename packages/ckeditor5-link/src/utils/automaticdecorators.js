@@ -23,7 +23,7 @@ export default class AutomaticDecorators {
 	}
 
 	/**
-	 * Add item or array of items with autoamtic rules for applying decorators to link plugin.
+	 * Add item or array of items with automatic rules for applying decorators to link plugin.
 	 *
 	 * @param {Object|Array.<Object>} item configuration object of automatic rules for decorating links.
 	 * It might be also array of such objects.
