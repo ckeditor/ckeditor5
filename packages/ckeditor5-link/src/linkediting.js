@@ -204,7 +204,7 @@ export default class LinkEditing extends Plugin {
 }
 
 export class ManualDecorator {
-	constructor( { id, value, label, attributes } = {} ) {
+	constructor( { id, value, label, attributes } ) {
 		this.id = id;
 
 		this.set( 'value', value );

@@ -958,6 +958,61 @@ describe( 'LinkUI', () => {
 
 				expect( focusSpy.calledBefore( removeSpy ) ).to.equal( true );
 			} );
+
+			it( 'should gather information about manual decorators', () => {
+				let editor, model, formView;
+				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ LinkEditing, LinkUI, Paragraph ],
+						link: {
+							decorators: [
+								{
+									mode: 'manual',
+									label: 'Foo',
+									attributes: {
+										foo: 'bar'
+									}
+								}
+							]
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+
+						model.schema.extend( '$text', {
+							allowIn: '$root',
+							allowAttributes: 'linkHref'
+						} );
+
+						const linkUIFeature = editor.plugins.get( LinkUI );
+						const balloon = editor.plugins.get( ContextualBalloon );
+
+						formView = linkUIFeature.formView;
+
+						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+						testUtils.sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+						testUtils.sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+						formView.render();
+					} )
+					.then( () => {
+						const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+						setModelData( model, 'f[<$text linkHref="url" linkManualDecorator0="true">ooba</$text>]r' );
+						expect( formView.urlInputView.inputView.element.value ).to.equal( 'url' );
+						expect( formView.customAttributesView.length ).to.equal( 1 );
+						expect( formView.customAttributesView.first.isOn ).to.be.true;
+
+						formView.fire( 'submit' );
+
+						expect( executeSpy.calledOnce ).to.be.true;
+						expect( executeSpy.calledWithExactly( 'link', 'url', { linkManualDecorator0: true } ) ).to.be.true;
+					} );
+			} );
 		} );
 	} );
 } );

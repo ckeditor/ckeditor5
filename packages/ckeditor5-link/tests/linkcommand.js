@@ -300,39 +300,60 @@ describe( 'LinkCommand', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should insert additional attributes to link when is created', () => {
-			setData( model, 'foo[]bar' );
+		describe( 'collapsed selection', () => {
+			it( 'should insert additional attributes to link when it is created', () => {
+				setData( model, 'foo[]bar' );
 
-			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
 
-			expect( getData( model ) ).to
-				.equal( 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">url</$text>]bar' );
+				expect( getData( model ) ).to
+					.equal( 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">url</$text>]bar' );
+			} );
+
+			it( 'should add additional attributes to link when link is modified', () => {
+				setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
+
+				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+			} );
+
+			it( 'should remove additional attributes to link if those are falsy', () => {
+				setData( model, 'foo<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >u[]rl</$text>bar' );
+
+				command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
+
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+			} );
 		} );
 
-		it( 'should remove additional attributes to link if those are falsy', () => {
-			setData( model, 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >url</$text>]bar' );
+		describe( 'range selection', () => {
+			it( 'should insert additional attributes to link when it is created', () => {
+				setData( model, 'f[ooba]r' );
 
-			command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
+				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
 
-			expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
-		} );
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+			} );
 
-		it( 'should add additional attributes to link when link is modified', () => {
-			setData( model, 'f<$text linkHref="url">o[]oba</$text>r' );
+			it( 'should add additional attributes to link when link is modified', () => {
+				setData( model, 'f[<$text linkHref="foo">ooba</$text>]r' );
 
-			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
 
-			expect( getData( model ) ).to
-				.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
-		} );
+				expect( getData( model ) ).to
+					.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+			} );
 
-		it( 'should insert additional attributes for range selection', () => {
-			setData( model, 'f[ooba]r' );
+			it( 'should remove additional attributes to link if those are falsy', () => {
+				setData( model, 'foo[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true" >url</$text>]bar' );
 
-			command.execute( 'url', { linkManualDecorator0: true, linkManualDecorator1: true } );
+				command.execute( 'url', { linkManualDecorator0: false, linkManualDecorator1: false } );
 
-			expect( getData( model ) ).to
-				.equal( 'f[<$text linkHref="url" linkManualDecorator0="true" linkManualDecorator1="true">ooba</$text>]r' );
+				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+			} );
 		} );
 	} );
 } );
