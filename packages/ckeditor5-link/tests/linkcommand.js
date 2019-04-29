@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import LinkCommand from '../src/linkcommand';
-import { ManualDecorator } from '../src/linkediting';
+import ManualDecorator from '../src/utils/manualdecorator';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'LinkCommand', () => {
@@ -272,7 +272,6 @@ describe( 'LinkCommand', () => {
 
 					command.customAttributes.add( new ManualDecorator( {
 						id: 'linkManualDecorator0',
-						value: undefined,
 						label: 'Foo',
 						attributes: {
 							class: 'Foo'
@@ -280,7 +279,6 @@ describe( 'LinkCommand', () => {
 					} ) );
 					command.customAttributes.add( new ManualDecorator( {
 						id: 'linkManualDecorator1',
-						value: undefined,
 						label: 'Bar',
 						attributes: {
 							target: '_blank'
