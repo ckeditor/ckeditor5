@@ -33,7 +33,13 @@ import '../../theme/linkform.css';
  */
 export default class LinkFormView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:link/ui/linkformview~LinkFormView} class.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:utils/collection~Collection} [customAttributes] Reference to custom attributes in
+	 * {@link module:link/linkcommand~LinkCommand#customAttributes}.
 	 */
 	constructor( locale, customAttributes ) {
 		super( locale );
@@ -78,10 +84,29 @@ export default class LinkFormView extends View {
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
+		/**
+		 * Keeps reference to {@link module:link/linkcommand~LinkCommand#customAttributes}.
+		 *
+		 * @readonly
+		 * @type {model:utils/collection~Collection}
+		 */
 		this.customAttributes = customAttributes;
 
+		/**
+		 * Keeps reference to {@link module:ui/button/switchbuttonview~SwitchButtonView} made based on {@link #customAttributes}.
+		 * It use {@link #_createCustomAttributesView} to generate proper collection.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
 		this.customAttributesView = this._createCustomAttributesView();
 
+		/**
+		 * Collection of views used as children elements in {@link module:link/ui/linkformview~LinkFormView}.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
 		this.children = this._createFormChildren();
 
 		/**
@@ -216,6 +241,12 @@ export default class LinkFormView extends View {
 		return button;
 	}
 
+	/**
+	 * Prepare {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
+	 * made based on {@link #customAttributes}
+	 *
+	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
+	 */
 	_createCustomAttributesView() {
 		const checkboxes = this.createCollection();
 
@@ -238,6 +269,12 @@ export default class LinkFormView extends View {
 		return checkboxes;
 	}
 
+	/**
+	 * Creates {@link #children} for {@link module:link/ui/linkformview~LinkFormView}. If there exist {@link #customAttributes},
+	 * Then additional View wrapping all {@link #customAttributesView} will be added as a child of LinkFormView.
+	 *
+	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
+	 */
 	_createFormChildren() {
 		const children = this.createCollection();
 

@@ -29,6 +29,13 @@ export default class LinkCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
+		/**
+		 * Keeps collection of {@link module:link/utils/manualdecorator~ManualDecorator}
+		 * recognized in {@link module:link/link~LinkConfig#decorators}.
+		 *
+		 * @readonly
+		 * @type {module:utils/collection~Collection}
+		 */
 		this.customAttributes = new Collection();
 	}
 

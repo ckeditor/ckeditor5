@@ -88,6 +88,15 @@ export default class LinkEditing extends Plugin {
 		this._setupLinkHighlight();
 	}
 
+	/**
+	 * Method process {@link module:link/link~LinkDecoratorAutomaticOption} by creating instance of
+	 * {@link module:link/utils/automaticdecorators~AutomaticDecorators}. If there are available automatic decorators, then
+	 * there is registered {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} to handle
+	 * those configurations.
+	 *
+	 * @private
+	 * @param {Array.<module:link/link~LinkDecoratorAutomaticOption>} automaticDecoratorDefinitions
+	 */
 	enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
 		const automaticDecorators = new AutomaticDecorators();
@@ -112,6 +121,17 @@ export default class LinkEditing extends Plugin {
 		}
 	}
 
+	/**
+	 * Method process {@link module:link/link~LinkDecoratorManualOption} by transformation those configuration options into
+	 * {@link module:link/utils/manualdecorator~ManualDecorator}. Manual decorators are added to
+	 * {@link module:link/linkcommand~LinkCommand#customAttributes} collections, which might be considered as a model
+	 * for manual decorators state. It also provides proper
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attributeToElement} converter for each
+	 * manual decorator and extends model schema with adequate attributes.
+	 *
+	 * @private
+	 * @param {Array.<module:link/link~LinkDecoratorManualOption>} manualDecoratorDefinitions
+	 */
 	enableManualDecorators( manualDecoratorDefinitions ) {
 		if ( !manualDecoratorDefinitions.length ) {
 			return;
