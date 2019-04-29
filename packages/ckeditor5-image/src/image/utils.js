@@ -8,6 +8,7 @@
  */
 
 import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import WidgetResizeFeature from '@ckeditor/ckeditor5-widget/src/widgetresizefeature';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
@@ -22,7 +23,12 @@ import { findOptimalInsertionPosition, isWidget, toWidget } from '@ckeditor/cked
 export function toImageWidget( viewElement, writer, label ) {
 	writer.setCustomProperty( 'image', true, viewElement );
 
-	return toWidget( viewElement, writer, { label: labelCreator } );
+	return toWidget( viewElement, writer, {
+		label: labelCreator,
+		features: [
+			new WidgetResizeFeature()
+		]
+	} );
 
 	function labelCreator() {
 		const imgElement = viewElement.getChild( 0 );
