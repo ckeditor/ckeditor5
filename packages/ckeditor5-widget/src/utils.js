@@ -108,6 +108,10 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandler( element, writer );
 	}
 
+	if ( options.features ) {
+		addWidgetFeatures( element, writer, options.features );
+	}
+
 	setHighlightHandling(
 		element,
 		writer,
@@ -378,4 +382,10 @@ function addSelectionHandler( widgetElement, writer ) {
 	// Append the selection handler into the widget wrapper.
 	writer.insert( writer.createPositionAt( widgetElement, 0 ), selectionHandler );
 	writer.addClass( [ 'ck-widget_with-selection-handler' ], widgetElement );
+}
+
+function addWidgetFeatures( element, writer, features ) {
+	for ( const currentFeature of features ) {
+		currentFeature.apply( element, writer );
+	}
 }
