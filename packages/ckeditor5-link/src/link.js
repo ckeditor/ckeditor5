@@ -87,22 +87,16 @@ export default class Link extends Plugin {
  * 		}
  * 	},
  * 	{
- * 		mode: 'automatic',
- * 		callback: url => url.includes( 'download' ) && url.endsWith( '.pdf' ),
+ * 		mode: 'manual',
+ * 		label: 'Downloadable',
  * 		attributes: {
  * 			download: 'download'
- * 		}
- * 	},
- * 	{
- * 		mode: 'automatic',
- * 		callback: url => url.includes( 'image' ) && url.endsWith( '.png' ),
- * 		attributes: {
- * 			class: 'light-gallery'
  * 		}
  * 	}
  * ]
  * ```
- * @member {Array.<module:link/link~LinkDecoratorAutomaticOption>} module:link/link~LinkConfig#decorators
+ * @member {Array.<module:link/link~LinkDecoratorAutomaticOption|module:link/link~LinkDecoratorManualOption>}
+ * module:link/link~LinkConfig#decorators
  */
 
 /**
@@ -114,20 +108,45 @@ export default class Link extends Plugin {
  *   * `rel="noopener noreferrer"`
  * for all links started with: `http://`, `https://` or `//`.
  *
- * ```js
- * 	{
- * 		mode: 'automatic',
- * 		callback: url => /^(https?:)?\/\//.test( url ),
- * 		attributes: {
- * 			target: '_blank',
- * 			rel: 'noopener noreferrer'
- * 		}
- * 	}
- * ```
+ *```js
+ *	{
+ *		mode: 'automatic',
+ *		callback: url => /^(https?:)?\/\//.test( url ),
+ *		attributes: {
+ *			target: '_blank',
+ *			rel: 'noopener noreferrer'
+ *		}
+ *	}
+ *```
  *
  * @typedef {Object} module:link/link~LinkDecoratorAutomaticOption
  * @property {'automatic'} mode it should has always string value 'automatic' for automatic decorators
  * @property {Function} callback takes `url` as parameter and should return `true`
  * for urls that be decorate with this decorator.
+ * @property {Object} attributes key-value pairs used as attributes added to anchor during downcasting.
+ */
+
+/**
+ * This object defining manual decorator for the links. Based on this options, there will be added UI switches do link balloon.
+ * User will be able activate pre-configured attributes for the link by simple switch button change.
+ * For example, you can define rules, when attribute `target="_blank"` will be added to links, which adds attributes
+ * when user select proper options in UI:
+ *   * `target="_blank"`
+ *   * `rel="noopener noreferrer"`
+ *
+ *```js
+ *	{
+ *		mode: 'manual',
+ *		label: 'Open link in new window',
+ *		attributes: {
+ *			target: '_blank',
+ *			rel: 'noopener noreferrer'
+ *		}
+ *	}
+ *```
+ *
+ * @typedef {Object} module:link/link~LinkDecoratorManualOption
+ * @property {'manual'} mode it should has always string value 'manual' for manual decorators
+ * @property {String} label the label for ui switch, which will be responsible for activation of given attributes set
  * @property {Object} attributes key-value pairs used as attributes added to anchor during downcasting.
  */
