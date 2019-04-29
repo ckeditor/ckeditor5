@@ -33,6 +33,10 @@ describe( 'LinkEditing', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		editor.destroy();
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
 	} );
@@ -393,8 +397,8 @@ describe( 'LinkEditing', () => {
 			} );
 
 			describe( 'for link.targetDecorator = false', () => {
+				let editor, model;
 				beforeEach( () => {
-					editor.destroy();
 					return VirtualTestEditor
 						.create( {
 							plugins: [ Paragraph, LinkEditing, Enter ],
@@ -408,6 +412,11 @@ describe( 'LinkEditing', () => {
 							view = editor.editing.view;
 						} );
 				} );
+
+				afterEach( () => {
+					editor.destroy();
+				} );
+
 				it( 'link.targetDecorator is set as true value', () => {
 					expect( editor.config.get( 'link.targetDecorator' ) ).to.be.true;
 				} );

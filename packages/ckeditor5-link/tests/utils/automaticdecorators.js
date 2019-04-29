@@ -17,6 +17,10 @@ describe( 'Automatic Decorators', () => {
 		} );
 	} );
 
+	it( 'has length equal 0 after initialization', () => {
+		expect( automaticDecorators.length ).to.equal( 0 );
+	} );
+
 	describe( 'add()', () => {
 		const tests = [
 			{
@@ -44,10 +48,10 @@ describe( 'Automatic Decorators', () => {
 			}
 		];
 		it( 'can accept single object', () => {
-			expect( automaticDecorators._definitions.size ).to.equal( 0 );
+			expect( automaticDecorators.length ).to.equal( 0 );
 
 			automaticDecorators.add( tests[ 0 ] );
-			expect( automaticDecorators._definitions.size ).to.equal( 1 );
+			expect( automaticDecorators.length ).to.equal( 1 );
 
 			const firstValue = automaticDecorators._definitions.values().next().value;
 
@@ -62,11 +66,11 @@ describe( 'Automatic Decorators', () => {
 		} );
 
 		it( 'can accept array of objects', () => {
-			expect( automaticDecorators._definitions.size ).to.equal( 0 );
+			expect( automaticDecorators.length ).to.equal( 0 );
 
 			automaticDecorators.add( tests );
 
-			expect( automaticDecorators._definitions.size ).to.equal( 3 );
+			expect( automaticDecorators.length ).to.equal( 3 );
 
 			const setIterator = automaticDecorators._definitions.values();
 			setIterator.next();

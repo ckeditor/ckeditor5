@@ -92,7 +92,6 @@ export default class LinkEditing extends Plugin {
 	enableAutomaticDecorators( automaticDecoratorDefinitions ) {
 		const editor = this.editor;
 		const automaticDecorators = new AutomaticDecorators();
-
 		// Adds default decorator for external links.
 		if ( editor.config.get( 'link.targetDecorator' ) ) {
 			automaticDecorators.add( {

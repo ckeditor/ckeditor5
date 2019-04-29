@@ -23,6 +23,17 @@ export default class AutomaticDecorators {
 	}
 
 	/**
+	 * Gives information how many decorators is stored in {@link module:link/utils/automaticdecorators~AutomaticDecorators} instance.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Number}
+	 */
+	get length() {
+		return this._definitions.size;
+	}
+
+	/**
 	 * Add item or array of items with automatic rules for applying decorators to link plugin.
 	 *
 	 * @param {Object|Array.<Object>} item configuration object of automatic rules for decorating links.
