@@ -170,7 +170,7 @@ export default class LinkFormView extends View {
 			this.urlInputView,
 			...this.customAttributesView,
 			this.saveButtonView,
-			this.cancelButtonView,
+			this.cancelButtonView
 		];
 
 		childViews.forEach( v => {
