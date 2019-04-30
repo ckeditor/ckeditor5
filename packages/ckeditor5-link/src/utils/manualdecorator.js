@@ -4,21 +4,21 @@
  */
 
 /**
- * @module link/utils/manualdecorator
+ * @module link/utils
  */
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class which stores manual decorators with observable {@link module:link/utils/manualdecorator~ManualDecorator#value}
+ * Class which stores manual decorators with observable {@link module:link/utils~ManualDecorator#value}
  * to handle integration with ui state.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ManualDecorator {
 	/**
-	 * Creates new instance of {@link module:link/utils/manualdecorator~ManualDecorator}.
+	 * Creates new instance of {@link module:link/utils~ManualDecorator}.
 	 *
 	 * @param {Object} config
 	 * @param {String} config.id Manual decorator id, which is a name of attribute in model, for example 'linkManualDecorator0'.
@@ -38,7 +38,7 @@ export default class ManualDecorator {
 		 * Value of current manual decorator. It reflects its state from UI.
 		 *
 		 * @observable
-		 * @member {Boolean} module:link/utils/manualdecorator~ManualDecorator#value
+		 * @member {Boolean} module:link/utils~ManualDecorator#value
 		 */
 		this.set( 'value' );
 

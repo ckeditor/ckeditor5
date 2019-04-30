@@ -30,8 +30,9 @@ export default class LinkCommand extends Command {
 		super( editor );
 
 		/**
-		 * Keeps collection of {@link module:link/utils/manualdecorator~ManualDecorator}
-		 * recognized in {@link module:link/link~LinkConfig#decorators}.
+		 * Keeps collection of {@link module:link/utils~ManualDecorator}
+		 * recognized from {@link module:link/link~LinkConfig#decorators}.
+		 * You can consider it as a model of states for custom attributes added to links.
 		 *
 		 * @readonly
 		 * @type {module:utils/collection~Collection}

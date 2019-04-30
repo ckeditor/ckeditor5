@@ -102,7 +102,7 @@ export default class Link extends Plugin {
 /**
  * This object defining automatic decorator for the links. Based on this option data pipeline will extend links with proper attributes.
  * For example, you can define rules, when attribute `target="_blank"` will be added to links.
- * There is a default option which might be activated with {@link module:link/link~LinkConfig#targetDecorator},
+ * Please notice that, there is a default option which can be activated with {@link module:link/link~LinkConfig#targetDecorator},
  * which automatically adds attributes:
  *   * `target="_blank"`
  *   * `rel="noopener noreferrer"`
@@ -124,15 +124,15 @@ export default class Link extends Plugin {
  * @property {Function} callback takes `url` as parameter and should return `true`
  * for urls that be decorate with this decorator.
  * @property {Object} attributes key-value pairs used as attributes added to anchor during downcasting.
+ * Attributes should be added in a form of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
  */
 
 /**
- * This object defining manual decorator for the links. Based on this options, there will be added UI switches do link balloon.
- * User will be able activate pre-configured attributes for the link by simple switch button change.
- * For example, you can define rules, when attribute `target="_blank"` will be added to links, which adds attributes
- * when user select proper options in UI:
- *   * `target="_blank"`
- *   * `rel="noopener noreferrer"`
+ * This object defining manual decorator for the links. Based on this options, there will be added UI switches to link balloon.
+ * User will be able to activate pre-configured attributes for the link by simple switch button change.
+ *
+ * For example, you can define decorator, which show up switch responsible for adding attributes `target="_blank"` and
+ * `rel="noopener noreferrer"` when user select proper options in UI.
  *
  *```js
  *	{
@@ -149,4 +149,5 @@ export default class Link extends Plugin {
  * @property {'manual'} mode it should has always string value 'manual' for manual decorators
  * @property {String} label the label for ui switch, which will be responsible for activation of given attributes set
  * @property {Object} attributes key-value pairs used as attributes added to anchor during downcasting.
+ * Attributes should be added in a form of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
  */

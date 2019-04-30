@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/utils/automaticdecorators
+ * @module link/utils
  */
 
 /**
@@ -23,7 +23,7 @@ export default class AutomaticDecorators {
 	}
 
 	/**
-	 * Gives information how many decorators is stored in {@link module:link/utils/automaticdecorators~AutomaticDecorators} instance.
+	 * Gives information how many decorators is stored in {@link module:link/utils~AutomaticDecorators} instance.
 	 *
 	 * @readonly
 	 * @protected
@@ -36,8 +36,8 @@ export default class AutomaticDecorators {
 	/**
 	 * Add item or array of items with automatic rules for applying decorators to link plugin.
 	 *
-	 * @param {Object|Array.<Object>} item configuration object of automatic rules for decorating links.
-	 * It might be also array of such objects.
+	 * @param {module:link/link~LinkDecoratorAutomaticOption|Array.<module:link/link~LinkDecoratorAutomaticOption>} item
+	 * configuration object of automatic rules for decorating links. It might be also array of such objects.
 	 */
 	add( item ) {
 		if ( Array.isArray( item ) ) {
