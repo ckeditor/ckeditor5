@@ -248,25 +248,26 @@ export default class LinkFormView extends View {
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
 	_createCustomAttributesView() {
-		const checkboxes = this.createCollection();
+		const switches = this.createCollection();
 
-		checkboxes.bindTo( this.customAttributes ).using( item => {
-			const checkbox = new SwitchButtonView( this.locale );
-			checkbox.set( {
-				value: item.id,
+		switches.bindTo( this.customAttributes ).using( item => {
+			const switchButton = new SwitchButtonView( this.locale );
+
+			switchButton.set( {
+				name: item.id,
 				label: item.label,
 				withText: true
 			} );
 
-			checkbox.bind( 'isOn' ).to( item, 'value' );
+			switchButton.bind( 'isOn' ).to( item, 'value' );
 
-			checkbox.on( 'execute', () => {
-				this.customAttributes.get( item.id ).set( 'value', !checkbox.isOn );
+			switchButton.on( 'execute', () => {
+				item.set( 'value', !switchButton.isOn );
 			} );
 
-			return checkbox;
+			return switchButton;
 		} );
-		return checkboxes;
+		return switches;
 	}
 
 	/**
