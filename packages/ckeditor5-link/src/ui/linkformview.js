@@ -249,13 +249,14 @@ export default class LinkFormView extends View {
 	 */
 	_createCustomAttributesView() {
 		const switches = this.createCollection();
+		const t = this.locale.t;
 
 		switches.bindTo( this.customAttributes ).using( item => {
 			const switchButton = new SwitchButtonView( this.locale );
 
 			switchButton.set( {
 				name: item.id,
-				label: item.label,
+				label: t( item.label ),
 				withText: true
 			} );
 
