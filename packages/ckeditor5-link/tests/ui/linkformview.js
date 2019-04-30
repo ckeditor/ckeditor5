@@ -13,6 +13,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ManualDecorator from '../../src/utils/manualdecorator';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 describe( 'LinkFormView', () => {
 	let view;
@@ -22,6 +24,10 @@ describe( 'LinkFormView', () => {
 	beforeEach( () => {
 		view = new LinkFormView( { t: val => val }, [] );
 		view.render();
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -180,6 +186,78 @@ describe( 'LinkFormView', () => {
 			view.focus();
 
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'customAttributes', () => {
+		let view, collection;
+		beforeEach( () => {
+			collection = new Collection();
+			collection.add( new ManualDecorator( {
+				id: 'decorator1',
+				label: 'Foo',
+				attributes: {
+					foo: 'bar'
+				}
+			} ) );
+			collection.add( new ManualDecorator( {
+				id: 'decorator2',
+				label: 'Download',
+				attributes: {
+					download: 'download'
+				}
+			} ) );
+			collection.add( new ManualDecorator( {
+				id: 'decorator3',
+				label: 'Multi',
+				attributes: {
+					class: 'fancy-class',
+					target: '_blank',
+					rel: 'noopener noreferrer'
+				}
+			} ) );
+
+			view = new LinkFormView( { t: val => val }, collection );
+			view.render();
+		} );
+
+		afterEach( () => {
+			view.destroy();
+			collection.clear();
+		} );
+		it( 'switch buttons reflects state of customAttributes', () => {
+			expect( view.customAttributesView.length ).to.equal( 3 );
+
+			expect( view.customAttributesView.get( 0 ) ).to.deep.include( {
+				name: 'decorator1',
+				label: 'Foo'
+			} );
+			expect( view.customAttributesView.get( 1 ) ).to.deep.include( {
+				name: 'decorator2',
+				label: 'Download'
+			} );
+			expect( view.customAttributesView.get( 2 ) ).to.deep.include( {
+				name: 'decorator3',
+				label: 'Multi'
+			} );
+		} );
+
+		it( 'reacts on switch button changes', () => {
+			const modelItem = collection.first;
+			const viewItem = view.customAttributesView.first;
+
+			expect( modelItem.value ).to.be.undefined;
+			expect( viewItem.isOn ).to.be.undefined;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.true;
+			expect( viewItem.isOn ).to.be.true;
+
+			viewItem.element.dispatchEvent( new Event( 'click' ) );
+
+			expect( modelItem.value ).to.be.false;
+			expect( viewItem.isOn ).to.be.false;
 		} );
 	} );
 } );
