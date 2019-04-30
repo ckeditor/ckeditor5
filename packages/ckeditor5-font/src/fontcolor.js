@@ -40,6 +40,15 @@ export default class FontColor extends Plugin {
 
 /**
  * The configuration of the font color feature.
+ * It is introduced by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
+ *
+ * Read more in {@link module:font/fontcolor~FontColorConfig}.
+ *
+ * @member {module:font/fontcolor~FontColorConfig} module:core/editor/editorconfig~EditorConfig#fontColor
+ */
+
+/**
+ * The configuration of the font color feature.
  * This option is used by the {@link module:font/fontcolor/fontcolorediting~FontColorEditing} feature.
  *
  *		ClassicEditor
