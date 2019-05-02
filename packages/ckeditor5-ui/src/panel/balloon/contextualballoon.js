@@ -9,7 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * Provides the common contextual balloon panel for the editor.
@@ -38,14 +41,8 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		/**
-		 * The common balloon panel view.
-		 *
-		 * @readonly
-		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
-		 */
-		this.view = new BalloonPanelView();
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * The {@link module:utils/dom/position~Options#limiter position limiter}
@@ -71,31 +68,53 @@ export default class ContextualBalloon extends Plugin {
 		};
 
 		/**
-		 * Stack of the views injected into the balloon. Last one in the stack is displayed
-		 * as a content of {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#view}.
+		 * The currently visible view or `null` when there are no
+		 * views in the currently visible panel stack.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View|null} #visibleView
+		 */
+		this.set( 'visibleView', null );
+
+		/**
+		 * The common balloon panel view.
+		 *
+		 * @readonly
+		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
+		 */
+		this.view = new BalloonPanelView( editor.locale );
+		this.editor.ui.view.body.add( this.view );
+		this.editor.ui.focusTracker.add( this.view.element );
+
+		/**
+		 * Currently visible panel.
 		 *
 		 * @private
-		 * @member {Map} #_stack
+		 * @readonly
+		 * @observable
+		 * @member {null|Object} #_visiblePanel
 		 */
-		this._stack = new Map();
+		this.set( '_visiblePanel', null );
 
-		// Add balloon panel view to editor `body` collection and wait until view will be ready.
-		this.editor.ui.view.body.add( this.view );
+		/**
+		 * List of panels.
+		 *
+		 * @private
+		 * @type {module:utils/collection~Collection}
+		 */
+		this._panels = new Collection();
 
-		// Editor should be focused when contextual balloon is focused.
-		this.editor.ui.focusTracker.add( this.view.element );
-	}
+		/**
+		 * @private
+		 * @type {Map.<Object>}
+		 */
+		this._viewToPanel = new Map();
 
-	/**
-	 * Returns the currently visible view or `null` when there are no
-	 * views in the stack.
-	 *
-	 * @returns {module:ui/view~View|null}
-	 */
-	get visibleView() {
-		const item = this._stack.get( this.view.content.get( 0 ) );
-
-		return item ? item.view : null;
+		/**
+		 * @private
+		 * @type {~RotatorView}
+		 */
+		this._rotatorView = this._createRotatorView();
 	}
 
 	/**
@@ -105,13 +124,14 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {Boolean}
 	 */
 	hasView( view ) {
-		return this._stack.has( view );
+		return Array.from( this._viewToPanel.keys() ).includes( view );
 	}
 
 	/**
 	 * Adds a new view to the stack and makes it visible.
 	 *
 	 * @param {Object} data Configuration of the view.
+	 * @param {String} [data.panelId='main'] Id of panel that view is added to.
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
@@ -127,17 +147,34 @@ export default class ContextualBalloon extends Plugin {
 			throw new CKEditorError( 'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.' );
 		}
 
-		// When adding view to the not empty balloon.
-		if ( this.visibleView ) {
-			// Remove displayed content from the view.
-			this.view.content.remove( this.visibleView );
+		const panelId = data.panelId || 'main';
+
+		// If new panel is added, creates it and show it.
+		if ( !this._panels.has( panelId ) ) {
+			this._panels.add( {
+				id: panelId,
+				stack: new Map( [ [ data.view, data ] ] )
+			} );
+
+			this._viewToPanel.set( data.view, this._panels.get( panelId ) );
+
+			if ( !this._visiblePanel ) {
+				this.showPanel( panelId );
+			}
+
+			return;
 		}
 
-		// Add new view to the stack.
-		this._stack.set( data.view, data );
+		const panel = this._panels.get( panelId );
 
-		// And display it.
-		this._show( data );
+		// Add new view to the stack.
+		panel.stack.set( data.view, data );
+		this._viewToPanel.set( data.view, panel );
+
+		// And display it if is added to the currently visible panel.
+		if ( panel === this._visiblePanel ) {
+			this._showView( data );
+		}
 	}
 
 	/**
@@ -157,29 +194,32 @@ export default class ContextualBalloon extends Plugin {
 			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove configuration of not existing view.' );
 		}
 
-		// When visible view is being removed.
+		const panel = this._viewToPanel.get( view );
+
+		// When visible view will be removed we need to show a preceding view or next panel
+		// if a view is the only view in the panel.
 		if ( this.visibleView === view ) {
-			// We need to remove it from the view content.
-			this.view.content.remove( view );
-
-			// And then remove from the stack.
-			this._stack.delete( view );
-
-			// Next we need to check if there is other view in stack to show.
-			const last = Array.from( this._stack.values() ).pop();
-
-			// If it is some other view.
-			if ( last ) {
-				// Just show it.
-				this._show( last );
+			if ( panel.stack.size === 1 ) {
+				if ( this._panels.length > 1 ) {
+					this._showNextPanel();
+				} else {
+					this.view.unpin();
+					this.visibleView = null;
+					this._visiblePanel = null;
+					this._rotatorView.content.clear();
+				}
 			} else {
-				// Hide the balloon panel.
-				this.view.hide();
+				this._showView( Array.from( panel.stack.values() )[ panel.stack.size - 2 ] );
 			}
-		} else {
-			// Just remove given view from the stack.
-			this._stack.delete( view );
 		}
+
+		if ( panel.stack.size === 1 ) {
+			this._panels.remove( panel.id );
+		} else {
+			panel.stack.delete( view );
+		}
+
+		this._viewToPanel.delete( view );
 	}
 
 	/**
@@ -190,10 +230,91 @@ export default class ContextualBalloon extends Plugin {
 	 */
 	updatePosition( position ) {
 		if ( position ) {
-			this._stack.get( this.visibleView ).position = position;
+			this._visiblePanel.stack.get( this.visibleView ).position = position;
 		}
 
 		this.view.pin( this._getBalloonPosition() );
+	}
+
+	showPanel( id ) {
+		const panel = this._panels.get( id );
+
+		if ( !panel ) {
+			/**
+			 * Trying to show not existing panel.
+			 *
+			 * @error contextualballoon-showpanel-panel-not-exist
+			 */
+			throw new CKEditorError( 'contextualballoon-showpanel-panel-not-exist: Cannot show not existing panel.' );
+		}
+
+		if ( this._visiblePanel === panel ) {
+			return;
+		}
+
+		this._visiblePanel = panel;
+		this._showView( Array.from( panel.stack.values() ).pop() );
+	}
+
+	_showNextPanel() {
+		if ( this._panels.length === 1 ) {
+			return;
+		}
+
+		const panel = this._visiblePanel;
+
+		let nextIndex = this._panels.getIndex( panel ) + 1;
+
+		if ( !this._panels.get( nextIndex ) ) {
+			nextIndex = 0;
+		}
+
+		this.showPanel( this._panels.get( nextIndex ).id );
+	}
+
+	_showPrevPanel() {
+		if ( this._panels.length === 1 ) {
+			return;
+		}
+
+		const panel = this._visiblePanel;
+
+		let nextIndex = this._panels.getIndex( panel ) - 1;
+
+		if ( !this._panels.get( nextIndex ) ) {
+			nextIndex = this._panels.length - 1;
+		}
+
+		this.showPanel( this._panels.get( nextIndex ).id );
+	}
+
+	/**
+	 * Creates a rotator view.
+	 *
+	 * @private
+	 * @returns {~RotatorView}
+	 */
+	_createRotatorView() {
+		const view = new RotatorView( this.editor.locale );
+
+		this.view.content.add( view );
+
+		// Hide navigation when there is only a one panel.
+		view.bind( 'isNavigationVisible' ).to( this._panels, 'length', value => value > 1 );
+
+		// Show panels counter.
+		view.bind( 'counter' ).to( this, '_visiblePanel', this._panels, 'length', ( panel, length ) => {
+			if ( !panel ) {
+				return `0/${ length }`;
+			}
+
+			return `${ this._panels.getIndex( panel ) + 1 }/${ length }`;
+		} );
+
+		view.buttonNextView.on( 'execute', () => this._showNextPanel() );
+		view.buttonPrevView.on( 'execute', () => this._showPrevPanel() );
+
+		return view;
 	}
 
 	/**
@@ -206,11 +327,13 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {String} [data.balloonClassName=''] Additional class name which will be added to the {@link #view balloon}.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
-	_show( { view, balloonClassName = '', withArrow = true } ) {
+	_showView( { view, balloonClassName = '', withArrow = true } ) {
 		this.view.class = balloonClassName;
 		this.view.withArrow = withArrow;
 
-		this.view.content.add( view );
+		this._rotatorView.content.clear();
+		this._rotatorView.content.add( view );
+		this.visibleView = view;
 		this.view.pin( this._getBalloonPosition() );
 	}
 
@@ -222,7 +345,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		let position = Array.from( this._stack.values() ).pop().position;
+		let position = Array.from( this._visiblePanel.stack.values() ).pop().position;
 
 		// Use the default limiter if none has been specified.
 		if ( position && !position.limiter ) {
@@ -233,5 +356,73 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		return position;
+	}
+}
+
+/**
+ * @private
+ */
+class RotatorView extends View {
+	constructor( locale ) {
+		super( locale );
+
+		const bind = this.bindTemplate;
+
+		this.set( 'isNavigationVisible', true );
+
+		this.buttonPrevView = this._createButtonView( locale.t( 'Prev' ) );
+
+		this.buttonNextView = this._createButtonView( locale.t( 'Next' ) );
+
+		/**
+		 * Collection of the child views which creates balloon panel contents.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this.content = this.createCollection();
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: 'rotator'
+			},
+			children: [
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'rotator_navigation',
+							bind.to( 'isNavigationVisible', value => value ? '' : 'ck-hidden' )
+						]
+					},
+					children: [
+						this.buttonPrevView,
+						this.buttonNextView,
+						{
+							text: bind.to( 'counter' )
+						}
+					]
+				},
+				{
+					tag: 'div',
+					attributes: {
+						class: 'rotator_content'
+					},
+					children: this.content
+				}
+			]
+		} );
+	}
+
+	_createButtonView( label ) {
+		const view = new ButtonView( this.locale );
+
+		view.set( {
+			withText: true,
+			label
+		} );
+
+		return view;
 	}
 }
