@@ -27,7 +27,7 @@ ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, RemoveFormat, ShiftEnter, Typing,
-			Underline, Undo, Image, Image, ImageCaption, ImageToolbar
+			Underline, Undo, Image, ImageCaption, ImageToolbar
 		],
 		toolbar: [ 'removeFormat', '|', 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo' ]
 	} )
