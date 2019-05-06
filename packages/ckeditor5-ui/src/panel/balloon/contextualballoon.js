@@ -72,6 +72,7 @@ export default class ContextualBalloon extends Plugin {
 		 * views in the currently visible panel stack.
 		 *
 		 * @readonly
+		 * @observable
 		 * @member {module:ui/view~View|null} #visibleView
 		 */
 		this.set( 'visibleView', null );
@@ -111,14 +112,17 @@ export default class ContextualBalloon extends Plugin {
 		this._viewToPanel = new Map();
 
 		/**
+		 * Rotator view embedded in the contextual balloon.
+		 * Displays currently visible view in the balloon and provides navigation for switching panels.
+		 *
 		 * @private
-		 * @type {~RotatorView}
+		 * @type {module:ui/view~View}
 		 */
 		this._rotatorView = this._createRotatorView();
 	}
 
 	/**
-	 * Returns `true` when the given view is in the stack. Otherwise returns `false`.
+	 * Returns `true` when the given view is in one of the stack. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
@@ -128,7 +132,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Adds a new view to the stack and makes it visible.
+	 * Adds a new view to the panel stack and makes it visible if current panel is visible.
 	 *
 	 * @param {Object} data Configuration of the view.
 	 * @param {String} [data.panelId='main'] Id of panel that view is added to.
@@ -178,9 +182,10 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Removes the given view from the stack. If the removed view was visible,
-	 * then the view preceding it in the stack will become visible instead.
-	 * When there is no view in the stack then balloon will hide.
+	 * Removes the given view from the panel stack. If the removed view was visible,
+	 * then the view preceding it in panel the stack will become visible instead.
+	 * When there is no view in the stack then next panel will be displayed.
+	 * When there is not panel to display then balloon will hide.
 	 *
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
@@ -223,7 +228,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Updates the position of the balloon using position data of the first visible view in the stack.
+	 * Updates the position of the balloon using position data of the first visible view in the panel stack.
 	 * When new position data is given then position data of currently visible panel will be updated.
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
@@ -236,6 +241,11 @@ export default class ContextualBalloon extends Plugin {
 		this.view.pin( this._getBalloonPosition() );
 	}
 
+	/**
+	 * Shows last view from the stack of panel with given id.
+	 *
+	 * @param {String} id
+	 */
 	showPanel( id ) {
 		const panel = this._panels.get( id );
 
@@ -256,6 +266,12 @@ export default class ContextualBalloon extends Plugin {
 		this._showView( Array.from( panel.stack.values() ).pop() );
 	}
 
+	/**
+	 * Shows last view from the stack of the next panel
+	 * according to the currently visible panel.
+	 *
+	 * @private
+	 */
 	_showNextPanel() {
 		if ( this._panels.length === 1 ) {
 			return;
@@ -272,6 +288,12 @@ export default class ContextualBalloon extends Plugin {
 		this.showPanel( this._panels.get( nextIndex ).id );
 	}
 
+	/**
+	 * Shows last view from the stack of the previous panel
+	 * according to the currently visible panel.
+	 *
+	 * @private
+	 */
 	_showPrevPanel() {
 		if ( this._panels.length === 1 ) {
 			return;
@@ -359,27 +381,36 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
-/**
- * @private
- */
+// Rotator view. Used to display last view from the panel stack.
+// Provides navigation buttons for switching panels.
+//
+// @private
+// @extends module:ui/view~View
 class RotatorView extends View {
 	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
+		// Defines whether navigation is visible or not.
+		//
+		// @member {Boolean} #isNavigationVisible
 		this.set( 'isNavigationVisible', true );
 
+		// Navigation button to switches panel to the next one.
+		//
+		// @type {module:ui/button/buttonview~ButtonView}
 		this.buttonPrevView = this._createButtonView( locale.t( 'Prev' ) );
 
+		// Navigation button to switches panel to the previous one.
+		//
+		// @type {module:ui/button/buttonview~ButtonView}
 		this.buttonNextView = this._createButtonView( locale.t( 'Next' ) );
 
-		/**
-		 * Collection of the child views which creates balloon panel contents.
-		 *
-		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
+		// Collection of the child views which creates balloon panel contents.
+		//
+		// @readonly
+		// @type {module:ui/viewcollection~ViewCollection}
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -415,6 +446,11 @@ class RotatorView extends View {
 		} );
 	}
 
+	// Create navigation button view.
+	//
+	// @private
+	// @param {String} label
+	// @returns {module:ui/button/buttonview~ButtonView}
 	_createButtonView( label ) {
 		const view = new ButtonView( this.locale );
 
