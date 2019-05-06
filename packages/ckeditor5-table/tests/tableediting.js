@@ -294,6 +294,22 @@ describe( 'TableEditing', () => {
 				] ) );
 			} );
 
+			it( 'should not create another row and not move the caret if insertTableRowBelow command is disabled', () => {
+				setModelData( model, modelTable( [
+					[ '11', '[12]' ]
+				] ) );
+
+				const insertTableRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
+
+				insertTableRowBelowCommand.forceDisabled( 'test' );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '[12]' ],
+				] ) );
+			} );
+
 			it( 'should move to the first cell of next row if on end of a row', () => {
 				setModelData( model, modelTable( [
 					[ '11', '12[]' ],
