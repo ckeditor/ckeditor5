@@ -324,6 +324,9 @@ export default class ContextualBalloon extends Plugin {
 		// Hide navigation when there is only a one panel.
 		view.bind( 'isNavigationVisible' ).to( this._panels, 'length', value => value > 1 );
 
+		// Update panel position after toggling navigation.
+		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
+
 		// Show panels counter.
 		view.bind( 'counter' ).to( this, '_visiblePanel', this._panels, 'length', ( panel, length ) => {
 			if ( !panel ) {
