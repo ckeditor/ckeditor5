@@ -6,7 +6,7 @@ category: api-reference
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-mention.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-mention)
 
-This package implements the mention feature for CKEditor 5. This features provides smart completion functionality for custom text matches based on user input.
+This package implements the mention feature for CKEditor 5. It provides smart completion functionality for custom text matches based on user input.
 
 ## Demo
 

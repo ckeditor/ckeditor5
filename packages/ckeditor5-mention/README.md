@@ -10,7 +10,11 @@ CKEditor 5 mention feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-mention/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-mention?type=dev)
 
-This package implements mention support for CKEditor 5.
+This package implements mention support for CKEditor 5 and brings smart autocompletion based on user input.
+
+## Demo
+
+Check out the demo in the [Mentions (autocomplete) feature](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html) guide.
 
 ## Documentation
 

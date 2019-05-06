@@ -37,7 +37,7 @@ export default class MentionEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		// Allow mention attribute on all text nodes.
+		// Allow the mention attribute on all text nodes.
 		model.schema.extend( '$text', { allowAttributes: 'mention' } );
 
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -70,7 +70,7 @@ export function _addMentionAttributes( baseMentionData, data ) {
 }
 
 /**
- * Creates mention attribute value from provided view element and optional data.
+ * Creates a mention attribute value from the provided view element and optional data.
  *
  * This function is exposed as
  * {@link module:mention/mention~Mention#toMentionAttribute `editor.plugins.get( 'Mention' ).toMentionAttribute()`}.
@@ -98,7 +98,7 @@ export function _toMentionAttribute( viewElementOrMention, data ) {
 	return _addMentionAttributes( baseMentionData, data );
 }
 
-// Creates mention element from mention data.
+// Creates a mention element from the mention data.
 //
 // @param {Object} mention
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
@@ -121,11 +121,11 @@ function createViewMentionElement( mention, viewWriter ) {
 	return viewWriter.createAttributeElement( 'span', attributes, options );
 }
 
-// Model post-fixer that disallows typing with selection when selection is placed after the text node with mention attribute.
+// Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
-// @returns {Boolean} Returns true if selection was fixed.
+// @returns {Boolean} Returns `true` if the selection was fixed.
 function selectionMentionAttributePostFixer( writer, doc ) {
 	const selection = doc.selection;
 	const focus = selection.focus;
@@ -141,33 +141,33 @@ function selectionMentionAttributePostFixer( writer, doc ) {
 	}
 }
 
-// Model post-fixer that removes mention attribute from modified text node.
+// Model post-fixer that removes the mention attribute from the modified text node.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
-// @returns {Boolean} Returns true if selection was fixed.
+// @returns {Boolean} Returns `true` if the selection was fixed.
 function removePartialMentionPostFixer( writer, doc, schema ) {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
 
 	for ( const change of changes ) {
-		// Check text node on current position;
+		// Checks the text node on the current position.
 		const position = change.position;
 
 		if ( change.name == '$text' ) {
 			const nodeAfterInsertedTextNode = position.textNode && position.textNode.nextSibling;
 
-			// Check textNode where the change occurred.
+			// Checks the text node where the change occurred.
 			wasChanged = checkAndFix( position.textNode, writer ) || wasChanged;
 
-			// Occurs on paste occurs inside a text node with mention.
+			// Occurs on paste inside a text node with mention.
 			wasChanged = checkAndFix( nodeAfterInsertedTextNode, writer ) || wasChanged;
 			wasChanged = checkAndFix( position.nodeBefore, writer ) || wasChanged;
 			wasChanged = checkAndFix( position.nodeAfter, writer ) || wasChanged;
 		}
 
-		// Check text nodes in inserted elements (might occur when splitting paragraph or pasting content inside text with mention).
+		// Checks text nodes in inserted elements (might occur when splitting a paragraph or pasting content inside text with mention).
 		if ( change.name != '$text' && change.type == 'insert' ) {
 			const insertedNode = position.nodeAfter;
 
@@ -188,11 +188,12 @@ function removePartialMentionPostFixer( writer, doc, schema ) {
 	return wasChanged;
 }
 
-// This post-fixer will extend attribute applied on part of a mention so a whole text node of a mention will have added attribute.
+// This post-fixer will extend the attribute applied on the part of the mention so the whole text node of the mention will have
+// the added attribute.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/document~Document} doc
-// @returns {Boolean} Returns true if selection was fixed.
+// @returns {Boolean} Returns `true` if the selection was fixed.
 function extendAttributeOnMentionPostFixer( writer, doc ) {
 	const changes = doc.differ.getChanges();
 
@@ -200,9 +201,9 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 
 	for ( const change of changes ) {
 		if ( change.type === 'attribute' && change.attributeKey != 'mention' ) {
-			// Check node at the left side of a range...
+			// Checks the node on the left side of the range...
 			const nodeBefore = change.range.start.nodeBefore;
-			// ... and on right side of range.
+			// ... and on the right side of the range.
 			const nodeAfter = change.range.end.nodeAfter;
 
 			for ( const node of [ nodeBefore, nodeAfter ] ) {
@@ -218,10 +219,10 @@ function extendAttributeOnMentionPostFixer( writer, doc ) {
 	return wasChanged;
 }
 
-// Checks if node has correct mention attribute if present.
-// Returns true if node is text and has a mention attribute which text does not match expected mention text.
+// Checks if a node has a correct mention attribute if present.
+// Returns `true` if the node is text and has a mention attribute whose text does not match the expected mention text.
 //
-// @param {module:engine/model/node~Node} node a node to check
+// @param {module:engine/model/node~Node} node The node to check.
 // @returns {Boolean}
 function isBrokenMentionNode( node ) {
 	if ( !node || !( node.is( 'text' ) || node.is( 'textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
@@ -236,7 +237,7 @@ function isBrokenMentionNode( node ) {
 	return text != expectedText;
 }
 
-// Fixes mention on text node it needs a fix.
+// Fixes a mention on a text node if it needs a fix.
 //
 // @param {module:engine/model/text~Text} textNode
 // @param {module:engine/model/writer~Writer} writer
