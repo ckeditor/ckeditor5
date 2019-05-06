@@ -158,6 +158,14 @@ export default class MentionUI extends Plugin {
 		return [ ContextualBalloon ];
 	}
 
+	/**
+	 * Returns true when {@link #_mentionView} is in the {module:ui/panel/balloon/contextualballoon~ContextualBalloon} and it is
+	 * currently visible.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
 	get _isUIVisible() {
 		return this._balloon.visibleView === this._mentionsView;
 	}
@@ -351,7 +359,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Shows the mentions balloon.
+	 * Shows the mentions balloon. If panel is already visible it will reposition it.
 	 *
 	 * @private
 	 */
