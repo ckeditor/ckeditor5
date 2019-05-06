@@ -8,9 +8,7 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -205,8 +203,6 @@ export default class ViewCollection extends Collection {
 	 * @returns {Object} The removed view.
 	 */
 }
-
-mix( Collection, ObservableMixin );
 
 // Check if all entries of the array are of `String` type.
 //
