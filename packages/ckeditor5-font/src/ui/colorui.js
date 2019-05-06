@@ -138,34 +138,41 @@ export default class ColorUI extends Plugin {
 			if ( documentColorsCount !== 0 ) {
 				dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
 					if ( val ) {
-						const model = editor.model;
-						const document = model.document;
-						const rootNames = document.getRootNames();
-						const maxCount = this.colorTableView.documentColorsCount;
-						const documentColors = this.colorTableView.documentColors;
-						documentColors.clear();
-
-						for ( const rootName of rootNames ) {
-							const root = document.getRoot( rootName );
-							const range = model.createRangeIn( root );
-							for ( const node of range.getItems() ) {
-								if ( node.is( 'textProxy' ) && node.hasAttribute( this.componentName ) ) {
-									this.addColorToDocumentColors( node.getAttribute( this.componentName ) );
-									if ( documentColors.length >= maxCount ) {
-										break;
-									}
-								}
-							}
-							if ( documentColors.length >= maxCount ) {
-								break;
-							}
-						}
+						this.findAndSetDocumentColors();
 					}
 				} );
 			}
 
 			return dropdownView;
 		} );
+	}
+
+	/**
+	 * Method scans through editor's content and search for text node attributes with name {@link #commandName}.
+	 * Found entries are set as document colors. Previously stored document colors are lost with that process.
+	 *
+	 * @private
+	 */
+	findAndSetDocumentColors() {
+		const model = this.editor.model;
+		const document = model.document;
+		const maxCount = this.colorTableView.documentColorsCount;
+		const documentColors = this.colorTableView.documentColors;
+
+		documentColors.clear();
+
+		for ( const rootName of document.getRootNames() ) {
+			const root = document.getRoot( rootName );
+			const range = model.createRangeIn( root );
+			for ( const node of range.getItems() ) {
+				if ( node.is( 'textProxy' ) && node.hasAttribute( this.componentName ) ) {
+					this.addColorToDocumentColors( node.getAttribute( this.componentName ) );
+					if ( documentColors.length >= maxCount ) {
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -179,6 +186,7 @@ export default class ColorUI extends Plugin {
 	addColorToDocumentColors( color ) {
 		const predefinedColor = this.colorTableView.colorDefinitions
 			.find( definition => definition.color === color );
+
 		if ( !predefinedColor ) {
 			this.colorTableView.documentColors.add( {
 				color,
