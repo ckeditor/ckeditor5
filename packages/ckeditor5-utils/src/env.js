@@ -37,7 +37,7 @@ const env = {
 	 * Indicates that the application is running in Firefox (Gecko).
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#isEdge
+	 * @member {Boolean} module:utils/env~env#isGecko
 	 */
 	isGecko: isGecko( userAgent ),
 
