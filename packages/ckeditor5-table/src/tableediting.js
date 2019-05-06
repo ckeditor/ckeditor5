@@ -214,25 +214,22 @@ export default class TableEditing extends Plugin {
 			}
 
 			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			let isLastRow = currentRowIndex === table.childCount - 1;
+			const isLastRow = currentRowIndex === table.childCount - 1;
 
 			if ( isForward && isLastRow && isLastCellInRow ) {
 				editor.execute( 'insertTableRowBelow' );
 
-				// Re-evaluate `isLastRow`. If `insertTableRowBelow` execution didn't add any row (because it was disabled or it got
-				// overwritten in some way) this will still be `true`. But if the row was added it will change to `false`.
-				isLastRow = currentRowIndex === table.childCount - 1;
+				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
+				// or it got overwritten) do not change the selection.
+				if ( currentRowIndex === table.childCount - 1 ) {
+					return;
+				}
 			}
 
 			let cellToFocus;
 
 			// Move to first cell in next row.
 			if ( isForward && isLastCellInRow ) {
-				if ( isLastRow ) {
-					// It's the last cell of a table - don't do anything (stay in current position).
-					return;
-				}
-
 				const nextRow = table.getChild( currentRowIndex + 1 );
 
 				cellToFocus = nextRow.getChild( 0 );
