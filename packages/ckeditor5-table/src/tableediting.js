@@ -220,7 +220,7 @@ export default class TableEditing extends Plugin {
 				editor.execute( 'insertTableRowBelow' );
 
 				// Re-evaluate `isLastRow`. If `insertTableRowBelow` execution didn't add any row (because it was disabled or it got
-				// overwritten in some way) this will still be `false`. But if the row was added it will change to `true`.
+				// overwritten in some way) this will still be `true`. But if the row was added it will change to `false`.
 				isLastRow = currentRowIndex === table.childCount - 1;
 			}
 
