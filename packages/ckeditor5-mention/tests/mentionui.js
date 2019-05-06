@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, setTimeout, Event */
+/* global document, setTimeout, Event, window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -268,6 +268,8 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'typing integration', () => {
+		const supportsES2018Escapes = checkES2018RegExpSupport();
+
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
@@ -433,6 +435,58 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
+			// Cache the original RegExp to restore it after the tests.
+			const RegExp = window.RegExp;
+
+			let callTimes;
+
+			beforeEach( () => {
+				callTimes = 0;
+
+				// The FakeRegExp throws on first call - it simulates syntax error of ES2018 syntax usage
+				// on browsers other then Chrome. See ckeditor5-mention#44.
+				function FakeRegExp( ...args ) {
+					callTimes++;
+
+					if ( callTimes == 1 ) {
+						throw new SyntaxError( 'invalid identity escape in regular expression' );
+					}
+
+					return new RegExp( ...args );
+				}
+
+				window.RegExp = FakeRegExp;
+
+				return createClassicTestEditor( staticConfig );
+			} );
+
+			afterEach( () => {
+				// Restore the original RegExp.
+				window.RegExp = RegExp;
+			} );
+
+			it( 'should fallback to old method if browser does not support unicode property escapes', () => {
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '〈', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+
+						expect( callTimes );
+					} );
+			} );
+		} );
+
 		describe( 'static list with default trigger', () => {
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -502,25 +556,14 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
+			// Opening parenthesis type characters that should be supported on all environments.
 			for ( const character of [ '(', '\'', '"', '[' ] ) {
-				it( `should show panel for matched marker after a "${ character }" character`, () => {
-					setData( model, '<paragraph>[] foo</paragraph>' );
+				testOpeningPunctuationCharacter( character );
+			}
 
-					model.change( writer => {
-						writer.insertText( character, doc.selection.getFirstPosition() );
-					} );
-
-					model.change( writer => {
-						writer.insertText( '@', doc.selection.getFirstPosition() );
-					} );
-
-					return waitForDebounce()
-						.then( () => {
-							expect( panelView.isVisible ).to.be.true;
-							expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-							expect( mentionsView.items ).to.have.length( 5 );
-						} );
-				} );
+			// Excerpt of opening parenthesis type characters that tests ES2018 Unicode property escapes on supported environment.
+			for ( const character of [ '〈', '„', '﹛', '｟', '｛' ] ) {
+				testOpeningPunctuationCharacter( character, !supportsES2018Escapes );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -849,6 +892,31 @@ describe( 'MentionUI', () => {
 					.then( () => expect( panelView.isVisible ).to.be.false );
 			} );
 		} );
+
+		function testOpeningPunctuationCharacter( character, skip = false ) {
+			it( `should show panel for matched marker after a "${ character }" character`, function() {
+				if ( skip ) {
+					this.skip();
+				}
+
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( character, doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+					} );
+			} );
+		}
 	} );
 
 	describe( 'panel behavior', () => {
@@ -1662,5 +1730,17 @@ describe( 'MentionUI', () => {
 		for ( const key of Object.keys( item ) ) {
 			expect( mentionForCommand[ key ] ).to.equal( item[ key ] );
 		}
+	}
+
+	function checkES2018RegExpSupport() {
+		let supportsES2018Escapes = false;
+
+		try {
+			supportsES2018Escapes = new RegExp( '\\p{Ps}', 'u' ).test( '〈' );
+		} catch ( error ) {
+			// It's Ok we skip test on this browser.
+		}
+
+		return supportsES2018Escapes;
 	}
 } );
