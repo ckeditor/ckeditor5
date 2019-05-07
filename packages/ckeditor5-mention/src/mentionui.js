@@ -531,7 +531,7 @@ function createRegExp( marker, minimumCharacters ) {
 			// Uses the ES2018 syntax. See ckeditor5-mention#44.
 			return new RegExp( buildPattern( '\\p{Ps}"\'', marker, numberOfCharacters ), 'u' );
 		} catch ( error ) {
-			// It's OK we're return later.
+			// It's OK we're fallback to non ES2018 RegExp later.
 		}
 	}
 

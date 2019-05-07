@@ -435,7 +435,7 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'ES2018 RegExp Unicode property escapes fallback', function() {
+		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
 			// Cache the original RegExp to restore it after the tests.
 			const RegExp = window.RegExp;
 
@@ -461,6 +461,54 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fallback to old method if browser does not support unicode property escapes', () => {
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '〈', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+
+			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
+				// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
+
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '〈', doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
+			} );
+		} );
+
+		describe( 'ES2018 RegExp Unicode property escapes fallback on Edge', () => {
+			beforeEach( () => {
+				// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
+
+				return createClassicTestEditor( staticConfig );
+			} );
+
+			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
 				setData( model, '<paragraph>[] foo</paragraph>' );
 
 				model.change( writer => {
