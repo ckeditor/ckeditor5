@@ -498,13 +498,12 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
-	/** Creates a navigation button view.
-	 *
-	 * @private
-	 * @param {String} label The button's label.
-	 * @param {String} icon The button's icon.
-	 * @returns {module:ui/button/buttonview~ButtonView}
-	 */
+	// Creates a navigation button view.
+	//
+	// @private
+	// @param {String} label The button's label.
+	// @param {String} icon The button's icon.
+	// @returns {module:ui/button/buttonview~ButtonView}
 	_createButtonView( label, icon ) {
 		const view = new ButtonView( this.locale );
 
