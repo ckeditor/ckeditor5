@@ -464,12 +464,11 @@ class RotatorView extends View {
 					},
 					children: [
 						this.buttonPrevView,
-						this.buttonNextView,
 						{
 							tag: 'span',
 
 							attributes: {
-								class: 'ck-balloon-rotattor__counter',
+								class: 'ck-balloon-rotator__counter',
 							},
 
 							children: [
@@ -477,7 +476,8 @@ class RotatorView extends View {
 									text: bind.to( 'counter' )
 								}
 							]
-						}
+						},
+						this.buttonNextView,
 					]
 				},
 				{

@@ -6,4 +6,5 @@
 .ck .ck-balloon-rotator__navigation {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 }
