@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout */
+/* globals window, setTimeout, document */
 
 import Editor from '../../src/editor/editor';
 import Plugin from '../../src/plugin';
@@ -771,6 +771,49 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginF ).afterInit
 					);
 				} );
+		} );
+	} );
+
+	describe( 'allowedElement()', () => {
+		it( 'should return resolved promise for non-html data', done => {
+			const sourceElementOrData = Editor.allowedElement( 'some initial data' );
+
+			expect( sourceElementOrData ).to.be.a( 'promise' );
+
+			sourceElementOrData
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'should return resolved promise for non-textarea html element', done => {
+			const element = document.createElement( 'div' );
+			const sourceElementOrData = Editor.allowedElement( element );
+
+			expect( sourceElementOrData ).to.be.a( 'promise' );
+
+			sourceElementOrData
+				.then( done )
+				.catch( done );
+		} );
+
+		it( 'should return rejected promise for textarea html element', done => {
+			const element = document.createElement( 'textarea' );
+			const sourceElementOrData = Editor.allowedElement( element );
+
+			expect( sourceElementOrData ).to.be.a( 'promise' );
+
+			sourceElementOrData
+				.then(
+					() => {
+						expect.fail( 'This promise should be rejected.' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and.match(
+							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 	} );
 } );
