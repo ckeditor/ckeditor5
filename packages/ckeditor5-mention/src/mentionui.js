@@ -100,7 +100,7 @@ export default class MentionUI extends Plugin {
 			}
 		}, { priority: 'highest' } ); // Required to override the Enter key.
 
-		// Close the #panelView upon clicking outside of the plugin UI.
+		// Close the dropdown upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this._mentionsView,
 			activator: () => this._isUIVisible,
@@ -159,7 +159,7 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns true when {@link #_mentionView} is in the {module:ui/panel/balloon/contextualballoon~ContextualBalloon} and it is
+	 * Returns true when {@link #_mentionsView} is in the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} and it is
 	 * currently visible.
 	 *
 	 * @readonly
