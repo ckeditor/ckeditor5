@@ -27,7 +27,7 @@ export default class Mention extends Plugin {
 	 *
 	 *		editor.plugins.get( 'Mention' ).toMentionAttribute( viewElement, { userId: '1234' } );
 	 *
-	 *		// for a viewElement: <span data-mention="@joe">@John Doe</span>
+	 *		// For a view element: <span data-mention="@joe">@John Doe</span>
 	 *		// it will return:
 	 *		// { id: '@joe', userId: '1234', _uid: '7a7bc7...', _text: '@John Doe' }
 	 *
@@ -70,7 +70,7 @@ export default class Mention extends Plugin {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- *				mention: ... // Media embed feature options.
+ *				mention: ... // Mention feature options.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -99,7 +99,7 @@ export default class Mention extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * You can provide as many mention feeds but they must use different `marker`s.
+ * You can provide many mention feeds but they must use different `marker`s.
  * For example, you can use `'@'` to autocomplete people and `'#'` to autocomplete tags.
  *
  * @member {Array.<module:mention/mention~MentionFeed>} module:mention/mention~MentionConfig#feeds
@@ -117,7 +117,7 @@ export default class Mention extends Plugin {
  *			minimumCharacters: 2
  *		};
  *
- *		// Simple, synchronous callback.
+ *		// Simple synchronous callback.
  *		const mentionFeedTags = {
  *			marker: '#',
  *			feed: searchString => {
@@ -154,18 +154,18 @@ export default class Mention extends Plugin {
  *
  * @typedef {Object} module:mention/mention~MentionFeed
  * @property {String} [marker] The character which triggers autocompletion for mention. It must be a single character.
- * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed The autocomplete items. Provide an array for
+ * @property {Array.<module:mention/mention~MentionFeedItem>|Function} feed Autocomplete items. Provide an array for
  * a static configuration (the mention feature will show matching items automatically) or a function which returns an array of
  * matching items (directly, or via a promise).
  * @property {Number} [minimumCharacters=0] Specifies after how many characters the autocomplete panel should be shown.
- * @property {Function} [itemRenderer] Function that renders a {@link module:mention/mention~MentionFeedItem}
+ * @property {Function} [itemRenderer] A function that renders a {@link module:mention/mention~MentionFeedItem}
  * to the autocomplete panel.
  */
 
 /**
  * The mention feed item. It may be defined as a string or a plain object.
  *
- * When defining a feed item as a plain object, the `id` property is obligatory. The additional properties
+ * When defining a feed item as a plain object, the `id` property is obligatory. Additional properties
  * can be used when customizing the mention feature bahavior
  * (see {@glink features/mentions#customizing-the-autocomplete-list "Customizing the autocomplete list"}
  * and {@glink features/mentions#customizing-the-output "Customizing the output"} sections).
@@ -215,18 +215,19 @@ export default class Mention extends Plugin {
  *			.catch( ... );
  *
  * @typedef {Object|String} module:mention/mention~MentionFeedItem
- * @property {String} id Unique id of the mention. It must start with the marker character.
+ * @property {String} id A unique ID of the mention. It must start with the marker character.
  * @property {String} [text] Text inserted into the editor when creating a mention.
  */
 
 /**
- * Represents mention in the model.
+ * Represents a mention in the model.
  *
  * See {@link module:mention/mention~Mention#toMentionAttribute `Mention#toMentionAttribute()`}.
  *
  * @interface module:mention/mention~MentionAttribute
- * @property {String} id Id of a mention – identifies the mention item in mention feed.
- * @property {String} _uid Internal mention view item id. Should be passed as an `option.id` when using
+ * @property {String} id The ID of a mention. It identifies the mention item in the mention feed.
+ * @property {String} _uid An internal mention view item ID. Should be passed as an `option.id` when using
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
- * @property {String} _text Helper property that holds text of inserted mention. Used for detecting broken mention in the editing area.
+ * @property {String} _text Helper property that stores the text of the inserted mention. Used for detecting a broken mention
+ * in the editing area.
  */

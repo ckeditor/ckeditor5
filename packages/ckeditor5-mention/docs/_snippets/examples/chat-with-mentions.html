@@ -1,0 +1,159 @@
+<div class="chat">
+	<ul class="chat__posts">
+		<li>
+			<img src="../../assets/img/m_1.jpg" alt="avatar" class="photo">
+			<div class="chat__posts__post__message">
+				<strong>Charles Flores</strong>
+				<a class="chat__posts__post__mailto-user" href="mailto:cflores@example.com">@cflores</a>
+				<span class="chat__posts__post__time">2 hours ago</span>
+				<p class="chat__posts__post__content">
+					Thanks for another <a class="mention" data-mention="#yummy" href="https://example.com/social/yummy">#yummy</a> recipe,
+					<a class="mention" data-mention="@dwilliams" href="mailto:dwilliams@example.com">@dwilliams</a>!
+					Makes me <a class="mention" data-mention="#hungry" href="https://example.com/social/hungry">#hungry</a>
+					just looking at the photos 😋. Definitely adding it to my TODO list for our next
+					<a class="mention" data-mention="#mediterranean" href="https://example.com/social/mediterranean">#mediterranean</a> potluck.
+				</p>
+			</div>
+		</li>
+		<li>
+			<img src="../../assets/img/w_1.jpg" alt="avatar" class="photo">
+			<div class="chat__posts__post__message">
+				<strong>Mildred Wilson</strong>
+				<a class="chat__posts__post__mailto-user" href="mailto:mwilson@example.com">@mwilson</a>
+				<span class="chat__posts__post__time">4 hours ago</span>
+				<p class="chat__posts__post__content">
+					Really appreciate the <a class="mention" data-mention="#vegetarian" href="https://example.com/social/vegetarian">#vegetarian</a>
+					and <a class="mention" data-mention="#vegan" href="https://example.com/social/vegan">#vegan</a> variations of your recipes.
+					So thoughtful of you! 🌱
+				</p>
+			</div>
+		</li>
+	</ul>
+	<div class="chat__editor">
+		<p>
+			I agree with <a href="mailto:mwilson@example.com" class="mention" data-mention="@mwilson">@mwilson</a> 👍.
+			It’s so nice of you to always be providing a few options to try! I love
+			<a href="https://example.com/social/greek" class="mention" data-mention="#greek">#greek</a> cuisine with a modern twist,
+			this one will be perfect to try.
+		</p>
+	</div>
+
+	<button class="chat-send" type="button">Send</button>
+</div>
+
+<style>
+	/* ---- General layout ---------------------------------------------------------------------- */
+
+	.chat {
+		margin-bottom: 1em
+	}
+
+	/* ---- Chat posts -------------------------------------------------------------------------- */
+
+	.chat ul.chat__posts {
+		border: 1px solid var(--ck-color-base-border);
+		border-top-left-radius: var(--ck-border-radius);
+		border-top-right-radius: var(--ck-border-radius);
+		border-bottom: none;
+		margin: 1em 0 0;
+		padding: 1em;
+		list-style-position: inside;
+	}
+
+	.chat ul.chat__posts li {
+		display: flex;
+	}
+
+	.chat ul.chat__posts li.new-post {
+		/* Highlight a new post in the chat. */
+		animation: highlight 600ms ease-out;
+	}
+
+	.chat ul.chat__posts li + li {
+		margin-top: 1em;
+	}
+
+	.chat .chat__posts li .photo {
+		border-radius: 100%;
+		height: 40px;
+		margin-right: 1.5em;
+	}
+
+	.chat .chat__posts li .time {
+		color: hsl(0, 0%, 72%);
+		font-size: .9em;
+	}
+
+	.chat .chat__posts .chat__posts__post__message > strong::after,
+	.chat__posts__post__mailto-user::after {
+		content: "•";
+		padding-left: 5px;
+		padding-right: 5px;
+		color: hsl(0, 0%, 72%);
+	}
+
+	@keyframes highlight {
+		0% {
+			background-color: yellow;
+		}
+
+		100% {
+			background-color: white;
+		}
+	}
+
+	/* ---- Chat editor ------------------------------------------------------------------------- */
+
+	.chat .chat__editor {
+		/* Anti–FOUC (flash of unstyled content). */
+		padding: 1em;
+		border: 1px solid var(--ck-color-base-border);
+	}
+
+	.chat .chat__editor + .ck.ck-editor {
+		margin-top: 0;
+	}
+
+	.chat .chat__editor + .ck.ck-editor .ck.ck-toolbar {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	/* ---- In–editor mention list --------------------------------------------------------------- */
+
+	.ck-mentions .mention__item {
+		display: block;
+	}
+
+	.ck-mentions .mention__item img {
+		border-radius: 100%;
+		height: 30px;
+	}
+
+	.ck-mentions .mention__item span {
+		margin-left: .5em;
+	}
+
+	.ck-mentions .mention__item.ck-on span {
+		color: var(--ck-color-base-background);
+	}
+
+	.ck-mentions .mention__item .mention__item__full-name {
+		color: hsl(0, 0%, 45%);
+	}
+
+	.ck-mentions .mention__item:hover:not(.ck-on) .mention__item__full-name {
+		color: hsl(0, 0%, 40%);
+	}
+
+	/* ---- Chat editor content styles ----------------------------------------------------------- */
+
+	.chat .ck-content .mention {
+		background: unset;
+	}
+
+	.chat .ck.ck-content a,
+	.chat .chat__posts a {
+		color: hsl(231, 89%, 53%);
+	}
+</style>

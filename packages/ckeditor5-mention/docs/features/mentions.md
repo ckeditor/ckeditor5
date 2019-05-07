@@ -11,9 +11,13 @@ The {@link module:mention/mention~Mention} feature brings support for smart auto
 
 ## Demo
 
-You can type the "@" character to invoke mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
+You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").
 
 {@snippet features/mention}
+
+<info-box>
+	Check out the {@link examples/chat-with-mentions more advanced example} of the mention feature used in a chat application.
+</info-box>
 
 ## Configuration
 
@@ -46,24 +50,24 @@ Additionally, you can configure:
 
 * How the item is rendered in the autocomplete panel (via setting {@link module:mention/mention~MentionFeed `itemRenderer`}). See ["Customizing the autocomplete list"](#customizing-the-autocomplete-list).
 * How the item is converted during the {@link framework/guides/architecture/editing-engine#conversion conversion}. See ["Customizing the output"](#customizing-the-output).
-* Multiple feeds &mdash; in the demo above we used only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
+* Multiple feeds. Te demo above uses only one feed, which is triggered by the `'@'` character. You can define multiple feeds but they must use different markers. For example, you can use `'@'` for people and `'#'` for tags.
 
 ### Providing the feed
 
 The {@link module:mention/mention~MentionFeed `feed`} can be provided as:
 
-* a static array &mdash; good for scenarios with a relatively small set of autocomplete items.
-* a callback &mdash; which provides more control over the returned list of items.
+* A static array &ndash; Good for scenarios with a relatively small set of autocomplete items.
+* A callback &ndash; It provides more control over the returned list of items.
 
-When using a callback you can return a `Promise` that resolves with the list of {@link module:mention/mention~MentionFeedItem matching feed items}. Those can be simple strings or plain objects with at least the `name` property. The other properties of this object can later be used e.g. when [customizing the autocomplete list](#customizing-the-autocomplete-list) or [customizing the output](#customizing-the-output).
+When using a callback you can return a `Promise` that resolves with the list of {@link module:mention/mention~MentionFeedItem matching feed items}. These can be simple strings or plain objects with at least the `name` property. The other properties of this object can later be used e.g. when [customizing the autocomplete list](#customizing-the-autocomplete-list) or [customizing the output](#customizing-the-output).
 
 <info-box>
 	When using external resources to obtain the feed it is recommended to add some caching mechanism so subsequent calls for the same suggestion would load faster.
 
-	You can also consider adding the `minimumCharacters` option to the feed config so the editor will call the feed callback after minimum characters typed instead of action on marker alone.
+	You can also consider adding the `minimumCharacters` option to the feed configuration so the editor will call the feed callback after some minimum number of characters typed instead of an action on a marker alone.
 </info-box>
 
-The callback receives the query text which should be used to filter item suggestions. It should return a `Promise` and resolve it with an array of items that match to the feed text.
+The callback receives the query text which should be used to filter item suggestions. It should return a `Promise` and resolve it with an array of items that match the feed text.
 
 ```js
 ClassicEditor
@@ -79,7 +83,7 @@ ClassicEditor
 					feed: getFeedItems
 				}
 			}
-		}
+		]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -93,13 +97,13 @@ const items = [
 ];
 
 function getFeedItems( queryText ) {
-	// As an example of an asynchronous action, let's return a promise
+	// As an example of an asynchronous action, return a promise
 	// that resolves after a 100ms timeout.
 	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
 			const itemsToDisplay = items
-				// Filter out the full list of all items to only those matching queryText.
+				// Filter out the full list of all items to only those matching the query text.
 				.filter( isItemMatching )
 				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
 				.slice( 0, 10 );
@@ -108,12 +112,12 @@ function getFeedItems( queryText ) {
 		}, 100 );
 	} );
 
-	// Filtering function - it uses `name` and `username` properties of an item to find a match.
+	// Filtering function - it uses the `name` and `username` properties of an item to find a match.
 	function isItemMatching( item ) {
-		// Make search case-insensitive.
+		// Make the search case-insensitive.
 		const searchString = queryText.toLowerCase();
 
-		// Include an item in the search results if name or username includes the current user input.
+		// Include an item in the search results if the name or username includes the current user input.
 		return (
 			item.name.toLowerCase().includes( searchString ) ||
 			item.id.toLowerCase().includes( searchString )
@@ -138,7 +142,7 @@ ClassicEditor
 			feeds: [
 				{
 					feed: [ ... ],
-					// Define the custom item renderer:
+					// Define the custom item renderer.
 					itemRenderer: customItemRenderer
 				}
 			]
@@ -171,7 +175,7 @@ A full, working demo with all possible customizations and its source code is ava
 
 In order to change the markup generated by the editor for mentions, you can overwrite the default converter of the mention feature. To do that, you must specify both {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher upcast} and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast} converters.
 
-The example below defined a plugin which overrides the default output:
+The example below defines a plugin that overrides the default output:
 
 ```html
 <span data-mention="@Ted" class="mention">@Ted</span>
@@ -183,12 +187,12 @@ To a link:
 <a class="mention" data-mention="@Ted" data-user-id="5" href="https://www.imdb.com/title/tt0460649/characters/nm1102140">@tdog</a>
 ```
 
-The converters must be defined with a `'high'` priority to be executed before the {@link features/link link} feature's converter and before the default converter of the mention feature. A mention is stored in the model as a {@link framework/guides/architecture/editing-engine#text-attributes text attribute} which stores an object (see {@link module:mention/mention~MentionFeedItem}).
+The converters must be defined with a `'high'` priority to be executed before the {@link features/link link} feature's converter and before the default converter of the mention feature. A mention is stored in the model as a {@link framework/guides/architecture/editing-engine#text-attributes text attribute} that stores an object (see {@link module:mention/mention~MentionFeedItem}).
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Mention, MentionCustomization, ... ], // Add custom mention plugin function.
+		plugins: [ Mention, MentionCustomization, ... ], // Add the custom mention plugin function.
 		mention: {
 			// Configuration...
 		}
@@ -248,7 +252,7 @@ function MentionCustomization( editor ) {
 }
 ```
 
-The full working demo with all customization possible is {@link features/mentions#fully-customized-mention-feed  at the end of this section}.
+A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
 
 ### Fully customized mention feed
 
@@ -256,7 +260,7 @@ Below is an example of a customized mention feature that:
 
 * Uses a feed of items with additional properties (`id`, `username`, `link`).
 * Renders custom item views in the autocomplete panel.
-* Converts mention to an `<a>` element instead of a `<span>`.
+* Converts a mention to an `<a>` element instead of a `<span>`.
 
 {@snippet features/mention-customization}
 
@@ -300,8 +304,8 @@ function MentionCustomization( editor ) {
 			key: 'mention',
 			value: viewItem => {
 				// The mention feature expects that the mention attribute value
-				// in the model is a plain object with set of additional attributes.
-				// In order to create proper object use `toMentionAttribute` helper method:
+				// in the model is a plain object with a set of additional attributes.
+				// In order to create a proper object, use the toMentionAttribute helper method:
 				const mentionAttribute = editor.plugins.get( 'Mention' ).toMentionAttribute( viewItem, {
 					// Add any other properties that you need.
 					link: viewItem.getAttribute( 'href' ),
@@ -314,7 +318,7 @@ function MentionCustomization( editor ) {
 		converterPriority: 'high'
 	} );
 
-	// Do not forget to define a downcast converter as well:
+	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
 		view: ( modelAttributeValue, viewWriter ) => {
@@ -343,13 +347,13 @@ const items = [
 ];
 
 function getFeedItems( queryText ) {
-	// As an example of an asynchronous action, let's return a promise
+	// As an example of an asynchronous action, return a promise
 	// that resolves after a 100ms timeout.
 	// This can be a server request or any sort of delayed action.
 	return new Promise( resolve => {
 		setTimeout( () => {
 			const itemsToDisplay = items
-				// Filter out the full list of all items to only those matching queryText.
+				// Filter out the full list of all items to only those matching the query text.
 				.filter( isItemMatching )
 				// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
 				.slice( 0, 10 );
@@ -360,7 +364,7 @@ function getFeedItems( queryText ) {
 
 	// Filtering function - it uses `name` and `username` properties of an item to find a match.
 	function isItemMatching( item ) {
-		// Make search case-insensitive.
+		// Make the search case-insensitive.
 		const searchString = queryText.toLowerCase();
 
 		// Include an item in the search results if name or username includes the current user input.
@@ -393,14 +397,14 @@ function customItemRenderer( item ) {
 
 #### Using CSS variables
 
-The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [theme lark stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that mention styles can be {@link framework/guides/theme-customization easily customized}:
+The mention feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [Lark theme stylesheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-mention/mentionediting.css). Thanks to that, mention styles can be {@link framework/guides/theme-customization easily customized}:
 
 ```css
 :root {
-	/* Make mention background blue. */
+	/* Make the mention background blue. */
 	--ck-color-mention-background: hsla(220, 100%, 54%, 0.4);
 
-	/* Make mention text dark grey. */
+	/* Make the mention text dark grey. */
 	--ck-color-mention-text: hsl(0, 0%, 15%);
 }
 ```
@@ -438,7 +442,7 @@ ClassicEditor
 ## Common API
 
 The {@link module:mention/mention~Mention} plugin registers:
-* the `'mention'` command implemented by {@link module:mention/mentioncommand~MentionCommand}.
+* The `'mention'` command implemented by {@link module:mention/mentioncommand~MentionCommand}.
 
 	You can insert a mention element by executing the following code:
 
