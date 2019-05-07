@@ -15,6 +15,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
+import prevIcon from '../../../theme/icons/previous-arrow.svg';
+import nextIcon from '../../../theme/icons/next-arrow.svg';
+
 /**
  * Provides the common contextual balloon panel for the editor.
  *
@@ -411,6 +414,8 @@ class RotatorView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		const t = locale.t;
+
 		const bind = this.bindTemplate;
 
 		// Defines whether navigation is visible or not.
@@ -424,12 +429,12 @@ class RotatorView extends View {
 		// Navigation button to switches panel to the next one.
 		//
 		// @type {module:ui/button/buttonview~ButtonView}
-		this.buttonPrevView = this._createButtonView( locale.t( 'Prev' ) );
+		this.buttonPrevView = this._createButtonView( t( 'Previous baloon' ), prevIcon );
 
 		// Navigation button to switches panel to the previous one.
 		//
 		// @type {module:ui/button/buttonview~ButtonView}
-		this.buttonNextView = this._createButtonView( locale.t( 'Next' ) );
+		this.buttonNextView = this._createButtonView( t( 'Next balloon' ), nextIcon );
 
 		// Collection of the child views which creates balloon panel contents.
 		//
@@ -440,7 +445,10 @@ class RotatorView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: 'rotator',
+				class: [
+					'ck',
+					'ck-balloon-rotator'
+				],
 				'z-index': '-1'
 			},
 			children: [
@@ -448,7 +456,7 @@ class RotatorView extends View {
 					tag: 'div',
 					attributes: {
 						class: [
-							'rotator_navigation',
+							'ck-balloon-rotator_navigation',
 							bind.to( 'isNavigationVisible', value => value ? '' : 'ck-hidden' )
 						]
 					},
@@ -463,7 +471,7 @@ class RotatorView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: 'rotator_content'
+						class: 'ck-balloon-rotator_content'
 					},
 					children: this.content
 				}
@@ -478,17 +486,20 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
-	// Create navigation button view.
-	//
-	// @private
-	// @param {String} label
-	// @returns {module:ui/button/buttonview~ButtonView}
-	_createButtonView( label ) {
+	/** Creates a navigation button view.
+	 *
+	 * @private
+	 * @param {String} label The button's label.
+	 * @param {String} icon The button's icon.
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
+	_createButtonView( label, icon ) {
 		const view = new ButtonView( this.locale );
 
 		view.set( {
-			withText: true,
-			label
+			label,
+			icon,
+			tooltip: true
 		} );
 
 		return view;
