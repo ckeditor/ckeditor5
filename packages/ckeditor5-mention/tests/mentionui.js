@@ -479,7 +479,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
-				// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+				// Stub the isEdge for covarage tests in other browsers.
 				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 				setData( model, '<paragraph>[] foo</paragraph>' );
