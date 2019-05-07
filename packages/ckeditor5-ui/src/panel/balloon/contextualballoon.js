@@ -18,6 +18,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
 
+import '../../../theme/components/panel/balloonrotator.css';
+
 /**
  * Provides the common contextual balloon panel for the editor.
  *
@@ -456,7 +458,7 @@ class RotatorView extends View {
 					tag: 'div',
 					attributes: {
 						class: [
-							'ck-balloon-rotator_navigation',
+							'ck-balloon-rotator__navigation',
 							bind.to( 'isNavigationVisible', value => value ? '' : 'ck-hidden' )
 						]
 					},
@@ -464,14 +466,24 @@ class RotatorView extends View {
 						this.buttonPrevView,
 						this.buttonNextView,
 						{
-							text: bind.to( 'counter' )
+							tag: 'span',
+
+							attributes: {
+								class: 'ck-balloon-rotattor__counter',
+							},
+
+							children: [
+								{
+									text: bind.to( 'counter' )
+								}
+							]
 						}
 					]
 				},
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-balloon-rotator_content'
+						class: 'ck-balloon-rotator__content'
 					},
 					children: this.content
 				}
