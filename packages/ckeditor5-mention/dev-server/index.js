@@ -63,11 +63,11 @@ function readEntries( timeOut ) {
 function getTimeout() {
 	const type = parseInt( Math.random() * 10 );
 
-	// 80% of requests completes in 100-300ms range (10ms resolution).
-	if ( type < 8 ) {
-		return parseInt( 10 + Math.random() * 20 ) * 10;
+	// 60% of requests completes in 150ms.
+	if ( type < 6 ) {
+		return 150;
 	}
 
-	// 20% of requests completes in 600-1000ms range (10ms resolution).
-	return parseInt( 60 + Math.random() * 40 ) * 10;
+	// 40% of requests completes in 400ms, 1s, 2s or 4s.
+	return [ 400, 1000, 2000, 4000 ][ ( Math.random() * 3 ).toFixed( 0 ) ];
 }
