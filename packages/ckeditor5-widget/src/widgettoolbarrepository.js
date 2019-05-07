@@ -151,8 +151,14 @@ export default class WidgetToolbarRepository extends Plugin {
 		for ( const definition of this._toolbarDefinitions.values() ) {
 			const relatedElement = definition.getRelatedElement( this.editor.editing.view.document.selection );
 
-			if ( !this.editor.ui.focusTracker.isFocused || !relatedElement ) {
-				this._hideToolbar( definition );
+			if ( !this.editor.ui.focusTracker.isFocused ) {
+				if ( this._isToolbarVisible( definition ) ) {
+					this._hideToolbar( definition );
+				}
+			} else if ( !relatedElement ) {
+				if ( this._isToolbarInBalloon( definition ) ) {
+					this._hideToolbar( definition );
+				}
 			} else {
 				const relatedElementDepth = relatedElement.getAncestors().length;
 
@@ -180,10 +186,6 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * @param {module:widget/widgettoolbarrepository~WidgetRepositoryToolbarDefinition} toolbarDefinition
 	 */
 	_hideToolbar( toolbarDefinition ) {
-		if ( !this._isToolbarVisible( toolbarDefinition ) ) {
-			return;
-		}
-
 		this._balloon.remove( toolbarDefinition.view );
 	}
 
@@ -201,7 +203,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	_showToolbar( toolbarDefinition, relatedElement ) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
 			repositionContextualBalloon( this.editor, relatedElement );
-		} else if ( !this._balloon.hasView( toolbarDefinition.view ) ) {
+		} else if ( !this._isToolbarInBalloon( toolbarDefinition.view ) ) {
 			this._balloon.add( {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
@@ -213,9 +215,19 @@ export default class WidgetToolbarRepository extends Plugin {
 	/**
 	 * @private
 	 * @param {Object} toolbar
+	 * @returns {Boolean}
 	 */
 	_isToolbarVisible( toolbar ) {
-		return this._balloon.visibleView == toolbar.view;
+		return this._balloon.visibleView === toolbar.view;
+	}
+
+	/**
+	 * @private
+	 * @param {Object} toolbar
+	 * @returns {Boolean}
+	 */
+	_isToolbarInBalloon( toolbar ) {
+		return this._balloon.hasView( toolbar.view );
 	}
 }
 
