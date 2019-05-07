@@ -275,7 +275,7 @@ describe( 'MentionUI', () => {
 		} );
 	} );
 
-	describe.only( 'typing integration', () => {
+	describe( 'typing integration', () => {
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
@@ -1573,7 +1573,7 @@ describe( 'MentionUI', () => {
 		return new Promise( resolve => {
 			setTimeout( () => {
 				resolve();
-			}, 50 );
+			}, 210 );
 		} );
 	}
 

@@ -15,6 +15,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import { debounce } from 'lodash-es';
 
 import TextWatcher from './textwatcher';
 
@@ -60,6 +61,77 @@ export default class MentionUI extends Plugin {
 		this._mentionsConfigurations = new Map();
 
 		editor.config.define( 'mention', { feeds: [] } );
+
+		this._handleSelectionDebounced = debounce( ( evt, data ) => {
+			const matched = data.matched;
+
+			const selection = editor.model.document.selection;
+
+			const focus = selection.focus;
+
+			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
+			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
+			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
+			const hasMention = focus.textNode && focus.textNode.hasAttribute( 'mention' );
+
+			const nodeBefore = focus.nodeBefore;
+
+			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
+				return;
+			}
+
+			const { feedText, marker } = matched;
+
+			const matchedTextLength = marker.length + feedText.length;
+
+			// Create a marker range.
+			const start = focus.getShiftedBy( -matchedTextLength );
+			const end = focus.getShiftedBy( -feedText.length );
+
+			const markerRange = editor.model.createRange( start, end );
+
+			let mentionMarker;
+
+			if ( editor.model.markers.has( 'mention' ) ) {
+				mentionMarker = editor.model.markers.get( 'mention' );
+			} else {
+				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
+					range: markerRange,
+					usingOperation: false,
+					affectsData: false
+				} ) );
+			}
+
+			// Debounce to 200ms
+
+			this._getFeed( marker, feedText )
+				.catch( () => {
+					// Discard error.
+				} )
+				.then( feed => {
+					if ( !feed ) {
+						return;
+					}
+
+					if ( !this.editor.model.markers.has( 'mention' ) ) {
+						// already hidden
+						return;
+					}
+
+					this._items.clear();
+
+					for ( const feedItem of feed ) {
+						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
+
+						this._items.add( { item, marker } );
+					}
+					if ( this._items.length ) {
+						this._showUI( mentionMarker );
+					} else {
+						this._hideUIAndRemoveMarker();
+					}
+				} );
+		}, 200 );
 	}
 
 	/**
@@ -299,72 +371,7 @@ export default class MentionUI extends Plugin {
 		const watcher = new TextWatcher( editor, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
-			const matched = data.matched;
-
-			const selection = editor.model.document.selection;
-
-			const focus = selection.focus;
-
-			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
-			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
-			const hasMention = focus.textNode && focus.textNode.hasAttribute( 'mention' );
-
-			const nodeBefore = focus.nodeBefore;
-
-			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
-				return;
-			}
-
-			const { feedText, marker } = matched;
-
-			const matchedTextLength = marker.length + feedText.length;
-
-			// Create a marker range.
-			const start = focus.getShiftedBy( -matchedTextLength );
-			const end = focus.getShiftedBy( -feedText.length );
-
-			const markerRange = editor.model.createRange( start, end );
-
-			let mentionMarker;
-
-			if ( editor.model.markers.has( 'mention' ) ) {
-				mentionMarker = editor.model.markers.get( 'mention' );
-			} else {
-				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
-					range: markerRange,
-					usingOperation: false,
-					affectsData: false
-				} ) );
-			}
-
-			this._getFeed( marker, feedText )
-				.catch( () => {
-					// Discard error.
-				} )
-				.then( feed => {
-					if ( !feed ) {
-						return;
-					}
-
-					if ( !this.editor.model.markers.has( 'mention' ) ) {
-						// already hidden
-						return;
-					}
-
-					this._items.clear();
-
-					for ( const feedItem of feed ) {
-						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
-
-						this._items.add( { item, marker } );
-					}
-					if ( this._items.length ) {
-						this._showUI( mentionMarker );
-					} else {
-						this._hideUIAndRemoveMarker();
-					}
-				} );
+			this._handleSelectionDebounced( evt, data );
 		} );
 
 		watcher.on( 'unmatched', () => {
