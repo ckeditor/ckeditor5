@@ -13,6 +13,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 /**
  * Provides the common contextual balloon panel for the editor.
@@ -314,7 +315,7 @@ export default class ContextualBalloon extends Plugin {
 	 * Creates a rotator view.
 	 *
 	 * @private
-	 * @returns {~RotatorView}
+	 * @returns {module:ui/view~View}
 	 */
 	_createRotatorView() {
 		const view = new RotatorView( this.editor.locale );
@@ -336,8 +337,25 @@ export default class ContextualBalloon extends Plugin {
 			return `${ this._panels.getIndex( panel ) + 1 }/${ length }`;
 		} );
 
-		view.buttonNextView.on( 'execute', () => this._showNextPanel() );
-		view.buttonPrevView.on( 'execute', () => this._showPrevPanel() );
+		view.buttonNextView.on( 'execute', () => {
+			// When current view has a focus then move focus to the editable before removing it,
+			// otherwise editor will lost focus.
+			if ( view.focusTracker.isFocused ) {
+				this.editor.editing.view.focus();
+			}
+
+			this._showNextPanel();
+		} );
+
+		view.buttonPrevView.on( 'execute', () => {
+			// When current view has a focus then move focus to the editable before removing it,
+			// otherwise editor will lost focus.
+			if ( view.focusTracker.isFocused ) {
+				this.editor.editing.view.focus();
+			}
+
+			this._showPrevPanel();
+		} );
 
 		return view;
 	}
@@ -384,7 +402,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
-// Rotator view. Used to display last view from the panel stack.
+// Rotator view. Used to display last view from the current panel stack.
 // Provides navigation buttons for switching panels.
 //
 // @private
@@ -399,6 +417,9 @@ class RotatorView extends View {
 		//
 		// @member {Boolean} #isNavigationVisible
 		this.set( 'isNavigationVisible', true );
+
+		// @type {module:utils/focustracker~FocusTracker}
+		this.focusTracker = new FocusTracker();
 
 		// Navigation button to switches panel to the next one.
 		//
@@ -419,7 +440,8 @@ class RotatorView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: 'rotator'
+				class: 'rotator',
+				'z-index': '-1'
 			},
 			children: [
 				{
@@ -447,6 +469,13 @@ class RotatorView extends View {
 				}
 			]
 		} );
+	}
+
+	// @inheritDoc
+	render() {
+		super.render();
+
+		this.focusTracker.add( this.element );
 	}
 
 	// Create navigation button view.
