@@ -185,6 +185,21 @@ describe( 'InlineEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
+
+		it( 'throws an error when is initialized in textarea', done => {
+			InlineEditor.create( document.createElement( 'textarea' ) )
+				.then(
+					() => {
+						expect.fail( 'Inline editor should throw an error when is initialized in textarea.' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
 	} );
 
 	describe( 'create - events', () => {
