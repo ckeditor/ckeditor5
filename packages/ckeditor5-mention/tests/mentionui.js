@@ -435,25 +435,19 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
+		describe( 'ES2018 RegExp Unicode property escapes fallback', function() {
 			// Cache the original RegExp to restore it after the tests.
 			const RegExp = window.RegExp;
 
-			let callTimes;
-
 			beforeEach( () => {
-				callTimes = 0;
-
 				// The FakeRegExp throws on first call - it simulates syntax error of ES2018 syntax usage
 				// on browsers other then Chrome. See ckeditor5-mention#44.
-				function FakeRegExp( ...args ) {
-					callTimes++;
-
-					if ( callTimes == 1 ) {
+				function FakeRegExp( pattern, flags ) {
+					if ( pattern.includes( '\\p{Ps}' ) ) {
 						throw new SyntaxError( 'invalid identity escape in regular expression' );
 					}
 
-					return new RegExp( ...args );
+					return new RegExp( pattern, flags );
 				}
 
 				window.RegExp = FakeRegExp;
@@ -481,8 +475,6 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.false;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-
-						expect( callTimes );
 					} );
 			} );
 		} );
@@ -557,7 +549,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			// Opening parenthesis type characters that should be supported on all environments.
-			for ( const character of [ '(', '\'', '"', '[' ] ) {
+			for ( const character of [ '(', '\'', '"', '[', '{' ] ) {
 				testOpeningPunctuationCharacter( character );
 			}
 
@@ -911,8 +903,8 @@ describe( 'MentionUI', () => {
 
 				return waitForDebounce()
 					.then( () => {
-						expect( panelView.isVisible ).to.be.true;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );

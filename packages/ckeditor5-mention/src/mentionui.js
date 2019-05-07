@@ -15,6 +15,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import TextWatcher from './textwatcher';
 
@@ -524,13 +525,18 @@ function getBalloonPanelPositions( positionName ) {
 function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
-	try {
-		// Uses the ES2018 syntax. See ckeditor5-mention#44.
-		return new RegExp( buildPattern( '\\p{Ps}"\';', marker, numberOfCharacters ), 'u' );
-	} catch ( error ) {
-		// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
-		return new RegExp( buildPattern( '\\(\\[{"\'', marker, numberOfCharacters ), 'u' );
+	if ( !env.isEdge ) {
+		// Unfortunately Edge does not throw on `/[\p{Ps}]/u` as it does on `/\p{Ps}/u (no square brackets in latter).
+		try {
+			// Uses the ES2018 syntax. See ckeditor5-mention#44.
+			return new RegExp( buildPattern( '\\p{Ps}"\'', marker, numberOfCharacters ), 'u' );
+		} catch ( error ) {
+			// It's OK we're return later.
+		}
 	}
+
+	// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
+	return new RegExp( buildPattern( '\\(\\[{"\'', marker, numberOfCharacters ), 'u' );
 }
 
 // Creates a regex pattern for the marker.
