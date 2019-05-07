@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document */
 
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
@@ -66,37 +66,6 @@ describe( 'InlineEditor', () => {
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
-		} );
-
-		it( 'handles form element', () => {
-			const form = document.createElement( 'form' );
-			const textarea = document.createElement( 'textarea' );
-			form.appendChild( textarea );
-			document.body.appendChild( form );
-
-			// Prevents page realods in Firefox ;|
-			form.addEventListener( 'submit', evt => {
-				evt.preventDefault();
-			} );
-
-			return InlineEditor.create( textarea, {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( textarea.value ).to.equal( '' );
-
-				editor.setData( '<p>Foo</p>' );
-
-				form.dispatchEvent( new Event( 'submit', {
-					// We need to be able to do preventDefault() to prevent page reloads in Firefox.
-					cancelable: true
-				} ) );
-
-				expect( textarea.value ).to.equal( '<p>Foo</p>' );
-
-				return editor.destroy().then( () => {
-					form.remove();
-				} );
-			} );
 		} );
 
 		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
