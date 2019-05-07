@@ -14,4 +14,10 @@
 		margin-top: var(--ck-spacing-small);
 		margin-bottom: var(--ck-spacing-small);
 	}
+
+	/* Gives counter more breath than buttons. */
+	& .ck-balloon-rotator__counter {
+		margin-right: var(--ck-spacing-standard);
+		margin-left: var(--ck-spacing-standard);
+	}
 }
