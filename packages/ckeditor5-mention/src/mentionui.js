@@ -529,7 +529,9 @@ function createRegExp( marker, minimumCharacters ) {
 		return new RegExp( buildPattern( '\\p{Ps}"\';', marker, numberOfCharacters ), 'u' );
 	} catch ( error ) {
 		// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
-		return new RegExp( buildPattern( '([{"\'', marker, numberOfCharacters ), 'u' );
+		// Disable the ESLing rule as \[ and \( escapes are needed for RegExp string in Edge browser.
+		// eslint-disable-next-line no-useless-escape
+		return new RegExp( buildPattern( '\(\[{"\'', marker, numberOfCharacters ), 'u' );
 	}
 }
 
