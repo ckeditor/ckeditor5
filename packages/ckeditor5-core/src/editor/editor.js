@@ -16,6 +16,8 @@ import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontro
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { isElement } from 'lodash-es';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -266,6 +268,23 @@ export default class Editor {
 	 */
 	execute( ...args ) {
 		this.commands.execute( ...args );
+	}
+
+	/**
+	 * Methods creates rejected promise when provided parameter is a HTML Textarea element.
+	 * It resolves in any other case.
+	 *
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * or the editor's initial data.
+	 * @returns {Promise}
+	 */
+	static allowedElement( sourceElementOrData ) {
+		if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName.toLowerCase() === 'textarea' ) {
+			return Promise.reject(
+				new CKEditorError( 'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.' )
+			);
+		}
+		return Promise.resolve();
 	}
 
 	/**
