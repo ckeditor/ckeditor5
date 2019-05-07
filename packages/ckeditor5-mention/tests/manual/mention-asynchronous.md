@@ -5,10 +5,10 @@
 
 The feed is asynchronous list that is loaded from server (`@` marker) after random delay:
 
-- 80% of requests completes in 100-300ms.
-- 20% of requests completes in 600-1000ms.
+- 60% of requests completes in 150ms.
+- 40% of requests completes in 400ms, 1s, 2s or 4s.
 
-In order to run the server go to the `ckeditor5-mention/dev-server/` and run:
+In order to run the server go to the `tests/_utils/asyncserver/` and run:
 
 ```sh
 node index.js
