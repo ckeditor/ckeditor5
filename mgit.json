@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#poc/magic-block",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font",
@@ -44,6 +44,7 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget",
+    "@ckeditor/ckeditor5-structured-editing": "Reinmar/ckeditor5-structured-editing"
   }
 }
