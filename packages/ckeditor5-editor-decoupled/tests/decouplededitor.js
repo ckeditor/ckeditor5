@@ -134,6 +134,21 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
+		it( 'throws error if it is initialized in textarea', done => {
+			DecoupledEditor.create( document.createElement( 'textarea' ) )
+				.then(
+					() => {
+						expect.fail( 'Decoupled editor should throw an error when is initialized in textarea.' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
+
 		function test( getElementOrData ) {
 			it( 'creates an instance which inherits from the DecoupledEditor', () => {
 				return DecoupledEditor
