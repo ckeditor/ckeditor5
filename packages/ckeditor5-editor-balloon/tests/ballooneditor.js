@@ -195,6 +195,21 @@ describe( 'BalloonEditor', () => {
 					return newEditor.destroy();
 				} );
 		} );
+
+		it( 'throws an error when is initialized in textarea', done => {
+			BalloonEditor.create( document.createElement( 'textarea' ) )
+				.then(
+					() => {
+						expect.fail( 'Balloon editor should throw an error when is initialized in textarea.' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							.match( /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
+		} );
 	} );
 
 	describe( 'create - events', () => {
