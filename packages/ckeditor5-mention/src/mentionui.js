@@ -102,11 +102,16 @@ export default class MentionUI extends Plugin {
 				} ) );
 			}
 
-			// Debounce to 200ms
-
 			this._getFeed( marker, feedText )
-				.catch( () => {
-					// Discard error.
+				.catch( error => {
+					if ( error.feedDiscarded ) {
+						return;
+					}
+
+					// TODO: show warning
+
+					// Hide the UI on errors? Or just remove marker?
+					this._hideUIAndRemoveMarker();
 				} )
 				.then( feed => {
 					if ( !feed ) {
@@ -114,7 +119,6 @@ export default class MentionUI extends Plugin {
 					}
 
 					if ( !this.editor.model.markers.has( 'mention' ) ) {
-						// already hidden
 						return;
 					}
 
@@ -131,7 +135,7 @@ export default class MentionUI extends Plugin {
 						this._hideUIAndRemoveMarker();
 					}
 				} );
-		}, 200 );
+		}, 100 );
 	}
 
 	/**
@@ -351,7 +355,7 @@ export default class MentionUI extends Plugin {
 				if ( this._lastRequested == feedText ) {
 					resolve( response );
 				} else {
-					reject( `Feed discarded: ${ feedText }` );
+					reject( { feedDiscarded: true } );
 				}
 			} );
 		} );
