@@ -90,8 +90,22 @@ export default class ContextualBalloon extends Plugin {
 		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
 		 */
 		this.view = new BalloonPanelView( editor.locale );
-		this.editor.ui.view.body.add( this.view );
-		this.editor.ui.focusTracker.add( this.view.element );
+		editor.ui.view.body.add( this.view );
+		editor.ui.focusTracker.add( this.view.element );
+
+		/**
+		 * @private
+		 * @type {Map.<Object>}
+		 */
+		this._viewToPanel = new Map();
+
+		/**
+		 * List of panels.
+		 *
+		 * @private
+		 * @type {module:utils/collection~Collection}
+		 */
+		this._panels = new Collection();
 
 		/**
 		 * Currently visible panel.
@@ -104,18 +118,16 @@ export default class ContextualBalloon extends Plugin {
 		this.set( '_visiblePanel', null );
 
 		/**
-		 * List of panels.
+		 * Panels length.
 		 *
 		 * @private
-		 * @type {module:utils/collection~Collection}
+		 * @readonly
+		 * @observable
+		 * @member {Number} #_panelsLength
 		 */
-		this._panels = new Collection();
-
-		/**
-		 * @private
-		 * @type {Map.<Object>}
-		 */
-		this._viewToPanel = new Map();
+		this.set( '_panelsLength', 0 );
+		this._panels.on( 'add', () => ( this._panelsLength = this._panels.length ) );
+		this._panels.on( 'remove', () => ( this._panelsLength = this._panels.length ) );
 
 		/**
 		 * Rotator view embedded in the contextual balloon.
@@ -217,7 +229,7 @@ export default class ContextualBalloon extends Plugin {
 					this.view.unpin();
 					this.visibleView = null;
 					this._visiblePanel = null;
-					this._rotatorView.content.clear();
+					this._rotatorView.hideView();
 				}
 			} else {
 				this._showView( Array.from( panel.stack.values() )[ panel.stack.size - 2 ] );
@@ -245,6 +257,7 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		this.view.pin( this._getBalloonPosition() );
+		this._rotatorView.checkIsNarrow();
 	}
 
 	/**
@@ -324,22 +337,21 @@ export default class ContextualBalloon extends Plugin {
 	 */
 	_createRotatorView() {
 		const view = new RotatorView( this.editor.locale );
+		const t = this.editor.locale.t;
 
 		this.view.content.add( view );
 
 		// Hide navigation when there is only a one panel.
-		view.bind( 'isNavigationVisible' ).to( this._panels, 'length', value => value > 1 );
+		view.bind( 'isNavigationVisible' ).to( this, '_panelsLength', value => value > 1 );
 
 		// Update panel position after toggling navigation.
 		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
 		// Show panels counter.
-		view.bind( 'counter' ).to( this, '_visiblePanel', this._panels, 'length', ( panel, length ) => {
-			if ( !panel ) {
-				return `0/${ length }`;
-			}
+		view.bind( 'counter' ).to( this, '_visiblePanel', this, '_panelsLength', ( panel, length ) => {
+			const current = panel ? this._panels.getIndex( panel ) + 1 : 0;
 
-			return `${ this._panels.getIndex( panel ) + 1 }/${ length }`;
+			return `${ current } ${ t( 'of' ) } ${ length }`;
 		} );
 
 		view.buttonNextView.on( 'execute', () => {
@@ -379,8 +391,7 @@ export default class ContextualBalloon extends Plugin {
 		this.view.class = balloonClassName;
 		this.view.withArrow = withArrow;
 
-		this._rotatorView.content.clear();
-		this._rotatorView.content.add( view );
+		this._rotatorView.showView( view );
 		this.visibleView = view;
 		this.view.pin( this._getBalloonPosition() );
 	}
@@ -407,7 +418,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
-// Rotator view. Used to display last view from the current panel stack.
+// Rotator view. Used for displaying last view from the current panel stack.
 // Provides navigation buttons for switching panels.
 //
 // @private
@@ -424,6 +435,11 @@ class RotatorView extends View {
 		//
 		// @member {Boolean} #isNavigationVisible
 		this.set( 'isNavigationVisible', true );
+
+		// Defines whether balloon should be marked as narrow or not.
+		//
+		// @member {Boolean} #isNarrow
+		this.set( 'isNarrow', false );
 
 		// @type {module:utils/focustracker~FocusTracker}
 		this.focusTracker = new FocusTracker();
@@ -468,7 +484,10 @@ class RotatorView extends View {
 							tag: 'span',
 
 							attributes: {
-								class: 'ck-balloon-rotator__counter',
+								class: [
+									'ck-balloon-rotator__counter',
+									bind.to( 'isNarrow', value => value ? 'ck-hidden' : '' )
+								]
 							},
 
 							children: [
@@ -496,6 +515,24 @@ class RotatorView extends View {
 		super.render();
 
 		this.focusTracker.add( this.element );
+	}
+
+	checkIsNarrow() {
+		this.isNarrow = this.element.clientWidth <= 200;
+	}
+
+	// Shows given view.
+	//
+	// @param {module:ui/view~View} view
+	showView( view ) {
+		this.hideView();
+		this.content.add( view );
+		this.checkIsNarrow();
+	}
+
+	// Hides currently visible view.
+	hideView() {
+		this.content.clear();
 	}
 
 	// Creates a navigation button view.
