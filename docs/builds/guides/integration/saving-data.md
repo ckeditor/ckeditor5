@@ -160,7 +160,7 @@ The minimum time period between two save actions might be configured using the `
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		autosave: {
-			waitingTime: 5000,
+			waitingTime: 5000, // in ms
 			save( editor ) {}
 		},
 
