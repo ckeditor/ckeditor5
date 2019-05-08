@@ -137,6 +137,21 @@ export default class ContextualBalloon extends Plugin {
 		 * @type {module:ui/view~View}
 		 */
 		this._rotatorView = this._createRotatorView();
+
+		/**
+		 * Fake panels view.
+		 *
+		 * @private
+		 * @type {module:ui/view~View}
+		 */
+		this._fakePanelsView = new FakePanelsView( editor.locale );
+		this._fakePanelsView.bind( 'position' ).to( this.view, 'position', position => {
+			return position.startsWith( 'arrow_n' ) ? 'bottom' : 'top';
+		} );
+		this._fakePanelsView.bind( 'panelsLength' ).to( this, '_panelsLength', length => {
+			return length < 2 ? 0 : Math.min( 5, length ) - 1;
+		} );
+		this.view.content.add( this._fakePanelsView );
 	}
 
 	/**
@@ -424,11 +439,11 @@ export default class ContextualBalloon extends Plugin {
 // @private
 // @extends module:ui/view~View
 class RotatorView extends View {
+	// @inheritDoc
 	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
-
 		const bind = this.bindTemplate;
 
 		// Defines whether navigation is visible or not.
@@ -454,7 +469,7 @@ class RotatorView extends View {
 		// @type {module:ui/button/buttonview~ButtonView}
 		this.buttonNextView = this._createButtonView( t( 'Next balloon' ), nextIcon );
 
-		// Collection of the child views which creates balloon panel contents.
+		// Collection of the child views which creates rotator content.
 		//
 		// @readonly
 		// @type {module:ui/viewcollection~ViewCollection}
@@ -551,5 +566,71 @@ class RotatorView extends View {
 		} );
 
 		return view;
+	}
+}
+
+// @private
+// @extends module:ui/view~View
+class FakePanelsView extends View {
+	// @inheritDoc
+	constructor( locale ) {
+		super( locale );
+
+		// Number of rendered fake panels.
+		//
+		// @observable
+		// @member {Boolean} #panelsLength
+		this.set( 'panelsLength', 0 );
+
+		// @observable
+		// @member {'top'|'bottom'} #position
+		this.set( 'position', 'top' );
+
+		// Collection of the child views which creates fake panel content.
+		//
+		// @readonly
+		// @type {module:ui/viewcollection~ViewCollection}
+		this.content = this.createCollection();
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: 'ck-fake-panels'
+			},
+			children: this.content
+		} );
+
+		this.on( 'change:panelsLength', ( evt, name, next, prev ) => {
+			if ( next > prev ) {
+				this._addPanels( next - prev );
+			} else {
+				this._removePanels( prev - next );
+			}
+		} );
+	}
+
+	// @private
+	// @param {Number} number
+	_addPanels( number ) {
+		while ( number-- ) {
+			const view = new View();
+
+			view.setTemplate( { tag: 'div' } );
+
+			this.content.add( view );
+			this.registerChild( view );
+		}
+	}
+
+	// @private
+	// @param {Number} number
+	_removePanels( number ) {
+		while ( number-- ) {
+			const view = this.content.last;
+
+			this.content.remove( view );
+			this.deregisterChild( view );
+			view.destroy();
+		}
 	}
 }

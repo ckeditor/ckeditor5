@@ -8,3 +8,65 @@
 	align-items: center;
 	justify-content: center;
 }
+
+
+
+
+
+/* WIP */
+.ck .ck-fake-panels {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+}
+
+.ck .ck-fake-panels div {
+	position: absolute;
+	background: #fff;
+	border: solid 1px #e1e1e1;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	transform: translate( 6px, 6px );
+	z-index: -1;
+}
+
+.ck .ck-fake-panels div + div {
+	transform: translate( 12px, 12px );
+	z-index: -2;
+}
+
+.ck .ck-fake-panels div + div + div {
+	transform: translate( 18px, 18px );
+	z-index: -3;
+}
+
+.ck .ck-fake-panels div + div + div + div {
+	transform: translate( 26px, 26px );
+	z-index: -4;
+}
+
+.ck.ck-balloon-panel {
+	&[class*="arrow_s"] {
+		& .ck-fake-panels div {
+			transform: translate( 6px, -6px );
+		}
+
+		& .ck-fake-panels div + div {
+			transform: translate( 12px, -12px );
+		}
+
+		& .ck-fake-panels div + div + div {
+			transform: translate( 18px, -18px );
+		}
+
+		& .ck-fake-panels div + div + div + div {
+			transform: translate( 26px, -26px );
+		}
+	}
+}
