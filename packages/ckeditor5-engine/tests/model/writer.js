@@ -86,6 +86,27 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let writer;
+
+		beforeEach( () => {
+			writer = new Writer( model, batch );
+		} );
+
+		it( 'should return true for "writer"', () => {
+			expect( writer.is( 'writer' ) ).to.be.true;
+			expect( writer.is( 'model:writer' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( writer.is( 'model' ) ).to.be.false;
+			expect( writer.is( 'model:node' ) ).to.be.false;
+			expect( writer.is( 'text' ) ).to.be.false;
+			expect( writer.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( writer.is() ).to.be.false;
+		} );
+	} );
+
 	describe( 'insert()', () => {
 		it( 'should insert node at given position', () => {
 			const parent = createDocumentFragment();

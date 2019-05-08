@@ -146,6 +146,20 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "markerCollection"', () => {
+			expect( markers.is( 'markerCollection' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( markers.is( 'model' ) ).to.be.false;
+			expect( markers.is( 'model:node' ) ).to.be.false;
+			expect( markers.is( 'text' ) ).to.be.false;
+			expect( markers.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( markers.is() ).to.be.false;
+		} );
+	} );
+
 	describe( '_remove', () => {
 		it( 'should remove marker, return true and fire update:<markerName> event', () => {
 			const marker = markers._set( 'name', range );
@@ -409,5 +423,25 @@ describe( 'Marker', () => {
 		model.markers._set( 'name', range, false, false );
 
 		expect( marker.affectsData ).to.be.false;
+	} );
+
+	describe( 'is()', () => {
+		let marker;
+		beforeEach( () => {
+			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			marker = model.markers._set( 'name', range );
+		} );
+
+		it( 'should return true for "marker"', () => {
+			expect( marker.is( 'marker' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( marker.is( 'model' ) ).to.be.false;
+			expect( marker.is( 'model:node' ) ).to.be.false;
+			expect( marker.is( 'text' ) ).to.be.false;
+			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( marker.is() ).to.be.false;
+		} );
 	} );
 } );

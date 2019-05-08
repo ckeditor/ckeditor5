@@ -69,6 +69,27 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let treeWalker;
+
+		beforeEach( () => {
+			treeWalker = new TreeWalker( { startPosition: rootBeginning } );
+		} );
+
+		it( 'should return true for "treeWalker"', () => {
+			expect( treeWalker.is( 'treeWalker' ) ).to.be.true;
+			expect( treeWalker.is( 'model:treeWalker' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( treeWalker.is( 'model' ) ).to.be.false;
+			expect( treeWalker.is( 'model:node' ) ).to.be.false;
+			expect( treeWalker.is( 'text' ) ).to.be.false;
+			expect( treeWalker.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( treeWalker.is() ).to.be.false;
+		} );
+	} );
+
 	describe( 'iterate from start position `startPosition`', () => {
 		let expected;
 

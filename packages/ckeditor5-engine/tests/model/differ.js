@@ -36,6 +36,20 @@ describe( 'Differ', () => {
 		] );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "differ"', () => {
+			expect( differ.is( 'differ' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( differ.is( 'model' ) ).to.be.false;
+			expect( differ.is( 'model:node' ) ).to.be.false;
+			expect( differ.is( 'text' ) ).to.be.false;
+			expect( differ.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( differ.is() ).to.be.false;
+		} );
+	} );
+
 	describe( 'insert', () => {
 		// Simple.
 		it( 'an element', () => {

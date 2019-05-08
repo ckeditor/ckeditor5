@@ -60,4 +60,24 @@ describe( 'Batch', () => {
 			expect( batch.baseVersion ).to.equal( null );
 		} );
 	} );
+
+	describe( 'is()', () => {
+		let batch;
+
+		beforeEach( () => {
+			batch = new Batch();
+		} );
+
+		it( 'should return true for "batch"', () => {
+			expect( batch.is( 'batch' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( batch.is( 'model' ) ).to.be.false;
+			expect( batch.is( 'node' ) ).to.be.false;
+			expect( batch.is( 'model:element' ) ).to.be.false;
+			expect( batch.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( batch.is() ).to.be.false;
+		} );
+	} );
 } );

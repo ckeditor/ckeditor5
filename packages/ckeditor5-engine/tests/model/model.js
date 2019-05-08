@@ -808,4 +808,18 @@ describe( 'Model', () => {
 			sinon.assert.notCalled( spy );
 		} );
 	} );
+
+	describe( 'is()', () => {
+		it( 'should return true for "model"', () => {
+			expect( model.is( 'model' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( model.is( 'view' ) ).to.be.false;
+			expect( model.is( 'model:node' ) ).to.be.false;
+			expect( model.is( 'text' ) ).to.be.false;
+			expect( model.is( 'element', 'paragraph' ) ).to.be.false;
+			expect( model.is() ).to.be.false;
+		} );
+	} );
 } );
