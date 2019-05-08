@@ -203,7 +203,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	_showToolbar( toolbarDefinition, relatedElement ) {
 		if ( this._isToolbarVisible( toolbarDefinition ) ) {
 			repositionContextualBalloon( this.editor, relatedElement );
-		} else if ( !this._isToolbarInBalloon( toolbarDefinition.view ) ) {
+		} else if ( !this._isToolbarInBalloon( toolbarDefinition ) ) {
 			this._balloon.add( {
 				view: toolbarDefinition.view,
 				position: getBalloonPositionData( this.editor, relatedElement ),
