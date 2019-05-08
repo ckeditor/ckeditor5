@@ -520,6 +520,16 @@ export default class Differ {
 	}
 
 	/**
+	 * Checks whether given object is of `differ` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'differ';
+	}
+
+	/**
 	 * Resets `Differ`. Removes all buffered changes.
 	 */
 	reset() {

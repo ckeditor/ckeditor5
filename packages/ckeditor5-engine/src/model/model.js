@@ -718,6 +718,16 @@ export default class Model {
 	}
 
 	/**
+	 * Checks whether given object is of `model` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'model';
+	}
+
+	/**
 	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
 	 * which calls callbacks and returns array of values returned by these callbacks.
 	 *

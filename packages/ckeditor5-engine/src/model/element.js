@@ -95,9 +95,14 @@ export default class Element extends Node {
 	 *		obj instanceof Element; // true
 	 *
 	 *		obj.is( 'element' ); // true
+	 *		obj.is( 'model:element' ); // true
 	 *		obj.is( 'listItem' ); // true
+	 *		obj.is( 'model:listItem' ); // true
 	 *		obj.is( 'element', 'listItem' ); // true
+	 *		obj.is( 'model:element', 'listItem' ); // true
 	 *		obj.is( 'text' ); // false
+	 *		obj.is( 'model:text' ); // false
+	 *		obj.is( 'view:element' ); // false
 	 *		obj.is( 'element', 'image' ); // false
 	 *
 	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
@@ -108,10 +113,11 @@ export default class Element extends Node {
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
+		const cutType = type && type.replace( 'model:', '' );
 		if ( !name ) {
-			return type == 'element' || type == this.name || super.is( type );
+			return cutType == 'element' || cutType == this.name || super.is( type );
 		} else {
-			return type == 'element' && name == this.name;
+			return cutType == 'element' && name == this.name;
 		}
 	}
 

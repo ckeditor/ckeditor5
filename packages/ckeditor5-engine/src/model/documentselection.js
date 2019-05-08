@@ -374,15 +374,22 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection( ... );
 	 *
 	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'model:selection' ); // true
 	 *		selection.is( 'documentSelection' ); // true
+	 *		selection.is( 'model:documentSelection' ); // true
+	 *		selection.is( 'view:selection' ); // false
 	 *		selection.is( 'node' ); // false
+	 *		selection.is( 'model:node' ); // false
 	 *		selection.is( 'element' ); // false
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection' || type == 'documentSelection';
+		return type == 'selection' ||
+			type == 'model:selection' ||
+			type == 'documentSelection' ||
+			type == 'model:documentSelection';
 	}
 
 	/**

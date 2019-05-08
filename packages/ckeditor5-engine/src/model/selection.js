@@ -629,14 +629,16 @@ export default class Selection {
 	 *		const selection = new Selection( ... );
 	 *
 	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'model:selection' ); // true
 	 *		selection.is( 'node' ); // false
 	 *		selection.is( 'element' ); // false
+	 *		selection.is( 'view:selection' ); // false
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'selection';
+		return type == 'selection' || type == 'model:selection';
 	}
 
 	/**

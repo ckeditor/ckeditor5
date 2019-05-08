@@ -144,6 +144,16 @@ export default class Range {
 	}
 
 	/**
+	 * Checks whether given object is of `range` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'range' || type == 'model:range';
+	}
+
+	/**
 	 * Two ranges are equal if their {@link #start} and {@link #end} positions are equal.
 	 *
 	 * @param {module:engine/model/range~Range} otherRange Range to compare with.

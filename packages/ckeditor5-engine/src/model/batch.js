@@ -79,4 +79,14 @@ export default class Batch {
 
 		return operation;
 	}
+
+	/**
+	 * Checks whether given object is of `batch` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'batch';
+	}
 }

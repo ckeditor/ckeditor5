@@ -73,6 +73,16 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Checks whether given object is of `markerCollection` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'markerCollection';
+	}
+
+	/**
 	 * Creates and adds a {@link ~Marker marker} to the `MarkerCollection` with given name on given
 	 * {@link module:engine/model/range~Range range}.
 	 *
@@ -446,6 +456,16 @@ class Marker {
 		}
 
 		return this._liveRange.toRange();
+	}
+
+	/**
+	 * Checks whether given object is of `marker` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'marker';
 	}
 
 	/**

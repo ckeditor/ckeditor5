@@ -503,6 +503,16 @@ export default class Position {
 	}
 
 	/**
+	 * Checks whether given object is of `position` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'position' || type == 'model:position';
+	}
+
+	/**
 	 * Checks if two positions are in the same parent.
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).

@@ -188,6 +188,16 @@ export default class Schema {
 	}
 
 	/**
+	 * Checks whether given object is of `schema` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'schema';
+	}
+
+	/**
 	 * Returns `true` if the given item is registered in the schema.
 	 *
 	 *		schema.isRegistered( 'paragraph' ); // -> true

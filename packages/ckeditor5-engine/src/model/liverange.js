@@ -41,6 +41,13 @@ export default class LiveRange extends Range {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'liveRange' || type == 'model:liveRange' || super.is( type );
+	}
+
+	/**
 	 * Creates a {@link module:engine/model/range~Range range instance} that is equal to this live range.
 	 *
 	 * @returns {module:engine/model/range~Range}

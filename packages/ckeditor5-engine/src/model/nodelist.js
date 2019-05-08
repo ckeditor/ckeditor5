@@ -171,6 +171,16 @@ export default class NodeList {
 	}
 
 	/**
+	 * Checks whether given object is of `nodeList` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'nodeList' || type == 'model:nodeList';
+	}
+
+	/**
 	 * Inserts given nodes at given index.
 	 *
 	 * @protected

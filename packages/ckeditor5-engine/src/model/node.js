@@ -467,6 +467,8 @@ export default class Node {
 	 * This method is useful when processing model tree objects that are of unknown type. For example, a function
 	 * may return {@link module:engine/model/documentfragment~DocumentFragment} or {@link module:engine/model/node~Node}
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 * All checked types might be prefixed with `model:` to narrow search exclusively to model's objects.
+	 * That should prevent of situation where `view:node` accidentally might be considered as `model:node`.
 	 *
 	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
@@ -477,11 +479,11 @@ export default class Node {
 	 *		obj.is( 'textProxy' ); // true for text proxy object
 	 *
 	 * @method #is
-	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'node';
+		return type == 'node' || type == 'model:node';
 	}
 }
 

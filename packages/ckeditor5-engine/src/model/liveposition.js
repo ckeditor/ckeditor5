@@ -64,6 +64,13 @@ export default class LivePosition extends Position {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'livePosition' || type == 'model:livePosition' || super.is( type );
+	}
+
+	/**
 	 * Creates a {@link module:engine/model/position~Position position instance}, which is equal to this live position.
 	 *
 	 * @returns {module:engine/model/position~Position}
