@@ -343,6 +343,7 @@ mix( Autosave, ObservableMixin );
 
 /**
  * The minimum amount of time that need to pass after last action to call the provided callback.
+ * By default it is 1000 ms.
  *
  *		ClassicEditor
  *			.create( editorElement, {
