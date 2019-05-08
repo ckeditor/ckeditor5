@@ -356,6 +356,5 @@ mix( Autosave, ObservableMixin );
  *			.then( ... )
  *			.catch( ... );
  *
- * @property module:autosave/autosave~AutosaveConfig#waitingTime
- * @type {Number}
+ * @member {Number} module:autosave/autosave~AutosaveConfig#waitingTime
  */
