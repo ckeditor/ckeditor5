@@ -393,6 +393,17 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewA );
 			expect( balloon.visibleView ).to.null;
 		} );
+
+		it( 'should be observable', () => {
+			const spy = sinon.spy();
+
+			balloon.on( 'change:visibleView', spy );
+
+			balloon.add( { view: viewB } );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, sinon.match.any, 'visibleView', viewB, viewA );
+		} );
 	} );
 
 	describe( 'showPanel()', () => {
