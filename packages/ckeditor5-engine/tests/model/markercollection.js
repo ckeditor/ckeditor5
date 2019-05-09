@@ -156,7 +156,6 @@ describe( 'MarkerCollection', () => {
 			expect( markers.is( 'model:node' ) ).to.be.false;
 			expect( markers.is( 'text' ) ).to.be.false;
 			expect( markers.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( markers.is() ).to.be.false;
 		} );
 	} );
 
@@ -441,7 +440,6 @@ describe( 'Marker', () => {
 			expect( marker.is( 'model:node' ) ).to.be.false;
 			expect( marker.is( 'text' ) ).to.be.false;
 			expect( marker.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( marker.is() ).to.be.false;
 		} );
 	} );
 } );

@@ -202,7 +202,6 @@ describe( 'LiveRange', () => {
 			expect( live.is( 'model:node' ) ).to.be.false;
 			expect( live.is( 'text' ) ).to.be.false;
 			expect( live.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( live.is() ).to.be.false;
 		} );
 	} );
 

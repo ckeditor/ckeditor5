@@ -57,7 +57,6 @@ describe( 'RootElement', () => {
 			expect( root.is( 'textProxy' ) ).to.be.false;
 			expect( root.is( 'documentFragment' ) ).to.be.false;
 			expect( root.is( 'view:element' ) ).to.be.false;
-			expect( root.is() ).to.be.false;
 		} );
 	} );
 } );

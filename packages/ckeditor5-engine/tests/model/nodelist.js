@@ -43,7 +43,6 @@ describe( 'NodeList', () => {
 			expect( nodes.is( 'model:node' ) ).to.be.false;
 			expect( nodes.is( 'text' ) ).to.be.false;
 			expect( nodes.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( nodes.is() ).to.be.false;
 		} );
 	} );
 

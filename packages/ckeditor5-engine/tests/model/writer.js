@@ -103,7 +103,6 @@ describe( 'Writer', () => {
 			expect( writer.is( 'model:node' ) ).to.be.false;
 			expect( writer.is( 'text' ) ).to.be.false;
 			expect( writer.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( writer.is() ).to.be.false;
 		} );
 	} );
 

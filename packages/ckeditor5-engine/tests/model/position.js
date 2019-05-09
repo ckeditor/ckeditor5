@@ -144,7 +144,6 @@ describe( 'Position', () => {
 			expect( position.is( 'model:node' ) ).to.be.false;
 			expect( position.is( 'text' ) ).to.be.false;
 			expect( position.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( position.is() ).to.be.false;
 		} );
 	} );
 

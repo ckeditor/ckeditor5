@@ -86,7 +86,6 @@ describe( 'TreeWalker', () => {
 			expect( treeWalker.is( 'model:node' ) ).to.be.false;
 			expect( treeWalker.is( 'text' ) ).to.be.false;
 			expect( treeWalker.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( treeWalker.is() ).to.be.false;
 		} );
 	} );
 

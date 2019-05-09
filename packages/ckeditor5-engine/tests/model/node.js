@@ -173,7 +173,6 @@ describe( 'Node', () => {
 			expect( node.is( 'model:text' ) ).to.be.false;
 			expect( node.is( 'text' ) ).to.be.false;
 			expect( node.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( node.is() ).to.be.false;
 		} );
 	} );
 

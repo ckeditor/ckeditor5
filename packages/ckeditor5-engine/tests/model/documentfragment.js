@@ -80,7 +80,6 @@ describe( 'DocumentFragment', () => {
 			expect( frag.is( 'element' ) ).to.be.false;
 			expect( frag.is( 'rootElement' ) ).to.be.false;
 			expect( frag.is( 'view:documentFragment' ) ).to.be.false;
-			expect( frag.is() ).to.be.false;
 		} );
 	} );
 

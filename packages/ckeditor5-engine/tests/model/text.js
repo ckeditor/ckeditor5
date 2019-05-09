@@ -52,7 +52,6 @@ describe( 'Text', () => {
 			expect( text.is( 'model:element' ) ).to.be.false;
 			expect( text.is( 'rootElement' ) ).to.be.false;
 			expect( text.is( 'documentFragment' ) ).to.be.false;
-			expect( text.is() ).to.be.false;
 		} );
 	} );
 

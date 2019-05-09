@@ -144,7 +144,6 @@ describe( 'Selection', () => {
 			expect( selection.is( 'model:node' ) ).to.be.false;
 			expect( selection.is( 'text' ) ).to.be.false;
 			expect( selection.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( selection.is() ).to.be.false;
 		} );
 	} );
 

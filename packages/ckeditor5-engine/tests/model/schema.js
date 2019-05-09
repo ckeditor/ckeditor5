@@ -321,7 +321,6 @@ describe( 'Schema', () => {
 			expect( schema.is( 'model:node' ) ).to.be.false;
 			expect( schema.is( 'text' ) ).to.be.false;
 			expect( schema.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( schema.is() ).to.be.false;
 		} );
 	} );
 

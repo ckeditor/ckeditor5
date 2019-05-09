@@ -819,7 +819,6 @@ describe( 'Model', () => {
 			expect( model.is( 'model:node' ) ).to.be.false;
 			expect( model.is( 'text' ) ).to.be.false;
 			expect( model.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( model.is() ).to.be.false;
 		} );
 	} );
 } );

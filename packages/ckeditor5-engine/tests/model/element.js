@@ -70,7 +70,6 @@ describe( 'Element', () => {
 			expect( element.is( 'view:node' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
 			expect( element.is( 'view:element' ) ).to.be.false;
-			expect( element.is() ).to.be.false;
 		} );
 	} );
 

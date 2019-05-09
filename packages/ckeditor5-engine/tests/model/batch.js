@@ -77,7 +77,6 @@ describe( 'Batch', () => {
 			expect( batch.is( 'node' ) ).to.be.false;
 			expect( batch.is( 'model:element' ) ).to.be.false;
 			expect( batch.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( batch.is() ).to.be.false;
 		} );
 	} );
 } );

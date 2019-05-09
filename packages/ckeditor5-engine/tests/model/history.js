@@ -189,7 +189,6 @@ describe( 'History', () => {
 			expect( history.is( 'model:node' ) ).to.be.false;
 			expect( history.is( 'text' ) ).to.be.false;
 			expect( history.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( history.is() ).to.be.false;
 		} );
 	} );
 } );

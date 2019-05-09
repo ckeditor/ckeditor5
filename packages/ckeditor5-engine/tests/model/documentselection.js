@@ -511,7 +511,6 @@ describe( 'DocumentSelection', () => {
 			expect( selection.is( 'rootElement' ) ).to.be.false;
 			expect( selection.is( 'view:selection' ) ).to.be.false;
 			expect( selection.is( 'view:documentSelection' ) ).to.be.false;
-			expect( selection.is() ).to.be.false;
 		} );
 	} );
 

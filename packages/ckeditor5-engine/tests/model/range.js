@@ -61,7 +61,6 @@ describe( 'Range', () => {
 			expect( range.is( 'model:node' ) ).to.be.false;
 			expect( range.is( 'text' ) ).to.be.false;
 			expect( range.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( range.is() ).to.be.false;
 		} );
 	} );
 

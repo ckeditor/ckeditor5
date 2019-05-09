@@ -46,7 +46,6 @@ describe( 'Differ', () => {
 			expect( differ.is( 'model:node' ) ).to.be.false;
 			expect( differ.is( 'text' ) ).to.be.false;
 			expect( differ.is( 'element', 'paragraph' ) ).to.be.false;
-			expect( differ.is() ).to.be.false;
 		} );
 	} );
 

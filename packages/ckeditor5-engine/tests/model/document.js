@@ -512,7 +512,6 @@ describe( 'Document', () => {
 			expect( doc.is( 'model:node' ) ).to.be.false;
 			expect( doc.is( 'view:document' ) ).to.be.false;
 			expect( doc.is( 'element', 'text' ) ).to.be.false;
-			expect( doc.is() ).to.be.false;
 		} );
 	} );
 } );

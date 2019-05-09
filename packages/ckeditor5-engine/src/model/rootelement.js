@@ -58,7 +58,7 @@ export default class RootElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name ) {
-		const cutType = type && type.replace( 'model:', '' );
+		const cutType = type.replace( 'model:', '' );
 		if ( !name ) {
 			return cutType == 'rootElement' || super.is( type );
 		} else {
