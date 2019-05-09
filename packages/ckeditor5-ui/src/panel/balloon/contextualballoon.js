@@ -226,7 +226,7 @@ export default class ContextualBalloon extends Plugin {
 				if ( this._panels.length > 1 ) {
 					this._showNextPanel();
 				} else {
-					this.view.unpin();
+					this.view.hide();
 					this.visibleView = null;
 					this._visiblePanel = null;
 					this._rotatorView.hideView();
@@ -292,10 +292,6 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 */
 	_showNextPanel() {
-		if ( this._panels.length === 1 ) {
-			return;
-		}
-
 		const panel = this._visiblePanel;
 
 		let nextIndex = this._panels.getIndex( panel ) + 1;
@@ -314,10 +310,6 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 */
 	_showPrevPanel() {
-		if ( this._panels.length === 1 ) {
-			return;
-		}
-
 		const panel = this._visiblePanel;
 
 		let nextIndex = this._panels.getIndex( panel ) - 1;
