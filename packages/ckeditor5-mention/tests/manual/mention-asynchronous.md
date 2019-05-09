@@ -1,5 +1,4 @@
-## Mention
-
+## Mention asynchronous feeds
 
 ### Configuration
 
@@ -18,8 +17,14 @@ node index.js
 
 Controlling the cache:
 
-- You can enable caching mechanism in `getFeed()` method - if checked it will save results and load them from cache for the same query.s
-- If cache is disable no loading nor saving will be performed. 
+- You can enable caching mechanism of the tests `getFeed()` callback - if checked it will save results and load them from cache for the same query.
+- If cache is disabled then no loading nor saving will be performed.
+
+### Behavior
+
+There should be no errors even if request took longer time or came out-of-order.
+
+If the asyncserver is not running the notification should be shown for failed requests. 
 
 ### Disclaimer
 
