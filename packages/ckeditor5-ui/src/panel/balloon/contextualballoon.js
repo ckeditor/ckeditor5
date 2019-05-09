@@ -94,8 +94,10 @@ export default class ContextualBalloon extends Plugin {
 		editor.ui.focusTracker.add( this.view.element );
 
 		/**
+		 * List of views mapped to its parent panels.
+		 *
 		 * @private
-		 * @type {Map.<Object>}
+		 * @type {Map.<module:ui/view~View,Object>}
 		 */
 		this._viewToPanel = new Map();
 
@@ -103,7 +105,7 @@ export default class ContextualBalloon extends Plugin {
 		 * List of panels.
 		 *
 		 * @private
-		 * @type {module:utils/collection~Collection}
+		 * @type {module:utils/collection~Collection.<Object>}
 		 */
 		this._panels = new Collection();
 
@@ -118,7 +120,7 @@ export default class ContextualBalloon extends Plugin {
 		this.set( '_visiblePanel', null );
 
 		/**
-		 * Panels length.
+		 * A total number of all panels in the balloon.
 		 *
 		 * @private
 		 * @readonly
@@ -150,7 +152,8 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Adds a new view to the panel stack and makes it visible if current panel is visible.
+	 * Adds a new view to the panel stack and makes it visible if current panel is visible
+	 * or it is a first view in the balloon.
 	 *
 	 * @param {Object} data Configuration of the view.
 	 * @param {String} [data.panelId='main'] Id of panel that view is added to.
@@ -261,7 +264,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Shows last view from the stack of panel with given id.
+	 * Shows last view from the stack of a panel with given id.
 	 *
 	 * @param {String} id
 	 */
