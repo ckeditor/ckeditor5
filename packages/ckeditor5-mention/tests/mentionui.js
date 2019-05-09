@@ -712,16 +712,18 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'asynchronous list with custom trigger', () => {
-			let feedCallbackStub, feedCallbackTimeout;
+			let feedCallbackStub, feedCallbackTimeout, feedCallbackCallTimes;
 
 			beforeEach( () => {
 				const issuesNumbers = [ '#100', '#101', '#102', '#103' ];
 
 				feedCallbackTimeout = 20;
+				feedCallbackCallTimes = 0;
 
 				function feedCallback( feedText ) {
 					return new Promise( resolve => {
 						setTimeout( () => {
+							feedCallbackCallTimes++;
 							resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
 						}, feedCallbackTimeout );
 					} );
@@ -864,8 +866,10 @@ describe( 'MentionUI', () => {
 
 				sinon.assert.notCalled( feedCallbackStub );
 
+				const panelShowSpy = sinon.spy( panelView, 'show' );
+
 				// Increase the response time to extend the debounce time out.
-				feedCallbackTimeout = 200;
+				feedCallbackTimeout = 300;
 
 				return Promise.resolve()
 					.then( wait( 20 ) )
@@ -879,17 +883,24 @@ describe( 'MentionUI', () => {
 					.then( waitForDebounce )
 					.then( () => {
 						sinon.assert.calledOnce( feedCallbackStub );
-
 						sinon.assert.calledWithExactly( feedCallbackStub, '1' );
+
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+
+						// Make second callback resolve before first.
+						feedCallbackTimeout = 50;
 
 						model.change( writer => {
 							writer.insertText( '0', doc.selection.getFirstPosition() );
 						} );
 					} )
-					.then( wait( 500 ) ) // Debounce wait plus some more for Edge on Travis.
+					.then( wait( 300 ) ) // Wait longer so the longer callback will be resolved.
 					.then( () => {
 						sinon.assert.calledTwice( feedCallbackStub );
 						sinon.assert.calledWithExactly( feedCallbackStub.getCall( 1 ), '10' );
+						sinon.assert.calledOnce( panelShowSpy );
+						expect( feedCallbackCallTimes ).to.equal( 2 );
 
 						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
@@ -1727,7 +1738,7 @@ describe( 'MentionUI', () => {
 	}
 
 	function waitForDebounce() {
-		return wait( 200 )();
+		return wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {
