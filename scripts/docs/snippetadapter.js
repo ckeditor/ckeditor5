@@ -163,8 +163,14 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 					let snippetHTML = fs.readFileSync( snippetData.snippetSources.html ).toString();
 
+					const elementClasses = [ 'live-snippet' ];
+
+					if ( !snippetHTML.trim() ) {
+						elementClasses.push( 'live-snippet--empty' );
+					}
+
 					snippetHTML = snippetHTML.replace( /%BASE_PATH%/g, snippetData.basePath );
-					snippetHTML = `<div class="live-snippet">${ snippetHTML }</div>`;
+					snippetHTML = `<div class="${ elementClasses.join( ' ' ) }">${ snippetHTML }</div>`;
 
 					content = content.replace( getSnippetPlaceholder( snippetData.snippetName ), snippetHTML );
 
