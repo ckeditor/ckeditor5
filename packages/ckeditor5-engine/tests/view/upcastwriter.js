@@ -34,6 +34,27 @@ describe( 'UpcastWriter', () => {
 		view = dataprocessor.toView( html );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "upcastWriter"', () => {
+			expect( writer.is( 'upcastWriter' ) ).to.be.true;
+			expect( writer.is( 'view:upcastWriter' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( writer.is( 'rootElement' ) ).to.be.false;
+			expect( writer.is( 'containerElement' ) ).to.be.false;
+			expect( writer.is( 'element' ) ).to.be.false;
+			expect( writer.is( 'p' ) ).to.be.false;
+			expect( writer.is( 'text' ) ).to.be.false;
+			expect( writer.is( 'textProxy' ) ).to.be.false;
+			expect( writer.is( 'attributeElement' ) ).to.be.false;
+			expect( writer.is( 'uiElement' ) ).to.be.false;
+			expect( writer.is( 'emptyElement' ) ).to.be.false;
+			expect( writer.is( 'documentFragment' ) ).to.be.false;
+			expect( writer.is( 'model:renderer' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'createDocumentFragment', () => {
 		it( 'should create empty document fragment', () => {
 			const df = writer.createDocumentFragment();

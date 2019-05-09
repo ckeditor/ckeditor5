@@ -43,6 +43,34 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let range;
+
+		before( () => {
+			const start = new Position( {}, 1 );
+			range = new Range( start );
+		} );
+
+		it( 'should return true for "range"', () => {
+			expect( range.is( 'range' ) ).to.be.true;
+			expect( range.is( 'view:range' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( range.is( 'rootElement' ) ).to.be.false;
+			expect( range.is( 'containerElement' ) ).to.be.false;
+			expect( range.is( 'element' ) ).to.be.false;
+			expect( range.is( 'p' ) ).to.be.false;
+			expect( range.is( 'text' ) ).to.be.false;
+			expect( range.is( 'textProxy' ) ).to.be.false;
+			expect( range.is( 'attributeElement' ) ).to.be.false;
+			expect( range.is( 'uiElement' ) ).to.be.false;
+			expect( range.is( 'emptyElement' ) ).to.be.false;
+			expect( range.is( 'documentFragment' ) ).to.be.false;
+			expect( range.is( 'model:range' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'iterator', () => {
 		it( 'should iterate over the range returning tree walker values', () => {
 			const range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>' );

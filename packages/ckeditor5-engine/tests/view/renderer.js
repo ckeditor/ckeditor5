@@ -41,6 +41,27 @@ describe( 'Renderer', () => {
 		renderer.domDocuments.add( document );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "renderer"', () => {
+			expect( renderer.is( 'renderer' ) ).to.be.true;
+			expect( renderer.is( 'view:renderer' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( renderer.is( 'rootElement' ) ).to.be.false;
+			expect( renderer.is( 'containerElement' ) ).to.be.false;
+			expect( renderer.is( 'element' ) ).to.be.false;
+			expect( renderer.is( 'p' ) ).to.be.false;
+			expect( renderer.is( 'text' ) ).to.be.false;
+			expect( renderer.is( 'textProxy' ) ).to.be.false;
+			expect( renderer.is( 'attributeElement' ) ).to.be.false;
+			expect( renderer.is( 'uiElement' ) ).to.be.false;
+			expect( renderer.is( 'emptyElement' ) ).to.be.false;
+			expect( renderer.is( 'documentFragment' ) ).to.be.false;
+			expect( renderer.is( 'model:renderer' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'markToSync', () => {
 		let viewRoot;
 

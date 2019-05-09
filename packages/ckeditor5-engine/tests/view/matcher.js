@@ -442,4 +442,30 @@ describe( 'Matcher', () => {
 			expect( matcher.getElementName() ).to.be.null;
 		} );
 	} );
+
+	describe( 'is', () => {
+		let matcher;
+
+		before( () => {
+			matcher = new Matcher( 'div' );
+		} );
+
+		it( 'should return true for "matcher"', () => {
+			expect( matcher.is( 'matcher' ) ).to.be.true;
+			expect( matcher.is( 'view:matcher' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( matcher.is( 'rootElement' ) ).to.be.false;
+			expect( matcher.is( 'containerElement' ) ).to.be.false;
+			expect( matcher.is( 'element' ) ).to.be.false;
+			expect( matcher.is( 'p' ) ).to.be.false;
+			expect( matcher.is( 'text' ) ).to.be.false;
+			expect( matcher.is( 'textProxy' ) ).to.be.false;
+			expect( matcher.is( 'attributeElement' ) ).to.be.false;
+			expect( matcher.is( 'uiElement' ) ).to.be.false;
+			expect( matcher.is( 'emptyElement' ) ).to.be.false;
+			expect( matcher.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
 } );

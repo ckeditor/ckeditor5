@@ -37,6 +37,21 @@ describe( 'Document', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "document"', () => {
+			expect( viewDocument.is( 'document' ) ).to.be.true;
+			expect( viewDocument.is( 'view:document' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( viewDocument.is( 'model' ) ).to.be.false;
+			expect( viewDocument.is( 'model:document' ) ).to.be.false;
+			expect( viewDocument.is( 'node' ) ).to.be.false;
+			expect( viewDocument.is( 'view:node' ) ).to.be.false;
+			expect( viewDocument.is( 'element', 'text' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'getRoot()', () => {
 		it( 'should return "main" root', () => {
 			createViewRoot( viewDocument, 'div', 'main' );

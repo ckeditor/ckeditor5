@@ -31,10 +31,26 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'is()', () => {
+		let node;
+		beforeEach( () => {
+			node = new Node();
+		} );
 		it( 'should return true for node', () => {
-			const node = new Node();
-
 			expect( node.is( 'node' ) ).to.be.true;
+			expect( node.is( 'view:node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( node.is( 'rootElement' ) ).to.be.false;
+			expect( node.is( 'containerElement' ) ).to.be.false;
+			expect( node.is( 'element' ) ).to.be.false;
+			expect( node.is( 'p' ) ).to.be.false;
+			expect( node.is( 'text' ) ).to.be.false;
+			expect( node.is( 'textProxy' ) ).to.be.false;
+			expect( node.is( 'attributeElement' ) ).to.be.false;
+			expect( node.is( 'uiElement' ) ).to.be.false;
+			expect( node.is( 'emptyElement' ) ).to.be.false;
+			expect( node.is( 'documentFragment' ) ).to.be.false;
 		} );
 	} );
 

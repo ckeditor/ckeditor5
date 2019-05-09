@@ -70,6 +70,33 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let treeWalker;
+
+		beforeEach( () => {
+			treeWalker = new TreeWalker();
+		} );
+
+		it( 'should return true for "treeWalker"', () => {
+			expect( treeWalker.is( 'treeWalker' ) ).to.be.true;
+			expect( treeWalker.is( 'view:treeWalker' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( treeWalker.is( 'rootElement' ) ).to.be.false;
+			expect( treeWalker.is( 'containerElement' ) ).to.be.false;
+			expect( treeWalker.is( 'element' ) ).to.be.false;
+			expect( treeWalker.is( 'p' ) ).to.be.false;
+			expect( treeWalker.is( 'text' ) ).to.be.false;
+			expect( treeWalker.is( 'textProxy' ) ).to.be.false;
+			expect( treeWalker.is( 'attributeElement' ) ).to.be.false;
+			expect( treeWalker.is( 'uiElement' ) ).to.be.false;
+			expect( treeWalker.is( 'emptyElement' ) ).to.be.false;
+			expect( treeWalker.is( 'documentFragment' ) ).to.be.false;
+			expect( treeWalker.is( 'model:treeWalker' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'iterate from start position `startPosition`', () => {
 		let expected;
 
