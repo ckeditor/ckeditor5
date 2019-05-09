@@ -364,11 +364,10 @@ export default class MentionUI extends Plugin {
 					} );
 				} )
 				.then( feed => {
-					if ( !feed ) {
-						return;
-					}
-
-					if ( !this.editor.model.markers.has( 'mention' ) ) {
+					// Do nothing if :
+					// - feed was discarded or empty feed was passed.
+					// - if the marker is not in the document - the selection might have already changed.
+					if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
 						return;
 					}
 
