@@ -532,6 +532,7 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
+	// @returns {Boolean}
 	checkIsNarrow() {
 		this.isNarrow = this.element.clientWidth <= 200;
 	}
