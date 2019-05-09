@@ -154,7 +154,7 @@ It also listens to the native [`window#beforeunload`](https://developer.mozilla.
 
 This automatically secures you from the user leaving the page before the content is saved or some ongoing actions like image upload did not finish.
 
-The minimum time period between two save actions might be configured using the `config.waitingTime` property to not overload the backend. 1 second is the default waiting time before next save action if nothing has changed in the meantime after the editor data has changed.
+The minimum time period between two save actions can be configured using the {@link module:autosave/autosave~AutosaveConfig#waitingTime `config.waitingTime`} property to not overload the backend. 1 second is the default waiting time before the next save action if nothing has changed in the meantime after the editor data has changed.
 
 ```js
 ClassicEditor
