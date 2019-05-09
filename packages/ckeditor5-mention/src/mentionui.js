@@ -15,6 +15,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import { debounce } from 'lodash-es';
 
 import TextWatcher from './textwatcher';
@@ -36,6 +37,13 @@ export default class MentionUI extends Plugin {
 	 */
 	static get pluginName() {
 		return 'MentionUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ContextualBalloon, Notification ];
 	}
 
 	/**
@@ -105,13 +113,22 @@ export default class MentionUI extends Plugin {
 			this._getFeed( marker, feedText )
 				.catch( error => {
 					if ( error.feedDiscarded ) {
+						// Do nothing on discarded feeds as they might come after another one was requested.
 						return;
 					}
 
-					// TODO: show warning
-
-					// Hide the UI on errors? Or just remove marker?
+					// At this point something bad happened - most likely unreachable host or some feed callback error.
+					// So cleanup marker, remove the UI and...
 					this._hideUIAndRemoveMarker();
+
+					const notification = editor.plugins.get( Notification );
+					const t = editor.locale.t;
+
+					// ...show warning notification.
+					notification.showWarning( t( 'Could not obtain mention autocomplete feed.' ), {
+						title: t( 'Requesting feed failed' ),
+						namespace: 'mention'
+					} );
 				} )
 				.then( feed => {
 					if ( !feed ) {
@@ -122,6 +139,7 @@ export default class MentionUI extends Plugin {
 						return;
 					}
 
+					// Remove old entries.
 					this._items.clear();
 
 					for ( const feedItem of feed ) {
@@ -129,9 +147,11 @@ export default class MentionUI extends Plugin {
 
 						this._items.add( { item, marker } );
 					}
+
 					if ( this._items.length ) {
 						this._showUI( mentionMarker );
 					} else {
+						// Do not show empty mention UI.
 						this._hideUIAndRemoveMarker();
 					}
 				} );
@@ -225,13 +245,6 @@ export default class MentionUI extends Plugin {
 
 		// Destroy created UI components as they are not automatically destroyed (see ckeditor5#1341).
 		this._mentionsView.destroy();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -332,9 +345,11 @@ export default class MentionUI extends Plugin {
 	/**
 	 * Returns a promise that resolves with autocomplete items for a given text.
 	 *
+	 * **Note**: This method unifies the responses from feed callbacks to always return a promise.
+	 *
 	 * @param {String} marker
 	 * @param {String} feedText
-	 * @return {Promise<module:mention/mention~MentionFeedItem>}
+	 * @returns {Promise<module:mention/mention~MentionFeedItem>}
 	 * @private
 	 */
 	_getFeed( marker, feedText ) {
@@ -342,6 +357,7 @@ export default class MentionUI extends Plugin {
 
 		this._lastRequested = feedText;
 
+		// To unify later processing the _getFeed should return a promise even if feed callback returns an array.
 		return new Promise( ( resolve, reject ) => {
 			const response = feedCallback( feedText );
 
@@ -351,13 +367,16 @@ export default class MentionUI extends Plugin {
 				resolve( response );
 			}
 
-			return response.then( response => {
-				if ( this._lastRequested == feedText ) {
-					resolve( response );
-				} else {
-					reject( { feedDiscarded: true } );
-				}
-			} );
+			response
+				.then( response => {
+					if ( this._lastRequested == feedText ) {
+						resolve( response );
+					} else {
+						// Discard a response that is not for the last requested feed.
+						reject( { feedDiscarded: true } );
+					}
+				} )
+				.catch( reject ); // Re-reject any errors from feed callback.
 		} );
 	}
 

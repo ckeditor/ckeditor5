@@ -16,6 +16,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import MentionUI from '../src/mentionui';
@@ -61,6 +62,10 @@ describe( 'MentionUI', () => {
 		return createClassicTestEditor().then( () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );
+	} );
+
+	it( 'should load Notification plugin', () => {
+		expect( editor.plugins.get( Notification ) ).to.instanceOf( Notification );
 	} );
 
 	describe( 'init()', () => {
@@ -922,25 +927,30 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
-			it( 'should warning if requested failed', () => {
+			it( 'should show warning if requested feed failed', () => {
 				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '#', doc.selection.getFirstPosition() );
-				} );
 
 				feedCallbackStub.throws( 'Request timeout' );
 
-				return Promise.resolve()
-					.then( waitForDebounce )
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-					} )
-					.then( waitForDebounce )
-					.then( () => {
-						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
+				const notification = editor.plugins.get( Notification );
+
+				return new Promise( resolve => {
+					notification.on( 'show:warning', ( evt, data ) => {
+						// Stop the event to not block Karma tests.
+						evt.stop();
+						resolve( data );
+					}, { priority: 'high' } );
+
+					model.change( writer => {
+						writer.insertText( '#', doc.selection.getFirstPosition() );
 					} );
+				} ).then( data => {
+					expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+					expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
+
+					expect( data.message ).to.equal( 'Could not obtain mention autocomplete feed.' );
+					expect( data.title ).to.equal( 'Requesting feed failed' );
+				} );
 			} );
 		} );
 	} );
