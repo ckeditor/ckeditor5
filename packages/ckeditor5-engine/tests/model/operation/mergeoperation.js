@@ -195,6 +195,32 @@ describe( 'MergeOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			const sourcePosition = new Position( root, [ 1, 0 ] );
+			const targetPosition = new Position( root, [ 0, 3 ] );
+			operation = new MergeOperation( sourcePosition, 1, targetPosition, gyPos, doc.version );
+		} );
+
+		it( 'should return true for all valid names of "merge" operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+			expect( operation.is( 'mergeOperation' ) ).to.be.true;
+			expect( operation.is( 'model:operation:merge' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:merge' ) ).to.be.false;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'detachOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const sourcePosition = new Position( root, [ 1, 0 ] );

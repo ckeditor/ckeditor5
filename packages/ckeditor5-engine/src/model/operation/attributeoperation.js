@@ -110,6 +110,13 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	is( type ) {
+		return type == 'attributeOperation' || type == 'model:operation:attribute' || super.is( type );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	toJSON() {
 		const json = super.toJSON();
 

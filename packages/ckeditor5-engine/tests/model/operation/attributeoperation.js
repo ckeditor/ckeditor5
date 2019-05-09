@@ -60,6 +60,37 @@ describe( 'AttributeOperation', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			operation = new AttributeOperation(
+				range,
+				'key',
+				null,
+				'newValue',
+				doc.version
+			);
+		} );
+
+		it( 'should return true for all valid names of "attribute" operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+			expect( operation.is( 'attributeOperation' ) ).to.be.true;
+			expect( operation.is( 'model:operation:attribute' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:attribute' ) ).to.be.false;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'detachOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	it( 'should insert attribute to the set of nodes', () => {
 		root._insertChild( 0, new Text( 'bar' ) );
 

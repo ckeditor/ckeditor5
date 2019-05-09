@@ -55,6 +55,13 @@ export default class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
+	is( type ) {
+		return type == 'detachOperation' || type == 'model:operation:detach' || super.is( type );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	toJSON() {
 		const json = super.toJSON();
 

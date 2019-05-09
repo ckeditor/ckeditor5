@@ -103,6 +103,30 @@ describe( 'RenameOperation', () => {
 		expect( clone.newName ).to.equal( newName );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			operation = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
+		} );
+
+		it( 'should return true for all valid names of "rename" operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+			expect( operation.is( 'renameOperation' ) ).to.be.true;
+			expect( operation.is( 'model:operation:rename' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:rename' ) ).to.be.false;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'detachOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );

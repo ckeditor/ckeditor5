@@ -35,6 +35,31 @@ describe( 'DetachOperation', () => {
 		expect( docFrag.childCount ).to.equal( 0 );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			const position = Position._createBefore( element );
+			operation = new DetachOperation( position, 1 );
+		} );
+
+		it( 'should return true for all valid names of "detach" operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+			expect( operation.is( 'detachOperation' ) ).to.be.true;
+			expect( operation.is( 'model:operation:detach' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:detach' ) ).to.be.false;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'attributeOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	describe( '_validate()', () => {
 		it( 'should throw when is executed on element from document', () => {
 			const root = doc.createRoot();

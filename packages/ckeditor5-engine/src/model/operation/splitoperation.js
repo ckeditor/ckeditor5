@@ -112,6 +112,13 @@ export default class SplitOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'splitOperation' || type == 'model:operation:split' || super.is( type );
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/splitoperation~SplitOperation} Clone of this operation.

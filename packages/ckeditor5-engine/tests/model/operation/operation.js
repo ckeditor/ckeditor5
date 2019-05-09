@@ -27,6 +27,28 @@ describe( 'Operation', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			operation = new Operation( null );
+		} );
+
+		it( 'should return true for all valid names of operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:attribute' ) ).to.be.false;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'detachOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object #1', () => {
 			const op = new Operation( 4 );

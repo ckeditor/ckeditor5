@@ -220,6 +220,31 @@ describe( 'InsertOperation', () => {
 		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
 	} );
 
+	describe( 'is()', () => {
+		let operation;
+
+		before( () => {
+			const position = new Position( root, [ 0 ] );
+			operation = new InsertOperation( position, new Text( 'x' ), doc.version );
+		} );
+
+		it( 'should return true for all valid names of "insert" operation', () => {
+			expect( operation.is( 'operation' ) ).to.be.true;
+			expect( operation.is( 'model:operation' ) ).to.be.true;
+			expect( operation.is( 'insertOperation' ) ).to.be.true;
+			expect( operation.is( 'model:operation:insert' ) ).to.be.true;
+		} );
+
+		it( 'should return false for invalid parameters', () => {
+			expect( operation.is( 'operation:insert' ) ).to.be.false;
+			expect( operation.is( 'model:operation:attribute' ) ).to.be.false;
+			expect( operation.is( 'noOperation' ) ).to.be.false;
+			expect( operation.is( 'detachOperation' ) ).to.be.false;
+			expect( operation.is( 'rootAttributeOperation' ) ).to.be.false;
+			expect( operation.is( 'model:operation:rootAttribute' ) ).to.be.false;
+		} );
+	} );
+
 	describe( '_validate()', () => {
 		it( 'should throw an error if target position does not exist', () => {
 			const element = new Element( 'p' );

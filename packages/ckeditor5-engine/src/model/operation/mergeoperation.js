@@ -105,6 +105,13 @@ export default class MergeOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'mergeOperation' || type == 'model:operation:merge' || super.is( type );
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/mergeoperation~MergeOperation} Clone of this operation.

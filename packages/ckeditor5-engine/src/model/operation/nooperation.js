@@ -25,6 +25,13 @@ export default class NoOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'noOperation' || type == 'model:operation:no' || super.is( type );
+	}
+
+	/**
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 *
 	 * @returns {module:engine/model/operation/nooperation~NoOperation} Clone of this operation.
