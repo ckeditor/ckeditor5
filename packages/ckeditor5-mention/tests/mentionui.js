@@ -868,7 +868,7 @@ describe( 'MentionUI', () => {
 				feedCallbackTimeout = 200;
 
 				return Promise.resolve()
-					.then( wait( 50 ) )
+					.then( wait( 20 ) )
 					.then( () => {
 						sinon.assert.notCalled( feedCallbackStub );
 
@@ -886,14 +886,13 @@ describe( 'MentionUI', () => {
 							writer.insertText( '0', doc.selection.getFirstPosition() );
 						} );
 					} )
-					.then( waitForDebounce )
-					.then( waitForDebounce ) // wait a bit more...
+					.then( wait( 500 ) ) // Debounce wait plus some more for Edge on Travis.
 					.then( () => {
 						sinon.assert.calledTwice( feedCallbackStub );
 						sinon.assert.calledWithExactly( feedCallbackStub.getCall( 1 ), '10' );
 
-						expect( panelView.isVisible ).to.be.true;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
 						expect( mentionsView.items ).to.have.length( 4 );
 					} );
 			} );
