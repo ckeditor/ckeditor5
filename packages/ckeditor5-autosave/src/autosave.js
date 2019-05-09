@@ -85,17 +85,17 @@ export default class Autosave extends Plugin {
 		 *
 		 * The plugin can be in the following states:
 		 *
-		 * * synchronized - when all changes are saved
-		 * * waiting - when the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`
-		 * * saving - when the provided save method is called and the plugin waits for the response
+		 * * synchronized &ndash; When all changes are saved.
+		 * * waiting &ndash; When the plugin is waiting for other changes before calling `adapter#save()` and `config.autosave.save()`.
+		 * * saving &ndash; When the provided save method is called and the plugin waits for the response.
 		 *
 		 * @member {'synchronized'|'waiting'|'saving'} #state
 		 */
 		this.set( 'state', 'synchronized' );
 
 		/**
-		 * Debounced save method. The `save` method is called the specified `waitingTime` after the `debouncedSave` is called,
-		 * unless new action happens in the meantime.
+		 * Debounced save method. The `save()` method is called the specified `waitingTime` after `debouncedSave()` is called,
+		 * unless a new action happens in the meantime.
 		 *
 		 * @private
 		 * @type {Function}
@@ -103,7 +103,7 @@ export default class Autosave extends Plugin {
 		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
 
 		/**
-		 * Last document version.
+		 * The last document version.
 		 *
 		 * @private
 		 * @type {Number}
@@ -119,7 +119,7 @@ export default class Autosave extends Plugin {
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
-		 * The config of this plugins.
+		 * The configuration of this plugins.
 		 *
 		 * @private
 		 * @type {Object}
@@ -198,7 +198,7 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Invokes remaining `_save` method call.
+	 * Invokes the remaining `_save()` method call.
 	 *
 	 * @protected
 	 */
@@ -207,8 +207,8 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * If the adapter is set and new document version exists,
-	 * `_save()` method creates a pending action and calls `adapter.save()` method.
+	 * If the adapter is set and a new document version exists,
+	 * the `_save()` method creates a pending action and calls the `adapter.save()` method.
 	 * It waits for the result and then removes the created pending action.
 	 *
 	 * @private
@@ -250,7 +250,7 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Save callbacks.
+	 * Saves callbacks.
 	 *
 	 * @private
 	 * @type {Array.<Function>}
@@ -275,14 +275,14 @@ mix( Autosave, ObservableMixin );
 /**
  * An interface that requires the `save()` method.
  *
- * Used by {@link module:autosave/autosave~Autosave#adapter}
+ * Used by {@link module:autosave/autosave~Autosave#adapter}.
  *
  * @interface module:autosave/autosave~AutosaveAdapter
  */
 
 /**
- * Method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
- * so the `Autosave` plugin will wait for that action before removing it from pending actions.
+ * The method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
+ * so the autosave plugin will wait for that action before removing it from pending actions.
  *
  * @method #save
  * @param {module:core/editor/editor~Editor} editor The editor instance.
@@ -323,7 +323,7 @@ mix( Autosave, ObservableMixin );
 /**
  * The callback to be executed when the data needs to be saved.
  *
- * This function must return a promise which should be which should be resolved when the data is successfully saved.
+ * This function must return a promise which should be resolved when the data is successfully saved.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -342,7 +342,7 @@ mix( Autosave, ObservableMixin );
  */
 
 /**
- * The minimum amount of time that need to pass after last action to call the provided callback.
+ * The minimum amount of time that needs to pass after the last action to call the provided callback.
  * By default it is 1000 ms.
  *
  *		ClassicEditor
