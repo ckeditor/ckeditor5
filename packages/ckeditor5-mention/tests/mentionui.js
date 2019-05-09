@@ -1727,7 +1727,7 @@ describe( 'MentionUI', () => {
 	}
 
 	function waitForDebounce() {
-		return wait( 160 )();
+		return wait( 200 )();
 	}
 
 	function fireKeyDownEvent( options ) {
