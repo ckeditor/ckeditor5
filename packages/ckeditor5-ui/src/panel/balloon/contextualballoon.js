@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '../../view';
+import ButtonView from '../../button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
