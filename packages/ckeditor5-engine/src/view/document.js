@@ -133,6 +133,16 @@ export default class Document {
 	}
 
 	/**
+	 * Checks whether given object is of `document` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'document' || type == 'view:document';
+	}
+
+	/**
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected

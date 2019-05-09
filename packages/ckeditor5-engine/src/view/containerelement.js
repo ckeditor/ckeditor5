@@ -54,10 +54,11 @@ export default class ContainerElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
+		const cutType = type && type.replace( 'view:', '' );
 		if ( !name ) {
-			return type == 'containerElement' || super.is( type );
+			return cutType == 'containerElement' || super.is( type );
 		} else {
-			return ( type == 'containerElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'containerElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 }

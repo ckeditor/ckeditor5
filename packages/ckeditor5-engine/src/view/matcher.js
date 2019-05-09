@@ -174,6 +174,16 @@ export default class Matcher {
 
 		return ( typeof pattern != 'function' && name && !( name instanceof RegExp ) ) ? name : null;
 	}
+
+	/**
+	 * Checks whether given object is of `matcher` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'matcher' || type == 'view:matcher';
+	}
 }
 
 // Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.

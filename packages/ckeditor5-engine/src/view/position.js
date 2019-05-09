@@ -207,6 +207,16 @@ export default class Position {
 	}
 
 	/**
+	 * Checks whether given object is of `position` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'position' || type == 'view:position';
+	}
+
+	/**
 	 * Checks whether this position equals given position.
 	 *
 	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.

@@ -55,6 +55,16 @@ export default class DowncastWriter {
 	}
 
 	/**
+	 * Checks whether given object is of `downcastWriter` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'downcastWriter' || type == 'view:downcastWriter';
+	}
+
+	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
 	 * specified location based on the given {@link module:engine/view/selection~Selectable selectable}.
 	 *

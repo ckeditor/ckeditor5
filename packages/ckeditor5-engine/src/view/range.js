@@ -395,6 +395,16 @@ export default class Range {
 	}
 
 	/**
+	 * Checks whether given object is of `range` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'range' || type == 'view:range';
+	}
+
+	/**
 	 * Checks and returns whether this range intersects with the given range.
 	 *
 	 * @param {module:engine/view/range~Range} otherRange Range to compare with.

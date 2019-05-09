@@ -145,6 +145,16 @@ export default class TreeWalker {
 	}
 
 	/**
+	 * Checks whether given object is of `treeWalker` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'treeWalker' || type == 'view:treeWalker';
+	}
+
+	/**
 	 * Moves {@link #position} in the {@link #direction} skipping values as long as the callback function returns `true`.
 	 *
 	 * For example:

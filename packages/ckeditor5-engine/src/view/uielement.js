@@ -60,10 +60,11 @@ export default class UIElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name = null ) {
+		const cutType = type.replace( 'view:', '' );
 		if ( !name ) {
-			return type == 'uiElement' || super.is( type );
+			return cutType == 'uiElement' || super.is( type );
 		} else {
-			return ( type == 'uiElement' && name == this.name ) || super.is( type, name );
+			return ( cutType == 'uiElement' && name == this.name ) || super.is( type, name );
 		}
 	}
 

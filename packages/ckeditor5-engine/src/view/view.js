@@ -653,6 +653,16 @@ export default class View {
 	}
 
 	/**
+	 * Checks whether given object is of `view` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'view';
+	}
+
+	/**
 	 * Disables or enables rendering. If the flag is set to `true` then the rendering will be disabled.
 	 * If the flag is set to `false` and if there was some change in the meantime, then the rendering action will be performed.
 	 *

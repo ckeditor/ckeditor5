@@ -36,6 +36,16 @@ import Selection from './selection';
  */
 export default class UpcastWriter {
 	/**
+	 * Checks whether given object is of `upcastWriter` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'upcastWriter' || type == 'view:upcastWriter';
+	}
+
+	/**
 	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
 	 *
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]

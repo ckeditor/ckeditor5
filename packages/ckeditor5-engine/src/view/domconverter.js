@@ -106,6 +106,16 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Checks whether given object is of `domConverter` type.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'domConverter' || type == 'view:domConverter';
+	}
+
+	/**
 	 * Binds given DOM element that represents fake selection to {@link module:engine/view/documentselection~DocumentSelection
 	 * document selection}. Document selection copy is stored and can be retrieved by
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.

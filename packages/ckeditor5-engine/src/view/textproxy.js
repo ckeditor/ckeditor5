@@ -149,7 +149,7 @@ export default class TextProxy {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'textProxy';
+		return type == 'textProxy' || type == 'view:textProxy';
 	}
 
 	/**
