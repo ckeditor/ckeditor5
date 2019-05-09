@@ -868,7 +868,7 @@ describe( 'MentionUI', () => {
 				feedCallbackTimeout = 200;
 
 				return Promise.resolve()
-					.then( wait( 20 ) )
+					.then( wait( 50 ) )
 					.then( () => {
 						sinon.assert.notCalled( feedCallbackStub );
 
