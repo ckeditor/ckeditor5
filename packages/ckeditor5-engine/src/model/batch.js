@@ -87,6 +87,6 @@ export default class Batch {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'batch';
+		return type == 'batch' || type == 'model:batch';
 	}
 }

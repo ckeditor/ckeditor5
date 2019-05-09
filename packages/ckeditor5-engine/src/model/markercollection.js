@@ -79,7 +79,7 @@ export default class MarkerCollection {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'markerCollection';
+		return type == 'markerCollection' || type == 'model:markerCollection';
 	}
 
 	/**
@@ -465,7 +465,7 @@ class Marker {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'marker';
+		return type == 'marker' || type == 'model:marker';
 	}
 
 	/**

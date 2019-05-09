@@ -104,7 +104,7 @@ export default class History {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'history';
+		return type == 'history' || type == 'mdoel:history';
 	}
 
 	/**

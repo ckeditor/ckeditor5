@@ -194,7 +194,7 @@ export default class Schema {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'schema';
+		return type == 'schema' || type == 'model:schema';
 	}
 
 	/**

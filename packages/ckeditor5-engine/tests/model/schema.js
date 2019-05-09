@@ -314,6 +314,7 @@ describe( 'Schema', () => {
 	describe( 'is()', () => {
 		it( 'should return true for "schema"', () => {
 			expect( schema.is( 'schema' ) ).to.be.true;
+			expect( schema.is( 'model:schema' ) ).to.be.true;
 		} );
 
 		it( 'should return false for incorrect values', () => {

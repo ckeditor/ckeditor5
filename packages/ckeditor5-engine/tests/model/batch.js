@@ -70,6 +70,7 @@ describe( 'Batch', () => {
 
 		it( 'should return true for "batch"', () => {
 			expect( batch.is( 'batch' ) ).to.be.true;
+			expect( batch.is( 'model:batch' ) ).to.be.true;
 		} );
 
 		it( 'should return false for incorrect values', () => {

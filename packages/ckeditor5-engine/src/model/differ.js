@@ -526,7 +526,7 @@ export default class Differ {
 	 * @returns {Boolean}
 	 */
 	is( type ) {
-		return type == 'differ';
+		return type == 'differ' || type == 'model:differ';
 	}
 
 	/**

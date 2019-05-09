@@ -149,6 +149,7 @@ describe( 'MarkerCollection', () => {
 	describe( 'is()', () => {
 		it( 'should return true for "markerCollection"', () => {
 			expect( markers.is( 'markerCollection' ) ).to.be.true;
+			expect( markers.is( 'model:markerCollection' ) ).to.be.true;
 		} );
 
 		it( 'should return false for incorrect values', () => {
@@ -433,6 +434,7 @@ describe( 'Marker', () => {
 
 		it( 'should return true for "marker"', () => {
 			expect( marker.is( 'marker' ) ).to.be.true;
+			expect( marker.is( 'model:marker' ) ).to.be.true;
 		} );
 
 		it( 'should return false for incorrect values', () => {

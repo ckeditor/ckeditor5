@@ -182,6 +182,7 @@ describe( 'History', () => {
 	describe( 'is()', () => {
 		it( 'should return true for "history"', () => {
 			expect( history.is( 'history' ) ).to.be.true;
+			expect( history.is( 'model:history' ) ).to.be.true;
 		} );
 
 		it( 'should return false for incorrect values', () => {
