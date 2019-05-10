@@ -536,10 +536,12 @@ function getBalloonPanelPositions( preferredPosition ) {
 
 // Creates a regex for marker.
 //
+// Function has to be exported to achieve 100% code coverage.
+//
 // @param {String} marker
 // @param {Number} minimumCharacters
 // @returns {String}
-function createRegExp( marker, minimumCharacters ) {
+export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
