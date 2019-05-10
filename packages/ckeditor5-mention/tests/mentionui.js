@@ -486,7 +486,7 @@ describe( 'MentionUI', () => {
 			} );
 
 			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
-				// Stub the isEdge for covarage tests in other browsers.
+				// Stub the isEdge for coverage tests in other browsers.
 				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 				setData( model, '<paragraph>[] foo</paragraph>' );
