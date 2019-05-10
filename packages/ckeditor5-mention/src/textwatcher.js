@@ -136,7 +136,7 @@ export default class TextWatcher {
  * @returns {String}
  */
 export function _getText( range ) {
-	const rangeText = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
+	return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {
 		if ( node.is( 'softBreak' ) ) {
 			// Trim text to softBreak
 			return '';
@@ -144,8 +144,6 @@ export function _getText( range ) {
 
 		return rangeText + node.data;
 	}, '' );
-
-	return rangeText;
 }
 
 mix( TextWatcher, EmitterMixin );
