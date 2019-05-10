@@ -87,20 +87,23 @@ export default class Operation {
 	 * attribute operation. You need to use analogical syntax for other {@link module:engine/model/operation/operation~Operation}.
 	 *
 	 * 	// Examples for AttributeOperation.
-	 * 	operation.is( 'operation' ) // true for any operation
-	 * 	operation.is( 'model:operation' ) // true for any operation
+	 *
+	 * 	operation instanceof AttributeOperation
+	 *
+	 * 	operation.is( 'operation' ) // true for AttributeOperation and other operations
+	 * 	operation.is( 'model:operation' ) // true for AttributeOperation and other operations
 	 * 	operation.is( 'attributeOperation' ) // true for AttributeOperation
 	 * 	operation.is( 'model:operation:attribute' ) // true for AttributeOperation
 	 *
-	 * 	// Random examples for other Operations
+	 * 	// Disallowed syntax
+	 * 	operation.is( 'operation:attribute' ) // will return false
+	 *
+	 * 	// Few examples for other Operations
 	 * 	operation.is( 'model:operation:no ) // true for no-operation
 	 * 	operation.is( 'noOperation' ) // true for no-operation
 	 * 	operation.is( 'model:operation:marker ) // true for marker operation
 	 * 	operation.is( 'insertOperation' ) // true for insert operation
 	 * 	operation.is( 'model:operation:rootAttribute' ) // true for rootAttributeOperation
-	 *
-	 * 	// Disallowed syntax
-	 * 	operation.is( 'operation:attribute' ) // will always return false
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

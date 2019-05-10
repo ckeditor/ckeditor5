@@ -146,6 +146,8 @@ export default class Range {
 	/**
 	 * Checks whether given object is of `range` type.
 	 *
+	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

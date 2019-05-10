@@ -105,7 +105,7 @@ export default class Element extends Node {
 	 *		obj.is( 'view:element' ); // false
 	 *		obj.is( 'element', 'image' ); // false
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`}.
+	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`} and {@link module:engine/model/model~Model#is `Model#is()`}.
 	 *
 	 * @param {String} type Type to check when `name` parameter is present.
 	 * Otherwise, it acts like the `name` parameter.

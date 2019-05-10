@@ -118,7 +118,7 @@ export default class DocumentFragment {
 	/**
 	 * Checks whether given model tree object is of given type.
 	 *
-	 * Read more in {@link module:engine/model/node~Node#is}.
+	 * Read more in {@link module:engine/model/node~Node#is `Node#is()`} and {@link module:engine/model/model~Model#is `Model#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

@@ -82,6 +82,8 @@ export default class Writer {
 	/**
 	 * Checks whether given object is of `writer` type.
 	 *
+	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

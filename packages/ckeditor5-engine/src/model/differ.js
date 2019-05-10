@@ -522,6 +522,8 @@ export default class Differ {
 	/**
 	 * Checks whether given object is of `differ` type.
 	 *
+	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

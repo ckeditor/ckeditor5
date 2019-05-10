@@ -478,6 +478,8 @@ export default class Node {
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'textProxy' ); // true for text proxy object
 	 *
+	 *	Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 *
 	 * @method #is
 	 * @param {String} type
 	 * @returns {Boolean}

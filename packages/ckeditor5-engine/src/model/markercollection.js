@@ -75,6 +75,8 @@ export default class MarkerCollection {
 	/**
 	 * Checks whether given object is of `markerCollection` type.
 	 *
+	 * Read more at {@link module:engine/model/model~Model#is `Model#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */
@@ -460,6 +462,8 @@ class Marker {
 
 	/**
 	 * Checks whether given object is of `marker` type.
+	 *
+	 * Read more at {@link module:engine/model/model~Model#is}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}
