@@ -14,7 +14,6 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import TextWatcher from './textwatcher';
@@ -534,6 +533,20 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
+const isPunctuationGroupSupported = ( function() {
+	let punctuationSupported = false;
+	// Feature detection for Unicode punctuation groups. It's added in ES2018. Currently Firefox and Edge does not support it.
+	// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
+
+	try {
+		punctuationSupported = '.'.search( new RegExp( '[\\p{P}]', 'u' ) ) === 0;
+	} catch ( error ) {
+		// It's OK we're fallback to non ES2018 RegExp later.
+	}
+
+	return punctuationSupported;
+}() );
+
 // Creates a regex for marker.
 //
 // @param {String} marker
@@ -541,19 +554,9 @@ function getBalloonPanelPositions( preferredPosition ) {
 // @returns {String}
 function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
+	const patternBase = isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
-	if ( !env.isEdge ) {
-		// Unfortunately Edge does not throw on `/[\p{Ps}]/u` as it does on `/\p{Ps}/u (no square brackets in latter).
-		try {
-			// Uses the ES2018 syntax. See ckeditor5-mention#44.
-			return new RegExp( buildPattern( '\\p{Ps}"\'', marker, numberOfCharacters ), 'u' );
-		} catch ( error ) {
-			// It's OK we're fallback to non ES2018 RegExp later.
-		}
-	}
-
-	// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
-	return new RegExp( buildPattern( '\\(\\[{"\'', marker, numberOfCharacters ), 'u' );
+	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
 }
 
 // Creates a regex pattern for the marker.
