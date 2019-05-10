@@ -174,10 +174,10 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should add view to the custom stack but not display it when other panel is already visible', () => {
+		it( 'should add view to the custom stack but not display it when other stack is already visible', () => {
 			balloon.add( {
 				view: viewB,
-				panelId: 'second',
+				stackId: 'second',
 				position: {
 					target: 'fake'
 				}
@@ -185,7 +185,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewC,
-				panelId: 'second',
+				stackId: 'second',
 				position: {
 					target: 'fake'
 				}
@@ -406,39 +406,39 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'showPanel()', () => {
-		it( 'should hide current view and display last view from the given panel stack', () => {
+	describe( 'showStack()', () => {
+		it( 'should hide current view and display last view from the given stack', () => {
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewB
 			} );
 
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewC
 			} );
 
 			expect( balloon.visibleView ).to.equal( viewA );
 
-			balloon.showPanel( 'second' );
+			balloon.showStack( 'second' );
 
 			expect( balloon.visibleView ).to.equal( viewC );
 
-			balloon.showPanel( 'main' );
+			balloon.showStack( 'main' );
 
 			expect( balloon.visibleView ).to.equal( viewA );
 		} );
 
-		it( 'should do nothing when given panel is already visible', () => {
+		it( 'should do nothing when given stack is already visible', () => {
 			expect( () => {
-				balloon.showPanel( 'main' );
+				balloon.showStack( 'main' );
 			} ).to.not.throw();
 		} );
 
-		it( 'should throw an error when there is no panel of given id', () => {
+		it( 'should throw an error when there is no stack of given id', () => {
 			expect( () => {
-				balloon.showPanel( 'second' );
-			} ).to.throw( CKEditorError, 'contextualballoon-showpanel-panel-not-exist: Cannot show not existing panel.' );
+				balloon.showStack( 'second' );
+			} ).to.throw( CKEditorError, 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
 		} );
 	} );
 
@@ -452,14 +452,14 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.isVisible ).to.false;
 		} );
 
-		it( 'should remove given view from not displayed panel', () => {
+		it( 'should remove given view from not displayed stack', () => {
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewB
 			} );
 
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewC
 			} );
 
@@ -467,13 +467,13 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.visibleView ).to.equal( viewA );
 			expect( () => {
-				balloon.showPanel( 'second' );
+				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
 
-		it( 'should remove not displayed panel if a removed view was the only view in this panel', () => {
+		it( 'should remove not displayed stack if a removed view was the only view in this stack', () => {
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewB
 			} );
 
@@ -481,13 +481,13 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.visibleView ).to.equal( viewA );
 			expect( () => {
-				balloon.showPanel( 'second' );
+				balloon.showStack( 'second' );
 			} ).to.throw();
 		} );
 
-		it( 'should switch panel to the next one when removed view was the last one in the visible panel', () => {
+		it( 'should switch stack to the next one when removed view was the last one in the visible stack', () => {
 			balloon.add( {
-				panelId: 'second',
+				stackId: 'second',
 				view: viewB
 			} );
 
@@ -495,7 +495,7 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.visibleView ).to.equal( viewB );
 			expect( () => {
-				balloon.showPanel( 'main' );
+				balloon.showStack( 'main' );
 			} ).to.throw();
 		} );
 
@@ -530,7 +530,7 @@ describe( 'ContextualBalloon', () => {
 		it( 'should remove given view from a not currently visible stack', () => {
 			balloon.add( {
 				view: viewB,
-				panelId: 'second',
+				stackId: 'second',
 				position: {
 					target: 'fake'
 				}
@@ -538,7 +538,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewC,
-				panelId: 'second',
+				stackId: 'second',
 				position: {
 					target: 'fake'
 				}
@@ -549,16 +549,16 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.hasView( viewB ) ).to.false;
 			expect( balloon.hasView( viewC ) ).to.true;
 
-			// Does not throw, so the panel is there.
+			// Does not throw, so the stack is there.
 			expect( () => {
-				balloon.showPanel( 'second' );
+				balloon.showStack( 'second' );
 			} ).to.not.throw();
 		} );
 
 		it( 'should remove not displayed stack when removied view was the last one in the stack', () => {
 			balloon.add( {
 				view: viewB,
-				panelId: 'second',
+				stackId: 'second',
 				position: {
 					target: 'fake'
 				}
@@ -568,9 +568,9 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.hasView( viewB ) ).to.false;
 
-			// Does throw, so the panel is not there.
+			// Does throw, so the stack is not there.
 			expect( () => {
-				balloon.showPanel( 'second' );
+				balloon.showStack( 'second' );
 			} ).to.throw();
 		} );
 
@@ -712,14 +712,14 @@ describe( 'ContextualBalloon', () => {
 			rotatorView = balloon.view.content.get( 0 );
 		} );
 
-		it( 'should display navigation when there is more than one panel', () => {
+		it( 'should display navigation when there is more than one stack', () => {
 			const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
 
 			expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.equal( true );
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
@@ -728,16 +728,16 @@ describe( 'ContextualBalloon', () => {
 		it( 'should display counter', () => {
 			const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
 
-			expect( counterElement.textContent ).to.equal( '1 of 1' );
+			expect( counterElement.textContent ).to.equal( '' );
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			expect( counterElement.textContent ).to.equal( '1 of 2' );
 
-			balloon.showPanel( 'second' );
+			balloon.showStack( 'second' );
 
 			expect( counterElement.textContent ).to.equal( '2 of 2' );
 		} );
@@ -746,7 +746,7 @@ describe( 'ContextualBalloon', () => {
 			// To be sure navigation is displayed.
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
@@ -754,12 +754,12 @@ describe( 'ContextualBalloon', () => {
 
 			sinon.stub( rotatorView.element, 'clientWidth' ).get( () => mockedWidth );
 
-			balloon.showPanel( 'second' );
+			balloon.showStack( 'second' );
 
 			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
 
 			mockedWidth = 200;
-			balloon.showPanel( 'main' );
+			balloon.showStack( 'main' );
 
 			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( true );
 
@@ -769,15 +769,15 @@ describe( 'ContextualBalloon', () => {
 			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
 		} );
 
-		it( 'should switch panel to the next one after clicking next button', () => {
+		it( 'should switch stack to the next one after clicking next button', () => {
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			balloon.add( {
 				view: viewC,
-				panelId: 'third'
+				stackId: 'third'
 			} );
 
 			expect( balloon.visibleView ).to.equal( viewA );
@@ -800,7 +800,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			rotatorView.buttonNextView.fire( 'execute' );
@@ -813,7 +813,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			rotatorView.focusTracker.isFocused = true;
@@ -823,15 +823,15 @@ describe( 'ContextualBalloon', () => {
 			sinon.assert.calledOnce( editableFocusSpy );
 		} );
 
-		it( 'should switch panel to the prev one after clicking prev button', () => {
+		it( 'should switch stack to the prev one after clicking prev button', () => {
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			balloon.add( {
 				view: viewC,
-				panelId: 'third'
+				stackId: 'third'
 			} );
 
 			expect( balloon.visibleView ).to.equal( viewA );
@@ -854,7 +854,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			rotatorView.buttonPrevView.fire( 'execute' );
@@ -867,7 +867,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.add( {
 				view: viewB,
-				panelId: 'second'
+				stackId: 'second'
 			} );
 
 			rotatorView.focusTracker.isFocused = true;

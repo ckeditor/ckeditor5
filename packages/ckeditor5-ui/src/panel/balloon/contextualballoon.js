@@ -12,7 +12,6 @@ import BalloonPanelView from './balloonpanelview';
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
@@ -75,7 +74,7 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * The currently visible view or `null` when there are no
-		 * views in the currently visible panel stack.
+		 * views in the currently visible stack.
 		 *
 		 * @readonly
 		 * @observable
@@ -94,46 +93,34 @@ export default class ContextualBalloon extends Plugin {
 		editor.ui.focusTracker.add( this.view.element );
 
 		/**
-		 * List of views mapped to its parent panels.
+		 * Map of views and its stacks.
 		 *
 		 * @private
-		 * @type {Map.<module:ui/view~View,Object>}
+		 * @type {Map.<module:ui/view~View,Set>}
 		 */
-		this._viewToPanel = new Map();
+		this._viewToStack = new Map();
 
 		/**
-		 * List of panels.
+		 * Map of ids and stacks.
 		 *
 		 * @private
-		 * @type {module:utils/collection~Collection.<Object>}
+		 * @type {Map.<String,Set>}
 		 */
-		this._panels = new Collection();
+		this._idToStack = new Map();
 
 		/**
-		 * Currently visible panel.
+		 * A total number of all stacks in the balloon.
 		 *
 		 * @private
 		 * @readonly
 		 * @observable
-		 * @member {null|Object} #_visiblePanel
+		 * @member {Number} #_numberOfStacks
 		 */
-		this.set( '_visiblePanel', null );
-
-		/**
-		 * A total number of all panels in the balloon.
-		 *
-		 * @private
-		 * @readonly
-		 * @observable
-		 * @member {Number} #_panelsLength
-		 */
-		this.set( '_panelsLength', 0 );
-		this._panels.on( 'add', () => ( this._panelsLength = this._panels.length ) );
-		this._panels.on( 'remove', () => ( this._panelsLength = this._panels.length ) );
+		this.set( '_numberOfStacks', 0 );
 
 		/**
 		 * Rotator view embedded in the contextual balloon.
-		 * Displays currently visible view in the balloon and provides navigation for switching panels.
+		 * Displays currently visible view in the balloon and provides navigation for switching stacks.
 		 *
 		 * @private
 		 * @type {module:ui/view~View}
@@ -148,15 +135,15 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {Boolean}
 	 */
 	hasView( view ) {
-		return Array.from( this._viewToPanel.keys() ).includes( view );
+		return Array.from( this._viewToStack.keys() ).includes( view );
 	}
 
 	/**
-	 * Adds a new view to the panel stack and makes it visible if current panel is visible
+	 * Adds a new view to the stack and makes it visible if current stack is visible
 	 * or it is a first view in the balloon.
 	 *
 	 * @param {Object} data Configuration of the view.
-	 * @param {String} [data.panelId='main'] Id of panel that view is added to.
+	 * @param {String} [data.stackId='main'] Id of a stack that view is added to.
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
@@ -172,41 +159,38 @@ export default class ContextualBalloon extends Plugin {
 			throw new CKEditorError( 'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.' );
 		}
 
-		const panelId = data.panelId || 'main';
+		const stackId = data.stackId || 'main';
 
-		// If new panel is added, creates it and show it.
-		if ( !this._panels.has( panelId ) ) {
-			this._panels.add( {
-				id: panelId,
-				stack: new Map( [ [ data.view, data ] ] )
-			} );
+		// If new stack is added, creates it and show view from this stack.
+		if ( !this._idToStack.has( stackId ) ) {
+			this._idToStack.set( stackId, new Map( [ [ data.view, data ] ] ) );
+			this._viewToStack.set( data.view, this._idToStack.get( stackId ) );
+			this._numberOfStacks = this._idToStack.size;
 
-			this._viewToPanel.set( data.view, this._panels.get( panelId ) );
-
-			if ( !this._visiblePanel ) {
-				this.showPanel( panelId );
+			if ( !this._visibleStack ) {
+				this.showStack( stackId );
 			}
 
 			return;
 		}
 
-		const panel = this._panels.get( panelId );
+		const stack = this._idToStack.get( stackId );
 
 		// Add new view to the stack.
-		panel.stack.set( data.view, data );
-		this._viewToPanel.set( data.view, panel );
+		stack.set( data.view, data );
+		this._viewToStack.set( data.view, stack );
 
-		// And display it if is added to the currently visible panel.
-		if ( panel === this._visiblePanel ) {
+		// And display it if is added to the currently visible stack.
+		if ( stack === this._visibleStack ) {
 			this._showView( data );
 		}
 	}
 
 	/**
-	 * Removes the given view from the panel stack. If the removed view was visible,
-	 * then the view preceding it in panel the stack will become visible instead.
-	 * When there is no view in the stack then next panel will be displayed.
-	 * When there is not panel to display then balloon will hide.
+	 * Removes the given view from the stack. If the removed view was visible,
+	 * then the view preceding it in the stack will become visible instead.
+	 * When there is no view in the stack then next stack will be displayed.
+	 * When there is not more stacks then balloon will hide.
 	 *
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
@@ -220,43 +204,43 @@ export default class ContextualBalloon extends Plugin {
 			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove configuration of not existing view.' );
 		}
 
-		const panel = this._viewToPanel.get( view );
+		const stack = this._viewToStack.get( view );
 
-		// When visible view will be removed we need to show a preceding view or next panel
-		// if a view is the only view in the panel.
+		// When visible view will be removed we need to show a preceding view or next stack
+		// if a view is the only view in the stack.
 		if ( this.visibleView === view ) {
-			if ( panel.stack.size === 1 ) {
-				if ( this._panels.length > 1 ) {
-					this._showNextPanel();
+			if ( stack.size === 1 ) {
+				if ( this._idToStack.size > 1 ) {
+					this._showNextStack();
 				} else {
 					this.view.hide();
 					this.visibleView = null;
-					this._visiblePanel = null;
 					this._rotatorView.hideView();
 				}
 			} else {
-				this._showView( Array.from( panel.stack.values() )[ panel.stack.size - 2 ] );
+				this._showView( Array.from( stack.values() )[ stack.size - 2 ] );
 			}
 		}
 
-		if ( panel.stack.size === 1 ) {
-			this._panels.remove( panel.id );
+		if ( stack.size === 1 ) {
+			this._idToStack.delete( this._getStackId( stack ) );
+			this._numberOfStacks = this._idToStack.size;
 		} else {
-			panel.stack.delete( view );
+			stack.delete( view );
 		}
 
-		this._viewToPanel.delete( view );
+		this._viewToStack.delete( view );
 	}
 
 	/**
-	 * Updates the position of the balloon using position data of the first visible view in the panel stack.
-	 * When new position data is given then position data of currently visible panel will be updated.
+	 * Updates the position of the balloon using position data of the first visible view in the stack.
+	 * When new position data is given then position data of currently visible view will be updated.
 	 *
 	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
 	updatePosition( position ) {
 		if ( position ) {
-			this._visiblePanel.stack.get( this.visibleView ).position = position;
+			this._visibleStack.get( this.visibleView ).position = position;
 		}
 
 		this.view.pin( this._getBalloonPosition() );
@@ -264,64 +248,84 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Shows last view from the stack of a panel with given id.
+	 * Shows last view from the stack of a given id.
 	 *
 	 * @param {String} id
 	 */
-	showPanel( id ) {
-		const panel = this._panels.get( id );
+	showStack( id ) {
+		const stack = this._idToStack.get( id );
 
-		if ( !panel ) {
+		if ( !stack ) {
 			/**
-			 * Trying to show not existing panel.
+			 * Trying to show not existing stack.
 			 *
-			 * @error contextualballoon-showpanel-panel-not-exist
+			 * @error contextualballoon-showstack-stack-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-showpanel-panel-not-exist: Cannot show not existing panel.' );
+			throw new CKEditorError( 'contextualballoon-showstack-stack-not-exist: Cannot show not existing stack.' );
 		}
 
-		if ( this._visiblePanel === panel ) {
+		if ( this._visibleStack === stack ) {
 			return;
 		}
 
-		this._visiblePanel = panel;
-		this._showView( Array.from( panel.stack.values() ).pop() );
+		this._showView( Array.from( stack.values() ).pop() );
 	}
 
 	/**
-	 * Shows last view from the stack of the next panel
-	 * according to the currently visible panel.
+	 * Returns the stack of currently visible view.
+	 *
+	 * @private
+	 * @type {Set}
+	 */
+	get _visibleStack() {
+		return this._viewToStack.get( this.visibleView );
+	}
+
+	/**
+	 * Returns id of given stack.
+	 *
+	 * @private
+	 * @param {Set} stack
+	 * @returns {String}
+	 */
+	_getStackId( stack ) {
+		const entry = Array.from( this._idToStack.entries() ).find( entry => entry[ 1 ] === stack );
+
+		return entry[ 0 ];
+	}
+
+	/**
+	 * Shows last view from the next stack.
 	 *
 	 * @private
 	 */
-	_showNextPanel() {
-		const panel = this._visiblePanel;
+	_showNextStack() {
+		const stacks = Array.from( this._idToStack.values() );
 
-		let nextIndex = this._panels.getIndex( panel ) + 1;
+		let nextIndex = stacks.indexOf( this._visibleStack ) + 1;
 
-		if ( !this._panels.get( nextIndex ) ) {
+		if ( !stacks[ nextIndex ] ) {
 			nextIndex = 0;
 		}
 
-		this.showPanel( this._panels.get( nextIndex ).id );
+		this.showStack( this._getStackId( stacks[ nextIndex ] ) );
 	}
 
 	/**
-	 * Shows last view from the stack of the previous panel
-	 * according to the currently visible panel.
+	 * Shows last view from the previous stack.
 	 *
 	 * @private
 	 */
-	_showPrevPanel() {
-		const panel = this._visiblePanel;
+	_showPrevStack() {
+		const stacks = Array.from( this._idToStack.values() );
 
-		let nextIndex = this._panels.getIndex( panel ) - 1;
+		let nextIndex = stacks.indexOf( this._visibleStack ) - 1;
 
-		if ( !this._panels.get( nextIndex ) ) {
-			nextIndex = this._panels.length - 1;
+		if ( !stacks[ nextIndex ] ) {
+			nextIndex = stacks.length - 1;
 		}
 
-		this.showPanel( this._panels.get( nextIndex ).id );
+		this.showStack( this._getStackId( stacks[ nextIndex ] ) );
 	}
 
 	/**
@@ -336,17 +340,21 @@ export default class ContextualBalloon extends Plugin {
 
 		this.view.content.add( view );
 
-		// Hide navigation when there is only a one panel.
-		view.bind( 'isNavigationVisible' ).to( this, '_panelsLength', value => value > 1 );
+		// Hide navigation when there is only a one stack.
+		view.bind( 'isNavigationVisible' ).to( this, '_numberOfStacks', value => value > 1 );
 
-		// Update panel position after toggling navigation.
+		// Update balloon position after toggling navigation.
 		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
-		// Show panels counter.
-		view.bind( 'counter' ).to( this, '_visiblePanel', this, '_panelsLength', ( panel, length ) => {
-			const current = panel ? this._panels.getIndex( panel ) + 1 : 0;
+		// Show stacks counter.
+		view.bind( 'counter' ).to( this, 'visibleView', this, '_numberOfStacks', ( visibleView, numberOfStacks ) => {
+			if ( numberOfStacks < 2 ) {
+				return '';
+			}
 
-			return `${ current } ${ t( 'of' ) } ${ length }`;
+			const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
+
+			return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
 		} );
 
 		view.buttonNextView.on( 'execute', () => {
@@ -356,7 +364,7 @@ export default class ContextualBalloon extends Plugin {
 				this.editor.editing.view.focus();
 			}
 
-			this._showNextPanel();
+			this._showNextStack();
 		} );
 
 		view.buttonPrevView.on( 'execute', () => {
@@ -366,7 +374,7 @@ export default class ContextualBalloon extends Plugin {
 				this.editor.editing.view.focus();
 			}
 
-			this._showPrevPanel();
+			this._showPrevStack();
 		} );
 
 		return view;
@@ -399,7 +407,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		let position = Array.from( this._visiblePanel.stack.values() ).pop().position;
+		let position = Array.from( this._visibleStack.values() ).pop().position;
 
 		// Use the default limiter if none has been specified.
 		if ( position && !position.limiter ) {
@@ -413,8 +421,8 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
-// Rotator view. Used for displaying last view from the current panel stack.
-// Provides navigation buttons for switching panels.
+// Rotator view. Used for displaying last view from the current stack.
+// Provides navigation buttons for switching stacks.
 //
 // @private
 // @extends module:ui/view~View
@@ -439,12 +447,12 @@ class RotatorView extends View {
 		// @type {module:utils/focustracker~FocusTracker}
 		this.focusTracker = new FocusTracker();
 
-		// Navigation button to switches panel to the next one.
+		// Navigation button to switches stack to the next one.
 		//
 		// @type {module:ui/button/buttonview~ButtonView}
 		this.buttonPrevView = this._createButtonView( t( 'Previous baloon' ), prevIcon );
 
-		// Navigation button to switches panel to the previous one.
+		// Navigation button to switches stack to the previous one.
 		//
 		// @type {module:ui/button/buttonview~ButtonView}
 		this.buttonNextView = this._createButtonView( t( 'Next balloon' ), nextIcon );
