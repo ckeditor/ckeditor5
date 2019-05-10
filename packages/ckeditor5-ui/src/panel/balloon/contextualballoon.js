@@ -20,18 +20,34 @@ import nextIcon from '../../../theme/icons/next-arrow.svg';
 import '../../../theme/components/panel/balloonrotator.css';
 
 /**
- * Provides the common contextual balloon panel for the editor.
+ * Provides the common contextual balloon for the editor.
  *
- * This plugin allows reusing a single {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
- * to display multiple contextual balloon panels in the editor.
- *
- * Child views of such a panel are stored in the stack and the last one in the stack is visible. When the
- * visible view is removed from the stack, the previous view becomes visible, etc. If there are no more
- * views in the stack, the balloon panel will hide.
- *
- * It simplifies managing the views and helps
+ * The role of this plugin is to unified contextual balloons logic, simplifies managing the views and helps
  * avoid the unnecessary complexity of handling multiple {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
  * instances in the editor.
+ *
+ * This plugin allows creating single or multiple panel stacks.
+ *
+ * Each stack may have multiple views, the one on the top is visible. When the visible view is removed from the stack,
+ * the previous view becomes visible, etc. It might be useful to implement nested navigation in a balloon. For instance
+ * toolbar view may have a link button. When you click it, link view (which let you set the URL) is created and put on
+ * top of the toolbar view, so not link panel is displayed. When you finish editing link and close (remove) link view,
+ * the toolbar view is visible back.
+ *
+ * However, there are cases when there are multiple independent balloons to be displayed. For instance, if the selection
+ * is inside two inline comments at the same time. For such cases, you can create two independent panel stacks.
+ * Contextual balloon plugin will create a navigation bar to let users switch between these panel stacks - "next balloon"
+ * and "previous balloon" buttons.
+ *
+ * If there are no views in the current stack, the balloon panel will try to switch to the next stack. If there are no
+ * panels in any stack then balloon panel will be hidden.
+ *
+ * From the implementation point of view, contextual ballon plugin is reusing a single
+ * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance to display multiple contextual balloon
+ * panels in the editor. It also creates a special rotator view, used to manage multiple panel stacks. Rotator
+ * view is a child of the balloon panel view and the parent of the specific view you want to display. If there is are
+ * more than one panel stack to be displayed, the rotator view will add a navigation bar. If there is only one stack,
+ * rotator view is transparent (do not add any UI elements).
  *
  * @extends module:core/plugin~Plugin
  */
