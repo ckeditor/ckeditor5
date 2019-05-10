@@ -21,9 +21,9 @@ import '@ckeditor/ckeditor5-utils/src/version';
  *
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
- * * {@module:engine/view/view~View}
- * * {@module:engine/view/downcastwriter~DowncastWriter}
- * * {@module:engine/view/upcastwriter~UpcastWriter}
+ * * {@link module:engine/view/view~View}
+ * * {@link module:engine/view/downcastwriter~DowncastWriter}
+ * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
 export default class Position {
 	/**
