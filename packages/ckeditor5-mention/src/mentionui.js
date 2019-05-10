@@ -534,7 +534,7 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
-// Creates a regex for marker.
+// Creates a RegExp pattern for the marker.
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
