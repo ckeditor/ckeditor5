@@ -728,10 +728,17 @@ export default class Model {
 	 * There is also available `model:` prefix in each case, which gives more specific results.
 	 * It helps to distinguish model's classes from view's. Few examples how to use this method you can find below:
 	 *
+	 * 	const model = new Model();
 	 * 	model.is( 'model' ) // return true
+	 *
+	 * 	const range = new LiveRange( startPosition )
 	 * 	range.is( 'range' ) // return true
+	 * 	range.is( 'liveRange' ) // return true
 	 * 	range.is( 'model:range' ) // return true
+	 * 	range.is( 'model:liveRange' ) // return true
 	 * 	range.is( 'view:range' ) // return false
+	 *
+	 * 	const document = new Document();
 	 * 	document.is( 'model:document' ) // return true
 	 *
 	 * See also {@link module:engine/model/node~Node#is `Node#is()`} for some more details related to elements.

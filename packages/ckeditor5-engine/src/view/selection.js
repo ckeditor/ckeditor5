@@ -604,8 +604,11 @@ export default class Selection {
 	 *		const selection = new Selection( ... );
 	 *
 	 *		selection.is( 'selection' ); // true
+	 *		selection.is( 'view:selection' ); // true
 	 *		selection.is( 'node' ); // false
 	 *		selection.is( 'element' ); // false
+	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

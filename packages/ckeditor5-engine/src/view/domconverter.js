@@ -108,6 +108,8 @@ export default class DomConverter {
 	/**
 	 * Checks whether given object is of `domConverter` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

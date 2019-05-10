@@ -135,6 +135,8 @@ export default class Document {
 	/**
 	 * Checks whether given object is of `document` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

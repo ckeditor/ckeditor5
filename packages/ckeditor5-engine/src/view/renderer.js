@@ -121,6 +121,8 @@ export default class Renderer {
 	/**
 	 * Checks whether given object is of `renderer` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

@@ -655,6 +655,27 @@ export default class View {
 	/**
 	 * Checks whether given object is of `view` type.
 	 *
+	 * All classes related to {@link module:engine/view/view~View} might contain `is` method,
+	 * which checks if given object belong to specific type. It might simplify your code for cases,
+	 * when you want to test unknown object for specific type.
+	 * Instead of using `instanceof` and importing entire class for testing,
+	 * there might be used `is` method which test for given name.
+	 * There is also available `view:` prefix in each case, which gives more specific results.
+	 * It helps to distinguish view's classes from model's. Few examples how to use this method you can find below:
+	 *
+	 * 	const view = new View()
+	 * 	view.is( 'view' ) // return true
+	 *
+	 * 	const range = new Range( startPosition )
+	 * 	range.is( 'range' ) // return true
+	 * 	range.is( 'view:range' ) // return true
+	 * 	range.is( 'model:range' ) // return false
+	 *
+	 * 	const document = new Document();
+	 * 	document.is( 'model:document' ) // return true
+	 *
+	 * See also {@link module:engine/view/node~Node#is `Node#is()`} for some more details related to elements.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

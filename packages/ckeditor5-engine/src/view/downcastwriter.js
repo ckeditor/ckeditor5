@@ -57,6 +57,8 @@ export default class DowncastWriter {
 	/**
 	 * Checks whether given object is of `downcastWriter` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

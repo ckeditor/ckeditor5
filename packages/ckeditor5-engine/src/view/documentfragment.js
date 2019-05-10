@@ -96,7 +96,7 @@ export default class DocumentFragment {
 	/**
 	 * Checks whether given view tree object is of given type.
 	 *
-	 * Read more in {@link module:engine/view/node~Node#is}.
+	 * Read more in {@link module:engine/view/node~Node#is `Node#is()`} and {@link module:engine/view/view~View#is `View#is()`}.
 	 *
 	 * @param {String} type
 	 * @returns {Boolean}

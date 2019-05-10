@@ -209,6 +209,8 @@ export default class Position {
 	/**
 	 * Checks whether given object is of `position` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

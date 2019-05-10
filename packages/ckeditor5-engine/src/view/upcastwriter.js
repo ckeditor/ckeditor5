@@ -38,6 +38,8 @@ export default class UpcastWriter {
 	/**
 	 * Checks whether given object is of `upcastWriter` type.
 	 *
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
 	 * @param {String} type
 	 * @returns {Boolean}
 	 */

@@ -297,14 +297,21 @@ export default class Node {
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
 	 *
 	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
+	 *		obj.is( 'view:node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
+	 *		obj.is( 'view:documentFragment' ); // true for document fragment, false for any node
 	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
+	 *		obj.is( 'ciew:element' ); // true for any element, false for text node or document fragment
 	 *		obj.is( 'element', 'p' ); // true only for element which name is 'p'
+	 *		obj.is( 'view:element', 'p' ); // true only for element which name is 'p'
 	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )
+	 *		obj.is( 'view:p' ); // shortcut for obj.is( 'view:element', 'p' )
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
+	 *		obj.is( 'view:text' ); // true for text node, false for element and document fragment
 	 *
-	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
-	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
+	 * Read more at {@link module:engine/view/view~View#is `View#is()`}.
+	 *
+	 * @param {String} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {
