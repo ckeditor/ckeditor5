@@ -314,7 +314,7 @@ export class MyComponent {
 
 ## Accessing the CKEditor 5 Editor
 
-The `<ckeditor>` component will provide all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to access the editor with an additional step.
+The `<ckeditor>` component provides all the functionality needed for most use cases. In cases where access to the full CKEditor 5 API is needed it is easy to get the editor with an additional step.
 
 To do this create a template reference variable `#editor` pointing the `<ckeditor>` component:
 
@@ -356,16 +356,18 @@ export class MyComponent {
 
   	public config = {
 		extraPlugins: [ UploadAdapterPlugin ],
-		httpClient: this.httpClient
+		uploadAdapter: {
+			httpClient: this.httpClient
+		}
 	};
 }
 
 class UploadAdapterPlugin {
 	constructor( editor: any ) {
-		const httpClient = editor.config.get( 'httpClient' );
+		const { httpClient } = editor.config.get( 'uploadAdapter' );
 
 		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
-			// Modify your endpoint URL.
+			// Modify for your endpoint URL.
 			return new UploadAdapter( loader, httpClient, 'http://example.com/image/upload/path' );
 		};
 	}
