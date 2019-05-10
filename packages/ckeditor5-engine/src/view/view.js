@@ -656,10 +656,13 @@ export default class View {
 	 * Checks whether given object is of `view` type.
 	 *
 	 * All classes related to {@link module:engine/view/view~View} might contain `is` method,
-	 * which checks if given object belong to specific type. It might simplify your code for cases,
-	 * when you want to test unknown object for specific type.
-	 * Instead of using `instanceof` and importing entire class for testing,
-	 * there might be used `is` method which test for given name.
+	 * which checks if given object belong to specific type. Types are defined as name of the class
+	 * written in [camelCase](https://en.wikipedia.org/wiki/Camel_case) notation. E.g. class `DocumentFragment`
+	 * will get type `documentFragment`. There might appear some additional possibilities to test types which will be described in
+	 * related documentation.
+	 *
+	 * It might simplify your code for cases, when you want to test unknown object for specific type.
+	 * Instead of using `instanceof` and importing entire class for testing, there might be used `is` method which test for given name.
 	 * There is also available `view:` prefix in each case, which gives more specific results.
 	 * It helps to distinguish view's classes from model's. Few examples how to use this method you can find below:
 	 *
