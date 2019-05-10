@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, setTimeout, Event, window */
+/* global window, document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -18,7 +18,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import MentionUI from '../src/mentionui';
+import MentionUI, { createRegExp } from '../src/mentionui';
+import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
 
@@ -276,8 +277,6 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'typing integration', () => {
-		const supportsES2018Escapes = checkES2018RegExpSupport();
-
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
@@ -443,94 +442,40 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
-			// Cache the original RegExp to restore it after the tests.
-			const RegExp = window.RegExp;
+			let regExpStub;
+
+			// Cache the original value to restore it after the tests.
+			const originalPunctuationSupport = featureDetection.isPunctuationGroupSupported;
+
+			before( () => {
+				featureDetection.isPunctuationGroupSupported = false;
+			} );
 
 			beforeEach( () => {
-				// The FakeRegExp throws on first call - it simulates syntax error of ES2018 syntax usage
-				// on browsers other then Chrome. See ckeditor5-mention#44.
-				function FakeRegExp( pattern, flags ) {
-					if ( pattern.includes( '\\p{Ps}' ) ) {
-						throw new SyntaxError( 'invalid identity escape in regular expression' );
-					}
+				return createClassicTestEditor( staticConfig )
+					.then( editor => {
+						regExpStub = sinon.stub( window, 'RegExp' );
 
-					return new RegExp( pattern, flags );
-				}
-
-				window.RegExp = FakeRegExp;
-
-				return createClassicTestEditor( staticConfig );
-			} );
-
-			afterEach( () => {
-				// Restore the original RegExp.
-				window.RegExp = RegExp;
-			} );
-
-			it( 'should fallback to old method if browser does not support unicode property escapes', () => {
-				setData( model, '<paragraph>[] foo</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '〈', doc.selection.getFirstPosition() );
-				} );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+						return editor;
 					} );
 			} );
 
-			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
-				// Stub the isEdge for coverage tests in other browsers.
-				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
-
-				setData( model, '<paragraph>[] foo</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '〈', doc.selection.getFirstPosition() );
-				} );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-					} );
-			} );
-		} );
-
-		describe( 'ES2018 RegExp Unicode property escapes fallback on Edge', () => {
-			beforeEach( () => {
-				// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
-
-				return createClassicTestEditor( staticConfig );
+			after( () => {
+				featureDetection.isPunctuationGroupSupported = originalPunctuationSupport;
 			} );
 
-			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
-				setData( model, '<paragraph>[] foo</paragraph>' );
+			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
+				featureDetection.isPunctuationGroupSupported = false;
+				createRegExp( '@', 2 );
+				sinon.assert.calledOnce( regExpStub );
+				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\(\\[{"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
+			} );
 
-				model.change( writer => {
-					writer.insertText( '〈', doc.selection.getFirstPosition() );
-				} );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-					} );
+			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
+				featureDetection.isPunctuationGroupSupported = true;
+				createRegExp( '@', 2 );
+				sinon.assert.calledOnce( regExpStub );
+				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\p{Ps}\\p{Pi}"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
 			} );
 		} );
 
@@ -615,7 +560,7 @@ describe( 'MentionUI', () => {
 				// Belongs to Pi (Punctuation, Initial quote) group:
 				'«', '‹', '⸌', ' ⸂', '⸠'
 			] ) {
-				testOpeningPunctuationCharacter( character, !supportsES2018Escapes );
+				testOpeningPunctuationCharacter( character, !featureDetection.isPunctuationGroupSupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -1782,17 +1727,5 @@ describe( 'MentionUI', () => {
 		for ( const key of Object.keys( item ) ) {
 			expect( mentionForCommand[ key ] ).to.equal( item[ key ] );
 		}
-	}
-
-	function checkES2018RegExpSupport() {
-		let supportsES2018Escapes = false;
-
-		try {
-			supportsES2018Escapes = new RegExp( '\\p{Ps}', 'u' ).test( '〈' );
-		} catch ( error ) {
-			// It's Ok we skip test on this browser.
-		}
-
-		return supportsES2018Escapes;
 	}
 } );

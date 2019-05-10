@@ -12,9 +12,9 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import featureDetection from './featuredetection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import env from '@ckeditor/ckeditor5-utils/src/env';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import TextWatcher from './textwatcher';
@@ -536,24 +536,16 @@ function getBalloonPanelPositions( preferredPosition ) {
 
 // Creates a RegExp pattern for the marker.
 //
+// Function has to be exported to achieve 100% code coverage.
+//
 // @param {String} marker
 // @param {Number} minimumCharacters
 // @returns {RegExp}
-function createRegExp( marker, minimumCharacters ) {
+export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
+	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
-	if ( !env.isEdge ) {
-		// Unfortunately Edge does not throw on `/[\p{Ps}\p{Pi}]/u` as it does on `/\p{Ps}\p{Pi}/u (no square brackets in latter).
-		try {
-			// Uses the ES2018 syntax. See ckeditor5-mention#44.
-			return new RegExp( buildPattern( '\\p{Ps}\\p{Pi}"\'', marker, numberOfCharacters ), 'u' );
-		} catch ( error ) {
-			// It's OK we're fallback to non ES2018 RegExp later.
-		}
-	}
-
-	// ES2018 RegExp Unicode property escapes are not supported - fallback to save character list.
-	return new RegExp( buildPattern( '\\(\\[{"\'', marker, numberOfCharacters ), 'u' );
+	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
 }
 
 // Helper to build a RegExp pattern string for the marker.
