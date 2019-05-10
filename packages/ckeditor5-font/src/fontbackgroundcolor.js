@@ -41,6 +41,15 @@ export default class FontBackgroundColor extends Plugin {
 
 /**
  * The configuration of the font background color feature.
+ * It is introduced by the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} feature.
+ *
+ * Read more in {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig}.
+ *
+ * @member {module:font/fontbackgroundcolor~FontBackgroundColorConfig} module:core/editor/editorconfig~EditorConfig#fontBackgroundColor
+ */
+
+/**
+ * The configuration of the font background color feature.
  * This option is used by the {@link module:font/fontbackgroundcolor/fontbackgroundcolorediting~FontBackgroundColorEditing} feature.
  *
  *		ClassicEditor
