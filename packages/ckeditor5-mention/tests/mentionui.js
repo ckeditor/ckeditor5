@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, setTimeout, Event, window */
+/* global document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,6 +19,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import MentionUI from '../src/mentionui';
+import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
 
@@ -444,78 +445,22 @@ describe( 'MentionUI', () => {
 
 		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
 			// Cache the original RegExp to restore it after the tests.
-			const RegExp = window.RegExp;
+			const originalPunctationSupport = featureDetection.isPunctuationGroupSupported;
+
+			before( () => {
+				featureDetection.isPunctuationGroupSupported = false;
+			} );
 
 			beforeEach( () => {
-				// The FakeRegExp throws on first call - it simulates syntax error of ES2018 syntax usage
-				// on browsers other then Chrome. See ckeditor5-mention#44.
-				function FakeRegExp( pattern, flags ) {
-					if ( pattern.includes( '\\p{Ps}' ) ) {
-						throw new SyntaxError( 'invalid identity escape in regular expression' );
-					}
-
-					return new RegExp( pattern, flags );
-				}
-
-				window.RegExp = FakeRegExp;
-
 				return createClassicTestEditor( staticConfig );
 			} );
 
-			afterEach( () => {
+			after( () => {
 				// Restore the original RegExp.
-				window.RegExp = RegExp;
+				featureDetection.isPunctuationGroupSupported = originalPunctationSupport;
 			} );
 
-			it( 'should fallback to old method if browser does not support unicode property escapes', () => {
-				setData( model, '<paragraph>[] foo</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '〈', doc.selection.getFirstPosition() );
-				} );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-					} );
-			} );
-
-			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
-				// Stub the isEdge for covarage tests in other browsers.
-				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
-
-				setData( model, '<paragraph>[] foo</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '〈', doc.selection.getFirstPosition() );
-				} );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.false;
-						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
-					} );
-			} );
-		} );
-
-		describe( 'ES2018 RegExp Unicode property escapes fallback on Edge', () => {
-			beforeEach( () => {
-				// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
-
-				return createClassicTestEditor( staticConfig );
-			} );
-
-			it( 'should fallback to old method if browser does not support unicode property escapes (on Edge)', () => {
+			it( 'should fallback to simpler RegExp if browser does not support unicode property escapes', () => {
 				setData( model, '<paragraph>[] foo</paragraph>' );
 
 				model.change( writer => {

@@ -12,6 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import featureDetection from './featuredetection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -533,20 +534,6 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
-const isPunctuationGroupSupported = ( function() {
-	let punctuationSupported = false;
-	// Feature detection for Unicode punctuation groups. It's added in ES2018. Currently Firefox and Edge does not support it.
-	// See https://github.com/ckeditor/ckeditor5-mention/issues/44#issuecomment-487002174.
-
-	try {
-		punctuationSupported = '.'.search( new RegExp( '[\\p{P}]', 'u' ) ) === 0;
-	} catch ( error ) {
-		// It's OK we're fallback to non ES2018 RegExp later.
-	}
-
-	return punctuationSupported;
-}() );
-
 // Creates a regex for marker.
 //
 // @param {String} marker
@@ -554,7 +541,7 @@ const isPunctuationGroupSupported = ( function() {
 // @returns {String}
 function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
-	const patternBase = isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
+	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
 	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
 }
