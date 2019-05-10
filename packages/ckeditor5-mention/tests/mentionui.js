@@ -609,7 +609,12 @@ describe( 'MentionUI', () => {
 			}
 
 			// Excerpt of opening parenthesis type characters that tests ES2018 Unicode property escapes on supported environment.
-			for ( const character of [ '〈', '„', '﹛', '｟', '｛' ] ) {
+			for ( const character of [
+				// Belongs to Ps (Punctuation, Open) group:
+				'〈', '„', '﹛', '｟', '｛',
+				// Belongs to Pi (Punctuation, Initial quote) group:
+				'«', '‹', '⸌', ' ⸂', '⸠'
+			] ) {
 				testOpeningPunctuationCharacter( character, !supportsES2018Escapes );
 			}
 

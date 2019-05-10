@@ -543,10 +543,10 @@ function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
 	if ( !env.isEdge ) {
-		// Unfortunately Edge does not throw on `/[\p{Ps}]/u` as it does on `/\p{Ps}/u (no square brackets in latter).
+		// Unfortunately Edge does not throw on `/[\p{Ps}\p{Pi}]/u` as it does on `/\p{Ps}\p{Pi}/u (no square brackets in latter).
 		try {
 			// Uses the ES2018 syntax. See ckeditor5-mention#44.
-			return new RegExp( buildPattern( '\\p{Ps}"\'', marker, numberOfCharacters ), 'u' );
+			return new RegExp( buildPattern( '\\p{Ps}\\p{Pi}"\'', marker, numberOfCharacters ), 'u' );
 		} catch ( error ) {
 			// It's OK we're fallback to non ES2018 RegExp later.
 		}
