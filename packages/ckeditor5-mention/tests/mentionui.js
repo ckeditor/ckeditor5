@@ -277,8 +277,6 @@ describe( 'MentionUI', () => {
 	} );
 
 	describe( 'typing integration', () => {
-		const supportsES2018Escapes = checkES2018RegExpSupport();
-
 		it( 'should show panel for matched marker after typing minimum characters', () => {
 			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
 				.then( () => {
@@ -557,7 +555,7 @@ describe( 'MentionUI', () => {
 
 			// Excerpt of opening parenthesis type characters that tests ES2018 Unicode property escapes on supported environment.
 			for ( const character of [ '〈', '„', '﹛', '｟', '｛' ] ) {
-				testOpeningPunctuationCharacter( character, !supportsES2018Escapes );
+				testOpeningPunctuationCharacter( character, !featureDetection.isPunctuationGroupSupported );
 			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
@@ -1724,17 +1722,5 @@ describe( 'MentionUI', () => {
 		for ( const key of Object.keys( item ) ) {
 			expect( mentionForCommand[ key ] ).to.equal( item[ key ] );
 		}
-	}
-
-	function checkES2018RegExpSupport() {
-		let supportsES2018Escapes = false;
-
-		try {
-			supportsES2018Escapes = new RegExp( '\\p{Ps}', 'u' ).test( '〈' );
-		} catch ( error ) {
-			// It's Ok we skip test on this browser.
-		}
-
-		return supportsES2018Escapes;
 	}
 } );
