@@ -123,7 +123,7 @@ export default class ContextualBalloon extends Plugin {
 		 * Displays currently visible view in the balloon and provides navigation for switching stacks.
 		 *
 		 * @private
-		 * @type {module:ui/view~View}
+		 * @type {~RotatorView}
 		 */
 		this._rotatorView = this._createRotatorView();
 	}
@@ -332,7 +332,7 @@ export default class ContextualBalloon extends Plugin {
 	 * Creates a rotator view.
 	 *
 	 * @private
-	 * @returns {module:ui/view~View}
+	 * @returns {~RotatorView}
 	 */
 	_createRotatorView() {
 		const view = new RotatorView( this.editor.locale );
@@ -421,46 +421,63 @@ export default class ContextualBalloon extends Plugin {
 	}
 }
 
-// Rotator view. Used for displaying last view from the current stack.
-// Provides navigation buttons for switching stacks.
-//
-// @private
-// @extends module:ui/view~View
+/**
+ * Rotator view. Used for displaying last view from the current stack.
+ * Provides navigation buttons for switching stacks.
+ *
+ * @extends module:ui/view~View
+ */
 class RotatorView extends View {
-	// @inheritDoc
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
 		const bind = this.bindTemplate;
 
-		// Defines whether navigation is visible or not.
-		//
-		// @member {Boolean} #isNavigationVisible
+		/**
+		 * Defines whether navigation is visible or not.
+		 *
+		 * @member {Boolean} #isNavigationVisible
+		 */
 		this.set( 'isNavigationVisible', true );
 
-		// Defines whether balloon should be marked as narrow or not.
-		//
-		// @member {Boolean} #isNarrow
+		/**
+		 * Defines whether balloon should be marked as narrow or not.
+		 *
+		 * @member {Boolean} #isNarrow
+		 */
 		this.set( 'isNarrow', false );
 
-		// @type {module:utils/focustracker~FocusTracker}
+		/**
+		 * Used for checking if view is focused or not.
+		 *
+		 * @type {module:utils/focustracker~FocusTracker}
+		 */
 		this.focusTracker = new FocusTracker();
 
-		// Navigation button to switches stack to the next one.
-		//
-		// @type {module:ui/button/buttonview~ButtonView}
+		/**
+		 * Navigation button for switching stack to the previous one.
+		 *
+		 * @type {module:ui/button/buttonview~ButtonView}
+		 */
 		this.buttonPrevView = this._createButtonView( t( 'Previous baloon' ), prevIcon );
 
-		// Navigation button to switches stack to the previous one.
-		//
-		// @type {module:ui/button/buttonview~ButtonView}
+		/**
+		 * Navigation button for switching stack to the next one.
+		 *
+		 * @type {module:ui/button/buttonview~ButtonView}
+		 */
 		this.buttonNextView = this._createButtonView( t( 'Next balloon' ), nextIcon );
 
-		// Collection of the child views which creates rotator content.
-		//
-		// @readonly
-		// @type {module:ui/viewcollection~ViewCollection}
+		/**
+		 * Collection of the child views which creates rotator content.
+		 *
+		 * @readonly
+		 * @type {module:ui/viewcollection~ViewCollection}
+		 */
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -513,37 +530,48 @@ class RotatorView extends View {
 		} );
 	}
 
-	// @inheritDoc
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
 		this.focusTracker.add( this.element );
 	}
 
+	/**
+	 * Checks if view width is narrow and updated {@link ~RotatorView#isNarrow} state.
+	 */
 	updateIsNarrow() {
 		this.isNarrow = this.element.clientWidth <= 200;
 	}
 
-	// Shows given view.
-	//
-	// @param {module:ui/view~View} view
+	/**
+	 * Shows given view.
+	 *
+	 * @param {module:ui/view~View} view The view to show.
+	 */
 	showView( view ) {
 		this.hideView();
 		this.content.add( view );
 		this.updateIsNarrow();
 	}
 
-	// Hides currently visible view.
+	/**
+	 * Hides currently displayed view.
+	 */
 	hideView() {
 		this.content.clear();
 	}
 
-	// Creates a navigation button view.
-	//
-	// @private
-	// @param {String} label The button's label.
-	// @param {String} icon The button's icon.
-	// @returns {module:ui/button/buttonview~ButtonView}
+	/**
+	 * Creates a navigation button view.
+	 *
+	 * @private
+	 * @param {String} label The button's label.
+	 * @param {String} icon The button's icon.
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
 	_createButtonView( label, icon ) {
 		const view = new ButtonView( this.locale );
 
