@@ -185,6 +185,7 @@ describe( 'LiveRange', () => {
 
 	describe( 'is()', () => {
 		let live;
+
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 			live.detach();

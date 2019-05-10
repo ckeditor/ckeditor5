@@ -130,6 +130,7 @@ describe( 'Position', () => {
 
 	describe( 'is()', () => {
 		let position;
+
 		beforeEach( () => {
 			position = new Position( root, [ 0 ] );
 		} );

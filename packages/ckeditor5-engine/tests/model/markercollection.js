@@ -427,6 +427,7 @@ describe( 'Marker', () => {
 
 	describe( 'is()', () => {
 		let marker;
+
 		beforeEach( () => {
 			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 			marker = model.markers._set( 'name', range );

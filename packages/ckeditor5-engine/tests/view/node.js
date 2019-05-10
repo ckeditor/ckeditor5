@@ -32,9 +32,11 @@ describe( 'Node', () => {
 
 	describe( 'is()', () => {
 		let node;
+
 		beforeEach( () => {
 			node = new Node();
 		} );
+
 		it( 'should return true for node', () => {
 			expect( node.is( 'node' ) ).to.be.true;
 			expect( node.is( 'view:node' ) ).to.be.true;
