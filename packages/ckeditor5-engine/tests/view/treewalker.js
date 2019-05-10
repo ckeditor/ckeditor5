@@ -74,7 +74,7 @@ describe( 'TreeWalker', () => {
 		let treeWalker;
 
 		beforeEach( () => {
-			treeWalker = new TreeWalker();
+			treeWalker = new TreeWalker( { startPosition: rootBeginning } );
 		} );
 
 		it( 'should return true for "treeWalker"', () => {

@@ -34,6 +34,21 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for "domConverter"', () => {
+			expect( converter.is( 'domConverter' ) ).to.be.true;
+			expect( converter.is( 'view:domConverter' ) ).to.be.true;
+		} );
+
+		it( 'should return false for incorrect values', () => {
+			expect( converter.is( 'view' ) ).to.be.false;
+			expect( converter.is( 'model:domConverter' ) ).to.be.false;
+			expect( converter.is( 'node' ) ).to.be.false;
+			expect( converter.is( 'view:node' ) ).to.be.false;
+			expect( converter.is( 'element', 'text' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		let viewEditable, domEditable, domEditableParent, viewDocument;
 
