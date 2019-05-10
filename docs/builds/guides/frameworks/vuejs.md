@@ -278,7 +278,6 @@ npm install --save \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-basic-styles \
-	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-link \
 	@ckeditor/ckeditor5-paragraph
 ```
