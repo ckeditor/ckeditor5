@@ -556,7 +556,7 @@ function createRegExp( marker, minimumCharacters ) {
 	return new RegExp( buildPattern( '\\(\\[{"\'', marker, numberOfCharacters ), 'u' );
 }
 
-// Creates a regex pattern for the marker.
+// Helper to build a RegExp pattern string for the marker.
 //
 // @param {String} whitelistedCharacters
 // @param {String} marker
