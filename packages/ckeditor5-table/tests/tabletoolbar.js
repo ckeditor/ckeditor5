@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window */
+/* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableToolbar from '../src/tabletoolbar';
@@ -239,12 +239,11 @@ describe( 'TableToolbar', () => {
 	} );
 
 	describe( 'deprecated toolbar', () => {
-		let editor, editorElement, warnMock;
+		let editor, editorElement;
 
-		it( 'table.toolbar should work as table.contentToolbar', () => {
+		it( 'table.toolbar should not create toolbar any longer', () => {
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
-			warnMock = sinon.stub( window.console, 'warn' );
 
 			return ClassicTestEditor
 				.create( editorElement, {
@@ -257,23 +256,14 @@ describe( 'TableToolbar', () => {
 					editor = newEditor;
 
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 
-					expect( toolbarView.items ).to.have.length( 1 );
-					expect( toolbarView.items.get( 0 ).label ).to.equal( 'fake button' );
-
-					sinon.assert.calledWith(
-						warnMock,
-						'`config.table.toolbar` is deprecated and will be removed in the next major release.' +
-						' Use `config.table.contentToolbar` instead.'
-					);
+					expect( widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ) ).to.be.undefined;
 				} );
 		} );
 
 		it( 'table.contentToolbar should be used if both toolbars options are provided', () => {
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
-			warnMock = sinon.stub( window.console, 'warn' );
 
 			return ClassicTestEditor
 				.create( editorElement, {

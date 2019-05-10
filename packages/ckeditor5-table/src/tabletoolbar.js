@@ -20,9 +20,6 @@ import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolba
  * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
  * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
  *
- * Note that the old {@link module:table/table~TableConfig#toolbar `table.toolbar` configuration option} is deprecated
- * and will be removed in the next major release.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class TableToolbar extends Plugin {
@@ -48,21 +45,12 @@ export default class TableToolbar extends Plugin {
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
 
 		const tableContentToolbarItems = editor.config.get( 'table.contentToolbar' );
-		const deprecatedTableContentToolbarItems = editor.config.get( 'table.toolbar' );
 
 		const tableToolbarItems = editor.config.get( 'table.tableToolbar' );
 
-		if ( deprecatedTableContentToolbarItems ) {
-			// eslint-disable-next-line
-			console.warn(
-				'`config.table.toolbar` is deprecated and will be removed in the next major release.' +
-				' Use `config.table.contentToolbar` instead.'
-			);
-		}
-
-		if ( tableContentToolbarItems || deprecatedTableContentToolbarItems ) {
+		if ( tableContentToolbarItems ) {
 			widgetToolbarRepository.register( 'tableContent', {
-				items: tableContentToolbarItems || deprecatedTableContentToolbarItems,
+				items: tableContentToolbarItems,
 				getRelatedElement: getTableWidgetAncestor
 			} );
 		}
