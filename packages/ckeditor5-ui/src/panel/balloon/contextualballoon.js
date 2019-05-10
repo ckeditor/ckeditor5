@@ -260,7 +260,7 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		this.view.pin( this._getBalloonPosition() );
-		this._rotatorView.checkIsNarrow();
+		this._rotatorView.updateIsNarrow();
 	}
 
 	/**
@@ -512,8 +512,7 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
-	// @returns {Boolean}
-	checkIsNarrow() {
+	updateIsNarrow() {
 		this.isNarrow = this.element.clientWidth <= 200;
 	}
 
@@ -523,7 +522,7 @@ class RotatorView extends View {
 	showView( view ) {
 		this.hideView();
 		this.content.add( view );
-		this.checkIsNarrow();
+		this.updateIsNarrow();
 	}
 
 	// Hides currently visible view.
