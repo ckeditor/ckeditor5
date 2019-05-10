@@ -538,7 +538,7 @@ function getBalloonPanelPositions( preferredPosition ) {
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
-// @returns {String}
+// @returns {RegExp}
 function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
