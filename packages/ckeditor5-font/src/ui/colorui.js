@@ -138,7 +138,7 @@ export default class ColorUI extends Plugin {
 			if ( documentColorsCount !== 0 ) {
 				dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
 					if ( val ) {
-						this.findAndSetDocumentColors();
+						this._updateDocumentColors();
 					}
 				} );
 			}
@@ -153,11 +153,9 @@ export default class ColorUI extends Plugin {
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
-	 * Method is used to determines document colors when UI dropdown is opened.
-	 *
 	 * @private
 	 */
-	findAndSetDocumentColors() {
+	_updateDocumentColors() {
 		const model = this.editor.model;
 		const document = model.document;
 		const maxCount = this.colorTableView.documentColorsCount;
@@ -180,9 +178,11 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the {@link #colorDefinitions} (label, color options).
-	 * If color is found, then it is added to the {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 * In other case it's created custom color, which is added to {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
+	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 * In other case it's created custom color, which is added to
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
 	 *
 	 * @private
 	 * @param {String} color String which stores value of recently applied color
