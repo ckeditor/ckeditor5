@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, setTimeout, Event */
+/* global window, document, setTimeout, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -18,7 +18,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import MentionUI from '../src/mentionui';
+import MentionUI, { createRegExp } from '../src/mentionui';
+import featureDetection from '../src/featuredetection';
 import MentionEditing from '../src/mentionediting';
 import MentionsView from '../src/ui/mentionsview';
 
@@ -440,6 +441,44 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'ES2018 RegExp Unicode property escapes fallback', () => {
+			let regExpStub;
+
+			// Cache the original value to restore it after the tests.
+			const originalPunctuationSupport = featureDetection.isPunctuationGroupSupported;
+
+			before( () => {
+				featureDetection.isPunctuationGroupSupported = false;
+			} );
+
+			beforeEach( () => {
+				return createClassicTestEditor( staticConfig )
+					.then( editor => {
+						regExpStub = sinon.stub( window, 'RegExp' );
+
+						return editor;
+					} );
+			} );
+
+			after( () => {
+				featureDetection.isPunctuationGroupSupported = originalPunctuationSupport;
+			} );
+
+			it( 'returns a simplified RegExp for browsers not supporting Unicode punctuation groups', () => {
+				featureDetection.isPunctuationGroupSupported = false;
+				createRegExp( '@', 2 );
+				sinon.assert.calledOnce( regExpStub );
+				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\(\\[{"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
+			} );
+
+			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
+				featureDetection.isPunctuationGroupSupported = true;
+				createRegExp( '@', 2 );
+				sinon.assert.calledOnce( regExpStub );
+				sinon.assert.calledWithExactly( regExpStub, '(^|[ \\p{Ps}\\p{Pi}"\'])([@])([_a-zA-Z0-9À-ž]{2,}?)$', 'u' );
+			} );
+		} );
+
 		describe( 'static list with default trigger', () => {
 			beforeEach( () => {
 				return createClassicTestEditor( staticConfig );
@@ -476,6 +515,53 @@ describe( 'MentionUI', () => {
 						expect( mentionsView.items ).to.have.length( 5 );
 					} );
 			} );
+
+			it( 'should show panel for matched marker after a <softBreak>', () => {
+				model.schema.register( 'softBreak', {
+					allowWhere: '$text',
+					isInline: true
+				} );
+
+				editor.conversion.for( 'upcast' )
+					.elementToElement( {
+						model: 'softBreak',
+						view: 'br'
+					} );
+
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'softBreak',
+						view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
+					} );
+
+				setData( model, '<paragraph>abc<softBreak></softBreak>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+					} );
+			} );
+
+			// Opening parenthesis type characters that should be supported on all environments.
+			for ( const character of [ '(', '\'', '"', '[', '{' ] ) {
+				testOpeningPunctuationCharacter( character );
+			}
+
+			// Excerpt of opening parenthesis type characters that tests ES2018 Unicode property escapes on supported environment.
+			for ( const character of [
+				// Belongs to Ps (Punctuation, Open) group:
+				'〈', '„', '﹛', '｟', '｛',
+				// Belongs to Pi (Punctuation, Initial quote) group:
+				'«', '‹', '⸌', ' ⸂', '⸠'
+			] ) {
+				testOpeningPunctuationCharacter( character, !featureDetection.isPunctuationGroupSupported );
+			}
 
 			it( 'should not show panel for marker in the middle of other word', () => {
 				setData( model, '<paragraph>foo[]</paragraph>' );
@@ -803,6 +889,31 @@ describe( 'MentionUI', () => {
 					.then( () => expect( panelView.isVisible ).to.be.false );
 			} );
 		} );
+
+		function testOpeningPunctuationCharacter( character, skip = false ) {
+			it( `should show panel for matched marker after a "${ character }" character`, function() {
+				if ( skip ) {
+					this.skip();
+				}
+
+				setData( model, '<paragraph>[] foo</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( character, doc.selection.getFirstPosition() );
+				} );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ), 'marker is inserted' ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 5 );
+					} );
+			} );
+		}
 	} );
 
 	describe( 'panel behavior', () => {

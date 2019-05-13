@@ -12,6 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import featureDetection from './featuredetection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
@@ -533,15 +534,28 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
-// Creates a regex pattern for the marker.
+// Creates a RegExp pattern for the marker.
+//
+// Function has to be exported to achieve 100% code coverage.
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
-// @returns {String}
-function createPattern( marker, minimumCharacters ) {
+// @returns {RegExp}
+export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
+	const patternBase = featureDetection.isPunctuationGroupSupported ? '\\p{Ps}\\p{Pi}"\'' : '\\(\\[{"\'';
 
-	return `(^| )(\\${ marker })([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
+	return new RegExp( buildPattern( patternBase, marker, numberOfCharacters ), 'u' );
+}
+
+// Helper to build a RegExp pattern string for the marker.
+//
+// @param {String} whitelistedCharacters
+// @param {String} marker
+// @param {Number} minimumCharacters
+// @returns {String}
+function buildPattern( whitelistedCharacters, marker, numberOfCharacters ) {
+	return `(^|[ ${ whitelistedCharacters }])([${ marker }])([_a-zA-Z0-9À-ž]${ numberOfCharacters }?)$`;
 }
 
 // Creates a test callback for the marker to be used in the text watcher instance.
@@ -550,7 +564,7 @@ function createPattern( marker, minimumCharacters ) {
 // @param {Number} minimumCharacters
 // @returns {Function}
 function createTestCallback( marker, minimumCharacters ) {
-	const regExp = new RegExp( createPattern( marker, minimumCharacters ) );
+	const regExp = createRegExp( marker, minimumCharacters );
 
 	return text => regExp.test( text );
 }
@@ -560,7 +574,7 @@ function createTestCallback( marker, minimumCharacters ) {
 // @param {String} marker
 // @returns {Function}
 function createTextMatcher( marker ) {
-	const regExp = new RegExp( createPattern( marker, 0 ) );
+	const regExp = createRegExp( marker, 0 );
 
 	return text => {
 		const match = text.match( regExp );
