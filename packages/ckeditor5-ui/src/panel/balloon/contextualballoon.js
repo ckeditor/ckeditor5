@@ -44,7 +44,8 @@ import '../../../theme/components/panel/balloonrotator.css';
  *
  * From the implementation point of view, contextual ballon plugin is reusing a single
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance to display multiple contextual balloon
- * panels in the editor. It also creates a special rotator view, used to manage multiple panel stacks. Rotator
+ * panels in the editor. It also creates a special {@link module:ui/panel/balloon/contextualballoon~RotatorView rotator view},
+ * used to manage multiple panel stacks. Rotator
  * view is a child of the balloon panel view and the parent of the specific view you want to display. If there is are
  * more than one panel stack to be displayed, the rotator view will add a navigation bar. If there is only one stack,
  * rotator view is transparent (do not add any UI elements).
@@ -89,8 +90,7 @@ export default class ContextualBalloon extends Plugin {
 		};
 
 		/**
-		 * The currently visible view or `null` when there are no
-		 * views in the currently visible stack.
+		 * The currently visible view or `null` when there are no views in the any stack.
 		 *
 		 * @readonly
 		 * @observable
@@ -139,7 +139,7 @@ export default class ContextualBalloon extends Plugin {
 		 * Displays currently visible view in the balloon and provides navigation for switching stacks.
 		 *
 		 * @private
-		 * @type {~RotatorView}
+		 * @type {module:ui/panel/balloon/contextualballoon~RotatorView}
 		 */
 		this._rotatorView = this._createRotatorView();
 	}
@@ -348,7 +348,7 @@ export default class ContextualBalloon extends Plugin {
 	 * Creates a rotator view.
 	 *
 	 * @private
-	 * @returns {~RotatorView}
+	 * @returns {module:ui/panel/balloon/contextualballoon~RotatorView}
 	 */
 	_createRotatorView() {
 		const view = new RotatorView( this.editor.locale );
@@ -438,8 +438,8 @@ export default class ContextualBalloon extends Plugin {
 }
 
 /**
- * Rotator view. Used for displaying last view from the current stack.
- * Provides navigation buttons for switching stacks.
+ * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
+ * Used for displaying last view from the current stack. Provides navigation buttons for switching stacks.
  *
  * @extends module:ui/view~View
  */
