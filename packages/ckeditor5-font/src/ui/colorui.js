@@ -151,7 +151,7 @@ export default class ColorUI extends Plugin {
 	 * Method scans through editor's content and search for text node attributes with name defined in {@link #commandName}.
 	 * Found entries are set as document colors.
 	 *
-	 * All previously stored document colors will be lost with that process.
+	 * All the previously stored document colors will be lost in the process.
 	 *
 	 * Method is used to determines document colors when UI dropdown is opened.
 	 *
