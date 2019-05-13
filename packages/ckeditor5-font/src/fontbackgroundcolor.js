@@ -159,33 +159,29 @@ export default class FontBackgroundColor extends Plugin {
  * By default it equals to {@link module:font/fontbackgroundcolor~FontBackgroundColorConfig#columns} value.
  *
  * Examples:
- * ```js
- * 	// Neither documentColors nor columns are defined in config.
+ *
+ * 	// 1) Neither documentColors nor columns are defined in config.
  * 	// documentColors will equal 5,
  * 	// because value will be inherited from `columns`,
  * 	// which has predefined value 5.
  * 	const fontBackgroundColorConfig = {}
- * ```
- * ```js
- * 	// documentColors will equal 8, because value will be inherited from `columns`.
+ *
+ * 	// 2) documentColors will equal 8, because value will be inherited from `columns`.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8
  * 	}
- * ```
- * ```js
- * 	// documentColors will equal 24, because has defined own value.
+ *
+ * 	// 3) documentColors will equal 24, because has defined own value.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8,
  * 		documentColors: 24
  * 	}
- * ```
- * ```js
- * 	// documentColors feature will be disabled.
+ *
+ * 	// 4) documentColors feature will be disabled.
  * 	const fontBackgroundColorConfig = {
  * 		columns: 8,
  * 		documentColors: 0
  * 	}
- * ```
  *
  * @member {Number} module:font/fontbackgroundcolor~FontBackgroundColorConfig#documentColors
  */
