@@ -159,6 +159,35 @@ export default class ColorTableView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		// Items added before rendering should be known to the #focusTracker.
+		for ( const item of this.items ) {
+			this.focusTracker.add( item.element );
+		}
+
+		// Start listening for the keystrokes coming from #element.
+		this.keystrokes.listenTo( this.element );
+	}
+
+	/**
+	 * Focuses the first focusable element in {@link #items}.
+	 */
+	focus() {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Focuses the last focusable element in {@link #items}.
+	 */
+	focusLast() {
+		this._focusCycler.focusLast();
+	}
+
+	/**
 	 * Adds the remove color button as a child of the current view.
 	 *
 	 * @private
@@ -252,34 +281,5 @@ export default class ColorTableView extends View {
 		} );
 
 		return documentColors;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	render() {
-		super.render();
-
-		// Items added before rendering should be known to the #focusTracker.
-		for ( const item of this.items ) {
-			this.focusTracker.add( item.element );
-		}
-
-		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
-	}
-
-	/**
-	 * Focuses the first focusable element in {@link #items}.
-	 */
-	focus() {
-		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Focuses the last focusable element in {@link #items}.
-	 */
-	focusLast() {
-		this._focusCycler.focusLast();
 	}
 }
