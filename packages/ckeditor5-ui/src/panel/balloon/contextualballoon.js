@@ -45,10 +45,9 @@ import '../../../theme/components/panel/balloonrotator.css';
  * From the implementation point of view, contextual ballon plugin is reusing a single
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance to display multiple contextual balloon
  * panels in the editor. It also creates a special {@link module:ui/panel/balloon/contextualballoon~RotatorView rotator view},
- * used to manage multiple panel stacks. Rotator
- * view is a child of the balloon panel view and the parent of the specific view you want to display. If there is are
- * more than one panel stack to be displayed, the rotator view will add a navigation bar. If there is only one stack,
- * rotator view is transparent (do not add any UI elements).
+ * used to manage multiple panel stacks. Rotator view is a child of the balloon panel view and the parent of the specific
+ * view you want to display. If there is are more than one panel stack to be displayed, the rotator view will add a
+ * navigation bar. If there is only one stack, rotator view is transparent (do not add any UI elements).
  *
  * @extends module:core/plugin~Plugin
  */
@@ -439,7 +438,8 @@ export default class ContextualBalloon extends Plugin {
 
 /**
  * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
- * Used for displaying last view from the current stack. Provides navigation buttons for switching stacks.
+ * It is used for displaying last view from the current stack and providing navigation buttons for switching stacks.
+ * See {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
  *
  * @extends module:ui/view~View
  */
