@@ -180,7 +180,7 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Method tries to find a color on predefined color list to prevent of creating custom color from it.
+	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the {@link #colorDefinitions} (label, color options).
 	 * If color is found, then it is added to the {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
 	 * In other case it's created custom color, which is added to {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
 	 *
