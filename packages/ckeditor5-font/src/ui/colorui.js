@@ -148,7 +148,7 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
-	 * Method scans through editor's content and search for text node attributes with name defined in {@link #commandName}.
+	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
 	 * Found entries are set as document colors.
 	 *
 	 * All the previously stored document colors will be lost in the process.
