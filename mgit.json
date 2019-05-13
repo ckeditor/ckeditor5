@@ -35,7 +35,7 @@
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#3fcc3f9",
     "@ckeditor/ckeditor5-mention": "ckeditor/ckeditor5-mention#86262d1",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#dd07d5e",
-    "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#e7c8a54",
+    "@ckeditor/ckeditor5-paste-from-office": "ckeditor/ckeditor5-paste-from-office#561f22b",
     "@ckeditor/ckeditor5-remove-format": "ckeditor/ckeditor5-remove-format#1ec65fb",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#00848a8",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#d3e4266",
