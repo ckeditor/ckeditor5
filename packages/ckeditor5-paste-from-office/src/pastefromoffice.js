@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import { parseHtml } from './filters/parse';
 import { transformListItemLikeElementsIntoLists } from './filters/list';
@@ -38,7 +37,7 @@ export default class PasteFromOffice extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		this.listenTo( editor.plugins.get( Clipboard ), 'inputTransformation', ( evt, data ) => {
+		this.listenTo( editor.plugins.get( 'Clipboard' ), 'inputTransformation', ( evt, data ) => {
 			const html = data.dataTransfer.getData( 'text/html' );
 
 			if ( data.pasteFromOfficeProcessed !== true && isWordInput( html ) ) {
