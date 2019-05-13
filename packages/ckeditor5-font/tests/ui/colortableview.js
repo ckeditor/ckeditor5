@@ -229,7 +229,6 @@ describe( 'ColorTableView', () => {
 		const colorEmpty = {
 			color: 'hsla(0,0%,0%,0)',
 			options: {
-				isEnabled: false,
 				hasBorder: true
 			}
 		};
@@ -295,7 +294,6 @@ describe( 'ColorTableView', () => {
 					expect( documentColors.length ).to.equal( 1 );
 					expect( documentColors.first.color ).to.equal( 'hsla(0,0%,0%,0)' );
 					expect( documentColors.first.options.hasBorder ).to.be.true;
-					expect( documentColors.first.options.isEnabled ).to.be.false;
 				} );
 			} );
 
@@ -335,14 +333,12 @@ describe( 'ColorTableView', () => {
 					expect( itm.label ).to.equal( 'Black' );
 					expect( itm.color ).to.equal( '#000000' );
 					expect( itm.hasBorder ).to.be.false;
-					expect( itm.isEnabled ).to.be.true;
 
 					documentColors.add( Object.assign( {}, colorEmpty ) );
 					itm = documentColorsGridView.items.get( 1 );
 					expect( itm ).to.be.instanceOf( ColorTileView );
 					expect( itm.color ).to.equal( 'hsla(0,0%,0%,0)' );
 					expect( itm.hasBorder ).to.be.true;
-					expect( itm.isEnabled ).to.be.false;
 				} );
 			} );
 		} );

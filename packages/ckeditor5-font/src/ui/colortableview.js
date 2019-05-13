@@ -228,10 +228,6 @@ export default class ColorTableView extends View {
 					} );
 				}
 
-				if ( colorObj.options && colorObj.options.isEnabled === false ) {
-					colorTile.set( 'isEnabled', false );
-				}
-
 				colorTile.on( 'execute', () => {
 					this.fire( 'execute', {
 						value: colorObj.color,
