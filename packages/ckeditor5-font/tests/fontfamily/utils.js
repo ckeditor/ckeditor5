@@ -57,7 +57,7 @@ describe( 'FontFamily utils', () => {
 							styles: {
 								'font-family': 'Arial'
 							},
-							priority: 5
+							priority: 7
 						}
 					},
 					{
@@ -68,7 +68,7 @@ describe( 'FontFamily utils', () => {
 							styles: {
 								'font-family': '\'Comic Sans MS\', sans-serif'
 							},
-							priority: 5
+							priority: 7
 						}
 					},
 					{
@@ -79,7 +79,7 @@ describe( 'FontFamily utils', () => {
 							styles: {
 								'font-family': '\'Lucida Console\', \'Courier New\', Courier, monospace'
 							},
-							priority: 5
+							priority: 7
 						}
 					}
 				] );

@@ -49,8 +49,7 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
 				},
 				{
@@ -61,8 +60,7 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
 				},
 				{
@@ -73,8 +71,7 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
 				},
 				{
@@ -85,8 +82,7 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
 				},
 				{
@@ -97,8 +93,7 @@ describe( 'utils', () => {
 						name: 'span',
 						styles: {
 							color: 'black'
-						},
-						priority: 5
+						}
 					}
 				},
 			] );
