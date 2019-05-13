@@ -354,7 +354,7 @@ describe( 'ColorUI', () => {
 		} );
 	} );
 
-	describe( 'addColorToDocumentColors', () => {
+	describe( '_addColorToDocumentColors', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -367,7 +367,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'add custom color from not defined colors', () => {
-			testColorPlugin.addColorToDocumentColors( '#123456' );
+			testColorPlugin._addColorToDocumentColors( '#123456' );
 			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
 				color: '#123456',
 				label: '#123456',
@@ -378,7 +378,7 @@ describe( 'ColorUI', () => {
 		} );
 
 		it( 'add already define color absed on color value', () => {
-			testColorPlugin.addColorToDocumentColors( 'rgb(255,255,255)' );
+			testColorPlugin._addColorToDocumentColors( 'rgb(255,255,255)' );
 			// Color values are kept without spaces.
 			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
 				color: 'rgb(255,255,255)',

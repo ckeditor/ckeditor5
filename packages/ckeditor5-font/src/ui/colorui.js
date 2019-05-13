@@ -144,6 +144,33 @@ export default class ColorUI extends Plugin {
 	}
 
 	/**
+	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
+	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 * In other case it's created custom color, which is added to
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 *
+	 * @private
+	 * @param {String} color String which stores value of recently applied color
+	 */
+	_addColorToDocumentColors( color ) {
+		const predefinedColor = this.colorTableView.colorDefinitions
+			.find( definition => definition.color === color );
+
+		if ( !predefinedColor ) {
+			this.colorTableView.documentColors.add( {
+				color,
+				label: color,
+				options: {
+					hasBorder: false
+				}
+			} );
+		} else {
+			this.colorTableView.documentColors.add( Object.assign( {}, predefinedColor ) );
+		}
+	}
+
+	/**
 	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
 	 * Found entries are set as document colors.
 	 *
@@ -164,39 +191,12 @@ export default class ColorUI extends Plugin {
 			const range = model.createRangeIn( root );
 			for ( const node of range.getItems() ) {
 				if ( node.is( 'textProxy' ) && node.hasAttribute( this.componentName ) ) {
-					this.addColorToDocumentColors( node.getAttribute( this.componentName ) );
+					this._addColorToDocumentColors( node.getAttribute( this.componentName ) );
 					if ( documentColors.length >= maxCount ) {
 						return;
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
-	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 * In other case it's created custom color, which is added to
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 *
-	 * @private
-	 * @param {String} color String which stores value of recently applied color
-	 */
-	addColorToDocumentColors( color ) {
-		const predefinedColor = this.colorTableView.colorDefinitions
-			.find( definition => definition.color === color );
-
-		if ( !predefinedColor ) {
-			this.colorTableView.documentColors.add( {
-				color,
-				label: color,
-				options: {
-					hasBorder: false
-				}
-			} );
-		} else {
-			this.colorTableView.documentColors.add( Object.assign( {}, predefinedColor ) );
 		}
 	}
 }
