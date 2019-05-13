@@ -18,10 +18,6 @@ import {
 /**
  * The color UI plugin which isolates the common logic responsible for displaying dropdowns with color grids.
  *
- * In case that `documentColors` for given plugins are not defined in the configuration,
- * then by default its value equals to its `column` value. This results with
- * displaying one row of document colors.
- *
  * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
  * a {@link module:font/ui/colortableview~ColorTableView}.
  *
