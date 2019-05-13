@@ -109,7 +109,7 @@ export function normalizeColorOptions( options ) {
  * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} config.colors An array with definitions
  * representing colors to be displayed in the color table.
  * @param {String} config.removeButtonLabel The label for the button responsible for removing the color.
- * @param {String} config.documentColorsLabel The label for the section with document colors.
+ * @param {String} config.documentColorsLabel The label of a section with document colors.
  * @param {String} config.documentColorsCount The number of document colors inside dropdown.
  * @returns {module:font/ui/colortableview~ColorTableView} The new color table view.
  */
