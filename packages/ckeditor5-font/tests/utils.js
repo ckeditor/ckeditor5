@@ -7,19 +7,23 @@ import {
 	FONT_COLOR,
 	FONT_BACKGROUND_COLOR,
 	normalizeColorOptions,
-	addColorTableToDropdown
+	addColorTableToDropdown,
+	renderDowncastElement
 } from './../src/utils';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import ColorTableView from './../src/ui/colortableview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'utils', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'color and background color related', () => {
 		it( 'plugin names has proper values', () => {
 			expect( FONT_COLOR ).to.equal( 'fontColor' );
 			expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
 		} );
 
-		it( 'normalizeColorOptions can produce the same output object', () => {
+		it( 'normalizeColorOptions() can produce the same output object', () => {
 			const normalizedArray = normalizeColorOptions( [
 				'black',
 				{
@@ -99,7 +103,7 @@ describe( 'utils', () => {
 			] );
 		} );
 
-		it( 'adding colors table to dropdown works', () => {
+		it( 'addColorTableToDropdown()', () => {
 			const dropdown = createDropdown();
 			dropdown.render();
 
@@ -127,6 +131,15 @@ describe( 'utils', () => {
 
 			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
 			expect( dropdown.panelView.children.length ).to.equal( 1 );
+		} );
+
+		it( 'renderDowncastElement()', () => {
+			const testRender = renderDowncastElement( 'color' );
+			const fake = testUtils.sinon.fake();
+
+			testRender( 'blue', { createAttributeElement: fake } );
+
+			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );
 	} );
 } );
