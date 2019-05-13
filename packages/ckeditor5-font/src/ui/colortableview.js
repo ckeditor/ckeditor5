@@ -150,11 +150,11 @@ export default class ColorTableView extends View {
 			children: this.items
 		} );
 
-		this.items.add( this.removeColorButton() );
-		this.items.add( this.createStaticColorGrid() );
+		this.items.add( this._removeColorButton() );
+		this.items.add( this._createStaticColorsGrid() );
 
 		if ( documentColorsCount ) {
-			this.items.add( this.createDocumentColors() );
+			this.items.add( this._createDocumentColorsGrid() );
 		}
 	}
 
@@ -162,8 +162,9 @@ export default class ColorTableView extends View {
 	 * Adds the remove color button as a child of the current view.
 	 *
 	 * @private
+	 * @returns {module:ui/src/button/buttonview~ButtonView}
 	 */
-	removeColorButton() {
+	_removeColorButton() {
 		const buttonView = new ButtonView();
 
 		buttonView.set( {
@@ -185,8 +186,9 @@ export default class ColorTableView extends View {
 	 * Creates a static color table grid based on the editor configuration.
 	 *
 	 * @private
+	 * @returns {module:ui/src/colorgrid/colorgridview~ColorGridView}
 	 */
-	createStaticColorGrid() {
+	_createStaticColorsGrid() {
 		const colorGrid = new ColorGridView( this.locale, {
 			colorDefinitions: this.colorDefinitions,
 			columns: this.columns
@@ -199,11 +201,12 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Adds document colors section view and binds it to {@link #documentColors}.
+	 * Creates document colors section view and binds it to {@link #documentColors}.
 	 *
 	 * @private
+	 * @returns {module:ui/src/colorgrid/colorgridview~ColorGridView}
 	 */
-	createDocumentColors() {
+	_createDocumentColorsGrid() {
 		const documentColors = new ColorGridView( this.locale, {
 			columns: this.columns,
 			gridLabel: this.documentColorsLabel
