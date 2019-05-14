@@ -136,6 +136,71 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( balloon.visibleView ).to.equal( null );
 		} );
 
+		it( 'toolbar should be removed from not visible balloon stack when the `getRelatedElement` callback returns null', () => {
+			balloon.add( {
+				view: new View(),
+				stackId: 'secondary',
+				position: {
+					target: {}
+				}
+			} );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			expect( balloon.hasView( fakeWidgetToolbarView ) );
+			expect( balloon.visibleView ).to.not.equal( fakeWidgetToolbarView );
+
+			model.change( writer => {
+				// Select the <paragraph>foo</paragraph>.
+				writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+			} );
+
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( false );
+		} );
+
+		it( 'toolbar should be hidden when the editor ui lost focus', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			editor.ui.focusTracker.isFocused = false;
+
+			expect( balloon.visibleView ).to.equal( null );
+		} );
+
+		it( 'toolbar should do nothing with toolbar when the editor ui lost focus but toolbar is not a visible view', () => {
+			balloon.add( {
+				view: new View(),
+				stackId: 'secondary',
+				position: {
+					target: {}
+				}
+			} );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			editor.ui.focusTracker.isFocused = false;
+
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
+		} );
+
 		it( 'toolbar should update its position when other widget is selected', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
