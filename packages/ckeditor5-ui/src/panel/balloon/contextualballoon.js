@@ -13,11 +13,14 @@ import View from '../../view';
 import ButtonView from '../../button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
 
 import '../../../theme/components/panel/balloonrotator.css';
+
+const toPx = toUnit( 'px' );
 
 /**
  * Provides the common contextual balloon for the editor.
@@ -141,6 +144,14 @@ export default class ContextualBalloon extends Plugin {
 		 * @type {module:ui/panel/balloon/contextualballoon~RotatorView}
 		 */
 		this._rotatorView = this._createRotatorView();
+
+		/**
+		 * Displays fake panels under the balloon panel view.
+		 *
+		 * @private
+		 * @type {module:ui/view~View}
+		 */
+		this._fakePanelsView = this._createFakePanelsView();
 	}
 
 	/**
@@ -260,6 +271,7 @@ export default class ContextualBalloon extends Plugin {
 
 		this.view.pin( this._getBalloonPosition() );
 		this._rotatorView.updateIsNarrow();
+		this._fakePanelsView.updatePosition();
 	}
 
 	/**
@@ -396,6 +408,24 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @returns {module:ui/view~View}
+	 */
+	_createFakePanelsView() {
+		const view = new FakePanelsView( this.editor.locale, this.view );
+
+		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', number => {
+			return number < 2 ? 0 : Math.min( number, 3 );
+		} );
+
+		view.listenTo( this.view, 'change:top', () => view.updatePosition() );
+		view.listenTo( this.view, 'change:left', () => view.updatePosition() );
+
+		this.editor.ui.view.body.add( view );
+
+		return view;
+	}
+
+	/**
 	 * Sets the view as a content of the balloon and attaches balloon using position
 	 * options of the first view.
 	 *
@@ -412,6 +442,7 @@ export default class ContextualBalloon extends Plugin {
 		this._rotatorView.showView( view );
 		this.visibleView = view;
 		this.view.pin( this._getBalloonPosition() );
+		this._fakePanelsView.updatePosition();
 	}
 
 	/**
@@ -598,5 +629,118 @@ class RotatorView extends View {
 		} );
 
 		return view;
+	}
+}
+
+// @private
+// @extends module:ui/view~View
+class FakePanelsView extends View {
+	// @inheritDoc
+	constructor( locale, balloonPanelView ) {
+		super( locale );
+
+		const bind = this.bindTemplate;
+
+		// Fake panels top offset.
+		//
+		// @observable
+		// @member {Number} #top
+		this.set( 'top', 0 );
+
+		// Fake panels left offset.
+		//
+		// @observable
+		// @member {Number} #left
+		this.set( 'left', 0 );
+
+		// Fake panels height.
+		//
+		// @observable
+		// @member {Number} #height
+		this.set( 'height', 0 );
+
+		// Fake panels width.
+		//
+		// @observable
+		// @member {Number} #width
+		this.set( 'width', 0 );
+
+		// Number of rendered fake panels.
+		//
+		// @observable
+		// @member {Number} #numberOfPanels
+		this.set( 'numberOfPanels', 0 );
+
+		// Collection of the child views which creates fake panel content.
+		//
+		// @readonly
+		// @type {module:ui/viewcollection~ViewCollection}
+		this.content = this.createCollection();
+
+		// Context.
+		//
+		// @private
+		// @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+		this._balloonPanelView = balloonPanelView;
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck-fake-panels',
+					bind.to( 'numberOfPanels', number => number ? '' : 'ck-hidden' )
+				],
+				style: {
+					top: bind.to( 'top', toPx ),
+					left: bind.to( 'left', toPx ),
+					width: bind.to( 'width', toPx ),
+					height: bind.to( 'height', toPx )
+				}
+			},
+			children: this.content
+		} );
+
+		this.on( 'change:numberOfPanels', ( evt, name, next, prev ) => {
+			if ( next > prev ) {
+				this._addPanels( next - prev );
+			} else {
+				this._removePanels( prev - next );
+			}
+		} );
+	}
+
+	// @private
+	// @param {Number} number
+	_addPanels( number ) {
+		while ( number-- ) {
+			const view = new View();
+
+			view.setTemplate( { tag: 'div' } );
+
+			this.content.add( view );
+			this.registerChild( view );
+		}
+	}
+
+	// @private
+	// @param {Number} number
+	_removePanels( number ) {
+		while ( number-- ) {
+			const view = this.content.last;
+
+			this.content.remove( view );
+			this.deregisterChild( view );
+			view.destroy();
+		}
+	}
+
+	// Updates coordinates of fake panels.
+	updatePosition() {
+		if ( this.numberOfPanels ) {
+			this.top = this._balloonPanelView.top;
+			this.left = this._balloonPanelView.left;
+			this.width = this._balloonPanelView.element.clientWidth;
+			this.height = this._balloonPanelView.element.clientHeight;
+		}
 	}
 }
