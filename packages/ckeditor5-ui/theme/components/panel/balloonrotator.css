@@ -8,3 +8,8 @@
 	align-items: center;
 	justify-content: center;
 }
+
+/* Buttons inside a toolbar should be centered while rotator bar is wider (in one or two icons case). */
+.ck .ck-balloon-rotator__content .ck-toolbar {
+	justify-content: center;
+}
