@@ -55,3 +55,11 @@ export default class Table extends Plugin {
  *
  * @interface TableConfig
  */
+
+/**
+ * The configuration of the {@link module:table/table~Table} feature.
+ *
+ * Read more in {@link module:table/table~TableConfig}.
+ *
+ * @member {module:table/table~TableConfig} module:core/editor/editorconfig~EditorConfig#table
+ */
