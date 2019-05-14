@@ -18,6 +18,7 @@ import LinkFormView from '../src/ui/linkformview';
 import LinkActionsView from '../src/ui/linkactionsview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
@@ -103,7 +104,7 @@ describe( 'LinkUI', () => {
 				const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
 
 				linkButton.fire( 'execute' );
-				sinon.assert.calledWithExactly( spy );
+				sinon.assert.calledWithExactly( spy, true );
 			} );
 		} );
 	} );
@@ -253,6 +254,19 @@ describe( 'LinkUI', () => {
 
 			linkUIFeature._showUI();
 			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
+		} );
+
+		it( 'should optionally force `main` stack to be visible', () => {
+			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
+			balloon.add( {
+				view: new View(),
+				stackId: 'secondary'
+			} );
+
+			linkUIFeature._showUI( true );
+
+			expect( balloon.visibleView ).to.equal( formView );
 		} );
 
 		describe( 'response to ui#update', () => {
@@ -581,7 +595,26 @@ describe( 'LinkUI', () => {
 		it( 'should hide the UI and not focus editable upon clicking outside the UI', () => {
 			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
-			linkUIFeature._showUI( true );
+			linkUIFeature._showUI();
+			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
+
+			sinon.assert.calledWithExactly( spy );
+		} );
+
+		it( 'should hide the UI when link is in not currently visible stack', () => {
+			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
+
+			balloon.add( {
+				view: new View(),
+				stackId: 'secondary'
+			} );
+
+			linkUIFeature._showUI();
+
+			// Be sure any of link view is not currently visible/
+			expect( balloon.visibleView ).to.not.equal( actionsView );
+			expect( balloon.visibleView ).to.not.equal( formView );
+
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			sinon.assert.calledWithExactly( spy );
@@ -590,7 +623,7 @@ describe( 'LinkUI', () => {
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
 			const spy = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
-			linkUIFeature._showUI( true );
+			linkUIFeature._showUI();
 			balloon.view.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			sinon.assert.notCalled( spy );
