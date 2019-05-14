@@ -77,7 +77,7 @@ describe( 'TableToolbar', () => {
 		} );
 
 		describe( 'toolbar', () => {
-			it( 'should use the config.table.toolbar to create items', () => {
+			it( 'should use the config.table.contenToolbar to create items', () => {
 				expect( toolbar.items ).to.have.length( 1 );
 				expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
 			} );
