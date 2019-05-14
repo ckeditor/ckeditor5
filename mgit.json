@@ -29,7 +29,7 @@
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#01c986c",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#7d79652",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#639311e",
-    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#6142355",
+    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#5b861a2",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#6ec564a",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#249d7b2",
     "@ckeditor/ckeditor5-media-embed": "ckeditor/ckeditor5-media-embed#3fcc3f9",
@@ -44,6 +44,6 @@
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#475b1b2",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#b31a136",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#c274c22",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#96ec042"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#7bd86e0"
   }
 }
