@@ -238,59 +238,6 @@ describe( 'TableToolbar', () => {
 		} );
 	} );
 
-	describe( 'deprecated toolbar', () => {
-		let editor, editorElement;
-
-		it( 'table.toolbar should not create toolbar any longer', () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
-					table: {
-						toolbar: [ 'fake_button' ]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-
-					expect( widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ) ).to.be.undefined;
-				} );
-		} );
-
-		it( 'table.contentToolbar should be used if both toolbars options are provided', () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton, FooButton ],
-					table: {
-						toolbar: [ 'fake_button' ],
-						contentToolbar: [ 'foo_button' ],
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
-
-					expect( toolbarView.items ).to.have.length( 1 );
-					expect( toolbarView.items.get( 0 ).label ).to.equal( 'foo button' );
-				} );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-
-			return editor.destroy();
-		} );
-	} );
-
 	describe( 'tableToolbar', () => {
 		let editor, element, widgetToolbarRepository, balloon, toolbar, model;
 
@@ -466,21 +413,6 @@ class FakeButton extends Plugin {
 
 			view.set( {
 				label: 'fake button'
-			} );
-
-			return view;
-		} );
-	}
-}
-
-// Plugin that adds foo_button to editor's component factory.
-class FooButton extends Plugin {
-	init() {
-		this.editor.ui.componentFactory.add( 'foo_button', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'foo button'
 			} );
 
 			return view;
