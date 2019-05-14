@@ -15,7 +15,7 @@ import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolba
  * The table toolbar class. It creates toolbars for the table feature and its content (for now only for a table cell content).
  *
  * Table toolbar shows up when a table widget is selected. Its components (e.g. buttons) are created based on the
- * {@link module:table/table~TableConfig#toolbar `table.tableToolbar` configuration option}.
+ * {@link module:table/table~TableConfig#tableToolbar `table.tableToolbar` configuration option}.
  *
  * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
  * {@link module:table/table~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
@@ -63,17 +63,6 @@ export default class TableToolbar extends Plugin {
 		}
 	}
 }
-
-/**
- * Items to be placed in the table content toolbar.
- *
- * **Note:** This configuration option is deprecated! Use {@link module:table/table~TableConfig#contentToolbar} instead.
- *
- * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
- *
- * @deprecated
- * @member {Array.<String>} module:table/table~TableConfig#toolbar
- */
 
 /**
  * Items to be placed in the table content toolbar.
