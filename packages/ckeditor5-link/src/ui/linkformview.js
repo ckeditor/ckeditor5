@@ -289,10 +289,23 @@ export default class LinkFormView extends View {
 		if ( this.customAttributes.length ) {
 			const additionalButtonsView = new View();
 			additionalButtonsView.setTemplate( {
-				tag: 'div',
-				children: [ ...this.customAttributesView ],
+				tag: 'ul',
+				children: this.customAttributesView.map( switchButton => ( {
+					tag: 'li',
+					children: [ switchButton ],
+					attributes: {
+						class: [
+							'ck',
+							'ck-list__item'
+						]
+					}
+				} ) ),
 				attributes: {
-					class: 'ck-link-form_additional-buttons'
+					class: [
+						'ck',
+						'ck-reset',
+						'ck-list'
+					]
 				}
 			} );
 			children.add( additionalButtonsView );

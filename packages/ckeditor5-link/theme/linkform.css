@@ -20,14 +20,12 @@
 
 	/* Buttons like `open in new window` with switch toggler.
 	Added div is a temporary solution to make stronger specificity than `.ck.ck-link-form > :not(:first-child)` in theme-lark. */
-	& div.ck-link-form_additional-buttons {
-		display: flex;
-		flex-wrap: wrap;
+	& ul.ck-list {
 		margin-left: 0;
 		width: 100%;
 	}
 
-	& .ck-link-form_additional-buttons .ck-button {
+	& .ck-list .ck-switchbutton {
 		width: 100%;
 		margin-left: 0;
 		margin-top: var(--ck-spacing-standard);

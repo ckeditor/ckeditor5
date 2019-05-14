@@ -13,6 +13,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
+// Just to have nicely styles switchbutton;
+import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Link, Typing, Paragraph, Clipboard, Undo, Enter ],
