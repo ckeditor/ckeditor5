@@ -11,7 +11,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-basic-styles' ), {
 		toolbar: {
 			items: [
-				'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'undo', 'redo'
+				'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'code', '|', 'removeFormat', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
