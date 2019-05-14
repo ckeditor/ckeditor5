@@ -7,9 +7,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import TextTransformation from '../src/texttransformation';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'Text transformation feature', () => {
-	let editorElement, editor;
+	let editorElement, editor, model, doc;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -17,11 +19,20 @@ describe( 'Text transformation feature', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ TextTransformation ]
+				plugins: [ Paragraph, TextTransformation ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+
+				model = editor.model;
+				doc = model.document;
 			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {
@@ -30,6 +41,26 @@ describe( 'Text transformation feature', () => {
 
 	it( 'has proper name', () => {
 		expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+	} );
+
+	describe( 'transformations', () => {
+		testTransformation( '(c)', '©' );
+		testTransformation( '(tm)', '™' );
+		testTransformation( '1/2', '½' );
+		testTransformation( '<=', '≤' );
+		testTransformation( '"Foo bar baz"', '„Foo bar baz”' );
+
+		function testTransformation( transformFrom, transformTo ) {
+			it( `should transform ${ transformFrom } to ${ transformTo }`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( transformFrom, doc.selection.getFirstPosition() );
+				} );
+
+				expect( getData( model ) ).to.equal( '<paragraph>' + transformTo + '[]</paragraph>' );
+			} );
+		}
 	} );
 } );
 
