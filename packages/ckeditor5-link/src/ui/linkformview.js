@@ -245,6 +245,7 @@ export default class LinkFormView extends View {
 	 * Prepare {@link module:ui/viewcollection~ViewCollection} of {@link module:ui/button/switchbuttonview~SwitchButtonView}
 	 * made based on {@link #customAttributes}
 	 *
+	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} of Switch Buttons.
 	 */
 	_createCustomAttributesView() {
@@ -275,6 +276,7 @@ export default class LinkFormView extends View {
 	 * Creates {@link #children} for {@link module:link/ui/linkformview~LinkFormView}. If there exist {@link #customAttributes},
 	 * Then additional View wrapping all {@link #customAttributesView} will be added as a child of LinkFormView.
 	 *
+	 * @private
 	 * @returns {module:ui/viewcollection~ViewCollection} children of LinkFormView.
 	 */
 	_createFormChildren() {
