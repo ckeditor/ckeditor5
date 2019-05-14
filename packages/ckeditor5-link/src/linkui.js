@@ -349,7 +349,7 @@ export default class LinkUI extends Plugin {
 
 			// Be sure panel with link is visible.
 			if ( forceVisible ) {
-				this._balloon.showPanel( 'main' );
+				this._balloon.showStack( 'main' );
 			}
 
 			this._addFormView();
