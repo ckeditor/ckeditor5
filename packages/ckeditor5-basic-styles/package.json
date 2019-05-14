@@ -18,6 +18,7 @@
     "@ckeditor/ckeditor5-engine": "^13.1.0",
     "@ckeditor/ckeditor5-essentials": "^11.0.1",
     "@ckeditor/ckeditor5-paragraph": "^11.0.1",
+    "@ckeditor/ckeditor5-remove-format": "^10.0.0",
     "@ckeditor/ckeditor5-utils": "^12.1.0",
     "eslint": "^5.5.0",
     "eslint-config-ckeditor5": "^1.0.11",
