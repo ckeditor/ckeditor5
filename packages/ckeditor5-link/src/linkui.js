@@ -205,7 +205,7 @@ export default class LinkUI extends Plugin {
 			button.bind( 'isOn', 'isEnabled' ).to( linkCommand, 'value', 'isEnabled' );
 
 			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showUI() );
+			this.listenTo( button, 'execute', () => this._showUI( true ) );
 
 			return button;
 		} );
@@ -255,7 +255,7 @@ export default class LinkUI extends Plugin {
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this.formView,
-			activator: () => this._isUIVisible,
+			activator: () => this._isUIInPanel,
 			contextElements: [ this._balloon.view.element ],
 			callback: () => this._hideUI()
 		} );
@@ -295,7 +295,10 @@ export default class LinkUI extends Plugin {
 			position: this._getBalloonPositionData()
 		} );
 
-		this.formView.urlInputView.select();
+		// Select input when form view is currently visible.
+		if ( this._balloon.visibleView === this.formView ) {
+			this.formView.urlInputView.select();
+		}
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
@@ -329,9 +332,10 @@ export default class LinkUI extends Plugin {
 	 * Shows the right kind of the UI for current state of the command. It's either
 	 * {@link #formView} or {@link #actionsView}.
 	 *
+	 * @param {Boolean} forceVisible
 	 * @private
 	 */
-	_showUI() {
+	_showUI( forceVisible = false ) {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
@@ -342,9 +346,15 @@ export default class LinkUI extends Plugin {
 		// When there's no link under the selection, go straight to the editing UI.
 		if ( !this._getSelectedLinkElement() ) {
 			this._addActionsView();
+
+			// Be sure panel with link is visible.
+			if ( forceVisible ) {
+				this._balloon.showStack( 'main' );
+			}
+
 			this._addFormView();
 		}
-		// If theres a link under the selection...
+		// If there's a link under the selection...
 		else {
 			// Go to the editing UI if actions are already visible.
 			if ( this._areActionsVisible ) {
