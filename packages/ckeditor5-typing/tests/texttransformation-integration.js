@@ -58,5 +58,32 @@ describe( 'Text transformation feature - integration', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo™</p>' );
 		} );
+
+		it( 'should allow to undo-redo steps', () => {
+			editor.setData( '<p></p>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+				writer.insertText( 'foo bar baz(tm', doc.selection.getFirstPosition() );
+			} );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+				writer.insertText( ')', doc.selection.getFirstPosition() );
+			} );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz™</p>' );
+
+			editor.execute( 'undo' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm)</p>' );
+
+			editor.execute( 'undo' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm</p>' );
+
+			editor.execute( 'redo' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm)</p>' );
+
+			editor.execute( 'redo' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz™</p>' );
+		} );
 	} );
 } );
