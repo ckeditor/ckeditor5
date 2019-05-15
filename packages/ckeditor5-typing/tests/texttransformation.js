@@ -44,10 +44,15 @@ describe( 'Text transformation feature', () => {
 	} );
 
 	describe( 'transformations', () => {
-		testTransformation( '(c)', '©' );
-		testTransformation( '(tm)', '™' );
-		testTransformation( '1/2', '½' );
-		testTransformation( '<=', '≤' );
+		describe( 'symbols', () => {
+			testTransformation( '(c)', '©' );
+			testTransformation( '(tm)', '™' );
+		} );
+
+		describe( 'mathematical', () => {
+			testTransformation( '1/2', '½' );
+			testTransformation( '<=', '≤' );
+		} );
 
 		describe( 'quotations', () => {
 			describe( 'english US', () => {
