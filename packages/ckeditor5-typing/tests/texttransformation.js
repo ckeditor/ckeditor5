@@ -72,9 +72,13 @@ describe( 'Text transformation feature', () => {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
-				model.change( writer => {
-					writer.insertText( transformFrom, doc.selection.getFirstPosition() );
-				} );
+				const letters = transformFrom.split( '' );
+
+				for ( const letter of letters ) {
+					model.change( writer => {
+						writer.insertText( letter, doc.selection.focus );
+					} );
+				}
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ transformTo }</paragraph>` );
 			} );
