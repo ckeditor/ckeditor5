@@ -45,7 +45,7 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( '(c)', doc.selection.getFirstPosition() );
+				writer.insertText( '(c)', doc.selection.focus );
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo©</p>' );
@@ -64,12 +64,12 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( 'foo bar baz(c', doc.selection.getFirstPosition() );
+				writer.insertText( 'foo bar baz(c', doc.selection.focus );
 			} );
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( ')', doc.selection.getFirstPosition() );
+				writer.insertText( ')', doc.selection.focus );
 			} );
 			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
 
