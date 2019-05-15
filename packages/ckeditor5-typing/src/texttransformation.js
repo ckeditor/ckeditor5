@@ -21,6 +21,34 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'textTransformation', {
+			transformations: [
+				// TODO: not nice definition - needs RegExp escaping.
+				{ in: '\\(c\\)$', out: '©' },
+				{ in: '\\(tm\\)$', out: '™' },
+				{ in: '\\.\\.\\.$', out: '…' },
+				{ in: '1/2', out: '½' },
+				{ in: '<=', out: '≤' },
+
+				// TODO: not nice - needs special order.
+				// TODO: not nice - needs spaces.
+				{ in: ' --- $', out: ' — ' },
+				{ in: ' -- $', out: ' – ' },
+
+				// English quotation - primary.
+				{ in: buildQuotesPattern( '"' ), out: '“$1”' },
+				// English quotation - secondary.
+				{ in: buildQuotesPattern( '\'' ), out: '‘$1’' }
+			]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'TextTransformation';
 	}
@@ -29,24 +57,7 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const transformations = [
-			// TODO: not nice definition - needs RegExp escaping.
-			{ in: '\\(c\\)$', out: '©' },
-			{ in: '\\(tm\\)$', out: '™' },
-			{ in: '\\.\\.\\.$', out: '…' },
-			{ in: '1/2', out: '½' },
-			{ in: '<=', out: '≤' },
-
-			// TODO: not nice - needs special order.
-			// TODO: not nice - needs spaces.
-			{ in: ' --- $', out: ' — ' },
-			{ in: ' -- $', out: ' – ' },
-
-			// English quotation - primary.
-			{ in: buildQuotesPattern( '"' ), out: '“$1”' },
-			// English quotation - secondary.
-			{ in: buildQuotesPattern( '\'' ), out: '‘$1’' }
-		];
+		const transformations = editor.config.get( 'textTransformation.transformations' );
 
 		for ( const transformation of transformations ) {
 			const regExp = new RegExp( transformation.in, 'u' );
@@ -88,3 +99,34 @@ export default class TextTransformation extends Plugin {
 function buildQuotesPattern( quoteCharacter ) {
 	return `${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$`;
 }
+
+/**
+ * The configuration of the {@link module:typing/texttransformation~TextTransformation} feature.
+ *
+ * Read more in {@link module:typing/texttransformation~TextTransformationConfig}.
+ *
+ * @member {module:typing/texttransformation~TextTransformationConfig} module:core/editor/editorconfig~EditorConfig#textTransformation
+ */
+
+/**
+ * The configuration of the text transformation feature.
+ *
+ * Read more about {@glink features/text-transformation#configuration configuring the text transformation feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				textTransformation: ... // Text transformation feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface TextTransformationConfig
+ */
+
+/**
+ * The default text transformations supported by the editor.
+ *
+ * @member {*} module:typing/texttransformation~TextTransformationConfig#transformations
+ */
