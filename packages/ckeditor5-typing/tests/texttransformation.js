@@ -80,7 +80,7 @@ describe( 'Text transformation feature', () => {
 				const letters = transformFrom.split( '' );
 
 				for ( const letter of letters ) {
-					model.change( writer => {
+					model.enqueueChange( model.createBatch(), writer => {
 						writer.insertText( letter, doc.selection.focus );
 					} );
 				}

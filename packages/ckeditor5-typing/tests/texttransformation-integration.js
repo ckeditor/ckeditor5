@@ -43,9 +43,14 @@ describe( 'Text transformation feature - integration', () => {
 		it( 'should undo text transformation', () => {
 			editor.setData( '<p>foo</p>' );
 
-			model.change( writer => {
+			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( '(c)', doc.selection.focus );
+				writer.insertText( '(c', doc.selection.focus );
+			} );
+
+			model.enqueueChange( model.createBatch(), writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+				writer.insertText( ')', doc.selection.focus );
 			} );
 
 			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
@@ -62,12 +67,12 @@ describe( 'Text transformation feature - integration', () => {
 		it( 'should allow to undo-redo steps', () => {
 			editor.setData( '<p></p>' );
 
-			model.change( writer => {
+			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( 'foo bar baz(c', doc.selection.focus );
 			} );
 
-			model.change( writer => {
+			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( ')', doc.selection.focus );
 			} );
