@@ -45,23 +45,23 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( '(c', doc.selection.focus );
+				writer.insertText( '..', doc.selection.focus );
 			} );
 
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( ')', doc.selection.focus );
+				writer.insertText( '.', doc.selection.focus );
 			} );
 
-			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo…</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData(), 'after undo' ).to.equal( '<p>foo(c)</p>' );
+			expect( editor.getData(), 'after undo' ).to.equal( '<p>foo...</p>' );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData(), 'after redo' ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'after redo' ).to.equal( '<p>foo…</p>' );
 		} );
 
 		it( 'should allow to undo-redo steps', () => {
@@ -69,26 +69,26 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( 'foo bar baz(c', doc.selection.focus );
+				writer.insertText( 'foo bar baz..', doc.selection.focus );
 			} );
 
 			model.enqueueChange( model.createBatch(), writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( ')', doc.selection.focus );
+				writer.insertText( '.', doc.selection.focus );
 			} );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz…</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz...</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz..</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz...</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz…</p>' );
 		} );
 	} );
 } );
