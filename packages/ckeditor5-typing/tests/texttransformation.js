@@ -54,6 +54,11 @@ describe( 'Text transformation feature', () => {
 			testTransformation( '<=', '≤' );
 		} );
 
+		describe( 'dashes', () => {
+			testTransformation( ' -- ', ' – ' );
+			testTransformation( ' --- ', ' — ' );
+		} );
+
 		describe( 'quotations', () => {
 			describe( 'english US', () => {
 				describe( 'primary', () => {
