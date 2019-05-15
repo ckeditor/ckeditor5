@@ -80,5 +80,11 @@ describe( 'Text transformation feature', () => {
 			} );
 		}
 	} );
+
+	describe( 'configuration', () => {
+		it( 'should allow adding own rules with string pattern' );
+
+		it( 'should allow adding own rules with RegExp object' );
+	} );
 } );
 
