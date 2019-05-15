@@ -81,12 +81,10 @@ export default class TextTransformation extends Plugin {
 
 				const textToInsert = message.replace( regExp, transformation.to );
 
-				// TODO: use model.insertContent()
 				model.enqueueChange( model.createBatch(), writer => {
 					const replaceRange = writer.createRange( focus.getShiftedBy( -textToReplaceLength ), focus );
 
-					writer.remove( replaceRange );
-					writer.insertText( textToInsert, selection.getAttributes(), selection.focus );
+					model.insertContent( writer.createText( textToInsert, selection.getAttributes() ), replaceRange );
 				} );
 			} );
 		}
