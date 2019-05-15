@@ -16,34 +16,31 @@ describe( 'Text transformation feature', () => {
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
-
-		return ClassicTestEditor
-			.create( editorElement, {
-				plugins: [ Paragraph, TextTransformation ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-
-				model = editor.model;
-				doc = model.document;
-			} );
 	} );
 
 	afterEach( () => {
 		editorElement.remove();
 
-		return editor.destroy();
+		if ( editor ) {
+			return editor.destroy();
+		}
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( TextTransformation ) ).to.instanceOf( TextTransformation );
+		return createEditorInstance().then( () => {
+			expect( editor.plugins.get( TextTransformation ) ).to.instanceOf( TextTransformation );
+		} );
 	} );
 
 	it( 'has proper name', () => {
-		expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+		return createEditorInstance().then( () => {
+			expect( TextTransformation.pluginName ).to.equal( 'TextTransformation' );
+		} );
 	} );
 
 	describe( 'transformations', () => {
+		beforeEach( createEditorInstance );
+
 		describe( 'symbols', () => {
 			testTransformation( '(c)', '©' );
 			// TODO: skip because of CI: testTransformation( '(tm)', '™' );
@@ -91,9 +88,59 @@ describe( 'Text transformation feature', () => {
 	} );
 
 	describe( 'configuration', () => {
-		it( 'should allow adding own rules with string pattern' );
+		it( 'should allow adding own rules with string pattern', () => {
+			return createEditorInstance( {
+				textTransformation: {
+					transformations: [
+						{
+							from: '([a-z]+)@(example.com)$',
+							to: '$1.at.$2'
+						}
+					]
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
 
-		it( 'should allow adding own rules with RegExp object' );
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( 'user@example.com', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+			} );
+		} );
+
+		it( 'should allow adding own rules with RegExp object', () => {
+			return createEditorInstance( {
+				textTransformation: {
+					transformations: [
+						{
+							from: /([a-z]+)@(example.com)$/,
+							to: '$1.at.$2'
+						}
+					]
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( 'user@example.com', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+			} );
+		} );
 	} );
-} );
 
+	function createEditorInstance( additionalConfig = {} ) {
+		return ClassicTestEditor
+			.create( editorElement, Object.assign( {
+				plugins: [ Paragraph, TextTransformation ]
+			}, additionalConfig ) )
+			.then( newEditor => {
+				editor = newEditor;
+
+				model = editor.model;
+				doc = model.document;
+			} );
+	}
+} );
