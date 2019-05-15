@@ -48,17 +48,30 @@ describe( 'Text transformation feature', () => {
 		testTransformation( '(tm)', '™' );
 		testTransformation( '1/2', '½' );
 		testTransformation( '<=', '≤' );
-		testTransformation( '"Foo bar baz"', '„Foo bar baz”' );
+
+		describe( 'quotations', () => {
+			describe( 'english US', () => {
+				describe( 'primary', () => {
+					testTransformation( '"Foo 1992 — bar(1) baz: xyz."', '“Foo 1992 — bar(1) baz: xyz.”' );
+					testTransformation( '\' foo "bar"', '\' foo “bar”' );
+				} );
+
+				describe( 'secondary', () => {
+					testTransformation( '\'Foo 1992 — bar(1) baz: xyz.\'', '‘Foo 1992 — bar(1) baz: xyz.’' );
+					testTransformation( '" foo \'bar\'', '" foo ‘bar’' );
+				} );
+			} );
+		} );
 
 		function testTransformation( transformFrom, transformTo ) {
-			it( `should transform ${ transformFrom } to ${ transformTo }`, () => {
+			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
 				model.change( writer => {
 					writer.insertText( transformFrom, doc.selection.getFirstPosition() );
 				} );
 
-				expect( getData( model ) ).to.equal( '<paragraph>' + transformTo + '[]</paragraph>' );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ transformTo }</paragraph>` );
 			} );
 		}
 	} );

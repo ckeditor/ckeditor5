@@ -36,17 +36,20 @@ export default class TextTransformation extends Plugin {
 			{ in: '\\.\\.\\.$', out: '…' },
 			{ in: '1/2', out: '½' },
 			{ in: '<=', out: '≤' },
+
 			// TODO: not nice - needs special order.
-			{ in: ' --- $', out: ' — ' },
 			// TODO: not nice - needs spaces.
+			{ in: ' --- $', out: ' — ' },
 			{ in: ' -- $', out: ' – ' },
-			// TODO: add language rules
-			// TODO: add secondary support
-			{ in: '"([a-zA-Z -]+)"$', out: '„$1”' }
+
+			// English quotation - primary.
+			{ in: buildQuotesPattern( '"' ), out: '“$1”' },
+			// English quotation - secondary.
+			{ in: buildQuotesPattern( '\'' ), out: '‘$1’' }
 		];
 
 		for ( const transformation of transformations ) {
-			const regExp = new RegExp( transformation.in );
+			const regExp = new RegExp( transformation.in, 'u' );
 
 			// setup text watcher
 			const watcher = new TextWatcher( editor, text => regExp.test( text ), text => {
@@ -76,4 +79,12 @@ export default class TextTransformation extends Plugin {
 			} );
 		}
 	}
+}
+
+// Returns a RegExp pattern string that detects a sentence inside a quote.
+//
+// @param {String} quoteCharacter a character to creat a pattern for.
+// @returns {String}
+function buildQuotesPattern( quoteCharacter ) {
+	return `${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$`;
 }
