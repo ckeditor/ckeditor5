@@ -45,18 +45,18 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( '(tm)', doc.selection.getFirstPosition() );
+				writer.insertText( '(c)', doc.selection.getFirstPosition() );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo™</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo©</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo(tm)</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo(c)</p>' );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo™</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo©</p>' );
 		} );
 
 		it( 'should allow to undo-redo steps', () => {
@@ -64,26 +64,26 @@ describe( 'Text transformation feature - integration', () => {
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
-				writer.insertText( 'foo bar baz(tm', doc.selection.getFirstPosition() );
+				writer.insertText( 'foo bar baz(c', doc.selection.getFirstPosition() );
 			} );
 
 			model.change( writer => {
 				writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
 				writer.insertText( ')', doc.selection.getFirstPosition() );
 			} );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz™</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm)</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
 
 			editor.execute( 'undo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(c</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz(tm)</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz(c)</p>' );
 
 			editor.execute( 'redo' );
-			expect( editor.getData() ).to.equal( '<p>foo bar baz™</p>' );
+			expect( editor.getData() ).to.equal( '<p>foo bar baz©</p>' );
 		} );
 	} );
 } );
