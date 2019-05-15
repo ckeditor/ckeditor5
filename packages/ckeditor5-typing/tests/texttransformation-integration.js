@@ -48,15 +48,15 @@ describe( 'Text transformation feature - integration', () => {
 				writer.insertText( '(c)', doc.selection.focus );
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'inserted text' ).to.equal( '<p>foo©</p>' );
 
 			editor.execute( 'undo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo(c)</p>' );
+			expect( editor.getData(), 'after undo' ).to.equal( '<p>foo(c)</p>' );
 
 			editor.execute( 'redo' );
 
-			expect( editor.getData() ).to.equal( '<p>foo©</p>' );
+			expect( editor.getData(), 'after redo' ).to.equal( '<p>foo©</p>' );
 		} );
 
 		it( 'should allow to undo-redo steps', () => {
