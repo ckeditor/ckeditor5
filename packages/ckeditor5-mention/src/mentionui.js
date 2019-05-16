@@ -213,17 +213,11 @@ export default class MentionUI extends Plugin {
 			const item = data.item;
 			const marker = data.marker;
 
-			const watcher = this._getWatcher( marker );
-
-			const text = watcher.last;
-
-			const textMatcher = createTextMatcher( marker );
-			const matched = textMatcher( text );
-			const matchedTextLength = matched.marker.length + matched.feedText.length;
+			const mentionMarker = editor.model.markers.get( 'mention' );
 
 			// Create a range on matched text.
 			const end = model.createPositionAt( model.document.selection.focus );
-			const start = end.getShiftedBy( -matchedTextLength );
+			const start = model.createPositionAt( mentionMarker.getStart() );
 			const range = model.createRange( start, end );
 
 			this._hideUIAndRemoveMarker();
@@ -279,7 +273,7 @@ export default class MentionUI extends Plugin {
 	_setupTextWatcherForFeed( marker, minimumCharacters ) {
 		const editor = this.editor;
 
-		const watcher = new TextWatcher( editor, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
+		const watcher = new TextWatcher( editor.model, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
 			const matched = data.matched;
