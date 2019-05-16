@@ -195,30 +195,31 @@ export default class BalloonEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready. The promise resolves with the created editor instance.
 	 */
 	static create( sourceElementOrData, config = {} ) {
-		let editor;
-		return Editor.allowedElement( sourceElementOrData )
-			.then( () => {
-				editor = new this( sourceElementOrData, config );
-			} )
-			.then( () => editor.initPlugins() )
-			.then( () => {
-				editor.ui.init();
-			} )
-			.then( () => {
-				if ( !isElement( sourceElementOrData ) && config.initialData ) {
-					// Documented in core/editor/editorconfig.jdoc.
-					throw new CKEditorError(
-						'editor-create-initial-data: ' +
-						'The config.initialData option cannot be used together with initial data passed in Editor.create().'
-					);
-				}
+		return new Promise( resolve => {
+			const editor = new this( sourceElementOrData, config );
 
-				const initialData = config.initialData || getInitialData( sourceElementOrData );
+			resolve(
+				editor.initPlugins()
+					.then( () => {
+						editor.ui.init();
+					} )
+					.then( () => {
+						if ( !isElement( sourceElementOrData ) && config.initialData ) {
+							// Documented in core/editor/editorconfig.jdoc.
+							throw new CKEditorError(
+								'editor-create-initial-data: ' +
+								'The config.initialData option cannot be used together with initial data passed in Editor.create().'
+							);
+						}
 
-				return editor.data.init( initialData );
-			} )
-			.then( () => editor.fire( 'ready' ) )
-			.then( () => editor );
+						const initialData = config.initialData || getInitialData( sourceElementOrData );
+
+						return editor.data.init( initialData );
+					} )
+					.then( () => editor.fire( 'ready' ) )
+					.then( () => editor )
+			);
+		} );
 	}
 }
 
