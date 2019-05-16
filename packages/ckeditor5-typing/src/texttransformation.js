@@ -26,17 +26,16 @@ export default class TextTransformation extends Plugin {
 
 		editor.config.define( 'textTransformation', {
 			transformations: [
-				// TODO: not nice definition - needs RegExp escaping.
-				{ from: '\\(c\\)$', to: '©' },
-				{ from: '\\(tm\\)$', to: '™' },
-				{ from: '\\.\\.\\.$', to: '…' },
-				{ from: '1/2$', to: '½' },
-				{ from: '<=$', to: '≤' },
+				{ from: '\\(c\\)', to: '©' },
+				{ from: '\\(tm\\)', to: '™' },
+				{ from: '\\.\\.\\.', to: '…' },
+				{ from: '1/2', to: '½' },
+				{ from: '<=', to: '≤' },
 
 				// TODO: not nice - needs special order.
 				// TODO: not nice - needs spaces.
-				{ from: ' --- $', to: ' — ' },
-				{ from: ' -- $', to: ' – ' },
+				{ from: ' --- ', to: ' — ' },
+				{ from: ' -- ', to: ' – ' },
 
 				// English quotation - primary.
 				{ from: buildQuotesPattern( '"' ), to: '“$1”' },
@@ -60,8 +59,9 @@ export default class TextTransformation extends Plugin {
 		const transformations = editor.config.get( 'textTransformation.transformations' );
 
 		for ( const transformation of transformations ) {
-			// TODO: always add $ to the string regexp!
-			const regExp = new RegExp( transformation.from, 'u' );
+			const { from, to } = transformation;
+
+			const regExp = from instanceof RegExp ? from : new RegExp( `${ from }$`, 'u' );
 
 			// setup text watcher
 			const watcher = new TextWatcher( editor, text => regExp.test( text ), text => {
@@ -79,7 +79,7 @@ export default class TextTransformation extends Plugin {
 				const message = data.matched.text;
 				const textToReplaceLength = message.length;
 
-				const textToInsert = message.replace( regExp, transformation.to );
+				const textToInsert = message.replace( regExp, to );
 
 				model.enqueueChange( model.createBatch(), writer => {
 					const replaceRange = writer.createRange( focus.getShiftedBy( -textToReplaceLength ), focus );
@@ -106,9 +106,11 @@ function buildQuotesPattern( quoteCharacter ) {
  *			// Will replace foo text before caret (ie typed) by user to bar:
  *			{ from: 'foo', to: 'bar' },
  *
- *			// Will remove @ from emails on example.com domain, ie from user@example.com -> user.at.example.com
- *			{ from: /([a-z-])@(example.com)$/, to: '$1.at.$2' }
+ *			// Will remove @ from emails on example.com domain, ie from user@example.com -> user.at.example.com:
+ *			{ from: /([a-z-])@(example.com)$/i, to: '$1.at.$2' }
  *		]
+ *
+ * *Note*: When passing a regex pattern as a string the end of string token (`$`) is always inserted.
  *
  * @typedef {Object} module:typing/texttransformation~TextTransformationDescription
  * @property {String|RegExp} from The pattern to transform.

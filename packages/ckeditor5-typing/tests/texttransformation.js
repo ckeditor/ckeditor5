@@ -84,6 +84,22 @@ describe( 'Text transformation feature', () => {
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ transformTo }</paragraph>` );
 			} );
+
+			it( `should not transform "${ transformFrom }" to "${ transformTo }" inside text`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				// Insert text - should not be transformed.
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( `foo ${ transformFrom } bar`, doc.selection.focus );
+				} );
+
+				// Enforce text watcher check after insertion.
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( ' ', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>foo ${ transformFrom } bar </paragraph>` );
+			} );
 		}
 	} );
 
