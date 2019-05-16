@@ -196,6 +196,8 @@ export default class BalloonEditor extends Editor {
 	 */
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
+			Editor._assertAllowedSourceElement( sourceElementOrData );
+
 			const editor = new this( sourceElementOrData, config );
 
 			resolve(
