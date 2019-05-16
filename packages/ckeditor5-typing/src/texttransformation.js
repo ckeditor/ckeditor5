@@ -13,23 +13,23 @@ import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
 // Set of default transformations provided by the feature.
 const DEFAULT_TRANSFORMATIONS = [
 	// Common symbols:
-	{ from: '\\(c\\)', to: '©' },
-	{ from: '\\(tm\\)', to: '™' },
+	{ from: '(c)', to: '©' },
+	{ from: '(tm)', to: '™' },
 
 	// Mathematical:
 	{ from: '1/2', to: '½' },
 	{ from: '<=', to: '≤' },
 
 	// Typography:
-	{ from: '\\.\\.\\.', to: '…' },
+	{ from: '...', to: '…' },
 	{ from: ' -- ', to: ' – ' },
 	{ from: ' --- ', to: ' — ' },
 
 	// Quotations:
 	// English primary.
-	{ from: buildQuotesPattern( '"' ), to: '“$1”' },
+	{ from: buildQuotesRegExp( '"' ), to: '“$1”' },
 	// English secondary.
-	{ from: buildQuotesPattern( '\'' ), to: '‘$1’' }
+	{ from: buildQuotesRegExp( '\'' ), to: '‘$1’' }
 ];
 
 /**
@@ -70,25 +70,24 @@ export default class TextTransformation extends Plugin {
 		for ( const transformation of transformations ) {
 			const { from, to } = transformation;
 
-			const regExp = from instanceof RegExp ? from : new RegExp( `${ from }$`, 'u' );
+			let testCallback;
+			let textReplacer;
 
-			// setup text watcher
-			const watcher = new TextWatcher( editor.model, text => regExp.test( text ), text => {
-				const match = text.match( regExp );
+			if ( from instanceof RegExp ) {
+				testCallback = text => from.test( text );
+				textReplacer = message => message.replace( from, to );
+			} else {
+				testCallback = text => text.endsWith( from );
+				textReplacer = message => message.slice( 0, message.length - from.length ) + to;
+			}
 
-				return {
-					text: match[ 0 ],
-					groups: match
-				};
-			} );
+			const watcher = new TextWatcher( editor.model, testCallback );
 
 			watcher.on( 'matched', ( evt, data ) => {
 				const selection = editor.model.document.selection;
 				const focus = selection.focus;
-				const message = data.matched.text;
-				const textToReplaceLength = message.length;
-
-				const textToInsert = message.replace( regExp, to );
+				const textToReplaceLength = data.text.length;
+				const textToInsert = textReplacer( data.text );
 
 				model.enqueueChange( model.createBatch(), writer => {
 					const replaceRange = writer.createRange( focus.getShiftedBy( -textToReplaceLength ), focus );
@@ -104,8 +103,8 @@ export default class TextTransformation extends Plugin {
 //
 // @param {String} quoteCharacter a character to creat a pattern for.
 // @returns {String}
-function buildQuotesPattern( quoteCharacter ) {
-	return `${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$`;
+function buildQuotesRegExp( quoteCharacter ) {
+	return new RegExp( `${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
 }
 
 /**
@@ -119,10 +118,11 @@ function buildQuotesPattern( quoteCharacter ) {
  *			{ from: /([a-z-])@(example.com)$/i, to: '$1.at.$2' }
  *		]
  *
- * *Note*: When passing a regex pattern as a string the end of string token (`$`) is always inserted.
+ * *Note*: The text watcher always evaluates end of an input - a text before a caret in single node. If passing a RegExp object you must
+ * include `$` token to match end of string.
  *
  * @typedef {Object} module:typing/texttransformation~TextTransformationDescription
- * @property {String|RegExp} from The pattern to transform.
+ * @property {String|RegExp} from The string or RegExp to transform.
  * @property {String} to The text to transform compatible with `String.replace()`
  */
 

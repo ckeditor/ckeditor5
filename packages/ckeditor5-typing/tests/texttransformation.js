@@ -43,7 +43,7 @@ describe( 'Text transformation feature', () => {
 
 		describe( 'symbols', () => {
 			testTransformation( '(c)', '©' );
-			// TODO: skip because of CI: testTransformation( '(tm)', '™' );
+			testTransformation( '(tm)', '™' );
 		} );
 
 		describe( 'mathematical', () => {
@@ -73,7 +73,7 @@ describe( 'Text transformation feature', () => {
 
 		function testTransformation( transformFrom, transformTo ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
-				setData( model, '<paragraph>[]</paragraph>' );
+				setData( model, '<paragraph>A foo[]</paragraph>' );
 
 				const letters = transformFrom.split( '' );
 
@@ -83,7 +83,7 @@ describe( 'Text transformation feature', () => {
 					} );
 				}
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>${ transformTo }</paragraph>` );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( `<paragraph>A foo${ transformTo }</paragraph>` );
 			} );
 
 			it( `should not transform "${ transformFrom }" to "${ transformTo }" inside text`, () => {
@@ -110,8 +110,8 @@ describe( 'Text transformation feature', () => {
 				textTransformation: {
 					transformations: [
 						{
-							from: '([a-z]+)@(example.com)$',
-							to: '$1.at.$2'
+							from: 'CKS',
+							to: 'CKSource'
 						}
 					]
 				}
@@ -119,10 +119,10 @@ describe( 'Text transformation feature', () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
 				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( 'user@example.com', doc.selection.focus );
+					writer.insertText( 'CKS', doc.selection.focus );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKSource</paragraph>' );
 			} );
 		} );
 
