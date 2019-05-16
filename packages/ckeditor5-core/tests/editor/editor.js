@@ -774,46 +774,32 @@ describe( 'Editor', () => {
 		} );
 	} );
 
-	describe( 'allowedElement()', () => {
-		it( 'should return resolved promise for non-html data', done => {
-			const sourceElementOrData = Editor.allowedElement( 'some initial data' );
+	describe( '_assertAllowedSourceElement()', () => {
+		it( 'should pass for non-html data', () => {
+			const notThrowingFn = () => {
+				Editor._assertAllowedSourceElement( 'some initial data' );
+			};
 
-			expect( sourceElementOrData ).to.be.a( 'promise' );
-
-			sourceElementOrData
-				.then( done )
-				.catch( done );
+			expect( notThrowingFn ).to.not.throw();
 		} );
 
-		it( 'should return resolved promise for non-textarea html element', done => {
+		it( 'should pass non-textarea element', () => {
 			const element = document.createElement( 'div' );
-			const sourceElementOrData = Editor.allowedElement( element );
+			const notThrowingFn = () => {
+				Editor._assertAllowedSourceElement( element );
+			};
 
-			expect( sourceElementOrData ).to.be.a( 'promise' );
-
-			sourceElementOrData
-				.then( done )
-				.catch( done );
+			expect( notThrowingFn ).to.not.throw();
 		} );
 
-		it( 'should return rejected promise for textarea html element', done => {
+		it( 'should throw error for textarea element', () => {
 			const element = document.createElement( 'textarea' );
-			const sourceElementOrData = Editor.allowedElement( element );
+			const throwingFn = () => {
+				Editor._assertAllowedSourceElement( element );
+			};
 
-			expect( sourceElementOrData ).to.be.a( 'promise' );
-
-			sourceElementOrData
-				.then(
-					() => {
-						expect.fail( 'This promise should be rejected.' );
-					},
-					err => {
-						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and.match(
-							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
-					}
-				)
-				.then( done )
-				.catch( done );
+			expect( throwingFn ).to
+				.throw( CKEditorError, /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
 		} );
 	} );
 } );
