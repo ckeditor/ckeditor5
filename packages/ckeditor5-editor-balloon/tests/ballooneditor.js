@@ -164,9 +164,19 @@ describe( 'BalloonEditor', () => {
 			BalloonEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
-			} ).catch( () => {
-				done();
-			} );
+			} )
+				.then(
+					() => {
+						expect.fail( 'Balloon editor should throw an error when both initial data are passed' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							// eslint-disable-next-line max-len
+							.match( /^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 
 		// ckeditor/ckeditor5-editor-classic#53
