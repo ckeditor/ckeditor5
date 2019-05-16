@@ -51,7 +51,8 @@ describe( 'Text transformation feature', () => {
 			testTransformation( '<=', '≤' );
 		} );
 
-		describe( 'dashes', () => {
+		describe( 'typography', () => {
+			testTransformation( '...', '…' );
 			testTransformation( ' -- ', ' – ' );
 			testTransformation( ' --- ', ' — ' );
 		} );

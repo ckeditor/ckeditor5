@@ -10,6 +10,28 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TextWatcher from '@ckeditor/ckeditor5-mention/src/textwatcher';
 
+// Set of default transformations provided by the feature.
+const DEFAULT_TRANSFORMATIONS = [
+	// Common symbols:
+	{ from: '\\(c\\)', to: '©' },
+	{ from: '\\(tm\\)', to: '™' },
+
+	// Mathematical:
+	{ from: '1/2', to: '½' },
+	{ from: '<=', to: '≤' },
+
+	// Typography:
+	{ from: '\\.\\.\\.', to: '…' },
+	{ from: ' -- ', to: ' – ' },
+	{ from: ' --- ', to: ' — ' },
+
+	// Quotations:
+	// English primary.
+	{ from: buildQuotesPattern( '"' ), to: '“$1”' },
+	// English secondary.
+	{ from: buildQuotesPattern( '\'' ), to: '‘$1’' }
+];
+
 /**
  * The text transformation plugin.
  *
@@ -25,23 +47,7 @@ export default class TextTransformation extends Plugin {
 		super( editor );
 
 		editor.config.define( 'textTransformation', {
-			transformations: [
-				{ from: '\\(c\\)', to: '©' },
-				{ from: '\\(tm\\)', to: '™' },
-				{ from: '\\.\\.\\.', to: '…' },
-				{ from: '1/2', to: '½' },
-				{ from: '<=', to: '≤' },
-
-				// TODO: not nice - needs special order.
-				// TODO: not nice - needs spaces.
-				{ from: ' --- ', to: ' — ' },
-				{ from: ' -- ', to: ' – ' },
-
-				// English quotation - primary.
-				{ from: buildQuotesPattern( '"' ), to: '“$1”' },
-				// English quotation - secondary.
-				{ from: buildQuotesPattern( '\'' ), to: '‘$1’' }
-			]
+			transformations: DEFAULT_TRANSFORMATIONS
 		} );
 	}
 
@@ -52,6 +58,9 @@ export default class TextTransformation extends Plugin {
 		return 'TextTransformation';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
