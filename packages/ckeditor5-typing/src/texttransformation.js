@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TextWatcher from '@ckeditor/ckeditor5-mention/src/textwatcher';
+import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
 
 // Set of default transformations provided by the feature.
 const DEFAULT_TRANSFORMATIONS = [
