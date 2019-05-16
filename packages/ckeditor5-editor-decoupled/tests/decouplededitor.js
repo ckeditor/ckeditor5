@@ -129,9 +129,19 @@ describe( 'DecoupledEditor', () => {
 			DecoupledEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
 				plugins: [ Paragraph ]
-			} ).catch( () => {
-				done();
-			} );
+			} )
+				.then(
+					() => {
+						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
+					},
+					err => {
+						expect( err ).to.be.an( 'error' ).with.property( 'message' ).and
+							// eslint-disable-next-line max-len
+							.match( /^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./ );
+					}
+				)
+				.then( done )
+				.catch( done );
 		} );
 
 		it( 'throws error if it is initialized in textarea', done => {
