@@ -341,19 +341,6 @@ export default class MentionUI extends Plugin {
 	}
 
 	/**
-	 * Returns the registered text watcher for the marker.
-	 *
-	 * @private
-	 * @param {String} marker
-	 * @returns {module:mention/textwatcher~TextWatcher}
-	 */
-	_getWatcher( marker ) {
-		const { watcher } = this._mentionsConfigurations.get( marker );
-
-		return watcher;
-	}
-
-	/**
 	 * Shows the mentions balloon. If the panel is already visible, it will reposition it.
 	 *
 	 * @private
