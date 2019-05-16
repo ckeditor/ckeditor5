@@ -21,3 +21,11 @@
 		margin-left: var(--ck-spacing-standard);
 	}
 }
+
+.ck .ck-balloon-rotator__content {
+
+	/* Disable default annotation shadow inside rotator with fake panels. */
+	& .ck.ck-annotation-wrapper {
+		box-shadow: none;
+	}
+}

@@ -25,7 +25,9 @@
 
 .ck .ck-fake-panels div:nth-child( 1 ) {
 	margin-left: var(--ck-balloon-fake-panel-offset);
-	margin-top: var(--ck-balloon-fake-panel-offset);
+
+	/* Because of parent shadow, we need to move panel by fixed value. */
+	margin-top: calc( var(--ck-balloon-fake-panel-offset) + 1px );
 }
 
 .ck .ck-fake-panels div:nth-child( 2 ) {
