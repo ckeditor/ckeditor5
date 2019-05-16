@@ -19,6 +19,7 @@ import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
 
 import '../../../theme/components/panel/balloonrotator.css';
+import '../../../theme/components/panel/fakepanel.css';
 
 const toPx = toUnit( 'px' );
 
