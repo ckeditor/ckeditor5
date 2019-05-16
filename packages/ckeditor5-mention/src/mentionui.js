@@ -273,13 +273,10 @@ export default class MentionUI extends Plugin {
 	_setupTextWatcherForFeed( marker, minimumCharacters ) {
 		const editor = this.editor;
 
-		const watcher = new TextWatcher( editor.model, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
+		const watcher = new TextWatcher( editor.model, createTestCallback( marker, minimumCharacters ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
-			const matched = data.matched;
-
 			const selection = editor.model.document.selection;
-
 			const focus = selection.focus;
 
 			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
@@ -293,8 +290,7 @@ export default class MentionUI extends Plugin {
 				return;
 			}
 
-			const { feedText, marker } = matched;
-
+			const feedText = getFeedText( marker, data.text );
 			const matchedTextLength = marker.length + feedText.length;
 
 			// Create a marker range.
@@ -554,17 +550,12 @@ function createTestCallback( marker, minimumCharacters ) {
 //
 // @param {String} marker
 // @returns {Function}
-function createTextMatcher( marker ) {
+function getFeedText( marker, text ) {
 	const regExp = createRegExp( marker, 0 );
 
-	return text => {
-		const match = text.match( regExp );
+	const match = text.match( regExp );
 
-		const marker = match[ 2 ];
-		const feedText = match[ 3 ];
-
-		return { marker, feedText };
-	};
+	return match[ 3 ];
 }
 
 // The default feed callback.
