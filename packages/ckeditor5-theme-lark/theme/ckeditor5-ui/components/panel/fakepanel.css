@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-balloon-fake-panel-offset: 8px;
+}
+
+/* Let's use `ck-balloon-panel` appearance. See: balloonpanel.css. */
+.ck .ck-fake-panels div {
+	@mixin ck-rounded-corners;
+	@mixin ck-drop-shadow;
+
+	min-height: 15px;
+
+	background: var(--ck-color-panel-background);
+	border: 1px solid var(--ck-color-panel-border);
+
+	width: 100%;
+	height: 100%;
+}
+
+.ck .ck-fake-panels div:nth-child( 1 ) {
+	margin-left: var(--ck-balloon-fake-panel-offset);
+	margin-top: var(--ck-balloon-fake-panel-offset);
+}
+
+.ck .ck-fake-panels div:nth-child( 2 ) {
+	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 2);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 2);
+}
+.ck .ck-fake-panels div:nth-child( 3 ) {
+	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 2);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 3);
+}
