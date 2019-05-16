@@ -224,7 +224,6 @@ export default class ColorTableView extends View {
 		} );
 
 		colorGrid.delegate( 'execute' ).to( this );
-		colorGrid.bind( 'selectedColor' ).to( this );
 
 		return colorGrid;
 	}
@@ -238,11 +237,10 @@ export default class ColorTableView extends View {
 	_createDocumentColorsGrid() {
 		const documentColors = new ColorGridView( this.locale, {
 			columns: this.columns,
-			gridLabel: this.documentColorsLabel
+			label: this.documentColorsLabel
 		} );
 
 		documentColors.delegate( 'execute' ).to( this );
-		documentColors.bind( 'selectedColor' ).to( this );
 
 		documentColors.items.bindTo( this.documentColors ).using(
 			colorObj => {

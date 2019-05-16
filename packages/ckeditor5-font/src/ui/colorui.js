@@ -131,13 +131,14 @@ export default class ColorUI extends Plugin {
 				editor.editing.view.focus();
 			} );
 
-			if ( documentColorsCount !== 0 ) {
-				dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
-					if ( val ) {
+			dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
+				if ( val ) {
+					if ( documentColorsCount !== 0 ) {
 						this._updateDocumentColors();
 					}
-				} );
-			}
+					this._updateSelectedColors();
+				}
+			} );
 
 			return dropdownView;
 		} );
@@ -199,4 +200,32 @@ export default class ColorUI extends Plugin {
 			}
 		}
 	}
+
+	/**
+	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
+	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
+	 *
+	 * @private
+	 */
+	_updateSelectedColors() {
+		const staticColorsGrid = this.colorTableView.items.get( 1 );
+		const documentColorGrid = this.colorTableView.items.get( 2 );
+		const selectedColor = this.colorTableView.selectedColor;
+
+		if ( documentColorGrid ) {
+			if ( isInDocumentColors( documentColorGrid.items, selectedColor ) ) {
+				documentColorGrid.selectedColor = selectedColor;
+				staticColorsGrid.selectedColor = null;
+			} else {
+				documentColorGrid.selectedColor = null;
+				staticColorsGrid.selectedColor = selectedColor;
+			}
+		} else {
+			staticColorsGrid.selectedColor = selectedColor;
+		}
+	}
+}
+
+function isInDocumentColors( collection, color ) {
+	return !!collection.find( item => item.color === color );
 }
