@@ -73,7 +73,7 @@ export default class TextTransformation extends Plugin {
 			const regExp = from instanceof RegExp ? from : new RegExp( `${ from }$`, 'u' );
 
 			// setup text watcher
-			const watcher = new TextWatcher( editor, text => regExp.test( text ), text => {
+			const watcher = new TextWatcher( editor.model, text => regExp.test( text ), text => {
 				const match = text.match( regExp );
 
 				return {
