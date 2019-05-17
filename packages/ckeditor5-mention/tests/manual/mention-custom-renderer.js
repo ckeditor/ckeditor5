@@ -22,6 +22,10 @@ ClassicEditor
 			'|', 'insertTable',
 			'|', 'undo', 'redo'
 		],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
+			tableToolbar: [ 'bold', 'italic' ]
+		},
 		mention: {
 			feeds: [
 				{
