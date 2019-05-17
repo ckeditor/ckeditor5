@@ -83,7 +83,7 @@ export default class TextTransformation extends Plugin {
 
 			const watcher = new TextWatcher( editor.model, testCallback );
 
-			watcher.on( 'matched', ( evt, data ) => {
+			watcher.on( 'matched:data', ( evt, data ) => {
 				const selection = editor.model.document.selection;
 				const focus = selection.focus;
 				const textToReplaceLength = data.text.length;

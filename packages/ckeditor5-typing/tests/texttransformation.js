@@ -41,6 +41,16 @@ describe( 'Text transformation feature', () => {
 	describe( 'transformations', () => {
 		beforeEach( createEditorInstance );
 
+		it( 'should not work for selection changes', () => {
+			setData( model, '<paragraph>foo bar(tm) baz[]</paragraph>' );
+
+			model.change( writer => {
+				writer.setSelection( doc.getRoot().getChild( 0 ), 11 );
+			} );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo bar(tm) baz</paragraph>' );
+		} );
+
 		describe( 'symbols', () => {
 			testTransformation( '(c)', '©' );
 			testTransformation( '(tm)', '™' );
