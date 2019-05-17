@@ -35,8 +35,6 @@ const DEFAULT_TRANSFORMATIONS = [
 /**
  * The text transformation plugin.
  *
- * For a detailed overview, check the {@glink features/text-transformation Text transformation feature documentation}.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class TextTransformation extends Plugin {
@@ -136,8 +134,6 @@ function buildQuotesRegExp( quoteCharacter ) {
 
 /**
  * The configuration of the text transformation feature.
- *
- * Read more about {@glink features/text-transformation#configuration configuring the text transformation feature}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
