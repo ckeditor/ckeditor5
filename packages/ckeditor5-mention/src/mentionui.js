@@ -69,6 +69,55 @@ export default class MentionUI extends Plugin {
 		this._mentionsConfigurations = new Map();
 
 		editor.config.define( 'mention', { feeds: [] } );
+
+		this._requestFeedDebounced = debounce( ( marker, feedText ) => {
+			this._getFeed( marker, feedText )
+				.catch( error => {
+					if ( error.feedDiscarded ) {
+						// Do nothing on discarded feeds as they might come after another one was requested.
+						return;
+					}
+
+					// At this point something bad happened - most likely unreachable host or some feed callback error.
+					// So cleanup marker, remove the UI and...
+					this._hideUIAndRemoveMarker();
+
+					const notification = editor.plugins.get( Notification );
+					const t = editor.locale.t;
+
+					// ...show warning notification.
+					notification.showWarning( t( 'Could not obtain mention autocomplete feed.' ), {
+						title: t( 'Requesting feed failed' ),
+						namespace: 'mention'
+					} );
+				} )
+				.then( feed => {
+					// Do nothing if :
+					// - feed was discarded or empty feed was passed.
+					// - if the marker is not in the document - the selection might have already changed.
+					if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
+						return;
+					}
+
+					// Remove old entries.
+					this._items.clear();
+
+					for ( const feedItem of feed ) {
+						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
+
+						this._items.add( { item, marker } );
+					}
+
+					const markerMarker = editor.model.markers.get( 'mention' );
+
+					if ( this._items.length && markerMarker ) {
+						this._showUI( markerMarker );
+					} else {
+						// Do not show empty mention UI.
+						this._hideUIAndRemoveMarker();
+					}
+				} );
+		}, 100 );
 	}
 
 	/**
@@ -306,10 +355,9 @@ export default class MentionUI extends Plugin {
 
 		const watcher = new TextWatcher( editor, createTestCallback( marker, minimumCharacters ), createTextMatcher( marker ) );
 
-		watcher.on( 'matched', debounce( ( evt, data ) => {
+		watcher.on( 'matched', ( evt, data ) => {
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
-
 			// The text watcher listens only to changed range in selection - so the selection attributes are not yet available
 			// and you cannot use selection.hasAttribute( 'mention' ) just yet.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/1723.
@@ -329,9 +377,15 @@ export default class MentionUI extends Plugin {
 			const start = focus.getShiftedBy( -matchedTextLength );
 			const end = focus.getShiftedBy( -feedText.length );
 
-			if ( !editor.model.markers.has( 'mention' ) ) {
-				const markerRange = editor.model.createRange( start, end );
+			const markerRange = editor.model.createRange( start, end );
 
+			if ( editor.model.markers.has( 'mention' ) ) {
+				const marker = editor.model.markers.get( 'mention' );
+
+				editor.model.change( writer => writer.updateMarker( marker, { range: markerRange } ) );
+			}
+
+			if ( !editor.model.markers.has( 'mention' ) ) {
 				editor.model.change( writer => writer.addMarker( 'mention', {
 					range: markerRange,
 					usingOperation: false,
@@ -339,53 +393,8 @@ export default class MentionUI extends Plugin {
 				} ) );
 			}
 
-			this._getFeed( marker, feedText )
-				.catch( error => {
-					if ( error.feedDiscarded ) {
-						// Do nothing on discarded feeds as they might come after another one was requested.
-						return;
-					}
-
-					// At this point something bad happened - most likely unreachable host or some feed callback error.
-					// So cleanup marker, remove the UI and...
-					this._hideUIAndRemoveMarker();
-
-					const notification = editor.plugins.get( Notification );
-					const t = editor.locale.t;
-
-					// ...show warning notification.
-					notification.showWarning( t( 'Could not obtain mention autocomplete feed.' ), {
-						title: t( 'Requesting feed failed' ),
-						namespace: 'mention'
-					} );
-				} )
-				.then( feed => {
-					// Do nothing if :
-					// - feed was discarded or empty feed was passed.
-					// - if the marker is not in the document - the selection might have already changed.
-					if ( !feed || !this.editor.model.markers.has( 'mention' ) ) {
-						return;
-					}
-
-					// Remove old entries.
-					this._items.clear();
-
-					for ( const feedItem of feed ) {
-						const item = typeof feedItem != 'object' ? { id: feedItem, text: feedItem } : feedItem;
-
-						this._items.add( { item, marker } );
-					}
-
-					const markerMarker = editor.model.markers.get( 'mention' );
-
-					if ( this._items.length && markerMarker ) {
-						this._showUI( markerMarker );
-					} else {
-						// Do not show empty mention UI.
-						this._hideUIAndRemoveMarker();
-					}
-				} );
-		}, 100 ) );
+			this._requestFeedDebounced( marker, feedText );
+		} );
 
 		watcher.on( 'unmatched', () => {
 			this._hideUIAndRemoveMarker();
@@ -425,7 +434,6 @@ export default class MentionUI extends Plugin {
 		}
 
 		this._mentionsView.position = this._balloon.view.position;
-
 		this._mentionsView.selectFirst();
 	}
 
@@ -495,13 +503,16 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_getBalloonPanelPositionData( mentionMarker, preferredPosition ) {
-		const editing = this.editor.editing;
+		const editor = this.editor;
+		const editing = editor.editing;
 		const domConverter = editing.view.domConverter;
 		const mapper = editing.mapper;
 
 		return {
 			target: () => {
-				const viewRange = mapper.toViewRange( mentionMarker.getRange() );
+				// const mentionMarker = editor.model.markers.get( 'mention' );
+				const markerRange = mentionMarker.getRange();
+				const viewRange = mapper.toViewRange( markerRange );
 
 				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
