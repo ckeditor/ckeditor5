@@ -78,14 +78,18 @@ export default class UndoEditing extends Plugin {
 
 			const batch = operation.batch;
 
+			const isRedoBatch = this._redoCommand._createdBatches.has( batch );
+			const isUndoBatch = this._undoCommand._createdBatches.has( batch );
+			const isRegisteredBatch = this._batchRegistry.has( batch );
+
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.
-			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {
+			if ( isRegisteredBatch || ( batch.type == 'transparent' && !isRedoBatch && !isUndoBatch ) ) {
 				return;
 			} else {
-				if ( this._redoCommand._createdBatches.has( batch ) ) {
+				if ( isRedoBatch ) {
 					// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
 					this._undoCommand.addBatch( batch );
-				} else if ( !this._undoCommand._createdBatches.has( batch ) ) {
+				} else if ( !isUndoBatch ) {
 					// A default batch - these are new changes in the document, not introduced by undo feature.
 					// Add them to `undoCommand` stack and clear `redoCommand` stack.
 					this._undoCommand.addBatch( batch );
