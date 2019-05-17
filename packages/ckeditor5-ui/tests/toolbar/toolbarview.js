@@ -56,6 +56,10 @@ describe( 'ToolbarView', () => {
 		it( 'creates #_focusCycler instance', () => {
 			expect( view._focusCycler ).to.be.instanceOf( FocusCycler );
 		} );
+
+		it( 'sets #labelView', () => {
+			expect( view.labelView ).to.be.instanceOf( View );
+		} );
 	} );
 
 	describe( 'template', () => {
@@ -319,6 +323,34 @@ describe( 'ToolbarView', () => {
 				sinon.match( /^toolbarview-item-unavailable/ ),
 				{ name: 'baz' }
 			);
+		} );
+	} );
+
+	describe( 'aria', () => {
+		it( 'poses required attributes', () => {
+			expect( view.element.getAttribute( 'role' ) ).to.equal( 'toolbar' );
+			expect( view.element.getAttribute( 'aria-labelledby' ) ).to.equal( view.labelView.element.id )
+				.and.to.match( /^ck-editor__aria-label_[0-9a-f]{16}/ );
+		} );
+	} );
+
+	describe( '_createLabelView()', () => {
+		let labelElement;
+
+		beforeEach( () => {
+			labelElement = view.labelView.element;
+		} );
+
+		it( 'label is attached as last element in toolbar', () => {
+			expect( labelElement ).to.equal( view.element.lastElementChild );
+		} );
+
+		it( 'label has proper attributes', () => {
+			view.label = 'Foo';
+
+			expect( labelElement.innerHTML ).to.equal( 'Foo' );
+			expect( labelElement.classList.contains( 'ck' ) ).to.be.true;
+			expect( labelElement.classList.contains( 'ck-toolbar__label' ) ).to.be.true;
 		} );
 	} );
 } );
