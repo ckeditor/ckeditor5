@@ -29,19 +29,24 @@
  * @returns {Object} A normalized toolbar config object.
  */
 export default function normalizeToolbarConfig( config ) {
+	const defaultLabel = 'Editor\'s toolbar';
+
 	if ( Array.isArray( config ) ) {
 		return {
-			items: config
+			items: config,
+			label: defaultLabel
 		};
 	}
 
 	if ( !config ) {
 		return {
-			items: []
+			items: [],
+			label: defaultLabel
 		};
 	}
 
 	return Object.assign( {
-		items: []
+		items: [],
+		label: defaultLabel
 	}, config );
 }

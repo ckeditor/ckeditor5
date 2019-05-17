@@ -138,6 +138,8 @@ export default class BalloonToolbar extends Plugin {
 		const factory = this.editor.ui.componentFactory;
 
 		this.toolbarView.fillFromConfig( config.items, factory );
+
+		this.toolbarView.label = this.editor.t( config.label );
 	}
 
 	/**
