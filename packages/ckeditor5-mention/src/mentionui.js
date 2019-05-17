@@ -510,7 +510,7 @@ export default class MentionUI extends Plugin {
 
 		return {
 			target: () => {
-				// const mentionMarker = editor.model.markers.get( 'mention' );
+				const mentionMarker = editor.model.markers.get( 'mention' );
 				const markerRange = mentionMarker.getRange();
 				const viewRange = mapper.toViewRange( markerRange );
 
