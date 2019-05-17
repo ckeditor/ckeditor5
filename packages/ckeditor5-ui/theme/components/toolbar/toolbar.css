@@ -19,6 +19,10 @@
 	&.ck-toolbar_floating {
 		flex-wrap: nowrap;
 	}
+
+	& .ck.ck-toolbar__label {
+		display: none;
+	}
 }
 
 .ck.ck-toolbar__separator {

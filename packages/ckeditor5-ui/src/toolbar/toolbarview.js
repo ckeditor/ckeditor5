@@ -14,6 +14,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -31,6 +32,7 @@ export default class ToolbarView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const ariaLabelUid = uid();
 
 		/**
 		 * Collection of the toolbar items (like buttons).
@@ -73,6 +75,22 @@ export default class ToolbarView extends View {
 		this.set( 'class' );
 
 		/**
+		 * The label of the toolbar.
+		 *
+		 * @observable
+		 * @member {String} #label
+		 */
+		this.set( 'label' );
+
+		/**
+		 * Label of the toolbar view. It is configurable using the {@link #label label attribute}.
+		 *
+		 * @readonly
+		 * @member {module:ui/view~View} #labelView
+		 */
+		this.labelView = this._createLabelView( ariaLabelUid );
+
+		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
@@ -100,7 +118,9 @@ export default class ToolbarView extends View {
 					'ck-toolbar',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
 					bind.to( 'class' )
-				]
+				],
+				role: 'toolbar',
+				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`
 			},
 
 			children: this.items,
@@ -110,6 +130,9 @@ export default class ToolbarView extends View {
 				mousedown: preventDefault( this )
 			}
 		} );
+
+		// Add label in a way to not be present in this.items.
+		this.registerChild( this.labelView );
 	}
 
 	/**
@@ -130,6 +153,8 @@ export default class ToolbarView extends View {
 		this.items.on( 'remove', ( evt, item ) => {
 			this.focusTracker.remove( item.element );
 		} );
+
+		this.element.appendChild( this.labelView.element );
 
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
@@ -186,6 +211,37 @@ export default class ToolbarView extends View {
 				);
 			}
 		} );
+	}
+
+	/**
+	 * Creates a label view instance and binds it with toolbar attributes.
+	 *
+	 * @private
+	 * @param {String} ariaLabelUid The aria label UID.
+	 * @returns {module:ui/view~View}
+	 */
+	_createLabelView( ariaLabelUid ) {
+		const labelView = new View();
+
+		labelView.setTemplate( {
+			tag: 'span',
+
+			attributes: {
+				class: [
+					'ck',
+					'ck-toolbar__label'
+				],
+				id: `ck-editor__aria-label_${ ariaLabelUid }`,
+			},
+
+			children: [
+				{
+					text: this.bindTemplate.to( 'label' )
+				}
+			]
+		} );
+
+		return labelView;
 	}
 }
 
