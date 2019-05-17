@@ -329,14 +329,10 @@ export default class MentionUI extends Plugin {
 			const start = focus.getShiftedBy( -matchedTextLength );
 			const end = focus.getShiftedBy( -feedText.length );
 
-			const markerRange = editor.model.createRange( start, end );
+			if ( !editor.model.markers.has( 'mention' ) ) {
+				const markerRange = editor.model.createRange( start, end );
 
-			let mentionMarker;
-
-			if ( editor.model.markers.has( 'mention' ) ) {
-				mentionMarker = editor.model.markers.get( 'mention' );
-			} else {
-				mentionMarker = editor.model.change( writer => writer.addMarker( 'mention', {
+				editor.model.change( writer => writer.addMarker( 'mention', {
 					range: markerRange,
 					usingOperation: false,
 					affectsData: false
@@ -380,8 +376,10 @@ export default class MentionUI extends Plugin {
 						this._items.add( { item, marker } );
 					}
 
-					if ( this._items.length ) {
-						this._showUI( mentionMarker );
+					const markerMarker = editor.model.markers.get( 'mention' );
+
+					if ( this._items.length && markerMarker ) {
+						this._showUI( markerMarker );
 					} else {
 						// Do not show empty mention UI.
 						this._hideUIAndRemoveMarker();

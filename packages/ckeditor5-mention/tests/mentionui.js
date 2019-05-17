@@ -962,6 +962,44 @@ describe( 'MentionUI', () => {
 					expect( data.title ).to.equal( 'Requesting feed failed' );
 				} );
 			} );
+
+			it( 'should not fail if marker was removed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+				const selectFirstMentionSpy = sinon.spy( mentionsView, 'selectFirst' );
+
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 500;
+
+				return Promise.resolve()
+				// .then( waitForDebounce )
+					.then( waitForDebounce )
+					.then( wait( 20 ) )
+					.then( () => {
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 2 );
+						} );
+					} )
+					.then( wait( 20 ) )
+					.then( () => {
+						feedCallbackTimeout = 1000;
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+						} );
+					} )
+					.then( wait( 500 ) )
+					.then( () => {
+						expect( panelView.isVisible, 'panel is visible' ).to.be.true;
+						// If there were any errors this will not get called.
+						// The errors might come from unhandled promise rejections errors.
+						sinon.assert.calledOnce( selectFirstMentionSpy );
+					} );
+			} );
 		} );
 	} );
 
