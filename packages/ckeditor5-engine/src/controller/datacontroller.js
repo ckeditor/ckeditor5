@@ -297,6 +297,7 @@ export default class DataController {
 	 */
 	set( data ) {
 		let newData = {};
+
 		if ( typeof data === 'string' ) {
 			newData.main = data; // Default root is 'main'. To set data on a different root, object should be passed.
 		} else {
