@@ -40,15 +40,17 @@ export default class BlockQuoteCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const selection = model.document.selection;
 
 		const blocks = Array.from( selection.getTopMostBlocks() );
 
+		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
+
 		model.change( writer => {
-			if ( this.value ) {
+			if ( !value ) {
 				this._removeQuote( writer, blocks.filter( findQuote ) );
 			} else {
 				const blocksToQuote = blocks.filter( block => {
@@ -189,7 +191,7 @@ function findQuote( elementOrPosition ) {
 // Returns a minimal array of ranges containing groups of subsequent blocks.
 //
 // content:         abcdefgh
-// blocks:          [ a, b, d , f, g, h ]
+// blocks:          [ a, b, d, f, g, h ]
 // output ranges:   [ab]c[d]e[fgh]
 //
 // @param {Array.<module:engine/model/element~Element>} blocks

@@ -438,6 +438,29 @@ describe( 'BlockQuoteCommand', () => {
 					'</blockQuote>'
 				);
 			} );
+
+			it( 'should handle forceValue = true param', () => {
+				setModelData(
+					model,
+					'<blockQuote>' +
+						'<paragraph>x[x</paragraph>' +
+					'</blockQuote>' +
+					'<paragraph>d]ef</paragraph>'
+				);
+
+				editor.execute( 'blockQuote', { forceValue: true } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph>x[x</paragraph>' +
+						'<paragraph>d]ef</paragraph>' +
+					'</blockQuote>'
+				);
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<blockquote><p>x{x</p><p>d}ef</p></blockquote>'
+				);
+			} );
 		} );
 
 		describe( 'removing quote', () => {
@@ -596,6 +619,28 @@ describe( 'BlockQuoteCommand', () => {
 					'<p>yy</p>' +
 					'<p>de}f</p>' +
 					'<blockquote><p>ghi</p></blockquote>'
+				);
+			} );
+
+			it( 'should handle forceValue = false param', () => {
+				setModelData(
+					model,
+					'<paragraph>a[bc</paragraph>' +
+					'<blockQuote>' +
+						'<paragraph>x]x</paragraph>' +
+					'</blockQuote>'
+				);
+
+				editor.execute( 'blockQuote', { forceValue: false } );
+
+				// Incorrect selection.
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>a[bc]</paragraph>' +
+					'<paragraph>xx</paragraph>'
+				);
+
+				expect( getViewData( editor.editing.view ) ).to.equal(
+					'<p>a{bc}</p><p>xx</p>'
 				);
 			} );
 		} );
