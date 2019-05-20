@@ -14,6 +14,8 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+
 describe( 'TableCell post-fixer', () => {
 	let editor, model, doc, root, view;
 
@@ -26,7 +28,7 @@ describe( 'TableCell post-fixer', () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-		return ClassicTestEditor.create( element )
+		return ClassicTestEditor.create( element, { extraPlugins: [ Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -275,5 +277,23 @@ describe( 'TableCell post-fixer', () => {
 
 		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
 		expect( () => view.domConverter.viewRangeToDom( viewRange ) ).to.not.throw();
+	} );
+
+	// https://github.com/ckeditor/ckeditor5-table/issues/191.
+	it( 'should not fire (and crash) for removed view elements', () => {
+		editor.setData( viewTable( [ [ '<p>foo</p>' ] ] ) );
+
+		const p = root.getNodeByPath( [ 0, 0, 0, 0 ] );
+
+		// Replace table cell contents with paragraph - as model.deleteContent() does.
+		model.change( writer => {
+			writer.setSelection( writer.createRangeIn( root ) );
+			editor.execute( 'delete' ); // For some reason it didn't crash with `writer.remove()`.
+
+			writer.setAttribute( 'foo', 'bar', p );
+		} );
+
+		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
+		expect( editor.getData() ).to.equal( '' );
 	} );
 } );
