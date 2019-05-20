@@ -39,6 +39,9 @@ export default class BlockQuoteCommand extends Command {
 	 * a block quote.
 	 *
 	 * @fires execute
+	 * @param {Object} [options] Command options.
+	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply a block quote,
+	 * otherwise the command will remove the block quote. If not set, the command will act basing on its current value.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
