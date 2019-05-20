@@ -298,7 +298,8 @@ class Media {
 					tag: 'a',
 					attributes: {
 						class: 'ck-media__placeholder__url',
-						target: 'new',
+						target: '_blank',
+						rel: 'noopener noreferrer',
 						href: this.url
 					},
 					children: [
