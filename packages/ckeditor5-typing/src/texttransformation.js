@@ -45,8 +45,11 @@ export default class TextTransformation extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'textTransformation', {
-			transformations: DEFAULT_TRANSFORMATIONS
+		editor.config.define( 'typing', {
+			transformation: {
+				include: DEFAULT_TRANSFORMATIONS,
+				extra: []
+			}
 		} );
 	}
 
@@ -64,9 +67,10 @@ export default class TextTransformation extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const transformations = editor.config.get( 'textTransformation.transformations' );
+		const transformations = editor.config.get( 'typing.transformation.include' );
+		const extraTransformations = editor.config.get( 'typing.transformation.extra' );
 
-		for ( const transformation of transformations ) {
+		for ( const transformation of [ ...transformations, ...extraTransformations ] ) {
 			const { from, to } = transformation;
 
 			let testCallback;
@@ -130,7 +134,7 @@ function buildQuotesRegExp( quoteCharacter ) {
  *
  * Read more in {@link module:typing/texttransformation~TextTransformationConfig}.
  *
- * @member {module:typing/texttransformation~TextTransformationConfig} module:core/editor/editorconfig~EditorConfig#textTransformation
+ * @member {module:typing/texttransformation~TextTransformationConfig} module:typing/typing~TypingConfig#transformation
  */
 
 /**
@@ -138,7 +142,9 @@ function buildQuotesRegExp( quoteCharacter ) {
  *
  *		ClassicEditor
  *			.create( editorElement, {
- *				textTransformation: ... // Text transformation feature options.
+ *				typing: {
+ *					transformation:  ... // Text transformation feature options.
+ *				}
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -152,6 +158,12 @@ function buildQuotesRegExp( quoteCharacter ) {
 /**
  * The default text transformations supported by the editor.
  *
- * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#transformations
+ * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#include
+ */
+
+/**
+ * The extra text transformations that are added to the transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#inlcude}.
+ *
+ * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
  */
 /* eslint-enable max-len */

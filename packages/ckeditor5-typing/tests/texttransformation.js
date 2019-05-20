@@ -119,34 +119,32 @@ describe( 'Text transformation feature', () => {
 	describe( 'configuration', () => {
 		it( 'should allow adding own rules with string pattern', () => {
 			return createEditorInstance( {
-				textTransformation: {
-					transformations: [
-						{
-							from: 'CKS',
-							to: 'CKSource'
-						}
-					]
+				typing: {
+					transformation: {
+						extra: [
+							{ from: 'CKE', to: 'CKEditor' }
+						]
+					}
 				}
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
 
 				model.enqueueChange( model.createBatch(), writer => {
-					writer.insertText( 'CKS', doc.selection.focus );
+					writer.insertText( 'CKE', doc.selection.focus );
 				} );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKSource</paragraph>' );
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
 			} );
 		} );
 
 		it( 'should allow adding own rules with RegExp object', () => {
 			return createEditorInstance( {
-				textTransformation: {
-					transformations: [
-						{
-							from: /([a-z]+)@(example.com)$/,
-							to: '$1.at.$2'
-						}
-					]
+				typing: {
+					transformation: {
+						extra: [
+							{ from: /([a-z]+)@(example.com)$/, to: '$1.at.$2' }
+						]
+					}
 				}
 			} ).then( () => {
 				setData( model, '<paragraph>[]</paragraph>' );
@@ -156,6 +154,58 @@ describe( 'Text transformation feature', () => {
 				} );
 
 				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>user.at.example.com</paragraph>' );
+			} );
+		} );
+
+		it( 'should not alter include rules adding own rules as extra', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						extra: [
+							{ from: 'CKE', to: 'CKEditor' }
+						]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( 'CKE', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(tm)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor™</paragraph>' );
+			} );
+		} );
+
+		it( 'should overwrite all rules when defining include rules', () => {
+			return createEditorInstance( {
+				typing: {
+					transformation: {
+						include: [
+							{ from: 'CKE', to: 'CKEditor' }
+						]
+					}
+				}
+			} ).then( () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( 'CKE', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '(tm)', doc.selection.focus );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>CKEditor(tm)</paragraph>' );
 			} );
 		} );
 	} );
