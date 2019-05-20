@@ -19,7 +19,7 @@ describe( 'LinkCommand', () => {
 
 				model.schema.extend( '$text', {
 					allowIn: '$root',
-					allowAttributes: 'linkHref'
+					allowAttributes: [ 'linkHref', 'bold' ]
 				} );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
