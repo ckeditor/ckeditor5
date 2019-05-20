@@ -102,7 +102,7 @@ describe( 'ColorTableView', () => {
 			expect( colorTableView.documentColors ).to.be.instanceOf( Collection );
 		} );
 
-		it( 'sets maximum numbero of document colors', () => {
+		it( 'sets maximum number of document colors', () => {
 			expect( colorTableView.documentColorsCount ).to.equal( 4 );
 		} );
 
@@ -116,7 +116,7 @@ describe( 'ColorTableView', () => {
 		} );
 
 		it( 'has correct amount of children', () => {
-			expect( colorTableView.items.length ).to.equal( 3 );
+			expect( colorTableView.items.length ).to.equal( 4 );
 		} );
 	} );
 
@@ -189,9 +189,7 @@ describe( 'ColorTableView', () => {
 				sinon.assert.calledWith( spy, sinon.match.any, {
 					value: item.color,
 					label: item.label,
-					options: {
-						hasBorder: item.options.hasBorder
-					}
+					hasBorder: item.options.hasBorder
 				} );
 			} );
 		} );

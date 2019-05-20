@@ -209,7 +209,7 @@ export default class ColorUI extends Plugin {
 	 */
 	_updateSelectedColors() {
 		const staticColorsGrid = this.colorTableView.items.get( 1 );
-		const documentColorGrid = this.colorTableView.items.get( 2 );
+		const documentColorGrid = this.colorTableView.items.get( 3 );
 		const selectedColor = this.colorTableView.selectedColor;
 
 		if ( documentColorGrid ) {

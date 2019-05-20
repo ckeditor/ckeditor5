@@ -11,7 +11,9 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import DocumentColorsCollection from '../fontcolor/documentcolorscollection';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -89,7 +91,7 @@ export default class ColorTableView extends View {
 		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * The label for the section with document colors.
+		 * The label of a section with document colors.
 		 *
 		 * @type {String}
 		 */
@@ -108,7 +110,7 @@ export default class ColorTableView extends View {
 		 * @readonly
 		 * @member {module:utils/collection~Collection}
 		 */
-		this.documentColors = new Collection();
+		this.documentColors = new DocumentColorsCollection();
 
 		/**
 		 * Maximum number of colors in document colors section.
@@ -154,6 +156,20 @@ export default class ColorTableView extends View {
 		this.items.add( this._createStaticColorsGrid() );
 
 		if ( documentColorsCount ) {
+			const label = new LabelView( this.locale );
+			label.text = this.documentColorsLabel;
+
+			label.extendTemplate( {
+				attributes: {
+					class: [
+						'ck',
+						'ck-color-grid__label',
+						Template.bind( this.documentColors, this.documentColors ).if( 'isEmpty', 'ck-hidden' )
+					]
+				}
+			} );
+
+			this.items.add( label );
 			this.items.add( this._createDocumentColorsGrid() );
 		}
 	}
@@ -236,8 +252,7 @@ export default class ColorTableView extends View {
 	 */
 	_createDocumentColorsGrid() {
 		const documentColors = new ColorGridView( this.locale, {
-			columns: this.columns,
-			label: this.documentColorsLabel
+			columns: this.columns
 		} );
 
 		documentColors.delegate( 'execute' ).to( this );
@@ -269,14 +284,6 @@ export default class ColorTableView extends View {
 				return colorTile;
 			}
 		);
-
-		this.documentColors.on( 'add', ( evt, item ) => {
-			const duplicates = this.documentColors.filter( element => element.color === item.color, this );
-
-			if ( duplicates.length === 2 ) {
-				this.documentColors.remove( duplicates[ 1 ] );
-			}
-		} );
 
 		return documentColors;
 	}
