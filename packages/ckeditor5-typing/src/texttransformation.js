@@ -149,7 +149,38 @@ function buildQuotesRegExp( quoteCharacter ) {
  *			.then( ... )
  *			.catch( ... );
  *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ * By default the editor provides transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}:
+ *
+ * ## Typography
+ *
+ * name | from | to
+ * -----|------|----
+ * ellipsis | `...` | `…`
+ * en dash | ` -- ` | ` – `
+ * em dash | ` --- ` | ` — `
+ *
+ *
+ * ## Quotations
+ *
+ * name | from | to
+ * -----|------|----
+ * primary | `"Foo bar"` | `“Foo bar”`
+ * secondary | `'Foo bar'` | `‘Foo bar’`
+ *
+ * ## Symbols
+ *
+ * name | from | to
+ * -----|------|----
+ * trademark | `(tm)` | `™`
+ * registered trademark | `(r)` | `®`
+ * copyright | `(c)` | `©`
+ *
+ * ## Mathematical
+ *
+ * name | from | to
+ * -----|------|----
+ * trademark | `1/2` | `½`
+ * registered trademark | `<=` | `≤`
  *
  * @interface TextTransformationConfig
  */
@@ -162,7 +193,7 @@ function buildQuotesRegExp( quoteCharacter ) {
  */
 
 /**
- * The extra text transformations that are added to the transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#inlcude}.
+ * The extra text transformations that are added to the transformations defined in {@link module:typing/texttransformation~TextTransformationConfig#include}.
  *
  * @member {Array.<module:typing/texttransformation~TextTransformationDescription>} module:typing/texttransformation~TextTransformationConfig#extra
  */
