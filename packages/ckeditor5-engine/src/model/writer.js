@@ -1349,10 +1349,31 @@ export default class Writer {
 				const elementBefore = positionOrRange.nodeBefore;
 				const elementAfter = positionOrRange.nodeAfter;
 
-				const affectedOnLeft = markerRange.start.parent == elementBefore && markerRange.start.isAtEnd;
-				const affectedOnRight = markerRange.end.parent == elementAfter && markerRange.end.offset == 0;
+				//               Start:  <p>Foo[</p><p>Bar]</p>
+				//         After merge:  <p>Foo[Bar]</p>
+				// After undoing split:  <p>Foo</p><p>[Bar]</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedInLeftElement = markerRange.start.parent == elementBefore && markerRange.start.isAtEnd;
 
-				isAffected = affectedOnLeft || affectedOnRight;
+				//               Start:  <p>[Foo</p><p>]Bar</p>
+				//         After merge:  <p>[Foo]Bar</p>
+				// After undoing split:  <p>[Foo]</p><p>Bar</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedInRightElement = markerRange.end.parent == elementAfter && markerRange.end.offset == 0;
+
+				//               Start:  <p>[Foo</p>]<p>Bar</p>
+				//         After merge:  <p>[Foo]Bar</p>
+				// After undoing split:  <p>[Foo]</p><p>Bar</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedAfterLeftElement = markerRange.end.nodeAfter == elementAfter;
+
+				//               Start:  <p>Foo</p>[<p>Bar]</p>
+				//         After merge:  <p>Foo[Bar]</p>
+				// After undoing split:  <p>Foo</p><p>[Bar]</p>     <-- incorrect, needs remembering for undo.
+				//
+				const affectedBeforeRightElement = markerRange.start.nodeAfter == elementAfter;
+
+				isAffected = affectedInLeftElement || affectedInRightElement || affectedAfterLeftElement || affectedBeforeRightElement;
 			}
 
 			if ( isAffected ) {
