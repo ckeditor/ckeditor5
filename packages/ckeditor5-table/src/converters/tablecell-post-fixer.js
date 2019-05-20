@@ -126,6 +126,10 @@ function getElementsToCheck( view ) {
 // - span: for single paragraph with no attributes.
 // - p   : in other cases.
 function ensureProperElementName( currentViewElement, mapper, writer ) {
+	if ( !currentViewElement.root.is( 'rootElement' ) ) {
+		return false;
+	}
+
 	const modelParagraph = mapper.toModelElement( currentViewElement );
 	const expectedViewElementName = getExpectedElementName( modelParagraph.parent, modelParagraph );
 
