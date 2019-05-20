@@ -387,12 +387,13 @@ export default class MentionUI extends Plugin {
 	 * @private
 	 */
 	_hideUIAndRemoveMarker() {
-		if ( this.editor.model.markers.has( 'mention' ) ) {
-			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
+		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
+		if ( this._balloon.hasView( this._mentionsView ) ) {
+			this._balloon.remove( this._mentionsView );
 		}
 
-		if ( this._isUIVisible ) {
-			this._balloon.remove( this._mentionsView );
+		if ( this.editor.model.markers.has( 'mention' ) ) {
+			this.editor.model.change( writer => writer.removeMarker( 'mention' ) );
 		}
 
 		// Make the last matched position on panel view undefined so the #_getBalloonPanelPositionData() method will return all positions
