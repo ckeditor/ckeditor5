@@ -81,7 +81,7 @@ export default class LinkCommand extends Command {
 
 					const node = writer.createText( href, attributes );
 
-					writer.insert( node, position );
+					model.insertContent( node, position );
 
 					// Create new range wrapping created node.
 					writer.setSelection( writer.createRangeOn( node ) );
