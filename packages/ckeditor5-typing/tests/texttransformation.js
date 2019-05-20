@@ -71,12 +71,13 @@ describe( 'Text transformation feature', () => {
 		describe( 'quotations', () => {
 			describe( 'english US', () => {
 				describe( 'primary', () => {
-					testTransformation( '"Foo 1992 — bar(1) baz: xyz."', '“Foo 1992 — bar(1) baz: xyz.”' );
+					testTransformation( ' "Foo 1992 — bar(1) baz: xyz."', ' “Foo 1992 — bar(1) baz: xyz.”' );
 					testTransformation( '\' foo "bar"', '\' foo “bar”' );
+					testTransformation( 'Foo "Bar bar\'s it\'s a baz"', 'Foo “Bar bar\'s it\'s a baz”' );
 				} );
 
 				describe( 'secondary', () => {
-					testTransformation( '\'Foo 1992 — bar(1) baz: xyz.\'', '‘Foo 1992 — bar(1) baz: xyz.’' );
+					testTransformation( ' \'Foo 1992 — bar(1) baz: xyz.\'', ' ‘Foo 1992 — bar(1) baz: xyz.’' );
 					testTransformation( '" foo \'bar\'', '" foo ‘bar’' );
 				} );
 			} );

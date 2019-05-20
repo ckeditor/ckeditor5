@@ -28,9 +28,9 @@ const DEFAULT_TRANSFORMATIONS = [
 
 	// Quotations:
 	// English primary.
-	{ from: buildQuotesRegExp( '"' ), to: '“$1”' },
+	{ from: buildQuotesRegExp( '"' ), to: '$1“$2”' },
 	// English secondary.
-	{ from: buildQuotesRegExp( '\'' ), to: '‘$1’' }
+	{ from: buildQuotesRegExp( '\'' ), to: '$1‘$2’' }
 ];
 
 /**
@@ -103,7 +103,7 @@ export default class TextTransformation extends Plugin {
 // @param {String} quoteCharacter a character to creat a pattern for.
 // @returns {String}
 function buildQuotesRegExp( quoteCharacter ) {
-	return new RegExp( `${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
+	return new RegExp( `(^|\\s)${ quoteCharacter }([^${ quoteCharacter }]+)${ quoteCharacter }$` );
 }
 
 /**
