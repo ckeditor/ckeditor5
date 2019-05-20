@@ -812,15 +812,44 @@ describe( 'LinkUI', () => {
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
 
-			it( 'should hide and reveal the #actionsView on formView#cancel event', () => {
+			it( 'should hide and reveal the #actionsView on formView#cancel event if link command has a value', () => {
 				linkUIFeature._showUI();
+
+				const command = editor.commands.get( 'link' );
+				command.value = 'http://foo.com';
+
 				formView.fire( 'cancel' );
 
 				expect( balloon.visibleView ).to.equal( actionsView );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
 			} );
 
-			it( 'should hide after Esc key press', () => {
+			it( 'should hide the balloon on formView#cancel if link command does not have a value', () => {
+				linkUIFeature._showUI();
+				formView.fire( 'cancel' );
+
+				expect( balloon.visibleView ).to.be.null;
+			} );
+
+			it( 'should hide and reveal the #actionsView after Esc key press if link command has a value', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.esc,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				linkUIFeature._showUI();
+
+				const command = editor.commands.get( 'link' );
+				command.value = 'http://foo.com';
+
+				formView.keystrokes.press( keyEvtData );
+
+				expect( balloon.visibleView ).to.equal( actionsView );
+				expect( focusEditableSpy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should hide the balloon after Esc key press if link command does not have a value', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.esc,
 					preventDefault: sinon.spy(),
@@ -830,8 +859,8 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 
 				formView.keystrokes.press( keyEvtData );
-				expect( balloon.visibleView ).to.equal( actionsView );
-				expect( focusEditableSpy.calledOnce ).to.be.true;
+
+				expect( balloon.visibleView ).to.be.null;
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/1501
