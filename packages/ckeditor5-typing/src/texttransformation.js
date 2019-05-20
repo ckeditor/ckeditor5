@@ -14,6 +14,7 @@ import TextWatcher from '@ckeditor/ckeditor5-utils/src/textwatcher';
 const DEFAULT_TRANSFORMATIONS = [
 	// Common symbols:
 	{ from: '(c)', to: '©' },
+	{ from: '(r)', to: '®' },
 	{ from: '(tm)', to: '™' },
 
 	// Mathematical:

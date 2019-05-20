@@ -53,6 +53,7 @@ describe( 'Text transformation feature', () => {
 
 		describe( 'symbols', () => {
 			testTransformation( '(c)', '©' );
+			testTransformation( '(r)', '®' );
 			testTransformation( '(tm)', '™' );
 		} );
 
