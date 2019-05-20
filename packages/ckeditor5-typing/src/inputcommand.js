@@ -82,12 +82,10 @@ export default class InputCommand extends Command {
 
 			this._buffer.lock();
 
-			if ( !isCollapsedRange ) {
-				model.deleteContent( model.createSelection( range ) );
-			}
+			model.deleteContent( model.createSelection( range ) );
 
 			if ( text ) {
-				writer.insertText( text, doc.selection.getAttributes(), range.start );
+				model.insertContent( writer.createText( text, doc.selection.getAttributes() ), range.start );
 			}
 
 			if ( resultRange ) {
