@@ -29,7 +29,7 @@ describe( 'Text transformation feature - integration', () => {
 		return editor.destroy();
 	} );
 
-	describe.skip( 'with undo', () => {
+	describe( 'with undo', () => {
 		beforeEach( () => {
 			return ClassicTestEditor
 				.create( editorElement, { plugins: [ Paragraph, TextTransformation, UndoEditing ] } )
