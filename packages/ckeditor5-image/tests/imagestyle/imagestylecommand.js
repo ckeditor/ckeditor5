@@ -30,6 +30,10 @@ describe( 'ImageStyleCommand', () => {
 			} );
 	} );
 
+	it( 'should have defaultStyle property correctly set', () => {
+		expect( command.defaultStyle ).to.equal( 'defaultStyle' );
+	} );
+
 	it( 'command value should be false if no image is selected', () => {
 		setData( model, '[]<image></image>' );
 

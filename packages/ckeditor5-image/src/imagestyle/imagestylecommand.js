@@ -26,12 +26,12 @@ export default class ImageStyleCommand extends Command {
 		super( editor );
 
 		/**
-		 * The cached name of the default style if it is present. If there is no default style, it defaults to `false`.
+		 * The name of the default style, if it is present. If there is no default style, it defaults to `false`.
 		 *
+		 * @readonly
 		 * @type {Boolean|String}
-		 * @private
 		 */
-		this._defaultStyle = false;
+		this.defaultStyle = false;
 
 		/**
 		 * A style handled by this command.
@@ -43,7 +43,7 @@ export default class ImageStyleCommand extends Command {
 			styles[ style.name ] = style;
 
 			if ( style.isDefault ) {
-				this._defaultStyle = style.name;
+				this.defaultStyle = style.name;
 			}
 
 			return styles;
@@ -64,7 +64,7 @@ export default class ImageStyleCommand extends Command {
 			const attributeValue = element.getAttribute( 'imageStyle' );
 			this.value = this.styles[ attributeValue ] ? attributeValue : false;
 		} else {
-			this.value = this._defaultStyle;
+			this.value = this.defaultStyle;
 		}
 	}
 
