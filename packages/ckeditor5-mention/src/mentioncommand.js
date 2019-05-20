@@ -137,11 +137,8 @@ export default class MentionCommand extends Command {
 			attributesWithMention.set( 'mention', mention );
 
 			// Replace a range with the text with a mention.
-			writer.remove( range );
-			writer.insertText( mentionText, attributesWithMention, range.start );
-
-			// Insert a space after the mention.
-			writer.insertText( ' ', currentAttributes, model.document.selection.focus );
+			model.insertContent( writer.createText( mentionText, attributesWithMention ), range );
+			model.insertContent( writer.createText( ' ', currentAttributes ), range.start.getShiftedBy( mentionText.length ) );
 		} );
 	}
 }
