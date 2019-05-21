@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -126,6 +126,12 @@ function getElementsToCheck( view ) {
 // - span: for single paragraph with no attributes.
 // - p   : in other cases.
 function ensureProperElementName( currentViewElement, mapper, writer ) {
+	// This situation may happen if a view element was changed and removed at the same time.
+	// In this case, the view element is already unbound so the post-fixer would crash.
+	if ( !currentViewElement.root.is( 'rootElement' ) ) {
+		return false;
+	}
+
 	const modelParagraph = mapper.toModelElement( currentViewElement );
 	const expectedViewElementName = getExpectedElementName( modelParagraph.parent, modelParagraph );
 

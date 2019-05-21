@@ -12,78 +12,78 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Serbian (Latin) (https://www.transifex.com/ckeditor/teams/11143/sr@latin/)\n"
-"Language: sr@latin\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Dodaj tabelu"
+msgstr "Sisipkan tabel"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Kolona za zaglavlje"
+msgstr "Kolom tajuk"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Dodaj kolonu levo"
+msgstr "Sisipkan kolom ke kiri"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Dodaj kolonu desno"
+msgstr "Sisipkan kolom ke kanan"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Briši kolonu"
+msgstr "Hapus kolom"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Kolona"
+msgstr "Kolom"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Red za zaglavlje"
+msgstr "Baris tajuk"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Dodaj red ispod"
+msgstr "Sisipkan baris ke bawah"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Dodaj red iznad"
+msgstr "Sisipkan baris ke atas"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Briši red"
+msgstr "Hapus baris"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Red"
+msgstr "Baris"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Spoj ćelije na gore"
+msgstr "Gabungkan sel ke atas"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Spoj ćelije na desno"
+msgstr "Gabungkan sel ke kanan"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Spoj ćelije na dole"
+msgstr "Gabungkan sel ke bawah"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Spoj ćelije na levo"
+msgstr "Gabungkan sel ke kiri"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Deli ćelije uspravno"
+msgstr "Bagikan sel secara vertikal"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Deli ćelije vodoravno"
+msgstr "Bagikan sel secara horizontal"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Spoj ćelije"
+msgstr "Gabungkan sel"

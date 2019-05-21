@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -291,6 +291,22 @@ describe( 'TableEditing', () => {
 				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
+				] ) );
+			} );
+
+			it( 'should not create another row and not move the caret if insertTableRowBelow command is disabled', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12[]' ]
+				] ) );
+
+				const insertTableRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
+
+				insertTableRowBelowCommand.forceDisabled( 'test' );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12[]' ]
 				] ) );
 			} );
 
