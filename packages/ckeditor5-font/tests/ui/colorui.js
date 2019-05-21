@@ -5,8 +5,7 @@
 
 /* global document */
 
-import ColorUI from './../../src/ui/colorui';
-import FontColorCommand from './../../src/fontcolor/fontcolorcommand';
+import TestColorPlugin from '../_utils/testcolorplugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
@@ -15,24 +14,6 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ColorUI', () => {
-	class TestColorPlugin extends ColorUI {
-		constructor( editor ) {
-			super( editor, {
-				commandName: 'testColorCommand',
-				componentName: 'testColor',
-				icon: '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"></svg>',
-				dropdownLabel: editor.locale.t( 'Test Color' )
-			} );
-
-			editor.commands.add( 'testColorCommand', new FontColorCommand( editor ) );
-			editor.model.schema.extend( '$text', { allowAttributes: 'testColor' } );
-		}
-
-		static get pluginName() {
-			return 'TestColorPlugin';
-		}
-	}
-
 	const testColorConfig = {
 		colors: [
 			'yellow',
@@ -168,7 +149,6 @@ describe( 'ColorUI', () => {
 		it( 'colorTableView has set proper default attributes', () => {
 			const colorTableView = dropdown.colorTableView;
 
-			expect( colorTableView.documentColorsLabel ).to.equal( 'Document colors' );
 			expect( colorTableView.documentColorsCount ).to.equal( 3 );
 		} );
 
@@ -352,177 +332,6 @@ describe( 'ColorUI', () => {
 						return editor;
 					} );
 			}
-		} );
-	} );
-
-	describe( '_addColorToDocumentColors', () => {
-		let dropdown;
-
-		beforeEach( () => {
-			dropdown = editor.ui.componentFactory.create( 'testColor' );
-			dropdown.render();
-		} );
-
-		afterEach( () => {
-			dropdown.destroy();
-		} );
-
-		it( 'add custom color from not defined colors', () => {
-			testColorPlugin._addColorToDocumentColors( '#123456' );
-			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
-				color: '#123456',
-				label: '#123456',
-				options: {
-					hasBorder: false
-				}
-			} );
-		} );
-
-		it( 'add already define color absed on color value', () => {
-			testColorPlugin._addColorToDocumentColors( 'rgb(255,255,255)' );
-			// Color values are kept without spaces.
-			expect( dropdown.colorTableView.documentColors.get( 0 ) ).to.deep.include( {
-				color: 'rgb(255,255,255)',
-				label: 'White',
-				options: {
-					hasBorder: true
-				}
-			} );
-		} );
-	} );
-
-	describe( '_updateSelectedColors() with document colors', () => {
-		let editor, element, dropdown;
-
-		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, TestColorPlugin ],
-					testColor: Object.assign( {
-						documentColors: 3
-					}, testColorConfig )
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
-					dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-					dropdown.render();
-					global.document.body.appendChild( dropdown.element );
-				} );
-		} );
-
-		afterEach( () => {
-			element.remove();
-			dropdown.element.remove();
-			dropdown.destroy();
-
-			return editor.destroy();
-		} );
-
-		it( 'checkmark in document colors', () => {
-			const colorTableView = dropdown.colorTableView;
-			const command = editor.commands.get( 'testColorCommand' );
-
-			setModelData( model,
-				'<paragraph><$text testColor="red">Foo</$text></paragraph>'
-			);
-			command.value = 'red';
-
-			dropdown.isOpen = true;
-
-			const staticColorsGrid = colorTableView.items.get( 1 );
-			const documentColorsGrid = colorTableView.items.get( 2 );
-
-			expect( staticColorsGrid.selectedColor ).to.be.null;
-			expect( documentColorsGrid.selectedColor ).to.equal( 'red' );
-
-			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === 'red' );
-			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
-
-			expect( redStaticColorTile.isOn ).to.be.false;
-			expect( redDocumentColorTile.isOn ).to.be.true;
-		} );
-
-		it( 'checkmark in static colors', () => {
-			const colorTableView = dropdown.colorTableView;
-			const command = editor.commands.get( 'testColorCommand' );
-
-			setModelData( model,
-				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
-				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
-				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>' +
-				'<paragraph><$text testColor="#00FF00">Test</$text></paragraph>'
-			);
-			command.value = '#00FF00';
-
-			dropdown.isOpen = true;
-
-			const staticColorsGrid = colorTableView.items.get( 1 );
-			const documentColorsGrid = colorTableView.items.get( 2 );
-
-			expect( staticColorsGrid.selectedColor ).to.equal( '#00FF00' );
-			expect( documentColorsGrid.selectedColor ).to.be.null;
-
-			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === '#00FF00' );
-			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
-
-			expect( redStaticColorTile.isOn ).to.be.true;
-			expect( redDocumentColorTile.isOn ).to.be.false;
-		} );
-	} );
-
-	describe( 'empty document colors', () => {
-		let editor, element, dropdown;
-
-		beforeEach( () => {
-			element = document.createElement( 'div' );
-			document.body.appendChild( element );
-
-			return ClassicTestEditor
-				.create( element, {
-					plugins: [ Paragraph, TestColorPlugin ],
-					testColor: Object.assign( {
-						documentColors: 0
-					}, testColorConfig )
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.model;
-					testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
-					dropdown = editor.ui.componentFactory.create( 'testColor' );
-
-					dropdown.render();
-					global.document.body.appendChild( dropdown.element );
-				} );
-		} );
-
-		afterEach( () => {
-			element.remove();
-			dropdown.element.remove();
-			dropdown.destroy();
-
-			return editor.destroy();
-		} );
-
-		it( 'document colors are not created', () => {
-			const colorTableView = dropdown.colorTableView;
-
-			setModelData( model,
-				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
-				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
-				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
-				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
-			);
-
-			dropdown.isOpen = true;
-
-			expect( colorTableView.documentColorsCount ).to.equal( 0 );
-			expect( colorTableView.documentColorsLabel ).to.be.undefined;
 		} );
 	} );
 } );

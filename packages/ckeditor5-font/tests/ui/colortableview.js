@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals document,Event */
 
+import TestColorPlugin from '../_utils/testcolorplugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ColorTableView from './../../src/ui/colortableview';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
@@ -14,6 +16,9 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'ColorTableView', () => {
 	let locale, colorTableView;
@@ -41,6 +46,29 @@ describe( 'ColorTableView', () => {
 			}
 		}
 	];
+	const testColorConfig = {
+		colors: [
+			'yellow',
+			{
+				color: '#000',
+			},
+			{
+				color: 'rgb(255, 255, 255)',
+				label: 'White',
+				hasBorder: true
+			},
+			{
+				color: 'red',
+				label: 'Red'
+			},
+			{
+				color: '#00FF00',
+				label: 'Green',
+				hasBorder: false
+			}
+		],
+		columns: 3
+	};
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -88,10 +116,6 @@ describe( 'ColorTableView', () => {
 
 		it( 'sets tooltip for the remove color button', () => {
 			expect( colorTableView.removeButtonLabel ).to.equal( 'Remove color' );
-		} );
-
-		it( 'sets tooltip for the document colors section', () => {
-			expect( colorTableView.documentColorsLabel ).to.equal( 'Document colors' );
 		} );
 
 		it( 'sets number of drawn columns', () => {
@@ -297,11 +321,7 @@ describe( 'ColorTableView', () => {
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledWith( spy, sinon.match.any, {
-						value: '#000000',
-						label: 'Black',
-						options: {
-							hasBorder: false
-						}
+						value: '#000000'
 					} );
 				} );
 			} );
@@ -355,6 +375,157 @@ describe( 'ColorTableView', () => {
 				expect( colorTableView.documentColors.length ).to.equal( 0 );
 				expect( colorTableView.documentColorsCount ).to.equal( 0 );
 			} );
+		} );
+	} );
+
+	describe( '_addColorToDocumentColors', () => {
+		it( 'add custom color from not defined colors', () => {
+			colorTableView._addColorToDocumentColors( '#123456' );
+			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+				color: '#123456',
+				label: '#123456',
+				options: {
+					hasBorder: false
+				}
+			} );
+		} );
+
+		it( 'add already define color based on color value', () => {
+			colorTableView._addColorToDocumentColors( 'rgb(255,255,255)' );
+			// Color values are kept without spaces.
+			expect( colorTableView.documentColors.get( 0 ) ).to.deep.include( {
+				color: 'rgb(255,255,255)'
+			} );
+		} );
+	} );
+
+	describe( 'updateSelectedColors() with document colors', () => {
+		let element, editor, model, dropdown, staticColorsGrid, documentColorsGrid;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: Object.assign( {
+						documentColors: 3
+					}, testColorConfig )
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+
+					dropdown = editor.ui.componentFactory.create( 'testColor' );
+					dropdown.render();
+
+					staticColorsGrid = dropdown.colorTableView.staticColorsGrid;
+					documentColorsGrid = dropdown.colorTableView.documentColorsGrid;
+
+					global.document.body.appendChild( dropdown.element );
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+			dropdown.element.remove();
+			dropdown.destroy();
+
+			return editor.destroy();
+		} );
+
+		it( 'checkmark is present in document colors section', () => {
+			const command = editor.commands.get( 'testColorCommand' );
+
+			setModelData( model,
+				'<paragraph><$text testColor="red">Foo</$text></paragraph>'
+			);
+			command.value = 'red';
+
+			dropdown.isOpen = true;
+
+			expect( staticColorsGrid.selectedColor ).to.be.null;
+			expect( documentColorsGrid.selectedColor ).to.equal( 'red' );
+
+			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === 'red' );
+			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
+
+			expect( redStaticColorTile.isOn ).to.be.false;
+			expect( redDocumentColorTile.isOn ).to.be.true;
+		} );
+
+		it( 'checkmark is present in static colors', () => {
+			const command = editor.commands.get( 'testColorCommand' );
+
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>' +
+				'<paragraph><$text testColor="#00FF00">Test</$text></paragraph>'
+			);
+			command.value = '#00FF00';
+
+			dropdown.isOpen = true;
+
+			expect( staticColorsGrid.selectedColor ).to.equal( '#00FF00' );
+			expect( documentColorsGrid.selectedColor ).to.be.null;
+
+			const redStaticColorTile = staticColorsGrid.items.find( tile => tile.color === '#00FF00' );
+			const redDocumentColorTile = documentColorsGrid.items.get( 0 );
+
+			expect( redStaticColorTile.isOn ).to.be.true;
+			expect( redDocumentColorTile.isOn ).to.be.false;
+		} );
+	} );
+
+	describe( 'empty document colors', () => {
+		let editor, element, dropdown, model;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, TestColorPlugin ],
+					testColor: Object.assign( {
+						documentColors: 0
+					}, testColorConfig )
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					// testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
+					dropdown = editor.ui.componentFactory.create( 'testColor' );
+
+					dropdown.render();
+					global.document.body.appendChild( dropdown.element );
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+			dropdown.element.remove();
+			dropdown.destroy();
+
+			return editor.destroy();
+		} );
+
+		it( 'document colors are not created', () => {
+			const colorTableView = dropdown.colorTableView;
+
+			setModelData( model,
+				'<paragraph><$text testColor="gold">Bar</$text></paragraph>' +
+				'<paragraph><$text testColor="rgb(10,20,30)">Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="gold">New Foo</$text></paragraph>' +
+				'<paragraph><$text testColor="#FFAACC">Baz</$text></paragraph>'
+			);
+
+			dropdown.isOpen = true;
+
+			expect( colorTableView.documentColorsCount ).to.equal( 0 );
+			expect( colorTableView.documentColorsLabel ).to.be.undefined;
 		} );
 	} );
 } );
