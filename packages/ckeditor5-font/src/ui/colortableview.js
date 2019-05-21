@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
 import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
-import DocumentColorsCollection from '../fontcolor/documentcolorscollection';
+import DocumentColorsCollection from '../documentcolorscollection';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';

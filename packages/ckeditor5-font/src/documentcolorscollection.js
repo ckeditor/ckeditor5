@@ -1,10 +1,9 @@
-
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * @module font/fontcolor/documentcolorscollection
+ * @module font/documentcolorscollection
  */
 
 /**
