@@ -188,6 +188,57 @@ export default class ColorTableView extends View {
 	}
 
 	/**
+	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
+	 * Found entries are set as document colors.
+	 *
+	 * All the previously stored document colors will be lost in the process.
+	 *
+	 * @param {model:engine/model/model~Model} model used as source to obtain document colors
+	 * @param {String} componentName determines what is name of related model's attribute for given dropdown
+	 */
+	updateDocumentColors( model, componentName ) {
+		const document = model.document;
+		const maxCount = this.documentColorsCount;
+
+		this.documentColors.clear();
+
+		for ( const rootName of document.getRootNames() ) {
+			const root = document.getRoot( rootName );
+			const range = model.createRangeIn( root );
+			for ( const node of range.getItems() ) {
+				if ( node.is( 'textProxy' ) && node.hasAttribute( componentName ) ) {
+					this._addColorToDocumentColors( node.getAttribute( componentName ) );
+					if ( this.documentColors.length >= maxCount ) {
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
+	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
+	 */
+	updateSelectedColors() {
+		const documentColorsGrid = this.documentColorsGrid;
+		const staticColorsGrid = this.staticColorsGrid;
+		const selectedColor = this.selectedColor;
+
+		if ( documentColorsGrid ) {
+			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
+				documentColorsGrid.selectedColor = selectedColor;
+				staticColorsGrid.selectedColor = null;
+			} else {
+				documentColorsGrid.selectedColor = null;
+				staticColorsGrid.selectedColor = selectedColor;
+			}
+		} else {
+			staticColorsGrid.selectedColor = selectedColor;
+		}
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	render() {
@@ -270,6 +321,12 @@ export default class ColorTableView extends View {
 
 		documentColors.delegate( 'execute' ).to( this );
 
+		documentColors.extendTemplate( {
+			attributes: {
+				class: Template.bind( this.documentColors, this.documentColors ).if( 'isEmpty', 'ck-hidden' )
+			}
+		} );
+
 		documentColors.items.bindTo( this.documentColors ).using(
 			colorObj => {
 				const colorTile = new ColorTileView();
@@ -297,57 +354,6 @@ export default class ColorTableView extends View {
 		);
 
 		return documentColors;
-	}
-
-	/**
-	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
-	 * Found entries are set as document colors.
-	 *
-	 * All the previously stored document colors will be lost in the process.
-	 *
-	 * @param {model:engine/model/model~Model} model used as source to obtain document colors
-	 * @param {String} componentName determines what is name of related model's attribute for given dropdown
-	 */
-	updateDocumentColors( model, componentName ) {
-		const document = model.document;
-		const maxCount = this.documentColorsCount;
-
-		this.documentColors.clear();
-
-		for ( const rootName of document.getRootNames() ) {
-			const root = document.getRoot( rootName );
-			const range = model.createRangeIn( root );
-			for ( const node of range.getItems() ) {
-				if ( node.is( 'textProxy' ) && node.hasAttribute( componentName ) ) {
-					this._addColorToDocumentColors( node.getAttribute( componentName ) );
-					if ( this.documentColors.length >= maxCount ) {
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
-	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
-	 */
-	updateSelectedColors() {
-		const documentColorsGrid = this.documentColorsGrid;
-		const staticColorsGrid = this.staticColorsGrid;
-		const selectedColor = this.selectedColor;
-
-		if ( documentColorsGrid ) {
-			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
-				documentColorsGrid.selectedColor = selectedColor;
-				staticColorsGrid.selectedColor = null;
-			} else {
-				documentColorsGrid.selectedColor = null;
-				staticColorsGrid.selectedColor = selectedColor;
-			}
-		} else {
-			staticColorsGrid.selectedColor = selectedColor;
-		}
 	}
 
 	/**
