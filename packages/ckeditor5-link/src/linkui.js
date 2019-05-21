@@ -154,17 +154,17 @@ export default class LinkUI extends Plugin {
 		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			editor.execute( 'link', formView.urlInputView.inputView.element.value );
-			this._removeFormView();
+			this._closeFormView();
 		} );
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( formView, 'cancel', () => {
-			this._removeFormView();
+			this._closeFormView();
 		} );
 
 		// Close the panel on esc key press when the **form has focus**.
 		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._removeFormView();
+			this._closeFormView();
 			cancel();
 		} );
 
@@ -307,6 +307,22 @@ export default class LinkUI extends Plugin {
 		// https://github.com/ckeditor/ckeditor5-link/issues/78
 		// https://github.com/ckeditor/ckeditor5-link/issues/123
 		this.formView.urlInputView.inputView.element.value = linkCommand.value || '';
+	}
+
+	/**
+	 * Closes form view. Decides whether the balloon should be hidden completely or if action view should be shown. This is decided upon
+	 * link command value (which has value if the document selection is in link).
+	 *
+	 * @private
+	 */
+	_closeFormView() {
+		const linkCommand = this.editor.commands.get( 'link' );
+
+		if ( linkCommand.value !== undefined ) {
+			this._removeFormView();
+		} else {
+			this._hideUI();
+		}
 	}
 
 	/**
