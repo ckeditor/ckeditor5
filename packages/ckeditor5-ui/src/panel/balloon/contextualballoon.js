@@ -147,7 +147,7 @@ export default class ContextualBalloon extends Plugin {
 		this._rotatorView = this._createRotatorView();
 
 		/**
-		 * Displays fake panels under the balloon panel view.
+		 * Displays fake panels under the balloon panel view when multiple stacks are added to the balloon.
 		 *
 		 * @private
 		 * @type {module:ui/view~View}
@@ -633,6 +633,8 @@ class RotatorView extends View {
 	}
 }
 
+// Displays additional layers under the balloon when multiple stacks are added to the balloon.
+//
 // @private
 // @extends module:ui/view~View
 class FakePanelsView extends View {
