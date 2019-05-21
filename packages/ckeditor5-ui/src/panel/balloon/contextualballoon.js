@@ -688,7 +688,7 @@ class FakePanelsView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-fake-panels',
+					'ck-fake-panel',
 					bind.to( 'numberOfPanels', number => number ? '' : 'ck-hidden' )
 				],
 				style: {
