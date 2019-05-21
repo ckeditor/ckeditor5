@@ -76,11 +76,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 
 .docsearch-txt tr th:nth-child( 1 ),
 .docsearch-txt tr td:nth-child( 1 ) {
-	width: 300px;
+	width: 250px;
 }
 </style>
 
-<table class="docsearch-txt" style="table-layout: fixed">
+<table class="docsearch-txt">
 	<thead>
 		<tr>
 			<th>CKEditor 4</th>
