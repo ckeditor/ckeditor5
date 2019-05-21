@@ -8,20 +8,43 @@
  */
 
 import WidgetFeature from './widgetfeature';
-
-export const WIDGET_RESIZE_ATTRIBUTE_NAME = 'resizer';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 
 /**
  * The base class for widget features. This type provides a common API for reusable features of widgets.
  */
 export default class WidgetResizeFeature extends WidgetFeature {
-	apply( widget, writer ) {
-		super.apply( widget, writer );
+	apply( widgetElement, writer ) {
+		super.apply( widgetElement, writer );
 
-		// writer.setCustomProperty( WIDGET_RESIZE_ATTRIBUTE_NAME, true, widget );
-		writer.setAttribute( WIDGET_RESIZE_ATTRIBUTE_NAME, true, widget );
+		const selectionHandler = writer.createUIElement( 'div', {
+			class: 'ck ck-widget__resizer-wrapper'
+		}, function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
+			const resizerPositions = [ 'top-left', 'top-right', 'bottom-right', 'bottom-left' ];
 
-		// widget.setAttribute( WIDGET_RESIZE_ATTRIBUTE_NAME );
-		// aaa
+			for ( const currentPosition of resizerPositions ) {
+				// Use the IconView from the UI library.
+				const icon = new IconView();
+				icon.set( 'content', dragHandlerIcon );
+				icon.extendTemplate( {
+					attributes: {
+						'class': `ck-widget__resizer ck-widget__resizer-${ currentPosition }`
+					}
+				} );
+
+				// Make sure icon#element is rendered before passing to appendChild().
+				icon.render();
+
+				domElement.appendChild( icon.element );
+			}
+
+			return domElement;
+		} );
+
+		// Append resizer wrapper to the widget's wrapper.
+		writer.insert( writer.createPositionAt( widgetElement, widgetElement.childCount ), selectionHandler );
+		writer.addClass( [ 'ck-widget_with-resizer' ], widgetElement );
 	}
 }

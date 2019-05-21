@@ -3,12 +3,65 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+.ck .ck-widget_with-resizer {
+	/* Make the widget wrapper a relative positioning container for the drag handler. */
+	position: relative;
+
+	& .ck-widget__resizer-wrapper {
+		visibility: hidden;
+		position: absolute;
+
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+
+	& .ck-widget__resizer {
+		position: absolute;
+
+		&.ck-widget__resizer-top-left {
+			top: 0;
+			left: 0;
+		}
+		&.ck-widget__resizer-top-right {
+			top: 0;
+			right: 0;
+		}
+		&.ck-widget__resizer-bottom-right {
+			bottom: 0;
+			right: 0;
+		}
+		&.ck-widget__resizer-bottom-left {
+			bottom: 0;
+			left: 0;
+		}
+
+		&.ck-widget__resizer-top-left, &.ck-widget__resizer-bottom-right {
+			&:hover {
+				cursor: nwse-resize;
+			}
+		}
+
+		/* Show the selection handler on mouse hover over the widget. */
+		&:hover {
+			cursor: nesw-resize;
+		}
+	}
+
+	&:hover {
+		& .ck-widget__resizer-wrapper {
+			visibility: visible;
+		}
+	}
+}
+
 .ck .ck-widget.ck-widget_with-selection-handler {
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
 
 	& .ck-widget__selection-handler {
-		visibility: hidden;
+		/* visibility: hidden; */
 		position: absolute;
 
 		& .ck-icon {
