@@ -6,10 +6,11 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
-	--ck-balloon-fake-panel-offset: 8px;
+	--ck-balloon-fake-panel-offset-horizontal: 8px;
+	--ck-balloon-fake-panel-offset-vertical: 8px;
 }
 
-/* Let's use `ck-balloon-panel` appearance. See: balloonpanel.css. */
+/* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 .ck .ck-fake-panel div {
 	@mixin ck-drop-shadow;
 
@@ -24,17 +25,22 @@
 }
 
 .ck .ck-fake-panel div:nth-child( 1 ) {
-	margin-left: var(--ck-balloon-fake-panel-offset);
+	margin-left: var(--ck-balloon-fake-panel-offset-horizontal);
 
 	/* Because of parent shadow, we need to move panel by fixed value. */
-	margin-top: calc( var(--ck-balloon-fake-panel-offset) + 1px );
+	margin-top: calc( var(--ck-balloon-fake-panel-offset-vertical) + 1px );
 }
 
 .ck .ck-fake-panel div:nth-child( 2 ) {
-	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 2);
-	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 2);
+	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 2);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 2);
 }
 .ck .ck-fake-panel div:nth-child( 3 ) {
-	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 3);
-	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 3);
+	margin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 3);
+	margin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 3);
+}
+
+/* If balloon is positioned above element, we need to move fake panel to the top. */
+.ck .ck-balloon-panel_arrow_s + .ck-fake-panel {
+	--ck-balloon-fake-panel-offset-vertical: -8px;
 }
