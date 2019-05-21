@@ -977,7 +977,6 @@ describe( 'MentionUI', () => {
 				feedCallbackTimeout = 500;
 
 				return Promise.resolve()
-				// .then( waitForDebounce )
 					.then( waitForDebounce )
 					.then( wait( 20 ) )
 					.then( () => {
@@ -998,6 +997,42 @@ describe( 'MentionUI', () => {
 						// If there were any errors this will not get called.
 						// The errors might come from unhandled promise rejections errors.
 						sinon.assert.calledOnce( selectFirstMentionSpy );
+					} );
+			} );
+
+			it( 'should not show panel if selection was moved during fetching a feed', () => {
+				setData( model, '<paragraph>foo [#101] bar</paragraph><paragraph></paragraph>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'mention', { id: '#101', _uid: 1234 }, doc.selection.getFirstRange() );
+				} );
+
+				// Increase the response time to extend the debounce time out.
+				feedCallbackTimeout = 300;
+
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 1 ), 0 );
+					writer.insertText( '#', doc.selection.getFirstPosition() );
+				} );
+
+				sinon.assert.notCalled( feedCallbackStub );
+
+				return Promise.resolve()
+					.then( waitForDebounce )
+					.then( () => {
+						sinon.assert.calledOnce( feedCallbackStub );
+
+						model.change( writer => {
+							writer.setSelection( doc.getRoot().getChild( 0 ), 6 );
+						} );
+
+						expect( panelView.isVisible ).to.be.false;
+					} )
+					.then( waitForDebounce )
+					.then( wait( 20 ) )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
 					} );
 			} );
 		} );
