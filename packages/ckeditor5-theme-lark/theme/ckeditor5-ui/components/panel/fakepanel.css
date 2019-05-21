@@ -10,7 +10,7 @@
 }
 
 /* Let's use `ck-balloon-panel` appearance. See: balloonpanel.css. */
-.ck .ck-fake-panels div {
+.ck .ck-fake-panel div {
 	@mixin ck-drop-shadow;
 
 	min-height: 15px;
@@ -23,18 +23,18 @@
 	height: 100%;
 }
 
-.ck .ck-fake-panels div:nth-child( 1 ) {
+.ck .ck-fake-panel div:nth-child( 1 ) {
 	margin-left: var(--ck-balloon-fake-panel-offset);
 
 	/* Because of parent shadow, we need to move panel by fixed value. */
 	margin-top: calc( var(--ck-balloon-fake-panel-offset) + 1px );
 }
 
-.ck .ck-fake-panels div:nth-child( 2 ) {
+.ck .ck-fake-panel div:nth-child( 2 ) {
 	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 2);
 	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 2);
 }
-.ck .ck-fake-panels div:nth-child( 3 ) {
+.ck .ck-fake-panel div:nth-child( 3 ) {
 	margin-left: calc(var(--ck-balloon-fake-panel-offset) * 3);
 	margin-top: calc(var(--ck-balloon-fake-panel-offset) * 3);
 }
