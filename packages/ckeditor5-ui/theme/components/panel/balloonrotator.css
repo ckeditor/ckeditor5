@@ -8,3 +8,10 @@
 	align-items: center;
 	justify-content: center;
 }
+
+/* Buttons inside a toolbar should be centered when rotator bar is wider.
+ * See: https://github.com/ckeditor/ckeditor5-ui/issues/495
+ */
+.ck .ck-balloon-rotator__content .ck-toolbar {
+	justify-content: center;
+}
