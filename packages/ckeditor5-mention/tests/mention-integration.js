@@ -11,6 +11,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import Link from '@ckeditor/ckeditor5-link/src/link';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -265,6 +267,62 @@ describe( 'Mention feature - integration', () => {
 
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false;
+				} );
+		} );
+	} );
+
+	describe( 'with link toolbar', () => {
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( div, {
+					plugins: [ Paragraph, Link, Delete, Mention ],
+					mention: {
+						feeds: [
+							{
+								marker: '@',
+								feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
+							}
+						]
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+				} );
+		} );
+
+		it( 'should work with link toolbar', () => {
+			editor.ui.focusTracker.isFocused = true;
+
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			const balloon = editor.plugins.get( 'ContextualBalloon' );
+			const panelView = balloon.view;
+			const mentionUI = editor.plugins.get( MentionUI );
+			const mentionsView = mentionUI._mentionsView;
+
+			return new Promise( resolve => setTimeout( resolve, 200 ) )
+				.then( () => {
+					// Show link UI
+					editor.execute( 'link', '@' );
+					editor.editing.view.document.fire( 'click' );
+
+					expect( panelView.isVisible ).to.be.true;
+					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI
+
+					model.change( writer => {
+						writer.setSelection( doc.getRoot().getChild( 0 ), 'end' );
+					} );
+				} )
+				.then( () => new Promise( resolve => setTimeout( resolve, 200 ) ) )
+				.then( () => {
+					expect( panelView.isVisible ).to.be.true;
+					expect( balloon.visibleView === mentionsView ).to.be.true;
+
+					editor.execute( 'delete' );
+
+					expect( panelView.isVisible ).to.be.false;
 				} );
 		} );
 	} );

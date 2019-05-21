@@ -514,9 +514,16 @@ export default class MentionUI extends Plugin {
 		return {
 			target: () => {
 				const mentionMarker = editor.model.markers.get( 'mention' );
-				const markerRange = mentionMarker.getRange();
-				const viewRange = mapper.toViewRange( markerRange );
 
+				let modelRange = mentionMarker.getRange();
+
+				// Target the UI to the model selection range - the marker has been removed so probably the UI will not be shown anyway.
+				// The logic is used by ContextualBalloon to display another panel in the same place.
+				if ( modelRange.start.root.rootName == '$graveyard' ) {
+					modelRange = editor.model.document.selection.getFirstRange();
+				}
+
+				const viewRange = mapper.toViewRange( modelRange );
 				const rangeRects = Rect.getDomRangeRects( domConverter.viewRangeToDom( viewRange ) );
 
 				return rangeRects.pop();
