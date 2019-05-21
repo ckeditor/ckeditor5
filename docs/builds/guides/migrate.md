@@ -68,6 +68,18 @@ The following table presents configuration options available in CKEditor 4 and t
 
 Note: The number of options was reduced on purpose. We understood that configuring CKEditor 4 was a bit too troublesome due to the number of configuration options available (over 240). Sometimes they were definitely too low-level, also many times they were so infrequently used that it did not justify the increased level of the application complexity. This is why when designing CKEditor 5 from scratch, we decided to come with a simplified editor, with well-thought default behavior, based on the results of the [Editor Recommendations](http://ckeditor.github.io/editor-recommendations/) project.
 
+<style>
+/* See: https://github.com/ckeditor/ckeditor5/issues/1718. */
+.docsearch-txt {
+	table-layout: fixed;
+}
+
+.docsearch-txt tr th:nth-child( 1 ),
+.docsearch-txt tr td:nth-child( 1 ) {
+	width: 250px;
+}
+</style>
+
 <table class="docsearch-txt">
 	<thead>
 		<tr>
