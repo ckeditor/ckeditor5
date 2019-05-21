@@ -76,7 +76,7 @@ export default class ColorUI extends Plugin {
 		/**
 		 * Keeps reference to {@link module:font/ui/colortableview~ColorTableView}.
 		 *
-		 * @type {module:font/ui/colortableview~ColorTableView}
+		 * @member {module:font/ui/colortableview~ColorTableView}
 		 */
 		this.colorTableView;
 	}
@@ -134,98 +134,13 @@ export default class ColorUI extends Plugin {
 			dropdownView.on( 'change:isOpen', ( evt, name, val ) => {
 				if ( val ) {
 					if ( documentColorsCount !== 0 ) {
-						this._updateDocumentColors();
+						this.colorTableView.updateDocumentColors( editor.model, this.componentName );
 					}
-					this._updateSelectedColors();
+					this.colorTableView.updateSelectedColors();
 				}
 			} );
 
 			return dropdownView;
 		} );
 	}
-
-	/**
-	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
-	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 * In other case it's created custom color, which is added to
-	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
-	 *
-	 * @private
-	 * @param {String} color String which stores value of recently applied color
-	 */
-	_addColorToDocumentColors( color ) {
-		const predefinedColor = this.colorTableView.colorDefinitions
-			.find( definition => definition.color === color );
-
-		if ( !predefinedColor ) {
-			this.colorTableView.documentColors.add( {
-				color,
-				label: color,
-				options: {
-					hasBorder: false
-				}
-			} );
-		} else {
-			this.colorTableView.documentColors.add( Object.assign( {}, predefinedColor ) );
-		}
-	}
-
-	/**
-	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
-	 * Found entries are set as document colors.
-	 *
-	 * All the previously stored document colors will be lost in the process.
-	 *
-	 * @private
-	 */
-	_updateDocumentColors() {
-		const model = this.editor.model;
-		const document = model.document;
-		const maxCount = this.colorTableView.documentColorsCount;
-		const documentColors = this.colorTableView.documentColors;
-
-		documentColors.clear();
-
-		for ( const rootName of document.getRootNames() ) {
-			const root = document.getRoot( rootName );
-			const range = model.createRangeIn( root );
-			for ( const node of range.getItems() ) {
-				if ( node.is( 'textProxy' ) && node.hasAttribute( this.componentName ) ) {
-					this._addColorToDocumentColors( node.getAttribute( this.componentName ) );
-					if ( documentColors.length >= maxCount ) {
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
-	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
-	 *
-	 * @private
-	 */
-	_updateSelectedColors() {
-		const staticColorsGrid = this.colorTableView.items.get( 1 );
-		const documentColorGrid = this.colorTableView.items.get( 3 );
-		const selectedColor = this.colorTableView.selectedColor;
-
-		if ( documentColorGrid ) {
-			if ( isInDocumentColors( documentColorGrid.items, selectedColor ) ) {
-				documentColorGrid.selectedColor = selectedColor;
-				staticColorsGrid.selectedColor = null;
-			} else {
-				documentColorGrid.selectedColor = null;
-				staticColorsGrid.selectedColor = selectedColor;
-			}
-		} else {
-			staticColorsGrid.selectedColor = selectedColor;
-		}
-	}
-}
-
-function isInDocumentColors( collection, color ) {
-	return !!collection.find( item => item.color === color );
 }

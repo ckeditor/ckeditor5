@@ -21,6 +21,7 @@ export default class DocumentColorsCollection extends Collection {
 		 * Indicates whether the collection is empty.
 		 *
 		 * @observable
+		 * @readonly
 		 * @member {Boolean} #isEmpty
 		 */
 		this.set( 'isEmpty', true );
@@ -65,4 +66,4 @@ export default class DocumentColorsCollection extends Collection {
 	}
 }
 
-mix( Collection, ObservableMixin );
+mix( DocumentColorsCollection, ObservableMixin );

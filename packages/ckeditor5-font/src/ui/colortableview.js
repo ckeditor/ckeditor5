@@ -91,13 +91,6 @@ export default class ColorTableView extends View {
 		this.removeButtonLabel = removeButtonLabel;
 
 		/**
-		 * The label of a section with document colors.
-		 *
-		 * @type {String}
-		 */
-		this.documentColorsLabel = documentColorsLabel;
-
-		/**
 		 * The number of columns in the color grid.
 		 *
 		 * @type {Number}
@@ -108,7 +101,7 @@ export default class ColorTableView extends View {
 		 * A collection of definitions stores document colors.
 		 *
 		 * @readonly
-		 * @member {module:utils/collection~Collection}
+		 * @member {module:font/fontcolor/documentcolorscollection~DocumentColorsCollection}
 		 */
 		this.documentColors = new DocumentColorsCollection();
 
@@ -120,6 +113,24 @@ export default class ColorTableView extends View {
 		 * @type {Number}
 		 */
 		this.documentColorsCount = documentColorsCount;
+
+		/**
+		 * Preserves reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
+		 * default (static) colors set.
+		 *
+		 * @readonly
+		 * @member {module:ui/colorgrid/colorgridview~ColorGridView}
+		 */
+		this.staticColorsGrid = this._createStaticColorsGrid();
+
+		/**
+		 * Preserves reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
+		 * document colors. It remains undefined if document colors are disabled.
+		 *
+		 * @readonly
+		 * @member {module:ui/colorgrid/colorgridview~ColorGridView}
+		 */
+		this.documentColorGrid;
 
 		/**
 		 * Helps cycling over focusable {@link #items} in the list.
@@ -153,11 +164,13 @@ export default class ColorTableView extends View {
 		} );
 
 		this.items.add( this._removeColorButton() );
-		this.items.add( this._createStaticColorsGrid() );
+		this.items.add( this.staticColorsGrid );
 
 		if ( documentColorsCount ) {
+			this.documentColorsGrid = this._createDocumentColorsGrid();
+
 			const label = new LabelView( this.locale );
-			label.text = this.documentColorsLabel;
+			label.text = documentColorsLabel;
 
 			label.extendTemplate( {
 				attributes: {
@@ -170,7 +183,7 @@ export default class ColorTableView extends View {
 			} );
 
 			this.items.add( label );
-			this.items.add( this._createDocumentColorsGrid() );
+			this.items.add( this.documentColorsGrid );
 		}
 	}
 
@@ -275,9 +288,7 @@ export default class ColorTableView extends View {
 
 				colorTile.on( 'execute', () => {
 					this.fire( 'execute', {
-						value: colorObj.color,
-						label: colorObj.label,
-						options: Object.assign( {}, colorObj.options )
+						value: colorObj.color
 					} );
 				} );
 
@@ -287,4 +298,86 @@ export default class ColorTableView extends View {
 
 		return documentColors;
 	}
+
+	/**
+	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
+	 * Found entries are set as document colors.
+	 *
+	 * All the previously stored document colors will be lost in the process.
+	 *
+	 * @param {model:engine/model/model~Model} model used as source to obtain document colors
+	 * @param {String} componentName determines what is name of related model's attribute for given dropdown
+	 */
+	updateDocumentColors( model, componentName ) {
+		const document = model.document;
+		const maxCount = this.documentColorsCount;
+
+		this.documentColors.clear();
+
+		for ( const rootName of document.getRootNames() ) {
+			const root = document.getRoot( rootName );
+			const range = model.createRangeIn( root );
+			for ( const node of range.getItems() ) {
+				if ( node.is( 'textProxy' ) && node.hasAttribute( componentName ) ) {
+					this._addColorToDocumentColors( node.getAttribute( componentName ) );
+					if ( this.documentColors.length >= maxCount ) {
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
+	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
+	 */
+	updateSelectedColors() {
+		const documentColorsGrid = this.documentColorsGrid;
+		const staticColorsGrid = this.staticColorsGrid;
+		const selectedColor = this.selectedColor;
+
+		if ( documentColorsGrid ) {
+			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
+				documentColorsGrid.selectedColor = selectedColor;
+				staticColorsGrid.selectedColor = null;
+			} else {
+				documentColorsGrid.selectedColor = null;
+				staticColorsGrid.selectedColor = selectedColor;
+			}
+		} else {
+			staticColorsGrid.selectedColor = selectedColor;
+		}
+	}
+
+	/**
+	 * Method adds the `color` to document colors list. If possible, it will attempt to use data from the
+	 * {@link #colorDefinitions} (label, color options). If color is found, then it is added to the
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 * In other case it's created custom color, which is added to
+	 * {@link module:font/ui/colortableview~ColorTableView#documentColors} model.
+	 *
+	 * @private
+	 * @param {String} color String which stores value of recently applied color
+	 */
+	_addColorToDocumentColors( color ) {
+		const predefinedColor = this.colorDefinitions
+			.find( definition => definition.color === color );
+
+		if ( !predefinedColor ) {
+			this.documentColors.add( {
+				color,
+				label: color,
+				options: {
+					hasBorder: false
+				}
+			} );
+		} else {
+			this.documentColors.add( Object.assign( {}, predefinedColor ) );
+		}
+	}
+}
+
+function isInDocumentColors( collection, color ) {
+	return !!collection.find( item => item.color === color );
 }
