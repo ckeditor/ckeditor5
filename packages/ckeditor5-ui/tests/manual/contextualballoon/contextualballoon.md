@@ -8,4 +8,12 @@
 ## Multiple stacks
 
 1. Select some highlighted text - "View in separate stack." should show up.
-2. Switch stacks by clicking navigation buttons - you should switch between toolbar and custom view.
+2. Switch stacks by clicking navigation buttons. You should switch between toolbar and custom views. Toolbar view should be displayed without information about number of stacks (only left and right arrows).
+
+## Fake panels - min
+
+1. Put the selection before the highlight, start moving selection by right arrow. You should see additional layer under the balloon only when at least 2 stacks are added to the balloon.
+
+## Fake panels - max
+
+1. Select text `[select]` from the lower highlight. You should see `1 of 5` status of pagination but only 3 additional layers under the balloon should be visible.
