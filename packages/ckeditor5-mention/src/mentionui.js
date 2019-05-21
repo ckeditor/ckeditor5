@@ -296,6 +296,8 @@ export default class MentionUI extends Plugin {
 			const nodeBefore = focus.nodeBefore;
 
 			if ( hasMention || nodeBefore && nodeBefore.is( 'text' ) && nodeBefore.hasAttribute( 'mention' ) ) {
+				this._hideUIAndRemoveMarker();
+
 				return;
 			}
 
