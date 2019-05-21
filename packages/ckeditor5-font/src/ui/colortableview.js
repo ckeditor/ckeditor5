@@ -115,20 +115,20 @@ export default class ColorTableView extends View {
 		this.documentColorsCount = documentColorsCount;
 
 		/**
-		 * Preserves reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
+		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
 		 * default (static) colors set.
 		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgridview~ColorGridView}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
 		 */
 		this.staticColorsGrid = this._createStaticColorsGrid();
 
 		/**
-		 * Preserves reference to {@link module:ui/colorgrid/colorgridview~ColorGridView} used to create
+		 * Preserves reference to {@link module:ui/colorgrid/colorgrid~ColorGridView} used to create
 		 * document colors. It remains undefined if document colors are disabled.
 		 *
 		 * @readonly
-		 * @member {module:ui/colorgrid/colorgridview~ColorGridView}
+		 * @member {module:ui/colorgrid/colorgrid~ColorGridView}
 		 */
 		this.documentColorGrid;
 
@@ -188,12 +188,12 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method scans through editor's content and searches for text node attributes with the name defined in {@link #commandName}.
+	 * Method scans through editor's content and searches for text node attributes with componentName.
 	 * Found entries are set as document colors.
 	 *
 	 * All the previously stored document colors will be lost in the process.
 	 *
-	 * @param {model:engine/model/model~Model} model used as source to obtain document colors
+	 * @param {module:engine/model/model~Model} model used as source to obtain document colors
 	 * @param {String} componentName determines what is name of related model's attribute for given dropdown
 	 */
 	updateDocumentColors( model, componentName ) {
@@ -217,7 +217,7 @@ export default class ColorTableView extends View {
 	}
 
 	/**
-	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgridview~ColorGridView}
+	 * Method refresh state of `selectedColor` in single or both {@link module:ui/colorgrid/colorgrid~ColorGridView}
 	 * available in {@link module:font/ui/colortableview~ColorTableView}. It guarantees that selection will occur only in one of them.
 	 */
 	updateSelectedColors() {
@@ -226,11 +226,12 @@ export default class ColorTableView extends View {
 		const selectedColor = this.selectedColor;
 
 		if ( documentColorsGrid ) {
+			staticColorsGrid.selectedColor = null;
+			documentColorsGrid.selectedColor = null;
+
 			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
 				documentColorsGrid.selectedColor = selectedColor;
-				staticColorsGrid.selectedColor = null;
 			} else {
-				documentColorsGrid.selectedColor = null;
 				staticColorsGrid.selectedColor = selectedColor;
 			}
 		} else {
@@ -271,7 +272,7 @@ export default class ColorTableView extends View {
 	 * Adds the remove color button as a child of the current view.
 	 *
 	 * @private
-	 * @returns {module:ui/src/button/buttonview~ButtonView}
+	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_removeColorButton() {
 		const buttonView = new ButtonView();
@@ -295,7 +296,7 @@ export default class ColorTableView extends View {
 	 * Creates a static color table grid based on the editor configuration.
 	 *
 	 * @private
-	 * @returns {module:ui/src/colorgrid/colorgridview~ColorGridView}
+	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
 	 */
 	_createStaticColorsGrid() {
 		const colorGrid = new ColorGridView( this.locale, {
@@ -312,7 +313,7 @@ export default class ColorTableView extends View {
 	 * Creates document colors section view and binds it to {@link #documentColors}.
 	 *
 	 * @private
-	 * @returns {module:ui/src/colorgrid/colorgridview~ColorGridView}
+	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
 	 */
 	_createDocumentColorsGrid() {
 		const documentColors = new ColorGridView( this.locale, {

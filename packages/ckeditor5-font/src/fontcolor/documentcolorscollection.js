@@ -31,7 +31,7 @@ export default class DocumentColorsCollection extends Collection {
 	 * Adds a color into the collection.
 	 *
 	 * Function ensures that no color duplicates are inserted (compared using
-	 * the {@link module:ui/colorgrid/colorgrid~ColorDefinition#color color} value).
+	 * the color value of {@link module:ui/colorgrid/colorgrid~ColorDefinition}).
 	 *
 	 * If the item does not have an id, then it will be automatically generated and set on the item.
 	 *
