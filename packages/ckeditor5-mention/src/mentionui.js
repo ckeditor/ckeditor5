@@ -552,8 +552,8 @@ export function createRegExp( marker, minimumCharacters ) {
 	// - 1: Marker character.
 	// - 2: Mention input (with support of minimal lenght to trigger UI)
 	// The pattern matches up to the caret (end of string switch - $).
-	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                  )$
-	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters }?)$`;
+	//               (0:      opening sequence       )(1:  marker   )(2:                typed mention                 )$
+	const pattern = `(?:^|[ ${ openAfterCharacters }])([${ marker }])([_${ mentionCharacters }]${ numberOfCharacters })$`;
 
 	return new RegExp( pattern, 'u' );
 }

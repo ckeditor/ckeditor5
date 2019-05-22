@@ -468,14 +468,14 @@ describe( 'MentionUI', () => {
 				featureDetection.isUnicodeGroupSupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,}?)$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([_a-zA-ZÀ-ž0-9]{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
 				featureDetection.isUnicodeGroupSupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,}?)$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([_\\p{L}\\p{N}]{2,})$', 'u' );
 			} );
 		} );
 
