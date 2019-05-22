@@ -742,33 +742,6 @@ describe( 'ContextualBalloon', () => {
 			expect( counterElement.textContent ).to.equal( '2 of 2' );
 		} );
 
-		it( 'should hide counter when element width is less then 200px', () => {
-			// To be sure navigation is displayed.
-			balloon.add( {
-				view: viewB,
-				stackId: 'second'
-			} );
-
-			const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
-			let mockedWidth = 201;
-
-			sinon.stub( rotatorView.element, 'clientWidth' ).get( () => mockedWidth );
-
-			balloon.showStack( 'second' );
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
-
-			mockedWidth = 200;
-			balloon.showStack( 'main' );
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( true );
-
-			mockedWidth = 201;
-			balloon.updatePosition();
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
-		} );
-
 		it( 'should switch stack to the next one after clicking next button', () => {
 			balloon.add( {
 				view: viewB,
@@ -875,6 +848,124 @@ describe( 'ContextualBalloon', () => {
 			rotatorView.buttonPrevView.fire( 'execute' );
 
 			sinon.assert.calledOnce( editableFocusSpy );
+		} );
+
+		it( 'should add hidden view with fake panels to editor body collection', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+
+			expect( fakePanelsView.element.classList.contains( 'ck-fake-panel' ) ).to.equal( true );
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( true );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+		} );
+
+		it( 'should show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+			const viewD = new View();
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.add( {
+				view: viewD,
+				stackId: 'fourth'
+			} );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.remove( viewD );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
+
+			balloon.remove( viewC );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+			balloon.remove( viewB );
+
+			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( true );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+		} );
+
+		it( 'should keep position of fake panels up to date with balloon position when panels are visible', () => {
+			const fakePanelsView = editor.ui.view.body.last;
+
+			let width = 30;
+			let height = 40;
+
+			balloon.view.top = 10;
+			balloon.view.left = 20;
+
+			sinon.stub( balloon.view.element, 'getBoundingClientRect' ).callsFake( () => ( { width, height } ) );
+
+			balloon.add( {
+				view: viewB,
+				stackId: 'second'
+			} );
+
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+
+			balloon.view.top = 15;
+			balloon.view.left = 25;
+			width = 35;
+			height = 45;
+
+			balloon.add( {
+				view: viewC,
+				stackId: 'third'
+			} );
+
+			expect( fakePanelsView.element.style.top ).to.equal( '15px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '25px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '35px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '45px' );
+
+			balloon.view.top = 10;
+			balloon.view.left = 20;
+			width = 30;
+			height = 40;
+
+			balloon.updatePosition();
+
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+
+			// Hide fake panels by removing additional stacks.
+			balloon.remove( viewC );
+			balloon.remove( viewB );
+
+			balloon.view.top = 15;
+			balloon.view.left = 25;
+			width = 35;
+			height = 45;
+
+			balloon.updatePosition();
+
+			// Old values because fake panels are hidden.
+			expect( fakePanelsView.element.style.top ).to.equal( '10px' );
+			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
+			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
+			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
 		} );
 	} );
 } );
