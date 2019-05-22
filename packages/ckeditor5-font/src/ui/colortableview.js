@@ -167,28 +167,31 @@ export default class ColorTableView extends View {
 		this.items.add( this.staticColorsGrid );
 
 		if ( documentColorsCount ) {
-			this.documentColorsGrid = this._createDocumentColorsGrid();
-
+			// Create Label for Document Colors
+			const bind = Template.bind( this.documentColors, this.documentColors );
 			const label = new LabelView( this.locale );
-			label.text = documentColorsLabel;
 
+			label.text = documentColorsLabel;
 			label.extendTemplate( {
 				attributes: {
 					class: [
 						'ck',
 						'ck-color-grid__label',
-						Template.bind( this.documentColors, this.documentColors ).if( 'isEmpty', 'ck-hidden' )
+						bind.if( 'isEmpty', 'ck-hidden' )
 					]
 				}
 			} );
 
 			this.items.add( label );
+
+			// Create Document Colors
+			this.documentColorsGrid = this._createDocumentColorsGrid();
 			this.items.add( this.documentColorsGrid );
 		}
 	}
 
 	/**
-	 * Method scans through editor's content and searches for text node attributes with componentName.
+	 * Method scans through editor's model and searches for text node attributes with componentName.
 	 * Found entries are set as document colors.
 	 *
 	 * All the previously stored document colors will be lost in the process.
@@ -201,6 +204,7 @@ export default class ColorTableView extends View {
 		const maxCount = this.documentColorsCount;
 
 		this.documentColors.clear();
+		this.documentColors.selectedColor = null;
 
 		for ( const rootName of document.getRootNames() ) {
 			const root = document.getRoot( rootName );
@@ -226,13 +230,12 @@ export default class ColorTableView extends View {
 		const selectedColor = this.selectedColor;
 
 		if ( documentColorsGrid ) {
-			staticColorsGrid.selectedColor = null;
-			documentColorsGrid.selectedColor = null;
-
 			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
+				staticColorsGrid.selectedColor = null;
 				documentColorsGrid.selectedColor = selectedColor;
 			} else {
 				staticColorsGrid.selectedColor = selectedColor;
+				documentColorsGrid.selectedColor = null;
 			}
 		} else {
 			staticColorsGrid.selectedColor = selectedColor;
@@ -316,19 +319,20 @@ export default class ColorTableView extends View {
 	 * @returns {module:ui/colorgrid/colorgrid~ColorGridView}
 	 */
 	_createDocumentColorsGrid() {
-		const documentColors = new ColorGridView( this.locale, {
+		const bind = Template.bind( this.documentColors, this.documentColors );
+		const documentColorsGrid = new ColorGridView( this.locale, {
 			columns: this.columns
 		} );
 
-		documentColors.delegate( 'execute' ).to( this );
+		documentColorsGrid.delegate( 'execute' ).to( this );
 
-		documentColors.extendTemplate( {
+		documentColorsGrid.extendTemplate( {
 			attributes: {
-				class: Template.bind( this.documentColors, this.documentColors ).if( 'isEmpty', 'ck-hidden' )
+				class: bind.if( 'isEmpty', 'ck-hidden' )
 			}
 		} );
 
-		documentColors.items.bindTo( this.documentColors ).using(
+		documentColorsGrid.items.bindTo( this.documentColors ).using(
 			colorObj => {
 				const colorTile = new ColorTileView();
 
@@ -354,7 +358,14 @@ export default class ColorTableView extends View {
 			}
 		);
 
-		return documentColors;
+		// Selected color should be cleared when document colors became empty.
+		this.documentColors.on( 'change:isEmpty', ( evt, name, val ) => {
+			if ( val ) {
+				documentColorsGrid.selectedColor = null;
+			}
+		} );
+
+		return documentColorsGrid;
 	}
 
 	/**
