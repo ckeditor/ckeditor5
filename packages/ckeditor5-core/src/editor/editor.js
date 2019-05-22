@@ -16,8 +16,6 @@ import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontro
 import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { isElement } from 'lodash-es';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -271,34 +269,6 @@ export default class Editor {
 	}
 
 	/**
-	 * Throws `editor-wrong-element` when checked element is `<textarea>`.
-	 *
-	 * @protected
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * or the editor's initial data.
-	 */
-	static _assertAllowedSourceElement( sourceElementOrData ) {
-		if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName.toLowerCase() === 'textarea' ) {
-			/**
-			 * This error is thrown when a user tries to use a `<textarea>` element to create a non-classic editor in it.
-			 *
-			 * Textarea element represents a plain-text and cannot be used as a editable root element with included CKEditor5.
-			 * Content of an editor should be nicely present to the user and show him how it's going to looks like. Textarea element
-			 * doesn't support such behavior.
-			 *
-			 * Only {@glink builds/guides/overview#classic-editor Classic Editor} has implemented a special system, which
-			 * **replace** DOM element and load data from it
-			 * ({@link module:editor-classic/classiceditor~ClassicEditor.create more information}). All other editors
-			 * use an existing element, load data from it and make this element editable. Details about behaviour of each editor
-			 * might be found in an associated description of a `create` method of each editor.
-			 *
-			 * @error editor-wrong-element
-			 */
-			throw new CKEditorError( 'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.' );
-		}
-	}
-
-	/**
 	 * Creates and initializes a new editor instance.
 	 *
 	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
@@ -340,6 +310,22 @@ mix( Editor, ObservableMixin );
  * See also the {@link #state `editor.state`} property.
  *
  * @event destroy
+ */
+
+/**
+ * This error is thrown when a user tries to use a `<textarea>` element to create a non-classic editor in it.
+ *
+ * Textarea element represents a plain-text and cannot be used as a editable root element with included CKEditor5.
+ * Content of an editor should be nicely present to the user and show him how it's going to looks like. Textarea element
+ * doesn't support such behavior.
+ *
+ * Only {@glink builds/guides/overview#classic-editor Classic Editor} has implemented a special system, which
+ * **replace** DOM element and load data from it
+ * ({@link module:editor-classic/classiceditor~ClassicEditor.create more information}). All other editors
+ * use an existing element, load data from it and make this element editable. Details about behaviour of each editor
+ * might be found in an associated description of a `create` method of each editor.
+ *
+ * @error editor-wrong-element
  */
 
 /**

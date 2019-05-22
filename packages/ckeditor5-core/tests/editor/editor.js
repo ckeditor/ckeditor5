@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals window, setTimeout, document */
+/* globals window, setTimeout */
 
 import Editor from '../../src/editor/editor';
 import Plugin from '../../src/plugin';
@@ -771,35 +771,6 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginF ).afterInit
 					);
 				} );
-		} );
-	} );
-
-	describe( '_assertAllowedSourceElement()', () => {
-		it( 'should pass for non-html data', () => {
-			const notThrowingFn = () => {
-				Editor._assertAllowedSourceElement( 'some initial data' );
-			};
-
-			expect( notThrowingFn ).to.not.throw();
-		} );
-
-		it( 'should pass non-textarea element', () => {
-			const element = document.createElement( 'div' );
-			const notThrowingFn = () => {
-				Editor._assertAllowedSourceElement( element );
-			};
-
-			expect( notThrowingFn ).to.not.throw();
-		} );
-
-		it( 'should throw error for textarea element', () => {
-			const element = document.createElement( 'textarea' );
-			const throwingFn = () => {
-				Editor._assertAllowedSourceElement( element );
-			};
-
-			expect( throwingFn ).to
-				.throw( CKEditorError, /^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./ );
 		} );
 	} );
 } );
