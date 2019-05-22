@@ -246,6 +246,7 @@ describe( 'ColorTableView', () => {
 				hasBorder: true
 			}
 		};
+
 		describe( 'default checks', () => {
 			let documentColorsGridView, documentColors;
 
@@ -329,13 +330,12 @@ describe( 'ColorTableView', () => {
 			describe( 'binding', () => {
 				it( 'add tile item when document colors model is updated', () => {
 					let itm;
+
 					expect( documentColors.length ).to.equal( 0 );
 					expect( documentColorsGridView.items.length ).to.equal( 0 );
 
 					documentColors.add( Object.assign( {}, colorBlack ) );
-
 					expect( documentColors.length ).to.equal( 1 );
-
 					expect( documentColorsGridView.items.length ).to.equal( 1 );
 
 					itm = documentColorsGridView.items.first;
@@ -496,7 +496,6 @@ describe( 'ColorTableView', () => {
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
-					// testColorPlugin = newEditor.plugins.get( 'TestColorPlugin' );
 					dropdown = editor.ui.componentFactory.create( 'testColor' );
 
 					dropdown.render();

@@ -53,4 +53,9 @@ describe( 'DocumentColorsCollection', () => {
 		documentColorsCollection.add( { color: '111' } );
 		expect( documentColorsCollection.length ).to.equal( 4 );
 	} );
+
+	it( 'hasColor()', () => {
+		expect( documentColorsCollection.hasColor( '111' ) ).to.be.true;
+		expect( documentColorsCollection.hasColor( '555' ) ).to.be.false;
+	} );
 } );

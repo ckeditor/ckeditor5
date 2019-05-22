@@ -204,14 +204,15 @@ export default class ColorTableView extends View {
 		const maxCount = this.documentColorsCount;
 
 		this.documentColors.clear();
-		this.documentColors.selectedColor = null;
 
 		for ( const rootName of document.getRootNames() ) {
 			const root = document.getRoot( rootName );
 			const range = model.createRangeIn( root );
+
 			for ( const node of range.getItems() ) {
 				if ( node.is( 'textProxy' ) && node.hasAttribute( componentName ) ) {
 					this._addColorToDocumentColors( node.getAttribute( componentName ) );
+
 					if ( this.documentColors.length >= maxCount ) {
 						return;
 					}
@@ -229,8 +230,8 @@ export default class ColorTableView extends View {
 		const staticColorsGrid = this.staticColorsGrid;
 		const selectedColor = this.selectedColor;
 
-		if ( documentColorsGrid ) {
-			if ( isInDocumentColors( documentColorsGrid.items, selectedColor ) ) {
+		if ( !this.documentColors.isEmpty ) {
+			if ( this.documentColors.hasColor( selectedColor ) ) {
 				staticColorsGrid.selectedColor = null;
 				documentColorsGrid.selectedColor = selectedColor;
 			} else {
@@ -394,8 +395,4 @@ export default class ColorTableView extends View {
 			this.documentColors.add( Object.assign( {}, predefinedColor ) );
 		}
 	}
-}
-
-function isInDocumentColors( collection, color ) {
-	return !!collection.find( item => item.color === color );
 }

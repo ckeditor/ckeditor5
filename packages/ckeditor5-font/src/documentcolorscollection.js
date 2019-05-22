@@ -63,6 +63,15 @@ export default class DocumentColorsCollection extends Collection {
 
 		return ret;
 	}
+
+	/**
+	 * Checks if object with given colors is present in collection.
+	 *
+	 * @param {String} color
+	 */
+	hasColor( color ) {
+		return !!this.find( item => item.color === color );
+	}
 }
 
 mix( DocumentColorsCollection, ObservableMixin );
