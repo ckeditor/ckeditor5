@@ -18,6 +18,16 @@
 	/* Gives counter more breath than buttons. */
 	& .ck-balloon-rotator__counter {
 		margin-right: var(--ck-spacing-standard);
-		margin-left: var(--ck-spacing-standard);
+
+		/* We need to use smaller margin because of previous button's right margin. */
+		margin-left: var(--ck-spacing-small);
+	}
+}
+
+.ck .ck-balloon-rotator__content {
+
+	/* Disable default annotation shadow inside rotator with fake panels. */
+	& .ck.ck-annotation-wrapper {
+		box-shadow: none;
 	}
 }
