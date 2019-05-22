@@ -6,8 +6,8 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
-	--ck-balloon-fake-panel-offset-horizontal: 8px;
-	--ck-balloon-fake-panel-offset-vertical: 8px;
+	--ck-balloon-fake-panel-offset-horizontal: 6px;
+	--ck-balloon-fake-panel-offset-vertical: 6px;
 }
 
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
@@ -26,9 +26,7 @@
 
 .ck .ck-fake-panel div:nth-child( 1 ) {
 	margin-left: var(--ck-balloon-fake-panel-offset-horizontal);
-
-	/* Because of parent shadow, we need to move panel by fixed value. */
-	margin-top: calc( var(--ck-balloon-fake-panel-offset-vertical) + 1px );
+	margin-top: var(--ck-balloon-fake-panel-offset-vertical);
 }
 
 .ck .ck-fake-panel div:nth-child( 2 ) {
