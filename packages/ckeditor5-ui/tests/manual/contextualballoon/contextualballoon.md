@@ -16,4 +16,4 @@
 
 ## Fake panels - max
 
-1. Select text `[select]` from the lower highlight. You should see `1 of 4` status of pagination but only 2 additional layers under the balloon should be visible.
+1. Select text `[select]` (by non-collapsed selection) from the lower highlight. You should see `1 of 4` status of pagination but only 2 additional layers under the balloon should be visible.
