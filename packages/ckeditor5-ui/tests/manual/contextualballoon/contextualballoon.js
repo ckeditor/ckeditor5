@@ -90,8 +90,7 @@ ClassicEditor
 				{ id: 2, start: [ 1, 2 ], end: [ 1, 33 ], color: 'green' },
 				{ id: 3, start: [ 5, 20 ], end: [ 5, 35 ], color: 'blue' },
 				{ id: 4, start: [ 5, 15 ], end: [ 5, 40 ], color: 'pink' },
-				{ id: 5, start: [ 5, 10 ], end: [ 5, 45 ], color: 'yellow' },
-				{ id: 6, start: [ 5, 5 ], end: [ 5, 50 ], color: 'green' },
+				{ id: 5, start: [ 5, 10 ], end: [ 5, 45 ], color: 'yellow' }
 			].forEach( data => {
 				writer.addMarker( `highlight:${ data.id }:${ data.color }`, {
 					range: writer.createRange(
