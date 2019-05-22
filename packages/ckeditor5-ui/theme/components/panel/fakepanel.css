@@ -15,9 +15,9 @@
 }
 
 .ck .ck-fake-panel div:nth-child( 1 ) {
-	z-index: 3;
+	z-index: 2;
 }
 
 .ck .ck-fake-panel div:nth-child( 2 ) {
-	z-index: 2;
+	z-index: 1;
 }
