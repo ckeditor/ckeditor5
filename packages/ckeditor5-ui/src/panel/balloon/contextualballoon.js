@@ -272,7 +272,6 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		this.view.pin( this._getBalloonPosition() );
-		this._rotatorView.updateIsNarrow();
 		this._fakePanelsView.updatePosition();
 	}
 
@@ -494,13 +493,6 @@ class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		/**
-		 * Defines whether balloon should be marked as narrow or not.
-		 *
-		 * @member {Boolean} #isNarrow
-		 */
-		this.set( 'isNarrow', false );
-
-		/**
 		 * Used for checking if view is focused or not.
 		 *
 		 * @type {module:utils/focustracker~FocusTracker}
@@ -554,8 +546,7 @@ class RotatorView extends View {
 
 							attributes: {
 								class: [
-									'ck-balloon-rotator__counter',
-									bind.to( 'isNarrow', value => value ? 'ck-hidden' : '' )
+									'ck-balloon-rotator__counter'
 								]
 							},
 
@@ -589,13 +580,6 @@ class RotatorView extends View {
 	}
 
 	/**
-	 * Checks if view width is narrow and updated {@link ~RotatorView#isNarrow} state.
-	 */
-	updateIsNarrow() {
-		this.isNarrow = this.element.clientWidth <= 200;
-	}
-
-	/**
 	 * Shows given view.
 	 *
 	 * @param {module:ui/view~View} view The view to show.
@@ -603,7 +587,6 @@ class RotatorView extends View {
 	showView( view ) {
 		this.hideView();
 		this.content.add( view );
-		this.updateIsNarrow();
 	}
 
 	/**

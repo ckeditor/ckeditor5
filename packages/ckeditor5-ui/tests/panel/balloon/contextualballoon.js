@@ -742,33 +742,6 @@ describe( 'ContextualBalloon', () => {
 			expect( counterElement.textContent ).to.equal( '2 of 2' );
 		} );
 
-		it( 'should hide counter when element width is less then 200px', () => {
-			// To be sure navigation is displayed.
-			balloon.add( {
-				view: viewB,
-				stackId: 'second'
-			} );
-
-			const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
-			let mockedWidth = 201;
-
-			sinon.stub( rotatorView.element, 'clientWidth' ).get( () => mockedWidth );
-
-			balloon.showStack( 'second' );
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
-
-			mockedWidth = 200;
-			balloon.showStack( 'main' );
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( true );
-
-			mockedWidth = 201;
-			balloon.updatePosition();
-
-			expect( counterElement.classList.contains( 'ck-hidden' ) ).to.equal( false );
-		} );
-
 		it( 'should switch stack to the next one after clicking next button', () => {
 			balloon.add( {
 				view: viewB,
