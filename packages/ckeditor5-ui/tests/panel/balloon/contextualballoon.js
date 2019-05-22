@@ -858,10 +858,9 @@ describe( 'ContextualBalloon', () => {
 			expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
 		} );
 
-		it( 'should show fake panels when more than one stack is added to the balloon (max to 3 panels)', () => {
+		it( 'should show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
 			const fakePanelsView = editor.ui.view.body.last;
 			const viewD = new View();
-			const viewE = new View();
 
 			balloon.add( {
 				view: viewB,
@@ -885,20 +884,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
-			expect( fakePanelsView.element.childElementCount ).to.equal( 3 );
-
-			balloon.add( {
-				view: viewE,
-				stackId: 'fifth'
-			} );
-
-			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
-			expect( fakePanelsView.element.childElementCount ).to.equal( 3 );
-
-			balloon.remove( viewE );
-
-			expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
-			expect( fakePanelsView.element.childElementCount ).to.equal( 3 );
+			expect( fakePanelsView.element.childElementCount ).to.equal( 2 );
 
 			balloon.remove( viewD );
 

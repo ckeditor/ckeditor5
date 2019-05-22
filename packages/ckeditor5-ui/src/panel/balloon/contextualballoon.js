@@ -415,7 +415,7 @@ export default class ContextualBalloon extends Plugin {
 		const view = new FakePanelsView( this.editor.locale, this.view );
 
 		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', number => {
-			return number < 2 ? 0 : Math.min( number - 1, 3 );
+			return number < 2 ? 0 : Math.min( number - 1, 2 );
 		} );
 
 		view.listenTo( this.view, 'change:top', () => view.updatePosition() );
