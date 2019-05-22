@@ -39,6 +39,8 @@
 }
 
 /* If balloon is positioned above element, we need to move fake panel to the top. */
-.ck .ck-balloon-panel_arrow_s + .ck-fake-panel {
+.ck .ck-balloon-panel_arrow_s + .ck-fake-panel,
+.ck .ck-balloon-panel_arrow_se + .ck-fake-panel,
+.ck .ck-balloon-panel_arrow_sw + .ck-fake-panel {
 	--ck-balloon-fake-panel-offset-vertical: -6px;
 }
