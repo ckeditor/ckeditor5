@@ -952,8 +952,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.view.top = 10;
 			balloon.view.left = 20;
 
-			sinon.stub( balloon.view.element, 'clientWidth' ).get( () => width );
-			sinon.stub( balloon.view.element, 'clientHeight' ).get( () => height );
+			sinon.stub( balloon.view.element, 'getBoundingClientRect' ).callsFake( () => ( { width, height } ) );
 
 			balloon.add( {
 				view: viewB,

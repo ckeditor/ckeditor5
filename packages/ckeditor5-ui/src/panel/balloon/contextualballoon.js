@@ -14,6 +14,7 @@ import ButtonView from '../../button/buttonview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
@@ -742,10 +743,10 @@ class FakePanelsView extends View {
 	// Updates coordinates of fake panels.
 	updatePosition() {
 		if ( this.numberOfPanels ) {
-			this.top = this._balloonPanelView.top;
-			this.left = this._balloonPanelView.left;
-			this.width = this._balloonPanelView.element.clientWidth;
-			this.height = this._balloonPanelView.element.clientHeight;
+			const { top, left } = this._balloonPanelView;
+			const { width, height } = new Rect( this._balloonPanelView.element );
+
+			Object.assign( this, { top, left, width, height } );
 		}
 	}
 }
