@@ -104,29 +104,30 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows warning notification.
+	 * Shows a warning notification.
 	 *
-	 * At default it fires `show:warning` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default it fires the {@link #show:warning `show:warning`} event with a given `data` but event namespace can be extended
+	 * using `data.namespace` option e.g.
 	 *
 	 * 		showWarning( 'Image upload error.', {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
 	 * will fire `show:warning:upload:image` event.
-	 * Title of the notification can be provided:
+	 *
+	 * The title of the notification can be provided:
 	 *
 	 *		showWarning( 'Image upload error.', {
 	 *			title: 'Upload failed'
-	 *		});
+	 *		} );
 	 *
-	 * Note that each unhandled and not stopped `warning` notification will be displayed as system alert.
-	 * Plugin responsible for displaying warnings should `stop()` the event to prevent of displaying it as alert:
+	 * Note that each unhandled and not stopped `warning` notification will be displayed as a system alert.
+	 * Plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
 	 * 			// Do something with data.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		} );
 	 *
@@ -139,7 +140,7 @@ export default class Notification extends Plugin {
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
 	 * 			// Log warning to some error tracker.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		}, { priority: 'low' } );
 	 *
