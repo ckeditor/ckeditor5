@@ -14,7 +14,7 @@ import RemoveFormatCommand from './removeformatcommand';
 /**
  * The remove format editing plugin.
  *
- * It registers the `'removeFormat'` command.
+ * It registers the {@link module:remove-format/removeformatcommand~RemoveFormatCommand removeFormat} command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -26,6 +26,9 @@ export default class RemoveFormatEditing extends Plugin {
 		return 'RemoveFormatEditing';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
