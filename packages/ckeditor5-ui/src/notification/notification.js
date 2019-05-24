@@ -138,7 +138,7 @@ export default class Notification extends Plugin {
 	 * 		} );
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Log warning to some error tracker.
+	 * 			// Log the warning to some error tracker.
 	 *
 	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
