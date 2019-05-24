@@ -15,8 +15,8 @@ import RemoveFormatEditing from './removeformatediting';
 /**
  * The remove format plugin.
  *
- * This is a "glue" plugin which loads the {@link module:remove-format/removeformatediting~RemoveFormatEditing editing}
- * and the {@link module:remove-format/removeformatui~RemoveFormatUI UI}.
+ * This is a "glue" plugin which loads the {@link module:remove-format/removeformatediting~RemoveFormatEditing}
+ * and {@link module:remove-format/removeformatui~RemoveFormatUI} plugins.
  *
  * For a detailed overview, check out the {@glink features/remove-format remove format} feature documentation.
  *
