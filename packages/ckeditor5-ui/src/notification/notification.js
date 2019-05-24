@@ -107,7 +107,7 @@ export default class Notification extends Plugin {
 	 * Shows a warning notification.
 	 *
 	 * By default, it fires the {@link #show:warning `show:warning`} event with the given `data`. The event namespace can be extended
-	 * using `data.namespace` option e.g.
+	 * using the `data.namespace` option. For example:
 	 *
 	 * 		showWarning( 'Image upload error.', {
 	 * 			namespace: 'upload:image'
