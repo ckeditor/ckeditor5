@@ -113,7 +113,7 @@ export default class Notification extends Plugin {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
-	 * will fire `show:warning:upload:image` event.
+	 * will fire the `show:warning:upload:image` event.
 	 *
 	 * The title of the notification can be provided:
 	 *
