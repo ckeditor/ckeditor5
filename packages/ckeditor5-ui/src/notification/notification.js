@@ -122,7 +122,7 @@ export default class Notification extends Plugin {
 	 *		} );
 	 *
 	 * Note that each unhandled and not stopped `warning` notification will be displayed as a system alert.
-	 * Plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
+	 * The plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
 	 * 			// Do something with data.
