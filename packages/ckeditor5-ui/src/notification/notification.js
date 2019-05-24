@@ -104,42 +104,43 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows warning notification.
+	 * Shows a warning notification.
 	 *
-	 * At default it fires `show:warning` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link module:ui/notification/notification~Notification#event:show:warning `show:warning` event}
+	 * with the given `data`. The event namespace can be extended using the `data.namespace` option. For example:
 	 *
 	 * 		showWarning( 'Image upload error.', {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
-	 * will fire `show:warning:upload:image` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:warning:upload:image` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showWarning( 'Image upload error.', {
 	 *			title: 'Upload failed'
-	 *		});
+	 *		} );
 	 *
-	 * Note that each unhandled and not stopped `warning` notification will be displayed as system alert.
-	 * Plugin responsible for displaying warnings should `stop()` the event to prevent of displaying it as alert:
+	 * Note that each unhandled and not stopped `warning` notification will be displayed as a system alert.
+	 * The plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Do something with data.
+	 * 			// Do something with the data.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		} );
 	 *
-	 * You can attach many listeners to the same event and `stop()` this event in the listener with the low priority:
+	 * You can attach many listeners to the same event and `stop()` this event in a listener with a low priority:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Show warning in the UI, but not stop it.
+	 * 			// Show the warning in the UI, but do not stop it.
 	 * 		} );
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Log warning to some error tracker.
+	 * 			// Log the warning to some error tracker.
 	 *
-	 * 			// Stop this event to prevent of displaying as alert.
+	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
 	 * 		}, { priority: 'low' } );
 	 *
