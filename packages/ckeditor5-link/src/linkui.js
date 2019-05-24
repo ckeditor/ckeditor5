@@ -188,7 +188,7 @@ export default class LinkUI extends Plugin {
 			cancel();
 
 			if ( linkCommand.isEnabled ) {
-				this._showUI();
+				this._showUI( true );
 			}
 		} );
 

@@ -486,7 +486,7 @@ describe( 'LinkUI', () => {
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, true );
 		} );
 
 		it( 'should prevent default action on Ctrl+K keystroke', () => {
@@ -502,6 +502,26 @@ describe( 'LinkUI', () => {
 
 			sinon.assert.calledOnce( preventDefaultSpy );
 			sinon.assert.calledOnce( stopPropagationSpy );
+		} );
+
+		it( 'should make stack with link visible on Ctrl+K keystroke', () => {
+			const command = editor.commands.get( 'link' );
+
+			command.isEnabled = true;
+
+			balloon.add( {
+				view: new View(),
+				stackId: 'custom'
+			} );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView === formView );
 		} );
 
 		it( 'should focus the the #actionsView on `Tab` key press when #actionsView is visible', () => {
