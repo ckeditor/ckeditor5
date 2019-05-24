@@ -125,7 +125,7 @@ export default class Notification extends Plugin {
 	 * The plugin responsible for displaying warnings should `stop()` the event to prevent displaying it as an alert:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Do something with data.
+	 * 			// Do something with the data.
 	 *
 	 * 			// Stop this event to prevent displaying it as an alert.
 	 * 			evt.stop();
