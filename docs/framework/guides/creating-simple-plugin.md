@@ -5,13 +5,13 @@ order: 30
 
 # Creating a simple plugin
 
-This guide will show you how to create a simple editor plugin.
+This guide will show you how to create a simple rich-text editor plugin for CKEditor 5.
 
 <info-box>
-	Before you get to work, you should check out the {@link framework/guides/quick-start "Quick start"} guide first and set up the framework and building tools.
+	Before you get to work, you should check out the {@link framework/guides/quick-start Quick start} guide first to set up the framework and building tools.
 </info-box>
 
-CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}, however, you can also write simple constructor functions. This guide uses the former method.
+CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}. However, you can also write simple constructor functions. This guide uses the former method.
 
 The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button that will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
 
@@ -21,7 +21,7 @@ The plugin that you will write will use a part of the {@link features/image imag
 
 ## Step 1. Installing dependencies
 
-Start from installing necessary dependencies:
+Start from installing the necessary dependencies:
 
 * The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package that contains the image feature (on which the plugin will rely).
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
@@ -39,7 +39,7 @@ npm install --save @ckeditor/ckeditor5-image \
 
 Now, open the `app.js` file and start adding code there. Usually, when implementing more complex features you will want to split the code into multiple files (modules). However, to make this guide simpler the entire code will be kept in `app.js`.
 
-First thing to do will be to load the core of the image feature:
+The first thing to do will be to load the core of the image feature:
 
 ```js
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -147,7 +147,7 @@ Rebuild the application and refresh the page. You should see a new button in the
 
 ## Step 4. Inserting a new image
 
-Now, expand the button's `#execute` event listener, so it will actually insert a new image into the content:
+Now, expand the button's `#execute` event listener, so it will actually insert the new image into the content:
 
 ```js
 class InsertImage extends Plugin {
@@ -187,7 +187,7 @@ If you refresh the page, you should now be able to insert new images into the co
 
 {@img assets/img/framework-quick-start-classic-editor-insert-image.gif 640 Screencast of inserting a new image.}
 
-The image is fully functional, you can undo inserting by pressing <kbd>Ctrl</kbd>+<kbd>Z</kbd> and the image is always inserted as a block element (the paragraph that contains the selection is automatically split). This is all handled by the CKEditor 5 engine.
+The image is fully functional. You can undo inserting by pressing <kbd>Ctrl</kbd>+<kbd>Z</kbd> and the image is always inserted as a block element (the paragraph that contains the selection is automatically split). This is all handled by the CKEditor 5 engine.
 
 <info-box>
 	As you can see, by clicking the button you are inserting an `<image src="...">` element into the model. The image feature is represented in the model as `<image>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
@@ -199,7 +199,7 @@ Congratulations! You have just created your first CKEditor 5 plugin!
 
 ## Bonus. Enabling image captions
 
-Thanks to the fact that all plugins operate on the model and on the view and know as little about themselves as possible, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin:
+Thanks to the fact that all plugins operate on the model and on the view, and know as little about themselves as possible, you can easily enable image captions by simply loading the {@link module:image/imagecaption~ImageCaption} plugin:
 
 ```js
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
@@ -286,9 +286,9 @@ ClassicEditor
 
 ## What's next?
 
-If you would like to read more tutorials check out the following one:
+If you would like to read more tutorials, check out the following one:
 
 * {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
 * {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget}
 
-If you are more into reading about CKEditor 5's architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
+If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
