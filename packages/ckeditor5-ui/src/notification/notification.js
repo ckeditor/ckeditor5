@@ -131,10 +131,10 @@ export default class Notification extends Plugin {
 	 * 			evt.stop();
 	 * 		} );
 	 *
-	 * You can attach many listeners to the same event and `stop()` this event in the listener with the low priority:
+	 * You can attach many listeners to the same event and `stop()` this event in a listener with a low priority:
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
-	 * 			// Show warning in the UI, but not stop it.
+	 * 			// Show the warning in the UI, but do not stop it.
 	 * 		} );
 	 *
 	 * 		notifications.on( 'show:warning', ( evt, data ) => {
