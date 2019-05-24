@@ -14,11 +14,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 /**
  * The Notification plugin.
  *
- * This plugin sends few base types of notifications: `success`, `info` and `warning`. This notifications need to be
- * handled and displayed by plugin responsible for showing UI of the notifications. Using this plugin for dispatching
- * notifications makes possible to switch the notifications UI.
+ * The notification plugin sends a few base types of notification events: {@link #event:show:success `success`},
+ * {@link #event:show:info `info`} and {@link #event:show:warning `warning`}. Those events need to be
+ * handled and displayed by other plugins, which have a responsibility to show an UI for the notifications.
+ * Such approach provides a possibility to modify the notifications UI.
  *
- * Note that every unhandled and not stopped `warning` notification will be displayed as system alert.
+ * Please notice that every unhandled and not stopped {@link #event:show:warning `warning` event} is displayed as a system alert.
  * See {@link module:ui/notification/notification~Notification#showWarning}.
  *
  * @extends module:core/plugin~Plugin
@@ -42,21 +43,22 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows success notification.
+	 * Shows a success notification.
 	 *
-	 * At default it fires `show:success` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link #event:show:success `show:success` event} with the given `data`. The event namespace can be extended
+	 * using the `data.namespace` option. For example:
 	 *
 	 * 		showSuccess( 'Image is uploaded.', {
 	 * 			namespace: 'upload:image'
 	 * 		} );
 	 *
-	 * will fire `show:success:upload:image` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:success:upload:image` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showSuccess( 'Image is uploaded.', {
 	 *			title: 'Image upload success'
-	 *		});
+	 *		} );
 	 *
 	 * @param {String} message Content of the notification.
 	 * @param {Object} [data={}] Additional data.
@@ -73,21 +75,22 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Shows info notification.
+	 * Shows an info notification.
 	 *
-	 * At default it fires `show:info` event with given data but event namespace can be extended
-	 * by `data.namespace` option e.g.
+	 * By default, it fires the {@link #event:show:info `show:info` event} with the given `data`. The event namespace can be extended
+	 * using the `data.namespace` option. For example:
 	 *
 	 * 		showInfo( 'Editor is offline.', {
 	 * 			namespace: 'editor:status'
 	 * 		} );
 	 *
-	 * will fire `show:info:editor:status` event.
-	 * Title of the notification can be provided:
+	 * will fire the `show:info:editor:status` event.
+	 *
+	 * You can provide the title of the notification:
 	 *
 	 *		showInfo( 'Editor is offline.', {
 	 *			title: 'Network information'
-	 *		});
+	 *		} );
 	 *
 	 * @param {String} message Content of the notification.
 	 * @param {Object} [data={}] Additional data.
@@ -106,7 +109,7 @@ export default class Notification extends Plugin {
 	/**
 	 * Shows a warning notification.
 	 *
-	 * By default, it fires the {@link module:ui/notification/notification~Notification#event:show:warning `show:warning` event}
+	 * By default, it fires the {@link #event:show:warning `show:warning` event}
 	 * with the given `data`. The event namespace can be extended using the `data.namespace` option. For example:
 	 *
 	 * 		showWarning( 'Image upload error.', {
@@ -159,7 +162,7 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Fires `show` event with specified type, namespace and message.
+	 * It fires a {@link #event:show `show`} event with a specified type, namespace and message.
 	 *
 	 * @private
 	 * @param {Object} data Message data.
@@ -179,7 +182,8 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Fired when one of `showSuccess`, `showInfo`, `showWarning` methods is called.
+	 * Fired when one of {@link #showSuccess `showSuccess`}, {@link #showInfo `showInfo`},
+	 * {@link #showWarning `showWarning`} methods is called.
 	 *
 	 * @event show
 	 * @param {Object} data Notification data.
@@ -189,7 +193,7 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when `showSuccess` method is called.
+	 * Fired when a {@link #showSuccess `showSuccess`} method is called.
 	 *
 	 * @event show:success
 	 * @param {Object} data Notification data.
@@ -199,7 +203,7 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when `showInfo` method is called.
+	 * Fired when a {@link #showInfo `showInfo`} method is called.
 	 *
 	 * @event show:info
 	 * @param {Object} data Notification data.
@@ -209,10 +213,10 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when `showWarning` method is called.
+	 * Fired when a {@link #showWarning `showWarning`} method is called.
 	 *
-	 * When this event won't be handled and stopped by `event.stop()` then data.message of this event will
-	 * be automatically displayed as system alert.
+	 * When this event isn't handled and stopped by {@link module:utils/eventinfo~EventInfo#stop `event.stop()`},
+	 * the `data.message` of the event is automatically displayed as a system alert.
 	 *
 	 * @event show:warning
 	 * @param {Object} data Notification data.
