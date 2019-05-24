@@ -521,7 +521,7 @@ describe( 'LinkUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 
-			expect( balloon.visibleView === formView );
+			expect( balloon.visibleView ).to.equal( formView );
 		} );
 
 		it( 'should focus the the #actionsView on `Tab` key press when #actionsView is visible', () => {
