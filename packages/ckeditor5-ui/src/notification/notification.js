@@ -115,7 +115,7 @@ export default class Notification extends Plugin {
 	 *
 	 * will fire the `show:warning:upload:image` event.
 	 *
-	 * The title of the notification can be provided:
+	 * You can provide the title of the notification:
 	 *
 	 *		showWarning( 'Image upload error.', {
 	 *			title: 'Upload failed'
