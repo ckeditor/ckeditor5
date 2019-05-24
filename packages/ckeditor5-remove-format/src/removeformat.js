@@ -10,13 +10,13 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import RemoveFormatUI from './removeformatui';
-import RemoveFormatCommand from './removeformatcommand';
+import RemoveFormatEditing from './removeformatediting';
 
 /**
  * The remove format plugin.
  *
- * This is a "glue" plugin which loads the {@link module:remove-format/removeformatcommand~RemoveFormatCommand command}
- * and the {@link module:remove-format/removeformatui~RemoveFormatUI UI}.
+ * This is a "glue" plugin which loads the {@link module:remove-format/removeformatediting~RemoveFormatEditing}
+ * and {@link module:remove-format/removeformatui~RemoveFormatUI} plugins.
  *
  * For a detailed overview, check out the {@glink features/remove-format remove format} feature documentation.
  *
@@ -27,13 +27,7 @@ export default class RemoveFormat extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ RemoveFormatCommand, RemoveFormatUI ];
-	}
-
-	init() {
-		const editor = this.editor;
-
-		editor.commands.add( 'removeFormat', new RemoveFormatCommand( editor ) );
+		return [ RemoveFormatEditing, RemoveFormatUI ];
 	}
 
 	/**
