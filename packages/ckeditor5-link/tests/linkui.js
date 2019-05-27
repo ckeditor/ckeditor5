@@ -504,7 +504,7 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledOnce( stopPropagationSpy );
 		} );
 
-		it( 'should make stack with link visible on Ctrl+K keystroke', () => {
+		it( 'should make stack with link visible on Ctrl+K keystroke - no link', () => {
 			const command = editor.commands.get( 'link' );
 
 			command.isEnabled = true;
@@ -513,6 +513,37 @@ describe( 'LinkUI', () => {
 				view: new View(),
 				stackId: 'custom'
 			} );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView ).to.equal( formView );
+		} );
+
+		it( 'should make stack with link visible on Ctrl+K keystroke - link', () => {
+			setModelData( editor.model, '<paragraph><$text linkHref="foo.html">f[]oo</$text></paragraph>' );
+
+			const customView = new View();
+
+			balloon.add( {
+				view: customView,
+				stackId: 'custom'
+			} );
+
+			expect( balloon.visibleView ).to.equal( customView );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( balloon.visibleView ).to.equal( actionsView );
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,

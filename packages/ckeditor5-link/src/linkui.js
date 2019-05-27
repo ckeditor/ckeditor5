@@ -380,6 +380,11 @@ export default class LinkUI extends Plugin {
 			else {
 				this._addActionsView();
 			}
+
+			// Be sure panel with link is visible.
+			if ( forceVisible ) {
+				this._balloon.showStack( 'main' );
+			}
 		}
 
 		// Begin responding to ui#update once the UI is added.
