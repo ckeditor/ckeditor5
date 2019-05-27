@@ -967,5 +967,167 @@ describe( 'ContextualBalloon', () => {
 			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
 			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
 		} );
+
+		describe( 'singleViewMode', () => {
+			it( 'should not display navigation when there is more than one stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			it( 'should hide display navigation after adding view', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+			} );
+
+			it( 'should display navigation after removing a view', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewC );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should not update the counter when adding a view', () => {
+				const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
+
+				expect( counterElement.textContent ).to.equal( '' );
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second',
+					singleViewMode: true
+				} );
+
+				expect( counterElement.textContent ).to.equal( '' );
+			} );
+
+			it( 'should not show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
+				const fakePanelsView = editor.ui.view.body.last;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+				expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+				expect( fakePanelsView.element.childElementCount ).to.equal( 0 );
+
+				balloon.remove( viewC );
+
+				expect( fakePanelsView.element.classList.contains( 'ck-hidden' ) ).to.equal( false );
+				expect( fakePanelsView.element.childElementCount ).to.equal( 1 );
+
+				balloon.remove( viewB );
+			} );
+
+			it( 'should switch visible view when adding a view to new stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewA );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewC );
+
+				const viewD = new View();
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'fifth',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewD );
+			} );
+
+			it( 'should switch visible view when adding a view to the same stack', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewA );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewC );
+
+				const viewD = new View();
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( balloon.visibleView ).to.equal( viewD );
+			} );
+		} );
 	} );
 } );

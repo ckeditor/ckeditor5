@@ -138,6 +138,8 @@ export default class ContextualBalloon extends Plugin {
 		 */
 		this.set( '_numberOfStacks', 0 );
 
+		this.set( '_singleViewMode', false );
+
 		/**
 		 * Rotator view embedded in the contextual balloon.
 		 * Displays currently visible view in the balloon and provides navigation for switching stacks.
@@ -176,6 +178,8 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
+	 * @param {Boolean} [data.preventOtherStacks=false] ... TODO
+	 * @param {Boolean} [singleViewMode=false]
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -195,7 +199,7 @@ export default class ContextualBalloon extends Plugin {
 			this._viewToStack.set( data.view, this._idToStack.get( stackId ) );
 			this._numberOfStacks = this._idToStack.size;
 
-			if ( !this._visibleStack ) {
+			if ( !this._visibleStack || data.singleViewMode ) {
 				this.showStack( stackId );
 			}
 
@@ -203,6 +207,10 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		const stack = this._idToStack.get( stackId );
+
+		if ( data.singleViewMode ) {
+			this.showStack( stackId );
+		}
 
 		// Add new view to the stack.
 		stack.set( data.view, data );
@@ -233,6 +241,10 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		const stack = this._viewToStack.get( view );
+
+		if ( this._singleViewMode == view ) {
+			this._singleViewMode = false;
+		}
 
 		// When visible view will be removed we need to show a preceding view or next stack
 		// if a view is the only view in the stack.
@@ -281,6 +293,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {String} id
 	 */
 	showStack( id ) {
+		this.visibleStack = id;
 		const stack = this._idToStack.get( id );
 
 		if ( !stack ) {
@@ -369,21 +382,31 @@ export default class ContextualBalloon extends Plugin {
 		this.view.content.add( view );
 
 		// Hide navigation when there is only a one stack.
-		view.bind( 'isNavigationVisible' ).to( this, '_numberOfStacks', value => value > 1 );
+		view.bind( 'isNavigationVisible' ).to( this, '_numberOfStacks', this, '_singleViewMode', ( value, isSingleViewMode ) => {
+			if ( this.visibleView == isSingleViewMode ) {
+				return false;
+			}
+
+			return value > 1;
+		} );
 
 		// Update balloon position after toggling navigation.
 		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
 		// Show stacks counter.
-		view.bind( 'counter' ).to( this, 'visibleView', this, '_numberOfStacks', ( visibleView, numberOfStacks ) => {
-			if ( numberOfStacks < 2 ) {
-				return '';
-			}
+		view.bind( 'counter' ).to(
+			this, 'visibleView',
+			this, '_numberOfStacks',
+			this, '_singleViewMode',
+			( visibleView, numberOfStacks, isSingleViewMode ) => {
+				if ( numberOfStacks < 2 || isSingleViewMode ) {
+					return '';
+				}
 
-			const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
+				const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
 
-			return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
-		} );
+				return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
+			} );
 
 		view.buttonNextView.on( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
@@ -414,8 +437,10 @@ export default class ContextualBalloon extends Plugin {
 	_createFakePanelsView() {
 		const view = new FakePanelsView( this.editor.locale, this.view );
 
-		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', number => {
-			return number < 2 ? 0 : Math.min( number - 1, 2 );
+		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', this, '_singleViewMode', ( number, isSingleViewMode ) => {
+			const hide = isSingleViewMode || number < 2;
+
+			return hide ? 0 : Math.min( number - 1, 2 );
 		} );
 
 		view.listenTo( this.view, 'change:top', () => view.updatePosition() );
@@ -436,7 +461,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {String} [data.balloonClassName=''] Additional class name which will be added to the {@link #view balloon}.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
 	 */
-	_showView( { view, balloonClassName = '', withArrow = true } ) {
+	_showView( { view, balloonClassName = '', withArrow = true, singleViewMode = false } ) {
 		this.view.class = balloonClassName;
 		this.view.withArrow = withArrow;
 
@@ -444,6 +469,10 @@ export default class ContextualBalloon extends Plugin {
 		this.visibleView = view;
 		this.view.pin( this._getBalloonPosition() );
 		this._fakePanelsView.updatePosition();
+
+		if ( singleViewMode ) {
+			this._singleViewMode = view;
+		}
 	}
 
 	/**
