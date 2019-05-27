@@ -188,7 +188,7 @@ export default class LinkUI extends Plugin {
 			cancel();
 
 			if ( linkCommand.isEnabled ) {
-				this._showUI();
+				this._showUI( true );
 			}
 		} );
 
@@ -379,6 +379,11 @@ export default class LinkUI extends Plugin {
 			// Otherwise display just the actions UI.
 			else {
 				this._addActionsView();
+			}
+
+			// Be sure panel with link is visible.
+			if ( forceVisible ) {
+				this._balloon.showStack( 'main' );
 			}
 		}
 
