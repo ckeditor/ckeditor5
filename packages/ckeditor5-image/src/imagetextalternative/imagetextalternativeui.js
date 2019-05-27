@@ -144,7 +144,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		clickOutsideHandler( {
 			emitter: this._form,
 			activator: () => this._isVisible,
-			contextElements: [ this._form.element ],
+			contextElements: [ this._balloon.view.element ],
 			callback: () => this._hideForm()
 		} );
 	}
