@@ -17,3 +17,9 @@
 ## Fake panels - max
 
 1. Select text `[select]` (by non-collapsed selection) from the lower highlight. You should see `1 of 4` status of pagination but only 2 additional layers under the balloon should be visible.
+
+## Force single view - Mention
+
+1. Select text `[select]` (by non-collapsed selection).
+2. Type <kbd>space</kbd> + `@` to open mention panel. You should see mention panel with no layers under the balloon and without any counter.
+3. Move selection around `@` when leaving mention suggestions the balloon should be displayed as in above cases (layers, navigation buttons, etc).
