@@ -221,8 +221,8 @@ module.exports = {
 	},
 
 	chainWebpack: config => {
-		// Vue CLI would normally use its own loader to load .svg files. The icons used by
-		// CKEditor should be loaded using raw-loader instead.
+		// Vue CLI would normally use its own loader to load .svg and .css files. The icons 
+		// used by CKEditor should be loaded using raw-loader instead.
 
 		//Add the ability to build the CSS files
 		config.module
