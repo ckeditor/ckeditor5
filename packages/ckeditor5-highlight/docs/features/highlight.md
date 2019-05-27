@@ -8,6 +8,8 @@ category: features
 
 The {@link module:highlight/highlight~Highlight} feature offers text marking tools that help content authors speed up their work, for example when reviewing content or marking it for future reference. It uses inline `<mark>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
 
+The Highlight plugin always comes with a predefined and a limited amount of available colors. It also focus on a functionality rather than a pure aesthetic aspect. For changing the appearance of a text's color and background color is recommended to use the {@link features/font#configuring-the-font-color-and-font-background-color-features Font color and background color} plugin.
+
 ## Demo
 
 {@snippet features/highlight}
