@@ -1025,20 +1025,6 @@ describe( 'ContextualBalloon', () => {
 				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
 			} );
 
-			it( 'should not update the counter when adding a view', () => {
-				const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
-
-				expect( counterElement.textContent ).to.equal( '' );
-
-				balloon.add( {
-					view: viewB,
-					stackId: 'second',
-					singleViewMode: true
-				} );
-
-				expect( counterElement.textContent ).to.equal( '' );
-			} );
-
 			it( 'should not show fake panels when more than one stack is added to the balloon (max to 2 panels)', () => {
 				const fakePanelsView = editor.ui.view.body.last;
 

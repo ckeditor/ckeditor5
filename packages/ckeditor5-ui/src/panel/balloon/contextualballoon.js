@@ -47,6 +47,9 @@ const toPx = toUnit( 'px' );
  * If there are no views in the current stack, the balloon panel will try to switch to the next stack. If there are no
  * panels in any stack then balloon panel will be hidden.
  *
+ * **Note**: To force balloon panel to show only one view - even if there are other stacks - use `singleViewMode=true` option
+ * when {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#add adding} view to a panel.
+ *
  * From the implementation point of view, contextual ballon plugin is reusing a single
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance to display multiple contextual balloon
  * panels in the editor. It also creates a special {@link module:ui/panel/balloon/contextualballoon~RotatorView rotator view},
@@ -138,6 +141,14 @@ export default class ContextualBalloon extends Plugin {
 		 */
 		this.set( '_numberOfStacks', 0 );
 
+		/**
+		 * Flag that controls the single view mode.
+		 *
+		 * @private
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #_singleViewMode
+		 */
 		this.set( '_singleViewMode', false );
 
 		/**
@@ -178,8 +189,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional CSS class added to the {@link #view balloon} when visible.
 	 * @param {Boolean} [data.withArrow=true] Whether the {@link #view balloon} should be rendered with an arrow.
-	 * @param {Boolean} [data.preventOtherStacks=false] ... TODO
-	 * @param {Boolean} [singleViewMode=false]
+	 * @param {Boolean} [data.singleViewMode=false] Whether the view should be only visible view - even if other stacks were added.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -242,7 +252,7 @@ export default class ContextualBalloon extends Plugin {
 
 		const stack = this._viewToStack.get( view );
 
-		if ( this._singleViewMode == view ) {
+		if ( this._singleViewMode && this.visibleView === view ) {
 			this._singleViewMode = false;
 		}
 
@@ -381,32 +391,24 @@ export default class ContextualBalloon extends Plugin {
 
 		this.view.content.add( view );
 
-		// Hide navigation when there is only a one stack.
+		// Hide navigation when there is only a one stack & not in single view mode.
 		view.bind( 'isNavigationVisible' ).to( this, '_numberOfStacks', this, '_singleViewMode', ( value, isSingleViewMode ) => {
-			if ( this.visibleView == isSingleViewMode ) {
-				return false;
-			}
-
-			return value > 1;
+			return !isSingleViewMode && value > 1;
 		} );
 
 		// Update balloon position after toggling navigation.
 		view.on( 'change:isNavigationVisible', () => ( this.updatePosition() ), { priority: 'low' } );
 
-		// Show stacks counter.
-		view.bind( 'counter' ).to(
-			this, 'visibleView',
-			this, '_numberOfStacks',
-			this, '_singleViewMode',
-			( visibleView, numberOfStacks, isSingleViewMode ) => {
-				if ( numberOfStacks < 2 || isSingleViewMode ) {
-					return '';
-				}
+		// Update stacks counter value.
+		view.bind( 'counter' ).to( this, 'visibleView', this, '_numberOfStacks', ( visibleView, numberOfStacks ) => {
+			if ( numberOfStacks < 2 ) {
+				return '';
+			}
 
-				const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
+			const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
 
-				return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
-			} );
+			return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
+		} );
 
 		view.buttonNextView.on( 'execute', () => {
 			// When current view has a focus then move focus to the editable before removing it,
@@ -438,9 +440,9 @@ export default class ContextualBalloon extends Plugin {
 		const view = new FakePanelsView( this.editor.locale, this.view );
 
 		view.bind( 'numberOfPanels' ).to( this, '_numberOfStacks', this, '_singleViewMode', ( number, isSingleViewMode ) => {
-			const hide = isSingleViewMode || number < 2;
+			const showPanels = !isSingleViewMode && number >= 2;
 
-			return hide ? 0 : Math.min( number - 1, 2 );
+			return showPanels ? Math.min( number - 1, 2 ) : 0;
 		} );
 
 		view.listenTo( this.view, 'change:top', () => view.updatePosition() );
@@ -471,7 +473,7 @@ export default class ContextualBalloon extends Plugin {
 		this._fakePanelsView.updatePosition();
 
 		if ( singleViewMode ) {
-			this._singleViewMode = view;
+			this._singleViewMode = true;
 		}
 	}
 
