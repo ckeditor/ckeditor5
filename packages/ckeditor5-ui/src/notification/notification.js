@@ -14,12 +14,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 /**
  * The Notification plugin.
  *
- * The notification plugin sends a few base types of notification events: {@link #event:show:success `success`},
- * {@link #event:show:info `info`} and {@link #event:show:warning `warning`}. Those events need to be
- * handled and displayed by other plugins, which have a responsibility to show an UI for the notifications.
- * Such approach provides a possibility to modify the notifications UI.
+ * This plugin sends few base types of notifications: `success`, `info` and `warning`. This notifications need to be
+ * handled and displayed by plugin responsible for showing UI of the notifications. Using this plugin for dispatching
+ * notifications makes possible to switch the notifications UI.
  *
- * Please notice that every unhandled and not stopped {@link #event:show:warning `warning` event} is displayed as a system alert.
+ * Note that every unhandled and not stopped `warning` notification will be displayed as system alert.
  * See {@link module:ui/notification/notification~Notification#showWarning}.
  *
  * @extends module:core/plugin~Plugin
@@ -162,7 +161,7 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * It fires a {@link #event:show `show`} event with a specified type, namespace and message.
+	 * Fires `show` event with specified type, namespace and message.
 	 *
 	 * @private
 	 * @param {Object} data Message data.
@@ -182,8 +181,7 @@ export default class Notification extends Plugin {
 	}
 
 	/**
-	 * Fired when one of {@link #showSuccess `showSuccess`}, {@link #showInfo `showInfo`},
-	 * {@link #showWarning `showWarning`} methods is called.
+	 * Fired when one of `showSuccess`, `showInfo`, `showWarning` methods is called.
 	 *
 	 * @event show
 	 * @param {Object} data Notification data.
@@ -193,7 +191,7 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when a {@link #showSuccess `showSuccess`} method is called.
+	 * Fired when `showSuccess` method is called.
 	 *
 	 * @event show:success
 	 * @param {Object} data Notification data.
@@ -203,7 +201,7 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when a {@link #showInfo `showInfo`} method is called.
+	 * Fired when `showInfo` method is called.
 	 *
 	 * @event show:info
 	 * @param {Object} data Notification data.
@@ -213,10 +211,10 @@ export default class Notification extends Plugin {
 	 */
 
 	/**
-	 * Fired when a {@link #showWarning `showWarning`} method is called.
+	 * Fired when `showWarning` method is called.
 	 *
-	 * When this event isn't handled and stopped by {@link module:utils/eventinfo~EventInfo#stop `event.stop()`},
-	 * the `data.message` of the event is automatically displayed as a system alert.
+	 * When this event won't be handled and stopped by `event.stop()` then data.message of this event will
+	 * be automatically displayed as system alert.
 	 *
 	 * @event show:warning
 	 * @param {Object} data Notification data.
