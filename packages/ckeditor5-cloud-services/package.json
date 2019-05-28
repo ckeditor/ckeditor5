@@ -9,7 +9,7 @@
     "ckeditor5-lib"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor-cloud-services-core": "^3.0.0",
+    "@ckeditor/ckeditor-cloud-services-core": "^3.0.1",
     "@ckeditor/ckeditor5-core": "^12.1.0"
   },
   "devDependencies": {
