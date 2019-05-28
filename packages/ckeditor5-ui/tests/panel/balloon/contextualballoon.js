@@ -15,7 +15,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 /* global document, Event */
 
 describe( 'ContextualBalloon', () => {
-	let editor, editorElement, balloon, viewA, viewB, viewC;
+	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -37,6 +37,7 @@ describe( 'ContextualBalloon', () => {
 				viewA = new View();
 				viewB = new View();
 				viewC = new View();
+				viewD = new View();
 
 				// Add viewA to the pane and init viewB.
 				balloon.add( {
@@ -1017,6 +1018,37 @@ describe( 'ContextualBalloon', () => {
 					stackId: 'third',
 					singleViewMode: true
 				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewC );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'should not display navigation after removing a view if there is still some view with singleViewMode', () => {
+				const navigationElement = rotatorView.element.querySelector( '.ck-balloon-rotator__navigation' );
+
+				balloon.add( {
+					view: viewB,
+					stackId: 'second'
+				} );
+
+				balloon.add( {
+					view: viewC,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				balloon.add( {
+					view: viewD,
+					stackId: 'third',
+					singleViewMode: true
+				} );
+
+				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+				balloon.remove( viewD );
 
 				expect( navigationElement.classList.contains( 'ck-hidden' ) ).to.be.true;
 
