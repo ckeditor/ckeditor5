@@ -36,8 +36,14 @@ describe( 'FontColorEditing', () => {
 	} );
 
 	it( 'has the attribute marked with the isFormatting property', () => {
-		expect( editor.model.schema.getAttributeProperties( 'fontColor' ) ).to.deep.equal( {
+		expect( editor.model.schema.getAttributeProperties( 'fontColor' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( editor.model.schema.getAttributeProperties( 'fontColor' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 
