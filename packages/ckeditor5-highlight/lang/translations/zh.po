@@ -12,38 +12,38 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "Marqueur jaune"
+msgstr "黃色標記"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "Marqueur vert"
+msgstr "綠色標記"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "Marqueur rose"
+msgstr "粉色標記"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "Marqueur bleu"
+msgstr "藍色標記"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "Crayon rouge"
+msgstr "紅色筆"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "Crayon vert"
+msgstr "綠色筆"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "Enlever le surlignage"
+msgstr "清除高亮"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "Surlignage"
+msgstr "高亮"

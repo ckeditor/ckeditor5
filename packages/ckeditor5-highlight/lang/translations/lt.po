@@ -12,38 +12,38 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: French (https://www.transifex.com/ckeditor/teams/11143/fr/)\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
 msgid "Yellow marker"
-msgstr "Marqueur jaune"
+msgstr "Geltonas žymeklis"
 
 msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
 msgid "Green marker"
-msgstr "Marqueur vert"
+msgstr "Žalias žymeklis"
 
 msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
 msgid "Pink marker"
-msgstr "Marqueur rose"
+msgstr "Rožinis žymeklis"
 
 msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
 msgid "Blue marker"
-msgstr "Marqueur bleu"
+msgstr "Mėlynas žymeklis"
 
 msgctxt "Toolbar button tooltip for applying red pen (text color)."
 msgid "Red pen"
-msgstr "Crayon rouge"
+msgstr "Raudonas žymeklis"
 
 msgctxt "Toolbar button tooltip for applying green pen (text color)."
 msgid "Green pen"
-msgstr "Crayon vert"
+msgstr "Žalias žymeklis"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "Enlever le surlignage"
+msgstr "Panaikinti pažymėjimą"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
-msgstr "Surlignage"
+msgstr "Pažymėti žymekliu"
