@@ -12,42 +12,42 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Galician (https://www.transifex.com/ckeditor/teams/11143/gl/)\n"
-"Language: gl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
-msgstr "Parágrafo"
+msgstr "Paragrafas"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Título"
+msgstr "Antraštė"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
-msgstr "Escolla o título"
+msgstr "Pasirinkite antraštę"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "Título 1"
+msgstr "Antraštė 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "Título 2"
+msgstr "Antraštė 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "Título 3"
+msgstr "Antraštė 3"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr "Título 4"
+msgstr "Antraštė 4"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr "Título 5"
+msgstr "Antraštė 5"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr "Título 6"
+msgstr "Antraštė 6"

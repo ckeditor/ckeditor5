@@ -30,7 +30,7 @@ msgstr "शीर्षक छनौट गर्नुहोस्"
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "शीर्षक १"
+msgstr "शीर्षक-एक"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
@@ -42,12 +42,12 @@ msgstr "शीर्षक ३"
 
 msgctxt "Dropdown option label for the heading level 4 format."
 msgid "Heading 4"
-msgstr ""
+msgstr "शीर्षक ४"
 
 msgctxt "Dropdown option label for the heading level 5 format."
 msgid "Heading 5"
-msgstr ""
+msgstr "शीर्षक ५"
 
 msgctxt "Dropdown option label for the heading level 6 format."
 msgid "Heading 6"
-msgstr ""
+msgstr "शीर्षक ६"
