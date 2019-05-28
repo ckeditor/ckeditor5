@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import View from '../../../src/view';
@@ -75,9 +76,17 @@ class CustomStackHighlight {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, BalloonToolbar, CustomStackHighlight ],
+		plugins: [ ArticlePluginSet, BalloonToolbar, CustomStackHighlight, Mention ],
 		toolbar: [ 'bold', 'link' ],
-		balloonToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ],
+		mention: {
+			feeds: [
+				{
+					marker: '@',
+					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
+				}
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
