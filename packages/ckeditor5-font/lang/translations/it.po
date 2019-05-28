@@ -46,72 +46,72 @@ msgstr "Predefinito"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr ""
+msgstr "Colore caratteri"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr ""
+msgstr "Colore di sfondo caratteri"
 
 msgctxt "Label or a button that removes the color from the text (font color and background)."
 msgid "Remove color"
-msgstr ""
+msgstr "Rimuovi colore"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
-msgstr ""
+msgstr "Nero"
 
 msgctxt "Label of a button that applies a dim grey text color (font color and background)"
 msgid "Dim grey"
-msgstr ""
+msgstr "Grigio tenue"
 
 msgctxt "Label of a button that applies a grey text color (font color and background)"
 msgid "Grey"
-msgstr ""
+msgstr "Grigio"
 
 msgctxt "Label of a button that applies a light grey text color (font color and background)"
 msgid "Light grey"
-msgstr ""
+msgstr "Grigio chiaro"
 
 msgctxt "Label of a button that applies a white text color (font color and background)"
 msgid "White"
-msgstr ""
+msgstr "Bianco"
 
 msgctxt "Label of a button that applies a red text color (font color and background)"
 msgid "Red"
-msgstr ""
+msgstr "Rosso"
 
 msgctxt "Label of a button that applies a orange text color (font color and background)"
 msgid "Orange"
-msgstr ""
+msgstr "Arancio"
 
 msgctxt "Label of a button that applies a yellow text color (font color and background)"
 msgid "Yellow"
-msgstr ""
+msgstr "Giallo"
 
 msgctxt "Label of a button that applies a light green text color (font color and background)"
 msgid "Light green"
-msgstr ""
+msgstr "Verde chiaro"
 
 msgctxt "Label of a button that applies a green text color (font color and background)"
 msgid "Green"
-msgstr ""
+msgstr "Verde"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr ""
+msgstr "Aquamarina"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr ""
+msgstr "Turchese"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
-msgstr ""
+msgstr "Azzurro"
 
 msgctxt "Label of a button that applies a blue text color (font color and background)"
 msgid "Blue"
-msgstr ""
+msgstr "Blu"
 
 msgctxt "Label of a button that applies a purple text color (font color and background)"
 msgid "Purple"
-msgstr ""
+msgstr "Porpora"

@@ -12,106 +12,106 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Indonesian (https://www.transifex.com/ckeditor/teams/11143/id/)\n"
-"Language: id\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Ukuran Huruf"
+msgstr "Šrifto dydis"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr "Sangat Kecil"
+msgstr "Mažytis"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr "Kecil"
+msgstr "Mažas"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr "Besar"
+msgstr "Didelis"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr "Sangat Besar"
+msgstr "Milžiniškas"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "Jenis Huruf"
+msgstr "Šrifto šeima"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Bawaan"
+msgstr "Numatyta"
 
 msgctxt "Label of a button that allows selecting a font color."
 msgid "Font Color"
-msgstr "Warna Huruf"
+msgstr "Šrifto spalva"
 
 msgctxt "Label of a button that allows selecting a font background color."
 msgid "Font Background Color"
-msgstr "Warna Latar Huruf"
+msgstr "Šrifto fono spalva"
 
 msgctxt "Label or a button that removes the color from the text (font color and background)."
 msgid "Remove color"
-msgstr "Hapus warna"
+msgstr "Pašalinti spalvą"
 
 msgctxt "Label of a button that applies a black text color (font color and background)"
 msgid "Black"
-msgstr "Hitam"
+msgstr "Juoda"
 
 msgctxt "Label of a button that applies a dim grey text color (font color and background)"
 msgid "Dim grey"
-msgstr "Kelabu gelap"
+msgstr "Pilkšva"
 
 msgctxt "Label of a button that applies a grey text color (font color and background)"
 msgid "Grey"
-msgstr "Kelabu"
+msgstr "Pilka"
 
 msgctxt "Label of a button that applies a light grey text color (font color and background)"
 msgid "Light grey"
-msgstr "Kelabu terang"
+msgstr "Šviesiai pilka"
 
 msgctxt "Label of a button that applies a white text color (font color and background)"
 msgid "White"
-msgstr "Putih"
+msgstr "Balta"
 
 msgctxt "Label of a button that applies a red text color (font color and background)"
 msgid "Red"
-msgstr "Merah"
+msgstr "Raudona"
 
 msgctxt "Label of a button that applies a orange text color (font color and background)"
 msgid "Orange"
-msgstr "Jingga"
+msgstr "Oranžinė"
 
 msgctxt "Label of a button that applies a yellow text color (font color and background)"
 msgid "Yellow"
-msgstr "Kuning"
+msgstr "Geltona"
 
 msgctxt "Label of a button that applies a light green text color (font color and background)"
 msgid "Light green"
-msgstr "Hijau terang"
+msgstr "Šviesiai žalia"
 
 msgctxt "Label of a button that applies a green text color (font color and background)"
 msgid "Green"
-msgstr "Hijau"
+msgstr "Žalia"
 
 msgctxt "Label of a button that applies a aquamarine text color (font color and background)"
 msgid "Aquamarine"
-msgstr ""
+msgstr "Aquamarine"
 
 msgctxt "Label of a button that applies a turquoise text color (font color and background)"
 msgid "Turquoise"
-msgstr ""
+msgstr "Turkio"
 
 msgctxt "Label of a button that applies a light blue text color (font color and background)"
 msgid "Light blue"
-msgstr "Biru terang"
+msgstr "Šviesiai mėlyna"
 
 msgctxt "Label of a button that applies a blue text color (font color and background)"
 msgid "Blue"
-msgstr "Biru"
+msgstr "Mėlyna"
 
 msgctxt "Label of a button that applies a purple text color (font color and background)"
 msgid "Purple"
-msgstr "Ungu"
+msgstr "Violetinė"
