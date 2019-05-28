@@ -504,7 +504,7 @@ class RotatorView extends View {
 		 *
 		 * @type {module:ui/button/buttonview~ButtonView}
 		 */
-		this.buttonPrevView = this._createButtonView( t( 'Previous baloon' ), prevIcon );
+		this.buttonPrevView = this._createButtonView( t( 'Previous balloon' ), prevIcon );
 
 		/**
 		 * Navigation button for switching stack to the next one.
