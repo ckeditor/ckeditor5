@@ -12,26 +12,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
-msgstr "Vasakjoondus"
+msgstr "Lygiuoti į kairę"
 
 msgctxt "Toolbar button tooltip for aligning the text to the right."
 msgid "Align right"
-msgstr "Paremjoondus"
+msgstr "Lygiuoti į dešinę"
 
 msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
-msgstr "Keskjoondus"
+msgstr "Centruoti"
 
 msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
-msgstr "Rööpjoondus"
+msgstr "Lygiuoti per visą plotį"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
-msgstr "Teksti joondamine"
+msgstr "Teksto lygiavimas"
