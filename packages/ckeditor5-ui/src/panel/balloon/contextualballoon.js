@@ -407,7 +407,7 @@ export default class ContextualBalloon extends Plugin {
 
 			const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
 
-			return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
+			return t( '%0 of %1', [ current, numberOfStacks ] );
 		} );
 
 		view.buttonNextView.on( 'execute', () => {
@@ -535,14 +535,14 @@ class RotatorView extends View {
 		 *
 		 * @type {module:ui/button/buttonview~ButtonView}
 		 */
-		this.buttonPrevView = this._createButtonView( t( 'Previous baloon' ), prevIcon );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), prevIcon );
 
 		/**
 		 * Navigation button for switching stack to the next one.
 		 *
 		 * @type {module:ui/button/buttonview~ButtonView}
 		 */
-		this.buttonNextView = this._createButtonView( t( 'Next balloon' ), nextIcon );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), nextIcon );
 
 		/**
 		 * Collection of the child views which creates rotator content.

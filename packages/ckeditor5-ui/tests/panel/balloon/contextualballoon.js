@@ -11,11 +11,33 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* global document, Event */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
+
+	testUtils.createSinonSandbox();
+
+	before( () => {
+		addTranslations( 'en', {
+			'Choose heading': '%0 of %1',
+			'Previous': 'Previous',
+			'Next': 'Next'
+		} );
+
+		addTranslations( 'pl', {
+			'%0 of %1': '%0 z %1',
+			'Previous': 'Poprzedni',
+			'Next': 'Następny'
+		} );
+	} );
+
+	after( () => {
+		clearTranslations();
+	} );
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -967,6 +989,49 @@ describe( 'ContextualBalloon', () => {
 			expect( fakePanelsView.element.style.left ).to.equal( '20px' );
 			expect( fakePanelsView.element.style.width ).to.equal( '30px' );
 			expect( fakePanelsView.element.style.height ).to.equal( '40px' );
+		} );
+
+		it( 'should translate the views', () => {
+			// Cleanup the editor created by contextual balloon suite beforeEach.
+			return editor.destroy()
+				.then( () => {
+					editorElement.remove();
+
+					// Setup localized editor for language tests.
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					return ClassicTestEditor
+						.create( editorElement, {
+							plugins: [ Paragraph, ContextualBalloon ],
+							language: 'pl'
+						} );
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+
+					balloon = editor.plugins.get( ContextualBalloon );
+					// We don't need to execute BalloonPanel pin and attachTo methods
+					// it's enough to check if was called with the proper data.
+					sinon.stub( balloon.view, 'attachTo' ).returns( {} );
+					sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+					balloon.add( {
+						view: new View()
+					} );
+
+					balloon.add( {
+						view: new View(),
+						stackId: 'second'
+					} );
+
+					const rotatorView = balloon.view.content.get( 0 );
+					const counterElement = rotatorView.element.querySelector( '.ck-balloon-rotator__counter' );
+
+					expect( counterElement.textContent ).to.equal( '1 z 2' );
+					expect( rotatorView.buttonPrevView.labelView.element.textContent ).to.equal( 'Poprzedni' );
+					expect( rotatorView.buttonNextView.labelView.element.textContent ).to.equal( 'Następny' );
+				} );
 		} );
 
 		describe( 'singleViewMode', () => {

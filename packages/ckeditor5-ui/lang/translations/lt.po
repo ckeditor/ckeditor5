@@ -12,18 +12,18 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Finnish (https://www.transifex.com/ckeditor/teams/11143/fi/)\n"
-"Language: fi\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Rikas tekstieditori, %0"
+msgstr "Raiškiojo teksto redaktorius, %0"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
-msgstr "Rikas tekstieditori"
+msgstr "Raiškiojo teksto redaktorius"
 
 msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
 msgid "Edit block"
-msgstr "Muokkaa lohkoa"
+msgstr "Redaguoti bloką"
