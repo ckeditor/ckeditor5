@@ -38,8 +38,8 @@ msgstr "स्ट्राइकथ्रू"
 
 msgctxt "Toolbar button tooltip for the Subscript feature."
 msgid "Subscript"
-msgstr ""
+msgstr "सबस्क्रिप्ट"
 
 msgctxt "Toolbar button tooltip for the Superscript feature."
 msgid "Superscript"
-msgstr ""
+msgstr "सुपरस्क्रिप्ट"
