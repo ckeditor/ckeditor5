@@ -375,8 +375,7 @@ export default class MentionUI extends Plugin {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
 				withArrow: false,
-				singleViewMode: true,
-				stack: 'mention'
+				singleViewMode: true
 			} );
 		}
 
