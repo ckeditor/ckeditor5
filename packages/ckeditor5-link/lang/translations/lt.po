@@ -12,30 +12,30 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
-"Language: zh_TW\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "取消連結"
+msgstr "Pašalinti nuorodą"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "連結"
+msgstr "Pridėti nuorodą"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr "連結˙ URL"
+msgstr "Nuorodos URL"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr "編輯連結"
+msgstr "Keisti nuorodą"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr "在新視窗開啟連結"
+msgstr "Atidaryti nuorodą naujame skirtuke"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr "連結沒有URL"
+msgstr "Ši nuorda neturi URL"

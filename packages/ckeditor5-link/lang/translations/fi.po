@@ -30,12 +30,12 @@ msgstr "Linkin osoite"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "Muokkaa linkkiä"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "Avaa linkki uudessa välilehdessä"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "Linkillä ei ole URL-osoitetta"
