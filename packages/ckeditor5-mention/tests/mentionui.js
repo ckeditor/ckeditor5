@@ -116,7 +116,6 @@ describe( 'MentionUI', () => {
 		it( 'should disable arrow', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 			sinon.assert.calledWithExactly( balloonAddSpy, sinon.match( data => data.singleViewMode ) );
-			sinon.assert.calledWithExactly( balloonAddSpy, sinon.match( data => data.stack == 'mention' ) );
 			expect( panelView.isVisible ).to.be.true;
 			expect( panelView.withArrow ).to.be.false;
 		} );
