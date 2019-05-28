@@ -382,7 +382,7 @@ export default class ContextualBalloon extends Plugin {
 
 			const current = Array.from( this._idToStack.values() ).indexOf( this._visibleStack ) + 1;
 
-			return `${ current } ${ t( 'of' ) } ${ numberOfStacks }`;
+			return t( '%0 of %1', [ current, numberOfStacks ] );
 		} );
 
 		view.buttonNextView.on( 'execute', () => {
