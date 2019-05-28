@@ -12,78 +12,78 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Sisesta tabel"
+msgstr "插入表格"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Päise veerg"
+msgstr "標題欄"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Sisesta veerg vasakule"
+msgstr "插入左方欄"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Sisesta veerg paremale"
+msgstr "插入右方欄"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Kustuta veerg"
+msgstr "刪除欄"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Veerg"
+msgstr "欄"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Päise rida"
+msgstr "標題列"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Sisesta rida allapoole"
+msgstr "插入下方列"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Sisesta rida ülespoole"
+msgstr "插入上方列"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Kustuta rida"
+msgstr "刪除列"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Rida"
+msgstr "列"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Liida ülemise lahtriga"
+msgstr "合併上方儲存格"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Liida paremal oleva lahtriga"
+msgstr "合併右方儲存格"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Liida alumise lahtriga"
+msgstr "合併下方儲存格"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Liida vasakul oleva lahtriga"
+msgstr "合併左方儲存格"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Jaga lahter vertikaalselt"
+msgstr "垂直分割儲存格"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Jaga lahter horisontaalselt"
+msgstr "水平分割儲存格"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Liida lahtrid"
+msgstr "合併儲存格"

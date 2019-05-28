@@ -54,7 +54,7 @@ msgstr "Insérer une ligne au-dessus"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Supprimer la rangée"
+msgstr "Supprimer la ligne"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"

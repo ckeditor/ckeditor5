@@ -26,11 +26,11 @@ msgstr "Заголовок стовпця"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Вставити стовпець зліва"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Вставити стовпець справа"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

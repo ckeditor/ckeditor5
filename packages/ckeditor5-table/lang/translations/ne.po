@@ -26,11 +26,11 @@ msgstr "हेडर स्तम्भ"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "बायाँ स्तम्भ सम्मिलित गर्न"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "दायाँ स्तम्भ सम्मिलित गर्न"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

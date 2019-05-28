@@ -26,11 +26,11 @@ msgstr "标题列"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "左侧插入列"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "右侧插入列"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

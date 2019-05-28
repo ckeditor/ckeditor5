@@ -26,11 +26,11 @@ msgstr "Stĺpec hlavičky"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "Vložiť stĺpec vľavo"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "Vložiť stĺpec vpravo"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

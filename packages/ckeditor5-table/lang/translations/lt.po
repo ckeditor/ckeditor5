@@ -12,78 +12,78 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
-"Language: et\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Lithuanian (https://www.transifex.com/ckeditor/teams/11143/lt/)\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Sisesta tabel"
+msgstr "Įterpti lentelę"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Päise veerg"
+msgstr "Antraštės stulpelis"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Sisesta veerg vasakule"
+msgstr "Įterpti stulpelį kairėje"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Sisesta veerg paremale"
+msgstr "Įterpti stulpelį dešinėje"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Kustuta veerg"
+msgstr "Ištrinti stulpelį"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Veerg"
+msgstr "Stulpelis"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Päise rida"
+msgstr "Antraštės eilutė"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Sisesta rida allapoole"
+msgstr "Įterpti eilutę žemiau"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Sisesta rida ülespoole"
+msgstr "Įterpti eilutę aukščiau"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Kustuta rida"
+msgstr "Ištrinti eilutę"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Rida"
+msgstr "Eilutė"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Liida ülemise lahtriga"
+msgstr "Prijungti langelį viršuje"
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Liida paremal oleva lahtriga"
+msgstr "Prijungti langelį dešinėje"
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Liida alumise lahtriga"
+msgstr "Prijungti langelį apačioje"
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Liida vasakul oleva lahtriga"
+msgstr "Prijungti langelį kairėje"
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Jaga lahter vertikaalselt"
+msgstr "Padalinti langelį vertikaliai"
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Jaga lahter horisontaalselt"
+msgstr "Padalinti langelį horizontaliai"
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Liida lahtrid"
+msgstr "Sujungti langelius"
