@@ -39,7 +39,7 @@ ClassicEditor
 					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],
 					minimumCharacters: 1
 				}
-			}
+			]
 		}
 	} )
 	.then( ... )
