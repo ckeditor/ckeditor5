@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
-"Language: ne_NP\n"
+"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language: en_AU\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the media widget."
 msgid "media widget"
-msgstr "मिडिया विजेट"
+msgstr "media widget"
 
 msgctxt "Label for the URL input in the Media Embed URL editing balloon."
 msgid "Media URL"
-msgstr "मिडिया यूआरएल"
+msgstr "Media URL"
 
 msgctxt "The help text displayed under the media URL input helping users to discover the interface."
 msgid "Paste the media URL in the input."
-msgstr "इनपुटमा मिडिया यूआरएल पेस्ट गर्नुहोस्।"
+msgstr "Paste the media URL in the input."
 
 msgctxt "The tip displayed next to the media URL input informing about an easier way of embedding."
 msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "सुझाव:छिटो इम्बेड गर्न यूआरएल सामग्रीमा पेस्ट गर्नुहोस्।"
+msgstr "Tip: Paste the URL into the content to embed faster."
 
 msgctxt "An error message that informs about an empty value in the URL input."
 msgid "The URL must not be empty."
-msgstr "यूआरएल खाली हुनु हुँदैन।"
+msgstr "The URL must not be empty."
 
 msgctxt "An error message that informs about unsupported media URL."
 msgid "This media URL is not supported."
-msgstr "यो मिडिया यूआरएल समर्थित छैन।"
+msgstr "This media URL is not supported."
 
 msgctxt "Toolbar button tooltip for the Media Embed feature."
 msgid "Insert media"
-msgstr "मिडिया सम्मिलित गर्नुहोस्।"
+msgstr "Insert media"
