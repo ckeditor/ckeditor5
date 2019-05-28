@@ -42,11 +42,11 @@ msgstr "Paremale joondatud pilt"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Muuda pildi tekstilist alternatiivi"
+msgstr "Muuda pildi asenduskirjeldust"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Alternatiivne tekst"
+msgstr "Asenduskirjeldus"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
