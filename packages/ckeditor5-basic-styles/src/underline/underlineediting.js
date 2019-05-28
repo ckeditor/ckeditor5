@@ -29,7 +29,10 @@ export default class UnderlineEditing extends Plugin {
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
-		editor.model.schema.setAttributeProperties( UNDERLINE, { isFormatting: true } );
+		editor.model.schema.setAttributeProperties( UNDERLINE, {
+			isFormatting: true,
+			copyOnEnter: true
+		} );
 
 		editor.conversion.attributeToElement( {
 			model: UNDERLINE,

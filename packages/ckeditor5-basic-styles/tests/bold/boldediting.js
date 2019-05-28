@@ -41,8 +41,14 @@ describe( 'BoldEditing', () => {
 	} );
 
 	it( 'should be marked with a formatting property', () => {
-		expect( model.schema.getAttributeProperties( 'bold' ) ).to.deep.equal( {
+		expect( model.schema.getAttributeProperties( 'bold' ) ).to.include( {
 			isFormatting: true
+		} );
+	} );
+
+	it( 'its attribute is marked with a copOnEnter property', () => {
+		expect( model.schema.getAttributeProperties( 'bold' ) ).to.include( {
+			copyOnEnter: true
 		} );
 	} );
 
