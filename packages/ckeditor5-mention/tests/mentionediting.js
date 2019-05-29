@@ -86,9 +86,9 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should be overridable', () => {
-			addCustomToLinkConverters( editor );
+			addCustomMentionConverters( editor );
 
-			editor.setData( '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>' );
+			editor.setData( '<p>Hello <b class="mention" data-link="/foo/bar" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 
@@ -99,9 +99,10 @@ describe( 'MentionEditing', () => {
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', 'Ted Mosby' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
-			const expectedView = '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>';
+			const expectedView = '<p>Hello <b class="mention" data-link="/foo/bar" data-mention="@Ted Mosby">Ted Mosby</b></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
@@ -184,7 +185,7 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should not downcast partial mention (custom converter)', done => {
-			addCustomToLinkConverters( editor );
+			addCustomMentionConverters( editor );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: 'mention',
@@ -632,21 +633,21 @@ describe( 'MentionEditing', () => {
 	}
 } );
 
-function addCustomToLinkConverters( editor ) {
+function addCustomMentionConverters( editor ) {
 	editor.conversion.for( 'upcast' ).elementToAttribute( {
 		view: {
-			name: 'a',
+			name: 'b',
 			key: 'data-mention',
 			classes: 'mention',
 			attributes: {
-				href: true
+				'data-link': true
 			}
 		},
 		model: {
 			key: 'mention',
 			value: viewItem => {
 				return _toMentionAttribute( viewItem, {
-					link: viewItem.getAttribute( 'href' )
+					link: viewItem.getAttribute( 'data-link' )
 				} );
 			}
 		},
@@ -660,10 +661,10 @@ function addCustomToLinkConverters( editor ) {
 				return;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return viewWriter.createAttributeElement( 'b', {
 				class: 'mention',
-				'data-mention': modelAttributeValue.id,
-				'href': modelAttributeValue.link
+				'data-link': modelAttributeValue.link,
+				'data-mention': modelAttributeValue.id
 			}, { id: modelAttributeValue._uid } );
 		},
 		converterPriority: 'high'
