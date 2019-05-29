@@ -287,7 +287,7 @@ describe( 'LinkCommand', () => {
 
 					model.schema.extend( '$text', {
 						allowIn: '$root',
-						allowAttributes: 'linkHref'
+						allowAttributes: [ 'linkHref', 'linkManualDecorator0', 'linkManualDecorator1' ]
 					} );
 
 					model.schema.register( 'p', { inheritAllFrom: '$block' } );
