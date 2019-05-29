@@ -88,18 +88,17 @@ describe( 'MentionEditing', () => {
 		it( 'should be overridable', () => {
 			addCustomMentionConverters( editor );
 
-			editor.setData( '<p>Hello <b class="mention" data-link="/foo/bar" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
+			editor.setData( '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
 
 			expect( textNode ).to.not.be.null;
 			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@Ted Mosby' );
-			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'link', '/foo/bar' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', 'Ted Mosby' );
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
-			const expectedView = '<p>Hello <b class="mention" data-link="/foo/bar" data-mention="@Ted Mosby">Ted Mosby</b></p>';
+			const expectedView = '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
@@ -203,7 +202,7 @@ describe( 'MentionEditing', () => {
 				converterPriority: 'high'
 			} );
 
-			editor.setData( '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>' );
+			editor.setData( '<p>Hello <b class="mention" data-mention="@Ted Mosby">Ted Mosby</b></p>' );
 
 			model.change( writer => {
 				const start = writer.createPositionAt( doc.getRoot().getChild( 0 ), 0 );
@@ -638,17 +637,12 @@ function addCustomMentionConverters( editor ) {
 		view: {
 			name: 'b',
 			key: 'data-mention',
-			classes: 'mention',
-			attributes: {
-				'data-link': true
-			}
+			classes: 'mention'
 		},
 		model: {
 			key: 'mention',
 			value: viewItem => {
-				return _toMentionAttribute( viewItem, {
-					link: viewItem.getAttribute( 'data-link' )
-				} );
+				return _toMentionAttribute( viewItem );
 			}
 		},
 		converterPriority: 'high'
@@ -663,7 +657,6 @@ function addCustomMentionConverters( editor ) {
 
 			return viewWriter.createAttributeElement( 'b', {
 				class: 'mention',
-				'data-link': modelAttributeValue.link,
 				'data-mention': modelAttributeValue.id
 			}, { id: modelAttributeValue._uid } );
 		},
