@@ -102,7 +102,6 @@ describe( 'MentionEditing', () => {
 			const expectedView = '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should convert consecutive mentions spans as two text nodes and two spans in the view', () => {
