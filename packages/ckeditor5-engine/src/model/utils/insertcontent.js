@@ -562,7 +562,7 @@ class Insertion {
 
 				// Special case – parent is empty (<p>^</p>).
 				// We can remove the element after moving insertion position out of it.
-				if ( parent.isEmpty ) {
+				if ( parent.isEmpty && parent.parent === allowedIn ) {
 					this.writer.remove( parent );
 				}
 			} else if ( this.position.isAtEnd ) {
