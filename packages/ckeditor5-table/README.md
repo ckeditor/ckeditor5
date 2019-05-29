@@ -22,4 +22,4 @@ See the [`@ckeditor/ckeditor5-table` package](https://ckeditor.com/docs/ckeditor
 
 ## License
 
-Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file.
+Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license).
