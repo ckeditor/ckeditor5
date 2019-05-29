@@ -40,6 +40,7 @@ export default class MentionEditing extends Plugin {
 		// Allow the mention attribute on all text nodes.
 		model.schema.extend( '$text', { allowAttributes: 'mention' } );
 
+		// Upcast conversion.
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			view: {
 				name: 'span',
@@ -52,10 +53,12 @@ export default class MentionEditing extends Plugin {
 			}
 		} );
 
+		// Downcast conversion.
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'mention',
 			view: createViewMentionElement
 		} );
+		editor.conversion.for( 'downcast' ).add( preventPartialMentionDowncast );
 
 		doc.registerPostFixer( writer => removePartialMentionPostFixer( writer, doc, model.schema ) );
 		doc.registerPostFixer( writer => extendAttributeOnMentionPostFixer( writer, doc ) );
@@ -96,6 +99,28 @@ export function _toMentionAttribute( viewElementOrMention, data ) {
 	};
 
 	return _addMentionAttributes( baseMentionData, data );
+}
+
+// Converter that prevents other converters from converting partial mentions.
+//
+// This helper consumes partial mention which should not be downcasted to allow usage
+// of attributeToElement() converter to override default conversion without the need to write more specialised converter.
+function preventPartialMentionDowncast( dispatcher ) {
+	dispatcher.on( 'attribute:mention', ( evt, data, conversionApi ) => {
+		const mention = data.attributeNewValue;
+
+		if ( !data.item.is( 'textProxy' ) || !mention ) {
+			return;
+		}
+
+		const start = data.range.start;
+		const textNode = start.textNode || start.nodeAfter;
+
+		if ( textNode.data != mention._text ) {
+			// Consume item to prevent partial mention conversion.
+			conversionApi.consumable.consume( data.item, evt.name );
+		}
+	}, { priority: 'highest' } );
 }
 
 // Creates a mention element from the mention data.

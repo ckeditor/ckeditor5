@@ -10,7 +10,7 @@ import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ck
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import MentionEditing from '../src/mentionediting';
+import MentionEditing, { _toMentionAttribute } from '../src/mentionediting';
 import MentionCommand from '../src/mentioncommand';
 
 describe( 'MentionEditing', () => {
@@ -58,7 +58,7 @@ describe( 'MentionEditing', () => {
 			} );
 	} );
 
-	describe.only( 'conversion', () => {
+	describe( 'conversion', () => {
 		beforeEach( () => {
 			return createTestEditor()
 				.then( newEditor => {
@@ -80,6 +80,26 @@ describe( 'MentionEditing', () => {
 			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
 
 			const expectedView = '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>';
+
+			expect( editor.getData() ).to.equal( expectedView );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
+		} );
+
+		it( 'should be overridable', () => {
+			addCustomToLinkConverters( editor );
+
+			editor.setData( '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>' );
+
+			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
+
+			expect( textNode ).to.not.be.null;
+			expect( textNode.hasAttribute( 'mention' ) ).to.be.true;
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'id', '@Ted Mosby' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( 'link', '/foo/bar' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_text', 'Ted Mosby' );
+			expect( textNode.getAttribute( 'mention' ) ).to.have.property( '_uid' );
+
+			const expectedView = '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>';
 
 			expect( editor.getData() ).to.equal( expectedView );
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
@@ -140,7 +160,7 @@ describe( 'MentionEditing', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 		} );
 
-		it( 'should not downcast partial mention', done => {
+		it( 'should not downcast partial mention (default converter)', done => {
 			editor.setData( '<p>Hello <span class="mention" data-mention="@John">@John</span></p>' );
 
 			model.change( writer => {
@@ -154,6 +174,48 @@ describe( 'MentionEditing', () => {
 
 			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
 				expect( stringifyView( data.content ) ).to.equal( 'Hello @Jo' );
+
+				done();
+			} );
+
+			editor.editing.view.document.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'should not downcast partial mention (custom converter)', done => {
+			addCustomToLinkConverters( editor );
+
+			editor.conversion.for( 'downcast' ).attributeToElement( {
+				model: 'mention',
+				view: ( modelAttributeValue, viewWriter ) => {
+					if ( !modelAttributeValue ) {
+						return;
+					}
+
+					return viewWriter.createAttributeElement( 'a', {
+						class: 'mention',
+						'data-mention': modelAttributeValue.id,
+						'href': modelAttributeValue.link
+					}, { id: modelAttributeValue._uid } );
+				},
+				converterPriority: 'high'
+			} );
+
+			editor.setData( '<p>Hello <a class="mention" data-mention="@Ted Mosby" href="/foo/bar">Ted Mosby</a></p>' );
+
+			model.change( writer => {
+				const start = writer.createPositionAt( doc.getRoot().getChild( 0 ), 0 );
+				const end = writer.createPositionAt( doc.getRoot().getChild( 0 ), 9 );
+				writer.setSelection( writer.createRange( start, end ) );
+			} );
+
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+
+			editor.editing.view.document.on( 'clipboardOutput', ( evt, data ) => {
+				expect( stringifyView( data.content ) ).to.equal( 'Hello Ted' );
 
 				done();
 			} );
@@ -570,3 +632,41 @@ describe( 'MentionEditing', () => {
 		};
 	}
 } );
+
+function addCustomToLinkConverters( editor ) {
+	editor.conversion.for( 'upcast' ).elementToAttribute( {
+		view: {
+			name: 'a',
+			key: 'data-mention',
+			classes: 'mention',
+			attributes: {
+				href: true
+			}
+		},
+		model: {
+			key: 'mention',
+			value: viewItem => {
+				return _toMentionAttribute( viewItem, {
+					link: viewItem.getAttribute( 'href' )
+				} );
+			}
+		},
+		converterPriority: 'high'
+	} );
+
+	editor.conversion.for( 'downcast' ).attributeToElement( {
+		model: 'mention',
+		view: ( modelAttributeValue, viewWriter ) => {
+			if ( !modelAttributeValue ) {
+				return;
+			}
+
+			return viewWriter.createAttributeElement( 'a', {
+				class: 'mention',
+				'data-mention': modelAttributeValue.id,
+				'href': modelAttributeValue.link
+			}, { id: modelAttributeValue._uid } );
+		},
+		converterPriority: 'high'
+	} );
+}
