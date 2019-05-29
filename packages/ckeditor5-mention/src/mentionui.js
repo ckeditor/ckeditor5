@@ -16,7 +16,7 @@ import featureDetection from './featuredetection';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import { debounce } from 'lodash-es';
 
 import TextWatcher from './textwatcher';
@@ -44,7 +44,7 @@ export default class MentionUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ContextualBalloon, Notification ];
+		return [ ContextualBalloon ];
 	}
 
 	/**
@@ -83,14 +83,14 @@ export default class MentionUI extends Plugin {
 					// So cleanup marker, remove the UI and...
 					this._hideUIAndRemoveMarker();
 
-					const notification = editor.plugins.get( Notification );
-					const t = editor.locale.t;
-
-					// ...show warning notification.
-					notification.showWarning( t( 'Could not obtain mention autocomplete feed.' ), {
-						title: t( 'Requesting feed failed' ),
-						namespace: 'mention'
-					} );
+					// ...log warning.
+					/**
+					 * The callback used for obtaining mention autocomplete feed thrown and error and the mention UI was hidden or
+					 * not displayed at all.
+					 *
+					 * @error mention-feed-callback-error
+					 */
+					log.warn( 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
 				} )
 				.then( feed => {
 					// Do nothing if :

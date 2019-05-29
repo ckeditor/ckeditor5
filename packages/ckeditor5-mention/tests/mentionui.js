@@ -16,7 +16,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import MentionUI, { createRegExp } from '../src/mentionui';
@@ -63,10 +63,6 @@ describe( 'MentionUI', () => {
 		return createClassicTestEditor().then( () => {
 			expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 		} );
-	} );
-
-	it( 'should load Notification plugin', () => {
-		expect( editor.plugins.get( Notification ) ).to.instanceOf( Notification );
 	} );
 
 	describe( 'init()', () => {
@@ -1028,25 +1024,19 @@ describe( 'MentionUI', () => {
 
 				feedCallbackStub.throws( 'Request timeout' );
 
-				const notification = editor.plugins.get( Notification );
+				const spy = sinon.spy( log, 'warn' );
 
-				return new Promise( resolve => {
-					notification.on( 'show:warning', ( evt, data ) => {
-						// Stop the event to not block Karma tests.
-						evt.stop();
-						resolve( data );
-					}, { priority: 'high' } );
-
-					model.change( writer => {
-						writer.insertText( '#', doc.selection.getFirstPosition() );
-					} );
-				} ).then( data => {
-					expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
-					expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
-
-					expect( data.message ).to.equal( 'Could not obtain mention autocomplete feed.' );
-					expect( data.title ).to.equal( 'Requesting feed failed' );
+				model.change( writer => {
+					writer.insertText( '#', doc.selection.getFirstPosition() );
 				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible, 'panel is hidden' ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ), 'there is no marker' ).to.be.false;
+
+						sinon.assert.calledWithExactly( spy, 'mention-feed-callback-error: Could not obtain mention autocomplete feed.' );
+					} );
 			} );
 
 			it( 'should not fail if marker was removed', () => {
