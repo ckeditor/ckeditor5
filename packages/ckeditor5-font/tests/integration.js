@@ -9,6 +9,7 @@ import Font from '../src/font';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;
@@ -41,15 +42,28 @@ describe( 'Integration test Font', () => {
 				'</paragraph>'
 			);
 
-			expect( editor.getData() ).to.equal(
-				'<p>' +
-					'<span ' +
-						'class="text-big" ' +
-						'style="font-family:Arial, Helvetica, sans-serif;background-color:rgb(10,20,30);color:#123456;"' +
-					'>foo' +
-					'</span>' +
-				'</p>'
-			);
+			if ( !env.isEdge ) {
+				expect( editor.getData() ).to.equal(
+					'<p>' +
+						'<span ' +
+							'class="text-big" ' +
+							'style="font-family:Arial, Helvetica, sans-serif;background-color:rgb(10,20,30);color:#123456;"' +
+						'>foo' +
+						'</span>' +
+					'</p>'
+				);
+			} else {
+				// Edge sorts attributes of an element.
+				expect( editor.getData() ).to.equal(
+					'<p>' +
+						'<span ' +
+							'class="text-big" ' +
+							'style="font-family:Arial, Helvetica, sans-serif;color:#123456;background-color:rgb(10,20,30);"' +
+						'>foo' +
+						'</span>' +
+					'</p>'
+				);
+			}
 		} );
 	} );
 
