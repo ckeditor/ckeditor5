@@ -17,78 +17,104 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
 
-	describe( 'color and background color related', () => {
-		it( 'plugin names has proper values', () => {
-			expect( FONT_COLOR ).to.equal( 'fontColor' );
-			expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
+	it( 'plugin names has proper values', () => {
+		expect( FONT_COLOR ).to.equal( 'fontColor' );
+		expect( FONT_BACKGROUND_COLOR ).to.equal( 'fontBackgroundColor' );
+	} );
+
+	describe( 'normalizeColorOptions()', () => {
+		it( 'should return normalized config object from string', () => {
+			const normalizedOption = normalizeColorOptions( [ 'black' ] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
 		} );
 
-		it( 'normalizeColorOptions() can produce the same output object', () => {
-			const normalizedArray = normalizeColorOptions( [
-				'black',
+		it( 'should return normalized config object from object( color )', () => {
+			const normalizedOption = normalizeColorOptions( [ { color: 'black' } ] );
+
+			expect( normalizedOption ).to.deep.equal( [
 				{
-					color: 'black'
-				},
+					model: 'black',
+					label: 'black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, label )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					label: 'Black'
-				},
+				}
+			] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'Black',
+					hasBorder: false,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, label, hasBorder )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					label: 'Black',
 					hasBorder: true
-				},
+				}
+			] );
+
+			expect( normalizedOption ).to.deep.equal( [
+				{
+					model: 'black',
+					label: 'Black',
+					hasBorder: true,
+					view: {
+						name: 'span',
+						styles: {
+							color: 'black'
+						}
+					}
+				}
+			] );
+		} );
+
+		it( 'should return normalized config object from object( color, hasBorder )', () => {
+			const normalizedOption = normalizeColorOptions( [
 				{
 					color: 'black',
 					hasBorder: true
 				}
 			] );
 
-			expect( normalizedArray ).to.deep.equal( [
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				},
-				{
-					model: 'black',
-					label: 'black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				},
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: false,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				},
-				{
-					model: 'black',
-					label: 'Black',
-					hasBorder: true,
-					view: {
-						name: 'span',
-						styles: {
-							color: 'black'
-						}
-					}
-				},
+			expect( normalizedOption ).to.deep.equal( [
 				{
 					model: 'black',
 					label: 'black',
@@ -99,47 +125,47 @@ describe( 'utils', () => {
 							color: 'black'
 						}
 					}
-				},
+				}
 			] );
 		} );
+	} );
 
-		it( 'addColorTableToDropdown()', () => {
-			const dropdown = createDropdown();
-			dropdown.render();
+	it( 'addColorTableToDropdown()', () => {
+		const dropdown = createDropdown();
+		dropdown.render();
 
-			addColorTableToDropdown( {
-				dropdownView: dropdown,
-				colors: [
-					{
-						label: 'Black',
-						color: '#000',
-						options: {
-							hasBorder: false
-						}
-					},
-					{
-						label: 'White',
-						color: '#FFFFFF',
-						options: {
-							hasBorder: true
-						}
+		addColorTableToDropdown( {
+			dropdownView: dropdown,
+			colors: [
+				{
+					label: 'Black',
+					color: '#000',
+					options: {
+						hasBorder: false
 					}
-				],
-				columns: 2,
-				removeButtonTooltip: 'Remove Color'
-			} );
-
-			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
-			expect( dropdown.panelView.children.length ).to.equal( 1 );
+				},
+				{
+					label: 'White',
+					color: '#FFFFFF',
+					options: {
+						hasBorder: true
+					}
+				}
+			],
+			columns: 2,
+			removeButtonTooltip: 'Remove Color'
 		} );
 
-		it( 'renderDowncastElement()', () => {
-			const testRender = renderDowncastElement( 'color' );
-			const fake = testUtils.sinon.fake();
+		expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
+		expect( dropdown.panelView.children.length ).to.equal( 1 );
+	} );
 
-			testRender( 'blue', { createAttributeElement: fake } );
+	it( 'renderDowncastElement()', () => {
+		const testRender = renderDowncastElement( 'color' );
+		const fake = testUtils.sinon.fake();
 
-			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
-		} );
+		testRender( 'blue', { createAttributeElement: fake } );
+
+		sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 	} );
 } );
