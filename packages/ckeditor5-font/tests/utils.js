@@ -161,10 +161,11 @@ describe( 'utils', () => {
 	} );
 
 	it( 'renderDowncastElement()', () => {
-		const testRender = renderDowncastElement( 'color' );
+		const downcastViewConverterFn = renderDowncastElement( 'color' );
 		const fake = testUtils.sinon.fake();
+		const fakeViewWriter = { createAttributeElement: fake };
 
-		testRender( 'blue', { createAttributeElement: fake } );
+		downcastViewConverterFn( 'blue', fakeViewWriter );
 
 		sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 	} );
