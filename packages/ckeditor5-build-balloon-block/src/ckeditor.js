@@ -69,15 +69,16 @@ BalloonEditor.defaultConfig = {
 		'imageUpload',
 		'blockQuote',
 		'insertTable',
-		'mediaEmbed'
+		'mediaEmbed',
+		'|',
+		'undo',
+		'redo'
 	],
 	toolbar: {
 		items: [
 			'bold',
 			'italic',
-			'link',
-			'undo',
-			'redo'
+			'link'
 		]
 	},
 	image: {
