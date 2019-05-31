@@ -130,43 +130,48 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	it( 'addColorTableToDropdown()', () => {
-		const dropdown = createDropdown();
-		dropdown.render();
+	describe( 'addColorTableToDropdown()', () => {
+		it( 'should create dropdown with color table', () => {
+			const dropdown = createDropdown();
+			dropdown.render();
 
-		addColorTableToDropdown( {
-			dropdownView: dropdown,
-			colors: [
-				{
-					label: 'Black',
-					color: '#000',
-					options: {
-						hasBorder: false
+			addColorTableToDropdown( {
+				dropdownView: dropdown,
+				colors: [
+					{
+						label: 'Black',
+						color: '#000',
+						options: {
+							hasBorder: false
+						}
+					},
+					{
+						label: 'White',
+						color: '#FFFFFF',
+						options: {
+							hasBorder: true
+						}
 					}
-				},
-				{
-					label: 'White',
-					color: '#FFFFFF',
-					options: {
-						hasBorder: true
-					}
-				}
-			],
-			columns: 2,
-			removeButtonTooltip: 'Remove Color'
+				],
+				columns: 2,
+				removeButtonTooltip: 'Remove Color'
+			} );
+
+			expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
+			expect( dropdown.panelView.children.length ).to.equal( 1 );
+			expect( dropdown.colorTableView.element ).to.equal( dropdown.panelView.children.first.element );
 		} );
-
-		expect( dropdown.colorTableView ).to.be.instanceOf( ColorTableView );
-		expect( dropdown.panelView.children.length ).to.equal( 1 );
 	} );
 
-	it( 'renderDowncastElement()', () => {
-		const downcastViewConverterFn = renderDowncastElement( 'color' );
-		const fake = testUtils.sinon.fake();
-		const fakeViewWriter = { createAttributeElement: fake };
+	describe( 'renderDowncastElement()', () => {
+		it( 'should create function executes viewWriter with proper arguments', () => {
+			const downcastViewConverterFn = renderDowncastElement( 'color' );
+			const fake = testUtils.sinon.fake();
+			const fakeViewWriter = { createAttributeElement: fake };
 
-		downcastViewConverterFn( 'blue', fakeViewWriter );
+			downcastViewConverterFn( 'blue', fakeViewWriter );
 
-		sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
+			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
+		} );
 	} );
 } );
