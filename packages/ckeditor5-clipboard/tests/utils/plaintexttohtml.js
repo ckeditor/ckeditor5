@@ -10,21 +10,12 @@ describe( 'plainTextToHtml()', () => {
 		expect( plainTextToHtml( 'x y <z>' ) ).to.equal( 'x y &lt;z&gt;' );
 	} );
 
-	it( 'turns double line breaks into paragraphs', () => {
-		expect( plainTextToHtml( 'x\n\ny\n\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
+	it( 'turns single line breaks into paragraphs', () => {
+		expect( plainTextToHtml( 'x\ny\nz' ) ).to.equal( '<p>x</p><p>y</p><p>z</p>' );
 	} );
 
-	it( 'turns single line breaks into <br>s', () => {
-		expect( plainTextToHtml( 'x\ny\nz' ) ).to.equal( 'x<br>y<br>z' );
-	} );
-
-	it( 'turns double and single line breaks to a combination of paragraphs and <br>s', () => {
-		expect( plainTextToHtml( 'a\nb\n\nc\nd' ) ).to.equal( '<p>a<br>b</p><p>c<br>d</p>' );
-	} );
-
-	it( 'turns 3-5 subsequent new lines to a combination of paragraphs and <br>s', () => {
-		expect( plainTextToHtml( 'a\n\n\nb\n\n\n\nc\n\n\n\n\nd' ) )
-			.to.equal( '<p>a</p><p><br>b</p><p></p><p>c</p><p></p><p><br>d</p>' );
+	it( 'turns combination of different amount of line breaks to paragraphs', () => {
+		expect( plainTextToHtml( 'a\nb\n\nc\n\n\nd' ) ).to.equal( '<p>a</p><p>b</p><p></p><p>c</p><p></p><p></p><p>d</p>' );
 	} );
 
 	it( 'preserves trailing spaces', () => {
