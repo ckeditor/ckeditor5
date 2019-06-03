@@ -10,6 +10,8 @@
 	"ckeditor5-plugin"
   ],
   "dependencies": {
+	"@ckeditor/ckeditor5-core": "^12.1.0",
+	"lodash-es": "^4.17.10"
   },
   "devDependencies": {
     "eslint": "^5.5.0",
