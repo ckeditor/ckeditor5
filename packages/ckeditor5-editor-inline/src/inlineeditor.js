@@ -19,6 +19,7 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -75,6 +76,7 @@ export default class InlineEditor extends Editor {
 		this.ui = new InlineEditorUI( this, view );
 
 		attachToForm( this );
+		secureSourceElement( this );
 	}
 
 	/**

@@ -21,6 +21,7 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 
@@ -114,6 +115,13 @@ describe( 'InlineEditor', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.element );
 			} );
 		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/746
+		it( 'should throw when trying to create the editor using the same source element more than once', () => {
+			expect( () => {
+				new InlineEditor( editorElement ); // eslint-disable-line no-new
+			} ).to.throw( CKEditorError, /^securesourceelement-source-element-used-more-than-once/ );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -148,6 +156,9 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'should not require config object', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
 			// Just being safe with `builtinPlugins` static property.
 			class CustomInlineEditor extends InlineEditor {}
 			CustomInlineEditor.builtinPlugins = [ Paragraph, Bold ];
@@ -157,6 +168,9 @@ describe( 'InlineEditor', () => {
 					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
 					return newEditor.destroy();
+				} )
+				.then( () => {
+					editorElement.remove();
 				} );
 		} );
 
@@ -171,13 +185,18 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'initializes with config.initialData', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p>Hello world!</p>';
+
 			return InlineEditor.create( editorElement, {
 				initialData: '<p>Hello world!</p>',
 				plugins: [ Paragraph ]
 			} ).then( editor => {
 				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 
-				editor.destroy();
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
 			} );
 		} );
 
