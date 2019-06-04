@@ -17,6 +17,7 @@ import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromele
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -70,6 +71,7 @@ export default class BalloonEditor extends Editor {
 
 		const plugins = this.config.get( 'plugins' );
 		plugins.push( BalloonToolbar );
+
 		this.config.set( 'plugins', plugins );
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
@@ -82,6 +84,7 @@ export default class BalloonEditor extends Editor {
 		this.ui = new BalloonEditorUI( this, view );
 
 		attachToForm( this );
+		secureSourceElement( this );
 	}
 
 	/**
