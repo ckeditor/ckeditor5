@@ -17,6 +17,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isElement } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
  * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
@@ -76,6 +77,8 @@ export default class DecoupledEditor extends Editor {
 
 		const view = new DecoupledEditorUIView( this.locale, this.editing.view, this.sourceElement );
 		this.ui = new DecoupledEditorUI( this, view );
+
+		secureSourceElement( this );
 	}
 
 	/**

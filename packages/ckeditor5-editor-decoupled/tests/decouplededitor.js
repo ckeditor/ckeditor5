@@ -22,6 +22,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const editorData = '<p><strong>foo</strong> bar</p>';
 
@@ -123,6 +124,20 @@ describe( 'DecoupledEditor', () => {
 
 				editor.destroy();
 			} );
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/746
+		it( 'should throw when trying to create the editor using the same source element more than once', () => {
+			const sourceElement = document.createElement( 'div' );
+
+			return DecoupledEditor.create( sourceElement )
+				.then( editor => {
+					expect( () => {
+						new DecoupledEditor( sourceElement ); // eslint-disable-line no-new
+					} ).to.throw( CKEditorError, /^securesourceelement-source-element-used-more-than-once/ );
+
+					return editor.destroy();
+				} );
 		} );
 
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
