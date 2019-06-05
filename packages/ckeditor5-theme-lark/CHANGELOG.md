@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [14.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.1...v14.0.0) (2019-06-05)
+
+### Features
+
+* Introduced rotatable panels styles for `ContextualBalloon`. ([d3e4266](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d3e4266))
+
+### Bug fixes
+
+* Vertical toolbar items should have no border-radius. Closes [#168](https://github.com/ckeditor/ckeditor5-theme-lark/issues/168). ([ea93616](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ea93616))
+
+### Other changes
+
+* Introduced styles for ck-fake-panel. Part of [ckeditor/ckeditor5-ui#501](https://github.com/ckeditor/ckeditor5-ui/issues/501). ([c2736b1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c2736b1))
+* Moved `_rwd.css` mixin to `@ckeditor/ckeditor5-ui`. See [ckeditor/ckeditor5#1662](https://github.com/ckeditor/ckeditor5/issues/1662). ([325d64e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/325d64e))
+
+### BREAKING CHANGES
+
+* The `_rwd.css` mixin was moved to `@ckeditor/ckeditor5-ui`.
+
+
 ## [13.0.1](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v13.0.0...v13.0.1) (2019-04-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
