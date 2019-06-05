@@ -3,24 +3,21 @@ Changelog
 
 ## [13.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.1...v13.1.0) (2019-06-05)
 
-### Features
-
-* Changed `ImageStyleCommand#defaultStyle` from private to public readonly property. Closes [#289](https://github.com/ckeditor/ckeditor5-image/issues/289). ([fb35177](https://github.com/ckeditor/ckeditor5-image/commit/fb35177))
-
 ### Bug fixes
 
-* ImageTextAlternative click outside handler scope. Closes [#292](https://github.com/ckeditor/ckeditor5-image/issues/292). ([78e619e](https://github.com/ckeditor/ckeditor5-image/commit/78e619e))
+* Fixed the scope of the "click outside handler" in `ImageTextAlternative`. Closes [#292](https://github.com/ckeditor/ckeditor5-image/issues/292). ([78e619e](https://github.com/ckeditor/ckeditor5-image/commit/78e619e))
 
 ### Other changes
 
-* Updated translations. ([01125b7](https://github.com/ckeditor/ckeditor5-image/commit/01125b7)) 
+* Changed `ImageStyleCommand#defaultStyle` from private to public readonly property. Closes [#289](https://github.com/ckeditor/ckeditor5-image/issues/289). ([fb35177](https://github.com/ckeditor/ckeditor5-image/commit/fb35177))
+* Updated translations. ([01125b7](https://github.com/ckeditor/ckeditor5-image/commit/01125b7))
 
 
 ## [13.0.1](https://github.com/ckeditor/ckeditor5-image/compare/v13.0.0...v13.0.1) (2019-04-10)
 
 ### Other changes
 
-* Updated translations. ([e674e9c](https://github.com/ckeditor/ckeditor5-image/commit/e674e9c)) 
+* Updated translations. ([e674e9c](https://github.com/ckeditor/ckeditor5-image/commit/e674e9c))
 
 
 ## [13.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v12.0.0...v13.0.0) (2019-02-28)
