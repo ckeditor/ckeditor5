@@ -1,6 +1,6 @@
 /**
  * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * For licensing, see LICENSE.md.
  */
 
 /**
@@ -24,7 +24,7 @@ const defaultLimiterElement = global.document.body;
  *
  * A floating container which can
  * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#pin pin} to any
- * {@link module:utils/dom/position~Options#target target} in DOM and remain in that position
+ * {@link module:utils/dom/position~Options#target target} in the DOM and remain in that position
  * e.g. when the web page is scrolled.
  *
  * The balloon panel can be used to display contextual, non-blocking UI like forms, toolbars and
@@ -86,9 +86,9 @@ export default class BalloonPanelView extends View {
 		this.set( 'left', 0 );
 
 		/**
-		 * Balloon panel's current position. The position name is reflected in the CSS class set
-		 * to the balloon, i.e. `.ck-balloon-panel_arrow_nw` for "arrow_nw" position. The class
-		 * controls the minor aspects of the balloon's visual appearance like placement
+		 * The balloon panel's current position. The position name is reflected in the CSS class set
+		 * to the balloon, i.e. `.ck-balloon-panel_arrow_nw` for the "arrow_nw" position. The class
+		 * controls the minor aspects of the balloon's visual appearance like the placement
 		 * of an {@link #withArrow arrow}. To support a new position, an additional CSS must be created.
 		 *
 		 * Default position names correspond with
@@ -113,7 +113,7 @@ export default class BalloonPanelView extends View {
 
 		/**
 		 * Controls whether the balloon panel has an arrow. The presence of the arrow
-		 * is reflected in `ck-balloon-panel_with-arrow` CSS class.
+		 * is reflected in the `ck-balloon-panel_with-arrow` CSS class.
 		 *
 		 * @observable
 		 * @default true
@@ -130,7 +130,7 @@ export default class BalloonPanelView extends View {
 		this.set( 'class' );
 
 		/**
-		 * A callback that starts pining the panel when {@link #isVisible} gets
+		 * A callback that starts pinning the panel when {@link #isVisible} gets
 		 * `true`. Used by {@link #pin}.
 		 *
 		 * @private
@@ -138,7 +138,7 @@ export default class BalloonPanelView extends View {
 		 */
 
 		/**
-		 * Collection of the child views which creates balloon panel contents.
+		 * A collection of the child views that creates the balloon panel contents.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -191,7 +191,7 @@ export default class BalloonPanelView extends View {
 	 * is visible to the user i.e. within the limits of the viewport.
 	 *
 	 * This method accepts configuration {@link module:utils/dom/position~Options options}
-	 * to set the `target`, optional `limiter` and `positions` the balloon should chose from.
+	 * to set the `target`, optional `limiter` and `positions` the balloon should choose from.
 	 *
 	 *		const panel = new BalloonPanelView( locale );
 	 *		const positions = BalloonPanelView.defaultPositions;
@@ -210,9 +210,7 @@ export default class BalloonPanelView extends View {
 	 * **Note**: Attaching the panel will also automatically {@link #show} it.
 	 *
 	 * **Note**: An attached panel will not follow its target when the window is scrolled or resized.
-	 * See the {@link #pin} method for more permanent positioning strategy.
-	 *
-	 * **Note**: If a limiter is not provided in the options the panel will use `document.body` as a default limiter.
+	 * See the {@link #pin} method for a more permanent positioning strategy.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
@@ -236,13 +234,7 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options );
 
-		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
-
-		// Usually browsers make some problems with super accurate values like 104.345px
-		// so it is better to use int values.
-		const left = parseInt( optimalPosition.left );
-		const top = parseInt( optimalPosition.top );
-		const position = optimalPosition.name;
+		const { top, left, name: position } = BalloonPanelView._getOptimalPosition( positionOptions );
 
 		Object.assign( this, { top, left, position } );
 	}
@@ -255,8 +247,8 @@ export default class BalloonPanelView extends View {
 	 * or {@link module:utils/dom/position~Options#limiter} is scrolled,
 	 * * the browser window gets resized or scrolled.
 	 *
-	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~Options#target},
-	 * immune to the changing environment.
+	 * Thanks to that, the panel always sticks to the {@link module:utils/dom/position~Options#target}
+	 * and is immune to the changing environment.
 	 *
 	 *		const panel = new BalloonPanelView( locale );
 	 *		const positions = BalloonPanelView.defaultPositions;
@@ -364,8 +356,8 @@ export default class BalloonPanelView extends View {
 	}
 }
 
-// Returns the DOM element for given object or null, if there's none,
-// e.g. when passed object is a Rect instance or so.
+// Returns the DOM element for given object or null, if there is none,
+// e.g. when the passed object is a Rect instance or so.
 //
 // @private
 // @param {*} object
@@ -433,9 +425,9 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
 
 /**
  * A default set of positioning functions used by the balloon panel view
- * when attaching using {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo} method.
+ * when attaching using the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo} method.
  *
- * The available positioning functions are as follow:
+ * The available positioning functions are as follows:
  *
  * **North**
  *
@@ -597,7 +589,7 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
- * The name that position function returns will be reflected in balloon panel's class that
+ * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
  * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
