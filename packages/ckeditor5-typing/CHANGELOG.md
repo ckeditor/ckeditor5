@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Use `model.insertContent` instead of `model.Writer#insertText`. Closes [#191](https://github.com/ckeditor/ckeditor5-typing/issues/191). ([0aeb384](https://github.com/ckeditor/ckeditor5-typing/commit/0aeb384))
+* Use `Model#insertContent()` instead of `model.Writer#insertText()`. Closes [#191](https://github.com/ckeditor/ckeditor5-typing/issues/191). ([0aeb384](https://github.com/ckeditor/ckeditor5-typing/commit/0aeb384))
 
 
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v12.0.0...v12.0.1) (2019-04-10)
