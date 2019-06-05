@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.1...v13.0.0) (2019-06-05)
+
+### Bug fixes
+
+* Table cell view post-fixer should not fix valid view selection. Closes [ckeditor/ckeditor5#1554](https://github.com/ckeditor/ckeditor5/issues/1554). ([fa46cdc](https://github.com/ckeditor/ckeditor5-table/commit/fa46cdc))
+* Table cell view post-fixer will not crash if an element inside a cell got attribute and was removed at the same time. Closes [#191](https://github.com/ckeditor/ckeditor5-table/issues/191). ([900c178](https://github.com/ckeditor/ckeditor5-table/commit/900c178))
+* Table rows will not be added on tab key press if the associated command is disabled. Closes [#185](https://github.com/ckeditor/ckeditor5-table/issues/185). ([00848a8](https://github.com/ckeditor/ckeditor5-table/commit/00848a8))
+
+### Other changes
+
+* Removed deprecated `config.table.toolbar` configuration option. Closes [#167](https://github.com/ckeditor/ckeditor5-table/issues/167). ([5d024ce](https://github.com/ckeditor/ckeditor5-table/commit/5d024ce))
+* Updated translations. ([60ccc61](https://github.com/ckeditor/ckeditor5-table/commit/60ccc61)) 
+
+### BREAKING CHANGES
+
+* `config.table.toolbar` is now removed from code. Use `config.table.contentToolbar`instead.
+
+
 ## [12.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.0...v12.0.1) (2019-04-10)
 
 ### Bug fixes
