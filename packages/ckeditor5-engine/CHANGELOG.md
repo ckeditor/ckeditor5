@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Prevented from losing selection attributes between operations - IME. Closes https://github.com/ckeditor/ckeditor5-typing/issues/188. ([42dcb25](https://github.com/ckeditor/ckeditor5-engine/commit/42dcb25))
+* Prevented from losing selection attributes between operations (fixes a bug with text composition). Closes https://github.com/ckeditor/ckeditor5-typing/issues/188. ([42dcb25](https://github.com/ckeditor/ckeditor5-engine/commit/42dcb25))
 
 ### Other changes
 
