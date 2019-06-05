@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [11.1.0](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.0.1...v11.1.0) (2019-06-05)
+
+### Features
+
+* Add possibility to force quoting or un-quoting in `execute()`. Closes: [#35](https://github.com/ckeditor/ckeditor5-block-quote/issues/35). ([e9a5027](https://github.com/ckeditor/ckeditor5-block-quote/commit/e9a5027))
+
+### Other changes
+
+* Updated translations. ([eb15fc6](https://github.com/ckeditor/ckeditor5-block-quote/commit/eb15fc6)) 
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
