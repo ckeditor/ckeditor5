@@ -639,10 +639,10 @@
     url-parse "^1.4.0"
     uuid "^3.0.1"
 
-"@ckeditor/ckeditor-cloud-services-core@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor-cloud-services-core/-/ckeditor-cloud-services-core-3.0.0.tgz#30e236d82e5a6622c6895a0b01f7f97883be909f"
-  integrity sha512-0k27ABBKT/3RDcgKda/p/EtcoLlVT5ZhtqmDN5SQL/uTnlJVC36EcxHtjt8bQ1atK87P6W4E0boSkSfZd6yrOA==
+"@ckeditor/ckeditor-cloud-services-core@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor-cloud-services-core/-/ckeditor-cloud-services-core-3.0.1.tgz#c9cb60562128b37065ddc77c1c54db1e3c129411"
+  integrity sha512-+i/HwTlItx39gY77nb1kWaGTugILDYRAbyr6QGrESs/JusweRe69we26tyZXlSI/a93zW5rG45s8Bdmbcm1xJw==
   dependencies:
     "@ckeditor/ckeditor5-utils" "^12.0.0"
 
