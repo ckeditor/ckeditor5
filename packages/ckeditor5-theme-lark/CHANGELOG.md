@@ -13,7 +13,7 @@ Changelog
 
 ### Other changes
 
-* Introduced styles for ck-fake-panel. Part of [ckeditor/ckeditor5-ui#501](https://github.com/ckeditor/ckeditor5-ui/issues/501). ([c2736b1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c2736b1))
+* Introduced styles for `ck-fake-panel`. Part of [ckeditor/ckeditor5-ui#501](https://github.com/ckeditor/ckeditor5-ui/issues/501). ([c2736b1](https://github.com/ckeditor/ckeditor5-theme-lark/commit/c2736b1))
 * Moved `_rwd.css` mixin to `@ckeditor/ckeditor5-ui`. See [ckeditor/ckeditor5#1662](https://github.com/ckeditor/ckeditor5/issues/1662). ([325d64e](https://github.com/ckeditor/ckeditor5-theme-lark/commit/325d64e))
 
 ### BREAKING CHANGES
