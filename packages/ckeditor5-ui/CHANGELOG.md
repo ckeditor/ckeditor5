@@ -8,21 +8,16 @@ Changelog
 * Implemented the single view mode for the `ContextualBalloon` plugin. See https://github.com/ckeditor/ckeditor5-mention/issues/74. ([c000c93](https://github.com/ckeditor/ckeditor5-ui/commit/c000c93))
 * Introduced rotatable panels for `ContextualBalloon`. Closes https://github.com/ckeditor/ckeditor5-ui/issues/491. ([581d8f7](https://github.com/ckeditor/ckeditor5-ui/commit/581d8f7))
 
-### Bug fixes
-
-* Rotatable balloons should center toolbar items. ([33d85bf](https://github.com/ckeditor/ckeditor5-ui/commit/33d85bf))
-
 ### Other changes
 
-* Improved UX of ContextualBalloon with multiple stacks by adding fake panels. Closes [#501](https://github.com/ckeditor/ckeditor5-ui/issues/501). ([abd05b6](https://github.com/ckeditor/ckeditor5-ui/commit/abd05b6))
 * Renamed a misspelled `InputTextViewariaDesribedById` property to `InputTextView#ariaDescribedById`. Closes [#483](https://github.com/ckeditor/ckeditor5-ui/issues/483). ([2288bf3](https://github.com/ckeditor/ckeditor5-ui/commit/2288bf3))
 * The `_rwd.css` mixin was moved to this package from `@ckeditor/ckeditor5-theme-lark`. See [ckeditor/ckeditor5#1662](https://github.com/ckeditor/ckeditor5/issues/1662). ([96e3a3c](https://github.com/ckeditor/ckeditor5-ui/commit/96e3a3c))
-* The `ContextualBalloon#add` method should accept the `withArrow` option. Closes [#487](https://github.com/ckeditor/ckeditor5-ui/issues/487). ([0e7f670](https://github.com/ckeditor/ckeditor5-ui/commit/0e7f670))
+* The `ContextualBalloon#add()` method should accept the `withArrow` option. Closes [#487](https://github.com/ckeditor/ckeditor5-ui/issues/487). ([0e7f670](https://github.com/ckeditor/ckeditor5-ui/commit/0e7f670))
 * Updated translations. ([4699d8b](https://github.com/ckeditor/ckeditor5-ui/commit/4699d8b)) ([d4c5714](https://github.com/ckeditor/ckeditor5-ui/commit/d4c5714))
 
 ### BREAKING CHANGES
 
-* The `InputTextView#ariaDesribedById` property is no longer available. Use `ariaDescribedById` instead.
+* The (misspelled) `InputTextView#ariaDesribedById` property is no longer available. Use `ariaDescribedById` instead.
 
 
 ## [12.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v12.0.0...v12.1.0) (2019-04-10)
