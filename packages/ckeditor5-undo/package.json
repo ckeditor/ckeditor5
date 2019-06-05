@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-undo",
-  "version": "11.0.1",
+  "version": "11.0.2",
   "description": "Undo manager for CKEditor 5.",
   "keywords": [
     "ckeditor",
