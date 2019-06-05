@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [11.0.2](https://github.com/ckeditor/ckeditor5-link/compare/v11.0.1...v11.0.2) (2019-06-05)
+
+### Bug fixes
+
+* Link balloon will not be shown if no link was added after command execution. Closes [#171](https://github.com/ckeditor/ckeditor5-link/issues/171). ([0069dc7](https://github.com/ckeditor/ckeditor5-link/commit/0069dc7))
+
+### Other changes
+
+* `Use model.insertContent` instead of `model.Writer.insert`. Closes [#224](https://github.com/ckeditor/ckeditor5-link/issues/224). ([e3c8676](https://github.com/ckeditor/ckeditor5-link/commit/e3c8676))
+* Updated translations. ([ba97a60](https://github.com/ckeditor/ckeditor5-link/commit/ba97a60)) 
+
+
 ## [11.0.1](https://github.com/ckeditor/ckeditor5-link/compare/v11.0.0...v11.0.1) (2019-04-10)
 
 ### Other changes
