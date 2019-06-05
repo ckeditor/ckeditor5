@@ -78,7 +78,8 @@ export default class CKFinder extends Plugin {
 /**
  * The configuration options passed to the CKFinder file manager instance.
  *
- * Check the file manager {@glink @ckfinder ckfinder3/#!/api/CKFinder.Config documentation} for the complete list of options.
+ * Check the file manager [documentation](https://ckeditor.com/docs/ckfinder/ckfinder3/#!/api/CKFinder.Config-cfg-language)
+ * for the complete list of options.
  *
  * @member {Object} module:ckfinder/ckfinder~CKFinderConfig#options
  */
