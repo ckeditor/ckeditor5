@@ -3,6 +3,10 @@ Changelog
 
 ## [12.2.0](https://github.com/ckeditor/ckeditor5-build-balloon-block/compare/v12.1.0...v12.2.0) (2019-06-05)
 
+We are happy to report the release of CKEditor 5 v12.2.0. This is a minor release with many bug fixes and a new UI feature which allows to navigating between multiple balloons.
+
+**Note:** The `config.table.toolbar` property that had been deprecated last year has now been completely removed. Use [`config.table.contentToolbar`](https://ckeditor.com/docs/ckeditor5/latest/api/module_table_table-TableConfig.html#member-contentToolbar) instead.
+
 ### Dependencies
 
 Major releases (contain breaking changes):
