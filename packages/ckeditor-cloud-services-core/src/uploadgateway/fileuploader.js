@@ -26,25 +26,30 @@ export default class FileUploader {
 	 */
 	constructor( fileOrData, token, apiAddress ) {
 		if ( !fileOrData ) {
-			throw new CKEditorError( 'File must be provided' );
+			/**
+			 * File must be provided as the first argument.
+			 *
+			 * @error fileuploader-missing-file
+			 */
+			throw new CKEditorError( 'fileuploader-missing-file: File must be provided as the first argument' );
 		}
 
 		if ( !token ) {
 			/**
-			 * Token must be provided.
+			 * Token must be provided as the second argument.
 			 *
 			 * @error fileuploader-missing-token
 			 */
-			throw new CKEditorError( 'fileuploader-missing-token: Token must be provided.' );
+			throw new CKEditorError( 'fileuploader-missing-token: Token must be provided as the second argument.' );
 		}
 
 		if ( !apiAddress ) {
 			/**
-			 * Api address must be provided.
+			 * Api address must be provided as the third argument.
 			 *
 			 * @error fileuploader-missing-api-address
 			 */
-			throw new CKEditorError( 'fileuploader-missing-api-address: Api address must be provided.' );
+			throw new CKEditorError( 'fileuploader-missing-api-address: Api address must be provided as the third argument.' );
 		}
 
 		/**
