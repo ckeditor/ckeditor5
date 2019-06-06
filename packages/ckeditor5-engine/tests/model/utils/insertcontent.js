@@ -1255,7 +1255,7 @@ describe( 'DataController utils', () => {
 			expect( stringify( root, affectedRange ) ).to.equal( '<limit>[ab]foo</limit>' );
 		} );
 
-		describe( 'when allowed elements is somewhere above limit', () => {
+		describe( 'when allowed element is above limit element in document tree', () => {
 			// $root > table > tableRow > tableCell > paragraph
 			// After inserting new table ( allowed in root ), empty paragraph shouldn't be removed from current tableCell.
 			beforeEach( () => {

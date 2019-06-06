@@ -561,7 +561,14 @@ class Insertion {
 				this.position = this.writer.createPositionBefore( parent );
 
 				// Special case – parent is empty (<p>^</p>).
+				//
+				// 1. parent.isEmpty
 				// We can remove the element after moving insertion position out of it.
+				//
+				// 2. parent.parent === allowedIn
+				// However parent should remain in place when allowed element is above limit element in document tree.
+				// For example there shouldn't be allowed to remove empty paragraph from tableCell, when is pasted
+				// content allowed in $root.
 				if ( parent.isEmpty && parent.parent === allowedIn ) {
 					this.writer.remove( parent );
 				}
