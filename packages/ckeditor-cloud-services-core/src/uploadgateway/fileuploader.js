@@ -9,6 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 
@@ -192,7 +193,10 @@ export default class FileUploader {
 						 *
 						 * @error fileuploader-uploading-data-failed
 						 */
-						return reject( new CKEditorError( 'fileuploader-uploading-data-failed: Uploading file failed.', { message: xhrResponse.message } ) );
+						return reject( new CKEditorError(
+							'fileuploader-uploading-data-failed: Uploading file failed.',
+							{ message: xhrResponse.message }
+						) );
 					}
 
 					return reject( xhrResponse.error );
