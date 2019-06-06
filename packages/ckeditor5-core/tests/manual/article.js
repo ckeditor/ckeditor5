@@ -56,9 +56,45 @@ class IndentOutdent extends Plugin {
 	}
 }
 
+class IndentBlock extends Plugin {
+	init() {
+		const schema = this.editor.model.schema;
+		const conversion = this.editor.conversion;
+
+		schema.extend( 'paragraph', { allowAttributes: 'indent' } );
+		schema.extend( 'heading1', { allowAttributes: 'indent' } );
+
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			view: {
+				styles: {
+					'margin-left': /[\s\S]+/
+				}
+			},
+			model: {
+				key: 'indent',
+				value: viewElement => {
+					return viewElement.getStyle( 'margin-left' );
+				}
+			}
+		} );
+
+		conversion.for( 'downcast' ).attributeToAttribute( {
+			model: 'indent',
+			view: modelAttributeValue => {
+				return {
+					key: 'style',
+					value: {
+						'margin-left': modelAttributeValue
+					}
+				};
+			}
+		} );
+	}
+}
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, IndentOutdent ],
+		plugins: [ ArticlePluginSet, IndentOutdent, IndentBlock ],
 		toolbar: [
 			'heading',
 			'|',
