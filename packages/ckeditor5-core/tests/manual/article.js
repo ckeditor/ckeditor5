@@ -8,10 +8,26 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '../_utils/articlepluginset';
+import MultiCommand from '../../src/multicommand';
+import Plugin from '../../src/plugin';
+
+class IndentOutdent extends Plugin {
+	afterInit() {
+		const editor = this.editor;
+
+		const indentCommand = new MultiCommand( editor );
+		indentCommand.registerChildCommand( editor.commands.get( 'indentList' ) );
+		editor.commands.add( 'indent', indentCommand );
+
+		const outdentCommand = new MultiCommand( editor );
+		outdentCommand.registerChildCommand( editor.commands.get( 'outdentList' ) );
+		editor.commands.add( 'outdent', outdentCommand );
+	}
+}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, IndentOutdent ],
 		toolbar: [
 			'heading',
 			'|',
