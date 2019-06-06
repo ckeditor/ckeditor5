@@ -10,8 +10,39 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '../_utils/articlepluginset';
 import MultiCommand from '../../src/multicommand';
 import Plugin from '../../src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 class IndentOutdent extends Plugin {
+	init() {
+		const editor = this.editor;
+		const t = editor.t;
+
+		this._createButton( 'indent', t( 'Indent' ) );
+		this._createButton( 'outdent', t( 'Outdent' ) );
+	}
+
+	_createButton( commandName, label ) {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( commandName, locale => {
+			const command = editor.commands.get( commandName );
+			const view = new ButtonView( locale );
+
+			view.set( {
+				label,
+				withText: true,
+				tooltip: true
+			} );
+
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => editor.execute( commandName ) );
+
+			return view;
+		} );
+	}
+
 	afterInit() {
 		const editor = this.editor;
 
@@ -34,8 +65,13 @@ ClassicEditor
 			'bold',
 			'italic',
 			'link',
+			'|',
+			'indent',
+			'outdent',
+			'|',
 			'bulletedList',
 			'numberedList',
+			'|',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
