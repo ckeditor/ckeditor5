@@ -63,8 +63,8 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Bold, Italic, Underline, Strikethrough, Code, Subscript, Superscript ],
-		image: {
-			toolbar: [ 'bold', 'italic', 'underline', 'strikethrough', 'code','subscript', 'superscript'  ]
+		toolbar: {
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code','subscript', 'superscript'  ]
 		}
 	} )
 	.then( ... )
