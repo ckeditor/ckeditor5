@@ -1,6 +1,74 @@
 Changelog
 =========
 
+## [13.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.1...v13.0.0) (2019-06-05)
+
+### Bug fixes
+
+* Table cell view post-fixer should not fix valid view selection. Closes [ckeditor/ckeditor5#1554](https://github.com/ckeditor/ckeditor5/issues/1554). ([fa46cdc](https://github.com/ckeditor/ckeditor5-table/commit/fa46cdc))
+* Table cell view post-fixer will not crash if an element inside a cell got attribute and was removed at the same time. Closes [#191](https://github.com/ckeditor/ckeditor5-table/issues/191). ([900c178](https://github.com/ckeditor/ckeditor5-table/commit/900c178))
+* Table rows will not be added on tab key press if the associated command is disabled. Closes [#185](https://github.com/ckeditor/ckeditor5-table/issues/185). ([00848a8](https://github.com/ckeditor/ckeditor5-table/commit/00848a8))
+
+### Other changes
+
+* Removed deprecated `config.table.toolbar` configuration option. Closes [#167](https://github.com/ckeditor/ckeditor5-table/issues/167). ([5d024ce](https://github.com/ckeditor/ckeditor5-table/commit/5d024ce))
+* Updated translations. ([60ccc61](https://github.com/ckeditor/ckeditor5-table/commit/60ccc61))
+
+### BREAKING CHANGES
+
+* `config.table.toolbar` is now removed from code. Use `config.table.contentToolbar` instead.
+
+
+## [12.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v12.0.0...v12.0.1) (2019-04-10)
+
+### Bug fixes
+
+* Single paragraphs with attributes inside `<tableCell>` will be properly converted in the data pipeline. Closes [ckeditor/ckeditor5#1620](https://github.com/ckeditor/ckeditor5/issues/1620). ([67ec89f](https://github.com/ckeditor/ckeditor5-table/commit/67ec89f))
+
+### Other changes
+
+* Optimized icons. ([c042369](https://github.com/ckeditor/ckeditor5-table/commit/c042369))
+* Updated translations. ([cd204c3](https://github.com/ckeditor/ckeditor5-table/commit/cd204c3))
+
+
+## [12.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.1...v12.0.0) (2019-02-28)
+
+### Features
+
+* Enabled media embeds in table cells. Closes [#161](https://github.com/ckeditor/ckeditor5-table/issues/161). ([9ace3ba](https://github.com/ckeditor/ckeditor5-table/commit/9ace3ba))
+* Enabled images in table cells. Closes [#99](https://github.com/ckeditor/ckeditor5-table/issues/99). ([39c09e6](https://github.com/ckeditor/ckeditor5-table/commit/39c09e6))
+
+### Bug fixes
+
+* Autoparagraph text nodes in table cells. Closes [#134](https://github.com/ckeditor/ckeditor5-table/issues/134). ([5863307](https://github.com/ckeditor/ckeditor5-table/commit/5863307))
+* Make `<table>` a block element in the schema. Closes [#126](https://github.com/ckeditor/ckeditor5-table/issues/126). ([85719af](https://github.com/ckeditor/ckeditor5-table/commit/85719af))
+
+### Other changes
+
+* Aligned to the new `WidgetToolbarRepository` API. Replaced the `isTableWidgetSelected()` utility with `getSelectedTableWidget()`. Replaced `isTableContentSelected()` with `getTableWidgetAncestor()` (see [ckeditor/ckeditor5-widget#60](https://github.com/ckeditor/ckeditor5-widget/issues/60)). ([e3a5c09](https://github.com/ckeditor/ckeditor5-table/commit/e3a5c09))
+* Use `TableUtils` by a string when using `editor.plugins.get()`. ([ce09c39](https://github.com/ckeditor/ckeditor5-table/commit/ce09c39))
+* Updated translations. ([370d494](https://github.com/ckeditor/ckeditor5-table/commit/370d494)) ([5a47b95](https://github.com/ckeditor/ckeditor5-table/commit/5a47b95)) ([5e20d54](https://github.com/ckeditor/ckeditor5-table/commit/5e20d54))
+
+### BREAKING CHANGES
+
+* Upgraded minimal versions of Node to `8.0.0` and npm to `5.7.1`. See: [ckeditor/ckeditor5#1507](https://github.com/ckeditor/ckeditor5/issues/1507). ([612ea3c](https://github.com/ckeditor/ckeditor5-cloud-services/commit/612ea3c))
+* The `isTableWidgetSelected()` utility has been replaced by `getSelectedTableWidget()` and returns an editing `View` element instead of a `Boolean`.
+* The `isTableContentSelected()` utility has been replaced by `getTableWidgetAncestor()` and returns an editing `View` element instead of a `Boolean`.
+
+
+## [11.0.1](https://github.com/ckeditor/ckeditor5-table/compare/v11.0.0...v11.0.1) (2018-12-05)
+
+### Bug fixes
+
+* Skip text nodes between `<tr>` elements during table upcast. Closes [#145](https://github.com/ckeditor/ckeditor5-table/issues/145). ([2ecf448](https://github.com/ckeditor/ckeditor5-table/commit/2ecf448))
+
+### Other changes
+
+* Changed labels and command names for the insert column functionality for better UX and translatability. Closes [#138](https://github.com/ckeditor/ckeditor5-table/issues/138). ([fd2221f](https://github.com/ckeditor/ckeditor5-table/commit/fd2221f))
+* Improved SVG icons size. See [ckeditor/ckeditor5-theme-lark#206](https://github.com/ckeditor/ckeditor5-theme-lark/issues/206). ([23d6803](https://github.com/ckeditor/ckeditor5-table/commit/23d6803))
+* Updated translations. ([47475b2](https://github.com/ckeditor/ckeditor5-table/commit/47475b2)) ([5d39d35](https://github.com/ckeditor/ckeditor5-table/commit/5d39d35)) ([7ce6d5b](https://github.com/ckeditor/ckeditor5-table/commit/7ce6d5b)) ([268f607](https://github.com/ckeditor/ckeditor5-table/commit/268f607))
+
+
 ## [11.0.0](https://github.com/ckeditor/ckeditor5-table/compare/v10.1.0...v11.0.0) (2018-10-08)
 
 ### Features

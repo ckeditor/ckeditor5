@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -9,8 +9,6 @@
 
 import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { findAncestor } from './commands/utils';
-
-const tableSymbol = Symbol( 'isTable' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a table widget:
@@ -23,7 +21,7 @@ const tableSymbol = Symbol( 'isTable' );
  * @returns {module:engine/view/element~Element}
  */
 export function toTableWidget( viewElement, writer ) {
-	writer.setCustomProperty( tableSymbol, true, viewElement );
+	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandler: true } );
 }
@@ -35,29 +33,37 @@ export function toTableWidget( viewElement, writer ) {
  * @returns {Boolean}
  */
 export function isTableWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( tableSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( 'table' ) && isWidget( viewElement );
 }
 
 /**
- * Checks if a table widget is the only selected element.
+ * Returns a table widget editing view element if one is selected.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {Boolean}
+ * @returns {module:engine/view/element~Element|null}
  */
-export function isTableWidgetSelected( selection ) {
+export function getSelectedTableWidget( selection ) {
 	const viewElement = selection.getSelectedElement();
 
-	return !!( viewElement && isTableWidget( viewElement ) );
+	if ( viewElement && isTableWidget( viewElement ) ) {
+		return viewElement;
+	}
+
+	return null;
 }
 
 /**
- * Checks if a table widget content is selected.
+ * Returns a table widget editing view element if one is among selection's ancestors.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {Boolean}
+ * @returns {module:engine/view/element~Element|null}
  */
-export function isTableContentSelected( selection ) {
+export function getTableWidgetAncestor( selection ) {
 	const parentTable = findAncestor( 'table', selection.getFirstPosition() );
 
-	return !!( parentTable && isTableWidget( parentTable.parent ) );
+	if ( parentTable && isTableWidget( parentTable.parent ) ) {
+		return parentTable.parent;
+	}
+
+	return null;
 }

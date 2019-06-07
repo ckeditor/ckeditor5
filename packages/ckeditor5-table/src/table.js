@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -54,4 +54,12 @@ export default class Table extends Plugin {
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
  *
  * @interface TableConfig
+ */
+
+/**
+ * The configuration of the {@link module:table/table~Table} feature.
+ *
+ * Read more in {@link module:table/table~TableConfig}.
+ *
+ * @member {module:table/table~TableConfig} module:core/editor/editorconfig~EditorConfig#table
  */

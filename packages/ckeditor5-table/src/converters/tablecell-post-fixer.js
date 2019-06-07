@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -91,7 +91,7 @@ function tableCellPostFixer( writer, model, mapper, view ) {
 	// Selection in the view might not be updated to renamed elements. Happens mostly when other feature inserts paragraph to the table cell
 	// (ie. when deleting table cell contents) and sets selection to it while table-post fixer changes view <p> to <span> element.
 	// The view.selection would have outdated nodes.
-	if ( wasFixed ) {
+	if ( wasFixed && selectionNeedsFix( view.document.selection, mapper ) ) {
 		updateRangesInViewSelection( model.document.selection, mapper, writer );
 	}
 
@@ -126,6 +126,12 @@ function getElementsToCheck( view ) {
 // - span: for single paragraph with no attributes.
 // - p   : in other cases.
 function ensureProperElementName( currentViewElement, mapper, writer ) {
+	// This situation may happen if a view element was changed and removed at the same time.
+	// In this case, the view element is already unbound so the post-fixer would crash.
+	if ( !currentViewElement.root.is( 'rootElement' ) ) {
+		return false;
+	}
+
 	const modelParagraph = mapper.toModelElement( currentViewElement );
 	const expectedViewElementName = getExpectedElementName( modelParagraph.parent, modelParagraph );
 
@@ -179,4 +185,14 @@ function updateRangesInViewSelection( selection, mapper, writer ) {
 		.map( range => mapper.toViewRange( range ) );
 
 	writer.setSelection( fixedRanges, { backward: selection.isBackward } );
+}
+
+// Checks if selection needs to be fixed by ensuring that current view selection position's parents are present in the editable view.
+//
+// @param {module:engine/view/selection~Selection} viewSelection
+function selectionNeedsFix( viewSelection ) {
+	const anchor = viewSelection.anchor;
+	const focus = viewSelection.focus;
+
+	return viewSelection.rangeCount && ( !anchor.root.is( 'rootElement' ) || !focus.root.is( 'rootElement' ) );
 }

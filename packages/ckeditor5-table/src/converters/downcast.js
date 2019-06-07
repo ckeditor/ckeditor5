@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -51,14 +51,17 @@ export function downcastInsertTable( options = {} ) {
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
+		// Cache for created table rows.
+		const viewRows = new Map();
+
 		for ( const tableWalkerValue of tableWalker ) {
 			const { row, cell } = tableWalkerValue;
 
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
 			const tableRow = table.getChild( row );
 
-			// Check if row was converted
-			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole table at once.
 			conversionApi.consumable.consume( cell, 'insert' );
@@ -104,9 +107,14 @@ export function downcastInsertRow( options = {} ) {
 			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
+		// Cache for created table rows.
+		const viewRows = new Map();
+
 		for ( const tableWalkerValue of tableWalker ) {
 			const tableSection = getOrCreateTableSection( getSectionName( row, tableAttributes ), tableElement, conversionApi );
-			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+
+			const trElement = viewRows.get( row ) || createTr( tableRow, row, tableSection, conversionApi );
+			viewRows.set( row, trElement );
 
 			// Consume table cell - it will be always consumed as we convert whole row at once.
 			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
@@ -313,7 +321,7 @@ export function downcastRemoveRow() {
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Boolean} asWidget
 function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
 	const viewWriter = conversionApi.writer;
@@ -344,7 +352,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {{headingColumns, headingRows}} tableAttributes
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Boolean} asWidget
 function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conversionApi, asWidget ) {
 	const { cell } = tableWalkerValue;
@@ -365,7 +373,7 @@ function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conve
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {module:engine/view/position~Position} insertPosition
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPosition, conversionApi, options ) {
 	const asWidget = options && options.asWidget;
 	const cellElementName = getCellElementName( tableWalkerValue, tableAttributes );
@@ -376,20 +384,19 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 
 	const tableCell = tableWalkerValue.cell;
 
-	const isSingleParagraph = tableCell.childCount === 1 && tableCell.getChild( 0 ).name === 'paragraph';
+	const firstChild = tableCell.getChild( 0 );
+	const isSingleParagraph = tableCell.childCount === 1 && firstChild.name === 'paragraph';
 
 	conversionApi.writer.insert( insertPosition, cellElement );
 
-	if ( isSingleParagraph ) {
+	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
 		const innerParagraph = tableCell.getChild( 0 );
 		const paragraphInsertPosition = conversionApi.writer.createPositionAt( cellElement, 'end' );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
 		if ( options.asWidget ) {
-			const containerName = [ ...innerParagraph.getAttributeKeys() ].length ? 'p' : 'span';
-
-			const fakeParagraph = conversionApi.writer.createContainerElement( containerName );
+			const fakeParagraph = conversionApi.writer.createContainerElement( 'span' );
 
 			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
 			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
@@ -404,29 +411,25 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 	}
 }
 
-// Creates or returns an existing `<tr>` element from the view.
+// Creates `<tr>` view element.
 //
 // @param {module:engine/view/element~Element} tableRow
 // @param {Number} rowIndex
 // @param {module:engine/view/element~Element} tableSection
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/element~Element}
-function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
-	let trElement = conversionApi.mapper.toViewElement( tableRow );
+function createTr( tableRow, rowIndex, tableSection, conversionApi ) {
+	// Will always consume since we're converting <tableRow> element from a parent <table>.
+	conversionApi.consumable.consume( tableRow, 'insert' );
 
-	if ( !trElement ) {
-		// Will always consume since we're converting <tableRow> element from a parent <table>.
-		conversionApi.consumable.consume( tableRow, 'insert' );
+	const trElement = conversionApi.writer.createContainerElement( 'tr' );
+	conversionApi.mapper.bindElements( tableRow, trElement );
 
-		trElement = conversionApi.writer.createContainerElement( 'tr' );
-		conversionApi.mapper.bindElements( tableRow, trElement );
+	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
+	const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 
-		const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
-		const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
-
-		const position = conversionApi.writer.createPositionAt( tableSection, offset );
-		conversionApi.writer.insert( position, trElement );
-	}
+	const position = conversionApi.writer.createPositionAt( tableSection, offset );
+	conversionApi.writer.insert( position, trElement );
 
 	return trElement;
 }
@@ -467,7 +470,7 @@ function getSectionName( row, tableAttributes ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} viewTable
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Object} cachedTableSection An object that stores cached elements.
 // @returns {module:engine/view/containerelement~ContainerElement}
 function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
@@ -480,7 +483,7 @@ function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function getExistingTableSectionElement( sectionName, tableElement ) {
 	for ( const tableSection of tableElement.getChildren() ) {
 		if ( tableSection.name == sectionName ) {
@@ -493,7 +496,7 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/containerelement~ContainerElement}
 function createTableSection( sectionName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
@@ -509,7 +512,7 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
 
@@ -524,7 +527,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 //
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection
-// @param {Object} conversionApi
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Number|'end'|'before'|'after'} offset Offset or one of the flags.
 function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi, offset ) {
 	for ( const tableRow of rowsToMove ) {
@@ -549,4 +552,12 @@ function getViewTable( viewFigure ) {
 			return child;
 		}
 	}
+}
+
+// Checks if element has any attribute set.
+//
+// @param {module:engine/model/element~Element element
+// @returns {Boolean}
+function hasAnyAttribute( element ) {
+	return !![ ...element.getAttributeKeys() ].length;
 }

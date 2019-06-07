@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -10,7 +10,6 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
-import TableUtils from '../tableutils';
 import { findAncestor, updateNumericAttribute } from './utils';
 
 /**
@@ -31,7 +30,7 @@ export default class RemoveColumnCommand extends Command {
 	refresh() {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
-		const tableUtils = editor.plugins.get( TableUtils );
+		const tableUtils = editor.plugins.get( 'TableUtils' );
 
 		const tableCell = findAncestor( 'tableCell', selection.getFirstPosition() );
 
@@ -63,7 +62,7 @@ export default class RemoveColumnCommand extends Command {
 
 		let cellToFocus;
 
-		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const columns = tableUtils.getColumns( tableCell.parent.parent );
 
 		const columnToFocus = removedColumn === columns - 1 ? removedColumn - 1 : removedColumn + 1;

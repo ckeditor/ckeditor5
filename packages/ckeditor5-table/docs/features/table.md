@@ -159,25 +159,31 @@ The {@link module:table/table~Table} plugin registers the following UI component
 
 And the following commands:
 
-* The `'insertTable'` command implemented by {@link module:table/commands/inserttablecommand~InsertTableCommand}.
-* The `'insertTableColumnLeft'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
-* The `'insertTableColumnRight'` command implemented by {@link module:table/commands/insertcolumncommand~InsertColumnCommand}.
-* The `'insertTableRowAbove'` command implemented by {@link module:table/commands/insertrowcommand~InsertRowCommand}.
-* The `'insertTableRowBelow'` command implemented by {@link module:table/commands/insertrowcommand~InsertRowCommand}.
-* The `'removeTableColumn'` command implemented by {@link module:table/commands/removecolumncommand~RemoveColumnCommand}.
-* The `'removeTableRow'` command implemented by {@link module:table/commands/removerowcommand~RemoveRowCommand}.
-* The `'setTableColumnHeader'` command implemented by {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand}.
-* The `'setTableRowHeader'` command implemented by {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}.
-* The `'mergeTableCellRight'` command implemented by {@link module:table/commands/mergecellcommand~MergeCellCommand}.
-* The `'mergeTableCellLeft'` command implemented by {@link module:table/commands/mergecellcommand~MergeCellCommand}.
-* The `'mergeTableCellUp'` command implemented by {@link module:table/commands/mergecellcommand~MergeCellCommand}.
-* The `'mergeTableCellDown'` command implemented by {@link module:table/commands/mergecellcommand~MergeCellCommand}.
-* The `'splitTableCellVertically'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
-* The `'splitTableCellHorizontally'` command implemented by {@link module:table/commands/splitcellcommand~SplitCellCommand}.
+| {@link framework/guides/architecture/core-editor-architecture#commands Command} name | Implemented by |
+|----------------------------------|-----------------------------------------------------------------------------|
+| `'insertTable'`                  | {@link module:table/commands/inserttablecommand~InsertTableCommand}         |
+| `'insertTableColumnLeft'`        | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}       |
+| `'insertTableColumnRight'`       | {@link module:table/commands/insertcolumncommand~InsertColumnCommand}       |
+| `'insertTableRowAbove'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}             |
+| `'insertTableRowBelow'`          | {@link module:table/commands/insertrowcommand~InsertRowCommand}             |
+| `'removeTableColumn'`            | {@link module:table/commands/removecolumncommand~RemoveColumnCommand}       |
+| `'removeTableRow'`               | {@link module:table/commands/removerowcommand~RemoveRowCommand}             |
+| `'setTableColumnHeader'`         | {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand} |
+| `'setTableRowHeader'`            | {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand}       |
+| `'mergeTableCellRight'`          | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
+| `'mergeTableCellLeft'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
+| `'mergeTableCellUp'`             | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
+| `'mergeTableCellDown'`           | {@link module:table/commands/mergecellcommand~MergeCellCommand}             |
+| `'splitTableCellVertically'`     | {@link module:table/commands/splitcellcommand~SplitCellCommand}             |
+| `'splitTableCellHorizontally'`   | {@link module:table/commands/splitcellcommand~SplitCellCommand}             |
 
 The {@link module:table/tabletoolbar~TableToolbar} plugin introduces two balloon toolbars for tables.
 * The content toolbar shows up when table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#contentToolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
 * The table toolbar shows up when the whole table is selected, for instance using the widget handler. It is possible to {@link module:table/table~TableConfig#tableToolbar configure} its content.
+
+<info-box>
+	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 

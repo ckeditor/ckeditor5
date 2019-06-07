@@ -1,9 +1,7 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import {
 	downcastInsertCell,
@@ -108,7 +106,8 @@ export function viewTable( tableData, attributes = {} ) {
 			asWidget
 		} ) }</tbody>` : '';
 
-	const figureAttributes = asWidget ? 'class="ck-widget ck-widget_selectable table" contenteditable="false"' : 'class="table"';
+	const figureAttributes = asWidget ?
+		'class="ck-widget ck-widget_with-selection-handler table" contenteditable="false"' : 'class="table"';
 	const widgetHandler = '<div class="ck ck-widget__selection-handler"></div>';
 
 	return `<figure ${ figureAttributes }>${ asWidget ? widgetHandler : '' }<table>${ thead }${ tbody }</table></figure>`;
@@ -162,7 +161,9 @@ export function defaultSchema( schema, registerParagraph = true ) {
 	schema.register( 'table', {
 		allowWhere: '$block',
 		allowAttributes: [ 'headingRows', 'headingColumns' ],
-		isObject: true
+		isLimit: true,
+		isObject: true,
+		isBlock: true
 	} );
 
 	schema.register( 'tableRow', {
@@ -186,13 +187,6 @@ export function defaultSchema( schema, registerParagraph = true ) {
 		}
 	} );
 
-	// Disallow image in table.
-	schema.addChildCheck( ( context, childDefinition ) => {
-		if ( childDefinition.name == 'image' && Array.from( context.getNames() ).includes( 'table' ) ) {
-			return false;
-		}
-	} );
-
 	if ( registerParagraph ) {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 	}
@@ -206,7 +200,7 @@ export function defaultConversion( conversion, asWidget = false ) {
 	conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget } ) );
 
 	// Table row conversion.
-	conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+	conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 	conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget } ) );
 	conversion.for( 'downcast' ).add( downcastRemoveRow( { asWidget } ) );
 

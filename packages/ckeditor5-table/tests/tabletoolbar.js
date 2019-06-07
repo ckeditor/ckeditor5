@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global document, window */
+/* global document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import TableToolbar from '../src/tabletoolbar';
@@ -16,6 +16,9 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 
 describe( 'TableToolbar', () => {
 	testUtils.createSinonSandbox();
@@ -29,7 +32,10 @@ describe( 'TableToolbar', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
+					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton ],
+					image: {
+						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					},
 					table: {
 						contentToolbar: [ 'fake_button' ]
 					}
@@ -39,7 +45,7 @@ describe( 'TableToolbar', () => {
 					model = newEditor.model;
 					doc = model.document;
 					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					toolbar = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
+					toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ).view;
 					balloon = editor.plugins.get( 'ContextualBalloon' );
 				} );
 		} );
@@ -63,7 +69,7 @@ describe( 'TableToolbar', () => {
 			} )
 				.then( editor => {
 					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					expect( widgetToolbarRepository._toolbars.get( 'tableContent' ) ).to.be.undefined;
+					expect( widgetToolbarRepository._toolbarDefinitions.get( 'tableContent' ) ).to.be.undefined;
 
 					editorElement.remove();
 					return editor.destroy();
@@ -71,7 +77,7 @@ describe( 'TableToolbar', () => {
 		} );
 
 		describe( 'toolbar', () => {
-			it( 'should use the config.table.toolbar to create items', () => {
+			it( 'should use the config.table.contenToolbar to create items', () => {
 				expect( toolbar.items ).to.have.length( 1 );
 				expect( toolbar.items.get( 0 ).label ).to.equal( 'fake button' );
 			} );
@@ -154,6 +160,36 @@ describe( 'TableToolbar', () => {
 				expect( balloon.visibleView ).to.equal( toolbar );
 			} );
 
+			it( 'should not show the toolbar on ui#update when the image inside table is selected', () => {
+				setData(
+					model,
+					'<paragraph>[foo]</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>foo</paragraph><image src=""></image></tableCell></tableRow></table>'
+				);
+
+				expect( balloon.visibleView ).to.be.null;
+
+				const imageToolbar = widgetToolbarRepository._toolbarDefinitions.get( 'image' ).view;
+
+				model.change( writer => {
+					// Select the <tableCell><paragraph></paragraph>[<image></image>]</tableCell>
+					const nodeByPath = doc.getRoot().getNodeByPath( [ 1, 0, 0, 1 ] );
+
+					writer.setSelection( nodeByPath, 'on' );
+				} );
+
+				expect( balloon.visibleView ).to.equal( imageToolbar );
+
+				model.change( writer => {
+					// Select the <tableCell><paragraph>[]</paragraph><image></image></tableCell>
+					writer.setSelection(
+						writer.createPositionAt( doc.getRoot().getNodeByPath( [ 1, 0, 0, 0 ] ), 0 )
+					);
+				} );
+
+				expect( balloon.visibleView ).to.equal( toolbar );
+			} );
+
 			it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 				setData( model, '<table><tableRow><tableCell><paragraph>x[y]z</paragraph></tableCell></tableRow></table>' );
 
@@ -202,69 +238,6 @@ describe( 'TableToolbar', () => {
 		} );
 	} );
 
-	describe( 'deprecated toolbar', () => {
-		let editor, editorElement, warnMock;
-
-		it( 'table.toolbar should work as table.contentToolbar', () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
-			warnMock = sinon.stub( window.console, 'warn' );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton ],
-					table: {
-						toolbar: [ 'fake_button' ]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
-
-					expect( toolbarView.items ).to.have.length( 1 );
-					expect( toolbarView.items.get( 0 ).label ).to.equal( 'fake button' );
-
-					sinon.assert.calledWith(
-						warnMock,
-						'`config.table.toolbar` is deprecated and will be removed in the next major release.' +
-						' Use `config.table.contentToolbar` instead.'
-					);
-				} );
-		} );
-
-		it( 'table.contentToolbar should be used if both toolbars options are provided', () => {
-			editorElement = global.document.createElement( 'div' );
-			global.document.body.appendChild( editorElement );
-			warnMock = sinon.stub( window.console, 'warn' );
-
-			return ClassicTestEditor
-				.create( editorElement, {
-					plugins: [ Paragraph, Table, TableToolbar, FakeButton, FooButton ],
-					table: {
-						toolbar: [ 'fake_button' ],
-						contentToolbar: [ 'foo_button' ],
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-
-					const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-					const toolbarView = widgetToolbarRepository._toolbars.get( 'tableContent' ).view;
-
-					expect( toolbarView.items ).to.have.length( 1 );
-					expect( toolbarView.items.get( 0 ).label ).to.equal( 'foo button' );
-				} );
-		} );
-
-		afterEach( () => {
-			editorElement.remove();
-
-			return editor.destroy();
-		} );
-	} );
-
 	describe( 'tableToolbar', () => {
 		let editor, element, widgetToolbarRepository, balloon, toolbar, model;
 
@@ -280,7 +253,7 @@ describe( 'TableToolbar', () => {
 			} ).then( _editor => {
 				editor = _editor;
 				widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-				toolbar = widgetToolbarRepository._toolbars.get( 'table' ).view;
+				toolbar = widgetToolbarRepository._toolbarDefinitions.get( 'table' ).view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 				model = editor.model;
 			} );
@@ -301,7 +274,7 @@ describe( 'TableToolbar', () => {
 				} )
 					.then( editor => {
 						const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
-						expect( widgetToolbarRepository._toolbars.get( 'table' ) ).to.be.undefined;
+						expect( widgetToolbarRepository._toolbarDefinitions.get( 'table' ) ).to.be.undefined;
 
 						editorElement.remove();
 						return editor.destroy();
@@ -440,21 +413,6 @@ class FakeButton extends Plugin {
 
 			view.set( {
 				label: 'fake button'
-			} );
-
-			return view;
-		} );
-	}
-}
-
-// Plugin that adds foo_button to editor's component factory.
-class FooButton extends Plugin {
-	init() {
-		this.editor.ui.componentFactory.add( 'foo_button', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: 'foo button'
 			} );
 
 			return view;

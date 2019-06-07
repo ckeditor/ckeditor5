@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
@@ -14,6 +14,8 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+
 describe( 'TableCell post-fixer', () => {
 	let editor, model, doc, root, view;
 
@@ -26,7 +28,7 @@ describe( 'TableCell post-fixer', () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
 		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
-		return ClassicTestEditor.create( element )
+		return ClassicTestEditor.create( element, { extraPlugins: [ Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -275,5 +277,56 @@ describe( 'TableCell post-fixer', () => {
 
 		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
 		expect( () => view.domConverter.viewRangeToDom( viewRange ) ).to.not.throw();
+	} );
+
+	it( 'should not update view selection after other feature set selection', () => {
+		editor.model.schema.register( 'widget', {
+			isObject: true,
+			isBlock: true,
+			allowWhere: '$block'
+		} );
+		editor.conversion.elementToElement( {
+			model: 'widget',
+			view: 'widget'
+		} );
+
+		editor.setData( viewTable( [ [ '<p>foo[]</p>' ] ] ) );
+
+		const spy = sinon.spy();
+
+		view.document.selection.on( 'change', spy );
+
+		// Insert a widget in table cell and select it.
+		model.change( writer => {
+			const widgetElement = writer.createElement( 'widget' );
+			const tableCell = root.getNodeByPath( [ 0, 0, 0, 0 ] );
+
+			writer.insert( widgetElement, writer.createPositionAfter( tableCell ) );
+
+			// Update the selection so it will be set on the widget and not in renamed paragraph.
+			writer.setSelection( widgetElement, 'on' );
+		} );
+
+		// View selection should be updated only twice - will be set to null and then to widget.
+		// If called thrice the selection post fixer for table cell was also called.
+		sinon.assert.calledTwice( spy );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5-table/issues/191.
+	it( 'should not fire (and crash) for removed view elements', () => {
+		editor.setData( viewTable( [ [ '<p>foo</p>' ] ] ) );
+
+		const p = root.getNodeByPath( [ 0, 0, 0, 0 ] );
+
+		// Replace table cell contents with paragraph - as model.deleteContent() does.
+		model.change( writer => {
+			writer.setSelection( writer.createRangeIn( root ) );
+			editor.execute( 'delete' ); // For some reason it didn't crash with `writer.remove()`.
+
+			writer.setAttribute( 'foo', 'bar', p );
+		} );
+
+		// Trying to map view selection to DOM range shouldn't throw after post-fixer will fix inserted <p> to <span>.
+		expect( editor.getData() ).to.equal( '' );
 	} );
 } );

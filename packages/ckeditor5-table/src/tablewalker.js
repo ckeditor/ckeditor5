@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -34,13 +34,13 @@ export default class TableWalker {
 	 * For instance the code above for the following table:
 	 *
 	 *		+----+----+----+----+----+----+
-	 *		| 00      | 02 | 03      | 05 |
+	 *		| 00      | 02 | 03 | 04 | 05 |
 	 *		|         +----+----+----+----+
 	 *		|         | 12      | 14 | 15 |
-	 *		|         +----+----+----+----+
-	 *		|         | 22                |
-	 *		|----+----+                   +
-	 *		| 31 | 32 |                   |
+	 *		|         +----+----+----+    +
+	 *		|         | 22           |    |
+	 *		|----+----+----+----+----+    +
+	 *		| 30 | 31 | 32 | 33 | 34 |    |
 	 *		+----+----+----+----+----+----+
 	 *
 	 * will log in the console:

@@ -12,78 +12,78 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
-"Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Vietnamese (https://www.transifex.com/ckeditor/teams/11143/vi/)\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Label for the insert table toolbar button."
 msgid "Insert table"
-msgstr "Inserisci tabella"
+msgstr "Tạo bảng"
 
 msgctxt "Label for the set/unset table header column button."
 msgid "Header column"
-msgstr "Intestazione colonna"
+msgstr "Tiêu đề cột"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr "Inserisci colonna a sinistra"
+msgstr "Thêm cột vào bên trái"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr "Inserisci colonna a destra"
+msgstr "Thêm cột vào bên phải"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"
-msgstr "Elimina colonna"
+msgstr "Xoá cột"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
-msgstr "Colonna"
+msgstr "Cột"
 
 msgctxt "Label for the set/unset table header row button."
 msgid "Header row"
-msgstr "Riga d'intestazione"
+msgstr "Tiêu đề hàng"
 
 msgctxt "Label for the insert row below button."
 msgid "Insert row below"
-msgstr "Inserisci riga sotto"
+msgstr "Thêm hàng ở dưới"
 
 msgctxt "Label for the insert row above button."
 msgid "Insert row above"
-msgstr "Inserisci riga sopra"
+msgstr "Thêm hàng phía trên"
 
 msgctxt "Label for the delete table row button."
 msgid "Delete row"
-msgstr "Elimina riga"
+msgstr "Xoá hàng"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
-msgstr "Riga"
+msgstr "Hàng"
 
 msgctxt "Label for the merge table cell up button."
 msgid "Merge cell up"
-msgstr "Unisci cella sopra"
+msgstr ""
 
 msgctxt "Label for the merge table cell right button."
 msgid "Merge cell right"
-msgstr "Unisci cella a destra"
+msgstr ""
 
 msgctxt "Label for the merge table cell down button."
 msgid "Merge cell down"
-msgstr "Unisci cella sotto"
+msgstr ""
 
 msgctxt "Label for the merge table cell left button."
 msgid "Merge cell left"
-msgstr "Unisci cella a sinistra"
+msgstr ""
 
 msgctxt "Label for the split table cell vertically button."
 msgid "Split cell vertically"
-msgstr "Dividi cella verticalmente"
+msgstr ""
 
 msgctxt "Label for the split table cell horizontally button."
 msgid "Split cell horizontally"
-msgstr "Dividi cella orizzontalmente"
+msgstr ""
 
 msgctxt "Label for the merge table cells button."
 msgid "Merge cells"
-msgstr "Unisci celle"
+msgstr ""

@@ -1,4 +1,15 @@
-# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
 msgid ""
 msgstr ""
 "Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
@@ -15,11 +26,11 @@ msgstr "हेडर स्तम्भ"
 
 msgctxt "Label for the insert table column to the left of the current one button."
 msgid "Insert column left"
-msgstr ""
+msgstr "बायाँ स्तम्भ सम्मिलित गर्न"
 
 msgctxt "Label for the insert table column to the right of the current one button."
 msgid "Insert column right"
-msgstr ""
+msgstr "दायाँ स्तम्भ सम्मिलित गर्न"
 
 msgctxt "Label for the delete table column button."
 msgid "Delete column"

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -97,16 +97,29 @@ function fixTableRow( tableRow, writer ) {
 	return wasFixed;
 }
 
-// Fixes all table cell content by adding paragraph to a table cell without any child.
+// Fixes all table cell content by:
+// - adding paragraph to a table cell without any child.
+// - wrapping direct $text in <paragraph>.
 //
 // @param {module:engine/model/element~Element} table
 // @param {module:engine/model/writer~Writer} writer
+// @returns {Boolean}
 function fixTableCellContent( tableCell, writer ) {
+	// Insert paragraph to an empty table cell.
 	if ( tableCell.childCount == 0 ) {
 		writer.insertElement( 'paragraph', tableCell );
 
 		return true;
 	}
 
-	return false;
+	// Check table cell children for directly placed $text nodes.
+	// Temporary solution. See https://github.com/ckeditor/ckeditor5/issues/1464.
+	const textNodes = Array.from( tableCell.getChildren() ).filter( child => child.is( 'text' ) );
+
+	for ( const child of textNodes ) {
+		writer.wrap( writer.createRangeOn( child ), 'paragraph' );
+	}
+
+	// Return true when there were text nodes to fix.
+	return !!textNodes.length;
 }

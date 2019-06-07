@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -147,6 +147,35 @@ describe( 'downcast converters', () => {
 			) );
 		} );
 
+		it( 'should create table with block content (attribute on paragraph)', () => {
+			editor.conversion.attributeToAttribute(
+				{
+					model: { key: 'alignment', values: [ 'right', 'center', 'justify' ] },
+					view: {
+						right: { key: 'style', value: { 'text-align': 'right' } },
+						center: { key: 'style', value: { 'text-align': 'center' } },
+						justify: { key: 'style', value: { 'text-align': 'justify' } }
+					}
+				}
+			);
+
+			setModelData( model, modelTable( [
+				[ '<paragraph alignment="right">00</paragraph>' ]
+			] ) );
+
+			expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td><p style="text-align:right">00</p></td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
+		} );
+
 		it( 'should be possible to overwrite', () => {
 			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
 			editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
@@ -168,6 +197,46 @@ describe( 'downcast converters', () => {
 				'<table foo="bar">' +
 					'<tr><td><p></p></td></tr>' +
 				'</table>'
+			) );
+		} );
+
+		it( 'should re-create table on reinsert', () => {
+			model.schema.register( 'wrapper', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+			editor.conversion.elementToElement( { model: 'wrapper', view: 'div' } );
+
+			setModelData( model, modelTable( [ [ '[]' ] ] ) );
+
+			expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td></td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
+
+			model.change( writer => {
+				const table = model.document.getRoot().getChild( 0 );
+				const range = writer.createRange( writer.createPositionBefore( table ), writer.createPositionAfter( table ) );
+				const wrapper = writer.createElement( 'wrapper' );
+
+				writer.wrap( range, wrapper );
+			} );
+
+			expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<div>' +
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td></td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>' +
+				'</div>'
 			) );
 		} );
 
@@ -264,7 +333,7 @@ describe( 'downcast converters', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -497,7 +566,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable(
 					getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -643,7 +712,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
@@ -820,7 +889,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<thead>' +
@@ -1034,7 +1103,7 @@ describe( 'downcast converters', () => {
 				} );
 
 				expect( formatTable( getViewData( view, { withoutSelection: true } ) ) ).to.equal( formatTable(
-					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
+					'<figure class="ck-widget ck-widget_with-selection-handler table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +

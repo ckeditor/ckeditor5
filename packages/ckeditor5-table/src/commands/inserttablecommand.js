@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
@@ -9,7 +9,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
-import TableUtils from '../tableutils';
 
 /**
  * The insert table command.
@@ -49,7 +48,7 @@ export default class InsertTableCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
