@@ -28,7 +28,6 @@ export default class IndentBlockCommand extends Command {
 		this.offset = offset;
 		this.unit = unit;
 		this.direction = direction == 'forward' ? 1 : -1;
-
 		this.useClasses = !!classes.length;
 	}
 
@@ -59,19 +58,19 @@ export default class IndentBlockCommand extends Command {
 				let newIndent;
 
 				if ( this.useClasses ) {
-					// eslint-disable-next-line no-undef
-					console.log( 'indent using classes' );
-
-					const currentIndex = this.classes.indexOf( currentIndent ) || -1;
+					const currentIndex = this.classes.indexOf( currentIndent );
 					newIndent = this.classes[ currentIndex + this.direction ];
+
+					// eslint-disable-next-line no-undef
+					console.log( 'indent using classes', currentIndent, currentIndex, newIndent );
 				} else {
 					const currentOffset = parseFloat( currentIndent || 0 );
 
 					const offsetToSet = currentOffset + this.direction * this.offset;
-					newIndent = offsetToSet ? offsetToSet + this.unit : undefined;
+					newIndent = offsetToSet && offsetToSet > 0 ? offsetToSet + this.unit : undefined;
 				}
 
-				if ( newIndent > 0 ) {
+				if ( newIndent ) {
 					writer.setAttribute( 'indent', newIndent, item );
 				} else {
 					writer.removeAttribute( 'indent', item );
@@ -99,13 +98,12 @@ export default class IndentBlockCommand extends Command {
 
 		// TODO fix this or get reward...
 		if ( this.useClasses ) {
-			// eslint-disable-next-line no-undef
 			const currentIndex = this.classes.indexOf( currentIndent );
 
 			if ( this.direction > 0 ) {
 				return currentIndex < this.classes.length - 1;
 			} else {
-				return currentIndex > 0 && currentIndex < this.classes.length - 1;
+				return currentIndex > 0 && currentIndex < this.classes.length;
 			}
 		} else {
 			const currentOffset = parseFloat( currentIndent || 0 );
