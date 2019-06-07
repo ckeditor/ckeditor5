@@ -55,21 +55,26 @@ export default class IndentBlockCommand extends Command {
 				// eslint-disable-next-line no-undef
 				console.log( 'indent block', item );
 
+				const currentIndent = item.getAttribute( 'indent' );
+				let newIndent;
+
 				if ( this.useClasses ) {
 					// eslint-disable-next-line no-undef
 					console.log( 'indent using classes' );
+
+					const currentIndex = this.classes.indexOf( currentIndent ) || -1;
+					newIndent = this.classes[ currentIndex + this.direction ];
 				} else {
-					const currentIndent = item.getAttribute( 'indent' );
 					const currentOffset = parseFloat( currentIndent || 0 );
 
 					const offsetToSet = currentOffset + this.direction * this.offset;
-					const newIndent = offsetToSet + this.unit;
+					newIndent = offsetToSet ? offsetToSet + this.unit : undefined;
+				}
 
-					if ( offsetToSet > 0 ) {
-						writer.setAttribute( 'indent', newIndent, item );
-					} else {
-						writer.removeAttribute( 'indent', item );
-					}
+				if ( newIndent > 0 ) {
+					writer.setAttribute( 'indent', newIndent, item );
+				} else {
+					writer.removeAttribute( 'indent', item );
 				}
 			}
 		} );
@@ -90,11 +95,19 @@ export default class IndentBlockCommand extends Command {
 			return false;
 		}
 
+		const currentIndent = block.getAttribute( 'indent' );
+
+		// TODO fix this or get reward...
 		if ( this.useClasses ) {
 			// eslint-disable-next-line no-undef
-			console.log( 'use classes' );
+			const currentIndex = this.classes.indexOf( currentIndent );
+
+			if ( this.direction > 0 ) {
+				return currentIndex < this.classes.length - 1;
+			} else {
+				return currentIndex > 0 && currentIndex < this.classes.length - 1;
+			}
 		} else {
-			const currentIndent = block.getAttribute( 'indent' );
 			const currentOffset = parseFloat( currentIndent || 0 );
 
 			// is forward
@@ -104,7 +117,5 @@ export default class IndentBlockCommand extends Command {
 				return currentOffset > 0;
 			}
 		}
-
-		return true;
 	}
 }
