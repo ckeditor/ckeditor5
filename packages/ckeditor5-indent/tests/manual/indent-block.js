@@ -10,58 +10,12 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import MultiCommand from '@ckeditor/ckeditor5-core/src/multicommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
-
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import IndentBlock from '../../src/indentblock';
 
-class IndentBlockCommand extends Command {
-	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		this.isEnabled = this._checkEnabled();
-	}
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import IndentBlockCommand from '../../src/indentblockcommand';
 
-	/**
-	 * Indents or outdents (depends on the {@link #constructor}'s `indentDirection` parameter) selected list items.
-	 *
-	 * @fires execute
-	 */
-	execute() {
-		const model = this.editor.model;
-		const doc = model.document;
-
-		const itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
-
-		model.change( () => {
-			for ( const item of itemsToChange ) {
-				console.log( 'indent block', item );
-			}
-		} );
-	}
-
-	/**
-	 * Checks whether the command can be enabled in the current context.
-	 *
-	 * @private
-	 * @returns {Boolean} Whether the command should be enabled.
-	 */
-	_checkEnabled() {
-		// Check whether any of position's ancestor is a list item.
-		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
-
-		// If selection is not in a list item, the command is disabled.
-		if ( !block || !this.editor.model.schema.checkAttribute( block, 'indent' ) ) {
-			return false;
-		}
-
-		return true;
-	}
-}
-
-class IndentOutdent extends Plugin {
+class IndentUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
@@ -120,7 +74,7 @@ class IndentOutdent extends Plugin {
 }
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, IndentOutdent, IndentBlock ],
+		plugins: [ ArticlePluginSet, IndentUI, IndentBlock ],
 		toolbar: [
 			'heading',
 			// '|',
