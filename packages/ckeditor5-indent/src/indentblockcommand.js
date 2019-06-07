@@ -57,17 +57,11 @@ export default class IndentBlockCommand extends Command {
 				const currentIndent = item.getAttribute( 'indent' );
 				let newIndent;
 
+				// TODO: split potential:
 				if ( this.useClasses ) {
-					const currentIndex = this.classes.indexOf( currentIndent );
-					newIndent = this.classes[ currentIndex + this.direction ];
-
-					// eslint-disable-next-line no-undef
-					console.log( 'indent using classes', currentIndent, currentIndex, newIndent );
+					newIndent = this._getIndentClasses( currentIndent );
 				} else {
-					const currentOffset = parseFloat( currentIndent || 0 );
-
-					const offsetToSet = currentOffset + this.direction * this.offset;
-					newIndent = offsetToSet && offsetToSet > 0 ? offsetToSet + this.unit : undefined;
+					newIndent = this._getIndentOffset( currentIndent );
 				}
 
 				if ( newIndent ) {
@@ -79,6 +73,20 @@ export default class IndentBlockCommand extends Command {
 		} );
 	}
 
+	_getIndentOffset( currentIndent ) {
+		const currentOffset = parseFloat( currentIndent || 0 );
+
+		const offsetToSet = currentOffset + this.direction * this.offset;
+
+		return offsetToSet && offsetToSet > 0 ? offsetToSet + this.unit : undefined;
+	}
+
+	_getIndentClasses( currentIndent ) {
+		const currentIndex = this.classes.indexOf( currentIndent );
+
+		return this.classes[ currentIndex + this.direction ];
+	}
+
 	/**
 	 * Checks whether the command can be enabled in the current context.
 	 *
@@ -87,33 +95,44 @@ export default class IndentBlockCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const editor = this.editor;
+		const model = editor.model;
+
+		const block = first( model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !block || !this.editor.model.schema.checkAttribute( block, 'indent' ) ) {
+		if ( !block || !model.schema.checkAttribute( block, 'indent' ) ) {
 			return false;
 		}
 
 		const currentIndent = block.getAttribute( 'indent' );
 
-		// TODO fix this or get reward...
+		// TODO: split potential.
 		if ( this.useClasses ) {
-			const currentIndex = this.classes.indexOf( currentIndent );
-
-			if ( this.direction > 0 ) {
-				return currentIndex < this.classes.length - 1;
-			} else {
-				return currentIndex >= 0 && currentIndex < this.classes.length;
-			}
+			return this._checkEnabledClasses( currentIndent );
 		} else {
-			const currentOffset = parseFloat( currentIndent || 0 );
+			return this._checkEnabledOffset( currentIndent );
+		}
+	}
 
-			// is forward
-			if ( this.direction > 0 ) {
-				return true;
-			} else {
-				return currentOffset > 0;
-			}
+	_checkEnabledOffset( currentIndent ) {
+		const currentOffset = parseFloat( currentIndent || 0 );
+
+		// is forward
+		if ( this.direction > 0 ) {
+			return true;
+		} else {
+			return currentOffset > 0;
+		}
+	}
+
+	_checkEnabledClasses( currentIndent ) {
+		const currentIndex = this.classes.indexOf( currentIndent );
+
+		if ( this.direction > 0 ) {
+			return currentIndex < this.classes.length - 1;
+		} else {
+			return currentIndex >= 0 && currentIndex < this.classes.length;
 		}
 	}
 }
