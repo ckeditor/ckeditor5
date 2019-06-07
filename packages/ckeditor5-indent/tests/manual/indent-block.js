@@ -14,6 +14,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import IndentBlock from '../../src/indentblock';
 
 class IndentBlockCommand extends Command {
 	/**
@@ -117,43 +118,6 @@ class IndentOutdent extends Plugin {
 		editor.commands.add( 'outdent', outdentCommand );
 	}
 }
-
-class IndentBlock extends Plugin {
-	init() {
-		const schema = this.editor.model.schema;
-		const conversion = this.editor.conversion;
-
-		schema.extend( 'paragraph', { allowAttributes: 'indent' } );
-		schema.extend( 'heading1', { allowAttributes: 'indent' } );
-
-		conversion.for( 'upcast' ).attributeToAttribute( {
-			view: {
-				styles: {
-					'margin-left': /[\s\S]+/
-				}
-			},
-			model: {
-				key: 'indent',
-				value: viewElement => {
-					return viewElement.getStyle( 'margin-left' );
-				}
-			}
-		} );
-
-		conversion.for( 'downcast' ).attributeToAttribute( {
-			model: 'indent',
-			view: modelAttributeValue => {
-				return {
-					key: 'style',
-					value: {
-						'margin-left': modelAttributeValue
-					}
-				};
-			}
-		} );
-	}
-}
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, IndentOutdent, IndentBlock ],
