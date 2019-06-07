@@ -17,6 +17,22 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  */
 export default class IndentBlockCommand extends Command {
 	/**
+	 * Creates an instance of the command.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @param {Object} config.
+	 */
+	constructor( editor, { classes, offset, unit, direction } ) {
+		super( editor );
+		this.classes = classes;
+		this.offset = offset;
+		this.unit = unit;
+		this.direction = direction == 'forward' ? 1 : -1;
+
+		this.useClasses = !!classes.length;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	refresh() {
@@ -34,10 +50,27 @@ export default class IndentBlockCommand extends Command {
 
 		const itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
-		model.change( () => {
+		model.change( writer => {
 			for ( const item of itemsToChange ) {
 				// eslint-disable-next-line no-undef
 				console.log( 'indent block', item );
+
+				if ( this.useClasses ) {
+					// eslint-disable-next-line no-undef
+					console.log( 'indent using classes' );
+				} else {
+					const currentIndent = item.getAttribute( 'indent' );
+					const currentOffset = parseFloat( currentIndent || 0 );
+
+					const offsetToSet = currentOffset + this.direction * this.offset;
+					const newIndent = offsetToSet + this.unit;
+
+					if ( offsetToSet > 0 ) {
+						writer.setAttribute( 'indent', newIndent, item );
+					} else {
+						writer.removeAttribute( 'indent', item );
+					}
+				}
 			}
 		} );
 	}

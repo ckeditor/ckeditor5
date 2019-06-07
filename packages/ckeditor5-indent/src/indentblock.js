@@ -19,6 +19,19 @@ export default class IndentBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'indentBlock', {
+			classes: [],
+			offset: 1,
+			unit: 'em'
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'IndentBlock';
 	}
@@ -61,8 +74,10 @@ export default class IndentBlock extends Plugin {
 			}
 		} );
 
-		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor ) );
-		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor ) );
+		const config = editor.config.get( 'indentBlock' );
+
+		editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'forward' }, config ) ) );
+		editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, Object.assign( { direction: 'backward' }, config ) ) );
 	}
 
 	afterInit() {
