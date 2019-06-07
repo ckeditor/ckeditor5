@@ -90,6 +90,21 @@ export default class IndentBlockCommand extends Command {
 			return false;
 		}
 
+		if ( this.useClasses ) {
+			// eslint-disable-next-line no-undef
+			console.log( 'use classes' );
+		} else {
+			const currentIndent = block.getAttribute( 'indent' );
+			const currentOffset = parseFloat( currentIndent || 0 );
+
+			// is forward
+			if ( this.direction > 0 ) {
+				return true;
+			} else {
+				return currentOffset > 0;
+			}
+		}
+
 		return true;
 	}
 }
